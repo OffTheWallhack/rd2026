@@ -1,0 +1,746 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<script>document.documentElement.classList.add("js")</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Robo Ďurica – pomôžem ti s AI</title>
+<meta name="description" content="Nevieš ako na AI alebo nemáš čas? Spravím to za teba, alebo ťa to naučím rovno na tvojej robote. Robo Ďurica, Bratislava.">
+<meta property="og:title" content="Robo Ďurica – pomôžem ti s AI">
+<meta property="og:description" content="Spravím to za teba, alebo ťa to naučím rovno na tvojej robote.">
+<meta property="og:image" content="img/hero.webp">
+<meta name="theme-color" content="#F5F5F2">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='30' fill='%231FAF6F'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F5F5F2;
+  --bg-2: #ECECE7;
+  --ink: #161616;
+  --muted: #5C5C55;
+  --line: #DCDCD4;
+  --pulse: #1FAF6F;
+  --pulse-ink: #0F7A4A;
+  --night: #121312;
+  --night-2: #1C1D1B;
+  --night-text: #EDEDE8;
+  --night-muted: #A3A39B;
+  --f: "Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --wrap: 72rem;
+  --pad: clamp(1.25rem, 5vw, 3rem);
+  --r: 6px;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: calc(4.5rem + env(safe-area-inset-top, 0px)); }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: var(--f); font-size: 1.0625rem; line-height: 1.6;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+img { max-width: 100%; height: auto; display: block; }
+a { color: inherit; text-underline-offset: .2em; }
+:focus-visible { outline: 3px solid var(--pulse); outline-offset: 3px; border-radius: 3px; }
+.skip { position: absolute; left: -9999px; top: 0; background: var(--ink); color: var(--bg); padding: .6rem 1rem; z-index: 30; }
+.skip:focus { left: 1rem; top: 1rem; }
+.wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 var(--pad); }
+.label { font-family: var(--mono); font-size: .78rem; letter-spacing: .08em; color: var(--muted); text-transform: uppercase; }
+
+/* pulse dot */
+.dot { position: relative; display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--pulse); flex: none; }
+.dot::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: var(--pulse); opacity: .5; }
+@media (prefers-reduced-motion: no-preference) {
+  .dot::after { animation: ping 2.4s ease-out infinite; }
+  @keyframes ping { 0% { transform: scale(1); opacity: .5; } 80%, 100% { transform: scale(3.2); opacity: 0; } }
+}
+
+/* bar */
+.bar {
+  position: sticky; top: 0; z-index: 20;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.bar-in { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 3.75rem; }
+.brand { white-space: nowrap; display: flex; align-items: center; gap: .6rem; font-weight: 700; text-decoration: none; font-size: 1.05rem; }
+.bar-r { display: flex; gap: .5rem; align-items: center; }
+.lang { white-space: nowrap; font: 500 .8rem var(--mono); background: none; border: 1px solid var(--line); color: var(--muted); padding: 0 .7rem; height: 40px; border-radius: var(--r); cursor: pointer; }
+.lang .on { color: var(--ink); }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  min-height: 48px; padding: 0 1.25rem; border-radius: var(--r);
+  font: 500 1rem var(--f); text-decoration: none; cursor: pointer;
+  border: 1px solid var(--ink); background: transparent; color: var(--ink);
+  transition: background .2s, color .2s, border-color .2s;
+}
+.btn:hover { background: var(--bg-2); }
+.btn-dark { background: var(--ink); color: var(--bg); }
+.btn-dark:hover { background: var(--pulse-ink); border-color: var(--pulse-ink); color: #fff; }
+.btn-sm { white-space: nowrap; min-height: 40px; padding: 0 .9rem; font-size: .9rem; }
+
+/* hero */
+.hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
+#field { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.hero-in { position: relative; display: grid; gap: 2.5rem; padding-top: clamp(2.5rem, 8vw, 5.5rem); padding-bottom: clamp(3rem, 8vw, 5.5rem); }
+@media (min-width: 56rem) { .hero-in { grid-template-columns: 1.15fr .85fr; align-items: center; gap: 4rem; } }
+.status { display: inline-flex; align-items: center; gap: .6rem; margin-bottom: 1.5rem; }
+h1 {
+  font-weight: 700; font-size: clamp(2.9rem, 10vw, 5.6rem); line-height: .98;
+  letter-spacing: -.035em; margin: 0 0 1.25rem;
+}
+h1 .soft { color: var(--muted); }
+.hero-sub { font-size: clamp(1.15rem, 2.6vw, 1.35rem); max-width: 30em; margin: 0 0 2rem; color: #33332F; }
+.actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+.hero-photo { position: relative; margin: 0; will-change: transform; }
+.hero-photo img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 25%; border-radius: var(--r); background: var(--bg-2); }
+.hero-photo figcaption {
+  position: absolute; left: .75rem; bottom: .75rem;
+  display: inline-flex; align-items: center; gap: .5rem;
+  background: rgba(245,245,242,.92); color: var(--ink);
+  font: 500 .8rem var(--mono); padding: .45rem .7rem; border-radius: 4px;
+}
+@media (max-width: 55.99rem) { .hero-photo img { aspect-ratio: 5 / 4; object-position: 50% 22%; } }
+
+/* sections */
+.sec { padding: clamp(3.5rem, 9vw, 6.5rem) 0; border-bottom: 1px solid var(--line); }
+.sec-head { max-width: 40rem; margin-bottom: 2.5rem; }
+h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.2rem); line-height: 1.05; letter-spacing: -.03em; margin: .6rem 0 .8rem; }
+.sec-head p { margin: 0; color: var(--muted); font-size: 1.1rem; }
+
+/* problem picker */
+.picker { display: grid; gap: 1.5rem; }
+@media (min-width: 56rem) { .picker { grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: start; } }
+.probs { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; }
+.prob {
+  width: 100%; text-align: left; cursor: pointer;
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  font: 500 1.05rem var(--f); color: var(--ink);
+  background: transparent; border: 1px solid var(--line); border-radius: var(--r);
+  padding: .95rem 1.1rem; min-height: 56px;
+  transition: border-color .2s, background .2s;
+}
+.prob:hover { border-color: #B9B9B0; }
+.prob[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.prob .arr { font-family: var(--mono); opacity: .5; }
+.prob[aria-pressed="true"] .arr { opacity: 1; color: var(--pulse); }
+.answer {
+  background: #fff; border: 1px solid var(--line); border-radius: var(--r);
+  padding: clamp(1.5rem, 4vw, 2.25rem); position: sticky; top: 5.5rem;
+}
+.answer .label { display: flex; align-items: center; gap: .5rem; }
+.answer h3 { font-size: 1.6rem; line-height: 1.15; letter-spacing: -.02em; margin: .75rem 0 .75rem; }
+.answer p { margin: 0 0 1.5rem; color: #33332F; }
+.answer-meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; border-top: 1px solid var(--line); padding-top: 1.25rem; }
+.answer-meta .price { font-family: var(--mono); font-size: .9rem; color: var(--muted); }
+@media (prefers-reduced-motion: no-preference) {
+  .answer.swap { animation: fadein .35s ease; }
+  @keyframes fadein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+}
+
+/* services */
+.svc { display: grid; gap: 1rem; }
+@media (min-width: 48rem) { .svc { grid-template-columns: 1fr 1fr; } }
+.card { border: 1px solid var(--line); border-radius: var(--r); padding: clamp(1.5rem, 4vw, 2.25rem); background: var(--bg); display: flex; flex-direction: column; }
+.card h3 { font-size: 1.9rem; letter-spacing: -.025em; line-height: 1.1; margin: .6rem 0 .75rem; }
+.card p { margin: 0 0 1.25rem; color: #33332F; }
+.card ul { margin: 0 0 1.5rem; padding: 0; list-style: none; }
+.card li { padding: .5rem 0 .5rem 1.4rem; border-top: 1px solid var(--line); position: relative; }
+.card li::before { content: ""; position: absolute; left: 0; top: 1.05rem; width: 6px; height: 6px; border-radius: 50%; background: var(--pulse); }
+.card-foot { margin-top: auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; }
+.price-big { font-size: 1.6rem; font-weight: 700; letter-spacing: -.02em; }
+.price-big small { font: 400 .85rem var(--mono); color: var(--muted); letter-spacing: 0; }
+
+/* care block */
+.care { margin-top: 1rem; border: 1px solid var(--line); border-radius: var(--r); padding: clamp(1.5rem, 4vw, 2.25rem); background: #fff; display: grid; gap: 1.25rem; }
+@media (min-width: 56rem) { .care { grid-template-columns: 1.1fr 1.3fr auto; align-items: center; gap: 2.5rem; } }
+.care .label { display: flex; align-items: center; gap: .5rem; }
+.care h3 { font-size: 1.5rem; letter-spacing: -.02em; margin: .5rem 0 .4rem; }
+.care p { margin: 0; color: var(--muted); }
+.care ul { list-style: none; margin: 0; padding: 0; }
+.care li { padding: .45rem 0 .45rem 1.4rem; position: relative; border-top: 1px solid var(--line); }
+.care li:first-child { border-top: 0; }
+.care li::before { content: ""; position: absolute; left: 0; top: 1rem; width: 6px; height: 6px; border-radius: 50%; background: var(--pulse); }
+.care .price-big { white-space: nowrap; color: var(--ink); }
+.promise { list-style: none; margin: 1.5rem 0 0; padding: 0; display: grid; gap: 0; border-top: 1px solid var(--line); }
+@media (min-width: 48rem) { .promise { grid-template-columns: repeat(3, 1fr); column-gap: 1.5rem; } }
+.promise li { font-size: 1rem; padding: .85rem 0 .85rem 1.8rem; position: relative; border-bottom: 1px solid var(--line); }
+.promise li::before { content: "✓"; position: absolute; left: .1rem; color: var(--pulse-ink); font-weight: 700; }
+
+/* steps */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+@media (min-width: 48rem) { .steps { grid-template-columns: repeat(3, 1fr); } }
+.steps li { background: var(--bg); padding: 1.75rem 1.5rem; }
+.steps .n { font-family: var(--mono); color: var(--pulse-ink); font-size: .9rem; }
+.steps h3 { font-size: 1.35rem; margin: .5rem 0 .4rem; letter-spacing: -.01em; }
+.steps p { margin: 0; color: var(--muted); }
+
+/* human section */
+.human { position: relative; overflow: hidden; background: var(--night); color: var(--night-text); padding: clamp(3.5rem, 9vw, 6.5rem) 0; }
+.human > .wrap { position: relative; }
+.field-dark { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.human .label { color: var(--night-muted); }
+.human h2 { color: #fff; }
+.human-top { display: grid; gap: 2rem; margin-bottom: 2.5rem; }
+@media (min-width: 56rem) { .human-top { grid-template-columns: auto 1fr; gap: 3rem; align-items: end; } }
+.me { display: flex; align-items: center; gap: 1.25rem; }
+.me img { width: 112px; height: 112px; border-radius: 50%; object-fit: cover; object-position: 50% 35%; border: 2px solid var(--pulse); }
+.me .name { font-size: 1.5rem; font-weight: 700; line-height: 1.1; }
+.me .sub { color: var(--night-muted); font-size: .95rem; }
+.bio { font-size: clamp(1.15rem, 2.4vw, 1.35rem); line-height: 1.55; max-width: 38em; margin: 0; }
+.bio strong { color: #fff; font-weight: 500; box-shadow: inset 0 -.35em 0 rgba(31,175,111,.35); }
+
+.gallery { columns: 2; column-gap: .75rem; padding: 3rem 0; }
+@media (min-width: 56rem) { .gallery { columns: 3; column-gap: 1rem; } }
+.gallery figure { break-inside: avoid; margin: 0 0 1rem; will-change: transform; }
+.gallery img { width: 100%; border-radius: var(--r); background: var(--night-2); }
+.gallery figcaption, .vids figcaption { font: .78rem var(--mono); color: var(--night-muted); padding-top: .45rem; }
+.vid-label { margin: 3rem 0 1rem; }
+.vids { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(13rem, 62%); gap: .75rem; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: .75rem; scrollbar-width: thin; scrollbar-color: #3A3B38 transparent; }
+@media (min-width: 56rem) { .vids { grid-auto-flow: row; grid-template-columns: repeat(3, 1fr); overflow: visible; } }
+.vids figure { margin: 0; scroll-snap-align: start; }
+.vids video { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: var(--r); background: var(--night-2); display: block; }
+.human-bottom { display: grid; gap: 2rem; margin-top: 3rem; }
+@media (min-width: 56rem) { .human-bottom { grid-template-columns: 1fr 1fr; gap: 3rem; } }
+.box { border: 1px solid #2C2D2A; border-radius: var(--r); padding: 1.5rem; }
+.box h3 { margin: 0 0 1rem; font-size: 1.2rem; color: #fff; }
+.built { list-style: none; margin: 0; padding: 0; }
+.built li { display: grid; grid-template-columns: 1fr auto; gap: .25rem 1rem; padding: .8rem 0; border-top: 1px solid #2C2D2A; }
+.built li:first-child { border-top: 0; padding-top: 0; }
+.built b { font-weight: 500; color: #fff; }
+.built span.d { grid-column: 1 / -1; color: var(--night-muted); font-size: .95rem; }
+.state { font: .75rem var(--mono); display: inline-flex; align-items: center; gap: .4rem; color: var(--night-muted); white-space: nowrap; }
+.state .dot { width: 7px; height: 7px; }
+.state.idle .dot { background: #6B6B63; }
+.state.idle .dot::after { display: none; }
+.box p { margin: 0 0 1rem; color: var(--night-muted); }
+.box a.inl { color: #fff; }
+.human .btn { border-color: #EDEDE8; color: #EDEDE8; }
+.human .btn:hover { background: #EDEDE8; color: var(--night); }
+details { margin-top: 1rem; border-top: 1px solid #2C2D2A; padding-top: 1rem; }
+summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; display: flex; align-items: center; }
+.tl { list-style: none; margin: .5rem 0 0; padding: 0; }
+.tl li { display: grid; grid-template-columns: 6.5rem 1fr; gap: .75rem; padding: .5rem 0; border-top: 1px solid #2C2D2A; font-size: .95rem; }
+.tl .y { font: .8rem var(--mono); color: var(--night-muted); padding-top: .2rem; }
+
+/* contact */
+.contact { padding: clamp(4rem, 10vw, 7rem) 0; }
+.contact h2 { font-size: clamp(2.8rem, 9vw, 5.5rem); letter-spacing: -.04em; line-height: .98; margin: 1rem 0 1.25rem; }
+.contact h2 .soft { color: var(--muted); }
+.contact p.lead { color: var(--muted); font-size: 1.15rem; margin: 0 0 2rem; max-width: 32em; }
+.socials { list-style: none; margin: 2.5rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: .25rem 1.5rem; font-family: var(--mono); font-size: .9rem; }
+.socials a { display: inline-flex; min-height: 44px; align-items: center; color: var(--muted); }
+.socials a:hover { color: var(--ink); }
+.foot { border-top: 1px solid var(--line); padding: 1.5rem 0 2.5rem; font: .8rem var(--mono); color: var(--muted); }
+.foot .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem; }
+.foot p { margin: 0; }
+
+/* levitation */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes float {
+    0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+    50% { transform: translate3d(0, -10px, 0) rotate(var(--rot, .5deg)); }
+  }
+  .hero-photo img { animation: float 6.5s ease-in-out infinite; --rot: -.6deg; }
+  .gallery img, .vids video { animation: float 7s ease-in-out infinite; }
+  .gallery figure:nth-child(3n+1) img { animation-duration: 6.2s; --rot: .7deg; }
+  .gallery figure:nth-child(3n+2) img { animation-duration: 7.6s; animation-delay: -2s; --rot: -.6deg; }
+  .gallery figure:nth-child(3n) img { animation-duration: 8.4s; animation-delay: -4s; --rot: .4deg; }
+  .vids figure:nth-child(2) video { animation-delay: -2.5s; --rot: -.5deg; }
+  .vids figure:nth-child(3) video { animation-delay: -5s; }
+  .me img { animation: float 5.5s ease-in-out infinite; }
+  .gallery img, .vids video { transition: box-shadow .3s; }
+  .gallery figure:hover img { box-shadow: 0 18px 40px rgba(0,0,0,.45); }
+}
+
+/* reveal */
+@media (prefers-reduced-motion: no-preference) {
+  html.js .rv { opacity: 0; transition: opacity .8s ease; }
+  html.js .rv.in { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<a class="skip" href="#main" data-en="Skip to content">Preskočiť na obsah</a>
+
+<header class="bar">
+  <div class="wrap bar-in">
+    <a class="brand" href="#top"><span class="dot" aria-hidden="true"></span>Robo Ďurica</a>
+    <div class="bar-r">
+      <button class="lang" type="button" aria-label="Prepnúť jazyk / Switch language"><span data-l="sk">SK</span> / <span data-l="en">EN</span></button>
+      <a class="btn btn-dark btn-sm wa" href="https://wa.me/421908109541" data-en="Message me">Napíš mi</a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="hero" id="top" aria-labelledby="h1">
+  <canvas id="field" aria-hidden="true"></canvas>
+  <div class="wrap hero-in">
+    <div>
+      <p class="status label"><span class="dot" aria-hidden="true"></span><span data-en="Taking new jobs">Beriem nové zákazky</span></p>
+      <h1 id="h1"><span data-en="Stuck with AI?">Nevieš ako na AI?</span><br><span class="soft" data-en="I’m not.">Ja áno.</span></h1>
+      <p class="hero-sub" data-en="I’ll build it for you. Or I’ll teach you, right on your own work.">Spravím to za teba. Alebo ťa to naučím rovno na tvojej robote.</p>
+      <div class="actions">
+        <a class="btn btn-dark wa" href="https://wa.me/421908109541" data-en="Message me on WhatsApp">Napíš mi na WhatsApp</a>
+        <a class="btn" href="#problem" data-en="What’s your problem?">S čím zápasíš?</a>
+      </div>
+    </div>
+    <figure class="hero-photo">
+      <img src="img/hero.webp" width="1000" height="1250" alt="Čiernobiely portrét Roba s plechovkou v ruke" data-en-alt="Black-and-white portrait of Robo holding a can" fetchpriority="high">
+      <figcaption><span class="dot" aria-hidden="true"></span><span data-en="That’s me.">To som ja.</span></figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- PROBLEM PICKER -->
+<section class="sec" id="problem" aria-labelledby="p-title">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <p class="label" data-en="01 · Your problem">01 · Tvoj problém</p>
+      <h2 id="p-title" data-en="What are you stuck on?">S čím zápasíš?</h2>
+      <p data-en="Pick what fits you best. I’ll tell you how I’d solve it.">Vyber, čo ťa najviac trápi. Poviem ti, ako by som to vyriešil.</p>
+    </div>
+    <div class="picker">
+      <ul class="probs rv" id="probs"></ul>
+      <div class="answer rv" id="answer" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="sec" id="sluzby" aria-labelledby="s-title">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <p class="label" data-en="02 · How I help">02 · Ako pomôžem</p>
+      <h2 id="s-title" data-en="Two ways. You choose.">Dva spôsoby. Vyberieš si.</h2>
+    </div>
+    <div class="svc">
+      <article class="card rv">
+        <p class="label" data-en="No time">Nemáš čas</p>
+        <h3 data-en="I build it for you">Spravím to za teba</h3>
+        <p data-en="Tell me what slows you down. I build a tool that does it for you, hand it over and show you how to use it.">Povieš mi, čo ťa brzdí. Postavím nástroj, ktorý to robí za teba, odovzdám ti ho a ukážem, ako ho používať.</p>
+        <ul>
+          <li data-en="A working tool made for your job">Hotový nástroj na mieru tvojej roboty</li>
+          <li data-en="Handover where I show you how it works">Odovzdanie, pri ktorom ti ukážem, ako funguje</li>
+          <li data-en="A short guide so you can use it alone">Krátky návod, aby si to zvládol sám</li>
+        </ul>
+        <div class="card-foot">
+          <p class="price-big">300–700 € <small data-en="one-off">jednorazovo</small></p>
+          <a class="btn btn-dark wa" href="https://wa.me/421908109541" data-en="I want this">Chcem toto</a>
+        </div>
+      </article>
+      <article class="card rv">
+        <p class="label" data-en="Want to learn">Chceš to vedieť</p>
+        <h3 data-en="I teach you">Naučím ťa to</h3>
+        <p data-en="We sit down, in person or online, and set AI up for your actual work. No theory, straight on your own stuff.">Sadneme si, naživo alebo online, a nastavíme AI na tvoju konkrétnu robotu. Žiadna teória, rovno na tvojich veciach.</p>
+        <ul>
+          <li data-en="One session on your own tasks">Jedno stretnutie na tvojich úlohách</li>
+          <li data-en="Tools set up and ready">Nastavené nástroje pripravené na použitie</li>
+          <li data-en="Notes to come back to">Poznámky, ku ktorým sa vieš vrátiť</li>
+        </ul>
+        <div class="card-foot">
+          <p class="price-big">150 € <small data-en="per session">za session</small></p>
+          <a class="btn btn-dark wa" href="https://wa.me/421908109541" data-en="I want this">Chcem toto</a>
+        </div>
+      </article>
+    </div>
+    <div class="care rv">
+      <div>
+        <p class="label"><span class="dot" aria-hidden="true"></span><span data-en="After handover">Po odovzdaní</span></p>
+        <h3 data-en="Care &amp; upkeep">Starostlivosť a údržba</h3>
+        <p data-en="For anything I build for you. So you’re never left alone with it.">Ku všetkému, čo ti spravím. Aby si s tým nikdy neostal sám.</p>
+      </div>
+      <ul>
+        <li data-en="It runs on a server, I keep it working">Beží to na serveri a ja sa starám, aby fungovalo</li>
+        <li data-en="Small tweaks when something changes">Malé úpravy, keď sa niečo zmení</li>
+        <li data-en="Come back anytime and I’ll explain again">Kedykoľvek sa vrátiš a dovysvetlím ti to</li>
+      </ul>
+      <p class="price-big">20–30 € <small data-en="per month">mesačne</small></p>
+    </div>
+  </div>
+</section>
+
+<!-- STEPS -->
+<section class="sec" id="postup" aria-labelledby="st-title">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <p class="label" data-en="03 · How it goes">03 · Ako to ide</p>
+      <h2 id="st-title" data-en="Three steps. No surprises.">Tri kroky. Žiadne prekvapenia.</h2>
+    </div>
+    <ol class="steps rv">
+      <li><span class="n">01</span><h3 data-en="You message me">Napíšeš mi</h3><p data-en="A few sentences on WhatsApp about what holds you up.">Pár viet na WhatsApp o tom, čo ťa zdržuje.</p></li>
+      <li><span class="n">02</span><h3 data-en="I suggest a fix">Navrhnem riešenie</h3><p data-en="You know the price and date upfront. Then I build it.">Cenu a termín vieš vopred. Potom to spravím.</p></li>
+      <li><span class="n">03</span><h3 data-en="You use it">Ty to používaš</h3><p data-en="I hand it over and explain it in plain words. Then upkeep, if you want it.">Odovzdám a vysvetlím bez odborných slov. Potom údržba, ak chceš.</p></li>
+    </ol>
+    <ul class="promise rv">
+      <li data-en="The tool is yours, with a guide">Nástroj je tvoj, aj s návodom</li>
+      <li data-en="Plain Slovak or English, no jargon">Po slovensky alebo anglicky, bez odborných slov</li>
+      <li data-en="If I can’t do it, I’ll say so straight">Ak niečo neviem, poviem ti to na rovinu</li>
+    </ul>
+  </div>
+</section>
+
+<!-- HUMAN -->
+<section class="human" id="kto" aria-labelledby="k-title">
+  <canvas class="field-dark" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div class="human-top rv">
+      <div class="me">
+        <img src="img/portrait.webp" width="525" height="700" alt="Portrét Roba Ďuricu" data-en-alt="Portrait of Robo Ďurica" loading="lazy">
+        <div>
+          <p class="label" data-en="04 · Who’s behind it">04 · Kto je za tým</p>
+          <p class="name">Robo Ďurica</p>
+          <p class="sub" data-en="31 · Bratislava">31 · Bratislava</p>
+        </div>
+      </div>
+      <div>
+        <h2 id="k-title" data-en="Not a robot. A guy from events.">Nie som robot. Som chalan z eventov.</h2>
+        <p class="bio" data-en="At <strong>Red Bull</strong> I drive event cars and build mobile stages. I run my own events like <strong>GOSko</strong> and <strong>Drop Ups</strong>, and DJ as <strong>R O B</strong>. I started building AI tools because I needed them myself. Now I build them for others too.">V <strong>Red Bulle</strong> jazdím s event autami a staviam mobilné stage. Robím vlastné eventy ako <strong>GOSko</strong> a <strong>Drop Ups</strong> a hrám ako DJ <strong>R O B</strong>. AI nástroje som si začal stavať, lebo som ich sám potreboval. Teraz ich robím aj pre iných.</p>
+      </div>
+    </div>
+
+    <div class="gallery rv">
+      <figure class="px"><img src="img/sugga-roof.webp" width="675" height="900" loading="lazy" alt="Robo sa usmieva zo strechy event auta" data-en-alt="Robo smiling from the roof of an event car"><figcaption data-en="On the roof of an event car">Na streche event auta</figcaption></figure>
+      <figure class="px"><img src="img/dj-booth.webp" width="1100" height="733" loading="lazy" alt="Robo za DJ pultom v event aute" data-en-alt="Robo behind the DJ decks in an event car"><figcaption data-en="Behind the decks as R O B">Za pultom ako R O B</figcaption></figure>
+      <figure class="px"><img src="img/dcl-control.webp" width="1100" height="825" loading="lazy" alt="Režijná miestnosť s obrazovkami počas prenosu" data-en-alt="Broadcast control room with screens during a live show"><figcaption data-en="Drone Champions League control room">Réžia Drone Champions League</figcaption></figure>
+      <figure class="px"><img src="img/gosko-mic.webp" width="1100" height="733" loading="lazy" alt="Robo moderuje skate súťaž s mikrofónom" data-en-alt="Robo hosting a skate contest with a mic"><figcaption data-en="Hosting GOSko">Moderujem GOSko</figcaption></figure>
+      <figure class="px"><img src="img/gosko-poster.webp" width="720" height="900" loading="lazy" alt="Plagát skate súťaže GOSko" data-en-alt="Poster for the GOSko skate contest"><figcaption data-en="GOSko, Bratislava 2026">GOSko, Bratislava 2026</figcaption></figure>
+      <figure class="px"><img src="img/thinking-laptop.webp" width="1100" height="733" loading="lazy" alt="Robo zamyslene pozerá do laptopu na evente" data-en-alt="Robo thinking over a laptop at an event"><figcaption data-en="Figuring out a fix">Vymýšľam riešenie</figcaption></figure>
+      <figure class="px"><img src="img/cat.webp" width="600" height="800" loading="lazy" alt="Mačka zblízka pozerá do objektívu" data-en-alt="A cat looking into the camera up close"><figcaption data-en="Home supervisor">Domáci dozor</figcaption></figure>
+      <figure class="px"><img src="img/big-stage.webp" width="675" height="900" loading="lazy" alt="Selfie v kapucni pred veľkou festivalovou stage" data-en-alt="Hooded selfie in front of a big festival stage"><figcaption data-en="Before a big build">Pred veľkou stavbou</figcaption></figure>
+      <figure class="px"><img src="img/mandalas.webp" width="675" height="900" loading="lazy" alt="Tri farebné ručne kreslené mandaly na stole" data-en-alt="Three colourful hand-drawn mandalas on a desk"><figcaption data-en="Hand-drawn mandalas">Ručne kreslené mandaly</figcaption></figure>
+      <figure class="px"><img src="img/gosko-ghost.webp" width="708" height="708" loading="lazy" alt="Kreslený duch na skateboarde na červenom pozadí" data-en-alt="Cartoon ghost on a skateboard on a red background"><figcaption data-en="GOSko mascot">Maskot GOSka</figcaption></figure>
+      <figure class="px"><img src="img/headphones-street.webp" width="675" height="900" loading="lazy" alt="Robo so slúchadlami na ulici" data-en-alt="Robo with headphones on the street"><figcaption data-en="Bratislava, between jobs">Bratislava, medzi akciami</figcaption></figure>
+      <figure class="px"><img src="img/grass-bw.webp" width="400" height="400" loading="lazy" alt="Čiernobiela fotka, Robo sedí v tráve a smeje sa" data-en-alt="Black-and-white photo of Robo sitting in the grass, laughing"><figcaption data-en="A quiet moment">Chvíľa pokoja</figcaption></figure>
+    </div>
+
+    <p class="label vid-label" data-en="In motion">V pohybe</p>
+    <div class="vids rv" tabindex="0" aria-label="Krátke videá" data-en-aria="Short videos">
+      <figure><video muted loop playsinline preload="none" poster="img/dj-les-poster.webp" aria-label="Robo hrá DJ set vonku v lese" data-en-aria="Robo playing a DJ set outdoors in the woods"><source src="vid/dj-les.mp4" type="video/mp4"></video><figcaption data-en="DJ set in the woods">DJ set v lese</figcaption></figure>
+      <figure><video muted loop playsinline preload="none" poster="img/natacam-poster.webp" aria-label="Robo so smiechom natáča kamerou v event aute" data-en-aria="Robo laughing while filming from an event car"><source src="vid/natacam.mp4" type="video/mp4"></video><figcaption data-en="Filming from an event car">Natáčam z event auta</figcaption></figure>
+      <figure><video muted loop playsinline preload="none" poster="img/gosko-nalepky-poster.webp" aria-label="Ruka drží balík nálepiek GOSko" data-en-aria="A hand holding a stack of GOSko stickers"><source src="vid/gosko-nalepky.mp4" type="video/mp4"></video><figcaption data-en="GOSko stickers heading out">GOSko nálepky idú von</figcaption></figure>
+    </div>
+
+    <div class="human-bottom">
+      <div class="box rv">
+        <h3 data-en="What I’ve built">Čo som už postavil</h3>
+        <ul class="built">
+          <li><b data-en="Shift planner">Plánovač smien</b><span class="state"><span class="dot" aria-hidden="true"></span><span data-en="Running">Beží</span></span><span class="d" data-en="For a Red Bull promo team of 11. Builds the weekly schedule from availability.">Pre 11-členný promo tím v Red Bulle. Poskladá týždenný rozpis z dostupnosti.</span></li>
+          <li><b>Event Hub</b><span class="state"><span class="dot" aria-hidden="true"></span><span data-en="Running">Beží</span></span><span class="d" data-en="My app for event work: dates, trips, costs, payouts, car service.">Moja appka na event prácu: termíny, jazdy, náklady, výplaty, servis.</span></li>
+          <li><b data-en="Game version of my site">Herná verzia webu</b><span class="state idle"><span class="dot" aria-hidden="true"></span><span data-en="In progress">V práci</span></span><span class="d" data-en="Pick a character like in an old PS2 skate game.">Vyber si postavu ako v starej PS2 skate hre.</span></li>
+        </ul>
+      </div>
+      <div class="box rv">
+        <h3 data-en="Also open to work">Otvorený aj práci</h3>
+        <p data-en="Looking for a full-time role in event production? Let’s talk.">Hľadáš človeka do event produkcie na plný úväzok? Pokecajme.</p>
+        <a class="btn btn-sm" href="cv-robert-durica.pdf" download data-en="Download CV">Stiahni CV</a>
+        <details>
+          <summary data-en="Full experience">Celá prax</summary>
+          <ol class="tl">
+            <li><span class="y" data-en="2024 – now">2024 – dnes</span><span data-en="Red Bull, event car driver (Zubor, Sugga)">Red Bull, event car driver (Zubor, Sugga)</span></li>
+            <li><span class="y" data-en="now">dnes</span><span data-en="Own events: GOSko, KALAMITA, Drop Ups">Vlastné eventy: GOSko, KALAMITA, Drop Ups</span></li>
+            <li><span class="y">2023</span><span data-en="RECIN, camera and live graphics; WPT Prime, Champion of Champions Tour">RECIN, kamera a živá grafika; WPT Prime, Champion of Champions Tour</span></li>
+            <li><span class="y">2022</span><span data-en="ESL IEM Cologne, Drone Champions League, CG operator">ESL IEM Cologne, Drone Champions League, CG operátor</span></li>
+            <li><span class="y">2020 – 23</span><span data-en="Republeague, esports brand co-founder">Republeague, spoluzakladateľ esports značky</span></li>
+            <li><span class="y">2019 – 20</span><span data-en="Motor-Car Group, online marketing">Motor-Car Group, online marketing</span></li>
+            <li><span class="y">2013 – 17</span><span data-en="Pan-European University, BA mass communication">Paneurópska VŠ, Bc. masmediálna komunikácia</span></li>
+          </ol>
+        </details>
+        <p style="margin-top:1.25rem" data-en="DJ booking: drum &amp; bass, jungle, hip hop, techno. <a class='inl' href='https://soundcloud.com/duriica'>Listen on SoundCloud</a>">DJ booking: drum &amp; bass, jungle, hip hop, techno. <a class="inl" href="https://soundcloud.com/duriica">Vypočuj si na SoundCloude</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="kontakt" aria-labelledby="c-title">
+  <div class="wrap rv">
+    <p class="status label"><span class="dot" aria-hidden="true"></span><span data-en="Taking new jobs">Beriem nové zákazky</span></p>
+    <h2 id="c-title"><span data-en="Message me.">Napíš mi.</span><br><span class="soft" data-en="Sorted.">Vyriešené.</span></h2>
+    <p class="lead" data-en="Tell me what’s bothering you. I’ll reply whether I can do it, how much it costs and by when.">Povedz mi, čo ťa trápi. Odpíšem ti, či to viem spraviť, koľko to stojí a dokedy.</p>
+    <div class="actions">
+      <a class="btn btn-dark wa" href="https://wa.me/421908109541">WhatsApp</a>
+      <a class="btn" href="tel:+421908109541" data-en="Call me">Zavolaj mi</a>
+      <a class="btn" href="mailto:rdurica1995@gmail.com">rdurica1995@gmail.com</a>
+    </div>
+    <ul class="socials">
+      <li><a href="https://www.linkedin.com/in/durica">LinkedIn</a></li>
+      <li><a href="https://www.instagram.com/duriica">Instagram</a></li>
+      <li><a href="https://github.com/OffTheWallhack">GitHub</a></li>
+      <li><a href="https://soundcloud.com/duriica">SoundCloud</a></li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p data-en="Services invoiced by 142 design s.r.o.">Služby fakturuje 142 design s.r.o.</p>
+    <p>© 2026 Robert Ďurica</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var WA = "421908109541";
+  var WA_TEXT = { sk: "Ahoj Robo, potreboval by som pomôcť s: ", en: "Hi Robo, I could use help with: " };
+  var TITLE = { sk: "Robo Ďurica – pomôžem ti s AI", en: "Robo Ďurica – I’ll help you with AI" };
+
+  var PROBLEMS = [
+    { sk: "Ručne skladám rozpis smien", en: "I build shift schedules by hand",
+      a: { sk: "Postavím ti plánovač, ktorý rozpis poskladá sám.", en: "I’ll build a planner that makes the schedule for you." },
+      d: { sk: "Z dostupnosti ľudí vyskladá týždeň a férovo rozdelí hodiny. Presne taký už používa tím v Red Bulle.", en: "It builds the week from people’s availability and splits hours fairly. A Red Bull team already uses one." },
+      s: "A" },
+    { sk: "Všetko mám v Exceli a správach", en: "Everything lives in spreadsheets and chats",
+      a: { sk: "Spravím ti jednoduchú appku pre tím.", en: "I’ll make you a simple app for your team." },
+      d: { sk: "Termíny, úlohy a náklady na jednom mieste, na mobile aj v počítači. Žiadne hľadanie v správach.", en: "Dates, tasks and costs in one place, on phone and laptop. No digging through chats." },
+      s: "A" },
+    { sk: "Mám hodiny videí bez titulkov", en: "I have hours of video without subtitles",
+      a: { sk: "Nastavím ti prepis videí do textu a titulkov.", en: "I’ll set up video-to-text and subtitles." },
+      d: { sk: "Nahráš video, dostaneš text alebo titulky. Ušetríš hodiny ručného prepisovania.", en: "Upload a video, get text or subtitles back. Hours of manual typing saved." },
+      s: "A" },
+    { sk: "Nestíham odpovedať na dopyty", en: "I can’t keep up with enquiries",
+      a: { sk: "Nastavím AI, ktorá ti pripraví odpovede.", en: "I’ll set up AI that drafts your replies." },
+      d: { sk: "Podľa tvojich pravidiel a cien. Ty len skontroluješ a odošleš.", en: "Following your rules and prices. You just check and send." },
+      s: "A" },
+    { sk: "Neviem, kde s AI začať", en: "I don’t know where to start with AI",
+      a: { sk: "Sadneme si a ukážem ti to na tvojej robote.", en: "We sit down and I show you on your own work." },
+      d: { sk: "Za jedno stretnutie odídeš s nastavenými nástrojmi a vieš, čo s nimi.", en: "In one session you leave with tools set up and know what to do with them." },
+      s: "B" },
+    { sk: "Niečo iné", en: "Something else",
+      a: { sk: "Napíš mi pár viet.", en: "Send me a few sentences." },
+      d: { sk: "Veľa vecí sa dá vyriešiť jednoduchšie, než si myslíš. Povieme si, čo by dávalo zmysel.", en: "Lots of things can be solved more simply than you think. We’ll figure out what makes sense." },
+      s: "?" }
+  ];
+  var SVC = {
+    A: { sk: ["Spravím to za teba", "300–700 € + údržba 20–30 €/mes."], en: ["I build it for you", "€300–700 + upkeep €20–30/mo"] },
+    B: { sk: ["Naučím ťa to", "150 € / session"], en: ["I teach you", "€150 / session"] },
+    "?": { sk: ["Dohodneme sa", "podľa zadania"], en: ["Let’s talk", "depends on the job"] }
+  };
+  var UI = {
+    sk: { sol: "Riešenie", svc: "Služba", cta: "Toto chcem" },
+    en: { sol: "Solution", svc: "Service", cta: "I want this" }
+  };
+
+  var still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var lang = "sk", current = 0;
+  var probsEl = document.getElementById("probs");
+  var ansEl = document.getElementById("answer");
+
+  function waHref(extra) {
+    return "https://wa.me/" + WA + "?text=" + encodeURIComponent(WA_TEXT[lang] + (extra || ""));
+  }
+
+  function renderProblems() {
+    probsEl.innerHTML = "";
+    PROBLEMS.forEach(function (p, i) {
+      var li = document.createElement("li");
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "prob";
+      b.setAttribute("aria-pressed", i === current ? "true" : "false");
+      b.setAttribute("aria-controls", "answer");
+      b.innerHTML = "<span></span><span class='arr' aria-hidden='true'>→</span>";
+      b.firstChild.textContent = p[lang];
+      b.addEventListener("click", function () {
+        current = i; renderProblems(); renderAnswer(true);
+        probsEl.querySelectorAll('.prob')[i].focus();
+        if (window.innerWidth < 896) {
+          var r = ansEl.getBoundingClientRect();
+          if (r.bottom > window.innerHeight || r.top < 60) ansEl.scrollIntoView({ behavior: still ? 'auto' : 'smooth', block: 'center' });
+        }
+      });
+      li.appendChild(b); probsEl.appendChild(li);
+    });
+  }
+
+  function renderAnswer(animate) {
+    var p = PROBLEMS[current], s = SVC[p.s][lang], u = UI[lang];
+    ansEl.innerHTML =
+      "<p class='label'><span class='dot' aria-hidden='true'></span>" + u.sol + "</p>" +
+      "<h3></h3><p class='d'></p>" +
+      "<div class='answer-meta'><span class='price'></span>" +
+      "<a class='btn btn-dark btn-sm' href='#'></a></div>";
+    ansEl.querySelector("h3").textContent = p.a[lang];
+    ansEl.querySelector("p.d").textContent = p.d[lang];
+    ansEl.querySelector(".price").textContent = s[0] + " · " + s[1];
+    var a = ansEl.querySelector("a");
+    a.textContent = u.cta; a.href = waHref(p[lang]);
+    if (animate) { ansEl.classList.remove("swap"); void ansEl.offsetWidth; ansEl.classList.add("swap"); }
+  }
+
+  var tr = document.querySelectorAll("[data-en]");
+  var trAria = document.querySelectorAll("[data-en-aria]");
+  var trAlt = document.querySelectorAll("[data-en-alt]");
+  tr.forEach(function (el) { el.dataset.sk = el.innerHTML; });
+  trAria.forEach(function (el) { el.dataset.skAria = el.getAttribute("aria-label"); });
+  trAlt.forEach(function (el) { el.dataset.skAlt = el.getAttribute("alt"); });
+
+  function setLang(l) {
+    lang = l;
+    tr.forEach(function (el) { el.innerHTML = l === "en" ? el.dataset.en : el.dataset.sk; });
+    trAria.forEach(function (el) { el.setAttribute("aria-label", l === "en" ? el.dataset.enAria : el.dataset.skAria); });
+    trAlt.forEach(function (el) { el.setAttribute("alt", l === "en" ? el.dataset.enAlt : el.dataset.skAlt); });
+    document.documentElement.lang = l;
+    document.title = TITLE[l];
+    document.querySelectorAll(".lang [data-l]").forEach(function (s) { s.classList.toggle("on", s.dataset.l === l); });
+    document.querySelectorAll("a.wa").forEach(function (a) { a.href = waHref(""); });
+    renderProblems(); renderAnswer(false);
+    try { localStorage.setItem("lang", l); } catch (e) {}
+  }
+
+  var start = "sk";
+  try {
+    var saved = localStorage.getItem("lang");
+    if (saved === "sk" || saved === "en") start = saved;
+    else if (!/^(sk|cs)/i.test(navigator.language || "")) start = "en";
+  } catch (e) {}
+  setLang(start);
+  document.querySelector(".lang").addEventListener("click", function () { setLang(lang === "sk" ? "en" : "sk"); });
+
+  // reveal on scroll
+  var rv = document.querySelectorAll(".rv");
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+    }, { rootMargin: "0px 0px -8% 0px" });
+    rv.forEach(function (el) { io.observe(el); });
+  } else { rv.forEach(function (el) { el.classList.add("in"); }); }
+
+  // ASCII fields with floating emoji (hero light, human dark)
+  var EMO = ["🎧","🚐","🛹","⚡","🤖","💡","📸","🎛️","☕","🐈","🔥","✨"];
+  var mx = 0, my = 0;
+  window.addEventListener("pointermove", function (e) { mx = e.clientX / window.innerWidth - .5; my = e.clientY / window.innerHeight - .5; }, { passive: true });
+  function field(cv, opt) {
+    var ctx = cv && cv.getContext("2d"); if (!ctx) return;
+    var W, H, dpr, cell = 16, t0 = performance.now(), running = true, last = 0, parts = [];
+    var CH = " .·:-=+*";
+    function size() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = cv.clientWidth; H = cv.clientHeight;
+      cv.width = W * dpr; cv.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      cell = W < 600 ? 14 : 16;
+      var n = Math.round((W < 600 ? 9 : 16) * opt.density); parts = [];
+      for (var i = 0; i < n; i++) parts.push({
+        x: Math.random() * W, y: Math.random() * H,
+        vy: 10 + Math.random() * 16, vx: (Math.random() - .5) * 8,
+        s: 18 + Math.random() * 18, e: EMO[(i + opt.shift) % EMO.length],
+        z: .3 + Math.random() * .7, ph: Math.random() * 6.28
+      });
+    }
+    function draw(now) {
+      if (running && !still) requestAnimationFrame(draw);
+      if (!still && now - last < 33) return;
+      var dt = Math.min((now - last) / 1000, .1); last = now;
+      var t = (now - t0) / 1000;
+      ctx.clearRect(0, 0, W, H);
+      ctx.font = "500 " + (cell - 3) + "px 'JetBrains Mono', ui-monospace, monospace";
+      ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      var cx = W * .85 + mx * 80, cy = H * .15 + my * 60, wide = W >= 896;
+      for (var y = cell / 2; y < H; y += cell) {
+        for (var x = cell / 2; x < W; x += cell) {
+          var dx = x - cx, dy = y - cy, d = Math.sqrt(dx * dx + dy * dy);
+          var v = Math.sin(d / 46 - t * 1.4) * .5 + .5;
+          v *= .55 + .45 * Math.sin(x * .05 + y * .03 + t * .5);
+          var k = opt.full ? .9 : (wide ? x / W : y / H);
+          var inten = Math.max(0, Math.min(1, (k - .15) * 1.4)) * opt.strength;
+          var idx = Math.floor(v * inten * (CH.length - 1) + .2);
+          if (idx <= 0) continue;
+          ctx.fillStyle = opt.ink + (.08 + v * .22 * inten).toFixed(3) + ")";
+          ctx.fillText(CH[idx], x, y);
+        }
+      }
+      ctx.globalAlpha = opt.emojiAlpha;
+      parts.forEach(function (p) {
+        if (!still) { p.y -= p.vy * dt; p.x += (p.vx + Math.sin(t + p.ph) * 8) * dt; }
+        if (p.y < -40) { p.y = H + 40; p.x = Math.random() * W; }
+        if (p.x < -40) p.x = W + 40; if (p.x > W + 40) p.x = -40;
+        ctx.font = p.s + "px system-ui, 'Apple Color Emoji', 'Segoe UI Emoji', sans-serif";
+        ctx.save();
+        ctx.translate(p.x + mx * 30 * p.z, p.y + my * 30 * p.z);
+        ctx.rotate(Math.sin(t * .9 + p.ph) * .3);
+        ctx.fillText(p.e, 0, 0);
+        ctx.restore();
+      });
+      ctx.globalAlpha = 1;
+    }
+    size(); requestAnimationFrame(draw);
+    window.addEventListener("resize", function () { size(); if (still) requestAnimationFrame(draw); });
+    if ("IntersectionObserver" in window && !still) {
+      new IntersectionObserver(function (es) {
+        var vis = es[0].isIntersecting;
+        if (vis && !running) { running = true; requestAnimationFrame(draw); }
+        running = vis;
+      }).observe(cv);
+    }
+  }
+  field(document.getElementById("field"), { ink: "rgba(22,22,22,", strength: 1, density: 1, emojiAlpha: .6, shift: 0 });
+  field(document.querySelector(".field-dark"), { ink: "rgba(237,237,232,", strength: .55, density: .8, emojiAlpha: .35, full: true, shift: 5 });
+
+  // parallax: hero layers, section heads, gallery columns
+  if (!still) {
+    var heroPh = document.querySelector(".hero-photo");
+    var heroTx = document.querySelector(".hero-in > div");
+    var heads = [].slice.call(document.querySelectorAll(".sec-head, .human-top"));
+    var figs = [].slice.call(document.querySelectorAll(".gallery figure"));
+    var vfigs = [].slice.call(document.querySelectorAll(".vids figure"));
+    var SPEED = [-0.06, 0.09, -0.03];
+    var ticking = false;
+    function px() {
+      ticking = false;
+      var vh = window.innerHeight, y = window.scrollY;
+      if (y < vh * 1.5) {
+        if (heroPh) heroPh.style.transform = "translate3d(0," + (y * 0.22).toFixed(1) + "px,0)";
+        if (heroTx) { heroTx.style.transform = "translate3d(0," + (y * 0.1).toFixed(1) + "px,0)"; heroTx.style.opacity = Math.max(0, 1 - y / (vh * .9)).toFixed(3); }
+      }
+      heads.forEach(function (h) {
+        var r = h.getBoundingClientRect();
+        if (r.bottom < -100 || r.top > vh + 100) return;
+        h.style.transform = "translate3d(0," + ((r.top - vh / 2) * 0.06).toFixed(1) + "px,0)";
+      });
+      if (figs.length) {
+        var gal = figs[0].parentNode, gr = gal.getBoundingClientRect();
+        if (gr.bottom > -300 && gr.top < vh + 300) {
+          var gw = gal.clientWidth, cols = window.innerWidth >= 896 ? 3 : 2;
+          var base = (gr.top + gr.height / 2 - vh / 2);
+          figs.forEach(function (f) {
+            var col = Math.min(cols - 1, Math.round((f.offsetLeft / gw) * cols));
+            f.style.transform = "translate3d(0," + (base * SPEED[col]).toFixed(1) + "px,0)";
+          });
+        }
+      }
+      vfigs.forEach(function (f, i) {
+        var r = f.getBoundingClientRect();
+        if (r.bottom < -200 || r.top > vh + 200) return;
+        f.style.transform = "translate3d(0," + ((r.top - vh / 2) * [0.08, -0.05, 0.1][i % 3]).toFixed(1) + "px,0)";
+      });
+    }
+    window.addEventListener("scroll", function () { if (!ticking) { ticking = true; requestAnimationFrame(px); } }, { passive: true });
+    window.addEventListener("resize", px);
+    px();
+  }
+
+  // videos: play only while visible, never with reduced motion
+  var vids = document.querySelectorAll(".vids video");
+  if (!still && "IntersectionObserver" in window) {
+    var vio = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        var v = e.target;
+        if (e.isIntersecting) { v.preload = "auto"; var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); }
+        else v.pause();
+      });
+    }, { threshold: .35 });
+    vids.forEach(function (v) { vio.observe(v); });
+  } else {
+    vids.forEach(function (v) { v.controls = true; });
+  }
+})();
+</script>
+</body>
+</html>

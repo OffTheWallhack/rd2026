@@ -87,6 +87,7 @@ a { color: inherit; text-underline-offset: .2em; }
 .hero-in { position: relative; display: grid; gap: 2.5rem; padding-top: clamp(2.5rem, 8vw, 5.5rem); padding-bottom: clamp(3rem, 8vw, 5.5rem); }
 @media (min-width: 56rem) { .hero-in { grid-template-columns: 1.15fr .85fr; align-items: center; gap: 4rem; } }
 .status { display: inline-flex; align-items: center; gap: .6rem; margin-bottom: 1.5rem; }
+h1 .l1, h1 .l2 { display: inline-block; will-change: transform; }
 h1 {
   font-weight: 700; font-size: clamp(2.9rem, 10vw, 5.6rem); line-height: .98;
   letter-spacing: -.035em; margin: 0 0 1.25rem;
@@ -192,7 +193,7 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.2rem); line-height: 1.05;
 .bio { font-size: clamp(1.15rem, 2.4vw, 1.35rem); line-height: 1.55; max-width: 38em; margin: 0; }
 .bio strong { color: #fff; font-weight: 500; box-shadow: inset 0 -.35em 0 rgba(31,175,111,.35); }
 
-.gallery { columns: 2; column-gap: .75rem; padding: 3rem 0; }
+.gallery { columns: 2; column-gap: .75rem; padding: 5rem 0; }
 @media (min-width: 56rem) { .gallery { columns: 3; column-gap: 1rem; } }
 .gallery figure { break-inside: avoid; margin: 0 0 1rem; will-change: transform; }
 .gallery img { width: 100%; border-radius: var(--r); background: var(--night-2); }
@@ -236,6 +237,22 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
 .foot { border-top: 1px solid var(--line); padding: 1.5rem 0 2.5rem; font: .8rem var(--mono); color: var(--muted); }
 .foot .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem; }
 .foot p { margin: 0; }
+
+/* marquee */
+.marquee { overflow: hidden; border-bottom: 1px solid var(--line); padding: 1.25rem 0; background: var(--bg); }
+.mq-row { display: flex; width: max-content; white-space: nowrap; will-change: transform; }
+.mq-row span { padding-right: .5rem; }
+.mq-a { font-weight: 700; font-size: clamp(2.2rem, 8vw, 5rem); letter-spacing: -.03em; line-height: 1.05; color: transparent; -webkit-text-stroke: 1.5px var(--ink); }
+.mq-b { font: 500 clamp(1rem, 2.6vw, 1.4rem) var(--mono); color: var(--muted); margin-top: .5rem; }
+
+/* cinematic band */
+.band { position: relative; height: 88vh; min-height: 30rem; overflow: hidden; background: #000; color: #fff; }
+.band-media { position: absolute; inset: -15% 0; will-change: transform; }
+.band-vid { width: 100%; height: 100%; object-fit: cover; opacity: .72; display: block; }
+.band::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.1) 30%, rgba(0,0,0,.65)); pointer-events: none; }
+.band-text { position: absolute; left: 0; right: 0; bottom: clamp(2rem, 8vh, 5rem); z-index: 1; will-change: transform; }
+.band-big { margin: 0; font-weight: 700; font-size: clamp(2.2rem, 7vw, 4.8rem); line-height: 1.02; letter-spacing: -.035em; }
+.band-big .soft-l { color: var(--pulse); }
 
 /* levitation */
 @media (prefers-reduced-motion: no-preference) {
@@ -283,7 +300,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
   <div class="wrap hero-in">
     <div>
       <p class="status label"><span class="dot" aria-hidden="true"></span><span data-en="Taking new jobs">Beriem nové zákazky</span></p>
-      <h1 id="h1"><span data-en="Stuck with AI?">Nevieš ako na AI?</span><br><span class="soft" data-en="I’m not.">Ja áno.</span></h1>
+      <h1 id="h1"><span class="l1" data-en="Stuck with AI?">Nevieš ako na AI?</span><br><span class="soft l2" data-en="I’m not.">Ja áno.</span></h1>
       <p class="hero-sub" data-en="I’ll build it for you. Or I’ll teach you, right on your own work.">Spravím to za teba. Alebo ťa to naučím rovno na tvojej robote.</p>
       <div class="actions">
         <a class="btn btn-dark wa" href="https://wa.me/421908109541" data-en="Message me on WhatsApp">Napíš mi na WhatsApp</a>
@@ -296,6 +313,11 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
     </figure>
   </div>
 </section>
+
+<div class="marquee" aria-hidden="true">
+  <div class="mq-row mq-a"><span data-en="I BUILD IT FOR YOU · I TEACH YOU · NO JARGON · STRAIGHT TALK · ">SPRAVÍM TO ZA TEBA · NAUČÍM ŤA TO · BEZ ODBORNÝCH SLOV · NA ROVINU · </span><span data-en="I BUILD IT FOR YOU · I TEACH YOU · NO JARGON · STRAIGHT TALK · ">SPRAVÍM TO ZA TEBA · NAUČÍM ŤA TO · BEZ ODBORNÝCH SLOV · NA ROVINU · </span></div>
+  <div class="mq-row mq-b"><span>🎧 EVENTY · 🤖 AI · 🚐 EVENT AUTÁ · 🛹 GOSKO · 🎛️ R O B · </span><span>🎧 EVENTY · 🤖 AI · 🚐 EVENT AUTÁ · 🛹 GOSKO · 🎛️ R O B · </span></div>
+</div>
 
 <!-- PROBLEM PICKER -->
 <section class="sec" id="problem" aria-labelledby="p-title">
@@ -385,6 +407,13 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
   </div>
 </section>
 
+<section class="band" aria-label="Robo hrá DJ set v lese" data-en-aria="Robo playing a DJ set in the woods">
+  <div class="band-media"><video class="band-vid" muted loop playsinline preload="none" poster="img/dj-les-poster.webp"><source src="vid/dj-les.mp4" type="video/mp4"></video></div>
+  <div class="band-text wrap">
+    <p class="band-big"><span data-en="By day I build tools.">Cez deň staviam nástroje.</span><br><span class="soft-l" data-en="By night I play records.">Večer hrám platne.</span></p>
+  </div>
+</section>
+
 <!-- HUMAN -->
 <section class="human" id="kto" aria-labelledby="k-title">
   <canvas class="field-dark" aria-hidden="true"></canvas>
@@ -412,7 +441,6 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
       <figure class="px"><img src="img/gosko-poster.webp" width="720" height="900" loading="lazy" alt="Plagát skate súťaže GOSko" data-en-alt="Poster for the GOSko skate contest"><figcaption data-en="GOSko, Bratislava 2026">GOSko, Bratislava 2026</figcaption></figure>
       <figure class="px"><img src="img/thinking-laptop.webp" width="1100" height="733" loading="lazy" alt="Robo zamyslene pozerá do laptopu na evente" data-en-alt="Robo thinking over a laptop at an event"><figcaption data-en="Figuring out a fix">Vymýšľam riešenie</figcaption></figure>
       <figure class="px"><img src="img/cat.webp" width="600" height="800" loading="lazy" alt="Mačka zblízka pozerá do objektívu" data-en-alt="A cat looking into the camera up close"><figcaption data-en="Home supervisor">Domáci dozor</figcaption></figure>
-      <figure class="px"><img src="img/big-stage.webp" width="675" height="900" loading="lazy" alt="Selfie v kapucni pred veľkou festivalovou stage" data-en-alt="Hooded selfie in front of a big festival stage"><figcaption data-en="Before a big build">Pred veľkou stavbou</figcaption></figure>
       <figure class="px"><img src="img/mandalas.webp" width="675" height="900" loading="lazy" alt="Tri farebné ručne kreslené mandaly na stole" data-en-alt="Three colourful hand-drawn mandalas on a desk"><figcaption data-en="Hand-drawn mandalas">Ručne kreslené mandaly</figcaption></figure>
       <figure class="px"><img src="img/gosko-ghost.webp" width="708" height="708" loading="lazy" alt="Kreslený duch na skateboarde na červenom pozadí" data-en-alt="Cartoon ghost on a skateboard on a red background"><figcaption data-en="GOSko mascot">Maskot GOSka</figcaption></figure>
       <figure class="px"><img src="img/headphones-street.webp" width="675" height="900" loading="lazy" alt="Robo so slúchadlami na ulici" data-en-alt="Robo with headphones on the street"><figcaption data-en="Bratislava, between jobs">Bratislava, medzi akciami</figcaption></figure>
@@ -421,7 +449,6 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
 
     <p class="label vid-label" data-en="In motion">V pohybe</p>
     <div class="vids rv" tabindex="0" aria-label="Krátke videá" data-en-aria="Short videos">
-      <figure><video muted loop playsinline preload="none" poster="img/dj-les-poster.webp" aria-label="Robo hrá DJ set vonku v lese" data-en-aria="Robo playing a DJ set outdoors in the woods"><source src="vid/dj-les.mp4" type="video/mp4"></video><figcaption data-en="DJ set in the woods">DJ set v lese</figcaption></figure>
       <figure><video muted loop playsinline preload="none" poster="img/natacam-poster.webp" aria-label="Robo so smiechom natáča kamerou v event aute" data-en-aria="Robo laughing while filming from an event car"><source src="vid/natacam.mp4" type="video/mp4"></video><figcaption data-en="Filming from an event car">Natáčam z event auta</figcaption></figure>
       <figure><video muted loop playsinline preload="none" poster="img/gosko-nalepky-poster.webp" aria-label="Ruka drží balík nálepiek GOSko" data-en-aria="A hand holding a stack of GOSko stickers"><source src="vid/gosko-nalepky.mp4" type="video/mp4"></video><figcaption data-en="GOSko stickers heading out">GOSko nálepky idú von</figcaption></figure>
     </div>
@@ -683,26 +710,39 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
   field(document.getElementById("field"), { ink: "rgba(22,22,22,", strength: 1, density: 1, emojiAlpha: .6, shift: 0 });
   field(document.querySelector(".field-dark"), { ink: "rgba(237,237,232,", strength: .55, density: .8, emojiAlpha: .35, full: true, shift: 5 });
 
-  // parallax: hero layers, section heads, gallery columns
+  // parallax: hero layers, marquee, band, section heads, gallery columns
+  var mqA = document.querySelector(".mq-a"), mqB = document.querySelector(".mq-b");
   if (!still) {
     var heroPh = document.querySelector(".hero-photo");
     var heroTx = document.querySelector(".hero-in > div");
+    var l1 = document.querySelector("h1 .l1"), l2 = document.querySelector("h1 .l2");
+    var band = document.querySelector(".band"), bandM = document.querySelector(".band-media"), bandT = document.querySelector(".band-text");
     var heads = [].slice.call(document.querySelectorAll(".sec-head, .human-top"));
     var figs = [].slice.call(document.querySelectorAll(".gallery figure"));
     var vfigs = [].slice.call(document.querySelectorAll(".vids figure"));
-    var SPEED = [-0.06, 0.09, -0.03];
-    var ticking = false;
+    var SPEED = [-0.14, 0.18, -0.08];
+    var ticking = false, drift = 0, lastT = performance.now();
     function px() {
       ticking = false;
       var vh = window.innerHeight, y = window.scrollY;
       if (y < vh * 1.5) {
-        if (heroPh) heroPh.style.transform = "translate3d(0," + (y * 0.22).toFixed(1) + "px,0)";
-        if (heroTx) { heroTx.style.transform = "translate3d(0," + (y * 0.1).toFixed(1) + "px,0)"; heroTx.style.opacity = Math.max(0, 1 - y / (vh * .9)).toFixed(3); }
+        if (heroPh) heroPh.style.transform = "translate3d(0," + (y * 0.25).toFixed(1) + "px,0) scale(" + (1 + y * 0.00015).toFixed(4) + ")";
+        if (heroTx) heroTx.style.opacity = Math.max(0, 1 - y / (vh * .85)).toFixed(3);
+        if (l1) l1.style.transform = "translate3d(" + (-y * 0.15).toFixed(1) + "px," + (y * 0.05).toFixed(1) + "px,0)";
+        if (l2) l2.style.transform = "translate3d(" + (y * 0.25).toFixed(1) + "px," + (y * 0.12).toFixed(1) + "px,0)";
+      }
+      if (band) {
+        var br = band.getBoundingClientRect();
+        if (br.bottom > 0 && br.top < vh) {
+          var prog = (vh - br.top) / (vh + br.height);
+          bandM.style.transform = "translate3d(0," + ((prog - .5) * -24).toFixed(2) + "%,0) scale(" + (1.05 + prog * .1).toFixed(3) + ")";
+          bandT.style.transform = "translate3d(0," + ((.5 - prog) * 120).toFixed(1) + "px,0)";
+        }
       }
       heads.forEach(function (h) {
         var r = h.getBoundingClientRect();
         if (r.bottom < -100 || r.top > vh + 100) return;
-        h.style.transform = "translate3d(0," + ((r.top - vh / 2) * 0.06).toFixed(1) + "px,0)";
+        h.style.transform = "translate3d(0," + ((r.top - vh / 2) * 0.08).toFixed(1) + "px,0)";
       });
       if (figs.length) {
         var gal = figs[0].parentNode, gr = gal.getBoundingClientRect();
@@ -711,23 +751,33 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
           var base = (gr.top + gr.height / 2 - vh / 2);
           figs.forEach(function (f) {
             var col = Math.min(cols - 1, Math.round((f.offsetLeft / gw) * cols));
-            f.style.transform = "translate3d(0," + (base * SPEED[col]).toFixed(1) + "px,0)";
+            f.style.transform = "translate3d(0," + (base * SPEED[col]).toFixed(1) + "px,0) rotate(" + (base * SPEED[col] * .012).toFixed(2) + "deg)";
           });
         }
       }
       vfigs.forEach(function (f, i) {
         var r = f.getBoundingClientRect();
         if (r.bottom < -200 || r.top > vh + 200) return;
-        f.style.transform = "translate3d(0," + ((r.top - vh / 2) * [0.08, -0.05, 0.1][i % 3]).toFixed(1) + "px,0)";
+        f.style.transform = "translate3d(0," + ((r.top - vh / 2) * [0.08, -0.06][i % 2]).toFixed(1) + "px,0)";
       });
     }
     window.addEventListener("scroll", function () { if (!ticking) { ticking = true; requestAnimationFrame(px); } }, { passive: true });
     window.addEventListener("resize", px);
     px();
+    // marquee: constant drift + scroll push
+    function mq(now) {
+      var dt = Math.min(now - lastT, 50); lastT = now;
+      drift += dt * 0.04;
+      var y = window.scrollY;
+      if (mqA) { var wA = mqA.scrollWidth / 2; mqA.style.transform = "translate3d(" + (-((drift + y * .6) % wA)).toFixed(1) + "px,0,0)"; }
+      if (mqB) { var wB = mqB.scrollWidth / 2; mqB.style.transform = "translate3d(" + (((drift * .8 + y * .4) % wB) - wB).toFixed(1) + "px,0,0)"; }
+      requestAnimationFrame(mq);
+    }
+    requestAnimationFrame(mq);
   }
 
   // videos: play only while visible, never with reduced motion
-  var vids = document.querySelectorAll(".vids video");
+  var vids = document.querySelectorAll(".vids video, .band-vid");
   if (!still && "IntersectionObserver" in window) {
     var vio = new IntersectionObserver(function (es) {
       es.forEach(function (e) {

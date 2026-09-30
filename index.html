@@ -4,11 +4,16 @@
 <meta charset="utf-8">
 <script>document.documentElement.classList.add("js")</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Robo Ďurica – pomôžem ti s AI</title>
-<meta name="description" content="Nevieš ako na AI alebo nemáš čas? Spravím to za teba, alebo ťa to naučím rovno na tvojej robote. Robo Ďurica, Bratislava.">
-<meta property="og:title" content="Robo Ďurica – pomôžem ti s AI">
-<meta property="og:description" content="Spravím to za teba, alebo ťa to naučím rovno na tvojej robote.">
-<meta property="og:image" content="img/hero.webp">
+<title>Robert Ďurica – pomôžem ti s AI</title>
+<meta name="description" content="Bojíš sa AI alebo nevieš, ako na to? Pomôžem ti zautomatizovať veci a rovno ti to vysvetlím, na tvojich dátach. Robert Ďurica, Bratislava.">
+<meta property="og:title" content="Robert Ďurica – pomôžem ti s AI">
+<meta property="og:description" content="Bojíš sa AI? Ja ti to vysvetlím. Automatizácia a AI na tvojich dátach.">
+<meta property="og:image" content="https://offthewallhack.github.io/rd2026/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://offthewallhack.github.io/rd2026/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#F5F5F2">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='30' fill='%231FAF6F'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -53,6 +58,8 @@ a { color: inherit; text-underline-offset: .2em; }
 .dot::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: var(--pulse); opacity: .5; }
 @media (prefers-reduced-motion: no-preference) {
   .dot::after { animation: ping 2.4s ease-out infinite; }
+  .status .dot { animation: blink 1.6s ease-in-out infinite; }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
   @keyframes ping { 0% { transform: scale(1); opacity: .5; } 80%, 100% { transform: scale(3.2); opacity: 0; } }
 }
 
@@ -85,11 +92,15 @@ a { color: inherit; text-underline-offset: .2em; }
 .hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
 #field { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .hero-in { position: relative; display: grid; gap: 2.5rem; padding-top: clamp(2.5rem, 8vw, 5.5rem); padding-bottom: clamp(3rem, 8vw, 5.5rem); }
-@media (min-width: 56rem) { .hero-in { grid-template-columns: 1.15fr .85fr; align-items: center; gap: 4rem; } }
+.hero-in { min-height: min(78vh, 46rem); align-content: center; }
+#h1 { min-height: 2.96em; }
+@media (min-width: 56rem) { #h1 { min-height: 1.98em; } }
+h1 .rq, h1 .ra { display: inline-block; transition: opacity .45s ease, transform .45s ease; }
+h1.swap .rq, h1.swap .ra { opacity: 0; transform: translateY(.25em); }
 .status { display: inline-flex; align-items: center; gap: .6rem; margin-bottom: 1.5rem; }
 h1 .l1, h1 .l2 { display: inline-block; will-change: transform; }
 h1 {
-  font-weight: 700; font-size: clamp(2.9rem, 10vw, 5.6rem); line-height: .98;
+  font-weight: 700; font-size: clamp(2.9rem, 10vw, 6.4rem); line-height: .98;
   letter-spacing: -.035em; margin: 0 0 1.25rem;
 }
 h1 .soft { color: var(--muted); }
@@ -285,7 +296,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
 
 <header class="bar">
   <div class="wrap bar-in">
-    <a class="brand" href="#top"><span class="dot" aria-hidden="true"></span>Robo Ďurica</a>
+    <a class="brand" href="#top"><span class="dot" aria-hidden="true"></span>Robert Ďurica</a>
     <div class="bar-r">
       <button class="lang" type="button" aria-label="Prepnúť jazyk / Switch language"><span data-l="sk">SK</span> / <span data-l="en">EN</span></button>
       <a class="btn btn-dark btn-sm wa" href="https://wa.me/421908109541" data-en="Message me">Napíš mi</a>
@@ -299,33 +310,28 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
   <canvas id="field" aria-hidden="true"></canvas>
   <div class="wrap hero-in">
     <div>
-      <p class="status label"><span class="dot" aria-hidden="true"></span><span data-en="Taking new jobs">Beriem nové zákazky</span></p>
-      <h1 id="h1"><span class="l1" data-en="Stuck with AI?">Nevieš ako na AI?</span><br><span class="soft l2" data-en="I’m not.">Ja áno.</span></h1>
-      <p class="hero-sub" data-en="I’ll build it for you. Or I’ll teach you, right on your own work.">Spravím to za teba. Alebo ťa to naučím rovno na tvojej robote.</p>
+      <p class="status label"><span class="dot" aria-hidden="true"></span><span data-en="Available now">Som k dispozícii</span></p>
+      <h1 id="h1"><span class="l1"><span class="rq">Bojíš sa AI?</span></span><br><span class="soft l2"><span class="ra">Ja ti to vysvetlím.</span></span></h1>
+      <p class="hero-sub" data-en="I’ll help you automate your stuff and explain it right away. On your own data.">Pomôžem ti zautomatizovať tvoje veci a rovno ti to vysvetlím. Na tvojich dátach.</p>
       <div class="actions">
         <a class="btn btn-dark wa" href="https://wa.me/421908109541" data-en="Message me on WhatsApp">Napíš mi na WhatsApp</a>
-        <a class="btn" href="#problem" data-en="What’s your problem?">S čím zápasíš?</a>
+        <a class="btn" href="#problem" data-en="Tell me what you’re stuck on">Povedz mi, s čím zápasíš</a>
       </div>
     </div>
-    <figure class="hero-photo">
-      <img src="img/hero.webp" width="1000" height="1250" alt="Čiernobiely portrét Roba s plechovkou v ruke" data-en-alt="Black-and-white portrait of Robo holding a can" fetchpriority="high">
-      <figcaption><span class="dot" aria-hidden="true"></span><span data-en="That’s me.">To som ja.</span></figcaption>
-    </figure>
   </div>
 </section>
 
 <div class="marquee" aria-hidden="true">
-  <div class="mq-row mq-a"><span data-en="I BUILD IT FOR YOU · I TEACH YOU · NO JARGON · STRAIGHT TALK · ">SPRAVÍM TO ZA TEBA · NAUČÍM ŤA TO · BEZ ODBORNÝCH SLOV · NA ROVINU · </span><span data-en="I BUILD IT FOR YOU · I TEACH YOU · NO JARGON · STRAIGHT TALK · ">SPRAVÍM TO ZA TEBA · NAUČÍM ŤA TO · BEZ ODBORNÝCH SLOV · NA ROVINU · </span></div>
-  <div class="mq-row mq-b"><span>🎧 EVENTY · 🤖 AI · 🚐 EVENT AUTÁ · 🛹 GOSKO · 🎛️ R O B · </span><span>🎧 EVENTY · 🤖 AI · 🚐 EVENT AUTÁ · 🛹 GOSKO · 🎛️ R O B · </span></div>
+  <div class="mq-row mq-a"><span data-en="I BUILD IT FOR YOU · I TEACH YOU · ON YOUR OWN DATA · NO JARGON · ">SPRAVÍM TO ZA TEBA · NAUČÍM ŤA TO · NA TVOJICH DÁTACH · BEZ ODBORNÝCH SLOV · </span><span data-en="I BUILD IT FOR YOU · I TEACH YOU · ON YOUR OWN DATA · NO JARGON · ">SPRAVÍM TO ZA TEBA · NAUČÍM ŤA TO · NA TVOJICH DÁTACH · BEZ ODBORNÝCH SLOV · </span></div>
 </div>
 
 <!-- PROBLEM PICKER -->
 <section class="sec" id="problem" aria-labelledby="p-title">
   <div class="wrap">
     <div class="sec-head rv">
-      <p class="label" data-en="01 · Your problem">01 · Tvoj problém</p>
-      <h2 id="p-title" data-en="What are you stuck on?">S čím zápasíš?</h2>
-      <p data-en="Pick what fits you best. I’ll tell you how I’d solve it.">Vyber, čo ťa najviac trápi. Poviem ti, ako by som to vyriešil.</p>
+      <p class="label">01</p>
+      <h2 id="p-title" data-en="Your problem">Tvoj problém</h2>
+      <p data-en="Pick from the examples below and I’ll tell you how I’d solve it.">Vyber si z príkladov nižšie a ja ti poviem, ako by som to vyriešil.</p>
     </div>
     <div class="picker">
       <ul class="probs rv" id="probs"></ul>
@@ -352,7 +358,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
           <li data-en="A short guide so you can use it alone">Krátky návod, aby si to zvládol sám</li>
         </ul>
         <div class="card-foot">
-          <p class="price-big">300–700 € <small data-en="one-off">jednorazovo</small></p>
+          <p class="price-big">500–1000 € <small data-en="one-off, by complexity">jednorazovo, podľa zložitosti</small></p>
           <a class="btn btn-dark wa" href="https://wa.me/421908109541" data-en="I want this">Chcem toto</a>
         </div>
       </article>
@@ -361,12 +367,12 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
         <h3 data-en="I teach you">Naučím ťa to</h3>
         <p data-en="We sit down, in person or online, and set AI up for your actual work. No theory, straight on your own stuff.">Sadneme si, naživo alebo online, a nastavíme AI na tvoju konkrétnu robotu. Žiadna teória, rovno na tvojich veciach.</p>
         <ul>
-          <li data-en="One session on your own tasks">Jedno stretnutie na tvojich úlohách</li>
-          <li data-en="Tools set up and ready">Nastavené nástroje pripravené na použitie</li>
+          <li data-en="3 hours on your own tasks">3 hodiny na tvojich úlohách</li>
+          <li data-en="Bring your laptop, I’ll install everything you need">Prinesieš svoj notebook, nainštalujem ti všetko potrebné</li>
           <li data-en="Notes to come back to">Poznámky, ku ktorým sa vieš vrátiť</li>
         </ul>
         <div class="card-foot">
-          <p class="price-big">150 € <small data-en="per session">za session</small></p>
+          <p class="price-big">150 € <small data-en="per 3-hour session">za session (3 hodiny)</small></p>
           <a class="btn btn-dark wa" href="https://wa.me/421908109541" data-en="I want this">Chcem toto</a>
         </div>
       </article>
@@ -382,7 +388,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
         <li data-en="Small tweaks when something changes">Malé úpravy, keď sa niečo zmení</li>
         <li data-en="Come back anytime and I’ll explain again">Kedykoľvek sa vrátiš a dovysvetlím ti to</li>
       </ul>
-      <p class="price-big">20–30 € <small data-en="per month">mesačne</small></p>
+      <p class="price-big">30 € <small data-en="per month">mesačne</small></p>
     </div>
   </div>
 </section>
@@ -407,23 +413,16 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
   </div>
 </section>
 
-<section class="band" aria-label="Robo hrá DJ set v lese" data-en-aria="Robo playing a DJ set in the woods">
-  <div class="band-media"><video class="band-vid" muted loop playsinline preload="none" poster="img/dj-les-poster.webp"><source src="vid/dj-les.mp4" type="video/mp4"></video></div>
-  <div class="band-text wrap">
-    <p class="band-big"><span data-en="By day I build tools.">Cez deň staviam nástroje.</span><br><span class="soft-l" data-en="By night I play records.">Večer hrám platne.</span></p>
-  </div>
-</section>
-
 <!-- HUMAN -->
 <section class="human" id="kto" aria-labelledby="k-title">
   <canvas class="field-dark" aria-hidden="true"></canvas>
   <div class="wrap">
     <div class="human-top rv">
       <div class="me">
-        <img src="img/portrait.webp" width="525" height="700" alt="Portrét Roba Ďuricu" data-en-alt="Portrait of Robo Ďurica" loading="lazy">
+        <img src="img/portrait.webp" width="400" height="400" alt="Čiernobiely portrét Roberta z profilu" data-en-alt="Black-and-white side portrait of Robert" loading="lazy">
         <div>
           <p class="label" data-en="04 · Who’s behind it">04 · Kto je za tým</p>
-          <p class="name">Robo Ďurica</p>
+          <p class="name">Robert Ďurica</p>
           <p class="sub" data-en="31 · Bratislava">31 · Bratislava</p>
         </div>
       </div>
@@ -449,6 +448,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
 
     <p class="label vid-label" data-en="In motion">V pohybe</p>
     <div class="vids rv" tabindex="0" aria-label="Krátke videá" data-en-aria="Short videos">
+      <figure><video muted loop playsinline preload="none" poster="img/dj-les-poster.webp" aria-label="Robo hrá DJ set vonku v lese" data-en-aria="Robo playing a DJ set outdoors in the woods"><source src="vid/dj-les.mp4" type="video/mp4"></video><figcaption data-en="DJ set in the woods">DJ set v lese</figcaption></figure>
       <figure><video muted loop playsinline preload="none" poster="img/natacam-poster.webp" aria-label="Robo so smiechom natáča kamerou v event aute" data-en-aria="Robo laughing while filming from an event car"><source src="vid/natacam.mp4" type="video/mp4"></video><figcaption data-en="Filming from an event car">Natáčam z event auta</figcaption></figure>
       <figure><video muted loop playsinline preload="none" poster="img/gosko-nalepky-poster.webp" aria-label="Ruka drží balík nálepiek GOSko" data-en-aria="A hand holding a stack of GOSko stickers"><source src="vid/gosko-nalepky.mp4" type="video/mp4"></video><figcaption data-en="GOSko stickers heading out">GOSko nálepky idú von</figcaption></figure>
     </div>
@@ -487,7 +487,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
 <!-- CONTACT -->
 <section class="contact" id="kontakt" aria-labelledby="c-title">
   <div class="wrap rv">
-    <p class="status label"><span class="dot" aria-hidden="true"></span><span data-en="Taking new jobs">Beriem nové zákazky</span></p>
+    <p class="status label"><span class="dot" aria-hidden="true"></span><span data-en="Available now">Som k dispozícii</span></p>
     <h2 id="c-title"><span data-en="Message me.">Napíš mi.</span><br><span class="soft" data-en="Sorted.">Vyriešené.</span></h2>
     <p class="lead" data-en="Tell me what’s bothering you. I’ll reply whether I can do it, how much it costs and by when.">Povedz mi, čo ťa trápi. Odpíšem ti, či to viem spraviť, koľko to stojí a dokedy.</p>
     <div class="actions">
@@ -517,46 +517,49 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
 (function () {
   var WA = "421908109541";
   var WA_TEXT = { sk: "Ahoj Robo, potreboval by som pomôcť s: ", en: "Hi Robo, I could use help with: " };
-  var TITLE = { sk: "Robo Ďurica – pomôžem ti s AI", en: "Robo Ďurica – I’ll help you with AI" };
+  var TITLE = { sk: "Robert Ďurica – pomôžem ti s AI", en: "Robert Ďurica – I’ll help you with AI" };
 
   var PROBLEMS = [
     { sk: "Ručne skladám rozpis smien", en: "I build shift schedules by hand",
       a: { sk: "Postavím ti plánovač, ktorý rozpis poskladá sám.", en: "I’ll build a planner that makes the schedule for you." },
       d: { sk: "Z dostupnosti ľudí vyskladá týždeň a férovo rozdelí hodiny. Presne taký už používa tím v Red Bulle.", en: "It builds the week from people’s availability and splits hours fairly. A Red Bull team already uses one." },
-      s: "A" },
+      svc: { sk: "Spravím to za teba", en: "I build it for you" }, price: { sk: "500–1000 € + 30 €/mes.", en: "€500–1000 + €30/mo" } },
     { sk: "Všetko mám v Exceli a správach", en: "Everything lives in spreadsheets and chats",
       a: { sk: "Spravím ti jednoduchú appku pre tím.", en: "I’ll make you a simple app for your team." },
       d: { sk: "Termíny, úlohy a náklady na jednom mieste, na mobile aj v počítači. Žiadne hľadanie v správach.", en: "Dates, tasks and costs in one place, on phone and laptop. No digging through chats." },
-      s: "A" },
+      svc: { sk: "Spravím to za teba", en: "I build it for you" }, price: { sk: "400 € + 30 €/mes.", en: "€400 + €30/mo" } },
     { sk: "Mám hodiny videí bez titulkov", en: "I have hours of video without subtitles",
-      a: { sk: "Nastavím ti prepis videí do textu a titulkov.", en: "I’ll set up video-to-text and subtitles." },
-      d: { sk: "Nahráš video, dostaneš text alebo titulky. Ušetríš hodiny ručného prepisovania.", en: "Upload a video, get text or subtitles back. Hours of manual typing saved." },
-      s: "A" },
+      a: { sk: "Nastavím ti prepis videí do textu a titulkov.", en: "I’ll set up video-to-text and subtitles for you." },
+      d: { sk: "Ukážem ti presne, ktorú AI použiť a ako na to. Potom to zvládneš sám.", en: "I’ll show you exactly which AI to use and how. Then you can do it yourself." },
+      svc: { sk: "Naučím ťa to", en: "I teach you" }, price: { sk: "150 € · lekcia", en: "€150 · one lesson" } },
     { sk: "Nestíham odpovedať na dopyty", en: "I can’t keep up with enquiries",
-      a: { sk: "Nastavím AI, ktorá ti pripraví odpovede.", en: "I’ll set up AI that drafts your replies." },
-      d: { sk: "Podľa tvojich pravidiel a cien. Ty len skontroluješ a odošleš.", en: "Following your rules and prices. You just check and send." },
-      s: "A" },
+      a: { sk: "Spravím ti chatbota, ktorý odpovedá za teba.", en: "I’ll build you a chatbot that replies for you." },
+      d: { sk: "Odpovedá podľa tvojich pravidiel a cien, aj keď spíš. Ty len kontroluješ.", en: "It replies following your rules and prices, even while you sleep. You just keep an eye on it." },
+      svc: { sk: "Spravím to za teba", en: "I build it for you" }, price: { sk: "700 € + 30 €/mes.", en: "€700 + €30/mo" } },
     { sk: "Neviem, kde s AI začať", en: "I don’t know where to start with AI",
-      a: { sk: "Sadneme si a ukážem ti to na tvojej robote.", en: "We sit down and I show you on your own work." },
-      d: { sk: "Za jedno stretnutie odídeš s nastavenými nástrojmi a vieš, čo s nimi.", en: "In one session you leave with tools set up and know what to do with them." },
-      s: "B" },
+      a: { sk: "Ukážem ti, čo všetko je dnes možné.", en: "I’ll show you what’s possible today." },
+      d: { sk: "Spustíme to spolu, vyskúšaš si to a sám uvidíš, aké je to super.", en: "We set it up together, you try it out and see for yourself how great it is." },
+      svc: { sk: "Naučím ťa to", en: "I teach you" }, price: { sk: "150 € · session", en: "€150 · session" } },
     { sk: "Niečo iné", en: "Something else",
       a: { sk: "Napíš mi pár viet.", en: "Send me a few sentences." },
       d: { sk: "Veľa vecí sa dá vyriešiť jednoduchšie, než si myslíš. Povieme si, čo by dávalo zmysel.", en: "Lots of things can be solved more simply than you think. We’ll figure out what makes sense." },
-      s: "?" }
+      svc: { sk: "Dohodneme sa", en: "Let’s talk" }, price: { sk: "podľa zadania", en: "depends on the job" } }
   ];
-  var SVC = {
-    A: { sk: ["Spravím to za teba", "300–700 € + údržba 20–30 €/mes."], en: ["I build it for you", "€300–700 + upkeep €20–30/mo"] },
-    B: { sk: ["Naučím ťa to", "150 € / session"], en: ["I teach you", "€150 / session"] },
-    "?": { sk: ["Dohodneme sa", "podľa zadania"], en: ["Let’s talk", "depends on the job"] }
-  };
   var UI = {
     sk: { sol: "Riešenie", svc: "Služba", cta: "Toto chcem" },
     en: { sol: "Solution", svc: "Service", cta: "I want this" }
   };
 
   var still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var lang = "sk", current = 0;
+  var lang = "sk", current = 0, rot = 0;
+  var ROT = {
+    sk: [["Bojíš sa AI?", "Ja ti to vysvetlím."], ["Nevieš, ako na to?", "Ja ti s tým pomôžem."], ["Nemáš na to čas?", "Spravím to za teba."]],
+    en: [["Scared of AI?", "I’ll explain it."], ["Not sure how?", "I’ll help you."], ["No time for it?", "I’ll do it for you."]]
+  };
+  function setRot() {
+    var h = document.getElementById("h1"), v = ROT[lang][rot];
+    h.querySelector(".rq").textContent = v[0]; h.querySelector(".ra").textContent = v[1];
+  }
   var probsEl = document.getElementById("probs");
   var ansEl = document.getElementById("answer");
 
@@ -587,7 +590,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
   }
 
   function renderAnswer(animate) {
-    var p = PROBLEMS[current], s = SVC[p.s][lang], u = UI[lang];
+    var p = PROBLEMS[current], u = UI[lang];
     ansEl.innerHTML =
       "<p class='label'><span class='dot' aria-hidden='true'></span>" + u.sol + "</p>" +
       "<h3></h3><p class='d'></p>" +
@@ -595,7 +598,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
       "<a class='btn btn-dark btn-sm' href='#'></a></div>";
     ansEl.querySelector("h3").textContent = p.a[lang];
     ansEl.querySelector("p.d").textContent = p.d[lang];
-    ansEl.querySelector(".price").textContent = s[0] + " · " + s[1];
+    ansEl.querySelector(".price").textContent = p.svc[lang] + " · " + p.price[lang];
     var a = ansEl.querySelector("a");
     a.textContent = u.cta; a.href = waHref(p[lang]);
     if (animate) { ansEl.classList.remove("swap"); void ansEl.offsetWidth; ansEl.classList.add("swap"); }
@@ -617,7 +620,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
     document.title = TITLE[l];
     document.querySelectorAll(".lang [data-l]").forEach(function (s) { s.classList.toggle("on", s.dataset.l === l); });
     document.querySelectorAll("a.wa").forEach(function (a) { a.href = waHref(""); });
-    renderProblems(); renderAnswer(false);
+    setRot(); renderProblems(); renderAnswer(false);
     try { localStorage.setItem("lang", l); } catch (e) {}
   }
 
@@ -628,6 +631,10 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
     else if (!/^(sk|cs)/i.test(navigator.language || "")) start = "en";
   } catch (e) {}
   setLang(start);
+  if (!still) setInterval(function () {
+    var h = document.getElementById("h1"); h.classList.add("swap");
+    setTimeout(function () { rot = (rot + 1) % 3; setRot(); h.classList.remove("swap"); }, 450);
+  }, 3800);
   document.querySelector(".lang").addEventListener("click", function () { setLang(lang === "sk" ? "en" : "sk"); });
 
   // reveal on scroll
@@ -711,7 +718,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
   field(document.querySelector(".field-dark"), { ink: "rgba(237,237,232,", strength: .55, density: .8, emojiAlpha: .35, full: true, shift: 5 });
 
   // parallax: hero layers, marquee, band, section heads, gallery columns
-  var mqA = document.querySelector(".mq-a"), mqB = document.querySelector(".mq-b");
+  var mqA = document.querySelector(".mq-a"), mqB = null;
   if (!still) {
     var heroPh = document.querySelector(".hero-photo");
     var heroTx = document.querySelector(".hero-in > div");
@@ -777,7 +784,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
   }
 
   // videos: play only while visible, never with reduced motion
-  var vids = document.querySelectorAll(".vids video, .band-vid");
+  var vids = document.querySelectorAll(".vids video");
   if (!still && "IntersectionObserver" in window) {
     var vio = new IntersectionObserver(function (es) {
       es.forEach(function (e) {

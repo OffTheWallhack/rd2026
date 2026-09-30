@@ -112,6 +112,7 @@ a { color: inherit; text-underline-offset: .2em; }
   @keyframes rise { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: none; } }
 }
 h1 .rq, h1 .ra { display: inline-block; transition: opacity .45s ease, transform .45s ease; }
+h1 .ra { display: inline; }
 h1.swap .rq, h1.swap .ra { opacity: 0; transform: translateY(.25em); }
 .status { display: inline-flex; align-items: center; gap: .6rem; margin-bottom: 1.5rem; }
 h1 .l1, h1 .l2 { display: inline-block; will-change: transform; }
@@ -221,9 +222,11 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.2rem); line-height: 1.05;
 .bio strong { color: #fff; font-weight: 500; box-shadow: inset 0 -.35em 0 rgba(31,175,111,.35); }
 
 .gallery { columns: 2; column-gap: .75rem; padding: 5.5rem 0 5rem; }
-@media (min-width: 56rem) { .gallery { padding: 6.5rem 0 5.5rem; } }
-@media (min-width: 56rem) { .gallery { columns: 3; column-gap: 1rem; } }
-.gallery figure { break-inside: avoid; margin: 0 0 1rem; will-change: transform; }
+@media (min-width: 56rem) { .gallery { columns: 3; column-gap: 1rem; padding: 6.5rem 0 5.5rem; } }
+html.js .gallery { columns: auto; display: flex; align-items: flex-start; gap: .75rem; }
+@media (min-width: 56rem) { html.js .gallery { gap: 1rem; } }
+.gcol { flex: 1 1 0; min-width: 0; will-change: transform; }
+.gallery figure { break-inside: avoid; margin: 0 0 1rem; }
 .gallery img { width: 100%; border-radius: var(--r); background: var(--night-2); }
 .gallery figcaption, .vids figcaption { font: .78rem var(--mono); color: var(--night-muted); padding-top: .45rem; }
 .vid-label { margin: 1rem 0 1rem; }
@@ -330,6 +333,14 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
 .phone video { width: 100%; height: 100%; object-fit: cover; border-radius: 1.2rem; display: block; background: #111; }
 @media (prefers-reduced-motion: no-preference) { .phone { animation: float 6s ease-in-out infinite; --rot: -1deg; } }
 
+/* headline photo pill */
+.pill { display: inline-block; vertical-align: middle; width: 1.9em; height: .82em; border-radius: 999px; overflow: hidden; margin-right: .08em; position: relative; top: .04em; box-shadow: 0 0 0 3px var(--bg), 0 0 0 4px var(--line); background: var(--bg-2); transition: transform .45s cubic-bezier(.2,.8,.2,1), opacity .45s ease; }
+.pill img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0; transition: opacity .5s ease, transform 3.8s linear; }
+.pill img.on { opacity: 1; }
+h1.swap .pill { transform: scale(.4) rotate(-8deg); opacity: 0; }
+@media (prefers-reduced-motion: no-preference) { h1:not(.swap) .pill img.on { transform: scale(1.12); } }
+@media (max-width: 55.99rem) { #h1 { min-height: 3.95em; } .pill { width: 1.7em; height: .74em; } }
+
 /* levitation */
 @media (prefers-reduced-motion: no-preference) {
   @keyframes float {
@@ -378,7 +389,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
   <div class="wrap hero-in">
     <div>
       <p class="status label"><span class="dot" aria-hidden="true"></span><span data-en="Available now">Som k dispozícii</span></p>
-      <h1 id="h1"><span class="l1"><span class="rq">Bojíš sa AI?</span></span><br><span class="soft l2"><span class="ra">Ja ti to vysvetlím.</span></span></h1>
+      <h1 id="h1"><span class="l1"><span class="rq">Bojíš sa AI?</span></span><br><span class="soft l2"><span class="pill" aria-hidden="true"><img class="on" src="img/gosko-mic.webp" alt="" style="object-position:30% 45%"><img src="img/thinking-laptop.webp" alt="" style="object-position:58% 35%"><img src="img/dcl-control.webp" alt="" style="object-position:45% 60%"></span> <span class="ra">Ja ti to vysvetlím.</span></span></h1>
       <p class="hero-sub" data-en="I’ll help you automate your stuff and explain it right away. On your own data.">Pomôžem ti zautomatizovať tvoje veci a rovno ti to vysvetlím. Na tvojich dátach.</p>
       <div class="actions">
         <a class="btn btn-dark wa" href="#kontakt" data-en="Message me on WhatsApp">Napíš mi na WhatsApp</a>
@@ -633,6 +644,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
   function setRot() {
     var h = document.getElementById("h1"), v = ROT[lang][rot];
     h.querySelector(".rq").textContent = v[0]; h.querySelector(".ra").textContent = v[1];
+    h.querySelectorAll(".pill img").forEach(function (im, i) { im.classList.toggle("on", i === rot); });
   }
   var probsEl = document.getElementById("probs");
   var ansEl = document.getElementById("answer");
@@ -814,6 +826,25 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
     torus: { x: .82, y: .47, size: .82, mx: .5, my: .78, msize: .8, alpha: .5 } });
   field(document.querySelector(".field-dark"), { ink: "rgba(237,237,232,", hot: "#1FAF6F", strength: .45 });
 
+  // gallery: distribute photos into fixed columns (stable on iOS)
+  var galEl = document.querySelector(".gallery");
+  var galFigs = galEl ? [].slice.call(galEl.querySelectorAll("figure")) : [];
+  var galCols = [], galN = 0;
+  function buildGallery() {
+    if (!galEl) return;
+    var n = window.innerWidth >= 896 ? 3 : 2;
+    if (n === galN) return; galN = n;
+    galEl.innerHTML = ""; galCols = []; var hts = [];
+    for (var i = 0; i < n; i++) { var c = document.createElement("div"); c.className = "gcol"; galEl.appendChild(c); galCols.push(c); hts.push(0); }
+    galFigs.forEach(function (f) {
+      var im = f.querySelector("img"), r = f.classList.contains("pair") ? .62 : (+im.getAttribute("height") / +im.getAttribute("width"));
+      var k = hts.indexOf(Math.min.apply(null, hts));
+      galCols[k].appendChild(f); hts[k] += r + .12;
+    });
+  }
+  buildGallery();
+  window.addEventListener("resize", buildGallery);
+
   // parallax: hero layers, marquee, band, section heads, gallery columns
   var mqA = document.querySelector(".mq-a"), mqB = null;
   if (!still) {
@@ -848,15 +879,13 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
         if (r.bottom < -100 || r.top > vh + 100) return;
         h.style.transform = "translate3d(0," + ((r.top - vh / 2) * 0.08).toFixed(1) + "px,0)";
       });
-      if (figs.length) {
-        var gal = figs[0].parentNode, gr = gal.getBoundingClientRect();
+      if (galCols.length) {
+        var gr = galEl.getBoundingClientRect();
         if (gr.bottom > -300 && gr.top < vh + 300) {
-          var gw = gal.clientWidth, cols = window.innerWidth >= 896 ? 3 : 2;
           var base = (gr.top + gr.height / 2 - vh / 2);
-          figs.forEach(function (f) {
-            var col = Math.min(cols - 1, Math.round((f.offsetLeft / gw) * cols));
-            var off = Math.max(-70, Math.min(70, base * SPEED[col]));
-            f.style.transform = "translate3d(0," + off.toFixed(1) + "px,0) rotate(" + (off * .015).toFixed(2) + "deg)";
+          galCols.forEach(function (c, i) {
+            var off = Math.max(-60, Math.min(60, base * SPEED[i]));
+            c.style.transform = "translate3d(0," + off.toFixed(1) + "px,0)";
           });
         }
       }

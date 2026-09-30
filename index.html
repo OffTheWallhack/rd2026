@@ -93,6 +93,7 @@ a { color: inherit; text-underline-offset: .2em; }
 #field { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .hero-in { position: relative; display: grid; gap: 2.5rem; padding-top: clamp(2.5rem, 8vw, 5.5rem); padding-bottom: clamp(3rem, 8vw, 5.5rem); }
 .hero-in { min-height: min(78vh, 46rem); align-content: center; }
+@media (max-width: 55.99rem) { .hero-in { min-height: 100svh; align-content: start; padding-bottom: 52vh; } }
 #h1 { min-height: 2.96em; }
 @media (min-width: 56rem) { #h1 { min-height: 1.98em; } }
 h1 .rq, h1 .ra { display: inline-block; transition: opacity .45s ease, transform .45s ease; }
@@ -673,13 +674,15 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
     rv.forEach(function (el) { io.observe(el); });
   } else { rv.forEach(function (el) { el.classList.add("in"); }); }
 
-  // ASCII fields with floating emoji (hero light, human dark)
-  var EMO = ["🎧","🚐","🛹","⚡","🤖","💡","📸","🎛️","☕","🐈","🔥","✨"];
-  var mx = 0, my = 0;
+  // ASCII engine: breathing wave field + big rotating ASCII torus (inspired by the classic donut.c)
+  var mx = 0, my = 0, lastY = window.scrollY, spin = 0;
   window.addEventListener("pointermove", function (e) { mx = e.clientX / window.innerWidth - .5; my = e.clientY / window.innerHeight - .5; }, { passive: true });
+  window.addEventListener("scroll", function () { var y = window.scrollY; spin += Math.min(Math.abs(y - lastY), 80) * .004; lastY = y; }, { passive: true });
+  var LUM = ".,-~:;=!*#$@";
   function field(cv, opt) {
     var ctx = cv && cv.getContext("2d"); if (!ctx) return;
-    var W, H, dpr, cell = 16, t0 = performance.now(), running = true, last = 0, parts = [];
+    var W, H, dpr, cell = 16, t0 = performance.now(), running = true, last = 0;
+    var A = .6, B = .2, zb = null, ob = null, cols = 0, rows = 0, cw = 8, ch = 12;
     var CH = " .·:-=+*";
     function size() {
       dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -687,13 +690,44 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
       cv.width = W * dpr; cv.height = H * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       cell = W < 600 ? 14 : 16;
-      var n = Math.round((W < 600 ? 9 : 16) * opt.density); parts = [];
-      for (var i = 0; i < n; i++) parts.push({
-        x: Math.random() * W, y: Math.random() * H,
-        vy: 10 + Math.random() * 16, vx: (Math.random() - .5) * 8,
-        s: 18 + Math.random() * 18, e: EMO[(i + opt.shift) % EMO.length],
-        z: .3 + Math.random() * .7, ph: Math.random() * 6.28
-      });
+      cw = W < 600 ? 7 : 9; ch = W < 600 ? 11 : 14;
+      cols = Math.ceil(W / cw); rows = Math.ceil(H / ch);
+      zb = new Float32Array(cols * rows); ob = new Int8Array(cols * rows);
+    }
+    function torus(t, dt) {
+      var tor = opt.torus, wide = W >= 896;
+      var cx = W * (wide ? tor.x : tor.mx), cy = H * (wide ? tor.y : tor.my);
+      var sz = Math.min(W, H) * (wide ? tor.size : tor.msize);
+      var breathe = 1 + Math.sin(t * .9) * .06;
+      var R1 = 1 + Math.sin(t * .6) * .15, R2 = 2.1, K2 = 6;
+      var K1 = sz * K2 * breathe / (R1 + R2) / 2;
+      if (!still) { A += dt * (.55 + spin) + my * dt * .8; B += dt * (.3 + spin * .6) + mx * dt * .8; }
+      spin *= .92;
+      zb.fill(0); ob.fill(-1);
+      var cA = Math.cos(A), sA = Math.sin(A), cB = Math.cos(B), sB = Math.sin(B);
+      for (var th = 0; th < 6.283; th += .07) {
+        var ct = Math.cos(th), st = Math.sin(th);
+        for (var ph = 0; ph < 6.283; ph += .025) {
+          var cp = Math.cos(ph), sp = Math.sin(ph);
+          var ox = R2 + R1 * ct, oy = R1 * st;
+          var x = ox * (cB * cp + sA * sB * sp) - oy * cA * sB;
+          var y = ox * (sB * cp - sA * cB * sp) + oy * cA * cB;
+          var z = K2 + cA * ox * sp + oy * sA;
+          var ooz = 1 / z;
+          var col = Math.floor((cx + K1 * ooz * x) / cw), row = Math.floor((cy - K1 * ooz * y) / ch);
+          if (col < 0 || col >= cols || row < 0 || row >= rows) continue;
+          var L = cp * ct * sB - cA * ct * sp - sA * st + cB * (cA * st - ct * sA * sp);
+          var i = row * cols + col;
+          if (ooz > zb[i]) { zb[i] = ooz; ob[i] = L > 0 ? Math.min(11, Math.floor(L * 8)) : 0; }
+        }
+      }
+      ctx.font = "500 " + (ch - 1) + "px 'JetBrains Mono', ui-monospace, monospace";
+      for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++) {
+        var v = ob[r * cols + c]; if (v < 0) continue;
+        var hot = v >= 11;
+        ctx.fillStyle = hot ? opt.hot + Math.round(tor.alpha * 255).toString(16).padStart(2, "0") : opt.ink + (tor.alpha * (.25 + v / 11 * .75)).toFixed(3) + ")";
+        ctx.fillText(LUM[v], c * cw + cw / 2, r * ch + ch / 2);
+      }
     }
     function draw(now) {
       if (running && !still) requestAnimationFrame(draw);
@@ -701,35 +735,24 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
       var dt = Math.min((now - last) / 1000, .1); last = now;
       var t = (now - t0) / 1000;
       ctx.clearRect(0, 0, W, H);
-      ctx.font = "500 " + (cell - 3) + "px 'JetBrains Mono', ui-monospace, monospace";
       ctx.textAlign = "center"; ctx.textBaseline = "middle";
-      var cx = W * .85 + mx * 80, cy = H * .15 + my * 60, wide = W >= 896;
-      for (var y = cell / 2; y < H; y += cell) {
-        for (var x = cell / 2; x < W; x += cell) {
-          var dx = x - cx, dy = y - cy, d = Math.sqrt(dx * dx + dy * dy);
-          var v = Math.sin(d / 46 - t * 1.4) * .5 + .5;
-          v *= .55 + .45 * Math.sin(x * .05 + y * .03 + t * .5);
-          var k = opt.full ? .9 : (wide ? x / W : y / H);
-          var inten = Math.max(0, Math.min(1, (k - .15) * 1.4)) * opt.strength;
-          var idx = Math.floor(v * inten * (CH.length - 1) + .2);
-          if (idx <= 0) continue;
-          ctx.fillStyle = opt.ink + (.08 + v * .22 * inten).toFixed(3) + ")";
-          ctx.fillText(CH[idx], x, y);
+      if (opt.strength > 0) {
+        ctx.font = "500 " + (cell - 3) + "px 'JetBrains Mono', ui-monospace, monospace";
+        var cx = W * .5 + mx * 120, cy = H * .5 + my * 90;
+        for (var y = cell / 2; y < H; y += cell) {
+          for (var x = cell / 2; x < W; x += cell) {
+            var dx = x - cx, dy = y - cy, d = Math.sqrt(dx * dx + dy * dy);
+            var v = Math.sin(d / 40 - t * 1.6) * .5 + .5;
+            v *= .5 + .5 * Math.sin(x * .04 - y * .03 + t * .6);
+            var inten = opt.strength;
+            var idx = Math.floor(v * inten * (CH.length - 1) + .15);
+            if (idx <= 0) continue;
+            ctx.fillStyle = opt.ink + (.06 + v * .16 * inten).toFixed(3) + ")";
+            ctx.fillText(CH[idx], x, y);
+          }
         }
       }
-      ctx.globalAlpha = opt.emojiAlpha;
-      parts.forEach(function (p) {
-        if (!still) { p.y -= p.vy * dt; p.x += (p.vx + Math.sin(t + p.ph) * 8) * dt; }
-        if (p.y < -40) { p.y = H + 40; p.x = Math.random() * W; }
-        if (p.x < -40) p.x = W + 40; if (p.x > W + 40) p.x = -40;
-        ctx.font = p.s + "px system-ui, 'Apple Color Emoji', 'Segoe UI Emoji', sans-serif";
-        ctx.save();
-        ctx.translate(p.x + mx * 30 * p.z, p.y + my * 30 * p.z);
-        ctx.rotate(Math.sin(t * .9 + p.ph) * .3);
-        ctx.fillText(p.e, 0, 0);
-        ctx.restore();
-      });
-      ctx.globalAlpha = 1;
+      if (opt.torus) torus(t, dt);
     }
     size(); requestAnimationFrame(draw);
     window.addEventListener("resize", function () { size(); if (still) requestAnimationFrame(draw); });
@@ -741,8 +764,9 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
       }).observe(cv);
     }
   }
-  field(document.getElementById("field"), { ink: "rgba(22,22,22,", strength: 1, density: 1, emojiAlpha: .6, shift: 0 });
-  field(document.querySelector(".field-dark"), { ink: "rgba(237,237,232,", strength: .55, density: .8, emojiAlpha: .35, full: true, shift: 5 });
+  field(document.getElementById("field"), { ink: "rgba(22,22,22,", hot: "#1FAF6F", strength: .35,
+    torus: { x: .8, y: .52, size: .8, mx: .5, my: .8, msize: .78, alpha: .5 } });
+  field(document.querySelector(".field-dark"), { ink: "rgba(237,237,232,", hot: "#1FAF6F", strength: .45 });
 
   // parallax: hero layers, marquee, band, section heads, gallery columns
   var mqA = document.querySelector(".mq-a"), mqB = null;
@@ -831,7 +855,8 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
       el.addEventListener("pointerleave", function () { el.style.transform = ""; });
     });
   }
-  field(document.querySelector(".field-contact"), { ink: "rgba(22,22,22,", strength: .7, density: .7, emojiAlpha: .45, full: true, shift: 3 });
+  field(document.querySelector(".field-contact"), { ink: "rgba(22,22,22,", hot: "#1FAF6F", strength: .2,
+    torus: { x: .78, y: .5, size: .9, mx: .5, my: .78, msize: .8, alpha: .45 } });
 
   // videos: play only while visible, never with reduced motion
   var vids = document.querySelectorAll(".vids video");

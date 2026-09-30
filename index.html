@@ -299,7 +299,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
     <a class="brand" href="#top"><span class="dot" aria-hidden="true"></span>Robert Ďurica</a>
     <div class="bar-r">
       <button class="lang" type="button" aria-label="Prepnúť jazyk / Switch language"><span data-l="sk">SK</span> / <span data-l="en">EN</span></button>
-      <a class="btn btn-dark btn-sm wa" href="https://wa.me/421908109541" data-en="Message me">Napíš mi</a>
+      <a class="btn btn-dark btn-sm wa" href="#kontakt" data-en="Message me">Napíš mi</a>
     </div>
   </div>
 </header>
@@ -314,7 +314,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
       <h1 id="h1"><span class="l1"><span class="rq">Bojíš sa AI?</span></span><br><span class="soft l2"><span class="ra">Ja ti to vysvetlím.</span></span></h1>
       <p class="hero-sub" data-en="I’ll help you automate your stuff and explain it right away. On your own data.">Pomôžem ti zautomatizovať tvoje veci a rovno ti to vysvetlím. Na tvojich dátach.</p>
       <div class="actions">
-        <a class="btn btn-dark wa" href="https://wa.me/421908109541" data-en="Message me on WhatsApp">Napíš mi na WhatsApp</a>
+        <a class="btn btn-dark wa" href="#kontakt" data-en="Message me on WhatsApp">Napíš mi na WhatsApp</a>
         <a class="btn" href="#problem" data-en="Tell me what you’re stuck on">Povedz mi, s čím zápasíš</a>
       </div>
     </div>
@@ -359,7 +359,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
         </ul>
         <div class="card-foot">
           <p class="price-big">500–1000 € <small data-en="one-off, by complexity">jednorazovo, podľa zložitosti</small></p>
-          <a class="btn btn-dark wa" href="https://wa.me/421908109541" data-en="I want this">Chcem toto</a>
+          <a class="btn btn-dark wa" href="#kontakt" data-en="I want this">Chcem toto</a>
         </div>
       </article>
       <article class="card rv">
@@ -373,7 +373,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
         </ul>
         <div class="card-foot">
           <p class="price-big">150 € <small data-en="per 3-hour session">za session (3 hodiny)</small></p>
-          <a class="btn btn-dark wa" href="https://wa.me/421908109541" data-en="I want this">Chcem toto</a>
+          <a class="btn btn-dark wa" href="#kontakt" data-en="I want this">Chcem toto</a>
         </div>
       </article>
     </div>
@@ -491,9 +491,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
     <h2 id="c-title"><span data-en="Message me.">Napíš mi.</span><br><span class="soft" data-en="Sorted.">Vyriešené.</span></h2>
     <p class="lead" data-en="Tell me what’s bothering you. I’ll reply whether I can do it, how much it costs and by when.">Povedz mi, čo ťa trápi. Odpíšem ti, či to viem spraviť, koľko to stojí a dokedy.</p>
     <div class="actions">
-      <a class="btn btn-dark wa" href="https://wa.me/421908109541">WhatsApp</a>
-      <a class="btn" href="tel:+421908109541" data-en="Call me">Zavolaj mi</a>
-      <a class="btn" href="mailto:rdurica1995@gmail.com">rdurica1995@gmail.com</a>
+      <a class="btn btn-dark wa" href="#kontakt">WhatsApp</a>
     </div>
     <ul class="socials">
       <li><a href="https://www.linkedin.com/in/durica">LinkedIn</a></li>
@@ -515,7 +513,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
 
 <script>
 (function () {
-  var WA = "421908109541";
+  var WA = ["541", "109", "908", "421"].reverse().join("");
   var WA_TEXT = { sk: "Ahoj Robo, potreboval by som pomôcť s: ", en: "Hi Robo, I could use help with: " };
   var TITLE = { sk: "Robert Ďurica – pomôžem ti s AI", en: "Robert Ďurica – I’ll help you with AI" };
 

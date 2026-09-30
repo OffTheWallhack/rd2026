@@ -230,7 +230,8 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.2rem); line-height: 1.05;
 .state.idle .dot { background: #6B6B63; }
 .state.idle .dot::after { display: none; }
 .box p { margin: 0 0 1rem; color: var(--night-muted); }
-.box a.inl { color: #fff; }
+.box a.inl, .inl-dark { color: #fff; }
+.qw { background: rgba(31,175,111,.08); margin: 0 -1rem; padding-left: 1rem !important; padding-right: 1rem !important; border-radius: var(--r); }
 .human .btn { border-color: #EDEDE8; color: #EDEDE8; }
 .human .btn:hover { background: #EDEDE8; color: var(--night); }
 details { margin-top: 1rem; border-top: 1px solid #2C2D2A; padding-top: 1rem; }
@@ -292,6 +293,13 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
   .socials a { transition: color .2s, transform .2s; }
   .socials a:hover { transform: translateY(-2px); }
 }
+
+.promise li.key { background: var(--ink); color: var(--bg); border-radius: var(--r); padding-left: 2.4rem; padding-right: 1rem; font-weight: 600; border-bottom-color: transparent; }
+.promise li.key::before { left: 1rem; color: var(--pulse); }
+
+.pair-in { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
+.pair-in img { aspect-ratio: 4 / 5; object-fit: cover; height: auto; }
+.pair-in img:first-child { object-position: 30% 50%; }
 
 /* levitation */
 @media (prefers-reduced-motion: no-preference) {
@@ -438,7 +446,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
     <ul class="promise rv stg">
       <li data-en="The tool is yours, with a guide">Nástroj je tvoj, aj s návodom</li>
       <li data-en="Plain Slovak or English, no jargon">Po slovensky alebo anglicky, bez odborných slov</li>
-      <li data-en="If I can’t do it, I’ll say so straight">Ak niečo neviem, poviem ti to na rovinu</li>
+      <li class="key" data-en="If I can’t do it, I’ll say so straight">Ak niečo neviem, poviem ti to na rovinu</li>
     </ul>
   </div>
 </section>
@@ -449,31 +457,28 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
   <div class="wrap">
     <div class="human-top rv">
       <div class="me">
-        <img src="img/portrait.webp" width="400" height="400" alt="Čiernobiely portrét Roberta z profilu" data-en-alt="Black-and-white side portrait of Robert" loading="lazy">
+        <img src="img/portrait.webp" width="400" height="400" alt="Robert so slúchadlami" data-en-alt="Robert with headphones" loading="lazy">
         <div>
-          <p class="label" data-en="04 · Who’s behind it">04 · Kto je za tým</p>
+          <p class="label" data-en="04 · Who I am">04 · Kto som</p>
           <p class="name">Robert Ďurica</p>
-          <p class="sub" data-en="31 · Bratislava">31 · Bratislava</p>
+          <p class="sub" data-en="1995 · Bratislava">1995 · Bratislava</p>
         </div>
       </div>
       <div>
-        <h2 id="k-title" data-en="Not a robot. A guy from events.">Nie som robot. Som chalan z eventov.</h2>
-        <p class="bio" data-en="At <strong>Red Bull</strong> I drive event cars and build mobile stages. I run my own events like <strong>GOSko</strong> and <strong>Drop Ups</strong>, and DJ as <strong>R O B</strong>. I started building AI tools because I needed them myself. Now I build them for others too.">V <strong>Red Bulle</strong> jazdím s event autami a staviam mobilné stage. Robím vlastné eventy ako <strong>GOSko</strong> a <strong>Drop Ups</strong> a hrám ako DJ <strong>R O B</strong>. AI nástroje som si začal stavať, lebo som ich sám potreboval. Teraz ich robím aj pre iných.</p>
+        <h2 id="k-title" data-en="Events are my job. AI is my tool.">Eventy sú moja robota. AI je môj nástroj.</h2>
+        <p class="bio" data-en="I make events for <strong>Red Bull</strong>, <strong>Mäsokombinát</strong>, <strong>GOSko</strong> and <strong>Drop Ups</strong>. I drive event cars, build mobile stages and sometimes DJ. I started building AI tools because I needed them myself. Now I build them for others too.">Robím eventy pre <strong>Red Bull</strong>, <strong>Mäsokombinát</strong>, <strong>GOSko</strong> a <strong>Drop Ups</strong>. Jazdím s event autami, staviam mobilné stage a občas hrám ako DJ. AI nástroje som si začal stavať, lebo som ich sám potreboval. Teraz ich robím aj pre iných.</p>
       </div>
     </div>
 
     <div class="gallery rv">
-      <figure class="px"><img src="img/sugga-roof.webp" width="675" height="900" loading="lazy" alt="Robo sa usmieva zo strechy event auta" data-en-alt="Robo smiling from the roof of an event car"><figcaption data-en="On the roof of an event car">Na streche event auta</figcaption></figure>
-      <figure class="px"><img src="img/dj-booth.webp" width="1100" height="733" loading="lazy" alt="Robo za DJ pultom v event aute" data-en-alt="Robo behind the DJ decks in an event car"><figcaption data-en="Behind the decks as R O B">Za pultom ako R O B</figcaption></figure>
-      <figure class="px"><img src="img/dcl-control.webp" width="1100" height="825" loading="lazy" alt="Režijná miestnosť s obrazovkami počas prenosu" data-en-alt="Broadcast control room with screens during a live show"><figcaption data-en="Drone Champions League control room">Réžia Drone Champions League</figcaption></figure>
-      <figure class="px"><img src="img/gosko-mic.webp" width="1100" height="733" loading="lazy" alt="Robo moderuje skate súťaž s mikrofónom" data-en-alt="Robo hosting a skate contest with a mic"><figcaption data-en="Hosting GOSko">Moderujem GOSko</figcaption></figure>
-      <figure class="px"><img src="img/gosko-poster.webp" width="720" height="900" loading="lazy" alt="Plagát skate súťaže GOSko" data-en-alt="Poster for the GOSko skate contest"><figcaption data-en="GOSko, Bratislava 2026">GOSko, Bratislava 2026</figcaption></figure>
-      <figure class="px"><img src="img/thinking-laptop.webp" width="1100" height="733" loading="lazy" alt="Robo zamyslene pozerá do laptopu na evente" data-en-alt="Robo thinking over a laptop at an event"><figcaption data-en="Figuring out a fix">Vymýšľam riešenie</figcaption></figure>
-      <figure class="px"><img src="img/cat.webp" width="600" height="800" loading="lazy" alt="Mačka zblízka pozerá do objektívu" data-en-alt="A cat looking into the camera up close"><figcaption data-en="Home supervisor">Domáci dozor</figcaption></figure>
-      <figure class="px"><img src="img/mandalas.webp" width="675" height="900" loading="lazy" alt="Tri farebné ručne kreslené mandaly na stole" data-en-alt="Three colourful hand-drawn mandalas on a desk"><figcaption data-en="Hand-drawn mandalas">Ručne kreslené mandaly</figcaption></figure>
-      <figure class="px"><img src="img/gosko-ghost.webp" width="708" height="708" loading="lazy" alt="Kreslený duch na skateboarde na červenom pozadí" data-en-alt="Cartoon ghost on a skateboard on a red background"><figcaption data-en="GOSko mascot">Maskot GOSka</figcaption></figure>
-      <figure class="px"><img src="img/headphones-street.webp" width="675" height="900" loading="lazy" alt="Robo so slúchadlami na ulici" data-en-alt="Robo with headphones on the street"><figcaption data-en="Bratislava, between jobs">Bratislava, medzi akciami</figcaption></figure>
-      <figure class="px"><img src="img/grass-bw.webp" width="400" height="400" loading="lazy" alt="Čiernobiela fotka, Robo sedí v tráve a smeje sa" data-en-alt="Black-and-white photo of Robo sitting in the grass, laughing"><figcaption data-en="A quiet moment">Chvíľa pokoja</figcaption></figure>
+      <figure class="px"><img src="img/sugga-roof.webp" width="675" height="900" loading="lazy" alt="Robert sa usmieva zo strechy event auta" data-en-alt="Robert smiling from the roof of an event car"><figcaption data-en="Can you hear me?">Počuješ ma?</figcaption></figure>
+      <figure class="px"><img src="img/dj-booth.webp" width="1100" height="733" loading="lazy" alt="Robert s kamarátom za DJ pultom v event aute" data-en-alt="Robert and a friend behind the DJ decks in an event car"><figcaption data-en="Behind the decks with Piry">Za pultom s Pirym</figcaption></figure>
+      <figure class="px"><img src="img/dcl-control.webp" width="1100" height="825" loading="lazy" alt="Režijná miestnosť s obrazovkami počas prenosu" data-en-alt="Broadcast control room with screens during a live show"><figcaption data-en="Drone Champions League with my brother">Drone Champions League s bráchom</figcaption></figure>
+      <figure class="px pair"><div class="pair-in"><img src="img/gosko-mic.webp" width="1100" height="733" loading="lazy" alt="Robert s mikrofónom na skate súťaži" data-en-alt="Robert with a mic at a skate contest"><img src="img/gosko-poster.webp" width="720" height="900" loading="lazy" alt="Plagát skate súťaže GOSko" data-en-alt="Poster for the GOSko skate contest"></div><figcaption data-en="GOSko, Bratislava · and the poster">GOSko, Bratislava · a plagát</figcaption></figure>
+      <figure class="px"><img src="img/thinking-laptop.webp" width="1100" height="733" loading="lazy" alt="Robert zamyslene pozerá do laptopu na evente" data-en-alt="Robert thinking over a laptop at an event"><figcaption data-en="Replying">Odpisujem</figcaption></figure>
+      <figure class="px"><img src="img/cat.webp" width="600" height="800" loading="lazy" alt="Mačka Felícia zblízka" data-en-alt="Felícia the cat up close"><figcaption data-en="Feli">Feli</figcaption></figure>
+      <figure class="px"><img src="img/mandalas.webp" width="675" height="900" loading="lazy" alt="Tri farebné ručne kreslené mandaly na stole" data-en-alt="Three colourful hand-drawn mandalas on a desk"><figcaption data-en="Just out of boredom">Len tak z nudy</figcaption></figure>
+      <figure class="px"><img src="img/grass-bw.webp" width="400" height="400" loading="lazy" alt="Čiernobiela fotka, Robert sedí v tráve a smeje sa" data-en-alt="Black-and-white photo of Robert sitting in the grass, laughing"><figcaption data-en="On a trip">Na výlete</figcaption></figure>
     </div>
 
     <p class="label vid-label" data-en="In motion">V pohybe</p>
@@ -486,9 +491,9 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
       <div class="box rv">
         <h3 data-en="What I’ve built">Čo som už postavil</h3>
         <ul class="built stg rv">
-          <li><b data-en="Shift planner">Plánovač smien</b><span class="state"><span class="dot" aria-hidden="true"></span><span data-en="Running">Beží</span></span><span class="d" data-en="For a Red Bull promo team of 11. Builds the weekly schedule from availability.">Pre 11-členný promo tím v Red Bulle. Poskladá týždenný rozpis z dostupnosti.</span></li>
           <li><b>Event Hub</b><span class="state"><span class="dot" aria-hidden="true"></span><span data-en="Running">Beží</span></span><span class="d" data-en="My app for event work: dates, trips, costs, payouts, car service.">Moja appka na event prácu: termíny, jazdy, náklady, výplaty, servis.</span></li>
-          <li><b data-en="Game version of my site">Herná verzia webu</b><span class="state idle"><span class="dot" aria-hidden="true"></span><span data-en="In progress">V práci</span></span><span class="d" data-en="Pick a character like in an old PS2 skate game.">Vyber si postavu ako v starej PS2 skate hre.</span></li>
+          <li><b data-en="Game version of my site">Herná verzia webu</b><span class="state idle"><span class="dot" aria-hidden="true"></span><span>70 %</span></span><span class="d" data-en="Pick a character like in an old PS2 skate game.">Vyber si postavu ako v starej PS2 skate hre.</span></li>
+          <li class="qw"><b><a class="inl-dark" href="https://github.com/OffTheWallhack">Questwave</a></b><span class="state"><span class="dot" aria-hidden="true"></span><span data-en="Beta">Beta</span></span><span class="d" data-en="One real-world quest a day for the whole world at once. I’ll be really grateful for every beta tester, I think the idea is worth it. <a class='inl-dark' href='https://github.com/OffTheWallhack'>Try it on GitHub →</a>">Jedna úloha v reálnom svete denne, pre celý svet naraz. Budem veľmi vďačný za každého beta testera, myslím, že ten nápad za to stojí. <a class="inl-dark" href="https://github.com/OffTheWallhack">Vyskúšaj na GitHube →</a></span></li>
         </ul>
       </div>
       <div class="box rv">
@@ -518,7 +523,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
   <canvas class="field-contact" aria-hidden="true"></canvas>
   <div class="wrap rv">
     <p class="status label"><span class="dot" aria-hidden="true"></span><span data-en="Available now">Som k dispozícii</span></p>
-    <h2 id="c-title"><span data-en="Message me.">Napíš mi.</span><br><span class="soft" data-en="Sorted.">Vyriešené.</span></h2>
+    <h2 id="c-title"><span data-en="Message me.">Napíš mi.</span><br><span class="soft" data-en="We’ll sort it.">Vyriešime.</span></h2>
     <p class="lead" data-en="Tell me what’s bothering you. I’ll reply whether I can do it, how much it costs and by when.">Povedz mi, čo ťa trápi. Odpíšem ti, či to viem spraviť, koľko to stojí a dokedy.</p>
     <div class="actions">
       <a class="btn btn-dark wa" href="#kontakt">WhatsApp</a>
@@ -550,7 +555,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
   var PROBLEMS = [
     { sk: "Ručne skladám rozpis smien", en: "I build shift schedules by hand",
       a: { sk: "Postavím ti plánovač, ktorý rozpis poskladá sám.", en: "I’ll build a planner that makes the schedule for you." },
-      d: { sk: "Z dostupnosti ľudí vyskladá týždeň a férovo rozdelí hodiny. Presne taký už používa tím v Red Bulle.", en: "It builds the week from people’s availability and splits hours fairly. A Red Bull team already uses one." },
+      d: { sk: "Z dostupnosti ľudí vyskladá týždeň a férovo rozdelí hodiny.", en: "It builds the week from people’s availability and splits hours fairly." },
       svc: { sk: "Spravím to za teba", en: "I build it for you" }, price: { sk: "500–1000 € + 30 €/mes.", en: "€500–1000 + €30/mo" } },
     { sk: "Všetko mám v Exceli a správach", en: "Everything lives in spreadsheets and chats",
       a: { sk: "Spravím ti jednoduchú appku pre tím.", en: "I’ll make you a simple app for your team." },

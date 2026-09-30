@@ -316,6 +316,20 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
 .pair-in img { aspect-ratio: 4 / 5; object-fit: cover; height: auto; }
 .pair-in img:first-child { object-position: 30% 50%; }
 
+/* questwave */
+.qw-card { margin-top: 2rem; display: grid; gap: 2rem; align-items: center; border: 1px solid #2C2D2A; border-radius: var(--r); padding: clamp(1.5rem, 4vw, 2.5rem); background: radial-gradient(120% 120% at 100% 0%, rgba(122,80,255,.22), transparent 55%), radial-gradient(90% 90% at 0% 100%, rgba(31,175,111,.16), transparent 60%), #151614; overflow: hidden; }
+@media (min-width: 48rem) { .qw-card { grid-template-columns: 1fr auto; gap: 3rem; } }
+.qw-card .label { display: flex; align-items: center; gap: .5rem; }
+.qw-card h3 { font-size: clamp(2.2rem, 6vw, 3.4rem); letter-spacing: -.03em; line-height: 1; margin: .7rem 0 .4rem; color: #fff; }
+.qw-tag { font: 500 .8rem var(--mono); display: inline-block; background: #D62B3A; color: #fff; padding: .25rem .6rem; border-radius: 4px; margin: 0 0 1rem; }
+.qw-card p { color: var(--night-text); margin: 0 0 1rem; max-width: 32em; }
+.qw-ask { color: #fff !important; font-weight: 500; }
+.btn-green { background: var(--pulse); border-color: var(--pulse); color: #0B1A12; font-weight: 600; }
+.btn-green:hover { background: #fff; border-color: #fff; color: #0B1A12; }
+.phone { width: min(15rem, 62vw); justify-self: center; aspect-ratio: 360 / 678; border-radius: 1.6rem; padding: .45rem; background: #0A0A0A; box-shadow: 0 0 0 1px #333, 0 30px 60px rgba(0,0,0,.5), 0 0 80px rgba(122,80,255,.25); }
+.phone video { width: 100%; height: 100%; object-fit: cover; border-radius: 1.2rem; display: block; background: #111; }
+@media (prefers-reduced-motion: no-preference) { .phone { animation: float 6s ease-in-out infinite; --rot: -1deg; } }
+
 /* levitation */
 @media (prefers-reduced-motion: no-preference) {
   @keyframes float {
@@ -509,7 +523,6 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
         <ul class="built stg rv">
           <li><b>Event Hub</b><span class="state"><span class="dot" aria-hidden="true"></span><span data-en="Running">Beží</span></span><span class="d" data-en="My app for event work: dates, trips, costs, payouts, car service.">Moja appka na event prácu: termíny, jazdy, náklady, výplaty, servis.</span></li>
           <li><b data-en="Game version of my site">Herná verzia webu</b><span class="state idle"><span class="dot" aria-hidden="true"></span><span>70 %</span></span><span class="d" data-en="Pick a character like in an old PS2 skate game.">Vyber si postavu ako v starej PS2 skate hre.</span></li>
-          <li class="qw"><b><a class="inl-dark" href="https://github.com/OffTheWallhack">Questwave</a></b><span class="state"><span class="dot" aria-hidden="true"></span><span data-en="Beta">Beta</span></span><span class="d" data-en="One real-world quest a day for the whole world at once. I’ll be really grateful for every beta tester, I think the idea is worth it. <a class='inl-dark' href='https://github.com/OffTheWallhack'>Try it on GitHub →</a>">Jedna úloha v reálnom svete denne, pre celý svet naraz. Budem veľmi vďačný za každého beta testera, myslím, že ten nápad za to stojí. <a class="inl-dark" href="https://github.com/OffTheWallhack">Vyskúšaj na GitHube →</a></span></li>
         </ul>
       </div>
       <div class="box rv">
@@ -531,6 +544,18 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
         <p style="margin-top:1.25rem" data-en="DJ booking: drum &amp; bass, jungle, hip hop, techno. <a class='inl' href='https://soundcloud.com/duriica'>Listen on SoundCloud</a>">DJ booking: drum &amp; bass, jungle, hip hop, techno. <a class="inl" href="https://soundcloud.com/duriica">Vypočuj si na SoundCloude</a></p>
       </div>
     </div>
+
+    <article class="qw-card rv">
+      <div class="qw-text">
+        <p class="label"><span class="dot" aria-hidden="true"></span><span data-en="New · Beta">Novinka · Beta</span></p>
+        <h3>Questwave</h3>
+        <p class="qw-tag">World Multiplayer IRL</p>
+        <p data-en="One real-world quest a day for the whole world at once. Do it, add a photo as proof and your dot lights up on the map.">Jedna úloha v reálnom svete denne, pre celý svet naraz. Splníš ju, pridáš fotku ako dôkaz a na mape sa rozsvieti tvoja bodka.</p>
+        <p class="qw-ask" data-en="I’ll be really grateful for every beta tester. I think the idea is worth it.">Budem veľmi vďačný za každého beta testera. Myslím, že ten nápad za to stojí.</p>
+        <a class="btn btn-green qw-link" href="https://github.com/OffTheWallhack" target="_blank" rel="noopener" data-en="Try Questwave →">Vyskúšaj Questwave →</a>
+      </div>
+      <div class="phone"><video muted loop playsinline preload="none" poster="img/questwave-poster.webp" aria-label="Ukážka appky Questwave" data-en-aria="Questwave app preview"><source src="vid/questwave.mp4" type="video/mp4"></video></div>
+    </article>
   </div>
 </section>
 
@@ -880,7 +905,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
     torus: { x: .78, y: .5, size: .9, mx: .5, my: .78, msize: .8, alpha: .45 } });
 
   // videos: play only while visible, never with reduced motion
-  var vids = document.querySelectorAll(".vids video");
+  var vids = document.querySelectorAll(".vids video, .phone video");
   if (!still && "IntersectionObserver" in window) {
     var vio = new IntersectionObserver(function (es) {
       es.forEach(function (e) {

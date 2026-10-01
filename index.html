@@ -111,7 +111,7 @@ a { color: inherit; text-underline-offset: .2em; }
   html.js .hero-cut img { animation: rise 1.1s cubic-bezier(.2,.8,.2,1) both .15s; }
   @keyframes rise { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: none; } }
 }
-h1 .rq, h1 .ra { display: inline-block; transition: opacity .45s ease, transform .45s ease; }
+h1 .rq, h1 .ra { display: inline-block; transition: opacity .7s ease, transform .7s ease; }
 h1 .ra { display: inline; }
 h1.swap .rq, h1.swap .ra { opacity: 0; transform: translateY(.25em); }
 .status { display: inline-flex; align-items: center; gap: .6rem; margin-bottom: 1.5rem; }
@@ -369,9 +369,27 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
 .g-role { font: 500 .85rem var(--mono); color: var(--pulse-ink); }
 .g-d { color: var(--muted); }
 
+/* words beside the figure */
+.hero-words { position: absolute; z-index: 1; pointer-events: none; display: flex; flex-direction: column; align-items: flex-end; text-align: right; gap: .05em; font-weight: 800; letter-spacing: -.03em; line-height: 1; }
+.hw { display: block; white-space: nowrap; will-change: translate; }
+.hw.w1 { color: var(--ink); }
+.hw.w2 { color: transparent; -webkit-text-stroke: 1.5px var(--ink); }
+.hw.w3 { color: var(--pulse); }
+.hw.w4 { color: var(--muted); }
+@media (min-width: 56rem) { .hero-words { font-size: clamp(1.5rem, 2.3vw, 2.3rem); } }
+@media (max-width: 55.99rem) {
+  .hero-words { left: 0; right: 0; bottom: 22vh; align-items: center; text-align: center; font-size: clamp(1.5rem, 8vw, 2.4rem); }
+  .hw.w1 { color: rgba(22,22,22,.28); } .hw.w2 { -webkit-text-stroke: 1.2px rgba(22,22,22,.45); } .hw.w3 { color: rgba(31,175,111,.75); } .hw.w4 { color: rgba(22,22,22,.24); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html.js .hw { opacity: 0; animation: hwIn .9s cubic-bezier(.2,.8,.2,1) both; }
+  html.js .hw.w1 { animation-delay: .5s; } html.js .hw.w2 { animation-delay: .65s; } html.js .hw.w3 { animation-delay: .8s; } html.js .hw.w4 { animation-delay: .95s; }
+  @keyframes hwIn { from { opacity: 0; transform: translateX(70px); } to { opacity: 1; transform: none; } }
+}
+
 /* hero photo background */
 .hero-bg { position: absolute; inset: 0; pointer-events: none; -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 40%, transparent 72%); mask-image: linear-gradient(90deg, #000 0%, #000 40%, transparent 72%); }
-.hero-bg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: var(--d, 50% 50%); opacity: 0; transition: opacity 1.1s ease; }
+.hero-bg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: var(--d, 50% 50%); opacity: 0; transition: opacity 1.8s ease; }
 .hero-bg img.on { opacity: .2; }
 @media (max-width: 55.99rem) {
   .hero-bg { bottom: auto; height: 400px; -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 45%, transparent 100%); mask-image: linear-gradient(180deg, #000 0%, #000 45%, transparent 100%); }
@@ -532,6 +550,12 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
 <section class="hero" id="top" aria-labelledby="h1">
   <div class="hero-bg" aria-hidden="true"><img class="on" src="img/bg-mic.webp" alt="" width="1800" height="1200" style="--d:30% 40%;--m:8% 40%" fetchpriority="high"><img src="img/bg-laptop.webp" alt="" width="1800" height="1200" loading="lazy" style="--d:58% 35%;--m:78% 40%"><img src="img/bg-dcl.webp" alt="" width="1800" height="1350" loading="lazy" style="--d:45% 55%;--m:40% 45%"></div>
   <canvas id="field" aria-hidden="true"></canvas>
+  <div class="hero-words" aria-hidden="true">
+    <span class="hw w1" data-en="I build it for you">Spravím to za teba</span>
+    <span class="hw w2" data-en="I teach you">Naučím ťa to</span>
+    <span class="hw w3" data-en="on your own data">Na tvojich dátach</span>
+    <span class="hw w4" data-en="no jargon">Bez odborných slov</span>
+  </div>
   <div class="hero-cut"><img src="img/hero-cut.webp" width="373" height="1288" alt="Robert Ďurica so slúchadlami" data-en-alt="Robert Ďurica with headphones" fetchpriority="high"></div>
   <canvas class="field-front" aria-hidden="true"></canvas>
   <div class="wrap hero-in">
@@ -547,9 +571,6 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
   </div>
 </section>
 
-<div class="marquee" aria-hidden="true">
-  <div class="mq-row mq-a"><span data-en="I BUILD IT FOR YOU · I TEACH YOU · ON YOUR OWN DATA · NO JARGON · ">SPRAVÍM TO ZA TEBA · NAUČÍM ŤA TO · NA TVOJICH DÁTACH · BEZ ODBORNÝCH SLOV · </span><span data-en="I BUILD IT FOR YOU · I TEACH YOU · ON YOUR OWN DATA · NO JARGON · ">SPRAVÍM TO ZA TEBA · NAUČÍM ŤA TO · NA TVOJICH DÁTACH · BEZ ODBORNÝCH SLOV · </span></div>
-</div>
 
 <!-- PROBLEM PICKER -->
 <section class="sec" id="problem" aria-labelledby="p-title">
@@ -906,8 +927,8 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
   setLang(start);
   if (!still) setInterval(function () {
     var h = document.getElementById("h1"); h.classList.add("swap");
-    setTimeout(function () { rot = (rot + 1) % 3; setRot(); h.classList.remove("swap"); }, 450);
-  }, 3800);
+    setTimeout(function () { rot = (rot + 1) % 3; setRot(); h.classList.remove("swap"); }, 700);
+  }, 8000);
   document.querySelector(".lang").addEventListener("click", function () { setLang(lang === "sk" ? "en" : "sk"); });
 
   // reveal on scroll
@@ -1021,6 +1042,29 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
   field(document.getElementById("field"), { ink: "rgba(22,22,22,", hot: "#1FAF6F", strength: .35,
     torus: { x: .82, y: .52, size: .68, mx: .5, my: .84, msize: .95, alpha: .5, ring: true }, front: document.querySelector(".field-front") });
   field(document.querySelector(".field-dark"), { ink: "rgba(237,237,232,", hot: "#1FAF6F", strength: .45 });
+
+  // hero words: hug the figure's left edge, drift on scroll
+  var hwBox = document.querySelector(".hero-words"), hwFig = document.querySelector(".hero-cut"), heroSec = document.querySelector(".hero");
+  var hwLines = hwBox ? [].slice.call(hwBox.querySelectorAll(".hw")) : [];
+  function placeWords() {
+    if (!hwBox || !hwFig || !heroSec) return;
+    if (window.innerWidth >= 896) {
+      var hr = heroSec.getBoundingClientRect(), fr = hwFig.getBoundingClientRect();
+      hwBox.style.right = Math.max(0, hr.right - fr.left + 14) + "px";
+      hwBox.style.top = Math.max(0, fr.top - hr.top + fr.height * 0.3) + "px";
+      hwBox.style.bottom = "auto"; hwBox.style.left = "";
+    } else { hwBox.style.right = ""; hwBox.style.left = ""; hwBox.style.top = ""; hwBox.style.bottom = ""; }
+  }
+  window.addEventListener("resize", placeWords);
+  window.addEventListener("load", placeWords);
+  var hwImg = hwFig && hwFig.querySelector("img"); if (hwImg && !hwImg.complete) hwImg.addEventListener("load", placeWords);
+  placeWords();
+  function driftWords() {
+    if (still) return;
+    var y = window.scrollY, k = window.innerWidth < 896 ? .55 : 1, sp = [-0.22 * k, 0.16 * k, -0.32 * k, 0.12 * k];
+    hwLines.forEach(function (el, i) { el.style.translate = (y * sp[i]).toFixed(1) + "px " + (y * -0.06).toFixed(1) + "px"; });
+  }
+  window.addEventListener("scroll", function () { requestAnimationFrame(driftWords); }, { passive: true });
 
   // gallery: distribute photos into fixed columns (stable on iOS)
   var galEl = document.querySelector(".gallery");

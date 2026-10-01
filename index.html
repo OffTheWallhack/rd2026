@@ -299,7 +299,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
 .example { margin: 0 0 1.5rem; padding: 1rem 1.1rem; background: var(--bg-2); border-radius: var(--r); font-size: .98rem; line-height: 1.5; }
 .example .label { display: block; margin-bottom: .3rem; color: var(--pulse-ink); }
 .vids { }
-@media (min-width: 56rem) { .vids { grid-template-columns: repeat(2, minmax(0, 22rem)); justify-content: start; gap: 1.25rem; } }
+@media (min-width: 56rem) { .vids { grid-template-columns: repeat(3, minmax(0, 20rem)); justify-content: start; gap: 1.25rem; } }
 .human { background: linear-gradient(180deg, var(--night) 0, var(--night) 100%); }
 .human::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 120px; background: linear-gradient(180deg, rgba(31,175,111,.08), transparent); pointer-events: none; }
 @media (prefers-reduced-motion: no-preference) {
@@ -353,7 +353,18 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
 .win figcaption { font: .78rem var(--mono); color: #B9B9B0; padding: .7rem .9rem .85rem; background: #1B1C1A; }
 .gigs { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--ink); }
 .gigs li { display: grid; grid-template-columns: 1fr; gap: .15rem 1.5rem; padding: 1.1rem 0; border-bottom: 1px solid var(--line); }
-@media (min-width: 48rem) { .gigs li { grid-template-columns: 1.1fr .9fr 1.6fr; align-items: baseline; } }
+@media (min-width: 48rem) { .gigs li { grid-template-columns: 1.1fr .9fr 1.6fr 7rem; align-items: center; } }
+.g-media { margin: .6rem 0 0; width: 7rem; }
+@media (min-width: 48rem) { .g-media { margin: 0; } }
+.g-media video { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 6px; display: block; background: var(--bg-2); box-shadow: 0 10px 24px rgba(0,0,0,.12); }
+.logos { margin-top: 2.5rem; }
+.logos .label { margin-bottom: 1rem; }
+.logo-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; }
+.logo-row figure { margin: 0; }
+.logo-row img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: var(--r); background: #1a1a1a; display: block; transition: transform .3s ease; }
+.logo-row .light img { object-fit: contain; background: #fff; border: 1px solid var(--line); padding: 6%; }
+.logo-row figure:hover img { transform: translateY(-4px) rotate(-1deg); }
+.logo-row figcaption { font: .75rem var(--mono); color: var(--muted); padding-top: .45rem; }
 .g-what { font-weight: 700; font-size: 1.2rem; letter-spacing: -.01em; }
 .g-role { font: 500 .85rem var(--mono); color: var(--pulse-ink); }
 .g-d { color: var(--muted); }
@@ -377,7 +388,11 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
 .care.bonus .price-big { color: var(--pulse-ink); }
 
 .hl { background: linear-gradient(transparent 58%, rgba(31,175,111,.45) 58%); padding: 0 .1em; }
-.callout { display: flex; align-items: center; gap: .8rem; background: var(--ink); color: #fff; border-radius: var(--r); padding: 1rem 1.25rem; font-size: clamp(1.05rem, 2.4vw, 1.3rem); font-weight: 600; margin: -1rem 0 2rem; max-width: 46rem; }
+.callout { display: flex; align-items: center; justify-content: space-between; gap: 1.25rem; background: var(--ink); color: #fff; border-radius: var(--r); padding: 1rem 1rem 1rem 1.25rem; margin: -1rem 0 2rem; max-width: 52rem; }
+.callout p { margin: 0; display: flex; align-items: center; gap: .8rem; font-size: clamp(1.05rem, 2.4vw, 1.3rem); font-weight: 600; }
+.c-vid { margin: 0; flex: none; width: 6.5rem; text-align: center; }
+.c-vid video { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 6px; display: block; background: #222; }
+.c-vid figcaption { font: .62rem var(--mono); color: #A3A39B; margin-top: .35rem; line-height: 1.3; }
 
 /* levitation */
 @media (prefers-reduced-motion: no-preference) {
@@ -541,7 +556,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
       <p data-en="For years I connected spreadsheets with live graphics on international broadcasts. The score changes at the venue and the graphic on screen changes by itself. Today I do the same with AI.">Roky som prepájal tabuľky so živou grafikou v medzinárodných prenosoch. Na turnaji sa zmení skóre a grafika na obrazovke sa zmení sama. Dnes to isté robím s AI.</p>
     </div>
 
-    <p class="callout rv"><span class="dot" aria-hidden="true"></span><span data-en="I’ve worked with data and automation since 2020, without AI. AI just makes it faster today.">S dátami a automatizáciou robím od roku 2020, bez AI. AI to dnes len zrýchľuje.</span></p>
+    <div class="callout rv"><p><span class="dot" aria-hidden="true"></span><span data-en="I’ve worked with data and automation since 2020, without AI. AI just makes it faster today.">S dátami a automatizáciou robím od roku 2020, bez AI. AI to dnes len zrýchľuje.</span></p><figure class="c-vid"><video muted loop playsinline preload="none" poster="img/livestream-done-poster.webp" aria-label="Robert sa teší, že livestream prebehol bez chyby" data-en-aria="Robert celebrating a livestream that went without a hitch"><source src="vid/livestream-done.mp4" type="video/mp4"></video><figcaption data-en="When the livestream goes without a fail">Keď livestream prejde bez chyby</figcaption></figure></div>
 
     <div class="shots">
       <figure class="shot-main win rv">
@@ -562,11 +577,22 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
     </div>
 
     <ul class="gigs stg rv">
-      <li><span class="g-what">CS:GO turnaje</span><span class="g-role" data-en="Tournament system + live CG">Turnajový systém + live CG</span><span class="g-d" data-en="Complete tournament sheets wired to the live graphics on the broadcast.">Kompletné turnajové sheety prepojené so živou grafikou vo vysielaní.</span></li>
-      <li><span class="g-what">Drone Champions League</span><span class="g-role" data-en="Data &amp; CG operator">Data &amp; CG operátor</span><span class="g-d" data-en="Race data and graphics during the live show.">Dáta z pretekov a grafika počas živého prenosu.</span></li>
-      <li><span class="g-what">ESL IEM Cologne 2022</span><span class="g-role" data-en="CG operator · B stream">CG operátor · B stream</span><span class="g-d" data-en="Live graphics for one of the biggest CS tournaments in the world.">Živá grafika na jednom z najväčších CS turnajov na svete.</span></li>
+      <li class="has-media"><span class="g-what" data-en="Freak x Yzomandias">Freak x Yzomandias</span><span class="g-role" data-en="Production · pop-up">Produkcia · pop-up</span><span class="g-d" data-en="A pop-up event with a Red Bull event car.">Pop-up event s Red Bull event autom.</span><figure class="g-media"><video muted loop playsinline preload="none" poster="img/freak-yzo-poster.webp" aria-label="Video z pop-up eventu Freak x Yzomandias" data-en-aria="Video from the Freak x Yzomandias pop-up"><source src="vid/freak-yzo.mp4" type="video/mp4"></video></figure></li>
+      <li class="has-media"><span class="g-what" data-en="Futbalic · 2024–2025">Futbalic · 2024–2025</span><span class="g-role" data-en="Production, marketing, design">Produkcia, marketing, dizajn</span><span class="g-d" data-en="Match production, marketing and the logo.">Produkcia zápasov, marketing aj logo.</span><figure class="g-media"><video muted loop playsinline preload="none" poster="img/futbalic-match-poster.webp" aria-label="Video zo zápasu Futbalic v hale" data-en-aria="Video from a Futbalic match in an arena"><source src="vid/futbalic-match.mp4" type="video/mp4"></video></figure></li>
+      <li><span class="g-what" data-en="CS:GO tournaments">CS:GO turnaje</span><span class="g-role" data-en="Tournament system + live CG">Turnajový systém + live CG</span><span class="g-d" data-en="Complete tournament sheets wired to the live graphics on the broadcast.">Kompletné turnajové sheety prepojené so živou grafikou vo vysielaní.</span></li>
+      <li><span class="g-what" data-en="Drone Champions League">Drone Champions League</span><span class="g-role" data-en="Data &amp; CG operator">Data &amp; CG operátor</span><span class="g-d" data-en="Race data and graphics during the live show.">Dáta z pretekov a grafika počas živého prenosu.</span></li>
+      <li class="has-media"><span class="g-what" data-en="ESL IEM Cologne 2022">ESL IEM Cologne 2022</span><span class="g-role" data-en="CG operator · B stream">CG operátor · B stream</span><span class="g-d" data-en="Live graphics for one of the biggest CS tournaments in the world. And at home I collect CS:GO cards, just as a hobby.">Živá grafika na jednom z najväčších CS turnajov na svete. A doma zbieram CS:GO kartičky, len tak z hobby.</span><figure class="g-media"><video muted loop playsinline preload="none" poster="img/csgo-cards-poster.webp" aria-label="Album so zberateľskými CS:GO kartičkami" data-en-aria="An album of collectible CS:GO cards"><source src="vid/csgo-cards.mp4" type="video/mp4"></video></figure></li>
       <li><span class="g-what" data-en="Poker tournaments, Cyprus">Pokrové turnaje, Cyprus</span><span class="g-role" data-en="Camera · CG at EPT">Kameraman · na EPT aj CG</span><span class="g-d" data-en="Camera at the tables, live graphics at European Poker Tour events.">Kamera pri stoloch, na European Poker Tour aj živá grafika.</span></li>
+      <li><span class="g-what" data-en="Slovak Esports Association · 2019">Slovenská asociácia e-športov · 2019</span><span class="g-role" data-en="Logo design">Dizajn loga</span><span class="g-d" data-en="Logo concepts for the association.">Návrhy loga pre asociáciu.</span></li>
     </ul>
+    <div class="logos rv">
+      <p class="label" data-en="Design">Dizajn</p>
+      <div class="logo-row">
+        <figure><img src="img/logo-futbalic.webp" width="700" height="688" loading="lazy" alt="Logo Futbalic s farebnou loptou" data-en-alt="Futbalic logo with a colourful ball"><figcaption>Futbalic · logo</figcaption></figure>
+        <figure><img src="img/logo-futbalic-star.webp" width="700" height="700" loading="lazy" alt="Logo Futbalic v tvare hviezdy" data-en-alt="Star-shaped Futbalic logo"><figcaption data-en="Futbalic · variant">Futbalic · variant</figcaption></figure>
+        <figure class="light"><img src="img/logo-saes.webp" width="772" height="800" loading="lazy" alt="Návrhy loga Slovak Esports Association" data-en-alt="Slovak Esports Association logo concepts"><figcaption data-en="SAES · logo, 2019">SAES · logo, 2019</figcaption></figure>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -598,10 +624,18 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
       <figure class="px"><img src="img/cat.webp" width="600" height="800" loading="lazy" alt="Mačka Felícia zblízka" data-en-alt="Felícia the cat up close"><figcaption data-en="Feli">Feli</figcaption></figure>
       <figure class="px"><img src="img/mandalas.webp" width="675" height="900" loading="lazy" alt="Tri farebné ručne kreslené mandaly na stole" data-en-alt="Three colourful hand-drawn mandalas on a desk"><figcaption data-en="Just out of boredom">Len tak z nudy</figcaption></figure>
       <figure class="px"><img src="img/grass-bw.webp" width="400" height="400" loading="lazy" alt="Čiernobiela fotka, Robert sedí v tráve a smeje sa" data-en-alt="Black-and-white photo of Robert sitting in the grass, laughing"><figcaption data-en="On a trip">Na výlete</figcaption></figure>
+      <figure class="px"><img src="img/republeague.webp" width="1100" height="729" loading="lazy" alt="Robert v žltej mikine pred nápisom Republeague" data-en-alt="Robert in a yellow hoodie in front of the Republeague sign"><figcaption data-en="Republeague">Republeague</figcaption></figure>
+      <figure class="px"><img src="img/on-the-event.webp" width="675" height="900" loading="lazy" alt="Pohľad na nohy a plechovku pod slnečníkmi na evente" data-en-alt="Legs and a can under parasols at an event"><figcaption data-en="A break at the event">Pauza na evente</figcaption></figure>
+      <figure class="px"><img src="img/ufo.webp" width="1000" height="675" loading="lazy" alt="Robert s prilbou vysoko nad Bratislavou" data-en-alt="Robert in a helmet high above Bratislava"><figcaption data-en="Up on UFO">Na UFO</figcaption></figure>
+      <figure class="px"><img src="img/dj-tech.webp" width="675" height="900" loading="lazy" alt="Robert pri flight caseoch s DJ technikou" data-en-alt="Robert next to flight cases with DJ gear"><figcaption data-en="Gear for the event">Technika na event</figcaption></figure>
+      <figure class="px"><img src="img/futbalic-me.webp" width="1100" height="733" loading="lazy" alt="Čiernobiela fotka hráča s číslom 4 na ihrisku" data-en-alt="Black-and-white photo of player number 4 on the pitch"><figcaption data-en="Futbalic, number 4">Futbalic, číslo 4</figcaption></figure>
+      <figure class="px"><img src="img/dj-session.webp" width="675" height="900" loading="lazy" alt="Dvaja ľudia za DJ pultom v Red Bull priestore" data-en-alt="Two people behind the decks in a Red Bull space"><figcaption data-en="DJ session">DJ session</figcaption></figure>
+      <figure class="px"><img src="img/namestie.webp" width="675" height="900" loading="lazy" alt="Robert ukazuje peace na námestí" data-en-alt="Robert showing a peace sign on a square"><figcaption data-en="Bratislava">Bratislava</figcaption></figure>
     </div>
 
     <p class="label vid-label" data-en="In motion">V pohybe</p>
     <div class="vids rv" tabindex="0" aria-label="Krátke videá" data-en-aria="Short videos">
+      <figure><video muted loop playsinline preload="none" poster="img/dropups-garage-poster.webp" aria-label="Drop Ups v garáži cez hľadáčik kamery" data-en-aria="Drop Ups in a garage through a camera viewfinder"><source src="vid/dropups-garage.mp4" type="video/mp4"></video><figcaption data-en="Drop Ups in the garage">Drop Ups v garáži</figcaption></figure>
       <figure><video muted loop playsinline preload="none" poster="img/natacam-poster.webp" aria-label="Robo so smiechom natáča kamerou v event aute" data-en-aria="Robo laughing while filming from an event car"><source src="vid/natacam.mp4" type="video/mp4"></video><figcaption data-en="Filming from an event car">Natáčam z event auta</figcaption></figure>
       <figure><video muted loop playsinline preload="none" poster="img/gosko-nalepky-poster.webp" aria-label="Ruka drží balík nálepiek GOSko" data-en-aria="A hand holding a stack of GOSko stickers"><source src="vid/gosko-nalepky.mp4" type="video/mp4"></video><figcaption data-en="GOSko stickers heading out">GOSko nálepky idú von</figcaption></figure>
     </div>
@@ -1033,7 +1067,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
     torus: { x: .78, y: .5, size: .9, mx: .5, my: .78, msize: .8, alpha: .45 } });
 
   // videos: play only while visible, never with reduced motion
-  var vids = document.querySelectorAll(".vids video, .phone video");
+  var vids = document.querySelectorAll(".vids video, .phone video, .g-media video, .c-vid video");
   if (!still && "IntersectionObserver" in window) {
     var vio = new IntersectionObserver(function (es) {
       es.forEach(function (e) {

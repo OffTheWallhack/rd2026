@@ -235,7 +235,10 @@ html.js .gallery { columns: auto; display: flex; align-items: flex-start; gap: .
 .vids figure { margin: 0; scroll-snap-align: start; }
 .vids video { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: var(--r); background: var(--night-2); display: block; }
 .human-bottom { display: grid; gap: 2rem; margin-top: 3rem; }
-@media (min-width: 56rem) { .human-bottom { grid-template-columns: 1fr 1fr; gap: 3rem; } }
+.apps { margin-top: 3.5rem; }
+.apps > .label { margin-bottom: 1rem; }
+.apps .qw-card { margin-top: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.apps-more { border-top: 0; border-top-left-radius: 0; border-top-right-radius: 0; }
 .box { border: 1px solid #2C2D2A; border-radius: var(--r); padding: 1.5rem; }
 .box h3 { margin: 0 0 1rem; font-size: 1.2rem; color: #fff; }
 .built { list-style: none; margin: 0; padding: 0; }
@@ -271,10 +274,10 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
 .foot p { margin: 0; }
 
 /* marquee */
-.marquee { overflow: hidden; border-bottom: 1px solid var(--line); padding: 1.25rem 0; background: var(--bg); }
+.marquee { overflow: hidden; padding: 1.1rem 0; background: var(--pulse); position: relative; z-index: 3; }
 .mq-row { display: flex; width: max-content; white-space: nowrap; will-change: transform; }
 .mq-row span { padding-right: .5rem; }
-.mq-a { font-weight: 700; font-size: clamp(2.2rem, 8vw, 5rem); letter-spacing: -.03em; line-height: 1.05; color: transparent; -webkit-text-stroke: 1.5px var(--ink); }
+.mq-a { font-weight: 700; font-size: clamp(2.2rem, 8vw, 5rem); letter-spacing: -.03em; line-height: 1.05; color: transparent; -webkit-text-stroke: 1.5px #0B1A12; }
 .mq-b { font: 500 clamp(1rem, 2.6vw, 1.4rem) var(--mono); color: var(--muted); margin-top: .5rem; }
 
 /* cinematic band */
@@ -333,13 +336,9 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
 .phone video { width: 100%; height: 100%; object-fit: cover; border-radius: 1.2rem; display: block; background: #111; }
 @media (prefers-reduced-motion: no-preference) { .phone { animation: float 6s ease-in-out infinite; --rot: -1deg; } }
 
-/* headline photo pill */
-.pill { display: inline-block; vertical-align: middle; width: 1.9em; height: .82em; border-radius: 999px; overflow: hidden; margin-right: .08em; position: relative; top: .04em; box-shadow: 0 0 0 3px var(--bg), 0 0 0 4px var(--line); background: var(--bg-2); transition: transform .45s cubic-bezier(.2,.8,.2,1), opacity .45s ease; }
-.pill img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0; transition: opacity .5s ease, transform 3.8s linear; }
-.pill img.on { opacity: 1; }
-h1.swap .pill { transform: scale(.4) rotate(-8deg); opacity: 0; }
-@media (prefers-reduced-motion: no-preference) { h1:not(.swap) .pill img.on { transform: scale(1.12); } }
-@media (max-width: 55.99rem) { #h1 { min-height: 3.95em; } .pill { width: 1.7em; height: .74em; } }
+/* headline */
+
+@media (max-width: 55.99rem) { #h1 { min-height: 3.95em; } }
 
 /* work / live data */
 .shots { display: grid; gap: 1rem; margin-bottom: 2.5rem; }
@@ -358,6 +357,27 @@ h1.swap .pill { transform: scale(.4) rotate(-8deg); opacity: 0; }
 .g-what { font-weight: 700; font-size: 1.2rem; letter-spacing: -.01em; }
 .g-role { font: 500 .85rem var(--mono); color: var(--pulse-ink); }
 .g-d { color: var(--muted); }
+
+/* hero photo background */
+.hero-bg { position: absolute; inset: 0; pointer-events: none; -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 42%, transparent 72%); mask-image: linear-gradient(90deg, #000 0%, #000 42%, transparent 72%); }
+.hero-bg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.1); opacity: 0; transition: opacity 1.1s ease; }
+.hero-bg img.on { opacity: .17; }
+@media (max-width: 55.99rem) { .hero-bg { -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 40%, transparent 66%); mask-image: linear-gradient(180deg, #000 0%, #000 40%, transparent 66%); } .hero-bg img.on { opacity: .2; } }
+@media (prefers-reduced-motion: no-preference) { .hero-bg img.on { animation: kb 9s ease-out both; } @keyframes kb { from { transform: scale(1.12); } to { transform: scale(1); } } }
+.field-front { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; will-change: transform; }
+
+/* green answer */
+.answer { background: #EAF7EF; border: 1.5px solid var(--pulse); }
+.answer .label { color: var(--pulse-ink); }
+@media (max-width: 55.99rem) { .probs li .answer { margin: .5rem 0 .75rem; position: static; } }
+
+/* bonus */
+.care.bonus { position: relative; background: #F1FAF4; border: 1.5px dashed var(--pulse); margin-top: 1.5rem; }
+.bonus-tag { position: absolute; top: -.85rem; left: 1.25rem; background: var(--pulse); color: #0B1A12; font: 700 .75rem var(--mono); letter-spacing: .08em; padding: .3rem .65rem; border-radius: 999px; }
+.care.bonus .price-big { color: var(--pulse-ink); }
+
+.hl { background: linear-gradient(transparent 58%, rgba(31,175,111,.45) 58%); padding: 0 .1em; }
+.callout { display: flex; align-items: center; gap: .8rem; background: var(--ink); color: #fff; border-radius: var(--r); padding: 1rem 1.25rem; font-size: clamp(1.05rem, 2.4vw, 1.3rem); font-weight: 600; margin: -1rem 0 2rem; max-width: 46rem; }
 
 /* levitation */
 @media (prefers-reduced-motion: no-preference) {
@@ -402,12 +422,14 @@ h1.swap .pill { transform: scale(.4) rotate(-8deg); opacity: 0; }
 <main id="main">
 
 <section class="hero" id="top" aria-labelledby="h1">
+  <div class="hero-bg" aria-hidden="true"><img class="on" src="img/gosko-mic.webp" alt="" style="object-position:30% 40%"><img src="img/thinking-laptop.webp" alt="" style="object-position:58% 35%"><img src="img/dcl-control.webp" alt="" style="object-position:45% 55%"></div>
   <canvas id="field" aria-hidden="true"></canvas>
   <div class="hero-cut"><img src="img/hero-cut.webp" width="373" height="1288" alt="Robert Ďurica so slúchadlami" data-en-alt="Robert Ďurica with headphones" fetchpriority="high"></div>
+  <canvas class="field-front" aria-hidden="true"></canvas>
   <div class="wrap hero-in">
     <div>
       <p class="status label"><span class="dot" aria-hidden="true"></span><span data-en="Available now">Som k dispozícii</span></p>
-      <h1 id="h1"><span class="l1"><span class="rq">Bojíš sa AI?</span></span><br><span class="soft l2"><span class="pill" aria-hidden="true"><img class="on" src="img/gosko-mic.webp" alt="" style="object-position:30% 45%"><img src="img/thinking-laptop.webp" alt="" style="object-position:58% 35%"><img src="img/dcl-control.webp" alt="" style="object-position:45% 60%"></span> <span class="ra">Ja ti to vysvetlím.</span></span></h1>
+      <h1 id="h1"><span class="l1"><span class="rq">Bojíš sa AI?</span></span><br><span class="soft l2"><span class="ra">Ja ti to vysvetlím.</span></span></h1>
       <p class="hero-sub" data-en="I’ll help you automate your stuff and explain it right away. On your own data.">Pomôžem ti zautomatizovať tvoje veci a rovno ti to vysvetlím. Na tvojich dátach.</p>
       <div class="actions">
         <a class="btn btn-dark wa" href="#kontakt" data-en="Message me on WhatsApp">Napíš mi na WhatsApp</a>
@@ -474,9 +496,9 @@ h1.swap .pill { transform: scale(.4) rotate(-8deg); opacity: 0; }
         </div>
       </article>
     </div>
-    <div class="care rv">
+    <div class="care bonus rv"><span class="bonus-tag" aria-hidden="true">+ BONUS</span>
       <div>
-        <p class="label"><span class="dot" aria-hidden="true"></span><span data-en="After handover">Po odovzdaní</span></p>
+        <p class="label"><span class="dot" aria-hidden="true"></span><span data-en="Bonus to every job">Bonus ku každej zákazke</span></p>
         <h3 data-en="Care &amp; upkeep">Starostlivosť a údržba</h3>
         <p data-en="For anything I build for you. So you’re never left alone with it.">Ku všetkému, čo ti spravím. Aby si s tým nikdy neostal sám.</p>
       </div>
@@ -515,9 +537,11 @@ h1.swap .pill { transform: scale(.4) rotate(-8deg); opacity: 0; }
   <div class="wrap">
     <div class="sec-head rv">
       <p class="label" data-en="04 · Where I worked">04 · Na čom som robil</p>
-      <h2 id="w-title" data-en="Live data on screen. Long before AI.">Dáta naživo na obrazovke. Dávno pred AI.</h2>
+      <h2 id="w-title"><span data-en="Live data on screen.">Dáta naživo na obrazovke.</span> <span class="hl" data-en="Long before AI.">Dávno pred AI.</span></h2>
       <p data-en="For years I connected spreadsheets with live graphics on international broadcasts. The score changes at the venue and the graphic on screen changes by itself. Today I do the same with AI.">Roky som prepájal tabuľky so živou grafikou v medzinárodných prenosoch. Na turnaji sa zmení skóre a grafika na obrazovke sa zmení sama. Dnes to isté robím s AI.</p>
     </div>
+
+    <p class="callout rv"><span class="dot" aria-hidden="true"></span><span data-en="I’ve worked with data and automation since 2020, without AI. AI just makes it faster today.">S dátami a automatizáciou robím od roku 2020, bez AI. AI to dnes len zrýchľuje.</span></p>
 
     <div class="shots">
       <figure class="shot-main win rv">
@@ -584,13 +608,6 @@ h1.swap .pill { transform: scale(.4) rotate(-8deg); opacity: 0; }
 
     <div class="human-bottom">
       <div class="box rv">
-        <h3 data-en="What I’ve built">Čo som už postavil</h3>
-        <ul class="built stg rv">
-          <li><b>Event Hub</b><span class="state"><span class="dot" aria-hidden="true"></span><span data-en="Running">Beží</span></span><span class="d" data-en="My app for event work: dates, trips, costs, payouts, car service.">Moja appka na event prácu: termíny, jazdy, náklady, výplaty, servis.</span></li>
-          <li><b data-en="Game version of my site">Herná verzia webu</b><span class="state idle"><span class="dot" aria-hidden="true"></span><span>70 %</span></span><span class="d" data-en="Pick a character like in an old PS2 skate game.">Vyber si postavu ako v starej PS2 skate hre.</span></li>
-        </ul>
-      </div>
-      <div class="box rv">
         <h3 data-en="Also open to work">Otvorený aj práci</h3>
         <p data-en="Looking for a full-time role in event production? Let’s talk.">Hľadáš človeka do event produkcie na plný úväzok? Pokecajme.</p>
         <a class="btn btn-sm" href="cv-robert-durica.pdf" download data-en="Download CV">Stiahni CV</a>
@@ -610,6 +627,8 @@ h1.swap .pill { transform: scale(.4) rotate(-8deg); opacity: 0; }
       </div>
     </div>
 
+    <div class="apps">
+      <p class="label rv" data-en="06 · What I’m building">06 · Čo staviam</p>
     <article class="qw-card rv">
       <div class="qw-text">
         <p class="label"><span class="dot" aria-hidden="true"></span><span data-en="New · Beta">Novinka · Beta</span></p>
@@ -621,6 +640,13 @@ h1.swap .pill { transform: scale(.4) rotate(-8deg); opacity: 0; }
       </div>
       <div class="phone"><video muted loop playsinline preload="none" poster="img/questwave-poster.webp" aria-label="Ukážka appky Questwave" data-en-aria="Questwave app preview"><source src="vid/questwave.mp4" type="video/mp4"></video></div>
     </article>
+      <div class="box rv apps-more">
+        <ul class="built stg rv">
+          <li><b>Event Hub</b><span class="state"><span class="dot" aria-hidden="true"></span><span data-en="Running">Beží</span></span><span class="d" data-en="My app for event work: dates, trips, costs, payouts, car service.">Moja appka na event prácu: termíny, jazdy, náklady, výplaty, servis.</span></li>
+          <li><b data-en="Game version of my site">Herná verzia webu</b><span class="state idle"><span class="dot" aria-hidden="true"></span><span>70 %</span></span><span class="d" data-en="Pick a character like in an old PS2 skate game.">Vyber si postavu ako v starej PS2 skate hre.</span></li>
+        </ul>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -698,7 +724,7 @@ h1.swap .pill { transform: scale(.4) rotate(-8deg); opacity: 0; }
   function setRot() {
     var h = document.getElementById("h1"), v = ROT[lang][rot];
     h.querySelector(".rq").textContent = v[0]; h.querySelector(".ra").textContent = v[1];
-    h.querySelectorAll(".pill img").forEach(function (im, i) { im.classList.toggle("on", i === rot); });
+    document.querySelectorAll(".hero-bg img").forEach(function (im, i) { im.classList.toggle("on", i === rot); });
   }
   var probsEl = document.getElementById("probs");
   var ansEl = document.getElementById("answer");
@@ -720,27 +746,30 @@ h1.swap .pill { transform: scale(.4) rotate(-8deg); opacity: 0; }
       b.addEventListener("click", function () {
         current = i; renderProblems(); renderAnswer(true);
         probsEl.querySelectorAll('.prob')[i].focus();
-        if (window.innerWidth < 896) {
-          var r = ansEl.getBoundingClientRect();
-          if (r.bottom > window.innerHeight || r.top < 60) ansEl.scrollIntoView({ behavior: still ? 'auto' : 'smooth', block: 'center' });
-        }
       });
       li.appendChild(b); probsEl.appendChild(li);
     });
   }
 
+  var pickerEl = document.querySelector(".picker");
+  function placeAnswer() {
+    if (window.innerWidth < 896) { var li = probsEl.children[current]; if (li && ansEl.parentNode !== li) li.appendChild(ansEl); }
+    else if (ansEl.parentNode !== pickerEl) pickerEl.appendChild(ansEl);
+  }
+  window.addEventListener("resize", function () { placeAnswer(); });
   function renderAnswer(animate) {
     var p = PROBLEMS[current], u = UI[lang];
     ansEl.innerHTML =
       "<p class='label'><span class='dot' aria-hidden='true'></span>" + u.sol + "</p>" +
       "<h3></h3><p class='d'></p>" +
       "<div class='answer-meta'><span class='price'></span>" +
-      "<a class='btn btn-dark btn-sm' href='#'></a></div>";
+      "<a class='btn btn-green btn-sm' href='#'></a></div>";
     ansEl.querySelector("h3").textContent = p.a[lang];
     ansEl.querySelector("p.d").textContent = p.d[lang];
     ansEl.querySelector(".price").textContent = p.svc[lang] + " · " + p.price[lang];
     var a = ansEl.querySelector("a");
     a.textContent = u.cta; a.href = waHref(p[lang]);
+    placeAnswer();
     if (animate) { ansEl.classList.remove("swap"); void ansEl.offsetWidth; ansEl.classList.add("swap"); }
   }
 
@@ -794,7 +823,8 @@ h1.swap .pill { transform: scale(.4) rotate(-8deg); opacity: 0; }
   function field(cv, opt) {
     var ctx = cv && cv.getContext("2d"); if (!ctx) return;
     var W, H, dpr, cell = 16, t0 = performance.now(), running = true, last = 0;
-    var A = .6, B = .2, zb = null, ob = null, cols = 0, rows = 0, cw = 8, ch = 12;
+    var A = .6, B = .2, ringP = 0, zb = null, ob = null, zf = null, of = null, cols = 0, rows = 0, cw = 8, ch = 12;
+    var fcv = opt.front, fctx = fcv && fcv.getContext("2d");
     var CH = " .·:-=+*";
     function size() {
       dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -805,17 +835,20 @@ h1.swap .pill { transform: scale(.4) rotate(-8deg); opacity: 0; }
       cw = W < 600 ? 7 : 9; ch = W < 600 ? 11 : 14;
       cols = Math.ceil(W / cw); rows = Math.ceil(H / ch);
       zb = new Float32Array(cols * rows); ob = new Int8Array(cols * rows);
+      zf = new Float32Array(cols * rows); of = new Int8Array(cols * rows);
+      if (fctx) { fcv.width = W * dpr; fcv.height = H * dpr; fctx.setTransform(dpr, 0, 0, dpr, 0, 0); }
     }
     function torus(t, dt) {
       var tor = opt.torus, wide = W >= 896;
       var cx = W * (wide ? tor.x : tor.mx), cy = H * (wide ? tor.y : tor.my);
       var sz = Math.min(W, H) * (wide ? tor.size : tor.msize);
       var breathe = 1 + Math.sin(t * .9) * .06;
-      var R1 = 1 + Math.sin(t * .6) * .15, R2 = 2.1, K2 = 6;
+      var R1 = tor.ring ? .55 + Math.sin(t * .6) * .06 : 1 + Math.sin(t * .6) * .15, R2 = 2.1, K2 = 6;
       var K1 = sz * K2 * breathe / (R1 + R2) / 2;
-      if (!still) { A += dt * (.55 + spin) + my * dt * .8; B += dt * (.3 + spin * .6) + mx * dt * .8; }
+      if (tor.ring) { ringP += still ? 0 : dt * (1 + spin * 4); A = -.4 + Math.sin(ringP * .45) * .1 - my * .2; B = Math.sin(ringP * .3) * .22 + mx * .3; }
+      else if (!still) { A += dt * (.55 + spin) + my * dt * .8; B += dt * (.3 + spin * .6) + mx * dt * .8; }
       spin *= .92;
-      zb.fill(0); ob.fill(-1);
+      zb.fill(0); ob.fill(-1); zf.fill(0); of.fill(-1);
       var cA = Math.cos(A), sA = Math.sin(A), cB = Math.cos(B), sB = Math.sin(B);
       for (var th = 0; th < 6.283; th += .07) {
         var ct = Math.cos(th), st = Math.sin(th);
@@ -829,17 +862,22 @@ h1.swap .pill { transform: scale(.4) rotate(-8deg); opacity: 0; }
           var col = Math.floor((cx + K1 * ooz * x) / cw), row = Math.floor((cy - K1 * ooz * y) / ch);
           if (col < 0 || col >= cols || row < 0 || row >= rows) continue;
           var L = cp * ct * sB - cA * ct * sp - sA * st + cB * (cA * st - ct * sA * sp);
-          var i = row * cols + col;
-          if (ooz > zb[i]) { zb[i] = ooz; ob[i] = L > 0 ? Math.min(11, Math.floor(L * 8)) : 0; }
+          var i = row * cols + col, lv = L > 0 ? Math.min(11, Math.floor(L * 8)) : 0;
+          if (fctx && z < K2 - .15) { if (ooz > zf[i]) { zf[i] = ooz; of[i] = lv; } }
+          else if (ooz > zb[i]) { zb[i] = ooz; ob[i] = lv; }
         }
       }
-      ctx.font = "500 " + (ch - 1) + "px 'JetBrains Mono', ui-monospace, monospace";
-      for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++) {
-        var v = ob[r * cols + c]; if (v < 0) continue;
-        var hot = v >= 11;
-        ctx.fillStyle = hot ? opt.hot + Math.round(tor.alpha * 255).toString(16).padStart(2, "0") : opt.ink + (tor.alpha * (.25 + v / 11 * .75)).toFixed(3) + ")";
-        ctx.fillText(LUM[v], c * cw + cw / 2, r * ch + ch / 2);
+      function paint(cx2, buf, alpha) {
+        cx2.font = "500 " + (ch - 1) + "px 'JetBrains Mono', ui-monospace, monospace";
+        cx2.textAlign = "center"; cx2.textBaseline = "middle";
+        for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++) {
+          var v = buf[r * cols + c]; if (v < 0) continue;
+          cx2.fillStyle = v >= 11 ? opt.hot + Math.round(alpha * 255).toString(16).padStart(2, "0") : opt.ink + (alpha * (.25 + v / 11 * .75)).toFixed(3) + ")";
+          cx2.fillText(LUM[v], c * cw + cw / 2, r * ch + ch / 2);
+        }
       }
+      paint(ctx, ob, tor.alpha);
+      if (fctx) { fctx.clearRect(0, 0, W, H); paint(fctx, of, Math.min(1, tor.alpha * 1.1)); }
     }
     function draw(now) {
       if (running && !still) requestAnimationFrame(draw);
@@ -877,7 +915,7 @@ h1.swap .pill { transform: scale(.4) rotate(-8deg); opacity: 0; }
     }
   }
   field(document.getElementById("field"), { ink: "rgba(22,22,22,", hot: "#1FAF6F", strength: .35,
-    torus: { x: .82, y: .47, size: .82, mx: .5, my: .78, msize: .8, alpha: .5 } });
+    torus: { x: .82, y: .52, size: .68, mx: .5, my: .84, msize: .95, alpha: .5, ring: true }, front: document.querySelector(".field-front") });
   field(document.querySelector(".field-dark"), { ink: "rgba(237,237,232,", hot: "#1FAF6F", strength: .45 });
 
   // gallery: distribute photos into fixed columns (stable on iOS)
@@ -902,7 +940,7 @@ h1.swap .pill { transform: scale(.4) rotate(-8deg); opacity: 0; }
   // parallax: hero layers, marquee, band, section heads, gallery columns
   var mqA = document.querySelector(".mq-a"), mqB = null;
   if (!still) {
-    var heroPh = document.querySelector(".hero-cut");
+    var heroPh = document.querySelector(".hero-cut"), frontCv = document.querySelector(".field-front");
     var heroTx = document.querySelector(".hero-in > div");
     var l1 = document.querySelector("h1 .l1"), l2 = document.querySelector("h1 .l2");
     var band = document.querySelector(".band"), bandM = document.querySelector(".band-media"), bandT = document.querySelector(".band-text");
@@ -917,6 +955,7 @@ h1.swap .pill { transform: scale(.4) rotate(-8deg); opacity: 0; }
       var vh = window.innerHeight, y = window.scrollY;
       if (y < vh * 1.5) {
         if (heroPh) heroPh.style.transform = "translate3d(0," + (y * 0.18).toFixed(1) + "px,0)";
+        if (frontCv) frontCv.style.transform = "translate3d(" + (mx * -14).toFixed(1) + "px," + (y * 0.32).toFixed(1) + "px,0)";
         if (heroTx) heroTx.style.opacity = Math.max(0, 1 - y / (vh * .85)).toFixed(3);
         if (l1) l1.style.transform = "translate3d(" + (-y * 0.15).toFixed(1) + "px," + (y * 0.05).toFixed(1) + "px,0)";
         if (l2) l2.style.transform = "translate3d(" + (y * 0.25).toFixed(1) + "px," + (y * 0.12).toFixed(1) + "px,0)";

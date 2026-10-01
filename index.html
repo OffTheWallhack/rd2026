@@ -341,6 +341,24 @@ h1.swap .pill { transform: scale(.4) rotate(-8deg); opacity: 0; }
 @media (prefers-reduced-motion: no-preference) { h1:not(.swap) .pill img.on { transform: scale(1.12); } }
 @media (max-width: 55.99rem) { #h1 { min-height: 3.95em; } .pill { width: 1.7em; height: .74em; } }
 
+/* work / live data */
+.shots { display: grid; gap: 1rem; margin-bottom: 2.5rem; }
+@media (min-width: 56rem) { .shots { grid-template-columns: 1fr 1fr; gap: 1.25rem; align-items: start; } .shot-main { grid-column: 1 / -1; } }
+.win { margin: 0; background: #1B1C1A; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 0 rgba(255,255,255,.06) inset, 0 24px 50px rgba(0,0,0,.18); will-change: transform; }
+.win-bar { display: flex; align-items: center; gap: .4rem; padding: .55rem .8rem; background: #262724; font: .72rem var(--mono); color: #9A9A92; }
+.win-bar i { width: 9px; height: 9px; border-radius: 50%; background: #4A4B47; }
+.win-bar i:first-child { background: #E5534B; } .win-bar i:nth-child(2) { background: #E2B33D; } .win-bar i:nth-child(3) { background: var(--pulse); }
+.win-bar span { margin-left: .5rem; }
+.win img { width: 100%; display: block; background: #111; }
+.shot-side img { aspect-ratio: 16 / 8.3; object-fit: contain; background: #fff; }
+.win figcaption { font: .78rem var(--mono); color: #B9B9B0; padding: .7rem .9rem .85rem; background: #1B1C1A; }
+.gigs { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--ink); }
+.gigs li { display: grid; grid-template-columns: 1fr; gap: .15rem 1.5rem; padding: 1.1rem 0; border-bottom: 1px solid var(--line); }
+@media (min-width: 48rem) { .gigs li { grid-template-columns: 1.1fr .9fr 1.6fr; align-items: baseline; } }
+.g-what { font-weight: 700; font-size: 1.2rem; letter-spacing: -.01em; }
+.g-role { font: 500 .85rem var(--mono); color: var(--pulse-ink); }
+.g-d { color: var(--muted); }
+
 /* levitation */
 @media (prefers-reduced-motion: no-preference) {
   @keyframes float {
@@ -492,6 +510,42 @@ h1.swap .pill { transform: scale(.4) rotate(-8deg); opacity: 0; }
   </div>
 </section>
 
+<!-- LIVE DATA / PROJECTS -->
+<section class="sec work" id="prace" aria-labelledby="w-title">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <p class="label" data-en="04 · Where I worked">04 · Na čom som robil</p>
+      <h2 id="w-title" data-en="Live data on screen. Long before AI.">Dáta naživo na obrazovke. Dávno pred AI.</h2>
+      <p data-en="For years I connected spreadsheets with live graphics on international broadcasts. The score changes at the venue and the graphic on screen changes by itself. Today I do the same with AI.">Roky som prepájal tabuľky so živou grafikou v medzinárodných prenosoch. Na turnaji sa zmení skóre a grafika na obrazovke sa zmení sama. Dnes to isté robím s AI.</p>
+    </div>
+
+    <div class="shots">
+      <figure class="shot-main win rv">
+        <div class="win-bar" aria-hidden="true"><i></i><i></i><i></i><span data-en="control panel · live">ovládací panel · live</span></div>
+        <img src="img/sheet-control.webp" width="1600" height="807" loading="lazy" alt="Ovládací panel turnaja v tabuľke: aktuálny zápas, skóre máp, veto, skupiny a texty do spodnej lišty" data-en-alt="Tournament control panel in a spreadsheet: current match, map scores, veto, groups and lower-third texts">
+        <figcaption data-en="One sheet runs the whole broadcast: match, score, maps, schedule and texts.">Jeden sheet riadi celý prenos: zápas, skóre, mapy, rozpis aj texty.</figcaption>
+      </figure>
+      <figure class="shot-side win rv">
+        <div class="win-bar" aria-hidden="true"><i></i><i></i><i></i><span data-en="groups">skupiny</span></div>
+        <img src="img/sheet-groups.webp" width="1200" height="622" loading="lazy" alt="Pavúk skupín A až D s výsledkami" data-en-alt="Group brackets A to D with results">
+        <figcaption data-en="Groups and bracket fill in by themselves.">Skupiny a pavúk sa vyplnia samé.</figcaption>
+      </figure>
+      <figure class="shot-side win rv">
+        <div class="win-bar" aria-hidden="true"><i></i><i></i><i></i><span>veto</span></div>
+        <img src="img/sheet-veto.webp" width="484" height="189" loading="lazy" alt="Prepínače veta máp a výsledkov" data-en-alt="Map veto and results switches">
+        <figcaption data-en="Map veto goes live with one click.">Veto máp ide do vysielania jedným klikom.</figcaption>
+      </figure>
+    </div>
+
+    <ul class="gigs stg rv">
+      <li><span class="g-what">CS:GO turnaje</span><span class="g-role" data-en="Tournament system + live CG">Turnajový systém + live CG</span><span class="g-d" data-en="Complete tournament sheets wired to the live graphics on the broadcast.">Kompletné turnajové sheety prepojené so živou grafikou vo vysielaní.</span></li>
+      <li><span class="g-what">Drone Champions League</span><span class="g-role" data-en="Data &amp; CG operator">Data &amp; CG operátor</span><span class="g-d" data-en="Race data and graphics during the live show.">Dáta z pretekov a grafika počas živého prenosu.</span></li>
+      <li><span class="g-what">ESL IEM Cologne 2022</span><span class="g-role" data-en="CG operator · B stream">CG operátor · B stream</span><span class="g-d" data-en="Live graphics for one of the biggest CS tournaments in the world.">Živá grafika na jednom z najväčších CS turnajov na svete.</span></li>
+      <li><span class="g-what" data-en="Poker tournaments, Cyprus">Pokrové turnaje, Cyprus</span><span class="g-role" data-en="Camera · CG at EPT">Kameraman · na EPT aj CG</span><span class="g-d" data-en="Camera at the tables, live graphics at European Poker Tour events.">Kamera pri stoloch, na European Poker Tour aj živá grafika.</span></li>
+    </ul>
+  </div>
+</section>
+
 <!-- HUMAN -->
 <section class="human" id="kto" aria-labelledby="k-title">
   <canvas class="field-dark" aria-hidden="true"></canvas>
@@ -500,7 +554,7 @@ h1.swap .pill { transform: scale(.4) rotate(-8deg); opacity: 0; }
       <div class="me">
         <img src="img/portrait.webp" width="400" height="400" alt="Robert so slúchadlami" data-en-alt="Robert with headphones" loading="lazy">
         <div>
-          <p class="label" data-en="04 · Who I am">04 · Kto som</p>
+          <p class="label" data-en="05 · Who I am">05 · Kto som</p>
           <p class="name">Robert Ďurica</p>
           <p class="sub" data-en="1995 · Bratislava">1995 · Bratislava</p>
         </div>
@@ -545,7 +599,7 @@ h1.swap .pill { transform: scale(.4) rotate(-8deg); opacity: 0; }
           <ol class="tl">
             <li><span class="y" data-en="2024 – now">2024 – dnes</span><span data-en="Red Bull, event car driver (Zubor, Sugga)">Red Bull, event car driver (Zubor, Sugga)</span></li>
             <li><span class="y" data-en="now">dnes</span><span data-en="Own events: GOSko, KALAMITA, Drop Ups">Vlastné eventy: GOSko, KALAMITA, Drop Ups</span></li>
-            <li><span class="y">2023</span><span data-en="RECIN, camera and live graphics; WPT Prime, Champion of Champions Tour">RECIN, kamera a živá grafika; WPT Prime, Champion of Champions Tour</span></li>
+            <li><span class="y">2023</span><span data-en="RECIN, camera and live graphics; poker tournaments in Cyprus (EPT), Champion of Champions Tour">RECIN, kamera a živá grafika; pokrové turnaje na Cypre (EPT), Champion of Champions Tour</span></li>
             <li><span class="y">2022</span><span data-en="ESL IEM Cologne, Drone Champions League, CG operator">ESL IEM Cologne, Drone Champions League, CG operátor</span></li>
             <li><span class="y">2020 – 23</span><span data-en="Republeague, esports brand co-founder">Republeague, spoluzakladateľ esports značky</span></li>
             <li><span class="y">2019 – 20</span><span data-en="Motor-Car Group, online marketing">Motor-Car Group, online marketing</span></li>
@@ -855,6 +909,7 @@ h1.swap .pill { transform: scale(.4) rotate(-8deg); opacity: 0; }
     var heads = [].slice.call(document.querySelectorAll(".sec-head, .human-top"));
     var figs = [].slice.call(document.querySelectorAll(".gallery figure"));
     var vfigs = [].slice.call(document.querySelectorAll(".vids figure"));
+    var shotEls = [].slice.call(document.querySelectorAll(".win"));
     var SPEED = [-0.07, 0.12, -0.05];
     var ticking = false, drift = 0, lastT = performance.now();
     function px() {
@@ -889,6 +944,11 @@ h1.swap .pill { transform: scale(.4) rotate(-8deg); opacity: 0; }
           });
         }
       }
+      shotEls.forEach(function (f, i) {
+        var r = f.getBoundingClientRect();
+        if (r.bottom < -200 || r.top > vh + 200) return;
+        f.style.transform = "translate3d(0," + Math.max(-40, Math.min(40, (r.top - vh / 2) * [0.05, -0.06, 0.08][i % 3])).toFixed(1) + "px,0)";
+      });
       vfigs.forEach(function (f, i) {
         var r = f.getBoundingClientRect();
         if (r.bottom < -200 || r.top > vh + 200) return;

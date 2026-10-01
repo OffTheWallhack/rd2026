@@ -394,6 +394,70 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
 .c-vid video { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 6px; display: block; background: #222; }
 .c-vid figcaption { font: .62rem var(--mono); color: #A3A39B; margin-top: .35rem; line-height: 1.3; }
 
+/* skills accordion */
+.skills .callout { margin-top: 0; }
+.skl { border-top: 2px solid var(--ink); }
+.sk { border-bottom: 1px solid var(--line); position: relative; }
+.sk::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--pulse); transform: scaleY(0); transform-origin: top; transition: transform .45s ease; }
+.sk.open::before { transform: scaleY(1); }
+.sk h3 { margin: 0; }
+.sk-head { all: unset; box-sizing: border-box; width: 100%; display: grid; grid-template-columns: 2.4rem 1fr auto 1.6rem; align-items: center; gap: .25rem 1rem; padding: 1.2rem .25rem 1.2rem .9rem; cursor: pointer; min-height: 44px; }
+.sk-head:focus-visible { outline: 3px solid var(--pulse); outline-offset: -3px; }
+.sk-n { font: 500 .85rem var(--mono); align-self: start; padding-top: .5rem; color: var(--pulse-ink); }
+.sk-t b { display: block; font-size: clamp(1.35rem, 3.6vw, 2rem); letter-spacing: -.025em; line-height: 1.1; font-weight: 700; }
+.sk-t i { display: block; font-style: normal; font-weight: 400; font-family: var(--f); color: var(--muted); font-size: .98rem; margin-top: .3rem; max-width: 40em; }
+.sk-y { font: 400 .78rem var(--mono); color: var(--muted); white-space: nowrap; }
+.sk-chev { width: 1.1rem; height: 1.1rem; position: relative; justify-self: end; }
+.sk-chev::before, .sk-chev::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 2px; background: var(--ink); transition: transform .35s ease; }
+.sk-chev::after { transform: rotate(90deg); }
+.sk.open .sk-chev::after { transform: rotate(0deg); }
+.sk-head:hover .sk-t b { color: var(--pulse-ink); }
+@media (max-width: 40rem) { .sk-head { grid-template-columns: 1.9rem 1fr 1.4rem; } .sk-y { display: none; } }
+.sk-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .5s cubic-bezier(.2,.8,.2,1); }
+.sk.open .sk-panel { grid-template-rows: 1fr; }
+.sk-in { overflow: hidden; min-height: 0; }
+.sk-body { padding: .25rem .25rem 2rem .9rem; opacity: 0; transform: translateY(8px); transition: opacity .4s ease .1s, transform .5s ease .1s; }
+.sk.open .sk-body { opacity: 1; transform: none; }
+@media (min-width: 40rem) { .sk-body { padding-left: 3.4rem; } }
+.sk-proj { list-style: none; margin: 0 0 1.25rem; padding: 0; }
+.sk-proj li { display: grid; grid-template-columns: 1fr; gap: .1rem 1.25rem; padding: .7rem 0; border-top: 1px solid var(--line); }
+@media (min-width: 48rem) { .sk-proj li { grid-template-columns: 13rem 1fr 6rem; align-items: baseline; } .sk-proj .py { text-align: right; } }
+.pn { font-weight: 700; }
+.pr { color: var(--muted); }
+.py { font: .78rem var(--mono); color: var(--pulse-ink); }
+.sk-tools { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; margin: 0 0 1.25rem; }
+.sk-tools .label { margin-right: .4rem; }
+.chip { font: 500 .78rem var(--mono); border: 1px solid var(--line); border-radius: 999px; padding: .25rem .65rem; background: #fff; }
+.sk-media { display: grid; grid-template-columns: repeat(2, 1fr); gap: .75rem; }
+@media (min-width: 48rem) { .sk-media { grid-template-columns: repeat(4, 1fr); gap: 1rem; } }
+.sk-media .m { margin: 0; }
+.sk-media .m img, .sk-media .m video { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: var(--r); display: block; background: var(--bg-2); }
+.sk-media .m.wide { grid-column: span 2; }
+.sk-media .m.wide img { aspect-ratio: 16 / 10; }
+.sk-media figcaption, .off figcaption { font: .75rem var(--mono); color: var(--muted); padding-top: .4rem; }
+.sk-media .full { grid-column: 1 / -1; }
+.sk-media .logos .m img, .sk-media.logos .m img { aspect-ratio: 1; background: #1a1a1a; }
+.sk-media.logos { grid-template-columns: repeat(3, 1fr); }
+.sk-media.logos .m.light img { object-fit: contain; background: #fff; border: 1px solid var(--line); padding: 6%; }
+.sk-link { margin: 1rem 0 0; font-weight: 600; }
+.sk-media .win { margin: 0; }
+.win.full { grid-column: 1 / -1; }
+.win .win-main { aspect-ratio: auto; border-radius: 0; }
+.win-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: #333; }
+.win-row > div { background: #1B1C1A; }
+.win-row img { width: 100%; aspect-ratio: 16 / 8.3; object-fit: contain; background: #fff; display: block; border-radius: 0; }
+.win-row span { display: block; font: .72rem var(--mono); color: #B9B9B0; padding: .5rem .7rem .65rem; }
+.win .win-main { width: 100%; height: auto; }
+.sk-body .qw-card { margin-top: .5rem; }
+.sk-body .apps-more { margin-top: 1rem; border: 1px solid #2C2D2A; border-radius: var(--r); background: #151614; padding: 1.25rem 1.5rem; color: var(--night-text); }
+.sk-body .apps-more .built { list-style: none; margin: 0; padding: 0; }
+.off-label { margin: 3.5rem 0 1rem; }
+.off { display: grid; grid-template-columns: repeat(2, 1fr); gap: .75rem; }
+@media (min-width: 48rem) { .off { grid-template-columns: repeat(4, 1fr); gap: 1rem; } }
+.off .m { margin: 0; }
+.off .m img, .off .m video { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: var(--r); display: block; background: var(--night-2); }
+@media (prefers-reduced-motion: reduce) { .sk-panel, .sk-body, .sk::before { transition: none; } }
+
 /* levitation */
 @media (prefers-reduced-motion: no-preference) {
   @keyframes float {
@@ -547,51 +611,62 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
   </div>
 </section>
 
-<!-- LIVE DATA / PROJECTS -->
-<section class="sec work" id="prace" aria-labelledby="w-title">
+<!-- SKILLS -->
+<section class="sec skills" id="skills" aria-labelledby="sk-title">
   <div class="wrap">
     <div class="sec-head rv">
-      <p class="label" data-en="04 · Where I worked">04 · Na čom som robil</p>
-      <h2 id="w-title"><span data-en="Live data on screen.">Dáta naživo na obrazovke.</span> <span class="hl" data-en="Long before AI.">Dávno pred AI.</span></h2>
-      <p data-en="For years I connected spreadsheets with live graphics on international broadcasts. The score changes at the venue and the graphic on screen changes by itself. Today I do the same with AI.">Roky som prepájal tabuľky so živou grafikou v medzinárodných prenosoch. Na turnaji sa zmení skóre a grafika na obrazovke sa zmení sama. Dnes to isté robím s AI.</p>
+      <p class="label" data-en="04 · What I can do">04 · Čo viem</p>
+      <h2 id="sk-title"><span data-en="What I can do.">Čo viem.</span> <span class="hl" data-en="And where I used it.">A kde som to použil.</span></h2>
+      <p data-en="Tap a skill to see the projects, photos and videos behind it.">Ťukni na schopnosť a uvidíš projekty, fotky a videá, ktoré za ňou stoja.</p>
     </div>
-
     <div class="callout rv"><p><span class="dot" aria-hidden="true"></span><span data-en="I’ve worked with data and automation since 2020, without AI. AI just makes it faster today.">S dátami a automatizáciou robím od roku 2020, bez AI. AI to dnes len zrýchľuje.</span></p><figure class="c-vid"><video muted loop playsinline preload="none" poster="img/livestream-done-poster.webp" aria-label="Robert sa teší, že livestream prebehol bez chyby" data-en-aria="Robert celebrating a livestream that went without a hitch"><source src="vid/livestream-done.mp4" type="video/mp4"></video><figcaption data-en="When the livestream goes without a fail">Keď livestream prejde bez chyby</figcaption></figure></div>
-
-    <div class="shots">
-      <figure class="shot-main win rv">
-        <div class="win-bar" aria-hidden="true"><i></i><i></i><i></i><span data-en="control panel · live">ovládací panel · live</span></div>
-        <img src="img/sheet-control.webp" width="1600" height="807" loading="lazy" alt="Ovládací panel turnaja v tabuľke: aktuálny zápas, skóre máp, veto, skupiny a texty do spodnej lišty" data-en-alt="Tournament control panel in a spreadsheet: current match, map scores, veto, groups and lower-third texts">
-        <figcaption data-en="One sheet runs the whole broadcast: match, score, maps, schedule and texts.">Jeden sheet riadi celý prenos: zápas, skóre, mapy, rozpis aj texty.</figcaption>
-      </figure>
-      <figure class="shot-side win rv">
-        <div class="win-bar" aria-hidden="true"><i></i><i></i><i></i><span data-en="groups">skupiny</span></div>
-        <img src="img/sheet-groups.webp" width="1200" height="622" loading="lazy" alt="Pavúk skupín A až D s výsledkami" data-en-alt="Group brackets A to D with results">
-        <figcaption data-en="Groups and bracket fill in by themselves.">Skupiny a pavúk sa vyplnia samé.</figcaption>
-      </figure>
-      <figure class="shot-side win rv">
-        <div class="win-bar" aria-hidden="true"><i></i><i></i><i></i><span>veto</span></div>
-        <img src="img/sheet-veto.webp" width="484" height="189" loading="lazy" alt="Prepínače veta máp a výsledkov" data-en-alt="Map veto and results switches">
-        <figcaption data-en="Map veto goes live with one click.">Veto máp ide do vysielania jedným klikom.</figcaption>
-      </figure>
-    </div>
-
-    <ul class="gigs stg rv">
-      <li class="has-media"><span class="g-what" data-en="Freak x Yzomandias">Freak x Yzomandias</span><span class="g-role" data-en="Production · pop-up">Produkcia · pop-up</span><span class="g-d" data-en="A pop-up event with a Red Bull event car.">Pop-up event s Red Bull event autom.</span><figure class="g-media"><video muted loop playsinline preload="none" poster="img/freak-yzo-poster.webp" aria-label="Video z pop-up eventu Freak x Yzomandias" data-en-aria="Video from the Freak x Yzomandias pop-up"><source src="vid/freak-yzo.mp4" type="video/mp4"></video></figure></li>
-      <li class="has-media"><span class="g-what" data-en="Futbalic · 2024–2025">Futbalic · 2024–2025</span><span class="g-role" data-en="Production, marketing, design">Produkcia, marketing, dizajn</span><span class="g-d" data-en="Match production, marketing and the logo.">Produkcia zápasov, marketing aj logo.</span><figure class="g-media"><video muted loop playsinline preload="none" poster="img/futbalic-match-poster.webp" aria-label="Video zo zápasu Futbalic v hale" data-en-aria="Video from a Futbalic match in an arena"><source src="vid/futbalic-match.mp4" type="video/mp4"></video></figure></li>
-      <li><span class="g-what" data-en="CS:GO tournaments">CS:GO turnaje</span><span class="g-role" data-en="Tournament system + live CG">Turnajový systém + live CG</span><span class="g-d" data-en="Complete tournament sheets wired to the live graphics on the broadcast.">Kompletné turnajové sheety prepojené so živou grafikou vo vysielaní.</span></li>
-      <li><span class="g-what" data-en="Drone Champions League">Drone Champions League</span><span class="g-role" data-en="Data &amp; CG operator">Data &amp; CG operátor</span><span class="g-d" data-en="Race data and graphics during the live show.">Dáta z pretekov a grafika počas živého prenosu.</span></li>
-      <li class="has-media"><span class="g-what" data-en="ESL IEM Cologne 2022">ESL IEM Cologne 2022</span><span class="g-role" data-en="CG operator · B stream">CG operátor · B stream</span><span class="g-d" data-en="Live graphics for one of the biggest CS tournaments in the world. And at home I collect CS:GO cards, just as a hobby.">Živá grafika na jednom z najväčších CS turnajov na svete. A doma zbieram CS:GO kartičky, len tak z hobby.</span><figure class="g-media"><video muted loop playsinline preload="none" poster="img/csgo-cards-poster.webp" aria-label="Album so zberateľskými CS:GO kartičkami" data-en-aria="An album of collectible CS:GO cards"><source src="vid/csgo-cards.mp4" type="video/mp4"></video></figure></li>
-      <li><span class="g-what" data-en="Poker tournaments, Cyprus">Pokrové turnaje, Cyprus</span><span class="g-role" data-en="Camera · CG at EPT">Kameraman · na EPT aj CG</span><span class="g-d" data-en="Camera at the tables, live graphics at European Poker Tour events.">Kamera pri stoloch, na European Poker Tour aj živá grafika.</span></li>
-      <li><span class="g-what" data-en="Slovak Esports Association · 2019">Slovenská asociácia e-športov · 2019</span><span class="g-role" data-en="Logo design">Dizajn loga</span><span class="g-d" data-en="Logo concepts for the association.">Návrhy loga pre asociáciu.</span></li>
-    </ul>
-    <div class="logos rv">
-      <p class="label" data-en="Design">Dizajn</p>
-      <div class="logo-row">
-        <figure><img src="img/logo-futbalic.webp" width="700" height="688" loading="lazy" alt="Logo Futbalic s farebnou loptou" data-en-alt="Futbalic logo with a colourful ball"><figcaption>Futbalic · logo</figcaption></figure>
-        <figure><img src="img/logo-futbalic-star.webp" width="700" height="700" loading="lazy" alt="Logo Futbalic v tvare hviezdy" data-en-alt="Star-shaped Futbalic logo"><figcaption data-en="Futbalic · variant">Futbalic · variant</figcaption></figure>
-        <figure class="light"><img src="img/logo-saes.webp" width="772" height="800" loading="lazy" alt="Návrhy loga Slovak Esports Association" data-en-alt="Slovak Esports Association logo concepts"><figcaption data-en="SAES · logo, 2019">SAES · logo, 2019</figcaption></figure>
+    <div class="skl rv" id="skl">
+      <article class="sk open">
+        <h3><button class="sk-head" type="button" id="skh1" aria-controls="skp1" aria-expanded="true"><span class="sk-n">01</span><span class="sk-t"><b data-en="Live graphics (CG)">Live grafika (CG)</b><i data-en="Scores, names and tables that pop up on screen during a live broadcast.">Výsledky, mená a tabuľky, ktoré naskakujú na obrazovku počas prenosu.</i></span><span class="sk-y">2020–2023</span><span class="sk-chev" aria-hidden="true"></span></button></h3>
+        <div class="sk-panel" id="skp1" role="region" aria-labelledby="skh1"><div class="sk-in"><div class="sk-body"><ul class="sk-proj"><li><span class="pn">ESL IEM Cologne</span><span class="pr" data-en="CG operator, B stream">CG operátor, B stream</span><span class="py">2022</span></li><li><span class="pn">Drone Champions League</span><span class="pr" data-en="CG and data operator">CG a dátový operátor</span><span class="py">2022</span></li><li><span class="pn">Champion of Champions Tour</span><span class="pr" data-en="CG operator">CG operátor</span><span class="py">2023</span></li><li><span class="pn">WPT Prime Liechtenstein</span><span class="pr" data-en="CG design, CG and data operator">CG dizajn, CG a dátový operátor</span><span class="py">2023</span></li><li><span class="pn">Pokrové turnaje</span><span class="pr" data-en="CG at EPT events">na EPT aj CG</span><span class="py"></span></li><li><span class="pn">Republeague</span><span class="pr" data-en="CG design and operator, three seasons">CG dizajn a operátor, tri sezóny</span><span class="py">2020–2023</span></li></ul><p class="sk-tools"><span class="label" data-en="Tools">Nástroje</span><span class="chip">vMix</span><span class="chip">OBS Studio</span><span class="chip">CharacterWorks</span><span class="chip">NewBlue</span><span class="chip">GT Title Designer</span></p><div class="sk-media"><figure class="m wide"><img src="img/dcl-control.webp" width="1100" height="825" loading="lazy" alt="Režijná miestnosť s obrazovkami počas prenosu" data-en-alt="Broadcast control room with screens during a live show"><figcaption data-en="Drone Champions League control room">Réžia Drone Champions League</figcaption></figure><figure class="m wide"><img src="img/republeague.webp" width="1100" height="729" loading="lazy" alt="Robert v žltej mikine pred nápisom Republeague" data-en-alt="Robert in a yellow hoodie in front of the Republeague sign"><figcaption data-en="Republeague">Republeague</figcaption></figure>
+<figure class="m "><video muted loop playsinline preload="none" poster="img/csgo-cards-poster.webp" aria-label="Album so zberateľskými CS:GO kartičkami" data-en-aria="An album of collectible CS:GO cards"><source src="vid/csgo-cards.mp4" type="video/mp4"></video><figcaption data-en="At home I collect CS:GO cards, just as a hobby">Doma zbieram CS:GO kartičky, len tak z hobby</figcaption></figure></div></div></div></div>
+      </article>
+      <article class="sk">
+        <h3><button class="sk-head" type="button" id="skh2" aria-controls="skp2" aria-expanded="false"><span class="sk-n">02</span><span class="sk-t"><b data-en="Data and automation">Dáta a automatizácia</b><i data-en="Spreadsheets that drive the graphics on air. The score changes at the venue and the screen updates by itself.">Tabuľky, ktoré riadia grafiku vo vysielaní. Na turnaji sa zmení skóre a na obrazovke sa zmení samo.</i></span><span class="sk-y">od 2020</span><span class="sk-chev" aria-hidden="true"></span></button></h3>
+        <div class="sk-panel" id="skp2" role="region" aria-labelledby="skh2"><div class="sk-in"><div class="sk-body"><ul class="sk-proj"><li><span class="pn">CS:GO turnaje</span><span class="pr" data-en="a complete tournament system in a spreadsheet, wired to live CG">kompletný turnajový systém v tabuľke, prepojený s live CG</span><span class="py"></span></li><li><span class="pn">Drone Champions League</span><span class="pr" data-en="data operator">dátový operátor</span><span class="py">2022</span></li><li><span class="pn">WPT Prime Liechtenstein</span><span class="pr" data-en="data operator">dátový operátor</span><span class="py">2023</span></li><li><span class="pn">Dnes</span><span class="pr" data-en="I do the same with AI today, see 08">to isté robím s AI, pozri 08</span><span class="py"></span></li></ul><div class="sk-media"><figure class="win full"><div class="win-bar" aria-hidden="true"><i></i><i></i><i></i><span data-en="tournament system · live">turnajový systém · live</span></div><img class="win-main" src="img/sheet-control.webp" width="1600" height="807" loading="lazy" alt="Ovládací panel turnaja v tabuľke: aktuálny zápas, skóre máp, veto, skupiny a texty do spodnej lišty" data-en-alt="Tournament control panel in a spreadsheet: current match, map scores, veto, groups and lower-third texts"><div class="win-row"><div><img src="img/sheet-groups.webp" width="1200" height="622" loading="lazy" alt="Pavúk skupín A až D s výsledkami" data-en-alt="Group brackets A to D with results"><span data-en="Groups and bracket fill in by themselves.">Skupiny a pavúk sa vyplnia samé.</span></div><div><img src="img/sheet-veto.webp" width="484" height="189" loading="lazy" alt="Prepínače veta máp a výsledkov" data-en-alt="Map veto and results switches"><span data-en="Map veto goes live with one click.">Veto máp ide do vysielania jedným klikom.</span></div></div><figcaption data-en="One sheet runs the whole broadcast: match, score, maps, schedule and texts.">Jeden sheet riadi celý prenos: zápas, skóre, mapy, rozpis aj texty.</figcaption></figure></div></div></div></div>
+      </article>
+      <article class="sk">
+        <h3><button class="sk-head" type="button" id="skh3" aria-controls="skp3" aria-expanded="false"><span class="sk-n">03</span><span class="sk-t"><b data-en="Event production">Produkcia eventov</b><i data-en="From idea to delivery: concept, tech, logistics and stage building.">Od nápadu po realizáciu: koncept, technika, logistika a stavba stage.</i></span><span class="sk-y">od 2024</span><span class="sk-chev" aria-hidden="true"></span></button></h3>
+        <div class="sk-panel" id="skp3" role="region" aria-labelledby="skh3"><div class="sk-in"><div class="sk-body"><ul class="sk-proj"><li><span class="pn">Red Bull</span><span class="pr" data-en="event car driver, I produce smaller events and assist on big ones">event car driver, produkcia menších eventov, produkčný asistent na veľkých</span><span class="py">od 05/2024</span></li><li><span class="pn">Freak x Yzomandias</span><span class="pr" data-en="pop-up production, Red Bull event car">produkcia pop-upu, Red Bull event auto</span><span class="py"></span></li><li><span class="pn">GOSko</span><span class="pr" data-en="co-organiser of the Game of Skate series (Bratislava, Žilina)">spoluorganizátor série Game of Skate (Bratislava, Žilina)</span><span class="py">2026</span></li><li><span class="pn">Drop Ups</span><span class="pr" data-en="own pop-up events on mobile stages">vlastné pop-up eventy na mobilných stageoch</span><span class="py"></span></li><li><span class="pn">KALAMITA</span><span class="pr" data-en="winter rave under a bridge in Bratislava">zimný rave pod mostom v Bratislave</span><span class="py"></span></li><li><span class="pn">Futbalic</span><span class="pr" data-en="match production">produkcia zápasov</span><span class="py">2024–2025</span></li><li><span class="pn">REVERS Production</span><span class="pr" data-en="production assistant">produkčný asistent</span><span class="py"></span></li></ul><div class="sk-media"><figure class="m "><video muted loop playsinline preload="none" poster="img/freak-yzo-poster.webp" aria-label="Video z pop-upu Freak x Yzomandias" data-en-aria="Video from the Freak x Yzomandias pop-up"><source src="vid/freak-yzo.mp4" type="video/mp4"></video><figcaption data-en="Freak x Yzomandias">Freak x Yzomandias</figcaption></figure><figure class="m "><video muted loop playsinline preload="none" poster="img/futbalic-match-poster.webp" aria-label="Video zo zápasu Futbalic v hale" data-en-aria="Video from a Futbalic match in an arena"><source src="vid/futbalic-match.mp4" type="video/mp4"></video><figcaption data-en="Futbalic match">Futbalic, zápas</figcaption></figure><figure class="m "><video muted loop playsinline preload="none" poster="img/dropups-garage-poster.webp" aria-label="Drop Ups v garáži cez hľadáčik kamery" data-en-aria="Drop Ups in a garage through a camera viewfinder"><source src="vid/dropups-garage.mp4" type="video/mp4"></video><figcaption data-en="Drop Ups in the garage">Drop Ups v garáži</figcaption></figure><figure class="m "><img src="img/gosko-poster.webp" width="720" height="900" loading="lazy" alt="Plagát skate súťaže GOSko" data-en-alt="Poster for the GOSko skate contest"><figcaption data-en="GOSko, Bratislava">GOSko, Bratislava</figcaption></figure><figure class="m "><img src="img/sugga-roof.webp" width="675" height="900" loading="lazy" alt="Robert sa usmieva zo strechy event auta" data-en-alt="Robert smiling from the roof of an event car"><figcaption data-en="Can you hear me?">Počuješ ma?</figcaption></figure><figure class="m "><img src="img/dj-tech.webp" width="675" height="900" loading="lazy" alt="Robert pri flight caseoch s DJ technikou" data-en-alt="Robert next to flight cases with DJ gear"><figcaption data-en="Gear for the event">Technika na event</figcaption></figure><figure class="m "><img src="img/on-the-event.webp" width="675" height="900" loading="lazy" alt="Pohľad na nohy a plechovku pod slnečníkmi na evente" data-en-alt="Legs and a can under parasols at an event"><figcaption data-en="A break at the event">Pauza na evente</figcaption></figure></div></div></div></div>
+      </article>
+      <article class="sk">
+        <h3><button class="sk-head" type="button" id="skh4" aria-controls="skp4" aria-expanded="false"><span class="sk-n">04</span><span class="sk-t"><b data-en="Camera and video">Kamera a video</b><i data-en="Filming events and broadcasts, working on site, editing.">Natáčanie eventov a prenosov, práca na mieste a strih.</i></span><span class="sk-y">2020–dnes</span><span class="sk-chev" aria-hidden="true"></span></button></h3>
+        <div class="sk-panel" id="skp4" role="region" aria-labelledby="skh4"><div class="sk-in"><div class="sk-body"><ul class="sk-proj"><li><span class="pn">Pokrové turnaje, Cyprus</span><span class="pr" data-en="camera operator">kameraman</span><span class="py"></span></li><li><span class="pn">RECIN</span><span class="pr" data-en="camera, live graphics, livestream">kamera, živá grafika, livestream</span><span class="py">2023</span></li><li><span class="pn">Republeague</span><span class="pr" data-en="video editing and livestreams">strih videí a livestreamy</span><span class="py">2020–2023</span></li><li><span class="pn">Red Bull</span><span class="pr" data-en="filming event content">natáčanie obsahu z eventov</span><span class="py">od 2024</span></li></ul><p class="sk-tools"><span class="label" data-en="Tools">Nástroje</span><span class="chip">Premiere Pro</span><span class="chip">vMix</span><span class="chip">OBS Studio</span></p><div class="sk-media"><figure class="m "><video muted loop playsinline preload="none" poster="img/natacam-poster.webp" aria-label="Robert sa smeje a natáča kamerou v event aute" data-en-aria="Robert laughing while filming from an event car"><source src="vid/natacam.mp4" type="video/mp4"></video><figcaption data-en="Filming from an event car">Natáčam z event auta</figcaption></figure></div></div></div></div>
+      </article>
+      <article class="sk">
+        <h3><button class="sk-head" type="button" id="skh5" aria-controls="skp5" aria-expanded="false"><span class="sk-n">05</span><span class="sk-t"><b data-en="Design and branding">Dizajn a branding</b><i data-en="Logos and visual identity. Design is where I started, and I use it for events and brands today.">Logá a vizuálna identita. S dizajnom som začal a dnes ho využívam pri eventoch a značkách.</i></span><span class="sk-y">od 2011</span><span class="sk-chev" aria-hidden="true"></span></button></h3>
+        <div class="sk-panel" id="skp5" role="region" aria-labelledby="skh5"><div class="sk-in"><div class="sk-body"><ul class="sk-proj"><li><span class="pn">Futbalic</span><span class="pr" data-en="logo and visuals">logo a vizuál</span><span class="py">2024–2025</span></li><li><span class="pn">Slovenská asociácia e-športov</span><span class="pr" data-en="logo concepts">návrhy loga</span><span class="py">cca 2019</span></li><li><span class="pn">142 design</span><span class="pr" data-en="graphics and print for Hotel Bratislava, Holiday Inn Bratislava, Summit Motors and others">grafika a tlačoviny pre Hotel Bratislava, Holiday Inn Bratislava, Summit Motors a ďalších</span><span class="py">od 2011</span></li><li><span class="pn">Republeague</span><span class="pr" data-en="CG design and graphics">CG dizajn a grafika</span><span class="py">2020–2023</span></li></ul><p class="sk-tools"><span class="label" data-en="Tools">Nástroje</span><span class="chip">Photoshop</span><span class="chip">Illustrator</span></p><div class="sk-media logos"><figure class="m "><img src="img/logo-futbalic.webp" width="700" height="688" loading="lazy" alt="Logo Futbalic s farebnou loptou" data-en-alt="Futbalic logo with a colourful ball"><figcaption data-en="Futbalic · logo">Futbalic · logo</figcaption></figure><figure class="m "><img src="img/logo-futbalic-star.webp" width="700" height="700" loading="lazy" alt="Logo Futbalic v tvare hviezdy" data-en-alt="Star-shaped Futbalic logo"><figcaption data-en="Futbalic · variant">Futbalic · variant</figcaption></figure><figure class="m light"><img src="img/logo-saes.webp" width="772" height="800" loading="lazy" alt="Návrhy loga Slovak Esports Association" data-en-alt="Slovak Esports Association logo concepts"><figcaption data-en="SAES · logo, 2019">SAES · logo, 2019</figcaption></figure></div><p class="sk-link"><a href="https://www.behance.net/durica" data-en="Portfolio on Behance →">Portfólio na Behance →</a></p></div></div></div>
+      </article>
+      <article class="sk">
+        <h3><button class="sk-head" type="button" id="skh6" aria-controls="skp6" aria-expanded="false"><span class="sk-n">06</span><span class="sk-t"><b data-en="Marketing and communication">Marketing a komunikácia</b><i data-en="Building a brand, social media, online events and talking to people.">Budovanie značky, sociálne siete, online eventy a komunikácia s ľuďmi.</i></span><span class="sk-y">od 2019</span><span class="sk-chev" aria-hidden="true"></span></button></h3>
+        <div class="sk-panel" id="skp6" role="region" aria-labelledby="skh6"><div class="sk-in"><div class="sk-body"><ul class="sk-proj"><li><span class="pn">Futbalic</span><span class="pr" data-en="marketing">marketing</span><span class="py">2024–2025</span></li><li><span class="pn">Republeague</span><span class="pr" data-en="marketing, social media, online events">marketing, sociálne siete, online eventy</span><span class="py">2020–2023</span></li><li><span class="pn">Motor-Car Group</span><span class="pr" data-en="online marketing for Mercedes-Benz, KIA, Fiat and Jeep">online marketing pre Mercedes-Benz, KIA, Fiat a Jeep</span><span class="py">2019–2020</span></li><li><span class="pn">GOSko</span><span class="pr" data-en="own brand and partners">vlastná značka a partneri</span><span class="py">2026</span></li></ul><div class="sk-media"><figure class="m "><video muted loop playsinline preload="none" poster="img/gosko-nalepky-poster.webp" aria-label="Ruka drží balík nálepiek GOSko" data-en-aria="A hand holding a stack of GOSko stickers"><source src="vid/gosko-nalepky.mp4" type="video/mp4"></video><figcaption data-en="GOSko stickers heading out">GOSko nálepky idú von</figcaption></figure><figure class="m wide"><img src="img/thinking-laptop.webp" width="1100" height="733" loading="lazy" alt="Robert zamyslene pozerá do laptopu na evente" data-en-alt="Robert thinking over a laptop at an event"><figcaption data-en="Replying">Odpisujem</figcaption></figure></div></div></div></div>
+      </article>
+      <article class="sk">
+        <h3><button class="sk-head" type="button" id="skh7" aria-controls="skp7" aria-expanded="false"><span class="sk-n">07</span><span class="sk-t"><b data-en="DJing and hosting">DJ a moderovanie</b><i data-en="I DJ from time to time and host events.">Občas hrám DJ sety a moderujem eventy.</i></span><span class="sk-y">občas</span><span class="sk-chev" aria-hidden="true"></span></button></h3>
+        <div class="sk-panel" id="skp7" role="region" aria-labelledby="skh7"><div class="sk-in"><div class="sk-body"><ul class="sk-proj"><li><span class="pn">Drop Ups</span><span class="pr" data-en="DJ on mobile stages in event cars">DJ na mobilných stageoch v event autách</span><span class="py"></span></li><li><span class="pn">GOSko</span><span class="pr" data-en="hosting the contest">moderovanie súťaže</span><span class="py">2026</span></li><li><span class="pn">Žánre</span><span class="pr" data-en="drum &amp; bass, jungle, hip hop, rap, techno">drum &amp; bass, jungle, hip hop, rap, techno</span><span class="py"></span></li></ul><div class="sk-media"><figure class="m wide"><img src="img/dj-booth.webp" width="1100" height="733" loading="lazy" alt="Robert s kamarátom za DJ pultom v event aute" data-en-alt="Robert and a friend behind the DJ decks in an event car"><figcaption data-en="Behind the decks with Piry">Za pultom s Pirym</figcaption></figure><figure class="m wide"><img src="img/gosko-mic.webp" width="1100" height="733" loading="lazy" alt="Robert s mikrofónom na skate súťaži" data-en-alt="Robert with a mic at a skate contest"><figcaption data-en="GOSko, Bratislava">GOSko, Bratislava</figcaption></figure><figure class="m "><img src="img/dj-session.webp" width="675" height="900" loading="lazy" alt="Dvaja ľudia za DJ pultom v Red Bull priestore" data-en-alt="Two people behind the decks in a Red Bull space"><figcaption data-en="DJ session">DJ session</figcaption></figure></div><p class="sk-link"><a href="https://soundcloud.com/duriica" data-en="Listen on SoundCloud →">Vypočuj si na SoundCloude →</a></p></div></div></div>
+      </article>
+      <article class="sk">
+        <h3><button class="sk-head" type="button" id="skh8" aria-controls="skp8" aria-expanded="false"><span class="sk-n">08</span><span class="sk-t"><b data-en="AI and my own apps">AI a vlastné appky</b><i data-en="I build apps and tools with AI, first for myself and my colleagues. Now for others too.">Stavam appky a nástroje s AI, najprv pre seba a kolegov. Teraz aj pre iných.</i></span><span class="sk-y">dnes</span><span class="sk-chev" aria-hidden="true"></span></button></h3>
+        <div class="sk-panel" id="skp8" role="region" aria-labelledby="skh8"><div class="sk-in"><div class="sk-body">    <article class="qw-card">
+      <div class="qw-text">
+        <p class="label"><span class="dot" aria-hidden="true"></span><span data-en="New · Beta">Novinka · Beta</span></p>
+        <h3>Questwave</h3>
+        <p class="qw-tag">World Multiplayer IRL</p>
+        <p data-en="One real-world quest a day for the whole world at once. Do it, add a photo as proof and your dot lights up on the map.">Jedna úloha v reálnom svete denne, pre celý svet naraz. Splníš ju, pridáš fotku ako dôkaz a na mape sa rozsvieti tvoja bodka.</p>
+        <p class="qw-ask" data-en="I’ll be really grateful for every beta tester. I think the idea is worth it.">Budem veľmi vďačný za každého beta testera. Myslím, že ten nápad za to stojí.</p>
+        <a class="btn btn-green qw-link" href="https://github.com/OffTheWallhack" target="_blank" rel="noopener" data-en="Try Questwave →">Vyskúšaj Questwave →</a>
       </div>
+      <div class="phone"><video muted loop playsinline preload="none" poster="img/questwave-poster.webp" aria-label="Ukážka appky Questwave" data-en-aria="Questwave app preview"><source src="vid/questwave.mp4" type="video/mp4"></video></div>
+    </article><div class="apps-more">        <ul class="built">
+          <li><b>Event Hub</b><span class="state"><span class="dot" aria-hidden="true"></span><span data-en="Running">Beží</span></span><span class="d" data-en="My app for event work: dates, trips, costs, payouts, car service.">Moja appka na event prácu: termíny, jazdy, náklady, výplaty, servis.</span></li>
+          <li><b data-en="Game version of my site">Herná verzia webu</b><span class="state idle"><span class="dot" aria-hidden="true"></span><span>70 %</span></span><span class="d" data-en="Pick a character like in an old PS2 skate game.">Vyber si postavu ako v starej PS2 skate hre.</span></li>
+        </ul></div><p class="sk-tools"><span class="label" data-en="Tools">Nástroje</span><span class="chip">Claude Code</span><span class="chip">Grok</span></p></div></div></div>
+      </article>
     </div>
   </div>
 </section>
@@ -615,29 +690,12 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
       </div>
     </div>
 
-    <div class="gallery rv">
-      <figure class="px"><img src="img/sugga-roof.webp" width="675" height="900" loading="lazy" alt="Robert sa usmieva zo strechy event auta" data-en-alt="Robert smiling from the roof of an event car"><figcaption data-en="Can you hear me?">Počuješ ma?</figcaption></figure>
-      <figure class="px"><img src="img/dj-booth.webp" width="1100" height="733" loading="lazy" alt="Robert s kamarátom za DJ pultom v event aute" data-en-alt="Robert and a friend behind the DJ decks in an event car"><figcaption data-en="Behind the decks with Piry">Za pultom s Pirym</figcaption></figure>
-      <figure class="px"><img src="img/dcl-control.webp" width="1100" height="825" loading="lazy" alt="Režijná miestnosť s obrazovkami počas prenosu" data-en-alt="Broadcast control room with screens during a live show"><figcaption data-en="Drone Champions League with my brother">Drone Champions League s bráchom</figcaption></figure>
-      <figure class="px pair"><div class="pair-in"><img src="img/gosko-mic.webp" width="1100" height="733" loading="lazy" alt="Robert s mikrofónom na skate súťaži" data-en-alt="Robert with a mic at a skate contest"><img src="img/gosko-poster.webp" width="720" height="900" loading="lazy" alt="Plagát skate súťaže GOSko" data-en-alt="Poster for the GOSko skate contest"></div><figcaption data-en="GOSko, Bratislava · and the poster">GOSko, Bratislava · a plagát</figcaption></figure>
-      <figure class="px"><img src="img/thinking-laptop.webp" width="1100" height="733" loading="lazy" alt="Robert zamyslene pozerá do laptopu na evente" data-en-alt="Robert thinking over a laptop at an event"><figcaption data-en="Replying">Odpisujem</figcaption></figure>
-      <figure class="px"><img src="img/cat.webp" width="600" height="800" loading="lazy" alt="Mačka Felícia zblízka" data-en-alt="Felícia the cat up close"><figcaption data-en="Feli">Feli</figcaption></figure>
-      <figure class="px"><img src="img/mandalas.webp" width="675" height="900" loading="lazy" alt="Tri farebné ručne kreslené mandaly na stole" data-en-alt="Three colourful hand-drawn mandalas on a desk"><figcaption data-en="Just out of boredom">Len tak z nudy</figcaption></figure>
-      <figure class="px"><img src="img/grass-bw.webp" width="400" height="400" loading="lazy" alt="Čiernobiela fotka, Robert sedí v tráve a smeje sa" data-en-alt="Black-and-white photo of Robert sitting in the grass, laughing"><figcaption data-en="On a trip">Na výlete</figcaption></figure>
-      <figure class="px"><img src="img/republeague.webp" width="1100" height="729" loading="lazy" alt="Robert v žltej mikine pred nápisom Republeague" data-en-alt="Robert in a yellow hoodie in front of the Republeague sign"><figcaption data-en="Republeague">Republeague</figcaption></figure>
-      <figure class="px"><img src="img/on-the-event.webp" width="675" height="900" loading="lazy" alt="Pohľad na nohy a plechovku pod slnečníkmi na evente" data-en-alt="Legs and a can under parasols at an event"><figcaption data-en="A break at the event">Pauza na evente</figcaption></figure>
-      <figure class="px"><img src="img/ufo.webp" width="1000" height="675" loading="lazy" alt="Robert s prilbou vysoko nad Bratislavou" data-en-alt="Robert in a helmet high above Bratislava"><figcaption data-en="Up on UFO">Na UFO</figcaption></figure>
-      <figure class="px"><img src="img/dj-tech.webp" width="675" height="900" loading="lazy" alt="Robert pri flight caseoch s DJ technikou" data-en-alt="Robert next to flight cases with DJ gear"><figcaption data-en="Gear for the event">Technika na event</figcaption></figure>
-      <figure class="px"><img src="img/futbalic-me.webp" width="1100" height="733" loading="lazy" alt="Čiernobiela fotka hráča s číslom 4 na ihrisku" data-en-alt="Black-and-white photo of player number 4 on the pitch"><figcaption data-en="Futbalic, number 4">Futbalic, číslo 4</figcaption></figure>
-      <figure class="px"><img src="img/dj-session.webp" width="675" height="900" loading="lazy" alt="Dvaja ľudia za DJ pultom v Red Bull priestore" data-en-alt="Two people behind the decks in a Red Bull space"><figcaption data-en="DJ session">DJ session</figcaption></figure>
-      <figure class="px"><img src="img/namestie.webp" width="675" height="900" loading="lazy" alt="Robert ukazuje peace na námestí" data-en-alt="Robert showing a peace sign on a square"><figcaption data-en="Bratislava">Bratislava</figcaption></figure>
-    </div>
-
-    <p class="label vid-label" data-en="In motion">V pohybe</p>
-    <div class="vids rv" tabindex="0" aria-label="Krátke videá" data-en-aria="Short videos">
-      <figure><video muted loop playsinline preload="none" poster="img/dropups-garage-poster.webp" aria-label="Drop Ups v garáži cez hľadáčik kamery" data-en-aria="Drop Ups in a garage through a camera viewfinder"><source src="vid/dropups-garage.mp4" type="video/mp4"></video><figcaption data-en="Drop Ups in the garage">Drop Ups v garáži</figcaption></figure>
-      <figure><video muted loop playsinline preload="none" poster="img/natacam-poster.webp" aria-label="Robo so smiechom natáča kamerou v event aute" data-en-aria="Robo laughing while filming from an event car"><source src="vid/natacam.mp4" type="video/mp4"></video><figcaption data-en="Filming from an event car">Natáčam z event auta</figcaption></figure>
-      <figure><video muted loop playsinline preload="none" poster="img/gosko-nalepky-poster.webp" aria-label="Ruka drží balík nálepiek GOSko" data-en-aria="A hand holding a stack of GOSko stickers"><source src="vid/gosko-nalepky.mp4" type="video/mp4"></video><figcaption data-en="GOSko stickers heading out">GOSko nálepky idú von</figcaption></figure>
+    <p class="label rv off-label" data-en="Off the clock">Mimo práce</p>
+    <div class="off rv">
+      <figure class="m "><img src="img/cat.webp" width="600" height="800" loading="lazy" alt="Mačka Felícia zblízka" data-en-alt="Felícia the cat up close"><figcaption data-en="Feli">Feli</figcaption></figure>
+      <figure class="m "><img src="img/mandalas.webp" width="675" height="900" loading="lazy" alt="Tri farebné ručne kreslené mandaly na stole" data-en-alt="Three colourful hand-drawn mandalas on a desk"><figcaption data-en="Just out of boredom">Len tak z nudy</figcaption></figure>
+      <figure class="m "><img src="img/grass-bw.webp" width="400" height="400" loading="lazy" alt="Čiernobiela fotka, Robert sedí v tráve a smeje sa" data-en-alt="Black-and-white photo of Robert sitting in the grass, laughing"><figcaption data-en="On a trip">Na výlete</figcaption></figure>
+      <figure class="m "><img src="img/ufo.webp" width="1000" height="675" loading="lazy" alt="Robert s prilbou vysoko nad Bratislavou" data-en-alt="Robert in a helmet high above Bratislava"><figcaption data-en="Up on UFO">Na UFO</figcaption></figure>
     </div>
 
     <div class="human-bottom">
@@ -661,26 +719,6 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
       </div>
     </div>
 
-    <div class="apps">
-      <p class="label rv" data-en="06 · What I’m building">06 · Čo staviam</p>
-    <article class="qw-card rv">
-      <div class="qw-text">
-        <p class="label"><span class="dot" aria-hidden="true"></span><span data-en="New · Beta">Novinka · Beta</span></p>
-        <h3>Questwave</h3>
-        <p class="qw-tag">World Multiplayer IRL</p>
-        <p data-en="One real-world quest a day for the whole world at once. Do it, add a photo as proof and your dot lights up on the map.">Jedna úloha v reálnom svete denne, pre celý svet naraz. Splníš ju, pridáš fotku ako dôkaz a na mape sa rozsvieti tvoja bodka.</p>
-        <p class="qw-ask" data-en="I’ll be really grateful for every beta tester. I think the idea is worth it.">Budem veľmi vďačný za každého beta testera. Myslím, že ten nápad za to stojí.</p>
-        <a class="btn btn-green qw-link" href="https://github.com/OffTheWallhack" target="_blank" rel="noopener" data-en="Try Questwave →">Vyskúšaj Questwave →</a>
-      </div>
-      <div class="phone"><video muted loop playsinline preload="none" poster="img/questwave-poster.webp" aria-label="Ukážka appky Questwave" data-en-aria="Questwave app preview"><source src="vid/questwave.mp4" type="video/mp4"></video></div>
-    </article>
-      <div class="box rv apps-more">
-        <ul class="built stg rv">
-          <li><b>Event Hub</b><span class="state"><span class="dot" aria-hidden="true"></span><span data-en="Running">Beží</span></span><span class="d" data-en="My app for event work: dates, trips, costs, payouts, car service.">Moja appka na event prácu: termíny, jazdy, náklady, výplaty, servis.</span></li>
-          <li><b data-en="Game version of my site">Herná verzia webu</b><span class="state idle"><span class="dot" aria-hidden="true"></span><span>70 %</span></span><span class="d" data-en="Pick a character like in an old PS2 skate game.">Vyber si postavu ako v starej PS2 skate hre.</span></li>
-        </ul>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -981,7 +1019,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
     var heads = [].slice.call(document.querySelectorAll(".sec-head, .human-top"));
     var figs = [].slice.call(document.querySelectorAll(".gallery figure"));
     var vfigs = [].slice.call(document.querySelectorAll(".vids figure"));
-    var shotEls = [].slice.call(document.querySelectorAll(".win"));
+    var shotEls = [];
     var SPEED = [-0.07, 0.12, -0.05];
     var ticking = false, drift = 0, lastT = performance.now();
     function px() {
@@ -1043,6 +1081,32 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
     requestAnimationFrame(mq);
   }
 
+  // skills accordion (header stays put when panels open/close)
+  var skl = document.getElementById("skl");
+  if (skl) {
+    var items = [].slice.call(skl.querySelectorAll(".sk"));
+    function setOpen(it, on) {
+      it.classList.toggle("open", on);
+      it.querySelector(".sk-head").setAttribute("aria-expanded", on ? "true" : "false");
+      var pn = it.querySelector(".sk-panel"); if (on) pn.removeAttribute("inert"); else pn.setAttribute("inert", "");
+    }
+    items.forEach(function (it, i) { setOpen(it, i === 0); });
+    items.forEach(function (it) {
+      it.querySelector(".sk-head").addEventListener("click", function () {
+        var head = it.querySelector(".sk-head"), before = head.getBoundingClientRect().top;
+        var willOpen = !it.classList.contains("open");
+        items.forEach(function (o) { if (o !== it) setOpen(o, false); });
+        setOpen(it, willOpen);
+        var t0 = performance.now();
+        (function keep() {
+          var d = head.getBoundingClientRect().top - before;
+          if (Math.abs(d) > 1) window.scrollBy(0, d);
+          if (performance.now() - t0 < 650) requestAnimationFrame(keep);
+        })();
+      });
+    });
+  }
+
   // stagger indices
   document.querySelectorAll(".stg").forEach(function (g) { [].forEach.call(g.children, function (c, i) { c.style.setProperty("--i", i); }); });
   // progress bar + header shadow
@@ -1067,7 +1131,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
     torus: { x: .78, y: .5, size: .9, mx: .5, my: .78, msize: .8, alpha: .45 } });
 
   // videos: play only while visible, never with reduced motion
-  var vids = document.querySelectorAll(".vids video, .phone video, .g-media video, .c-vid video");
+  var vids = document.querySelectorAll(".sk-media video, .off video, .phone video, .c-vid video");
   if (!still && "IntersectionObserver" in window) {
     var vio = new IntersectionObserver(function (es) {
       es.forEach(function (e) {

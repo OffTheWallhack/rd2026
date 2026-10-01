@@ -505,6 +505,61 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
 .rl-hltv { display: inline-block; font: 600 .85rem var(--mono); border: 1px solid var(--ink); border-radius: 999px; padding: .4rem .9rem; text-decoration: none; transition: background .2s, color .2s; }
 .rl-hltv:hover { background: var(--ink); color: #fff; }
 
+/* problems: scroll cue */
+.prob .arr { display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; border-radius: 50%; background: rgba(31,175,111,.14); color: var(--pulse-ink); opacity: 1; flex: none; font-size: 1rem; }
+.prob[aria-pressed="true"] .arr { background: var(--pulse); color: #0B1A12; }
+.prob.focus:not([aria-pressed="true"]) { background: #EAF7EF; border-color: var(--pulse); }
+.prob.focus:not([aria-pressed="true"]) .arr { background: var(--pulse); color: #0B1A12; }
+@media (prefers-reduced-motion: no-preference) {
+  .prob.focus:not([aria-pressed="true"]) { animation: tapPulse 1.8s ease-in-out infinite; }
+  .prob.focus:not([aria-pressed="true"]) .arr { animation: nudge 1.2s ease-in-out infinite; }
+  @keyframes tapPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(31,175,111,.0); } 50% { box-shadow: 0 0 0 6px rgba(31,175,111,.22); } }
+  @keyframes nudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
+}
+
+/* two ways: different colours */
+.card { position: relative; overflow: hidden; }
+.card::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 5px; }
+.card-a { background: #F1FAF4; border-color: rgba(31,175,111,.55); }
+.card-a::before { background: var(--pulse); }
+.card-a .label { color: var(--pulse-ink); }
+.card-a .price-big { color: var(--pulse-ink); }
+.card-b { background: #F1F2FF; border-color: rgba(110,123,255,.55); }
+.card-b::before { background: #6E7BFF; }
+.card-b .label { color: #4A56D6; }
+.card-b .price-big { color: #4A56D6; }
+.card-b li::before { background: #6E7BFF; }
+.btn-indigo { background: #6E7BFF; border-color: #6E7BFF; color: #fff; font-weight: 600; }
+.btn-indigo:hover { background: #fff; border-color: #6E7BFF; color: #4A56D6; }
+@media (max-width: 47.99rem) { .svc { gap: 1.5rem; } }
+
+/* three steps: dark connected panel */
+.steps.steps-dark { background: var(--ink); border: 0; border-radius: 14px; gap: 0; padding: .5rem 0; position: relative; }
+.steps-dark li { background: transparent; color: #fff; position: relative; padding: 1.35rem 1.5rem 1.35rem 4.1rem; }
+.steps-dark li + li { border-top: 1px solid rgba(255,255,255,.1); }
+.steps-dark .n { position: absolute; left: 1.25rem; top: 1.35rem; width: 2.1rem; height: 2.1rem; border-radius: 50%; background: var(--pulse); color: #0B1A12; display: flex; align-items: center; justify-content: center; font: 700 .8rem var(--mono); }
+.steps-dark h3 { color: #fff; margin: 0 0 .25rem; }
+.steps-dark p { color: #B9B9B0; }
+@media (min-width: 48rem) {
+  .steps.steps-dark { padding: 0; }
+  .steps-dark li { padding: 1.9rem 1.75rem 1.9rem 1.75rem; }
+  .steps-dark li + li { border-top: 0; border-left: 1px solid rgba(255,255,255,.1); }
+  .steps-dark .n { position: static; margin-bottom: .75rem; }
+}
+.promise li.key em { display: block; font-style: normal; font-weight: 400; color: #B9B9B0; font-size: .92rem; margin-top: .15rem; }
+.rl-hltv, .yt { }
+.yt { display: inline-block; font: 600 .78rem var(--mono); color: var(--pulse-ink); text-decoration: none; border: 1px solid rgba(31,175,111,.55); border-radius: 999px; padding: .1rem .6rem; margin-left: .35rem; white-space: nowrap; }
+.yt:hover { background: var(--pulse); color: #0B1A12; }
+
+/* tighter rhythm on phones */
+@media (max-width: 47.99rem) {
+  .sec { padding: 2.9rem 0; }
+  #postup.sec { padding-top: 1.75rem; }
+  .sec-head { margin-bottom: 1.6rem; }
+  .care.bonus { margin-top: 1.75rem; }
+  .promise { margin-top: 1.1rem; }
+}
+
 /* levitation */
 @media (prefers-reduced-motion: no-preference) {
   @keyframes float {
@@ -595,7 +650,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
       <h2 id="s-title" data-en="Two ways. You choose.">Dva spôsoby. Vyberieš si.</h2>
     </div>
     <div class="svc stg rv">
-      <article class="card rv">
+      <article class="card card-a rv">
         <p class="label" data-en="No time">Nemáš čas</p>
         <h3 data-en="I build it for you">Spravím to za teba</h3>
         <p data-en="Tell me what slows you down. I build a tool that does it for you, hand it over and show you how to use it.">Povieš mi, čo ťa brzdí. Postavím nástroj, ktorý to robí za teba, odovzdám ti ho a ukážem, ako ho používať.</p>
@@ -606,10 +661,10 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
         </ul>
         <div class="card-foot">
           <p class="price-big">500–1000 € <small data-en="one-off, by complexity">jednorazovo, podľa zložitosti</small></p>
-          <a class="btn btn-dark wa" href="#kontakt" data-en="I want this">Chcem toto</a>
+          <a class="btn btn-green wa" href="#kontakt" data-en="I want this">Chcem toto</a>
         </div>
       </article>
-      <article class="card rv">
+      <article class="card card-b rv">
         <p class="label" data-en="Want to learn">Chceš to vedieť</p>
         <h3 data-en="I teach you">Naučím ťa to</h3>
         <p data-en="We sit down together and set AI up for your actual work. No theory, straight on your own stuff.">Sadneme si spolu a nastavíme AI na tvoju konkrétnu robotu. Žiadna teória, rovno na tvojich veciach.</p>
@@ -621,7 +676,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
         <p class="example"><span class="label" data-en="For example">Napríklad</span><span data-en="Build your own app with AI, put it on GitHub and online, and secure it so bots can’t get in.">Postavíš si s AI vlastnú appku, dáš ju na GitHub a na web a zabezpečíš ju, aby sa do nej nedostali boti.</span></p>
         <div class="card-foot">
           <p class="price-big">150 € <small data-en="per 3-hour session">za session (3 hodiny)</small></p>
-          <a class="btn btn-dark wa" href="#kontakt" data-en="I want this">Chcem toto</a>
+          <a class="btn btn-indigo wa" href="#kontakt" data-en="I want this">Chcem toto</a>
         </div>
       </article>
     </div>
@@ -648,7 +703,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
       <p class="label" data-en="03 · How it goes">03 · Ako to ide</p>
       <h2 id="st-title" data-en="Three steps. No surprises.">Tri kroky. Žiadne prekvapenia.</h2>
     </div>
-    <ol class="steps rv stg">
+    <ol class="steps steps-dark rv stg">
       <li><span class="n">01</span><h3 data-en="You message me">Napíšeš mi</h3><p data-en="A few sentences on WhatsApp about what holds you up.">Pár viet na WhatsApp o tom, čo ťa zdržuje.</p></li>
       <li><span class="n">02</span><h3 data-en="I suggest a fix">Navrhnem riešenie</h3><p data-en="You know the price and date upfront. Then I build it.">Cenu a termín vieš vopred. Potom to spravím.</p></li>
       <li><span class="n">03</span><h3 data-en="You use it">Ty to používaš</h3><p data-en="I hand it over and explain it in plain words. Then upkeep, if you want it.">Odovzdám a vysvetlím bez odborných slov. Potom údržba, ak chceš.</p></li>
@@ -656,7 +711,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
     <ul class="promise rv stg">
       <li data-en="The tool is yours, with a guide">Nástroj je tvoj, aj s návodom</li>
       <li data-en="Plain Slovak or English, no jargon">Po slovensky alebo anglicky, bez odborných slov</li>
-      <li class="key" data-en="If I can’t do it, I’ll say so straight">Ak niečo neviem, poviem ti to na rovinu</li>
+      <li class="key"><span data-en="If I can’t do it, I’ll say so straight.">Ak niečo neviem, poviem ti to na rovinu.</span> <em data-en="But we’ll probably sort it anyway ;)">Ale aj tak to asi vyriešime ;)</em></li>
     </ul>
   </div>
 </section>
@@ -673,7 +728,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
     <div class="skl rv" id="skl">
       <article class="sk open">
         <h3><button class="sk-head" type="button" id="skh1" aria-controls="skp1" aria-expanded="true"><span class="sk-n">01</span><span class="sk-t"><b data-en="Live graphics (CG)">Live grafika (CG)</b><i data-en="Scores, names and tables that pop up on screen during a live broadcast.">Výsledky, mená a tabuľky, ktoré naskakujú na obrazovku počas prenosu.</i></span><span class="sk-y">2020–2023</span><span class="sk-chev" aria-hidden="true"></span></button></h3>
-        <div class="sk-panel" id="skp1" role="region" aria-labelledby="skh1"><div class="sk-in"><div class="sk-body"><ul class="sk-proj"><li><span class="pn">ESL IEM Cologne</span><span class="pr" data-en="CG operator, B stream">CG operátor, B stream</span><span class="py">2022</span></li><li><span class="pn">Drone Champions League</span><span class="pr" data-en="CG and data operator">CG a dátový operátor</span><span class="py">2022</span></li><li><span class="pn">Champion of Champions Tour</span><span class="pr" data-en="CG operator">CG operátor</span><span class="py">2023</span></li><li><span class="pn">WPT Prime Liechtenstein</span><span class="pr" data-en="CG design, CG and data operator">CG dizajn, CG a dátový operátor</span><span class="py">2023</span></li><li><span class="pn">Pokrové turnaje</span><span class="pr" data-en="CG at EPT events">na EPT aj CG</span><span class="py"></span></li><li><span class="pn">Republeague</span><span class="pr" data-en="CG design and operator, three seasons">CG dizajn a operátor, tri sezóny</span><span class="py">2020–2023</span></li></ul><p class="sk-tools"><span class="label" data-en="Tools">Nástroje</span><span class="chip">vMix</span><span class="chip">OBS Studio</span><span class="chip">CharacterWorks</span><span class="chip">NewBlue</span><span class="chip">GT Title Designer</span></p><div class="sk-media"><figure class="m wide"><img src="img/dcl-control.webp" width="1100" height="825" loading="lazy" alt="Režijná miestnosť s obrazovkami počas prenosu" data-en-alt="Broadcast control room with screens during a live show"><figcaption data-en="Drone Champions League control room">Réžia Drone Champions League</figcaption></figure><figure class="m wide"><img src="img/republeague.webp" width="1100" height="729" loading="lazy" alt="Robert v žltej mikine pred nápisom Republeague" data-en-alt="Robert in a yellow hoodie in front of the Republeague sign"><figcaption data-en="Republeague">Republeague</figcaption></figure>
+        <div class="sk-panel" id="skp1" role="region" aria-labelledby="skh1"><div class="sk-in"><div class="sk-body"><ul class="sk-proj"><li><span class="pn">ESL IEM Cologne</span><span class="pr"><span data-en="CG operator, B stream">CG operátor, B stream</span> <a class="yt" href="https://youtu.be/IbuMVijdr7E" target="_blank" rel="noopener" data-en="▶ Watch the CG on YouTube">▶ Pozri CG na YouTube</a></span><span class="py">2022</span></li><li><span class="pn">Drone Champions League</span><span class="pr" data-en="CG and data operator">CG a dátový operátor</span><span class="py">2022</span></li><li><span class="pn">Champion of Champions Tour</span><span class="pr" data-en="CG operator">CG operátor</span><span class="py">2023</span></li><li><span class="pn">WPT Prime Liechtenstein</span><span class="pr" data-en="CG design, CG and data operator">CG dizajn, CG a dátový operátor</span><span class="py">2023</span></li><li><span class="pn">Pokrové turnaje</span><span class="pr" data-en="CG at EPT events">na EPT aj CG</span><span class="py"></span></li><li><span class="pn">Republeague</span><span class="pr" data-en="CG design and operator, three seasons">CG dizajn a operátor, tri sezóny</span><span class="py">2020–2023</span></li></ul><p class="sk-tools"><span class="label" data-en="Tools">Nástroje</span><span class="chip">vMix</span><span class="chip">OBS Studio</span><span class="chip">CharacterWorks</span><span class="chip">NewBlue</span><span class="chip">GT Title Designer</span></p><div class="sk-media"><figure class="m wide"><img src="img/dcl-control.webp" width="1100" height="825" loading="lazy" alt="Režijná miestnosť s obrazovkami počas prenosu" data-en-alt="Broadcast control room with screens during a live show"><figcaption data-en="Drone Champions League control room">Réžia Drone Champions League</figcaption></figure><figure class="m wide"><img src="img/republeague.webp" width="1100" height="729" loading="lazy" alt="Robert v žltej mikine pred nápisom Republeague" data-en-alt="Robert in a yellow hoodie in front of the Republeague sign"><figcaption data-en="Republeague">Republeague</figcaption></figure>
 <figure class="m "><video muted loop playsinline preload="none" poster="img/csgo-cards-poster.webp" aria-label="Album so zberateľskými CS:GO kartičkami" data-en-aria="An album of collectible CS:GO cards"><source src="vid/csgo-cards.mp4" type="video/mp4"></video><figcaption data-en="At home I collect CS:GO cards, just as a hobby">Doma zbieram CS:GO kartičky, len tak z hobby</figcaption></figure></div></div></div></div>
       </article>
       <article class="sk">
@@ -858,6 +913,15 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
     return "https://wa.me/" + WA + "?text=" + encodeURIComponent(WA_TEXT[lang] + (extra || ""));
   }
 
+  var probIO = null;
+  function watchProbs() {
+    if (!("IntersectionObserver" in window)) return;
+    if (probIO) probIO.disconnect();
+    probIO = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { e.target.classList.toggle("focus", e.isIntersecting); });
+    }, { rootMargin: "-46% 0px -46% 0px", threshold: 0 });
+    probsEl.querySelectorAll(".prob").forEach(function (b) { probIO.observe(b); });
+  }
   function renderProblems() {
     probsEl.innerHTML = "";
     PROBLEMS.forEach(function (p, i) {
@@ -874,6 +938,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
       });
       li.appendChild(b); probsEl.appendChild(li);
     });
+    watchProbs();
   }
 
   var pickerEl = document.querySelector(".picker");

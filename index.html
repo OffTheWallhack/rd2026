@@ -18,7 +18,7 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='30' fill='%231FAF6F'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg: #F5F5F2;
@@ -505,10 +505,39 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
 .rl-hltv { display: inline-block; font: 600 .85rem var(--mono); border: 1px solid var(--ink); border-radius: 999px; padding: .4rem .9rem; text-decoration: none; transition: background .2s, color .2s; }
 .rl-hltv:hover { background: var(--ink); color: #fff; }
 
+/* problem buttons: each one in its own style */
+.prob { position: relative; overflow: hidden; }
+.prob .t { flex: 1; }
+.prob[aria-pressed="true"] { color: var(--ink); border-color: var(--pulse); box-shadow: 0 0 0 3px rgba(31,175,111,.28); }
+.prob[aria-pressed="true"]:not([class*="k-"]) { background: #fff; }
+.k-hand[aria-pressed="true"] { background: #fffdf3 repeating-linear-gradient(180deg, transparent 0 27px, rgba(70,110,200,.16) 27px 28px); }
+.k-sheet[aria-pressed="true"], .k-chat[aria-pressed="true"], .k-word[aria-pressed="true"] { background-color: #fff; }
+.k-hand .t { font-family: "Caveat", "Bradley Hand", cursive; font-size: 1.65rem; line-height: 1; font-weight: 700; color: #1d2a6b; }
+.k-hand { background: #fffdf3 repeating-linear-gradient(180deg, transparent 0 27px, rgba(70,110,200,.16) 27px 28px); }
+.k-sheet { padding-top: 1.55rem; font-family: var(--mono); font-size: .95rem; background-color: #fff;
+  background-image: linear-gradient(#1F7A45, #1F7A45), linear-gradient(90deg, rgba(0,0,0,.08) 1px, transparent 1px), linear-gradient(rgba(0,0,0,.08) 1px, transparent 1px);
+  background-size: 100% 6px, 64px 100%, 100% 26px; background-repeat: no-repeat, repeat, repeat; background-position: 0 0, 46px 0, 0 6px; }
+.k-sheet .cell { flex: none; font: 600 .7rem var(--mono); color: #1F7A45; border: 2px solid #1F7A45; padding: .1rem .3rem; background: #fff; }
+.k-sheet .t { background: #fff; padding: .05rem .25rem; }
+.k-subs { background: #0d0d0d linear-gradient(180deg, #2a2f33 0%, #0d0d0d 100%); border-color: #0d0d0d; justify-content: center; text-align: center; }
+.k-subs .t { font-family: "Helvetica Neue", Arial, sans-serif; font-weight: 700; color: #fff; text-shadow: 0 0 2px #000, 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 2px 6px rgba(0,0,0,.6); letter-spacing: .01em; }
+.k-subs .t::before { content: "— "; color: #ffe46b; } 
+.k-subs[aria-pressed="true"] { background: #0d0d0d linear-gradient(180deg, #2a2f33 0%, #0d0d0d 100%); color: #fff; }
+.k-chat { background: #fff; }
+.k-chat .av { flex: none; width: 1.9rem; height: 1.9rem; border-radius: 50%; background: radial-gradient(circle at 50% 38%, #fff 0 22%, transparent 23%), linear-gradient(135deg, #0A84FF, #7B5CFF); }
+.k-chat .t { flex: 0 1 auto; margin-right: auto; background: #0A84FF; color: #fff; border-radius: 18px 18px 18px 4px; padding: .5rem .85rem; font-family: -apple-system, "SF Pro Text", system-ui, sans-serif; font-weight: 500; }
+.k-word { background: #fff; box-shadow: inset 0 3px 0 #2B579A; }
+.k-word .t { font-family: "Times New Roman", Times, serif; font-size: 1.15rem; font-weight: 400; flex: 0 1 auto; }
+.k-word { gap: 0; }
+.k-word .arr { margin-left: 1rem; }
+.k-word .caret { display: inline-block; width: 1.5px; height: 1.2em; background: #111; margin: 0 auto 0 2px; animation: caret 1s steps(1) infinite; }
+@keyframes caret { 50% { opacity: 0; } }
+
 /* problems: scroll cue */
 .prob .arr { display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; border-radius: 50%; background: rgba(31,175,111,.14); color: var(--pulse-ink); opacity: 1; flex: none; font-size: 1rem; }
 .prob[aria-pressed="true"] .arr { background: var(--pulse); color: #0B1A12; }
-.prob.focus:not([aria-pressed="true"]) { background: #EAF7EF; border-color: var(--pulse); }
+.prob.focus:not([aria-pressed="true"]) { border-color: var(--pulse); }
+.prob.focus:not([aria-pressed="true"]):not([class*="k-"]) { background: #EAF7EF; }
 .prob.focus:not([aria-pressed="true"]) .arr { background: var(--pulse); color: #0B1A12; }
 @media (prefers-reduced-motion: no-preference) {
   .prob.focus:not([aria-pressed="true"]) { animation: tapPulse 1.8s ease-in-out infinite; }
@@ -559,6 +588,45 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
   .care.bonus { margin-top: 1.75rem; }
   .promise { margin-top: 1.1rem; }
 }
+
+/* three steps: light flow with a line that fills as you scroll */
+.steps.flow { --p: 0; background: none; border: 0; border-radius: 0; overflow: visible; display: grid; gap: 1rem; position: relative; padding-left: 3.1rem; }
+.steps.flow::before, .steps.flow::after { content: ""; position: absolute; left: 1.05rem; top: 1.4rem; bottom: 1.4rem; width: 3px; border-radius: 3px; background: var(--line); }
+.steps.flow::after { background: var(--pulse); transform-origin: top; transform: scaleY(var(--p)); }
+.flow li { position: relative; background: linear-gradient(135deg, #fff 0%, #F1FAF4 100%); border: 1px solid var(--line); border-radius: 12px; padding: 1.25rem 1.25rem 1.3rem; box-shadow: 0 10px 30px rgba(0,0,0,.04); transition: opacity .6s ease, transform .7s cubic-bezier(.2,.8,.2,1), border-color .4s, box-shadow .4s; }
+.flow .n { position: absolute; left: -3.1rem; top: .95rem; width: 2.15rem; height: 2.15rem; border-radius: 50%; background: var(--bg); border: 2px solid var(--line); display: flex; align-items: center; justify-content: center; font: 700 .78rem var(--mono); color: var(--muted); transition: background .4s, border-color .4s, color .4s, transform .4s; z-index: 1; }
+.flow li.lit { border-color: rgba(31,175,111,.55); box-shadow: 0 14px 34px rgba(31,175,111,.12); }
+.flow li.lit .n { background: var(--pulse); border-color: var(--pulse); color: #0B1A12; transform: scale(1.08); }
+.flow h3 { margin: 0 0 .3rem; }
+.flow p { margin: 0; color: var(--muted); }
+@media (prefers-reduced-motion: no-preference) { html.js .flow li:not(.lit) { opacity: .35; transform: translateX(10px); } }
+@media (min-width: 48rem) {
+  .steps.flow { grid-template-columns: repeat(3, 1fr); padding-left: 0; padding-top: 3.2rem; gap: 1.25rem; }
+  .steps.flow::before, .steps.flow::after { left: 1.05rem; right: 1.05rem; top: 1.05rem; bottom: auto; width: auto; height: 3px; }
+  .steps.flow::after { transform-origin: left; transform: scaleX(var(--p)); }
+  .flow .n { left: 0; top: -3.2rem; }
+  @media (prefers-reduced-motion: no-preference) { html.js .flow li:not(.lit) { transform: translateY(12px); } }
+}
+
+/* the joke appears a moment later */
+.promise li.key em { transition: opacity .7s ease, transform .7s ease, max-height .7s ease; }
+@media (prefers-reduced-motion: no-preference) { html.js .promise li.key em:not(.show) { opacity: 0; transform: translateY(6px); max-height: 0; margin-top: 0; overflow: hidden; } }
+.promise li.key em.show { max-height: 3em; }
+
+/* skills on phones: cleaner header */
+@media (max-width: 40rem) {
+  .sk-head { grid-template-columns: 1fr 2.2rem; padding: 1.05rem .2rem 1.05rem .9rem; gap: .2rem .75rem; }
+  .sk-n { grid-column: 1; padding-top: 0; font-size: .72rem; }
+  .sk-t { grid-column: 1; }
+  .sk-chev { grid-column: 2; grid-row: 1 / span 2; width: 2.2rem; height: 2.2rem; border-radius: 50%; border: 1px solid var(--line); }
+  .sk-chev::before, .sk-chev::after { left: .6rem; right: .6rem; }
+  .sk.open .sk-chev { background: var(--pulse); border-color: var(--pulse); }
+  .sk-t b { font-size: 1.35rem; }
+  .sk-t i { font-size: .92rem; }
+  .sk-body { padding: .25rem .2rem 1.75rem .9rem; }
+  .sk-proj li { padding: .6rem 0; }
+}
+.sk.instant .sk-panel, .sk.instant .sk-body { transition: none !important; }
 
 /* levitation */
 @media (prefers-reduced-motion: no-preference) {
@@ -703,7 +771,7 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
       <p class="label" data-en="03 · How it goes">03 · Ako to ide</p>
       <h2 id="st-title" data-en="Three steps. No surprises.">Tri kroky. Žiadne prekvapenia.</h2>
     </div>
-    <ol class="steps steps-dark rv stg">
+    <ol class="steps flow rv">
       <li><span class="n">01</span><h3 data-en="You message me">Napíšeš mi</h3><p data-en="A few sentences on WhatsApp about what holds you up.">Pár viet na WhatsApp o tom, čo ťa zdržuje.</p></li>
       <li><span class="n">02</span><h3 data-en="I suggest a fix">Navrhnem riešenie</h3><p data-en="You know the price and date upfront. Then I build it.">Cenu a termín vieš vopred. Potom to spravím.</p></li>
       <li><span class="n">03</span><h3 data-en="You use it">Ty to používaš</h3><p data-en="I hand it over and explain it in plain words. Then upkeep, if you want it.">Odovzdám a vysvetlím bez odborných slov. Potom údržba, ak chceš.</p></li>
@@ -865,23 +933,23 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
   var TITLE = { sk: "Robert Ďurica – pomôžem ti s AI", en: "Robert Ďurica – I’ll help you with AI" };
 
   var PROBLEMS = [
-    { sk: "Ručne skladám rozpis smien", en: "I build shift schedules by hand",
+    { kind: "hand", sk: "Ručne skladám rozpis smien", en: "I build shift schedules by hand",
       a: { sk: "Postavím ti plánovač, ktorý rozpis poskladá sám.", en: "I’ll build a planner that makes the schedule for you." },
       d: { sk: "Z dostupnosti ľudí vyskladá týždeň a férovo rozdelí hodiny.", en: "It builds the week from people’s availability and splits hours fairly." },
       svc: { sk: "Spravím to za teba", en: "I build it for you" }, price: { sk: "500–1000 € + 30 €/mes.", en: "€500–1000 + €30/mo" } },
-    { sk: "Všetko mám v Exceli a správach", en: "Everything lives in spreadsheets and chats",
+    { kind: "sheet", sk: "Všetko mám v Exceli a správach", en: "Everything lives in spreadsheets and chats",
       a: { sk: "Spravím ti jednoduchú appku pre tím.", en: "I’ll make you a simple app for your team." },
       d: { sk: "Termíny, úlohy a náklady na jednom mieste, na mobile aj v počítači. Žiadne hľadanie v správach.", en: "Dates, tasks and costs in one place, on phone and laptop. No digging through chats." },
       svc: { sk: "Spravím to za teba", en: "I build it for you" }, price: { sk: "500–1000 € podľa zložitosti + 30 €/mes., ak treba", en: "€500–1000 by complexity + €30/mo if needed" } },
-    { sk: "Mám hodiny videí bez titulkov", en: "I have hours of video without subtitles",
+    { kind: "subs", sk: "Mám hodiny videí bez titulkov", en: "I have hours of video without subtitles",
       a: { sk: "Nastavím ti prepis videí do textu a titulkov.", en: "I’ll set up video-to-text and subtitles for you." },
       d: { sk: "Ukážem ti presne, ktorú AI použiť a ako na to. Potom to zvládneš sám.", en: "I’ll show you exactly which AI to use and how. Then you can do it yourself." },
       svc: { sk: "Naučím ťa to", en: "I teach you" }, price: { sk: "150 € · session (3 hodiny)", en: "€150 · 3-hour session" } },
-    { sk: "Nestíham odpovedať na dopyty", en: "I can’t keep up with enquiries",
+    { kind: "chat", sk: "Potrebujem chatbota", en: "I need a chatbot",
       a: { sk: "Spravím ti chatbota, ktorý odpovedá za teba.", en: "I’ll build you a chatbot that replies for you." },
       d: { sk: "Odpovedá podľa tvojich pravidiel a cien, aj keď spíš. Ty len kontroluješ.", en: "It replies following your rules and prices, even while you sleep. You just keep an eye on it." },
       svc: { sk: "Spravím to za teba", en: "I build it for you" }, price: { sk: "700 € + 30 €/mes.", en: "€700 + €30/mo" } },
-    { sk: "Neviem, kde s AI začať", en: "I don’t know where to start with AI",
+    { kind: "word", sk: "Neviem, kde s AI začať", en: "I don’t know where to start with AI",
       a: { sk: "Ukážem ti, čo všetko je dnes možné.", en: "I’ll show you what’s possible today." },
       d: { sk: "Za 3 hodiny prejdeme to, čo sám používam: ako si s AI postavíš vlastnú appku, ako ju uložíš na GitHub a dáš na web, a ako ju zabezpečíš, aby sa ti do nej nedostali boti. Odídeš s vecami, ktoré už bežia.", en: "In 3 hours we go through what I use myself: how to build your own app with AI, put it on GitHub and online, and secure it so bots can’t get in. You leave with things that already run." },
       svc: { sk: "Naučím ťa to", en: "I teach you" }, price: { sk: "150 € · session", en: "€150 · session" } },
@@ -927,11 +995,15 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
     PROBLEMS.forEach(function (p, i) {
       var li = document.createElement("li");
       var b = document.createElement("button");
-      b.type = "button"; b.className = "prob";
+      b.type = "button"; b.className = "prob" + (p.kind ? " k-" + p.kind : "");
       b.setAttribute("aria-pressed", i === current ? "true" : "false");
       b.setAttribute("aria-controls", "answer");
-      b.innerHTML = "<span></span><span class='arr' aria-hidden='true'>→</span>";
-      b.firstChild.textContent = p[lang];
+      var pre = "", post = "";
+      if (p.kind === "sheet") pre = "<span class='cell' aria-hidden='true'>A1</span>";
+      if (p.kind === "chat") pre = "<span class='av' aria-hidden='true'></span>";
+      if (p.kind === "word") post = "<i class='caret' aria-hidden='true'></i>";
+      b.innerHTML = pre + "<span class='t'></span>" + post + "<span class='arr' aria-hidden='true'>→</span>";
+      b.querySelector(".t").textContent = p[lang];
       b.addEventListener("click", function () {
         current = i; renderProblems(); renderAnswer(true);
         probsEl.querySelectorAll('.prob')[i].focus();
@@ -1222,6 +1294,32 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
     requestAnimationFrame(mq);
   }
 
+  // steps: fill the line and light each step as you scroll
+  var flow = document.querySelector(".steps.flow");
+  var flowLis = flow ? [].slice.call(flow.querySelectorAll("li")) : [];
+  function flowTick() {
+    if (!flow) return;
+    var vh = window.innerHeight, r = flow.getBoundingClientRect();
+    var wide = window.innerWidth >= 768;
+    var p = Math.max(0, Math.min(1, (vh * .72 - r.top) / (wide ? vh * .35 : r.height)));
+    flow.style.setProperty("--p", still ? 1 : p.toFixed(3));
+    flowLis.forEach(function (li, i) {
+      var on = still || (wide ? p >= i / 2.2 : li.getBoundingClientRect().top < vh * .72);
+      li.classList.toggle("lit", on);
+    });
+  }
+  window.addEventListener("scroll", function () { requestAnimationFrame(flowTick); }, { passive: true });
+  window.addEventListener("resize", flowTick); flowTick();
+
+  // "but we'll probably sort it anyway" shows up a moment later
+  var joke = document.querySelector(".promise li.key em");
+  if (joke) {
+    if (still || !("IntersectionObserver" in window)) joke.classList.add("show");
+    else new IntersectionObserver(function (es, o) {
+      if (es[0].isIntersecting) { setTimeout(function () { joke.classList.add("show"); }, 1400); o.disconnect(); }
+    }, { threshold: 1 }).observe(joke.parentNode);
+  }
+
   // skills accordion (header stays put when panels open/close)
   var skl = document.getElementById("skl");
   if (skl) {
@@ -1234,16 +1332,16 @@ summary { cursor: pointer; font-weight: 500; color: #fff; min-height: 44px; disp
     items.forEach(function (it, i) { setOpen(it, i === 0); });
     items.forEach(function (it) {
       it.querySelector(".sk-head").addEventListener("click", function () {
-        var head = it.querySelector(".sk-head"), before = head.getBoundingClientRect().top;
+        var head = it.querySelector(".sk-head");
         var willOpen = !it.classList.contains("open");
-        items.forEach(function (o) { if (o !== it) setOpen(o, false); });
+        // close the others instantly so nothing above moves while this one opens
+        items.forEach(function (o) {
+          if (o !== it && o.classList.contains("open")) { o.classList.add("instant"); setOpen(o, false); void o.offsetHeight; o.classList.remove("instant"); }
+        });
+        // bring the tapped header just under the top bar, without smooth scrolling
+        var top = head.getBoundingClientRect().top;
+        if (willOpen && (top < 64 || top > window.innerHeight * .55)) { var de = document.documentElement, sb = de.style.scrollBehavior; de.style.scrollBehavior = "auto"; window.scrollTo(0, window.scrollY + top - 72); de.style.scrollBehavior = sb; }
         setOpen(it, willOpen);
-        var t0 = performance.now();
-        (function keep() {
-          var d = head.getBoundingClientRect().top - before;
-          if (Math.abs(d) > 1) window.scrollBy(0, d);
-          if (performance.now() - t0 < 650) requestAnimationFrame(keep);
-        })();
       });
     });
   }

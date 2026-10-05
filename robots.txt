@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://offthewallhack.github.io/rd2026/sitemap.xml

@@ -4,8 +4,9 @@
 <meta charset="utf-8">
 <script>document.documentElement.classList.add("js")</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Robert Ďurica – kto som</title>
-<meta name="description" content="Živé CV Roberta Ďuricu: eventy, live grafika, DJ sety, dizajn a appky s AI. Celý príbeh od roku 2011 aj s fotkami a videami.">
+<title>Robert Ďurica – kto som | eventy, live grafika, DJ a AI</title>
+<meta name="description" content="Živé CV Roberta Ďuricu z Bratislavy: Red Bull event car driver, CG operátor (ESL IEM Cologne, Drone Champions League, REPUBLEAGUE), dizajn od 2011, DJ a appky s AI. Príbeh s fotkami a CV na stiahnutie.">
+<link rel="canonical" href="https://offthewallhack.github.io/rd2026/kto-som/">
 <meta property="og:title" content="Robert Ďurica – kto som">
 <meta property="og:description" content="Živé CV: eventy, live grafika, DJ sety, dizajn a appky s AI. Celý príbeh aj s fotkami.">
 <meta property="og:image" content="https://offthewallhack.github.io/rd2026/img/og-kto-som.jpg">
@@ -13,6 +14,10 @@
 <meta property="og:image:height" content="630">
 <meta property="og:url" content="https://offthewallhack.github.io/rd2026/kto-som/">
 <meta property="og:type" content="profile">
+<meta property="og:locale" content="sk_SK">
+<meta name="author" content="Robert Ďurica">
+<meta name="goatcounter" content="">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "ProfilePage", "url": "https://offthewallhack.github.io/rd2026/kto-som/", "name": "Robert Ďurica – kto som", "dateModified": "2026-10-05", "mainEntity": {"@type": "Person", "@id": "https://offthewallhack.github.io/rd2026/#robert", "name": "Robert Ďurica", "alternateName": "Robo", "url": "https://offthewallhack.github.io/rd2026/kto-som/", "image": "https://offthewallhack.github.io/rd2026/img/hero-cut.webp", "email": "mailto:rdurica1995@gmail.com", "birthDate": "1995", "address": {"@type": "PostalAddress", "addressLocality": "Bratislava", "addressCountry": "SK"}, "jobTitle": "AI konzultant, event producent a CG operátor", "knowsLanguage": ["sk", "en"], "knowsAbout": ["umelá inteligencia", "automatizácia", "AI nástroje", "chatboty", "event produkcia", "live grafika (CG)", "vMix", "OBS Studio", "grafický dizajn", "branding", "DJing"], "alumniOf": {"@type": "CollegeOrUniversity", "name": "Paneurópska vysoká škola"}, "sameAs": ["https://www.linkedin.com/in/durica", "https://www.instagram.com/duriica", "https://github.com/OffTheWallhack", "https://soundcloud.com/duriica", "https://www.behance.net/durica"]}}</script>
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#111211">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='30' fill='%231FAF6F'/></svg>">
@@ -188,6 +193,14 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.4rem); line-height: 1.04;
 }
 .pols-label { margin: 1.25rem 0 .5rem; }
 
+/* "+N photos" opens the rest in the gallery */
+.pol.more-hidden { display: none; }
+.pol-more { align-self: stretch; width: 10.5rem; min-height: 10rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .2rem; border: 1.5px dashed #4A4B47; border-radius: 4px; background: transparent; color: var(--night-text); cursor: pointer; font: 700 1.6rem var(--f); transition: border-color .2s, color .2s; }
+.pol-more small { font: .78rem var(--mono); color: var(--night-muted); }
+.pol-more:hover { border-color: var(--pulse); color: var(--pulse); }
+@media (max-width: 47.99rem) { .pol-more { width: auto; } }
+.cv-facts { margin-top: 1.5rem; }
+
 /* season cards */
 .seasons { display: grid; gap: .75rem; margin: 0 0 1.25rem; }
 @media (min-width: 48rem) { .seasons { grid-template-columns: repeat(3, 1fr); } }
@@ -324,7 +337,6 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.4rem); line-height: 1.04;
         <li><span data-en="<b>GOSko</b>: I co-organise the Game of Skate series."><b>GOSko</b>: spoluorganizujem sériu Game of Skate.</span></li>
         <li><span data-en="<b>GOSko web</b>: building the website for GOSko."><b>GOSko web</b>: staviam web pre GOSko.</span></li>
         <li><span data-en="<b>Questwave</b>: looking for beta testers."><b>Questwave</b>: hľadám beta testerov.</span><a href="https://offthewallhack.github.io/questwave/" target="_blank" rel="noopener" data-en="Try it →">Vyskúšaj →</a></li>
-        <li><span data-en="<b>Students</b>: I’ve helped several of them find their way in today’s world of AI."><b>Študenti</b>: niekoľkým som pomohol nájsť sa v dnešnom svete AI.</span><a href="../" data-en="How I help →">Ako pomáham →</a></li>
         <li><span data-en="And <b>loads of other projects</b>, like a game version of this site.">A <b>plno ďalších projektov</b>, napríklad herná verzia tohto webu.</span><span class="tag">70 %</span></li>
       </ul>
       <span class="now-note" aria-hidden="true" data-en="this part changes the most">toto sa mení najčastejšie</span>
@@ -351,7 +363,6 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.4rem); line-height: 1.04;
       <li><a href="#ch-dnes"><span class="n">08</span><b data-en="LIVE and COMING SOON apps">LIVE a COMING SOON appky</b><span class="y" data-en="today">dnes</span><span class="go" data-en="→ today">→ dnes</span></a></li>
     </ul>
     <div class="meta-rows rv">
-      <p><span class="label" data-en="Languages">Jazyky</span><span class="chip" data-en="Slovak, native">slovenčina, rodná</span><span class="chip" data-en="English, B2">angličtina, B2</span><span class="chip" data-en="German, learning">nemčina, učím sa</span></p>
       <p><span class="label" data-en="Tools">Nástroje</span><span class="chip">vMix</span><span class="chip">OBS Studio</span><span class="chip">CharacterWorks</span><span class="chip">NewBlue</span><span class="chip">GT Title Designer</span><span class="chip">Premiere Pro</span><span class="chip">Photoshop</span><span class="chip">Illustrator</span><span class="chip">Claude Code</span><span class="chip">Lovable</span><span class="chip">Grok</span></p>
     </div>
   </div>
@@ -383,7 +394,6 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.4rem); line-height: 1.04;
         <div class="ch-y">2011</div>
         <div class="ch-b rv">
           <h3>142 design</h3>
-          <div class="sk-tags"><a href="#viem" data-en="05 Branding and design">05 Branding a dizajn</a></div>
           <p data-en="Design came first. I started 142 design and made logos, graphics and print. Today 142 design s.r.o. also invoices my AI services.">S dizajnom som začal ako prvým. Založil som 142 design a robil logá, grafiku a tlačoviny. Dnes cez 142 design s.r.o. fakturujem aj služby s AI.</p>
           <ul class="facts">
             <li><b data-en="Clients">Klienti</b><span class="when" data-en="since 2011">od 2011</span><span class="r">Hotel Bratislava, Holiday Inn Bratislava, Summit Motors, T.O.P. AUTO, Slovkarpatia, Winfinity, Sound Healing Slovakia</span><span class="lnk"><a class="yt" href="https://www.behance.net/durica" target="_blank" rel="noopener">Behance →</a></span></li>
@@ -397,7 +407,6 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.4rem); line-height: 1.04;
         <div class="ch-y">2019</div>
         <div class="ch-b rv">
           <h3 data-en="Cars and an Instagram">Autá a jeden Instagram</h3>
-          <div class="sk-tags"><a href="#viem" data-en="06 Marketing">06 Marketing</a></div>
           <p data-en="Online marketing for Mercedes-Benz, KIA, Fiat and Jeep at Motor-Car Group. On the side I started a fun CS:GO Instagram on my phone. It was called REPUBLEAGUE.">Online marketing pre Mercedes-Benz, KIA, Fiat a Jeep v Motor-Car Group. Popritom som si v mobile založil zábavný Instagram o CS:GO. Volal sa REPUBLEAGUE.</p>
           <ul class="facts">
             <li><b>Motor-Car Group / Mercedes-Benz</b><span class="when">2019–2020</span><span class="r" data-en="online marketing for Mercedes-Benz, KIA, Fiat and Jeep">online marketing pre Mercedes-Benz, KIA, Fiat a Jeep</span></li>
@@ -411,7 +420,6 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.4rem); line-height: 1.04;
         <div class="ch-y">2020<small>– 2023</small></div>
         <div class="ch-b rv">
           <h3>REPUBLEAGUE</h3>
-          <div class="sk-tags"><a href="#viem" data-en="01 Live graphics">01 Live grafika</a><a href="#viem" data-en="02 Data automation">02 Automatizácia dát</a><a href="#viem" data-en="05 Branding">05 Branding</a><a href="#viem" data-en="06 Marketing">06 Marketing</a></div>
           <p data-en="The Instagram grew into an esports brand and a tournament. I’m a co-founder: brand, marketing, online events, CG design and running the CG. The graphics ran off my own tournament system in a spreadsheet: the score changes at the venue and the screen updates by itself.">Z Instagramu vyrástla esports značka a turnaj. Som spoluzakladateľ: brand, marketing, online eventy, CG dizajn aj CG operátor. Grafiku poháňal môj turnajový systém v tabuľke: na turnaji sa zmení skóre a na obrazovke sa zmení samo.</p>
           <div class="seasons">
             <div class="season"><p class="label" data-en="Season 1">Sezóna 1</p><b>REPUBLEAGUE TIPOS</b><p data-en="April–June 2021 · $71,356 · winner SKADE">apríl–jún 2021 · 71 356 $ · víťaz SKADE</p><a class="yt" href="https://www.hltv.org/events/5822/republeague-tipos-season-1" target="_blank" rel="noopener">HLTV →</a></div>
@@ -429,7 +437,6 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.4rem); line-height: 1.04;
         <div class="ch-y">2022</div>
         <div class="ch-b rv">
           <h3 data-en="Big stages">Veľké pódiá</h3>
-          <div class="sk-tags"><a href="#viem" data-en="01 Live graphics">01 Live grafika</a><a href="#viem" data-en="02 Data automation">02 Automatizácia dát</a></div>
           <p data-en="My first big international broadcasts. Scores, names and tables popping up on screen, live.">Prvé veľké medzinárodné prenosy. Výsledky, mená a tabuľky, ktoré naskakujú na obrazovku naživo.</p>
           <ul class="facts">
             <li><b>ESL IEM Cologne</b><span class="when">2022</span><span class="r" data-en="CG operator, B stream">CG operátor, B stream</span><span class="lnk"><a class="yt" href="https://youtu.be/IbuMVijdr7E" target="_blank" rel="noopener" data-en="▶ Watch the CG on YouTube">▶ Pozri CG na YouTube</a></span></li>
@@ -443,7 +450,6 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.4rem); line-height: 1.04;
         <div class="ch-y">2023</div>
         <div class="ch-b rv">
           <h3 data-en="Camera and travel">Kamera a cesty</h3>
-          <div class="sk-tags"><a href="#viem" data-en="04 Video and camera">04 Video a kamera</a><a href="#viem" data-en="01 Live graphics">01 Live grafika</a></div>
           <p data-en="Behind the camera and the graphics, from Kaufland festivals to poker tables in Cyprus.">Za kamerou aj za grafikou, od Kaufland festivalov po pokrové stoly na Cypre.</p>
           <ul class="facts">
             <li><b>RECIN</b><span class="when">2023</span><span class="r" data-en="main camera at several Kaufland Children’s Festival events, ski races and smaller events, plus live graphics">hlavná kamera na viacerých podujatiach Kaufland Detský festival, lyžiarske preteky a menšie akcie, k tomu živá grafika</span></li>
@@ -458,7 +464,6 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.4rem); line-height: 1.04;
         <div class="ch-y">2024</div>
         <div class="ch-b rv">
           <h3 data-en="Red Bull and event cars">Red Bull a event autá</h3>
-          <div class="sk-tags"><a href="#viem" data-en="03 Event production">03 Event produkcia</a><a href="#viem" data-en="04 Video and camera">04 Video a kamera</a><a href="#viem" data-en="05 Branding">05 Branding</a></div>
           <p data-en="Since May 2024 I drive the Red Bull event car. I produce smaller events and help with production on the big ones. On the side, Futbalic: logo, marketing and match production.">Od mája 2024 jazdím s Red Bull event autom. Menšie eventy produkujem, na veľkých pomáham s produkciou. Popri tom Futbalic: logo, marketing a produkcia zápasov.</p>
           <ul class="facts">
             <li><b>Red Bull</b><span class="when" data-en="since 05/2024">od 05/2024</span><span class="r" data-en="event car driver, I produce smaller events and assist on big ones · Freak x Yzomandias: pop-up production with an event car">event car driver, produkcia menších eventov, produkčný asistent na veľkých · Freak x Yzomandias: produkcia pop-upu s event autom</span></li>
@@ -473,7 +478,6 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.4rem); line-height: 1.04;
         <div class="ch-y" data-en="Now">Dnes</div>
         <div class="ch-b rv">
           <h3 data-en="My own events and AI">Vlastné eventy a AI</h3>
-          <div class="sk-tags"><a href="#viem" data-en="03 Event production">03 Event produkcia</a><a href="#viem" data-en="06 Marketing">06 Marketing</a><a href="#viem">07 DJing</a><a href="#viem" data-en="08 Apps">08 Appky</a></div>
           <p data-en="I make my own things. GOSko, a Game of Skate series in Bratislava and Žilina that I co-organise and host. Drop Ups, my pop-up events on mobile stages, like KALAMITA, a winter rave under a bridge in Bratislava. And apps I build with AI.">Robím vlastné veci. GOSko, sériu Game of Skate v Bratislave a Žiline, ktorú spoluorganizujem a moderujem. Drop Ups, moje pop-up eventy na mobilných stageoch, napríklad KALAMITA, zimný rave pod mostom v Bratislave. A appky, ktoré staviam s AI.</p>
           <ul class="facts">
             <li><b>GOSko</b><span class="when">2026</span><span class="r" data-en="co-organiser and host of the Game of Skate series, own brand and partners">spoluorganizátor a moderátor série Game of Skate, vlastná značka a partneri</span></li>
@@ -494,7 +498,6 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.4rem); line-height: 1.04;
   </div>
 </section>
 
-<div class="band" aria-hidden="true"><div class="band-row" data-en="&lt;span&gt;FELI&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;SKATE&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;RAVE UNDER A BRIDGE&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;UFO&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;MANDALAS&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;DRUM &amp;amp; BASS&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;BRATISLAVA&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;FELI&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;SKATE&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;RAVE UNDER A BRIDGE&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;UFO&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;MANDALAS&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;DRUM &amp;amp; BASS&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;BRATISLAVA&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt;"><span>FELI</span><i>✦</i> <span>SKATE</span><i>✦</i> <span>RAVE POD MOSTOM</span><i>✦</i> <span>UFO</span><i>✦</i> <span>MANDALY</span><i>✦</i> <span>DRUM &amp; BASS</span><i>✦</i> <span>BRATISLAVA</span><i>✦</i> <span>FELI</span><i>✦</i> <span>SKATE</span><i>✦</i> <span>RAVE POD MOSTOM</span><i>✦</i> <span>UFO</span><i>✦</i> <span>MANDALY</span><i>✦</i> <span>DRUM &amp; BASS</span><i>✦</i> <span>BRATISLAVA</span><i>✦</i></div></div>
 
 <!-- OFF THE CLOCK -->
 <section class="k-sec" id="mimo" aria-labelledby="off-title">
@@ -521,33 +524,31 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.4rem); line-height: 1.04;
   </div>
 </section>
 
-<!-- OPEN TO WORK -->
-<section class="k-sec" id="praca" aria-labelledby="w-title">
+<!-- WORK WITH ME -->
+<section class="k-sec" id="spolupraca" aria-labelledby="w-title">
   <div class="wrap">
     <div class="work rv">
       <div>
-        <p class="label"><span class="dot" aria-hidden="true"></span><span data-en="Open to job offers">Otvorený aj pracovným ponukám</span></p>
-        <h2 id="w-title" data-en="Looking for someone in event production?">Hľadáš človeka do event produkcie?</h2>
-        <p data-en="Full-time is fine. Let’s talk.">Aj na plný úväzok. Pokecajme.</p>
+        <p class="label"><span class="dot" aria-hidden="true"></span><span data-en="Let’s work together">Spolupráca</span></p>
+        <h2 id="w-title" data-en="I’m looking for people, not a job.">Nehľadám prácu. Hľadám ľudí.</h2>
+        <p data-en="People and teams to make good things with, and to show what AI can do today. Events, small businesses, creatives, students. If you have an idea, write.">Ľudí a tímy, s ktorými budem robiť dobré veci a ukazovať im, čo dnes dokáže AI. Eventy, malé firmy, kreatívci, študenti. Ak máš nápad, napíš.</p>
         <div class="actions">
-          <a class="btn btn-green" href="../cv-robert-durica.pdf" download data-en="Download CV (PDF)">Stiahni CV (PDF)</a>
+          <a class="btn btn-green wa" href="#kontakt" data-wa-sk="spoluprácou" data-wa-en="working together" data-en="Message me">Napíš mi</a>
           <a class="btn" href="https://www.linkedin.com/in/durica" target="_blank" rel="noopener">LinkedIn →</a>
-          <a class="btn" href="mailto:rdurica1995@gmail.com" data-en="E-mail">E-mail</a>
         </div>
       </div>
       <div>
-        <p class="label" data-en="Full experience">Celá prax</p>
-        <ol class="tl">
-          <li><span class="y" data-en="2024 – now">2024 – dnes</span><span data-en="Red Bull, event car driver (Zubor, Sugga)">Red Bull, event car driver (Zubor, Sugga)</span></li>
-          <li><span class="y" data-en="now">dnes</span><span data-en="Own events: GOSko, KALAMITA, Drop Ups">Vlastné eventy: GOSko, KALAMITA, Drop Ups</span></li>
-          <li><span class="y">2024 – 25</span><span data-en="Futbalic: logo, marketing, match production">Futbalic: logo, marketing, produkcia zápasov</span></li>
-          <li><span class="y">2023</span><span data-en="RECIN, camera and live graphics; poker tournaments in Cyprus (EPT), WPT Prime, Champion of Champions Tour">RECIN, kamera a živá grafika; pokrové turnaje na Cypre (EPT), WPT Prime, Champion of Champions Tour</span></li>
-          <li><span class="y">2022</span><span data-en="ESL IEM Cologne, Drone Champions League, CG operator">ESL IEM Cologne, Drone Champions League, CG operátor</span></li>
-          <li><span class="y">2020 – 23</span><span data-en="REPUBLEAGUE, esports brand co-founder">REPUBLEAGUE, spoluzakladateľ esports značky</span></li>
-          <li><span class="y">2019 – 20</span><span data-en="Motor-Car Group, online marketing">Motor-Car Group, online marketing</span></li>
-          <li><span class="y" data-en="2011 – now">2011 – dnes</span><span data-en="142 design, graphics and print">142 design, grafika a tlačoviny</span></li>
-          <li><span class="y">2013 – 17</span><span data-en="Pan-European University, BA mass communication">Paneurópska VŠ, Bc. masmediálna komunikácia</span></li>
-        </ol>
+        <p class="label" data-en="CV to download">CV na stiahnutie</p>
+        <p data-en="Everything in one place: experience, projects, tools and photos. Updated October 2026.">Všetko na jednom mieste: prax, projekty, nástroje aj fotky. Aktualizované v októbri 2026.</p>
+        <div class="actions">
+          <a class="btn btn-green" href="../cv-robert-durica-sk.pdf" download>CV · SK (PDF)</a>
+          <a class="btn" href="../cv-robert-durica.pdf" download>CV · EN (PDF)</a>
+        </div>
+        <ul class="facts cv-facts">
+          <li><b data-en="Driving licence">Vodičák</b><span class="r" data-en="category B, happy to travel">skupina B, rád cestujem</span></li>
+          <li><b data-en="Languages">Jazyky</b><span class="r" data-en="Slovak (native), English (B2), German (learning)">slovenčina (rodná), angličtina (B2), nemčina (učím sa)</span></li>
+          <li><b data-en="Based in">Kde</b><span class="r">Bratislava</span></li>
+        </ul>
       </div>
     </div>
   </div>
@@ -559,7 +560,7 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.4rem); line-height: 1.04;
   <div class="wrap rv">
     <p class="status label"><span class="dot" aria-hidden="true"></span><span data-en="Available now">Som k dispozícii</span></p>
     <h2 id="c-title"><span data-en="Message me,">Napíš mi,</span><br><span class="soft" data-en="we’ll sort it all out.">všetko vyriešime.</span></h2>
-    <p class="lead" data-en="Work, events, DJ booking or AI. Write a few sentences and I’ll get back to you.">Práca, eventy, DJ booking alebo AI. Napíš pár viet a ozvem sa.</p>
+    <p class="lead" data-en="Working together, events, DJ booking or AI. Write a few sentences and I’ll get back to you.">Spolupráca, eventy, DJ booking alebo AI. Napíš pár viet a ozvem sa.</p>
     <div class="actions">
       <a class="btn btn-green wa" href="#kontakt">WhatsApp</a>
       <a class="btn" href="mailto:rdurica1995@gmail.com">rdurica1995@gmail.com</a>
@@ -580,7 +581,7 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.4rem); line-height: 1.04;
 <footer class="foot">
   <div class="wrap">
     <p data-en="Services invoiced by 142 design s.r.o.">Služby fakturuje 142 design s.r.o.</p>
-    <p>© 2026 Robert Ďurica</p>
+    <p><a href="../ochrana-udajov/" data-en="Privacy">Ochrana údajov</a> · © 2026 Robert Ďurica</p>
   </div>
 </footer>
 
@@ -592,6 +593,18 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.4rem); line-height: 1.04;
     torus: { x: .8, y: .5, size: .7, mx: .5, my: .82, msize: .95, alpha: .32, ring: true } });
   RD.field(document.querySelector(".field-end"), { ink: "rgba(237,237,232,", hot: "#1FAF6F", strength: .25,
     torus: { x: .8, y: .5, size: .85, mx: .5, my: .8, msize: .8, alpha: .3 } });
+
+  // show the first three photos of a strip, the rest sit behind "+N"
+  document.querySelectorAll(".pols").forEach(function (g) {
+    var figs = [].slice.call(g.querySelectorAll(".pol")); if (figs.length <= 4) return;
+    figs.slice(3).forEach(function (f) { f.classList.add("more-hidden"); });
+    var n = figs.length - 3, b = document.createElement("button");
+    b.type = "button"; b.className = "pol-more";
+    function txt() { b.innerHTML = "+" + n + "<small>" + (RD.lang === "en" ? (n === 1 ? "photo" : "photos") : (n < 5 ? "fotky" : "fotiek")) + "</small>"; b.setAttribute("aria-label", (RD.lang === "en" ? "Show " + n + " more photos" : "Ukázať ďalšie fotky: " + n)); }
+    RD.onLang(txt);
+    b.addEventListener("click", function () { figs[3].click(); });
+    g.appendChild(b);
+  });
 
   // stagger the photos as they come in
   document.querySelectorAll(".pols, .wall").forEach(function (g) { [].forEach.call(g.children, function (c, i) { c.style.setProperty("--i", i); }); });

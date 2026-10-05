@@ -72,7 +72,7 @@
     var lb = document.getElementById("lb"); if (!lb) return;
     var stage = lb.querySelector(".lb-stage"), cap = lb.querySelector(".lb-cap"), cnt = lb.querySelector(".lb-count");
     var group = [], idx = 0, lastFocus = null;
-    var SEL = ".rm .th, .sk-media .m, .rl-media .m, .off .m, .pol";
+    var SEL = ".rm .th, .sk-media .m, .rl-media .m, .off .m, .pol, .sheet-mini";
     function media(fig) { return fig.querySelector("img, video"); }
     function show(i) {
       idx = (i + group.length) % group.length;
@@ -229,6 +229,23 @@
       }).observe(cv);
     }
   };
+
+  // analytics: privacy-friendly GoatCounter, no cookies. Off until the site code is filled in
+  // <meta name="goatcounter" content="https://CODE.goatcounter.com/count"> on each page.
+  var gc = document.querySelector('meta[name="goatcounter"]'), gcUrl = gc && gc.content;
+  if (gcUrl) {
+    var sc = document.createElement("script"); sc.async = true; sc.src = "https://gc.zgo.at/count.js";
+    sc.setAttribute("data-goatcounter", gcUrl); document.head.appendChild(sc);
+    document.addEventListener("click", function (e) {
+      var a = e.target.closest && e.target.closest("a"); if (!a || !window.goatcounter || !window.goatcounter.count) return;
+      var h = a.getAttribute("href") || "", ev = null;
+      if (a.id === "callWa" || a.id === "callMail") ev = "call-request";
+      else if (/wa\.me/.test(a.href)) ev = "whatsapp";
+      else if (/^mailto:/.test(h)) ev = "email";
+      else if (/\.pdf$/.test(h)) ev = "cv-download";
+      if (ev) window.goatcounter.count({ path: ev, title: ev, event: true });
+    });
+  }
 
   // page transition: give the shared photo its name only on the element that's on screen
   RD.vtPick = function (els) {

@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="sk" data-title-en="404 – Robert Ďurica">
+<head>
+<meta charset="utf-8">
+<script>document.documentElement.classList.add("js")</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>404 – Robert Ďurica</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#111211">
+<meta name="goatcounter" content="">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='30' fill='%231FAF6F'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<!-- 404 can be served at any depth, so paths are absolute to the site root -->
+<link rel="stylesheet" href="/rd2026/assets/common.css">
+<style>
+body { background: #111211; color: #EDEDE8; }
+.label { color: #A3A39B; }
+.bar { background: color-mix(in srgb, #111211 86%, transparent); border-bottom-color: #2C2D2A; }
+.lang { border-color: #2C2D2A; color: #A3A39B; }
+.lang .on { color: #fff; }
+.bar .btn-dark { background: #fff; color: #111211; border-color: #fff; }
+.bar .btn-dark:hover { background: var(--pulse); border-color: var(--pulse); color: #0B1A12; }
+.btn { border-color: #EDEDE8; color: #EDEDE8; }
+.btn:hover { background: #EDEDE8; color: #111211; }
+.foot { border-top-color: #2C2D2A; color: #A3A39B; }
+
+.lost { padding-top: clamp(2rem, 6vw, 3.5rem); padding-bottom: clamp(3rem, 8vw, 5rem); }
+.lost h1 { font-size: clamp(2.4rem, 7vw, 4.4rem); line-height: .98; letter-spacing: -.04em; margin: .5rem 0 .8rem; color: #fff; }
+.lost h1 span + span { color: var(--pulse); }
+.lost .sub { color: #A3A39B; font-size: clamp(1.05rem, 2.4vw, 1.2rem); max-width: 34em; margin: 0 0 1.75rem; }
+.game { position: relative; border: 1px solid #2C2D2A; border-radius: 12px; background: #151614; overflow: hidden; touch-action: manipulation; cursor: pointer; user-select: none; -webkit-user-select: none; }
+.game canvas { display: block; width: 100%; height: clamp(15rem, 34vw, 19rem); }
+.game:focus-visible { outline: 3px solid var(--pulse); outline-offset: 3px; }
+.hud { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem 1rem; margin: .75rem 0 2rem; font: .8rem var(--mono); color: #A3A39B; }
+.hud b { color: var(--pulse); font-weight: 500; }
+</style>
+</head>
+<body>
+<a class="skip" href="#main" data-en="Skip to content">Preskočiť na obsah</a>
+<header class="bar">
+  <div class="wrap bar-in">
+    <a class="brand" href="/rd2026/"><span class="dot" aria-hidden="true"></span><span class="bn-l">Robert Ďurica</span></a>
+    <div class="bar-r">
+      <a class="nav-link" href="/rd2026/kto-som/" data-en="About me">Kto som</a>
+      <button class="lang" type="button" aria-label="Prepnúť jazyk / Switch language"><span data-l="sk">SK</span> / <span data-l="en">EN</span></button>
+      <a class="btn btn-dark btn-sm wa" href="#" data-en="Message me">Napíš mi</a>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="wrap lost">
+  <p class="label">404</p>
+  <h1><span data-en="This page went to a skate contest.">Táto stránka odišla na skate súťaž.</span> <span data-en="You can stay.">Ty môžeš ostať.</span></h1>
+  <p class="sub" data-en="The page you’re looking for doesn’t exist. While you’re here, jump a few cones. Space, arrow up or a tap.">Stránka, ktorú hľadáš, neexistuje. Kým si tu, preskoč pár kužeľov. Medzerník, šípka hore alebo ťuknutie.</p>
+
+  <div class="game" id="game" tabindex="0" role="application" aria-label="Mini hra: skater skáče cez kužele. Skáče sa medzerníkom, šípkou hore alebo ťuknutím." data-en-aria="Mini game: a skater jumping over cones. Jump with space, arrow up or a tap.">
+    <canvas id="cv"></canvas>
+  </div>
+  <div class="hud"><span><span data-en="Score">Skóre</span> <b id="sc">0</b></span><span><span data-en="Best">Najlepšie</span> <b id="hi">0</b></span></div>
+
+  <div class="actions">
+    <a class="btn btn-green" href="/rd2026/" data-en="Back to services">Späť na služby</a>
+    <a class="btn" href="/rd2026/kto-som/" data-en="Who I am">Kto som</a>
+    <a class="btn" href="/rd2026/#hovor" data-en="Free 15-min call">15 min hovor zadarmo</a>
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p data-en="Services invoiced by 142 design, s. r. o., Holíčska 3049/5, 851 05 Bratislava · Company ID 53389662">Služby fakturuje 142 design, s. r. o., Holíčska 3049/5, 851 05 Bratislava · IČO 53389662</p>
+    <p><a href="/rd2026/ochrana-udajov/" data-en="Privacy">Ochrana údajov</a> · © 2026 Robert Ďurica</p>
+  </div>
+</footer>
+
+<script src="/rd2026/assets/common.js"></script>
+<script>
+// ASCII skate runner: jump the cones and crates, speed grows with the score
+(function () {
+  var RD = window.RD, box = document.getElementById("game"), cv = document.getElementById("cv"), ctx = cv.getContext("2d");
+  var scEl = document.getElementById("sc"), hiEl = document.getElementById("hi");
+  var W, H, cw, ch, cols, rows, ground, dpr;
+  var MSG = {
+    sk: { start: "STLAČ MEDZERNÍK ALEBO ŤUKNI", over: "WIPEOUT!", again: "ZNOVA: MEDZERNÍK ALEBO ŤUK", best: "NOVÝ REKORD" },
+    en: { start: "PRESS SPACE OR TAP", over: "WIPEOUT!", again: "AGAIN: SPACE OR TAP", best: "NEW BEST" }
+  };
+  // skater: rolling and in the air
+  var ROLL = [" O ", "/|\\", "/ \\", "o=o"];
+  var AIR = ["\\O/", " | ", "/ \\", "o=o"];
+  var OBST = [
+    { rows: ["^"] },
+    { rows: ["/^\\"] },
+    { rows: [" ^ ", "/_\\"] },
+    { rows: ["[#]", "[#]"] },
+    { rows: ["|===|"] }
+  ];
+  var state = "ready", y = 0, vy = 0, speed, dist, obs, nextGap, best = 0, newBest = false, tick = 0, deco = [];
+  try { best = +localStorage.getItem("rd404best") || 0; } catch (e) {}
+  hiEl.textContent = best;
+
+  function size() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ch = W < 520 ? 17 : 20; ctx.font = "500 " + (ch - 3) + "px 'JetBrains Mono', ui-monospace, monospace";
+    cw = Math.ceil(ctx.measureText("M").width) + 1;
+    cols = Math.floor(W / cw); rows = Math.floor(H / ch); ground = rows - 2;
+    if (!deco.length) for (var i = 0; i < 9; i++) deco.push({ x: Math.random() * cols, r: 1 + Math.floor(Math.random() * Math.max(1, ground - 7)), c: Math.random() < .5 ? "·" : "+" });
+    draw();
+  }
+  function reset() { y = 0; vy = 0; speed = 16; dist = 0; obs = []; nextGap = 6; newBest = false; }
+  reset();
+
+  function jump() {
+    if (state !== "run") { reset(); state = "run"; return; }
+    if (y <= 0.01) vy = 15.5;
+  }
+  function px(c, r, s, color) { ctx.fillStyle = color; ctx.fillText(s, c * cw + cw / 2, r * ch + ch / 2); }
+  function text(r, s, color) { var c0 = Math.floor((cols - s.length) / 2); for (var i = 0; i < s.length; i++) px(c0 + i, r, s[i], color); }
+
+  var PX = 4; // skater column
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    // far dots drift slowly
+    deco.forEach(function (d) { px(Math.floor(d.x), d.r, d.c, "rgba(237,237,232,.18)"); });
+    // ground
+    var off = Math.floor(dist) % 4;
+    for (var c = 0; c < cols; c++) { px(c, ground + 1, "=", "rgba(237,237,232,.35)"); if ((c + off) % 4 === 0) px(c, ground + 1, "_", "rgba(31,175,111,.5)"); }
+    // obstacles
+    (obs || []).forEach(function (o) {
+      var h = o.rows.length;
+      o.rows.forEach(function (line, i) { for (var k = 0; k < line.length; k++) if (line[k] !== " ") px(Math.round(o.x) + k, ground - h + 1 + i, line[k], "#EDEDE8"); });
+    });
+    // skater
+    var sp = y > 0.3 ? AIR : ROLL, top = ground - sp.length + 1 - Math.round(y);
+    sp.forEach(function (line, i) { for (var k = 0; k < line.length; k++) if (line[k] !== " ") px(PX + k, top + i, line[k], i === 3 ? "#E9F06A" : "#1FAF6F"); });
+    var m = MSG[RD.lang];
+    if (state === "ready") text(Math.max(1, Math.floor(ground / 2) - 1), m.start, "#EDEDE8");
+    if (state === "over") {
+      text(Math.max(1, Math.floor(ground / 2) - 2), m.over, "#D62B3A");
+      if (newBest) text(Math.max(2, Math.floor(ground / 2) - 1), m.best + " · " + best, "#E9F06A");
+      text(Math.max(3, Math.floor(ground / 2)), m.again, "#A3A39B");
+    }
+  }
+
+  var last = performance.now();
+  function loop(now) {
+    var dt = Math.min((now - last) / 1000, .05); last = now;
+    if (state === "run") {
+      tick += dt;
+      speed = 16 + Math.min(dist / 40, 22);
+      dist += speed * dt;
+      vy -= 42 * dt; y = Math.max(0, y + vy * dt); if (y === 0 && vy < 0) vy = 0;
+      deco.forEach(function (d) { d.x -= speed * dt * .15; if (d.x < 0) { d.x += cols; d.r = 1 + Math.floor(Math.random() * Math.max(1, ground - 7)); } });
+      obs.forEach(function (o) { o.x -= speed * dt; });
+      obs = obs.filter(function (o) { return o.x > -6; });
+      nextGap -= speed * dt;
+      if (nextGap <= 0) {
+        var t = OBST[Math.floor(Math.random() * (dist > 120 ? OBST.length : 3))];
+        obs.push({ x: cols + 1, rows: t.rows });
+        nextGap = 14 + Math.random() * 18 + speed * .35;
+      }
+      // collision: skater box vs obstacle box
+      var sTop = ground - 3 - Math.round(y), sBot = ground - Math.round(y);
+      for (var i = 0; i < obs.length; i++) {
+        var o = obs[i], w = Math.max.apply(null, o.rows.map(function (r) { return r.length; })), oTop = ground - o.rows.length + 1;
+        if (o.x < PX + 2.6 && o.x + w > PX + .4 && sBot >= oTop) { over(); break; }
+      }
+      scEl.textContent = Math.floor(dist / 3);
+    }
+    draw();
+    requestAnimationFrame(loop);
+  }
+  function over() {
+    state = "over";
+    var s = Math.floor(dist / 3);
+    if (s > best) { best = s; newBest = true; hiEl.textContent = best; try { localStorage.setItem("rd404best", best); } catch (e) {} }
+  }
+
+  box.addEventListener("pointerdown", function (e) { e.preventDefault(); box.focus({ preventScroll: true }); jump(); });
+  document.addEventListener("keydown", function (e) {
+    if (e.code === "Space" || e.key === "ArrowUp" || e.key === "w") {
+      var tag = document.activeElement && document.activeElement.tagName;
+      if (tag === "A" || tag === "BUTTON") return;
+      e.preventDefault(); jump();
+    }
+  });
+  window.addEventListener("resize", size);
+  RD.onLang(function () { if (W) draw(); });
+  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(size);
+  size(); requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

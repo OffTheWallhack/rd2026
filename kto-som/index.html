@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="sk" data-title-en="Robert Ďurica – who I am">
+<head>
+<meta charset="utf-8">
+<script>document.documentElement.classList.add("js")</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Robert Ďurica – kto som</title>
+<meta name="description" content="Živé CV Roberta Ďuricu: eventy, live grafika, DJ sety, dizajn a appky s AI. Celý príbeh od roku 2011 aj s fotkami a videami.">
+<meta property="og:title" content="Robert Ďurica – kto som">
+<meta property="og:description" content="Živé CV: eventy, live grafika, DJ sety, dizajn a appky s AI. Celý príbeh aj s fotkami.">
+<meta property="og:image" content="https://offthewallhack.github.io/rd2026/img/og-kto-som.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://offthewallhack.github.io/rd2026/kto-som/">
+<meta property="og:type" content="profile">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#111211">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='30' fill='%231FAF6F'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<script type="speculationrules">{"prerender":[{"urls":["../"],"eagerness":"moderate"}]}</script>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+/* "who I am": the live CV. Darker, wilder, more personal than the services page */
+:root { --k-bg: #111211; --k-2: #1A1B19; --k-line: #2C2D2A; --paper: #F3EFE4; --pen: #1d2a6b; --marker: #E9F06A; }
+body { background: var(--k-bg); color: var(--night-text); }
+main { overflow-x: clip; }
+body::before { content: ""; position: fixed; inset: 0; z-index: 50; pointer-events: none; opacity: .07; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+.label { color: var(--night-muted); }
+h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.4rem); line-height: 1.04; letter-spacing: -.03em; margin: .6rem 0 .8rem; color: #fff; }
+.hand { font-family: var(--hand); font-weight: 700; }
+.nw { white-space: nowrap; }
+.mk { background: linear-gradient(transparent 55%, rgba(31,175,111,.55) 55%); padding: 0 .08em; }
+
+/* dark top bar */
+.bar { background: color-mix(in srgb, var(--k-bg) 86%, transparent); border-bottom-color: var(--k-line); }
+.bar.scrolled { box-shadow: 0 6px 24px rgba(0,0,0,.4); }
+.lang { border-color: var(--k-line); color: var(--night-muted); }
+.lang .on { color: #fff; }
+.bar .btn-dark { background: #fff; color: var(--k-bg); border-color: #fff; }
+.bar .btn-dark:hover { background: var(--pulse); border-color: var(--pulse); color: #0B1A12; }
+.nav-link .arr { color: var(--pulse); }
+.btn { border-color: var(--night-text); color: var(--night-text); }
+.btn:hover { background: var(--night-text); color: var(--k-bg); }
+.chip { background: transparent; border-color: var(--k-line); color: var(--night-text); }
+.yt { color: var(--pulse); }
+.foot { border-top-color: var(--k-line); color: var(--night-muted); }
+.socials a { color: var(--night-muted); }
+.socials a:hover { color: #fff; }
+
+.k-sec { position: relative; padding: clamp(3.5rem, 9vw, 6.5rem) 0; }
+.k-head { max-width: 44rem; margin-bottom: 2.25rem; }
+.k-head p { margin: 0; color: var(--night-muted); font-size: 1.1rem; }
+
+/* hero */
+.k-hero { position: relative; overflow: hidden; min-height: calc(100svh - 3.75rem); display: flex; align-items: center; }
+.k-hero .field-dark { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.k-name { position: absolute; left: 0; right: 0; top: 50%; translate: 0 -50%; text-align: center; white-space: nowrap; pointer-events: none; font-weight: 700; font-size: 17vw; line-height: .85; letter-spacing: -.05em; color: transparent; -webkit-text-stroke: 1.5px rgba(237,237,232,.13); will-change: transform; }
+.k-hero-in { position: relative; z-index: 2; width: 100%; display: grid; gap: 1.5rem; padding-top: clamp(2.5rem, 7vw, 4rem); padding-bottom: clamp(2.5rem, 7vw, 4rem); }
+.k-hero h1 { font-weight: 700; font-size: clamp(3.2rem, 11vw, 7.2rem); line-height: .92; letter-spacing: -.045em; margin: 0 0 1rem; color: #fff; }
+.k-hero h1 .robo { color: var(--pulse); display: inline-block; }
+.k-lead { font-size: clamp(1.35rem, 3.4vw, 2rem); font-weight: 700; letter-spacing: -.02em; line-height: 1.15; margin: 0 0 1rem; max-width: 18em; }
+.k-sub { color: var(--night-muted); font-size: clamp(1.02rem, 2.2vw, 1.15rem); max-width: 30em; margin: 0 0 1.5rem; }
+.stickers { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .55rem; max-width: 34rem; }
+.stickers li { font: 600 .82rem var(--mono); padding: .35rem .7rem; border-radius: 999px; background: var(--paper); color: var(--k-bg); transform: rotate(var(--r, -2deg)); box-shadow: 0 6px 14px rgba(0,0,0,.35); }
+.stickers li:nth-child(2) { --r: 1.5deg; background: var(--pulse); }
+.stickers li:nth-child(3) { --r: -1deg; background: var(--marker); }
+.stickers li:nth-child(4) { --r: 2.5deg; background: #6E7BFF; color: #fff; }
+.stickers li:nth-child(5) { --r: -2.5deg; background: #D62B3A; color: #fff; }
+.k-cut { position: absolute; z-index: 1; bottom: 0; pointer-events: none; }
+.k-cut img { height: 100%; width: auto; }
+.k-note { position: absolute; z-index: 3; font: 700 1.9rem/1 var(--hand); color: var(--marker); transform: rotate(-8deg); pointer-events: none; white-space: nowrap; }
+.k-scroll { position: absolute; z-index: 3; left: 50%; bottom: 1.1rem; translate: -50% 0; font: .75rem var(--mono); color: var(--night-muted); text-decoration: none; letter-spacing: .1em; text-transform: uppercase; }
+@media (min-width: 56rem) {
+  .k-hero-in > div { max-width: 58%; }
+  .k-cut { right: 9%; height: 92%; }
+  .k-note { right: calc(9% + 13rem); top: 22%; }
+}
+@media (max-width: 55.99rem) {
+  .k-hero { align-items: flex-start; }
+  .k-hero-in { padding-bottom: 50vh; }
+  .k-cut { left: 50%; height: 46vh; margin-left: -6.5vh; }
+  .k-note { left: max(1rem, calc(50% - 10.5rem)); bottom: 30vh; font-size: 1.55rem; }
+  .k-name { top: auto; bottom: 14vh; translate: 0 0; font-size: 26vw; }
+  .k-scroll { display: none; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html.js .k-cut img { animation: kRise 1.1s cubic-bezier(.2,.8,.2,1) both .1s; }
+  html.vt-in .k-cut img { animation: none; }
+  @keyframes kRise { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: none; } }
+  .k-scroll { animation: bob 2s ease-in-out infinite; }
+  @keyframes bob { 50% { translate: -50% 6px; } }
+}
+
+/* running band */
+.band { overflow: hidden; background: var(--pulse); color: #0B1A12; transform: rotate(-1.5deg); margin: 0 -2rem; padding: .7rem 0; position: relative; z-index: 4; box-shadow: 0 10px 30px rgba(0,0,0,.35); }
+.band-row { display: flex; width: max-content; white-space: nowrap; font-weight: 700; font-size: clamp(1.2rem, 3vw, 1.8rem); letter-spacing: -.01em; }
+.band-row span { padding-right: 1.25rem; }
+.band-row i { font-style: normal; color: rgba(11,26,18,.45); padding-right: 1.25rem; }
+@media (prefers-reduced-motion: no-preference) { .band-row { animation: slide 38s linear infinite; } @keyframes slide { to { transform: translateX(-50%); } } }
+
+/* right now */
+.now { display: grid; gap: 1.5rem; border: 1.5px solid var(--pulse); border-radius: 14px; padding: clamp(1.5rem, 4vw, 2.5rem); background: radial-gradient(90% 120% at 100% 0%, rgba(31,175,111,.14), transparent 60%), var(--k-2); position: relative; }
+@media (min-width: 56rem) { .now { grid-template-columns: .8fr 1.2fr; gap: 3rem; align-items: start; } }
+.now .label { display: flex; align-items: center; gap: .55rem; color: var(--pulse); }
+.now h2 { margin-bottom: .4rem; }
+.now-list { list-style: none; margin: 0; padding: 0; }
+.now-list li { display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem .75rem; padding: .85rem 0; border-top: 1px solid var(--k-line); font-size: 1.08rem; }
+.now-list li:first-child { border-top: 0; padding-top: 0; }
+.now-list b { color: #fff; font-weight: 600; }
+.now-list .tag { font: .75rem var(--mono); color: var(--pulse); border: 1px solid rgba(31,175,111,.5); border-radius: 999px; padding: .05rem .5rem; }
+.now-list a { color: var(--pulse); font-weight: 600; text-decoration: none; }
+.now-list a:hover { text-decoration: underline; }
+.now-note { position: absolute; right: 1.25rem; bottom: -1.1rem; max-width: calc(100% - 2.5rem); text-align: right; font: 700 1.35rem/1 var(--hand); color: var(--marker); transform: rotate(-3deg); background: var(--k-bg); padding: 0 .5rem; }
+
+/* what I can do: 8 tiles */
+.tiles { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: .75rem; }
+@media (min-width: 48rem) { .tiles { grid-template-columns: repeat(4, 1fr); gap: 1rem; } }
+.tiles a { display: flex; flex-direction: column; gap: .35rem; height: 100%; min-height: 8.5rem; padding: 1rem 1rem 1.1rem; border-radius: 10px; text-decoration: none; background: var(--k-2); border: 1px solid var(--k-line); transform: rotate(var(--r, 0deg)); transition: transform .3s cubic-bezier(.2,.8,.2,1), border-color .3s, background .3s; }
+.tiles li:nth-child(4n+1) a { --r: -1.2deg; } .tiles li:nth-child(4n+2) a { --r: .8deg; } .tiles li:nth-child(4n+3) a { --r: -.6deg; } .tiles li:nth-child(4n) a { --r: 1.3deg; }
+.tiles a:hover, .tiles a:focus-visible { transform: rotate(0deg) translateY(-4px); border-color: var(--pulse); background: #182019; }
+.tiles .n { font: 500 .78rem var(--mono); color: var(--pulse); }
+.tiles b { font-size: clamp(1.1rem, 2.4vw, 1.35rem); line-height: 1.12; letter-spacing: -.015em; color: #fff; }
+.tiles .y { margin-top: auto; font: .75rem var(--mono); color: var(--night-muted); }
+.tiles .go { font: .75rem var(--mono); color: var(--pulse); }
+.meta-rows { margin: 1.75rem 0 0; display: grid; gap: .75rem; }
+.meta-rows p { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; margin: 0; }
+.meta-rows .label { margin-right: .5rem; min-width: 6.5rem; }
+
+/* story timeline */
+.story { list-style: none; margin: 0; padding: 0; position: relative; }
+.story::before { content: ""; position: absolute; left: .45rem; top: .5rem; bottom: 0; width: 2px; background: linear-gradient(var(--pulse), rgba(31,175,111,.15)); }
+.ch { position: relative; display: grid; gap: .75rem 2.5rem; padding: 0 0 clamp(3rem, 7vw, 4.5rem) 2.25rem; scroll-margin-top: 5rem; }
+.ch::before { content: ""; position: absolute; left: 0; top: .55rem; width: 1rem; height: 1rem; border-radius: 50%; background: var(--k-bg); border: 3px solid var(--pulse); }
+@media (min-width: 56rem) {
+  .story::before { left: 11.45rem; }
+  .ch { grid-template-columns: 9.5rem 1fr; padding-left: 0; }
+  .ch::before { left: 11rem; }
+  .ch-y { position: sticky; top: 5.5rem; align-self: start; text-align: right; }
+  .ch-b { padding-left: 2.75rem; }
+}
+.ch-y { font-weight: 700; font-size: clamp(2.6rem, 6vw, 3.6rem); line-height: .9; letter-spacing: -.04em; color: transparent; -webkit-text-stroke: 1.5px var(--pulse); }
+.ch-y small { display: block; font-size: .32em; letter-spacing: 0; -webkit-text-stroke: 0; color: var(--night-muted); font-family: var(--mono); font-weight: 400; margin-top: .4rem; }
+.ch h3 { font-size: clamp(1.6rem, 4vw, 2.3rem); line-height: 1.05; letter-spacing: -.03em; margin: 0 0 .6rem; color: #fff; }
+.ch-b > p { margin: 0 0 1rem; max-width: 38em; font-size: 1.06rem; }
+.ch-b > p.label { font-size: .78rem; }
+.sk-tags { display: flex; flex-wrap: wrap; gap: .35rem; margin: 0 0 1rem; }
+.sk-tags a { font: 500 .72rem var(--mono); text-decoration: none; color: var(--night-muted); border: 1px dashed #3A3B38; border-radius: 4px; padding: .1rem .45rem; }
+.sk-tags a:hover { color: var(--pulse); border-color: var(--pulse); }
+.facts { list-style: none; margin: 0 0 1.25rem; padding: 0; max-width: 46rem; }
+.facts li { padding: .6rem 0; border-top: 1px solid var(--k-line); display: grid; grid-template-columns: 1fr auto; gap: .1rem 1rem; }
+.facts li:last-child { border-bottom: 1px solid var(--k-line); }
+.facts b { color: #fff; font-weight: 600; }
+.facts .r { grid-column: 1 / -1; color: var(--night-muted); font-size: .97rem; }
+.facts .when { font: .75rem var(--mono); color: var(--pulse); grid-column: 2; grid-row: 1; text-align: right; }
+.facts .lnk { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .3rem; }
+.facts .lnk .yt { margin: 0; }
+.ch-note { font: 700 1.45rem/1.1 var(--hand); color: var(--marker); margin: 0 0 1rem; transform: rotate(-1.5deg); display: inline-block; }
+
+/* polaroids */
+.pols { display: flex; flex-wrap: wrap; gap: 1.1rem 1rem; align-items: flex-start; padding: .5rem 0 .25rem; }
+.pol { position: relative; margin: 0; width: 10.5rem; background: var(--paper); padding: .45rem .45rem 0; box-shadow: 0 14px 28px rgba(0,0,0,.45); transform: rotate(var(--r, 0deg)); transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s; cursor: zoom-in; }
+.pol:nth-child(5n+1) { --r: -2.2deg; } .pol:nth-child(5n+2) { --r: 1.6deg; } .pol:nth-child(5n+3) { --r: -.8deg; } .pol:nth-child(5n+4) { --r: 2.4deg; } .pol:nth-child(5n) { --r: -1.4deg; }
+.pol:hover { transform: rotate(0deg) translateY(-6px) scale(1.03); box-shadow: 0 22px 40px rgba(0,0,0,.55); z-index: 2; }
+.pol img, .pol video { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; display: block; background: #222; }
+.pol.wide { width: 15rem; }
+.pol.wide img, .pol.wide video { aspect-ratio: 3 / 2; }
+.pol.sq img { aspect-ratio: 1; }
+.pol.tall img { aspect-ratio: 9 / 16; }
+.pol.fit img { object-fit: contain; background: #161616; padding: 8%; }
+.pol.fit.light img { background: #fff; }
+.pol figcaption { font: 700 1.12rem/1.15 var(--hand); color: var(--pen); text-align: center; padding: .45rem .2rem .55rem; min-height: 2.2rem; }
+.pol.tape::before { content: ""; position: absolute; left: 50%; top: -.7rem; width: 4.5rem; height: 1.4rem; translate: -50% 0; rotate: -4deg; background: rgba(233,240,106,.55); box-shadow: 0 1px 2px rgba(0,0,0,.2); }
+.pol.vid::after { content: "▶"; position: absolute; right: .9rem; top: .9rem; width: 1.7rem; height: 1.7rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .7rem; background: rgba(0,0,0,.55); color: #fff; padding-left: 2px; }
+@media (max-width: 47.99rem) {
+  .pols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem .8rem; }
+  .pol, .pol.wide { width: auto; }
+}
+.pols-label { margin: 1.25rem 0 .5rem; }
+
+/* season cards */
+.seasons { display: grid; gap: .75rem; margin: 0 0 1.25rem; }
+@media (min-width: 48rem) { .seasons { grid-template-columns: repeat(3, 1fr); } }
+.season { border: 1px solid var(--k-line); border-radius: 10px; padding: 1rem; background: var(--k-2); }
+.season .label { color: var(--pulse); }
+.season b { display: block; color: #fff; font-size: 1.1rem; margin: .25rem 0 .2rem; }
+.season p { margin: 0 0 .6rem; color: var(--night-muted); font-size: .95rem; }
+.season .yt { margin: 0 .3rem 0 0; }
+
+/* apps in "today" */
+.apps { display: grid; gap: .75rem; margin: 0 0 1.25rem; }
+@media (min-width: 48rem) { .apps { grid-template-columns: repeat(3, 1fr); } }
+.app { border: 1px solid var(--k-line); border-radius: 10px; padding: 1rem 1.1rem; background: var(--k-2); display: flex; flex-direction: column; gap: .35rem; }
+.app .state { font: .75rem var(--mono); display: inline-flex; align-items: center; gap: .45rem; color: var(--pulse); }
+.app .state .dot { width: 7px; height: 7px; }
+.app .state.idle { color: var(--night-muted); }
+.app .state.idle .dot { background: #6B6B63; }
+.app .state.idle .dot::after { display: none; }
+.app b { color: #fff; font-size: 1.25rem; letter-spacing: -.02em; }
+.app p { margin: 0; color: var(--night-muted); font-size: .95rem; }
+.app a { margin-top: auto; padding-top: .4rem; color: var(--pulse); font-weight: 600; text-decoration: none; }
+.app a:hover { text-decoration: underline; }
+.back-link { display: inline-flex; align-items: center; gap: .5rem; font-weight: 600; color: var(--pulse); text-decoration: none; font-size: 1.08rem; }
+.back-link:hover { text-decoration: underline; }
+
+/* off the clock: a wall of photos */
+.wall { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 1.5rem 1.25rem; padding: 1rem 0; }
+.wall .pol { width: clamp(9.5rem, 22vw, 14rem); }
+.wall .pol.wide { width: clamp(13rem, 30vw, 20rem); }
+.wall .pol:nth-child(odd) { margin-top: 1.5rem; }
+@media (max-width: 47.99rem) { .wall { display: grid; align-items: start; grid-template-columns: repeat(2, minmax(0, 1fr)); } .wall .pol, .wall .pol.wide { width: auto; } .wall .pol:nth-child(odd) { margin-top: 0; } .wall .pol:nth-child(even) { margin-top: 1.5rem; } .wall .pol.wide { grid-column: span 2; } }
+
+/* DJ */
+.dj { display: grid; gap: 2rem; align-items: start; }
+@media (min-width: 56rem) { .dj { grid-template-columns: 1.05fr .95fr; gap: 3rem; } }
+.dj h2 .soft { color: var(--pulse); }
+.dj-txt > p { margin: 0 0 1.25rem; font-size: 1.08rem; max-width: 34em; }
+.sc { margin: 1.5rem 0 0; border-radius: 10px; overflow: hidden; border: 1px solid var(--k-line); background: var(--k-2); }
+.sc iframe { display: block; width: 100%; height: 300px; border: 0; }
+
+/* open to work */
+.work { border: 1px solid var(--k-line); border-radius: 14px; padding: clamp(1.5rem, 4vw, 2.5rem); background: var(--k-2); display: grid; gap: 2rem; }
+@media (min-width: 56rem) { .work { grid-template-columns: .9fr 1.1fr; gap: 3rem; } }
+.work > div > p:not(.label) { margin: 0 0 1.5rem; color: var(--night-text); font-size: 1.08rem; }
+.work p.label { margin: 0 0 .5rem; }
+.work .label { display: flex; align-items: center; gap: .55rem; }
+.tl { list-style: none; margin: 0; padding: 0; }
+.tl li { display: grid; grid-template-columns: 6.5rem 1fr; gap: .75rem; padding: .6rem 0; border-top: 1px solid var(--k-line); font-size: .97rem; }
+.tl li:last-child { border-bottom: 1px solid var(--k-line); }
+.tl .y { font: .8rem var(--mono); color: var(--pulse); padding-top: .15rem; }
+
+/* contact at the end */
+.k-end { position: relative; overflow: hidden; padding: clamp(4rem, 10vw, 7rem) 0; border-top: 1px solid var(--k-line); }
+.k-end .field-end { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.k-end > .wrap { position: relative; }
+.k-end h2 { font-size: clamp(2.8rem, 9vw, 5.5rem); letter-spacing: -.04em; line-height: .98; margin: 1rem 0 1.25rem; }
+.k-end h2 .soft { color: var(--night-muted); }
+.k-end .lead { color: var(--night-muted); font-size: 1.15rem; margin: 0 0 2rem; max-width: 32em; }
+.k-end .btn-green:hover { background: #fff; }
+
+/* motion */
+@media (prefers-reduced-motion: no-preference) {
+  .btn { transition: background .2s, color .2s, border-color .2s, transform .2s ease; }
+  .btn:hover { transform: translateY(-2px); }
+  html.js .pols.rv .pol, html.js .wall.rv .pol { opacity: 0; translate: 0 26px; transition: opacity .6s ease, translate .7s cubic-bezier(.2,.8,.2,1), transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s; transition-delay: calc(var(--i, 0) * 70ms), calc(var(--i, 0) * 70ms), 0s, 0s; }
+  html.js .pols.rv.in .pol, html.js .wall.rv.in .pol { opacity: 1; translate: 0 0; }
+}
+
+/* arriving here from the services page: the dark page rises from below */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) { animation: vtStay .8s ease both; }
+  ::view-transition-new(root) { animation: vtRise .8s cubic-bezier(.7, 0, .2, 1) both; }
+  @keyframes vtRise { from { clip-path: inset(100% 0 0 0); } to { clip-path: inset(0 0 0 0); } }
+  @keyframes vtStay { to { transform: translateY(-8%); filter: brightness(.6); } }
+}
+
+</style>
+</head>
+<body>
+<a class="skip" href="#main" data-en="Skip to content">Preskočiť na obsah</a>
+
+<div class="progress" aria-hidden="true"></div>
+<header class="bar">
+  <div class="wrap bar-in">
+    <a class="brand" href="../"><span class="dot" aria-hidden="true"></span><span class="bn-l">Robert Ďurica</span></a>
+    <div class="bar-r">
+      <a class="nav-link" href="../" data-en="Services">Služby</a>
+      <button class="lang" type="button" aria-label="Prepnúť jazyk / Switch language"><span data-l="sk">SK</span> / <span data-l="en">EN</span></button>
+      <a class="btn btn-dark btn-sm wa" href="#kontakt" data-en="Message me">Napíš mi</a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- HERO -->
+<section class="k-hero" id="top" aria-labelledby="h1">
+  <canvas class="field-dark" aria-hidden="true"></canvas>
+  <div class="k-name" aria-hidden="true">ROBERT ĎURICA</div>
+  <div class="k-cut"><img src="../img/hero-cut.webp" width="373" height="1288" alt="Robert Ďurica so slúchadlami" data-en-alt="Robert Ďurica with headphones" fetchpriority="high"></div>
+  <span class="k-note" aria-hidden="true" data-en="that’s me →">to som ja →</span>
+  <div class="wrap k-hero-in">
+    <div>
+      <p class="status label"><span class="dot" aria-hidden="true"></span><span data-en="Live CV · updated October 2026">Živé CV · aktualizované október 2026</span></p>
+      <h1 id="h1"><span data-en="Hi, I’m">Ahoj, som</span> <span class="robo">Robo.</span></h1>
+      <p class="k-lead" data-en="You’ll see me at events, using AI.">Uvidíš ma na evente používať <span class="nw">AI-čko.</span></p>
+      <p class="k-sub" data-en="Robert Ďurica · 1995 · Bratislava. I do events, live graphics, the odd DJ set and apps built with AI. This is my story, with photos.">Robert Ďurica · 1995 · Bratislava. Robím eventy, live grafiku, občas DJ sety a appky s AI. Toto je môj príbeh, aj s fotkami.</p>
+      <ul class="stickers">
+        <li>event car driver</li>
+        <li data-en="CG operator">CG operátor</li>
+        <li>DJ</li>
+        <li data-en="design since 2011">dizajn od 2011</li>
+        <li data-en="Feli the cat">mačka Feli</li>
+      </ul>
+    </div>
+  </div>
+  <a class="k-scroll" href="#teraz" data-en="↓ scroll">↓ scrolluj</a>
+</section>
+
+<div class="band" aria-hidden="true"><div class="band-row" data-en="&lt;span&gt;EVENTS&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;LIVE GRAPHICS&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;DJ SETS&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;DESIGN&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;CAMERA&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;AI&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;EVENT CARS&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;ESPORTS&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;EVENTS&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;LIVE GRAPHICS&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;DJ SETS&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;DESIGN&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;CAMERA&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;AI&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;EVENT CARS&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;ESPORTS&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt;"><span>EVENTY</span><i>✦</i> <span>LIVE GRAFIKA</span><i>✦</i> <span>DJ SETY</span><i>✦</i> <span>DIZAJN</span><i>✦</i> <span>KAMERA</span><i>✦</i> <span>AI-ČKO</span><i>✦</i> <span>EVENT AUTÁ</span><i>✦</i> <span>ESPORTS</span><i>✦</i> <span>EVENTY</span><i>✦</i> <span>LIVE GRAFIKA</span><i>✦</i> <span>DJ SETY</span><i>✦</i> <span>DIZAJN</span><i>✦</i> <span>KAMERA</span><i>✦</i> <span>AI-ČKO</span><i>✦</i> <span>EVENT AUTÁ</span><i>✦</i> <span>ESPORTS</span><i>✦</i></div></div>
+
+<!-- RIGHT NOW -->
+<section class="k-sec" id="teraz" aria-labelledby="now-title">
+  <div class="wrap">
+    <div class="now rv">
+      <div>
+        <p class="label"><span class="dot" aria-hidden="true"></span><span data-en="Right now">Teraz</span></p>
+        <h2 id="now-title" data-en="What I’m up to.">Čo práve robím.</h2>
+      </div>
+      <ul class="now-list">
+        <li><span data-en="<b>Driving</b> the Red Bull event car and producing smaller events."><b>Jazdím</b> s Red Bull event autom a produkujem menšie eventy.</span><span class="tag" data-en="since 05/2024">od 05/2024</span></li>
+        <li><span data-en="<b>Building</b> Questwave and looking for beta testers."><b>Staviam</b> Questwave a hľadám beta testerov.</span><a href="https://offthewallhack.github.io/questwave/" target="_blank" rel="noopener" data-en="Try it →">Vyskúšaj →</a></li>
+        <li><span data-en="<b>Finishing</b> a game version of this site."><b>Dokončujem</b> hernú verziu tohto webu.</span><span class="tag">70 %</span></li>
+        <li><span data-en="<b>Looking</b> for a full-time role in event production."><b>Hľadám</b> full-time rolu v event produkcii.</span><a href="#praca" data-en="More →">Viac →</a></li>
+        <li><span data-en="<b>Helping</b> people get started with AI."><b>Pomáham</b> ľuďom s AI.</span><a href="../" data-en="Services →">Služby →</a></li>
+      </ul>
+      <span class="now-note" aria-hidden="true" data-en="this part changes the most">toto sa mení najčastejšie</span>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT I CAN DO -->
+<section class="k-sec" id="viem" aria-labelledby="sk-title">
+  <div class="wrap">
+    <div class="k-head rv">
+      <p class="label" data-en="What I can do">Čo viem</p>
+      <h2 id="sk-title" data-en="8 things I can do.">8 vecí, ktoré viem.</h2>
+      <p data-en="Tap one to jump to the chapter where I did it.">Ťukni a skočíš do kapitoly, kde som to robil.</p>
+    </div>
+    <ul class="tiles stg rv">
+      <li><a href="#ch-2022"><span class="n">01</span><b data-en="Live graphics (CG)">Live grafika (CG)</b><span class="y">2020–2023</span><span class="go">→ 2022</span></a></li>
+      <li><a href="#ch-2020"><span class="n">02</span><b data-en="Data automation">Automatizácia dát</b><span class="y" data-en="since 2020">od 2020</span><span class="go">→ 2020</span></a></li>
+      <li><a href="#ch-2024"><span class="n">03</span><b data-en="Event production">Event produkcia</b><span class="y" data-en="since 2024">od 2024</span><span class="go">→ 2024</span></a></li>
+      <li><a href="#ch-2023"><span class="n">04</span><b data-en="Video and camera">Video a kamera</b><span class="y" data-en="2020–today">2020–dnes</span><span class="go">→ 2023</span></a></li>
+      <li><a href="#ch-2011"><span class="n">05</span><b data-en="Branding and design">Branding a dizajn</b><span class="y" data-en="since 2011">od 2011</span><span class="go">→ 2011</span></a></li>
+      <li><a href="#ch-2019"><span class="n">06</span><b>Marketing</b><span class="y" data-en="since 2019">od 2019</span><span class="go">→ 2019</span></a></li>
+      <li><a href="#dj"><span class="n">07</span><b>DJing</b><span class="y" data-en="now and then">občas</span><span class="go">→ DJ</span></a></li>
+      <li><a href="#ch-dnes"><span class="n">08</span><b data-en="LIVE and COMING SOON apps">LIVE a COMING SOON appky</b><span class="y" data-en="today">dnes</span><span class="go" data-en="→ today">→ dnes</span></a></li>
+    </ul>
+    <div class="meta-rows rv">
+      <p><span class="label" data-en="Languages">Jazyky</span><span class="chip" data-en="Slovak, native">slovenčina, rodná</span><span class="chip" data-en="English, B2">angličtina, B2</span><span class="chip" data-en="German, learning">nemčina, učím sa</span></p>
+      <p><span class="label" data-en="Tools">Nástroje</span><span class="chip">vMix</span><span class="chip">OBS Studio</span><span class="chip">CharacterWorks</span><span class="chip">NewBlue</span><span class="chip">GT Title Designer</span><span class="chip">Premiere Pro</span><span class="chip">Photoshop</span><span class="chip">Illustrator</span><span class="chip">Claude Code</span><span class="chip">Lovable</span><span class="chip">Grok</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- STORY -->
+<section class="k-sec" id="pribeh" aria-labelledby="st-title">
+  <div class="wrap">
+    <div class="k-head rv">
+      <p class="label" data-en="My story">Môj príbeh</p>
+      <h2 id="st-title" data-en="From Photoshop to event cars.">Od Photoshopu po event autá.</h2>
+      <p data-en="Oldest first. Tap any photo to see it big.">Od najstaršieho po dnešok. Každú fotku si môžeš ťuknúť a zväčšiť.</p>
+    </div>
+
+    <ol class="story">
+
+      <li class="ch" id="ch-1995">
+        <div class="ch-y">1995</div>
+        <div class="ch-b rv">
+          <h3 data-en="Born in Bratislava">Narodil som sa v Bratislave</h3>
+          <p data-en="Ladislav Novomeský grammar school, then media at the Pan-European University. Bratislava is where most of this story happens.">Gymnázium Ladislava Novomeského, potom masmédiá na Paneurópskej. V Bratislave sa odohráva väčšina tohto príbehu.</p>
+          <ul class="facts">
+            <li><b data-en="Pan-European University">Paneurópska vysoká škola</b><span class="when">2013–2017</span><span class="r" data-en="Bachelor’s in mass communication">Bc. masmediálna komunikácia</span></li>
+          </ul>
+        </div>
+      </li>
+
+      <li class="ch" id="ch-2011">
+        <div class="ch-y">2011</div>
+        <div class="ch-b rv">
+          <h3>142 design</h3>
+          <div class="sk-tags"><a href="#viem" data-en="05 Branding and design">05 Branding a dizajn</a></div>
+          <p data-en="Design came first. I started 142 design and made logos, graphics and print. Today 142 design s.r.o. also invoices my AI services.">S dizajnom som začal ako prvým. Založil som 142 design a robil logá, grafiku a tlačoviny. Dnes cez 142 design s.r.o. fakturujem aj služby s AI.</p>
+          <ul class="facts">
+            <li><b data-en="Clients">Klienti</b><span class="when" data-en="since 2011">od 2011</span><span class="r">Hotel Bratislava, Holiday Inn Bratislava, Summit Motors, T.O.P. AUTO, Slovkarpatia, Winfinity, Sound Healing Slovakia</span><span class="lnk"><a class="yt" href="https://www.behance.net/durica" target="_blank" rel="noopener">Behance →</a></span></li>
+            <li><b data-en="Slovak Esports Association">Slovenská asociácia e-športov</b><span class="when" data-en="c. 2019">cca 2019</span><span class="r" data-en="logo concepts">návrhy loga</span></li>
+          </ul>
+          <div class="pols rv"><figure class="pol sq fit light"><img src="../img/logo-saes.webp" width="772" height="800" loading="lazy" alt="Návrhy loga Slovak Esports Association" data-en-alt="Slovak Esports Association logo concepts"><figcaption data-en="Logo concepts">Návrhy loga</figcaption></figure></div>
+        </div>
+      </li>
+
+      <li class="ch" id="ch-2019">
+        <div class="ch-y">2019</div>
+        <div class="ch-b rv">
+          <h3 data-en="Cars and an Instagram">Autá a jeden Instagram</h3>
+          <div class="sk-tags"><a href="#viem" data-en="06 Marketing">06 Marketing</a></div>
+          <p data-en="Online marketing for Mercedes-Benz, KIA, Fiat and Jeep at Motor-Car Group. On the side I started a fun CS:GO Instagram on my phone. It was called REPUBLEAGUE.">Online marketing pre Mercedes-Benz, KIA, Fiat a Jeep v Motor-Car Group. Popritom som si v mobile založil zábavný Instagram o CS:GO. Volal sa REPUBLEAGUE.</p>
+          <ul class="facts">
+            <li><b>Motor-Car Group / Mercedes-Benz</b><span class="when">2019–2020</span><span class="r" data-en="online marketing for Mercedes-Benz, KIA, Fiat and Jeep">online marketing pre Mercedes-Benz, KIA, Fiat a Jeep</span></li>
+          </ul>
+          <p class="label pols-label" data-en="REPUBLEAGUE · first posts, 2019">REPUBLEAGUE · prvé príspevky, 2019</p>
+          <div class="pols rv"><figure class="pol sq"><img src="../img/rl-navi.webp" width="1080" height="1080" loading="lazy" alt="Príspevok REPUBLEAGUE o GuardiaNovi a Natus Vincere, DreamHack Masters Malmö 2019" data-en-alt="REPUBLEAGUE post about GuardiaN and Natus Vincere, DreamHack Masters Malmö 2019"><figcaption data-en="GuardiaN and NAVI">GuardiaN a NAVI</figcaption></figure><figure class="pol sq"><img src="../img/rl-getright.webp" width="1080" height="1080" loading="lazy" alt="Príspevok REPUBLEAGUE o odchode GeT_RiGhTa z Ninjas in Pyjamas" data-en-alt="REPUBLEAGUE post about GeT_RiGhT leaving Ninjas in Pyjamas"><figcaption data-en="GeT_RiGhT leaves NiP">GeT_RiGhT opúšťa NiP</figcaption></figure><figure class="pol sq"><img src="../img/rl-tricked.webp" width="1080" height="1080" loading="lazy" alt="Príspevok REPUBLEAGUE o víťazstve Tricked Esport na V4 Future Festival 2019" data-en-alt="REPUBLEAGUE post about Tricked Esport winning V4 Future Festival 2019"><figcaption>Tricked, V4 Future Festival</figcaption></figure><figure class="pol tall"><img src="../img/rl-story.webp" width="720" height="1280" loading="lazy" alt="Story REPUBLEAGUE s odporúčaním zápasu SMASH vs Mousesports na EPICENTER 2019" data-en-alt="REPUBLEAGUE story recommending SMASH vs Mousesports at EPICENTER 2019"><figcaption data-en="Story: a match recommendation">Story: odporúčanie zápasu</figcaption></figure></div>
+        </div>
+      </li>
+
+      <li class="ch" id="ch-2020">
+        <div class="ch-y">2020<small>– 2023</small></div>
+        <div class="ch-b rv">
+          <h3>REPUBLEAGUE</h3>
+          <div class="sk-tags"><a href="#viem" data-en="01 Live graphics">01 Live grafika</a><a href="#viem" data-en="02 Data automation">02 Automatizácia dát</a><a href="#viem" data-en="05 Branding">05 Branding</a><a href="#viem" data-en="06 Marketing">06 Marketing</a></div>
+          <p data-en="The Instagram grew into an esports brand and a tournament. I’m a co-founder: brand, marketing, online events, CG design and running the CG. The graphics ran off my own tournament system in a spreadsheet: the score changes at the venue and the screen updates by itself.">Z Instagramu vyrástla esports značka a turnaj. Som spoluzakladateľ: brand, marketing, online eventy, CG dizajn aj CG operátor. Grafiku poháňal môj turnajový systém v tabuľke: na turnaji sa zmení skóre a na obrazovke sa zmení samo.</p>
+          <div class="seasons">
+            <div class="season"><p class="label" data-en="Season 1">Sezóna 1</p><b>REPUBLEAGUE TIPOS</b><p data-en="April–June 2021 · $71,356 · winner SKADE">apríl–jún 2021 · 71 356 $ · víťaz SKADE</p><a class="yt" href="https://www.hltv.org/events/5822/republeague-tipos-season-1" target="_blank" rel="noopener">HLTV →</a></div>
+            <div class="season"><p class="label" data-en="Season 2">Sezóna 2</p><b>REPUBLEAGUE TIPOS</b><p data-en="Sept–Nov 2021 · $120,000 · winner fnatic">sep–nov 2021 · 120 000 $ · víťaz fnatic</p><a class="yt" href="https://www.hltv.org/events/6064/republeague-tipos-season-2" target="_blank" rel="noopener">HLTV →</a><a class="yt" href="https://www.youtube.com/watch?v=4hmEe2G0u6w" target="_blank" rel="noopener">▶ YouTube</a></div>
+            <div class="season"><p class="label" data-en="Season 3">Sezóna 3</p><b>REPUBLEAGUE</b><p data-en="June 2022 · $128,300 · winner ex-MAD Lions">jún 2022 · 128 300 $ · víťaz ex-MAD Lions</p><a class="yt" href="https://www.hltv.org/events/6370/republeague-season-3" target="_blank" rel="noopener">HLTV →</a></div>
+          </div>
+          <ul class="facts">
+            <li><b data-en="Smaller events">Menšie eventy</b><span class="when">2020–2023</span><span class="r" data-en="the CZE vs. SVK showmatch, a Christmas showmatch and smaller live streams">Showmatch CZE vs. SVK, vianočný showmatch a menšie live streamy</span></li>
+          </ul>
+          <div class="pols rv"><figure class="pol wide tape"><img src="../img/republeague.webp" width="1100" height="729" loading="lazy" alt="Robert v žltej mikine pred nápisom REPUBLEAGUE" data-en-alt="Robert in a yellow hoodie in front of the REPUBLEAGUE sign"><figcaption>REPUBLEAGUE</figcaption></figure><figure class="pol wide"><img src="../img/cct-x-rl.webp" width="880" height="492" loading="lazy" alt="Logá CCT a REPUBLEAGUE vedľa seba" data-en-alt="CCT and REPUBLEAGUE logos side by side"><figcaption>CCT × REPUBLEAGUE</figcaption></figure><figure class="pol vid"><video muted loop playsinline preload="none" poster="../img/livestream-done-poster.webp" aria-label="Robert sa teší, že livestream prebehol bez chyby" data-en-aria="Robert celebrating a livestream that went without a hitch"><source src="../vid/livestream-done.mp4" type="video/mp4"></video><figcaption data-en="When the livestream goes without a fail">Keď livestream prejde bez chyby</figcaption></figure><figure class="pol wide"><img src="../img/rl-s1-trophy.webp" width="800" height="400" loading="lazy" alt="Trofej REPUBLEAGUE TIPOS Season 1 naplnená nábojnicami" data-en-alt="REPUBLEAGUE TIPOS Season 1 trophy filled with cartridge casings"><figcaption data-en="Trophy, Season 1">Trofej, Season 1</figcaption></figure><figure class="pol wide"><img src="../img/rl-s2-champions.webp" width="1100" height="619" loading="lazy" alt="Grafika Champions: fnatic víťaz REPUBLEAGUE TIPOS Season 2" data-en-alt="Champions graphic: fnatic win REPUBLEAGUE TIPOS Season 2"><figcaption data-en="fnatic, Season 2 champions">Fnatic, víťaz sezóny 2</figcaption></figure><figure class="pol tall"><img src="../img/rl-s3-control.webp" width="640" height="1137" loading="lazy" alt="Obrazovka s grafikou REPUBLEAGUE Season 3 a program, v ktorom sa grafika ovláda" data-en-alt="Screen with REPUBLEAGUE Season 3 graphics and the software used to run them"><figcaption data-en="The graphics and their control software, Season 3">Grafika a jej ovládanie, Season 3</figcaption></figure><figure class="pol wide"><img src="../img/sheet-control.webp" width="1600" height="807" loading="lazy" alt="Ovládací panel turnaja v tabuľke: aktuálny zápas, skóre máp, veto, skupiny a texty do spodnej lišty" data-en-alt="Tournament control panel in a spreadsheet: current match, map scores, veto, groups and lower-third texts"><figcaption data-en="The tournament in a spreadsheet">Turnaj v tabuľke</figcaption></figure><figure class="pol wide"><img src="../img/rl-kv.webp" width="1100" height="619" loading="lazy" alt="Kľúčový vizuál REPUBLEAGUE: In game we are all equal" data-en-alt="REPUBLEAGUE key visual: In game we are all equal"><figcaption data-en="Key visual">Kľúčový vizuál</figcaption></figure><figure class="pol wide fit light"><img src="../img/rl-logo.webp" width="900" height="310" loading="lazy" alt="Logo REPUBLEAGUE na bielom pozadí" data-en-alt="REPUBLEAGUE logo on white"><figcaption>Logo</figcaption></figure></div>
+        </div>
+      </li>
+
+      <li class="ch" id="ch-2022">
+        <div class="ch-y">2022</div>
+        <div class="ch-b rv">
+          <h3 data-en="Big stages">Veľké pódiá</h3>
+          <div class="sk-tags"><a href="#viem" data-en="01 Live graphics">01 Live grafika</a><a href="#viem" data-en="02 Data automation">02 Automatizácia dát</a></div>
+          <p data-en="My first big international broadcasts. Scores, names and tables popping up on screen, live.">Prvé veľké medzinárodné prenosy. Výsledky, mená a tabuľky, ktoré naskakujú na obrazovku naživo.</p>
+          <ul class="facts">
+            <li><b>ESL IEM Cologne</b><span class="when">2022</span><span class="r" data-en="CG operator, B stream">CG operátor, B stream</span><span class="lnk"><a class="yt" href="https://youtu.be/IbuMVijdr7E" target="_blank" rel="noopener" data-en="▶ Watch the CG on YouTube">▶ Pozri CG na YouTube</a></span></li>
+            <li><b>Drone Champions League</b><span class="when">2022</span><span class="r" data-en="CG and data operator">CG a dátový operátor</span></li>
+          </ul>
+          <div class="pols rv"><figure class="pol wide fit"><img src="../img/logo-esl.webp" width="600" height="371" loading="lazy" alt="Logo Intel Extreme Masters ESL Cologne 2022" data-en-alt="Intel Extreme Masters ESL Cologne 2022 logo"><figcaption>IEM Cologne 2022</figcaption></figure><figure class="pol tape vid"><video muted loop playsinline preload="none" poster="../img/csgo-cards-poster.webp" aria-label="Album so zberateľskými CS:GO kartičkami" data-en-aria="An album of collectible CS:GO cards"><source src="../vid/csgo-cards.mp4" type="video/mp4"></video><figcaption data-en="I collect CS:GO cards at home, as a hobby">Doma zbieram CS:GO kartičky, z hobby</figcaption></figure><figure class="pol wide fit"><img src="../img/logo-dcl.webp" width="600" height="284" loading="lazy" alt="Logo Drone Champions League" data-en-alt="Drone Champions League logo"><figcaption>DCL</figcaption></figure><figure class="pol wide"><img src="../img/dcl-control.webp" width="1100" height="825" loading="lazy" alt="Režijná miestnosť s obrazovkami počas prenosu" data-en-alt="Broadcast control room with screens during a live show"><figcaption data-en="DCL control room with my brother">Réžia DCL s bráchom</figcaption></figure></div>
+        </div>
+      </li>
+
+      <li class="ch" id="ch-2023">
+        <div class="ch-y">2023</div>
+        <div class="ch-b rv">
+          <h3 data-en="Camera and travel">Kamera a cesty</h3>
+          <div class="sk-tags"><a href="#viem" data-en="04 Video and camera">04 Video a kamera</a><a href="#viem" data-en="01 Live graphics">01 Live grafika</a></div>
+          <p data-en="Behind the camera and the graphics, from Kaufland festivals to poker tables in Cyprus.">Za kamerou aj za grafikou, od Kaufland festivalov po pokrové stoly na Cypre.</p>
+          <ul class="facts">
+            <li><b>RECIN</b><span class="when">2023</span><span class="r" data-en="main camera at several Kaufland Children’s Festival events, ski races and smaller events, plus live graphics">hlavná kamera na viacerých podujatiach Kaufland Detský festival, lyžiarske preteky a menšie akcie, k tomu živá grafika</span></li>
+            <li><b data-en="Poker tournaments">Pokrové turnaje</b><span class="when">2023</span><span class="r" data-en="CG and camera: WPT Prime Liechtenstein, EPT, Cyprus">CG a kamera: WPT Prime Liechtenstein, EPT, Cyprus</span></li>
+            <li><b>Champion of Champions Tour</b><span class="when">2023</span><span class="r" data-en="CG operator">CG operátor</span></li>
+            <li><b>REVERS Production</b><span class="r" data-en="production assistant">produkčný asistent</span></li>
+          </ul>
+        </div>
+      </li>
+
+      <li class="ch" id="ch-2024">
+        <div class="ch-y">2024</div>
+        <div class="ch-b rv">
+          <h3 data-en="Red Bull and event cars">Red Bull a event autá</h3>
+          <div class="sk-tags"><a href="#viem" data-en="03 Event production">03 Event produkcia</a><a href="#viem" data-en="04 Video and camera">04 Video a kamera</a><a href="#viem" data-en="05 Branding">05 Branding</a></div>
+          <p data-en="Since May 2024 I drive the Red Bull event car. I produce smaller events and help with production on the big ones. On the side, Futbalic: logo, marketing and match production.">Od mája 2024 jazdím s Red Bull event autom. Menšie eventy produkujem, na veľkých pomáham s produkciou. Popri tom Futbalic: logo, marketing a produkcia zápasov.</p>
+          <ul class="facts">
+            <li><b>Red Bull</b><span class="when" data-en="since 05/2024">od 05/2024</span><span class="r" data-en="event car driver, I produce smaller events and assist on big ones · Freak x Yzomandias: pop-up production with an event car">event car driver, produkcia menších eventov, produkčný asistent na veľkých · Freak x Yzomandias: produkcia pop-upu s event autom</span></li>
+            <li><b>Futbalic</b><span class="when">2024–2025</span><span class="r" data-en="logo, visuals, marketing and match production">logo, vizuál, marketing a produkcia zápasov</span></li>
+          </ul>
+          <div class="pols rv"><figure class="pol tape vid"><video muted loop playsinline preload="none" poster="../img/freak-yzo-poster.webp" aria-label="Video z pop-upu Freak x Yzomandias" data-en-aria="Video from the Freak x Yzomandias pop-up"><source src="../vid/freak-yzo.mp4" type="video/mp4"></video><figcaption>Freak x Yzomandias</figcaption></figure><figure class="pol"><img src="../img/sugga-roof.webp" width="675" height="900" loading="lazy" alt="Robert sa usmieva zo strechy event auta" data-en-alt="Robert smiling from the roof of an event car"><figcaption data-en="Can you hear me?">Počuješ ma?</figcaption></figure><figure class="pol"><img src="../img/dj-tech.webp" width="675" height="900" loading="lazy" alt="Robert pri flight caseoch s DJ technikou" data-en-alt="Robert next to flight cases with DJ gear"><figcaption data-en="Gear for the event">Technika na event</figcaption></figure><figure class="pol"><img src="../img/on-the-event.webp" width="675" height="900" loading="lazy" alt="Pohľad na nohy a plechovku pod slnečníkmi na evente" data-en-alt="Legs and a can under parasols at an event"><figcaption data-en="A break at the event">Pauza na evente</figcaption></figure><figure class="pol vid"><video muted loop playsinline preload="none" poster="../img/natacam-poster.webp" aria-label="Robert sa smeje a natáča kamerou z event auta" data-en-aria="Robert laughing while filming from an event car"><source src="../vid/natacam.mp4" type="video/mp4"></video><figcaption>Multitasking</figcaption></figure></div>
+          <div class="pols rv"><figure class="pol sq fit"><img src="../img/logo-futbalic.webp" width="700" height="688" loading="lazy" alt="Logo Futbalic s farebnou loptou" data-en-alt="Futbalic logo with a colourful ball"><figcaption>Logo</figcaption></figure><figure class="pol sq fit"><img src="../img/logo-futbalic-star.webp" width="700" height="700" loading="lazy" alt="Logo Futbalic v tvare hviezdy" data-en-alt="Star-shaped Futbalic logo"><figcaption>Variant</figcaption></figure><figure class="pol vid"><video muted loop playsinline preload="none" poster="../img/futbalic-match-poster.webp" aria-label="Video zo zápasu Futbalic v hale" data-en-aria="Video from a Futbalic match in an arena"><source src="../vid/futbalic-match.mp4" type="video/mp4"></video><figcaption data-en="The match">Zápas</figcaption></figure><figure class="pol wide"><img src="../img/futbalic-me.webp" width="1100" height="733" loading="lazy" alt="Čiernobiela fotka hráča s číslom 4 na ihrisku" data-en-alt="Black-and-white photo of player number 4 on the pitch"><figcaption data-en="Number 4">Číslo 4</figcaption></figure></div>
+        </div>
+      </li>
+
+      <li class="ch" id="ch-dnes">
+        <div class="ch-y" data-en="Now">Dnes</div>
+        <div class="ch-b rv">
+          <h3 data-en="My own events and AI">Vlastné eventy a AI</h3>
+          <div class="sk-tags"><a href="#viem" data-en="03 Event production">03 Event produkcia</a><a href="#viem" data-en="06 Marketing">06 Marketing</a><a href="#viem">07 DJing</a><a href="#viem" data-en="08 Apps">08 Appky</a></div>
+          <p data-en="I make my own things. GOSko, a Game of Skate series in Bratislava and Žilina that I co-organise and host. Drop Ups, my pop-up events on mobile stages, like KALAMITA, a winter rave under a bridge in Bratislava. And apps I build with AI.">Robím vlastné veci. GOSko, sériu Game of Skate v Bratislave a Žiline, ktorú spoluorganizujem a moderujem. Drop Ups, moje pop-up eventy na mobilných stageoch, napríklad KALAMITA, zimný rave pod mostom v Bratislave. A appky, ktoré staviam s AI.</p>
+          <ul class="facts">
+            <li><b>GOSko</b><span class="when">2026</span><span class="r" data-en="co-organiser and host of the Game of Skate series, own brand and partners">spoluorganizátor a moderátor série Game of Skate, vlastná značka a partneri</span></li>
+            <li><b>Drop Ups</b><span class="r" data-en="own pop-up events on mobile stages · KALAMITA: a winter rave under a bridge in Bratislava">vlastné pop-up eventy na mobilných stageoch · KALAMITA: zimný rave pod mostom v Bratislave</span></li>
+          </ul>
+          <div class="pols rv"><figure class="pol tape"><img src="../img/gosko-poster.webp" width="720" height="900" loading="lazy" alt="Plagát skate súťaže GOSko" data-en-alt="Poster for the GOSko skate contest"><figcaption data-en="The poster">Plagát</figcaption></figure><figure class="pol vid"><video muted loop playsinline preload="none" poster="../img/gosko-nalepky-poster.webp" aria-label="Ruka drží balík nálepiek GOSko" data-en-aria="A hand holding a stack of GOSko stickers"><source src="../vid/gosko-nalepky.mp4" type="video/mp4"></video><figcaption data-en="Stickers heading out">Nálepky idú von</figcaption></figure><figure class="pol wide"><img src="../img/gosko-mic.webp" width="1100" height="733" loading="lazy" alt="Robert s mikrofónom na skate súťaži" data-en-alt="Robert with a mic at a skate contest"><figcaption data-en="Hosting">Moderujem</figcaption></figure><figure class="pol wide"><img src="../img/thinking-laptop.webp" width="1100" height="733" loading="lazy" alt="Robert zamyslene pozerá do laptopu na evente" data-en-alt="Robert thinking over a laptop at an event"><figcaption data-en="Replying">Odpisujem</figcaption></figure><figure class="pol vid"><video muted loop playsinline preload="none" poster="../img/dropups-garage-poster.webp" aria-label="Drop Ups v garáži cez hľadáčik kamery" data-en-aria="Drop Ups in a garage through a camera viewfinder"><source src="../vid/dropups-garage.mp4" type="video/mp4"></video><figcaption data-en="Drop Ups in the garage">Drop Ups v garáži</figcaption></figure></div>
+          <p class="label pols-label" data-en="Apps I build with AI">Appky, ktoré staviam s AI</p>
+          <div class="apps">
+            <div class="app"><span class="state"><span class="dot" aria-hidden="true"></span>Live</span><b>Event Hub</b><p data-en="My own app for my work: schedule, trips, costs, payouts, garage, gear and stock in one place.">Moja appka na moju robotu: rozpis, jazdy, náklady, výplaty, garáž, technika aj sklad na jednom mieste.</p></div>
+            <div class="app"><span class="state"><span class="dot" aria-hidden="true"></span>Beta</span><b>Questwave</b><p data-en="One real-world quest a day for the whole world at once.">Jedna úloha v reálnom svete denne, pre celý svet naraz.</p><a href="https://offthewallhack.github.io/questwave/" target="_blank" rel="noopener" data-en="Try Questwave →">Vyskúšaj Questwave →</a></div>
+            <div class="app"><span class="state idle"><span class="dot" aria-hidden="true"></span>Coming soon · 70 %</span><b data-en="Game version of this site">Herná verzia webu</b><p data-en="Pick a character like in an old PS2 skate game.">Vyber si postavu ako v starej PS2 skate hre.</p></div>
+          </div>
+          <a class="back-link" href="../" data-en="Want something like this? See how I can help →">Chceš niečo podobné? Pozri, ako ti pomôžem →</a>
+        </div>
+      </li>
+
+    </ol>
+  </div>
+</section>
+
+<div class="band" aria-hidden="true"><div class="band-row" data-en="&lt;span&gt;FELI&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;SKATE&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;RAVE UNDER A BRIDGE&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;UFO&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;MANDALAS&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;DRUM &amp;amp; BASS&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;BRATISLAVA&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;FELI&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;SKATE&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;RAVE UNDER A BRIDGE&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;UFO&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;MANDALAS&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;DRUM &amp;amp; BASS&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt; &lt;span&gt;BRATISLAVA&lt;/span&gt;&lt;i&gt;✦&lt;/i&gt;"><span>FELI</span><i>✦</i> <span>SKATE</span><i>✦</i> <span>RAVE POD MOSTOM</span><i>✦</i> <span>UFO</span><i>✦</i> <span>MANDALY</span><i>✦</i> <span>DRUM &amp; BASS</span><i>✦</i> <span>BRATISLAVA</span><i>✦</i> <span>FELI</span><i>✦</i> <span>SKATE</span><i>✦</i> <span>RAVE POD MOSTOM</span><i>✦</i> <span>UFO</span><i>✦</i> <span>MANDALY</span><i>✦</i> <span>DRUM &amp; BASS</span><i>✦</i> <span>BRATISLAVA</span><i>✦</i></div></div>
+
+<!-- OFF THE CLOCK -->
+<section class="k-sec" id="mimo" aria-labelledby="off-title">
+  <div class="wrap">
+    <div class="k-head rv">
+      <p class="label" data-en="Off the clock">Mimo práce</p>
+      <h2 id="off-title" data-en="When I’m not working.">Keď práve nerobím.</h2>
+    </div>
+    <div class="wall rv"><figure class="pol tape"><img src="../img/cat.webp" width="600" height="800" loading="lazy" alt="Mačka Felícia zblízka" data-en-alt="Felícia the cat up close"><figcaption>Feli</figcaption></figure><figure class="pol"><img src="../img/mandalas.webp" width="675" height="900" loading="lazy" alt="Tri farebné ručne kreslené mandaly na stole" data-en-alt="Three colourful hand-drawn mandalas on a desk"><figcaption data-en="Just out of boredom">Len tak z nudy</figcaption></figure><figure class="pol wide tape"><img src="../img/ufo.webp" width="1000" height="675" loading="lazy" alt="Robert s prilbou vysoko nad Bratislavou" data-en-alt="Robert in a helmet high above Bratislava"><figcaption data-en="Up on UFO">Na UFO</figcaption></figure><figure class="pol sq"><img src="../img/grass-bw.webp" width="400" height="400" loading="lazy" alt="Čiernobiela fotka, Robert sedí v tráve a smeje sa" data-en-alt="Black-and-white photo of Robert sitting in the grass, laughing"><figcaption data-en="On a trip">Na výlete</figcaption></figure><figure class="pol"><img src="../img/namestie.webp" width="675" height="900" loading="lazy" alt="Robert ukazuje peace na námestí" data-en-alt="Robert showing a peace sign on a square"><figcaption>Peace</figcaption></figure></div>
+  </div>
+</section>
+
+<!-- DJ -->
+<section class="k-sec" id="dj" aria-labelledby="dj-title">
+  <div class="wrap dj">
+    <div class="dj-txt rv">
+      <p class="label">07 · DJing</p>
+      <h2 id="dj-title">Drum &amp; bass, jungle, <span class="soft">hip hop, rap, techno.</span></h2>
+      <p data-en="I DJ now and then, mostly on mobile stages in event cars. And I host, for example GOSko.">Občas hrám DJ sety, najčastejšie na mobilných stageoch v event autách. A moderujem, napríklad GOSko.</p>
+      <div class="actions"><a class="btn btn-green wa" href="#kontakt" data-wa-sk="DJ booking" data-wa-en="DJ booking" data-en="DJ booking on WhatsApp">DJ booking na WhatsApp</a><a class="btn" href="https://soundcloud.com/duriica" target="_blank" rel="noopener">SoundCloud →</a></div>
+      <div class="sc"><iframe title="SoundCloud: duriica" loading="lazy" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/duriica&amp;color=%231faf6f&amp;auto_play=false&amp;hide_related=true&amp;show_comments=false&amp;show_user=true&amp;show_reposts=false&amp;show_teaser=false"></iframe></div>
+    </div>
+    <div class="pols rv"><figure class="pol wide tape"><img src="../img/dj-booth.webp" width="1100" height="733" loading="lazy" alt="Robert s kamarátom za DJ pultom v event aute" data-en-alt="Robert and a friend behind the DJ decks in an event car"><figcaption data-en="Behind the decks with Piry">Za pultom s Pirym</figcaption></figure><figure class="pol"><img src="../img/dj-session.webp" width="675" height="900" loading="lazy" alt="Dvaja ľudia za DJ pultom v Red Bull priestore" data-en-alt="Two people behind the decks in a Red Bull space"><figcaption>DJ session</figcaption></figure></div>
+  </div>
+</section>
+
+<!-- OPEN TO WORK -->
+<section class="k-sec" id="praca" aria-labelledby="w-title">
+  <div class="wrap">
+    <div class="work rv">
+      <div>
+        <p class="label"><span class="dot" aria-hidden="true"></span><span data-en="Open to job offers">Otvorený aj pracovným ponukám</span></p>
+        <h2 id="w-title" data-en="Looking for someone in event production?">Hľadáš človeka do event produkcie?</h2>
+        <p data-en="Full-time is fine. Let’s talk.">Aj na plný úväzok. Pokecajme.</p>
+        <div class="actions">
+          <a class="btn btn-green" href="../cv-robert-durica.pdf" download data-en="Download CV (PDF)">Stiahni CV (PDF)</a>
+          <a class="btn" href="https://www.linkedin.com/in/durica" target="_blank" rel="noopener">LinkedIn →</a>
+        </div>
+      </div>
+      <div>
+        <p class="label" data-en="Full experience">Celá prax</p>
+        <ol class="tl">
+          <li><span class="y" data-en="2024 – now">2024 – dnes</span><span data-en="Red Bull, event car driver (Zubor, Sugga)">Red Bull, event car driver (Zubor, Sugga)</span></li>
+          <li><span class="y" data-en="now">dnes</span><span data-en="Own events: GOSko, KALAMITA, Drop Ups">Vlastné eventy: GOSko, KALAMITA, Drop Ups</span></li>
+          <li><span class="y">2024 – 25</span><span data-en="Futbalic: logo, marketing, match production">Futbalic: logo, marketing, produkcia zápasov</span></li>
+          <li><span class="y">2023</span><span data-en="RECIN, camera and live graphics; poker tournaments in Cyprus (EPT), WPT Prime, Champion of Champions Tour">RECIN, kamera a živá grafika; pokrové turnaje na Cypre (EPT), WPT Prime, Champion of Champions Tour</span></li>
+          <li><span class="y">2022</span><span data-en="ESL IEM Cologne, Drone Champions League, CG operator">ESL IEM Cologne, Drone Champions League, CG operátor</span></li>
+          <li><span class="y">2020 – 23</span><span data-en="REPUBLEAGUE, esports brand co-founder">REPUBLEAGUE, spoluzakladateľ esports značky</span></li>
+          <li><span class="y">2019 – 20</span><span data-en="Motor-Car Group, online marketing">Motor-Car Group, online marketing</span></li>
+          <li><span class="y" data-en="2011 – now">2011 – dnes</span><span data-en="142 design, graphics and print">142 design, grafika a tlačoviny</span></li>
+          <li><span class="y">2013 – 17</span><span data-en="Pan-European University, BA mass communication">Paneurópska VŠ, Bc. masmediálna komunikácia</span></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="k-end" id="kontakt" aria-labelledby="c-title">
+  <canvas class="field-end" aria-hidden="true"></canvas>
+  <div class="wrap rv">
+    <p class="status label"><span class="dot" aria-hidden="true"></span><span data-en="Available now">Som k dispozícii</span></p>
+    <h2 id="c-title"><span data-en="Message me,">Napíš mi,</span><br><span class="soft" data-en="we’ll sort it all out.">všetko vyriešime.</span></h2>
+    <p class="lead" data-en="Work, events, DJ booking or AI. Write a few sentences and I’ll get back to you.">Práca, eventy, DJ booking alebo AI. Napíš pár viet a ozvem sa.</p>
+    <div class="actions">
+      <a class="btn btn-green wa" href="#kontakt">WhatsApp</a>
+      <a class="btn" href="../" data-en="Need help with AI? Services →">Potrebuješ pomôcť s AI? Služby →</a>
+    </div>
+    <ul class="socials">
+      <li><a href="https://www.linkedin.com/in/durica" target="_blank" rel="noopener">LinkedIn</a></li>
+      <li><a href="https://www.instagram.com/duriica" target="_blank" rel="noopener">Instagram</a></li>
+      <li><a href="https://github.com/OffTheWallhack" target="_blank" rel="noopener">GitHub</a></li>
+      <li><a href="https://soundcloud.com/duriica" target="_blank" rel="noopener">SoundCloud</a></li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Fotka" data-en-aria="Photo"><span class="lb-count"></span><button class="lb-x" type="button" aria-label="Zavrieť">✕</button><button class="lb-p" type="button" aria-label="Predchádzajúca">‹</button><div class="lb-stage"></div><button class="lb-n" type="button" aria-label="Ďalšia">›</button><p class="lb-cap"></p></div>
+<footer class="foot">
+  <div class="wrap">
+    <p data-en="Services invoiced by 142 design s.r.o.">Služby fakturuje 142 design s.r.o.</p>
+    <p>© 2026 Robert Ďurica</p>
+  </div>
+</footer>
+
+<script src="../assets/common.js"></script>
+<script>
+(function () {
+  var RD = window.RD, still = RD.still;
+  RD.field(document.querySelector(".k-hero .field-dark"), { ink: "rgba(237,237,232,", hot: "#1FAF6F", strength: .4,
+    torus: { x: .8, y: .5, size: .7, mx: .5, my: .82, msize: .95, alpha: .32, ring: true } });
+  RD.field(document.querySelector(".field-end"), { ink: "rgba(237,237,232,", hot: "#1FAF6F", strength: .25,
+    torus: { x: .8, y: .5, size: .85, mx: .5, my: .8, msize: .8, alpha: .3 } });
+
+  // stagger the photos as they come in
+  document.querySelectorAll(".pols, .wall").forEach(function (g) { [].forEach.call(g.children, function (c, i) { c.style.setProperty("--i", i); }); });
+
+  // hero: the big name and the figure drift as you scroll
+  var name = document.querySelector(".k-name"), cut = document.querySelector(".k-cut"), note = document.querySelector(".k-note");
+  if (!still) {
+    var ticking = false;
+    function px() {
+      ticking = false;
+      var y = window.scrollY, vh = window.innerHeight; if (y > vh * 1.4) return;
+      if (name) name.style.transform = "translate3d(" + (-y * 0.35).toFixed(1) + "px,0,0)";
+      if (cut) cut.style.transform = "translate3d(0," + (y * 0.16).toFixed(1) + "px,0)";
+      if (note) note.style.translate = "0 " + (y * 0.3).toFixed(1) + "px";
+    }
+    window.addEventListener("scroll", function () { if (!ticking) { ticking = true; requestAnimationFrame(px); } }, { passive: true });
+    px();
+  }
+
+  // page transition to/from the services page: the photo of me flies across
+  var vtEls = [cut];
+  window.addEventListener("pageswap", function (e) { if (e.viewTransition) RD.vtPick(vtEls); });
+  window.addEventListener("pagereveal", function (e) {
+    if (!e.viewTransition) return;
+    document.documentElement.classList.add("vt-in");
+    RD.vtPick(vtEls);
+    e.viewTransition.finished.then(function () { if (cut) cut.style.viewTransitionName = ""; });
+  });
+})();
+</script>
+</body>
+</html>

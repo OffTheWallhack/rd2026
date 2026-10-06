@@ -25,7 +25,7 @@ T = {
  sk_h='Skillset', skills=[
   ('Graphic design','since 2011','Adobe Photoshop, Illustrator and Premiere Pro. Graphics and design for all kinds of media.'),
   ('Marketing','since 2019','Strategy and brand building, mostly esports and gaming, but also car dealerships, hotels and restaurants.'),
-  ('AI tools','since 2022','Claude Code, Lovable, Grok, ChatGPT, Midjourney. I build working apps with AI, like Event Hub and Questwave.'),
+  ('AI tools','since 2022','Claude Code, Grok, ChatGPT, Midjourney. I build working apps with AI, like Event Hub and Questwave.'),
   ('Event production','since 2024','Concept, tech, logistics and stage building, from pop-ups to big brand events.'),
   ('CG design &amp; operation','2020 – 2023','Live graphics in broadcasts and events with CharacterWorks, NewBlue and GT Title Designer, driven by live data.'),
   ('Live-stream production','since 2020','vMix and OBS Studio, camera work and editing.'),
@@ -60,7 +60,7 @@ T = {
  sk_h='Zručnosti', skills=[
   ('Grafický dizajn','od 2011','Adobe Photoshop, Illustrator a Premiere Pro. Grafika a dizajn pre všetky médiá.'),
   ('Marketing','od 2019','Stratégia a budovanie značky, hlavne esports a gaming, ale aj autosalóny, hotely a reštaurácie.'),
-  ('AI nástroje','od 2022','Claude Code, Lovable, Grok, ChatGPT, Midjourney. S AI staviam fungujúce appky, napríklad Event Hub a Questwave.'),
+  ('AI nástroje','od 2022','Claude Code, Grok, ChatGPT, Midjourney. S AI staviam fungujúce appky, napríklad Event Hub a Questwave.'),
   ('Event produkcia','od 2024','Koncept, technika, logistika a stavba stage, od pop-upov po veľké eventy značiek.'),
   ('CG dizajn a operátor','2020 – 2023','Live grafika do prenosov a eventov v CharacterWorks, NewBlue a GT Title Designer, poháňaná živými dátami.'),
   ('Produkcia livestreamov','od 2020','vMix a OBS Studio, kamera a strih.'),

@@ -168,17 +168,26 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.4rem); line-height: 1.04;
 .kid-stats b { display: block; font-size: clamp(1.6rem, 4vw, 2.2rem); line-height: 1; letter-spacing: -.03em; color: var(--pulse); margin-bottom: .35rem; }
 .kid-stats span { display: block; font-size: .88rem; color: var(--night-muted); line-height: 1.3; }
 .kid-stats li:nth-child(2) b { color: #E5222B; }
-.clubs { list-style: none; margin: 0 0 1.25rem; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; max-width: 46rem; }
-.club { border: 1px solid var(--k-line); border-radius: 10px; background: var(--k-2); padding: .9rem .8rem; display: flex; flex-direction: column; gap: .6rem; }
-.club-art { display: flex; align-items: center; justify-content: center; gap: .9rem; min-height: 6rem; }
-.club-art .kit { width: 3.8rem; height: auto; filter: drop-shadow(0 6px 10px rgba(0,0,0,.45)); }
-.club-art .crests { display: flex; align-items: center; gap: .3rem; }
-.club-art .crests i { font-style: normal; color: var(--night-muted); font: 600 1rem var(--mono); }
-.club-art .crest { width: 3.6rem; height: 3.6rem; border-radius: 10px; background: #fff; padding: 3px; box-shadow: 0 6px 12px rgba(0,0,0,.4); }
-.club-t b { display: block; color: #fff; font-size: .95rem; line-height: 1.2; }
-.club-t .when { display: block; font: .72rem var(--mono); color: var(--pulse); margin-top: .15rem; }
-.club-t .r { display: block; color: var(--night-muted); font-size: .85rem; line-height: 1.35; margin-top: .25rem; }
-@media (max-width: 30rem) { .clubs { grid-template-columns: 1fr; } .club { flex-direction: row; align-items: center; } .club-art { flex: none; gap: .5rem; min-height: 0; } .club-art .kit { width: 2.8rem; } .club-art .crest { width: 2.6rem; height: 2.6rem; } .club-art .crests i { font-size: .8rem; } }
+.clubs { list-style: none; margin: .4rem 0 .6rem; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 9.5rem)); gap: .9rem; perspective: 900px; }
+.hcard { position: relative; aspect-ratio: 5 / 7; border-radius: 10px; padding: 5px; background: linear-gradient(145deg, var(--c), color-mix(in srgb, var(--c) 55%, #000)); box-shadow: 0 12px 26px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.25); transform-style: preserve-3d; transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform .5s cubic-bezier(.2,.8,.2,1); cursor: grab; touch-action: pan-y; }
+.hcard.on { transition: transform .08s linear; }
+.hcard.on .hc-foil { opacity: .38; }
+.hc-in { position: relative; height: 100%; border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: .45rem .35rem .4rem; background: radial-gradient(120% 80% at 50% 35%, #2a2c2a, #121312 70%); }
+.hc-top .crests { display: flex; align-items: center; gap: .2rem; }
+.hc-top .crests i { font: 600 .7rem var(--mono); color: #bbb; font-style: normal; }
+.hc-top .crest { width: 1.9rem; height: 1.9rem; border-radius: 6px; background: #fff; padding: 2px; box-shadow: 0 3px 8px rgba(0,0,0,.5); }
+.hc-kit { flex: 1; display: flex; align-items: center; justify-content: center; }
+.hc-kit .kit { width: 3.4rem; height: auto; filter: drop-shadow(0 6px 8px rgba(0,0,0,.6)); }
+.hc-name { width: 100%; text-align: center; background: var(--c); color: var(--c2); border-radius: 3px; padding: .2rem .25rem; }
+.hc-name b { display: block; font: 700 .58rem/1.15 var(--mono); letter-spacing: .02em; text-transform: uppercase; }
+.hc-yr { display: block; font: 500 .52rem var(--mono); opacity: .8; }
+.hc-foil, .hc-glare { position: absolute; inset: 0; border-radius: 10px; pointer-events: none; }
+.hc-foil { mix-blend-mode: color-dodge; opacity: .16; transition: opacity .3s; background: repeating-linear-gradient(115deg, #ff6ad5 0%, #c774e8 7%, #8795e8 14%, #94d0ff 21%, #7dffb0 28%, #ffe66d 35%, #ff6ad5 42%); background-size: 300% 300%; background-position: var(--px, 50%) var(--py, 50%); }
+.hc-glare { background: radial-gradient(circle at var(--gx, 50%) var(--gy, 30%), rgba(255,255,255,.45), rgba(255,255,255,0) 45%); mix-blend-mode: overlay; }
+.hc-artmedia .hc-name { box-shadow: inset 0 0 0 1px #111; }
+@media (prefers-reduced-motion: no-preference) { .hcard:not(.on) .hc-foil { animation: foilDrift 6s ease-in-out infinite alternate; } @keyframes foilDrift { from { background-position: 0% 30%; } to { background-position: 100% 70%; } } }
+.clubs-note { margin: 0 0 1.25rem; color: var(--night-muted); font-size: .9rem; }
+@media (max-width: 30rem) { .clubs { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .55rem; } .hc-top .crest { width: 1.5rem; height: 1.5rem; } .hc-kit .kit { width: 2.7rem; } .hc-name b { font-size: .5rem; } }
 .ch-note { font: 700 1.45rem/1.1 var(--hand); color: var(--marker); margin: 0 0 1rem; transform: rotate(-1.5deg); display: inline-block; }
 
 /* polaroids: real instant-film look, photos in black and white */
@@ -411,29 +420,30 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.4rem); line-height: 1.04;
             <li><b>6</b><span data-en="years old at my first football club">rokov, keď som začal s futbalom</span></li>
           </ul>
           <p class="label pols-label" data-en="Football">Futbal</p>
-          <ul class="clubs">
-            <li class="club"><div class="club-art"><span class="crests"><img class="crest" src="../img/club-tj-rapid.webp" width="160" height="160" loading="lazy" alt="Logo TJ Rapid Bratislava"><i>/</i><img class="crest" src="../img/club-fk-rapid.webp" width="160" height="160" loading="lazy" alt="Logo FK Rapid Bratislava"></span><svg class="kit" viewBox="0 0 80 112" aria-hidden="true"><defs><clipPath id="shr"><path d="M28 4h24l10 4 14 12-8 12-8-5v29H20V27l-8 5-8-12L18 8z"/></clipPath></defs>
+          <ul class="clubs holo-cards">
+            <li class="hcard hc-rapid" style="--c:#D7141A;--c2:#111"><div class="hc-in"><div class="hc-top"><span class="crests"><img class="crest" src="../img/club-tj-rapid.webp" width="160" height="160" loading="lazy" alt="Logo TJ Rapid Bratislava"><i>/</i><img class="crest" src="../img/club-fk-rapid.webp" width="160" height="160" loading="lazy" alt="Logo FK Rapid Bratislava"></span></div><div class="hc-kit"><svg class="kit" viewBox="0 0 80 112" aria-hidden="true"><defs><clipPath id="shr"><path d="M28 4h24l10 4 14 12-8 12-8-5v29H20V27l-8 5-8-12L18 8z"/></clipPath></defs>
 <g clip-path="url(#shr)"><rect width="80" height="70" fill="#D7141A"/><rect x="5" y="0" width="4" height="70" fill="#111"/><rect x="13" y="0" width="4" height="70" fill="#111"/><rect x="21" y="0" width="4" height="70" fill="#111"/><rect x="29" y="0" width="4" height="70" fill="#111"/><rect x="37" y="0" width="4" height="70" fill="#111"/><rect x="45" y="0" width="4" height="70" fill="#111"/><rect x="53" y="0" width="4" height="70" fill="#111"/><rect x="61" y="0" width="4" height="70" fill="#111"/><rect x="69" y="0" width="4" height="70" fill="#111"/></g>
 <path d="M28 4h24l10 4 14 12-8 12-8-5v29H20V27l-8 5-8-12L18 8z" fill="none" stroke="#2a2a2a" stroke-width="1.5"/>
 <path d="M33 4c2 5 12 5 14 0" fill="none" stroke="#2a2a2a" stroke-width="2"/>
 <path d="M20 60h40l2 20H43l-3-7-3 7H18z" fill="#111" stroke="#2a2a2a" stroke-width="1.5"/>
 <rect x="22" y="84" width="12" height="22" rx="2" fill="#D7141A" stroke="#2a2a2a" stroke-width="1.5"/><rect x="46" y="84" width="12" height="22" rx="2" fill="#D7141A" stroke="#2a2a2a" stroke-width="1.5"/>
-</svg></div><div class="club-t"><b>TJ / FK Rapid Bratislava</b><span class="when" data-en="from age 6">od 6 rokov</span><span class="r" data-en="where it all started, a red and black team">tu to celé začalo, červeno-čierny tím</span></div></li>
-            <li class="club"><div class="club-art"><span class="crests"><img class="crest" src="../img/club-artmedia.webp" width="160" height="160" loading="lazy" alt="Logo FC Artmedia Bratislava"></span><svg class="kit" viewBox="0 0 80 112" aria-hidden="true"><defs><clipPath id="sha"><path d="M28 4h24l10 4 14 12-8 12-8-5v29H20V27l-8 5-8-12L18 8z"/></clipPath></defs>
+</svg></div><div class="hc-name"><b>TJ / FK Rapid Bratislava</b><span class="hc-yr" data-en="from 6">od 6</span></div></div><i class="hc-foil" aria-hidden="true"></i><i class="hc-glare" aria-hidden="true"></i></li>
+            <li class="hcard hc-artmedia" style="--c:#EDEDE8;--c2:#111"><div class="hc-in"><div class="hc-top"><span class="crests"><img class="crest" src="../img/club-artmedia.webp" width="160" height="160" loading="lazy" alt="Logo FC Artmedia Bratislava"></span></div><div class="hc-kit"><svg class="kit" viewBox="0 0 80 112" aria-hidden="true"><defs><clipPath id="sha"><path d="M28 4h24l10 4 14 12-8 12-8-5v29H20V27l-8 5-8-12L18 8z"/></clipPath></defs>
 <g clip-path="url(#sha)"><rect width="80" height="70" fill="#F4F4F0"/><rect x="5" y="0" width="4" height="70" fill="#111"/><rect x="13" y="0" width="4" height="70" fill="#111"/><rect x="21" y="0" width="4" height="70" fill="#111"/><rect x="29" y="0" width="4" height="70" fill="#111"/><rect x="37" y="0" width="4" height="70" fill="#111"/><rect x="45" y="0" width="4" height="70" fill="#111"/><rect x="53" y="0" width="4" height="70" fill="#111"/><rect x="61" y="0" width="4" height="70" fill="#111"/><rect x="69" y="0" width="4" height="70" fill="#111"/></g>
 <path d="M28 4h24l10 4 14 12-8 12-8-5v29H20V27l-8 5-8-12L18 8z" fill="none" stroke="#2a2a2a" stroke-width="1.5"/>
 <path d="M33 4c2 5 12 5 14 0" fill="none" stroke="#2a2a2a" stroke-width="2"/>
 <path d="M20 60h40l2 20H43l-3-7-3 7H18z" fill="#111" stroke="#2a2a2a" stroke-width="1.5"/>
 <rect x="22" y="84" width="12" height="22" rx="2" fill="#F4F4F0" stroke="#2a2a2a" stroke-width="1.5"/><rect x="46" y="84" width="12" height="22" rx="2" fill="#F4F4F0" stroke="#2a2a2a" stroke-width="1.5"/>
-</svg></div><div class="club-t"><b>Artmedia Bratislava</b><span class="r" data-en="Rapid merged into it, I played in the Artmedia shirt">Rapid sa spojil s Artmediou, hral som v jej drese</span></div></li>
-            <li class="club"><div class="club-art"><span class="crests"><img class="crest" src="../img/club-domino.webp" width="160" height="160" loading="lazy" alt="Logo SDM Domino"></span><svg class="kit" viewBox="0 0 80 112" aria-hidden="true"><defs><clipPath id="shd"><path d="M28 4h24l10 4 14 12-8 12-8-5v29H20V27l-8 5-8-12L18 8z"/></clipPath></defs>
+</svg></div><div class="hc-name"><b>Artmedia Bratislava</b></div></div><i class="hc-foil" aria-hidden="true"></i><i class="hc-glare" aria-hidden="true"></i></li>
+            <li class="hcard hc-domino" style="--c:#FFD400;--c2:#1C3B7A"><div class="hc-in"><div class="hc-top"><span class="crests"><img class="crest" src="../img/club-domino.webp" width="160" height="160" loading="lazy" alt="Logo SDM Domino"></span></div><div class="hc-kit"><svg class="kit" viewBox="0 0 80 112" aria-hidden="true"><defs><clipPath id="shd"><path d="M28 4h24l10 4 14 12-8 12-8-5v29H20V27l-8 5-8-12L18 8z"/></clipPath></defs>
 <g clip-path="url(#shd)"><rect width="80" height="70" fill="#FFD400"/></g>
 <path d="M28 4h24l10 4 14 12-8 12-8-5v29H20V27l-8 5-8-12L18 8z" fill="none" stroke="#2a2a2a" stroke-width="1.5"/>
 <path d="M33 4c2 5 12 5 14 0" fill="none" stroke="#2a2a2a" stroke-width="2"/>
 <path d="M20 60h40l2 20H43l-3-7-3 7H18z" fill="#8EC5FF" stroke="#2a2a2a" stroke-width="1.5"/>
 <rect x="22" y="84" width="12" height="22" rx="2" fill="#F4F4F0" stroke="#2a2a2a" stroke-width="1.5"/><rect x="46" y="84" width="12" height="22" rx="2" fill="#F4F4F0" stroke="#2a2a2a" stroke-width="1.5"/>
-</svg></div><div class="club-t"><b>SDM Domino</b><span class="r" data-en="then on to Trnávka">potom ďalej na Trnávku</span></div></li>
+</svg></div><div class="hc-name"><b>SDM Domino</b></div></div><i class="hc-foil" aria-hidden="true"></i><i class="hc-glare" aria-hidden="true"></i></li>
           </ul>
+          <p class="clubs-note" data-en="Rapid → merged into Artmedia → then on to SDM Domino in Trnávka.">Rapid → spojil sa s Artmediou → potom ďalej SDM Domino na Trnávke.</p>
           <p class="label pols-label" data-en="School">Škola</p>
           <ul class="facts">
             <li><b data-en="Primary school and grammar school">Základka a gympel</b><span class="when" data-en="until 2013">do 2013</span><span class="r">Bratislava</span></li>
@@ -656,6 +666,25 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.4rem); line-height: 1.04;
     RD.onLang(txt);
     b.addEventListener("click", function () { figs[3].click(); });
     g.appendChild(b);
+  });
+
+  // holo club cards: tilt and shine follow the pointer or finger
+  document.querySelectorAll(".hcard").forEach(function (cd) {
+    function move(e) {
+      var r = cd.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+      if (x < 0 || x > 1 || y < 0 || y > 1) return;
+      cd.classList.add("on");
+      cd.style.setProperty("--ry", ((x - .5) * 26).toFixed(1) + "deg");
+      cd.style.setProperty("--rx", ((.5 - y) * 26).toFixed(1) + "deg");
+      cd.style.setProperty("--px", (x * 100).toFixed(0) + "%"); cd.style.setProperty("--py", (y * 100).toFixed(0) + "%");
+      cd.style.setProperty("--gx", (x * 100).toFixed(0) + "%"); cd.style.setProperty("--gy", (y * 100).toFixed(0) + "%");
+    }
+    function reset() { cd.classList.remove("on"); ["--rx", "--ry", "--px", "--py", "--gx", "--gy"].forEach(function (p) { cd.style.removeProperty(p); }); }
+    if (still) return;
+    cd.addEventListener("pointermove", move);
+    cd.addEventListener("pointerdown", move);
+    cd.addEventListener("pointerleave", reset);
+    cd.addEventListener("pointerup", function (e) { if (e.pointerType !== "mouse") setTimeout(reset, 600); });
   });
 
   // stagger the photos as they come in

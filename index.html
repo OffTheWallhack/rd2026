@@ -455,10 +455,15 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.2rem); line-height: 1.05;
 .door-ring, .door-ring-front { position: absolute; left: -10%; right: -10%; top: 0; bottom: 0; width: 120%; height: 100%; pointer-events: none; }
 .door-ring { z-index: 1; } .door-ring-front { z-index: 3; }
 .door-stk { position: absolute; z-index: 4; font: 600 .82rem var(--mono); padding: .35rem .7rem; border-radius: 999px; white-space: nowrap; transform: rotate(var(--r)); box-shadow: 0 6px 14px rgba(0,0,0,.4); }
-.door-stk.s1 { left: 4%; top: 16%; --r: -4deg; background: #F3EFE4; color: #111211; }
-.door-stk.s2 { right: 4%; top: 36%; --r: 3deg; background: var(--pulse); color: #0B1A12; }
-.door-stk.s3 { left: 2%; top: 56%; --r: -2deg; background: #6E7BFF; color: #fff; }
-@media (max-width: 55.99rem) { .door-fig { height: clamp(22rem, 98vw, 27rem); } .door-txt { padding-bottom: .5rem; } .door-stk { font-size: .74rem; } .door-stk.s3 { top: 60%; } }
+.door-stk.s1 { left: 2%; top: 6%; --r: -4deg; background: #F3EFE4; color: #111211; }
+.door-stk.s2 { right: 2%; top: 12%; --r: 3deg; background: var(--pulse); color: #0B1A12; }
+.door-stk.s3 { left: 8%; top: 22%; --r: 2deg; background: #E9F06A; color: #111211; }
+.door-stk.s4 { right: 4%; top: 28%; --r: -3deg; background: #6E7BFF; color: #fff; }
+.door-stk.s5 { left: 1%; top: 38%; --r: -2deg; background: #D62B3A; color: #fff; }
+.door-stk.s6 { right: 1%; top: 44%; --r: 4deg; background: #F3EFE4; color: #111211; }
+.door-stk.s7 { left: 6%; top: 54%; --r: 3deg; background: var(--pulse); color: #0B1A12; }
+.door-stk.s8 { right: 6%; top: 60%; --r: -3deg; background: #6E7BFF; color: #fff; }
+@media (max-width: 55.99rem) { .door-fig { height: clamp(22rem, 98vw, 27rem); } .door-txt { padding-bottom: .5rem; } .door-stk { font-size: .68rem; padding: .28rem .55rem; } }
 @media (prefers-reduced-motion: no-preference) { .door-stk { transition: transform .35s cubic-bezier(.2,.8,.2,1); } .door-fig:hover .door-stk { transform: rotate(0deg) translateY(-4px); } }
 .door-cut { position: absolute; left: 50%; bottom: 22%; height: 76%; transform: translateX(-50%); z-index: 2; }
 .door-cut img { height: 100%; width: auto; }
@@ -689,8 +694,13 @@ html.vt-in .hero-cut img { animation: none !important; }
       <span class="door-cut"><img src="img/hero-cut.webp" width="373" height="1288" loading="lazy" alt=""></span>
       <canvas class="door-ring-front"></canvas>
       <span class="door-stk s1">event car driver</span>
-      <span class="door-stk s2">DJ</span>
-      <span class="door-stk s3">de_westwood enjoyer</span>
+      <span class="door-stk s2">usage drainer</span>
+      <span class="door-stk s3">DJ</span>
+      <span class="door-stk s4">life enjoyer</span>
+      <span class="door-stk s5">red bull addict</span>
+      <span class="door-stk s6">vibecoder</span>
+      <span class="door-stk s7">collector</span>
+      <span class="door-stk s8">ex-gamer</span>
     </a>
   </div>
 </section>

@@ -163,6 +163,11 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.4rem); line-height: 1.04;
 .facts .when { font: .75rem var(--mono); color: var(--pulse); grid-column: 2; grid-row: 1; text-align: right; }
 .facts .lnk { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .3rem; }
 .facts .lnk .yt { margin: 0; }
+.kid-stats { list-style: none; margin: .25rem 0 1.25rem; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; max-width: 40rem; }
+.kid-stats li { border: 1px solid var(--k-line); border-radius: 10px; padding: .8rem .9rem; background: var(--k-2); }
+.kid-stats b { display: block; font-size: clamp(1.6rem, 4vw, 2.2rem); line-height: 1; letter-spacing: -.03em; color: var(--pulse); margin-bottom: .35rem; }
+.kid-stats span { display: block; font-size: .88rem; color: var(--night-muted); line-height: 1.3; }
+.kid-stats li:nth-child(2) b { color: #E5222B; }
 .ch-note { font: 700 1.45rem/1.1 var(--hand); color: var(--marker); margin: 0 0 1rem; transform: rotate(-1.5deg); display: inline-block; }
 
 /* polaroids: real instant-film look, photos in black and white */
@@ -388,8 +393,21 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.4rem); line-height: 1.04;
         <div class="ch-y">1995</div>
         <div class="ch-b rv">
           <h3 data-en="Born in Bratislava">Narodil som sa v Bratislave</h3>
-          <p data-en="Ladislav Novomeský grammar school, then media at the Pan-European University. Bratislava is where most of this story happens.">Gymnázium Ladislava Novomeského, potom masmédiá na Paneurópskej. V Bratislave sa odohráva väčšina tohto príbehu.</p>
+          <p data-en="A kid who never sat still. Football from the age of six, and everything with wheels in between.">Decko, ktoré nikdy neposedelo. Od šiestich futbal a medzi tým všetko, čo má kolesá.</p>
+          <ul class="kid-stats">
+            <li><b>2×</b><span data-en="broken head">rozbitá hlava</span></li>
+            <li><b>~150</b><span data-en="crashes on a scooter, bike or skates">úrazov na kolobežke, bicykli a korčuliach</span></li>
+            <li><b>6</b><span data-en="years old at my first football club">rokov, keď som začal s futbalom</span></li>
+          </ul>
+          <p class="label pols-label" data-en="Football">Futbal</p>
           <ul class="facts">
+            <li><b>FK Rapid Bratislava</b><span class="when" data-en="from age 6">od 6 rokov</span><span class="r" data-en="where it all started, a red and black team">tu to celé začalo, červeno-čierny tím</span></li>
+            <li><b>Artmedia Bratislava</b><span class="r" data-en="Rapid merged into it, so I played in the Artmedia shirt">Rapid sa spojil s Artmediou, takže som hral v jej drese</span></li>
+            <li><b>SDM Domino</b><span class="r" data-en="then on to Trnávka">potom ďalej na Trnávku</span></li>
+          </ul>
+          <p class="label pols-label" data-en="School">Škola</p>
+          <ul class="facts">
+            <li><b data-en="Ladislav Novomeský grammar school">Gymnázium Ladislava Novomeského</b><span class="r">Bratislava</span></li>
             <li><b data-en="Pan-European University">Paneurópska vysoká škola</b><span class="when">2013–2017</span><span class="r" data-en="Bachelor’s in mass communication">Bc. masmediálna komunikácia</span></li>
           </ul>
         </div>

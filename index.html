@@ -456,11 +456,16 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.2rem); line-height: 1.05;
 .door-ring { z-index: 1; } .door-ring-front { z-index: 3; }
 .door-tags { position: absolute; z-index: 4; left: 0; top: 14%; width: 44%; list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .35rem .3rem; }
 .door-tags li { font: 600 .74rem var(--mono); padding: .26rem .55rem; border-radius: 999px; white-space: nowrap; transform: rotate(var(--r, 0deg)); box-shadow: 0 6px 14px rgba(0,0,0,.4); }
-.door-tags li:nth-child(1), .door-tags li:nth-child(6) { background: #F3EFE4; color: #111211; }
-.door-tags li:nth-child(2), .door-tags li:nth-child(7) { background: var(--pulse); color: #0B1A12; }
-.door-tags li:nth-child(3), .door-tags li:nth-child(8) { background: #E9F06A; color: #111211; }
-.door-tags li:nth-child(4) { background: #6E7BFF; color: #fff; }
-.door-tags li:nth-child(5) { background: #D62B3A; color: #fff; }
+/* personal tags: each one in its own colours */
+.door-tags li:nth-child(1) { background: #111211; color: #FFD400; box-shadow: inset 0 0 0 2px #FFD400, 0 6px 14px rgba(0,0,0,.4); }
+.door-tags li:nth-child(2) { background: linear-gradient(90deg, #E5222B 0 22%, #9E0F16 22%); color: #fff; box-shadow: inset 0 0 0 2px #FF4A4F, 0 6px 14px rgba(0,0,0,.4); }
+.door-tags li:nth-child(3) { background: #FFD400; color: #111211; box-shadow: inset 0 0 0 2.5px #111211, 0 6px 14px rgba(0,0,0,.4); }
+.door-tags li:nth-child(4) { background: linear-gradient(90deg, #A9D8FF, #FFB3D9); color: #2B2350; }
+.door-tags li:nth-child(5) { background: linear-gradient(180deg, #1C2B6B, #0E1A4A); color: #D7DCE4; box-shadow: inset 0 0 0 2px #B8BFC9, 0 6px 14px rgba(0,0,0,.4); }
+.door-tags li:nth-child(6) { background: #2B2D2A; color: #39FF88; box-shadow: inset 0 0 0 1px #4A4D48, 0 6px 14px rgba(0,0,0,.4); }
+.door-tags li:nth-child(6)::before { content: "> "; color: #8A8D86; }
+.door-tags li:nth-child(7) { background: #B3121B; color: #F5C542; box-shadow: inset 0 0 0 2px #F5C542, 0 6px 14px rgba(0,0,0,.4); }
+.door-tags li:nth-child(8) { background: #5E615C; color: #F2F2EE; }
 .door-tags li:nth-child(1) { --r: -4deg; } .door-tags li:nth-child(2) { --r: 3deg; } .door-tags li:nth-child(3) { --r: -2deg; } .door-tags li:nth-child(4) { --r: 4deg; }
 .door-tags li:nth-child(5) { --r: -3deg; } .door-tags li:nth-child(6) { --r: 2deg; } .door-tags li:nth-child(7) { --r: -4deg; } .door-tags li:nth-child(8) { --r: 3deg; }
 @media (prefers-reduced-motion: no-preference) {

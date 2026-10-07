@@ -46,6 +46,7 @@
         // on a computer, hovering "downloads" shows the files right away
         var wrap = document.createElement("span"); wrap.className = "nav-dd"; wrap.appendChild(a);
         wrap.insertAdjacentHTML("beforeend", "<span class='dd'>" +
+          "<a href='" + ROOT + "stiahni/ai-prirucka.pdf' download='AI-prirucka-Robert-Durica.pdf'><b data-en='AI handbook'>AI príručka</b><span data-en='AI in plain words, 17 pages'>AI po ľudsky, 17 strán</span></a>" +
           "<a href='" + ROOT + "na-stiahnutie/checklist-automatizacia.pdf' download><b>Checklist</b><span data-en='What to automate in a company'>Čo vo firme zautomatizovať</span></a>" +
           "<a href='" + ROOT + "na-stiahnutie/bezpecne-s-ai.pdf' download><b data-en='Safe with AI'>Bezpečne s AI</b><span data-en='10 rules for your team'>10 pravidiel pre tím</span></a>" +
           "<a href='" + ROOT + "na-stiahnutie/'><b data-en='All files →'>Všetky súbory →</b><span data-en='incl. my CV'>aj moje CV</span></a></span>");

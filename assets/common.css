@@ -240,3 +240,16 @@ html.si .cust-pop .aisi .on { color: var(--pulse-ink); }
   html.has-tabbar body { padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px)); }
   .aisi-toast { bottom: calc(5.4rem + env(safe-area-inset-bottom, 0px)); }
 }
+/* downloads */
+.dl-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 28rem), 1fr)); align-items: start; }
+.dl-card { display: grid; grid-template-columns: 7.5rem 1fr; gap: 1rem; padding: .8rem; border: 1.5px solid var(--ink); border-radius: 14px; background: #fff; box-shadow: 5px 5px 0 var(--pulse); }
+.dl-thumb img { width: 100%; border-radius: 6px; border: 1px solid var(--line); }
+.dl-txt { display: grid; gap: .45rem; align-content: start; }
+.dl-txt .label { margin: 0; color: var(--pulse-ink); }
+.dl-txt h3 { margin: 0; font-size: 1.25rem; letter-spacing: -.02em; line-height: 1.15; }
+.dl-txt p { margin: 0; font-size: .95rem; color: var(--muted); line-height: 1.5; }
+.dl-txt .btn { justify-self: start; margin-top: .3rem; }
+.dl-soon { min-height: 5rem; border: 1.5px dashed var(--line); border-radius: 14px; display: flex; align-items: center; justify-content: center; gap: .6rem; font: 500 .8rem var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+@media (min-width: 48rem) { .dl-card { grid-template-columns: 9.5rem 1fr; } .dl-soon { align-self: stretch; } }
+.dl-all { text-decoration: none; color: var(--ink); border-color: var(--ink); }
+.dl-all:hover { border-style: solid; background: #EAF7EF; }

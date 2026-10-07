@@ -129,3 +129,10 @@
 .prose h3 { font-size: 1.15rem; letter-spacing: -.01em; margin: 1.6rem 0 .5rem; }
 .prose .warn { margin: 1.2rem 0; }
 .mp-all { margin: 1rem 0 0; }
+/* simple vertical timeline */
+.prose .tl { list-style: none; margin: 1.4rem 0; padding: 0 0 0 1.6rem; border-left: 2px solid var(--line); display: grid; gap: .9rem; }
+.prose .tl li { position: relative; margin: 0; }
+.prose .tl li::before { content: ""; position: absolute; left: -2.15rem; top: .35rem; width: .8rem; height: .8rem; border-radius: 50%; background: var(--pulse); box-shadow: 0 0 0 4px rgba(31,175,111,.2); }
+.prose .tl li.end::before { background: #D62B3A; box-shadow: 0 0 0 4px rgba(214,43,58,.2); }
+.prose .tl b { display: block; font-size: 1.1rem; letter-spacing: -.01em; }
+.prose .tl span { color: #55554F; font-size: .98rem; line-height: 1.4; }

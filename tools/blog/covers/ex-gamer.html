@@ -1,0 +1,28 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../../cv/f/f.css"><style>html,body{margin:0;background:#0B0C0B}canvas{display:block}</style></head><body>
+<canvas id="c" width="1600" height="900"></canvas><script src="_base.js"></script><script>
+Promise.all([document.fonts.load('700 100px "Space Grotesk"'),document.fonts.load('500 28px "JetBrains Mono"'),document.fonts.load('700 70px "JetBrains Mono"')]).then(()=>{
+// dusty map-like backdrop: warm grey, with box silhouettes and a floor line
+let g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#2A2B26');g.addColorStop(.6,'#3A3A33');g.addColorStop(1,'#1A1A17');x.fillStyle=g;x.fillRect(0,0,W,H);
+for(let i=0;i<14;i++){const bx=r()*W,bw=90+r()*200,bh=80+r()*260;x.fillStyle=`rgba(0,0,0,${.12+r()*.18})`;x.fillRect(bx,560-bh,bw,bh);x.fillStyle='rgba(255,255,255,.04)';x.fillRect(bx,560-bh,bw,6);}
+x.fillStyle='#14140F';x.fillRect(0,560,W,H-560);
+for(let i=0;i<900;i++){x.fillStyle=`rgba(255,255,255,${r()*.05})`;x.fillRect(r()*W,r()*H,2,2);}
+ascii(.14,500); glitch(6,50);
+// crosshair
+const cx=1020,cy=420; x.strokeStyle='#39FF88'; x.lineWidth=5; x.lineCap='butt';
+[[-70,-20,0],[20,70,0]].forEach(([a,b])=>{x.beginPath();x.moveTo(cx+a,cy);x.lineTo(cx+b,cy);x.stroke();});
+[[-70,-20],[20,70]].forEach(([a,b])=>{x.beginPath();x.moveTo(cx,cy+a);x.lineTo(cx,cy+b);x.stroke();});
+x.fillStyle='#39FF88';x.fillRect(cx-3,cy-3,6,6);
+x.strokeStyle='rgba(57,255,136,.25)';x.lineWidth=2;x.beginPath();x.arc(cx,cy,110,0,7);x.stroke();
+// title
+x.textBaseline='alphabetic';x.fillStyle='#F5F5F2';x.font='700 150px "Space Grotesk", sans-serif';x.fillText('EX-',80,330);x.fillText('GAMER',80,470);
+x.fillStyle='#39FF88';x.fillRect(84,505,170,10);
+x.fillStyle='#CFCFC6';x.font='500 30px "JetBrains Mono", monospace';x.fillText('de_westwood · 1.6 · CS2 day one',84,570);
+// kill feed
+const feed=[['TV Banan','Kalachoviny'],['TV Banan','Aztegoviny'],['Adam','dom (lava)']];
+feed.forEach(([a,b],i)=>{const y=70+i*54;const t=a+'  ✕  '+b;x.font='500 26px "JetBrains Mono", monospace';const w=x.measureText(t).width+36;x.fillStyle='rgba(0,0,0,.55)';x.fillRect(W-w-60,y,w,42);x.strokeStyle=i<2?'#D62B3A':'rgba(255,255,255,.18)';x.lineWidth=2;x.strokeRect(W-w-60,y,w,42);x.fillStyle='#F5F5F2';x.fillText(t,W-w-42,y+30);});
+// HUD
+x.fillStyle='#FFB000';x.font='700 76px "JetBrains Mono", monospace';x.fillText('100',90,740);x.font='500 22px "JetBrains Mono", monospace';x.fillText('HP',100,768);
+x.font='700 76px "JetBrains Mono", monospace';x.fillText('0 | 0',1210,740);x.font='500 22px "JetBrains Mono", monospace';x.fillText('AMMO',1450,768);
+vignette();tag('PRÍBEH · ex-gamer');
+});
+</script></body></html>

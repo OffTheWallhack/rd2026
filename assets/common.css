@@ -179,3 +179,7 @@ li.ub { flex-shrink: 0; max-width: 100%; }
 .latest-post .lp-lead { color: #33332F; max-width: 46em; }
 .latest-post .lp-go { font: 500 .9rem var(--mono); color: var(--pulse-ink); }
 @media (max-width: 420px) { .nl-blog { display: none; } }
+.latest-post.has-img { grid-template-columns: minmax(0, 18rem) 1fr; gap: 1.25rem; align-items: center; }
+.latest-post .lp-txt { display: grid; gap: .35rem; }
+.lp-img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); background: #0B0C0B; }
+@media (max-width: 640px) { .latest-post.has-img { grid-template-columns: 1fr; } }

@@ -1,0 +1,53 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#0B0C0B}canvas{display:block}</style></head><body>
+<canvas id="c" width="1600" height="900"></canvas>
+<script>
+const c=document.getElementById('c'),x=c.getContext('2d'),W=1600,H=900;
+let seed=7;const r=()=>(seed=(seed*16807)%2147483647)/2147483647;
+// sky
+let g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#141821');g.addColorStop(.55,'#2A2530');g.addColorStop(1,'#0B0C0B');x.fillStyle=g;x.fillRect(0,0,W,H);
+// moon + glow
+let mg=x.createRadialGradient(1120,250,10,1120,250,330);mg.addColorStop(0,'rgba(255,214,150,.55)');mg.addColorStop(1,'rgba(255,214,150,0)');x.fillStyle=mg;x.fillRect(0,0,W,H);
+x.fillStyle='#F3D9A4';x.beginPath();x.arc(1120,250,92,0,7);x.fill();
+// stars
+for(let i=0;i<160;i++){x.fillStyle=`rgba(255,255,255,${r()*.6})`;x.fillRect(r()*W,r()*H*.55,1.6,1.6)}
+// far mountains
+function ridge(y,amp,col,step){x.fillStyle=col;x.beginPath();x.moveTo(0,H);let yy=y;for(let i=0;i<=W;i+=step){yy+= (r()-.5)*amp;yy=Math.max(y-amp*2,Math.min(y+amp,yy));x.lineTo(i,yy)}x.lineTo(W,H);x.fill()}
+ridge(560,40,'#221F28',40);ridge(640,30,'#18161C',30);
+// gothic castle silhouette
+x.fillStyle='#0F0E12';
+function tower(cx,w,h,base){x.fillRect(cx-w/2,base-h,w,h);x.beginPath();x.moveTo(cx-w/2-8,base-h);x.lineTo(cx,base-h-w*1.6);x.lineTo(cx+w/2+8,base-h);x.fill()}
+const base=700;x.fillRect(820,base-150,560,150);
+tower(860,50,260,base);tower(960,70,360,base);tower(1080,90,470,base);tower(1200,64,330,base);tower(1300,46,240,base);tower(1360,40,200,base);
+// windows
+x.fillStyle='#E9A84A';[[1080,380],[1080,450],[960,470],[1200,500],[860,560],[1300,580]].forEach(([a,b])=>{x.fillRect(a-5,b,10,22)});
+// ground
+x.fillStyle='#0B0C0B';x.fillRect(0,base,W,H-base);
+// fog
+for(let i=0;i<6;i++){let fg=x.createLinearGradient(0,base-80+i*20,0,base+60+i*20);fg.addColorStop(0,'rgba(180,170,200,0)');fg.addColorStop(.5,'rgba(180,170,200,.07)');fg.addColorStop(1,'rgba(180,170,200,0)');x.fillStyle=fg;x.fillRect(0,base-80+i*20,W,140)}
+// voxel cubes (another game breaking in)
+function cube(px,py,s,col){const [top,left,right]=col;const h=s*.5;
+ x.fillStyle=top;x.beginPath();x.moveTo(px,py-h);x.lineTo(px+s,py);x.lineTo(px,py+h);x.lineTo(px-s,py);x.fill();
+ x.fillStyle=left;x.beginPath();x.moveTo(px-s,py);x.lineTo(px,py+h);x.lineTo(px,py+h+s*1.1);x.lineTo(px-s,py+s*1.1);x.fill();
+ x.fillStyle=right;x.beginPath();x.moveTo(px+s,py);x.lineTo(px,py+h);x.lineTo(px,py+h+s*1.1);x.lineTo(px+s,py+s*1.1);x.fill();
+ // pixel texture
+ x.globalAlpha=.18;for(let i=0;i<10;i++){x.fillStyle=r()>.5?'#000':'#fff';let u=r(),v=r();x.fillRect(px-s+u*s*.9,py+v*s*1.1,s/5,s/5)}x.globalAlpha=1}
+const grass=['#6FCF4A','#6B4A2B','#55381F'],dirt=['#9A6B3E','#6B4A2B','#55381F'],stone=['#A9A9A9','#6E6E6E','#555'],gold=['#FFD84A','#C9A227','#A9851A'];
+// stack on ground left
+[[300,690,60,grass],[420,690,60,grass],[360,630,60,dirt],[540,690,60,stone],[480,630,60,grass],[420,570,60,gold]].forEach(a=>cube(...a));
+// floating debris toward castle
+[[690,470,34,grass],[760,380,26,stone],[640,330,20,dirt],[820,560,22,gold],[560,250,16,grass],[900,300,14,stone]].forEach(a=>cube(...a));
+// pixel trail
+for(let i=0;i<70;i++){const t=r();x.fillStyle=['#6FCF4A','#FFD84A','#A9A9A9'][i%3];x.globalAlpha=.25+r()*.6;const s=4+r()*8;x.fillRect(450+t*520+(r()-.5)*90,620-t*380+(r()-.5)*90,s,s)}x.globalAlpha=1;
+// glitch split (RGB shift band)
+const img=x.getImageData(0,0,W,H);
+for(let k=0;k<9;k++){const y0=Math.floor(r()*H),hh=4+Math.floor(r()*26),sh=Math.floor((r()-.5)*80);const band=x.getImageData(0,y0,W,hh);x.putImageData(band,sh,y0)}
+// green scanline accent (site color)
+x.fillStyle='rgba(31,191,98,.9)';x.fillRect(0,812,W,3);
+// ASCII overlay on left third
+x.font='500 15px monospace';const chars='01{}<>/=+*#░▒▓';
+for(let yy=20;yy<H;yy+=19)for(let xx=10;xx<W;xx+=12){const fade=Math.max(0,1-xx/700);if(r()>fade*.75)continue;x.fillStyle=`rgba(31,191,98,${.08+r()*.25*fade})`;x.fillText(chars[Math.floor(r()*chars.length)],xx,yy)}
+// vignette
+let vg=x.createRadialGradient(W/2,H/2,300,W/2,H/2,1000);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.55)');x.fillStyle=vg;x.fillRect(0,0,W,H);
+// tag
+x.fillStyle='#1FBF62';x.fillRect(60,836,14,14);x.fillStyle='#F5F5F2';x.font='500 26px monospace';x.fillText('AI REMIX · game A + game B = ?',90,850);
+</script></body></html>

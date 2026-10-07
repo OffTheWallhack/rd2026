@@ -38,3 +38,10 @@
 .x-post blockquote.twitter-tweet { max-width: 550px; padding: 1rem 1.25rem; border: 1.5px solid var(--ink); border-radius: 12px; background: #fff; font-size: 1rem; }
 .x-post blockquote.twitter-tweet p { margin: 0 0 .5rem; }
 .x-post blockquote.twitter-tweet a { font: 500 .9rem var(--mono); color: var(--pulse-ink); }
+/* covers */
+.post-cover { margin: 0 0 2rem; border-radius: 12px; overflow: hidden; border: 1.5px solid var(--ink); background: #0B0C0B; aspect-ratio: 16 / 9; }
+.post-cover img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.post-list a { display: grid; grid-template-columns: 1fr; gap: .9rem; }
+.post-list a:has(.pl-img) { grid-template-columns: minmax(0, 15rem) 1fr; align-items: start; }
+.pl-img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 10px; border: 1px solid var(--line); background: #0B0C0B; }
+@media (max-width: 560px) { .post-list a:has(.pl-img) { grid-template-columns: 1fr; } }

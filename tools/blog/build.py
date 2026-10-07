@@ -6,6 +6,9 @@ Each post file starts with a JSON header between <!--meta and -->:
    "sources": [["Forbes", "https://..."], ...]}
 followed by the article body as plain HTML (<p>, <h2>, <ul>, <blockquote>).
 
+Optional cover: img/blog/<slug>.webp (1600x900), <slug>-sm.webp (800x450) and
+<slug>-og.jpg (1200x630), described by "cover_alt" in the meta.
+
 Writes blog/<slug>/index.html for every post, blog/index.html with the list,
 and refreshes the blog entries in sitemap.xml. Run from the repo root:
   python3 tools/blog/build.py
@@ -46,7 +49,7 @@ HEAD = """<!doctype html>
 <link rel="canonical" href="{url}">
 <meta property="og:title" content="{ogtitle}">
 <meta property="og:description" content="{desc}">
-<meta property="og:image" content="{base}img/og.jpg">
+<meta property="og:image" content="{ogimg}">
 <meta property="og:url" content="{url}">
 <meta property="og:type" content="{ogtype}">
 <meta property="og:locale" content="sk_SK">
@@ -94,6 +97,11 @@ FOOT = """</main>
 
 def esc(s): return html.escape(s, quote=True)
 
+def cover(p):
+    """Returns the cover file names relative to img/blog/, or None."""
+    if os.path.exists(os.path.join(ROOT, "img", "blog", p["slug"] + ".webp")):
+        return {"big": p["slug"] + ".webp", "sm": p["slug"] + "-sm.webp", "og": p["slug"] + "-og.jpg"}
+
 def tags_html(p):
     return "".join(f'<span class="chip">{esc(t)}</span>' for t in p.get("tags", []))
 
@@ -103,8 +111,10 @@ def build_post(p, newer, older):
           "datePublished": p["date"], "dateModified": p["date"], "inLanguage": "sk", "url": url,
           "author": {"@type": "Person", "name": "Robert Ďurica", "url": BASE + "kto-som/"},
           "publisher": {"@type": "Person", "name": "Robert Ďurica"}, "image": BASE + "img/og.jpg"}
+    cv = cover(p)
+    if cv: ld["image"] = BASE + "img/blog/" + cv["og"]
     head = HEAD.format(title=esc(p["title"]) + " | Robert Ďurica", desc=esc(p["lead"]), url=url, ogtitle=esc(p["title"]),
-                       base=BASE, ogtype="article", rel="../../",
+                       base=BASE, ogtype="article", rel="../../", ogimg=BASE + ("img/blog/" + cv["og"] if cv else "img/og.jpg"),
                        ld='<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False) + "</script>")
     src = ""
     if p.get("sources"):
@@ -114,12 +124,13 @@ def build_post(p, newer, older):
     nav += f'<a href="../{older["slug"]}/"><span class="label">Starší</span>{esc(older["title"])}</a>' if older else "<span></span>"
     nav += f'<a class="nx" href="../{newer["slug"]}/"><span class="label">Novší</span>{esc(newer["title"])}</a>' if newer else "<span></span>"
     nav += "</nav>"
+    cover_fig = (f'<figure class="post-cover"><img src="../../img/blog/{cv["big"]}" width="1600" height="900" alt="{esc(p.get("cover_alt", ""))}" fetchpriority="high"></figure>\n    ' if cv else "")
     body = f"""  <article class="post">
     <p class="label"><a href="../">Blog</a> · <time datetime="{p['date']}">{sk_date(p['date'])}</time></p>
     <h1>{esc(p['title'])}</h1>
     <p class="lead">{esc(p['lead'])}</p>
     <p class="tags">{tags_html(p)}</p>
-    <div class="prose">
+    {cover_fig}<div class="prose">
 {p['body']}
     </div>
     {src}
@@ -140,9 +151,12 @@ def build_index(posts):
     ld = {"@context": "https://schema.org", "@type": "Blog", "name": "Robert Ďurica – blog", "url": url, "inLanguage": "sk",
           "blogPost": [{"@type": "BlogPosting", "headline": p["title"], "datePublished": p["date"], "url": f"{url}{p['slug']}/"} for p in posts[:20]]}
     head = HEAD.format(title="Blog – AI každý deň | Robert Ďurica", desc="Každý deň jeden krátky článok o AI, automatizácii a tom, čo sa práve deje. Po ľudsky, bez odborných slov.",
-                       url=url, ogtitle="Blog – AI každý deň", base=BASE, ogtype="blog", rel="../",
+                       url=url, ogtitle="Blog – AI každý deň", base=BASE, ogtype="blog", rel="../", ogimg=BASE + "img/og.jpg",
                        ld='<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False) + "</script>")
-    items = "".join(f"""      <li><a href="{p['slug']}/"><time datetime="{p['date']}">{sk_date(p['date'])}</time><h2>{esc(p['title'])}</h2><p>{esc(p['lead'])}</p><span class="tags">{tags_html(p)}</span></a></li>
+    def thumb(p):
+        cv = cover(p)
+        return f'<img class="pl-img" src="../img/blog/{cv["sm"]}" width="800" height="450" loading="lazy" alt="">' if cv else ""
+    items = "".join(f"""      <li><a href="{p['slug']}/">{thumb(p)}<span class="pl-txt"><time datetime="{p['date']}">{sk_date(p['date'])}</time><h2>{esc(p['title'])}</h2><p>{esc(p['lead'])}</p><span class="tags">{tags_html(p)}</span></span></a></li>
 """ for p in posts)
     body = f"""  <header class="blog-head">
     <p class="label"><span class="dot" aria-hidden="true"></span> Blog · každý deň</p>
@@ -176,7 +190,9 @@ def latest_teaser(posts):
     p = os.path.join(ROOT, "index.html"); s = open(p, encoding="utf-8").read()
     if not posts or "<!--latest-post-->" not in s: return
     q = posts[0]
-    card = f"""<!--latest-post--><a class="latest-post" href="blog/{q['slug']}/"><span class="label"><span class="dot" aria-hidden="true"></span> Článok dňa · {sk_date(q['date'])}</span><b>{esc(q['title'])}</b><span class="lp-lead">{esc(q['lead'])}</span><span class="lp-go">Čítať →</span></a><!--/latest-post-->"""
+    cv = cover(q)
+    img = f'<img class="lp-img" src="img/blog/{cv["sm"]}" width="800" height="450" loading="lazy" alt="">' if cv else ""
+    card = f"""<!--latest-post--><a class="latest-post{' has-img' if cv else ''}" href="blog/{q['slug']}/">{img}<span class="lp-txt"><span class="label"><span class="dot" aria-hidden="true"></span> Článok dňa · {sk_date(q['date'])}</span><b>{esc(q['title'])}</b><span class="lp-lead">{esc(q['lead'])}</span><span class="lp-go">Čítať →</span></span></a><!--/latest-post-->"""
     s = re.sub(r"<!--latest-post-->.*?<!--/latest-post-->", card, s, flags=re.S)
     open(p, "w", encoding="utf-8").write(s)
 

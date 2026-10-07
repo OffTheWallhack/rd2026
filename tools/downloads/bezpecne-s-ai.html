@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="sk"><head><meta charset="utf-8"><title>Bezpečne s AI: pravidlá pre tím</title>
+<link rel="stylesheet" href="../cv/f/f.css"><link rel="stylesheet" href="base.css">
+<style>
+.hero { display: grid; grid-template-columns: 1fr 34mm; gap: 6mm; align-items: start; }
+.stamp { width: 34mm; height: 34mm; margin-top: 7mm; border-radius: 50%; border: 1.6mm double var(--pulse-ink); color: var(--pulse-ink); display: grid; place-items: center; text-align: center; rotate: -8deg; position: relative; }
+.stamp::before { content: ""; position: absolute; inset: 2.2mm; border-radius: 50%; border: 1px dashed rgba(15,122,74,.6); }
+.stamp div { font: 700 6.6pt/1.25 var(--mono); letter-spacing: .06em; text-transform: uppercase; }
+.stamp b { display: block; font: 700 15pt/1 var(--f); letter-spacing: -.02em; margin: .8mm 0; }
+.stamp .stars { color: #E2B33D; letter-spacing: .2em; }
+.rules { list-style: none; margin: 0; padding: 0; display: grid; gap: 2.3mm; }
+.rules li { display: grid; grid-template-columns: 9mm 17mm 1fr; gap: 3mm; align-items: start; padding: 2.2mm 3.5mm; border: 1.5px solid var(--ink); border-radius: 2.5mm; }
+.rules .n { font: 700 13pt/1 var(--f); }
+.tag { font: 700 7pt/1 var(--mono); letter-spacing: .08em; text-align: center; padding: 1.4mm 0; border-radius: 1mm; margin-top: .3mm; }
+.never .tag { background: var(--red); color: #fff; }
+.always .tag { background: var(--pulse); color: #0B1A12; }
+.rules b { display: block; font-size: 10.5pt; letter-spacing: -.005em; margin-bottom: .4mm; }
+.rules p { margin: 0; font-size: 8.8pt; line-height: 1.35; color: #33332F; }
+.never { background: #FDF3F4; border-color: var(--red) !important; }
+.law { margin: 4mm 0; font-size: 7.6pt; line-height: 1.4; color: var(--muted); border-left: 3px solid var(--pulse); padding-left: 3mm; }
+.law b { color: var(--ink); }
+.sign { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 6mm; margin: 0 0 7mm; }
+.sign div { border-bottom: 1.5px solid var(--ink); height: 9mm; position: relative; }
+.sign span { position: absolute; bottom: -4mm; left: 0; font: 6.5pt var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+</style></head>
+<body>
+<section class="page">
+  <div class="top"><b><span class="dot"></span>Robert Ďurica</b><span>Pravidlá pre tím · vytlač a zaves</span></div>
+  <div class="hero">
+    <div>
+      <h1>Bezpečne s AI.<br><span class="soft">10 pravidiel pre tím.</span></h1>
+      <p class="lead" style="margin-bottom:4mm">AI ti ušetrí hodiny. Jedna chyba ťa môže stáť zákazníka, peniaze alebo pokutu. Tieto pravidlá platia pre každého, kto vo firme píše do chatu s AI.</p>
+    </div>
+    <div class="stamp"><div><span class="stars">★★★</span><br>Podľa<b>EU AI Act</b>čl. 4 · AI<br>gramotnosť</div></div>
+  </div>
+  <ol class="rules">
+    <li class="never"><span class="n">01</span><span class="tag">NIKDY</span><div><b>Heslá, PIN-y, prístupové kódy ani kľúče.</b><p>Ani „len na chvíľu“, ani v screenshote. Čo raz odošleš, už nevezmeš späť.</p></div></li>
+    <li class="never"><span class="n">02</span><span class="tag">NIKDY</span><div><b>Osobné údaje klientov bez povolenia firmy.</b><p>Mená s kontaktmi, rodné čísla, zdravie, financie. GDPR platí aj v chate s AI.</p></div></li>
+    <li class="never"><span class="n">03</span><span class="tag">NIKDY</span><div><b>Zmluvy, interné čísla a zdrojový kód do bezplatných verzií.</b><p>Niektoré bezplatné verzie môžu tvoje texty použiť na trénovanie. Používaj firemný účet s vypnutým trénovaním.</p></div></li>
+    <li class="never"><span class="n">04</span><span class="tag">NIKDY</span><div><b>Neposielaj ďalej nič, čo si neprečítal.</b><p>Klientovi, šéfovi ani na sociálne siete. Za text zodpovedáš ty, nie AI.</p></div></li>
+    <li class="never"><span class="n">05</span><span class="tag">NIKDY</span><div><b>Neinštaluj neznáme AI rozšírenia a appky.</b><p>Hlavne tie, ktoré chcú prístup k mailu, disku alebo kalendáru. Najprv sa opýtaj.</p></div></li>
+    <li class="always"><span class="n">06</span><span class="tag">VŽDY</span><div><b>Over čísla, paragrafy, citácie a mená.</b><p>AI si vie vymyslieť s úplnou istotou. Ak to nevieš overiť, nepoužívaj to.</p></div></li>
+    <li class="always"><span class="n">07</span><span class="tag">VŽDY</span><div><b>Údaje pred vložením anonymizuj.</b><p>Namiesto „Ján Novák, Bratislava“ napíš „klient A“. Výsledok bude rovnako dobrý.</p></div></li>
+    <li class="always"><span class="n">08</span><span class="tag">VŽDY</span><div><b>Pri peniazoch a heslách over človeka inou cestou.</b><p>Hlas aj video sa dajú napodobniť. Žiadosť o platbu over telefonátom na známe číslo.</p></div></li>
+    <li class="always"><span class="n">09</span><span class="tag">VŽDY</span><div><b>Povedz, keď je niečo celé od AI.</b><p>Ak to má klient alebo kolega vedieť, napíš to. Dôvera sa stráca rýchlejšie, ako sa buduje.</p></div></li>
+    <li class="always"><span class="n">10</span><span class="tag">VŽDY</span><div><b>Keď si nie si istý, opýtaj sa.</b><p>Hlúpa otázka nič nestojí. Únik dát áno.</p></div></li>
+  </ol>
+  <p class="law"><b>Prečo EU AI Act?</b> Článok 4 nariadenia EÚ o umelej inteligencii od 2. 2. 2025 vyžaduje, aby firmy, ktoré AI používajú, zabezpečili dostatočnú AI gramotnosť svojich ľudí. Tieto pravidlá sú jednoduchý prvý krok. Nie sú certifikátom ani právnou radou, certifikát zákon ani nevyžaduje.</p>
+  <div class="sign"><div><span>Prečítal/a a rozumiem (meno)</span></div><div><span>Podpis</span></div><div><span>Dátum</span></div></div>
+  <div class="foot" style="margin-top:auto"><span>Školenie AI pre tím: offthewallhack.github.io/rd2026</span><span>142 design, s. r. o. · IČO 53389662</span></div>
+</section>
+</body></html>

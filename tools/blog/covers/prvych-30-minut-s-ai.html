@@ -1,0 +1,23 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../../cv/f/f.css"><style>html,body{margin:0;background:#0B0C0B}canvas{display:block}</style></head><body>
+<canvas id="c" width="1600" height="900"></canvas><script src="_base.js"></script><script>
+document.fonts.load('700 80px "Space Grotesk"').then(()=>{
+bg('#0F1712','#070807'); ascii(.2,800);
+const cx=800,cy=420,R=260;
+// dial ticks
+for(let i=0;i<60;i++){const a=i/60*Math.PI*2-Math.PI/2,l=i%5?18:36;x.strokeStyle=i<30?'#1FBF62':'#3A3D38';x.lineWidth=i%5?4:7;x.beginPath();x.moveTo(cx+Math.cos(a)*(R+20),cy+Math.sin(a)*(R+20));x.lineTo(cx+Math.cos(a)*(R+20-l),cy+Math.sin(a)*(R+20-l));x.stroke();}
+// progress arc (half = 30 min)
+x.strokeStyle='#1FBF62'; x.lineWidth=26; x.lineCap='round'; x.beginPath(); x.arc(cx,cy,R+60,-Math.PI/2,Math.PI/2); x.stroke();
+x.strokeStyle='rgba(255,255,255,.08)'; x.beginPath(); x.arc(cx,cy,R+60,Math.PI/2,Math.PI*1.5); x.stroke();
+x.fillStyle='#F5F5F2'; x.font='700 170px "Space Grotesk", sans-serif'; x.textAlign='center'; x.fillText('30:00',cx,cy+60);
+x.fillStyle='#A3A39B'; x.font='500 30px "JetBrains Mono", monospace'; x.fillText('min s AI',cx,cy+120);
+// chat bubbles around
+x.textAlign='left';
+function bubble(bx,by,txt,col,tc){x.font='600 30px "Space Grotesk", sans-serif';const w=x.measureText(txt).width+56;x.fillStyle=col;rr(bx,by,w,74,22);x.fill();x.fillStyle=tc;x.fillText(txt,bx+28,by+48);}
+bubble(90,150,'1 · vyber nástroj','#1E201D','#F5F5F2');
+bubble(1150,190,'2 · povedz, kto si','#0A84FF','#fff');
+bubble(70,560,'3 · napíš ten mail','#0A84FF','#fff');
+bubble(1160,520,'4 · zhrň mi to','#1E201D','#F5F5F2');
+bubble(1110,660,'5 · vyspovedaj ma','#1FBF62','#0B1A12');
+glitch(6,60); vignette(); tag('PRVÝCH 30 MINÚT · 5 krokov pre začiatočníkov');
+});
+</script></body></html>

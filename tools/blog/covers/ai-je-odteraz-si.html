@@ -1,0 +1,16 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../../cv/f/f.css"><style>html,body{margin:0;background:#0B0C0B}canvas{display:block}</style></head><body>
+<canvas id="c" width="1600" height="900"></canvas><script src="_base.js"></script><script>
+Promise.all([document.fonts.load('700 400px "Space Grotesk"'),document.fonts.load('500 30px "JetBrains Mono"')]).then(()=>{
+bg('#121512','#070807'); ascii(.22,900);
+// small grey AI, struck through, and a big green SI under it
+x.textBaseline='alphabetic';
+x.fillStyle='#5A5A52'; x.font='700 230px "Space Grotesk", sans-serif'; x.fillText('AI',1010,330);
+x.strokeStyle='#D62B3A'; x.lineWidth=20; x.lineCap='round'; x.beginPath(); x.moveTo(990,250); x.lineTo(1330,250); x.stroke();
+x.fillStyle='#1FBF62'; x.font='700 470px "Space Grotesk", sans-serif'; x.fillText('SI',860,760);
+// arrow + label
+x.fillStyle='#1FBF62'; x.font='500 34px "JetBrains Mono", monospace'; x.fillText('artificial → super',120,330);
+x.fillStyle='#F5F5F2'; x.font='700 92px "Space Grotesk", sans-serif'; x.fillText('AI → SI?',120,450);
+x.fillStyle='#A3A39B'; x.font='500 28px "JetBrains Mono", monospace'; x.fillText('executive order · 29. 9. 2026',120,510);
+glitch(10,90); vignette(); tag('AI / SI · nový názov, tá istá technológia');
+});
+</script></body></html>

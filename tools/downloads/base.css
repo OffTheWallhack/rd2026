@@ -1,0 +1,20 @@
+/* shared look for the downloadable PDFs: same fonts and colours as the site */
+@page { size: A4; margin: 0; }
+:root { --ink: #161616; --bg: #F5F5F2; --line: #DCDCD5; --muted: #6B6B63; --pulse: #1FAF6F; --pulse-ink: #0F7A4A; --red: #D62B3A;
+  --f: "Space Grotesk", system-ui, sans-serif; --mono: "JetBrains Mono", ui-monospace, monospace; }
+* { box-sizing: border-box; }
+html, body { margin: 0; background: #fff; color: var(--ink); font: 400 10.5pt/1.45 var(--f); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.page { width: 210mm; height: 297mm; padding: 14mm 15mm 12mm; position: relative; overflow: hidden; page-break-after: always; display: flex; flex-direction: column; }
+.page:last-child { page-break-after: auto; }
+.top { display: flex; justify-content: space-between; align-items: center; font: 500 7.5pt var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding-bottom: 4mm; border-bottom: 1.5px solid var(--ink); }
+.top b { color: var(--ink); display: inline-flex; align-items: center; gap: 2mm; font-weight: 500; }
+.dot { width: 2.4mm; height: 2.4mm; border-radius: 50%; background: var(--pulse); display: inline-block; box-shadow: 0 0 0 1mm rgba(31,175,111,.2); }
+h1 { font-size: 30pt; line-height: .98; letter-spacing: -.035em; margin: 7mm 0 3mm; }
+h1 .soft { color: #5A5A52; }
+.lead { font-size: 11.5pt; color: #33332F; max-width: 150mm; margin: 0 0 5mm; }
+.label { font: 500 7.5pt var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.foot { margin-top: auto; padding-top: 3mm; border-top: 1px solid var(--line); display: flex; justify-content: space-between; font: 7pt var(--mono); color: var(--muted); }
+.cta { background: var(--pulse); color: #0B1A12; border-radius: 4mm; padding: 5mm 6mm; display: flex; justify-content: space-between; align-items: center; gap: 6mm; box-shadow: 1.5mm 1.5mm 0 var(--ink); }
+.cta b { font-size: 13pt; letter-spacing: -.01em; display: block; margin-bottom: 1mm; }
+.cta p { margin: 0; font-size: 9.5pt; }
+.cta .ct { font: 500 8.5pt/1.6 var(--mono); text-align: right; white-space: nowrap; }

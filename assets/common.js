@@ -27,14 +27,38 @@
     var onHome = here === rootPath;
     barR.querySelectorAll(".nav-link").forEach(function (a) { a.remove(); });
     var nav = document.createElement("nav"); nav.className = "bar-nav"; nav.setAttribute("aria-label", "Menu");
-    [[onHome ? "#sluzby" : ROOT, "Služby", "Services", rootPath],
-     [ROOT + "blog/", "Blog", "Blog", rootPath + "blog/"],
-     [ROOT + "kto-som/", "Kto som", "About me", rootPath + "kto-som/"]].forEach(function (l) {
+    var ICON = {
+      svc: "<path d='M4 11.5 12 4l8 7.5V20h-5.5v-5h-5v5H4z'/>",
+      blog: "<rect x='4' y='3.5' width='16' height='17' rx='2'/><path d='M8 8h8M8 12h8M8 16h5'/>",
+      dl: "<path d='M12 4v11m-4.5-4.5L12 15l4.5-4.5'/><path d='M4.5 17v2.5h15V17'/>",
+      me: "<circle cx='12' cy='8.5' r='3.8'/><path d='M4.5 20c.8-3.8 3.8-6 7.5-6s6.7 2.2 7.5 6'/>"
+    };
+    var LINKS = [[onHome ? "#sluzby" : ROOT, "Služby", "Services", rootPath, "svc"],
+     [ROOT + "blog/", "Blog", "Blog", rootPath + "blog/", "blog"],
+     [ROOT + "na-stiahnutie/", "Na stiahnutie", "Downloads", rootPath + "na-stiahnutie/", "dl"],
+     [ROOT + "kto-som/", "Kto som", "About me", rootPath + "kto-som/", "me"]];
+    var tabs = document.createElement("nav"); tabs.className = "tabbar"; tabs.setAttribute("aria-label", "Menu");
+    LINKS.forEach(function (l) {
+      var cur = here === l[3] || (l[3] !== rootPath && here.indexOf(l[3]) === 0);
       var a = document.createElement("a"); a.className = "nav-link"; a.href = l[0]; a.textContent = l[1]; a.setAttribute("data-en", l[2]);
-      if (here === l[3] || (l[3] !== rootPath && here.indexOf(l[3]) === 0)) a.setAttribute("aria-current", "page");
-      nav.appendChild(a);
+      if (cur) a.setAttribute("aria-current", "page");
+      if (l[4] === "dl") {
+        // on a computer, hovering "downloads" shows the files right away
+        var wrap = document.createElement("span"); wrap.className = "nav-dd"; wrap.appendChild(a);
+        wrap.insertAdjacentHTML("beforeend", "<span class='dd'>" +
+          "<a href='" + ROOT + "na-stiahnutie/checklist-automatizacia.pdf' download><b>Checklist</b><span data-en='What to automate in a company'>Čo vo firme zautomatizovať</span></a>" +
+          "<a href='" + ROOT + "na-stiahnutie/bezpecne-s-ai.pdf' download><b data-en='Safe with AI'>Bezpečne s AI</b><span data-en='10 rules for your team'>10 pravidiel pre tím</span></a>" +
+          "<a href='" + ROOT + "na-stiahnutie/'><b data-en='All files →'>Všetky súbory →</b><span data-en='incl. my CV'>aj moje CV</span></a></span>");
+        nav.appendChild(wrap);
+      } else nav.appendChild(a);
+      var t = document.createElement("a"); t.href = l[0]; if (cur) t.setAttribute("aria-current", "page");
+      t.innerHTML = "<svg viewBox='0 0 24 24' aria-hidden='true' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'>" + ICON[l[4]] + "</svg><span></span>";
+      var lab = t.querySelector("span"); lab.textContent = l[4] === "dl" ? "Stiahnuť" : l[1]; lab.setAttribute("data-en", l[4] === "dl" ? "Downloads" : l[2]);
+      tabs.appendChild(t);
     });
     barIn.insertBefore(nav, barR);
+    document.body.appendChild(tabs);
+    html.classList.add("has-tabbar");
     var cust = document.createElement("div"); cust.className = "cust";
     cust.innerHTML = "<button class='cust-btn' type='button' aria-expanded='false' aria-haspopup='true' aria-label='Prispôsobiť' data-nosi>" +
       "<svg viewBox='0 0 20 20' aria-hidden='true'><path d='M3 5h8M15 5h2M3 10h2M9 10h8M3 15h10M17 15h0' stroke='currentColor' stroke-width='1.8' stroke-linecap='round'/><circle cx='13' cy='5' r='2' fill='none' stroke='currentColor' stroke-width='1.8'/><circle cx='7' cy='10' r='2' fill='none' stroke='currentColor' stroke-width='1.8'/><circle cx='15' cy='15' r='2' fill='none' stroke='currentColor' stroke-width='1.8'/></svg></button>" +

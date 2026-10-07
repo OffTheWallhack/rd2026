@@ -35,7 +35,8 @@ def read_posts():
             if not meta.get(k): raise SystemExit(f"{f}: missing {k}")
         datetime.date.fromisoformat(meta["date"])
         posts.append(meta)
-    posts.sort(key=lambda p: (p["date"], p["slug"]), reverse=True)
+    # "time" (HH:MM, optional) orders several posts published on the same day
+    posts.sort(key=lambda p: (p["date"], p.get("time", "07:00"), p["slug"]), reverse=True)
     return posts
 
 HEAD = """<!doctype html>
@@ -125,7 +126,8 @@ def build_post(p, newer, older):
     nav += f'<a class="nx" href="../{newer["slug"]}/"><span class="label">Novší</span>{esc(newer["title"])}</a>' if newer else "<span></span>"
     nav += "</nav>"
     cover_fig = (f'<figure class="post-cover"><img src="../../img/blog/{cv["big"]}" width="1600" height="900" alt="{esc(p.get("cover_alt", ""))}" fetchpriority="high"></figure>\n    ' if cv else "")
-    body = f"""  <article class="post">
+    nosi = " data-nosi" if p.get("nosi") else ""   # posts about the AI/SI rename keep their wording
+    body = f"""  <article class="post"{nosi}>
     <p class="label"><a href="../">Blog</a> · <time datetime="{p['date']}">{sk_date(p['date'])}</time></p>
     <h1>{esc(p['title'])}</h1>
     <p class="lead">{esc(p['lead'])}</p>
@@ -156,7 +158,7 @@ def build_index(posts):
     def thumb(p):
         cv = cover(p)
         return f'<img class="pl-img" src="../img/blog/{cv["sm"]}" width="800" height="450" loading="lazy" alt="">' if cv else ""
-    items = "".join(f"""      <li><a href="{p['slug']}/">{thumb(p)}<span class="pl-txt"><time datetime="{p['date']}">{sk_date(p['date'])}</time><h2>{esc(p['title'])}</h2><p>{esc(p['lead'])}</p><span class="tags">{tags_html(p)}</span></span></a></li>
+    items = "".join(f"""      <li{' data-nosi' if p.get('nosi') else ''}><a href="{p['slug']}/">{thumb(p)}<span class="pl-txt"><time datetime="{p['date']}">{sk_date(p['date'])}</time><h2>{esc(p['title'])}</h2><p>{esc(p['lead'])}</p><span class="tags">{tags_html(p)}</span></span></a></li>
 """ for p in posts)
     body = f"""  <header class="blog-head">
     <p class="label"><span class="dot" aria-hidden="true"></span> Blog · každý deň</p>
@@ -169,7 +171,7 @@ def build_index(posts):
     open(os.path.join(ROOT, "blog", "index.html"), "w", encoding="utf-8").write(head + body + FOOT.format(rel="../"))
 
 def build_feed(posts):
-    items = "".join(f"""  <item><title>{esc(p['title'])}</title><link>{BASE}blog/{p['slug']}/</link><guid>{BASE}blog/{p['slug']}/</guid><pubDate>{datetime.date.fromisoformat(p['date']).strftime('%a, %d %b %Y')} 07:00:00 +0200</pubDate><description>{esc(p['lead'])}</description></item>
+    items = "".join(f"""  <item><title>{esc(p['title'])}</title><link>{BASE}blog/{p['slug']}/</link><guid>{BASE}blog/{p['slug']}/</guid><pubDate>{datetime.date.fromisoformat(p['date']).strftime('%a, %d %b %Y')} {p.get('time', '07:00')}:00 +0200</pubDate><description>{esc(p['lead'])}</description></item>
 """ for p in posts[:30])
     open(os.path.join(ROOT, "blog", "feed.xml"), "w", encoding="utf-8").write(f"""<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0"><channel>
@@ -194,7 +196,7 @@ def latest_teaser(posts):
         cv = cover(q)
         img = f'<img class="lp-img" src="img/blog/{cv["sm"]}" width="800" height="450" loading="lazy" alt="">' if cv else ""
         tag = "Článok dňa" if n == 0 else sk_date(q["date"])
-        cards += f"""<a class="latest-post{' first' if n == 0 else ''}" href="blog/{q['slug']}/">{img}<span class="lp-txt"><span class="label"><span class="dot" aria-hidden="true"></span> {tag}</span><b>{esc(q['title'])}</b><span class="lp-lead">{esc(q['lead'])}</span></span></a>"""
+        cards += f"""<a class="latest-post{' first' if n == 0 else ''}"{' data-nosi' if q.get('nosi') else ''} href="blog/{q['slug']}/">{img}<span class="lp-txt"><span class="label"><span class="dot" aria-hidden="true"></span> {tag}</span><b>{esc(q['title'])}</b><span class="lp-lead">{esc(q['lead'])}</span></span></a>"""
     block = f"""<!--latest-post--><div class="lp-grid">{cards}</div><p class="lp-all"><a class="btn" href="blog/">Všetky články →</a></p><!--/latest-post-->"""
     s = re.sub(r"<!--latest-post-->.*?<!--/latest-post-->", block, s, flags=re.S)
     open(p, "w", encoding="utf-8").write(s)

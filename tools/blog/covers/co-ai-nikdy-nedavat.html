@@ -1,0 +1,23 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../../cv/f/f.css"><style>html,body{margin:0;background:#0B0C0B}canvas{display:block}</style></head><body>
+<canvas id="c" width="1600" height="900"></canvas><script src="_base.js"></script><script>
+Promise.all([document.fonts.load('700 80px "Space Grotesk"'),document.fonts.load('500 30px "Space Grotesk"'),document.fonts.load('700 30px "JetBrains Mono"'),document.fonts.load('500 26px "JetBrains Mono"')]).then(()=>{
+bg('#1A0E10','#08090A'); ascii(.18,700);
+// chat window
+x.fillStyle='#1E201D'; rr(520,150,760,560,28); x.fill(); x.strokeStyle='#3A3D38'; x.lineWidth=2; x.stroke();
+x.fillStyle='#2A2C29'; rr(520,150,760,64,28); x.fill(); x.fillRect(520,190,760,24);
+[['#E5534B',560],['#E2B33D',590],['#1FBF62',620]].forEach(([col,cx])=>{x.fillStyle=col;x.beginPath();x.arc(cx,182,8,0,7);x.fill();});
+// bubbles
+function bubble(bx,by,w,h,col,txt,tc,font){x.fillStyle=col;rr(bx,by,w,h,22);x.fill();x.fillStyle=tc;x.font=font;x.fillText(txt,bx+28,by+h/2+12);}
+bubble(580,250,460,80,'#2F3330','zhrň mi túto zmluvu…','#D7D7D0','500 30px "Space Grotesk", sans-serif');
+bubble(760,360,460,80,'#0A84FF','heslo: Kaviaren2026!','#fff','700 32px "JetBrains Mono", monospace');
+bubble(580,470,520,80,'#2F3330','OP: EA 123 •••','#D7D7D0','500 30px "Space Grotesk", sans-serif');
+bubble(760,580,380,80,'#0A84FF','iban: SK89 ••••','#fff','700 30px "JetBrains Mono", monospace');
+// big red X
+x.strokeStyle='rgba(214,43,58,.92)'; x.lineWidth=46; x.lineCap='round';
+x.beginPath(); x.moveTo(600,230); x.lineTo(1260,690); x.moveTo(1260,230); x.lineTo(600,690); x.stroke();
+// stamp
+x.save(); x.translate(300,420); x.rotate(-.18); x.strokeStyle='#D62B3A'; x.lineWidth=8; rr(-210,-70,420,140,14); x.stroke();
+x.fillStyle='#D62B3A'; x.font='700 78px "Space Grotesk", sans-serif'; x.textAlign='center'; x.fillText('NIKDY',0,28); x.restore();
+glitch(8,70); vignette(); tag('NIKDY NEVKLADAJ · heslá · osobné údaje · zmluvy');
+});
+</script></body></html>

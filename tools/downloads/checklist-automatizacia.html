@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="sk"><head><meta charset="utf-8"><title>Checklist: čo zautomatizovať vo firme</title>
+<link rel="stylesheet" href="../cv/f/f.css"><link rel="stylesheet" href="base.css">
+<style>
+.cats { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm 6mm; }
+.cat { border: 1.5px solid var(--ink); border-radius: 3mm; padding: 3.5mm 4mm 2.5mm; }
+.cat h2 { margin: 0 0 2mm; font-size: 11.5pt; letter-spacing: -.01em; display: flex; align-items: center; gap: 2.5mm; }
+.cat h2 i { font: 700 8pt var(--mono); font-style: normal; background: var(--ink); color: #3BE08F; border-radius: 1.2mm; padding: .6mm 1.6mm; }
+.cat ul { list-style: none; margin: 0; padding: 0; }
+.cat li { display: grid; grid-template-columns: 4.2mm 1fr 15mm; gap: 2.2mm; align-items: center; padding: 1.7mm 0; border-top: 1px solid var(--line); font-size: 9.3pt; line-height: 1.25; }
+.cat li:first-child { border-top: 0; }
+.box { width: 4.2mm; height: 4.2mm; border: 1.4px solid var(--ink); border-radius: .8mm; }
+.hrs { border-bottom: 1px solid #9A9A92; height: 4mm; position: relative; }
+.hrs::after { content: "h"; position: absolute; right: 0; bottom: .3mm; font: 6.5pt var(--mono); color: var(--muted); }
+.head-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; margin-bottom: 3mm; }
+.head-row .label { display: flex; justify-content: space-between; }
+.own { margin-top: 4mm; border: 1.5px dashed #9A9A92; border-radius: 3mm; padding: 3mm 4mm; }
+.own .ln { border-bottom: 1px solid var(--line); height: 6.5mm; }
+/* page 2 */
+.calc { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; margin: 2mm 0 6mm; }
+.calc div { border: 1.5px solid var(--ink); border-radius: 3mm; padding: 4mm; }
+.calc .v { height: 11mm; border-bottom: 1.5px solid var(--ink); margin: 2mm 0 1.5mm; font: 700 18pt var(--f); color: #C9C9C0; display: flex; align-items: flex-end; }
+.calc small { font: 7.5pt var(--mono); color: var(--muted); }
+.calc .eq { background: #EAF7EF; border-color: var(--pulse); }
+h2.sec { font-size: 15pt; letter-spacing: -.02em; margin: 2mm 0 2.5mm; }
+.test { width: 100%; border-collapse: collapse; margin-bottom: 6mm; font-size: 9.5pt; }
+.test th { font: 500 7pt var(--mono); text-transform: uppercase; letter-spacing: .06em; color: var(--muted); text-align: left; padding: 0 2mm 1.5mm; border-bottom: 1.5px solid var(--ink); }
+.test th.c, .test td.c { text-align: center; width: 20mm; }
+.test td { border-bottom: 1px solid var(--line); padding: 0 2mm; height: 8.5mm; }
+.test td.c span { display: inline-block; width: 4.2mm; height: 4.2mm; border: 1.4px solid var(--ink); border-radius: .8mm; vertical-align: middle; }
+.rule { display: grid; grid-template-columns: 22mm 1fr; gap: 5mm; align-items: center; background: var(--ink); color: #fff; border-radius: 3mm; padding: 4.5mm 5mm; margin-bottom: 6mm; }
+.rule .n { font: 700 26pt/1 var(--f); color: #3BE08F; }
+.rule p { margin: 0; font-size: 10.5pt; }
+.rule b { color: #3BE08F; }
+.tips { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; margin-bottom: 6mm; }
+.tips div { border-left: 3px solid var(--pulse); padding: 1mm 0 1mm 3.5mm; font-size: 9.5pt; }
+.tips b { display: block; font-size: 10.5pt; margin-bottom: .5mm; }
+</style></head>
+<body>
+<section class="page">
+  <div class="top"><b><span class="dot"></span>Robert Ďurica</b><span>Checklist · 1 / 2</span></div>
+  <h1>Čo vo firme<br><span class="soft">zautomatizovať.</span></h1>
+  <p class="lead">Zaškrtni všetko, čo u vás dnes robí človek ručne. Vedľa dopíš, koľko hodín týždenne (h) to zaberie. Na druhej strane zistíš, kde sa oplatí začať.</p>
+  <div class="cats">
+    <div class="cat"><h2><i>A</i>Zákazníci a komunikácia</h2><ul>
+      <li><span class="box"></span>Odpovedanie na stále tie isté otázky (ceny, termíny, otváracie hodiny)<span class="hrs"></span></li>
+      <li><span class="box"></span>Potvrdzovanie objednávok a rezervácií<span class="hrs"></span></li>
+      <li><span class="box"></span>Pripomienky termínov a stretnutí<span class="hrs"></span></li>
+      <li><span class="box"></span>Zbieranie spätnej väzby a recenzií<span class="hrs"></span></li>
+    </ul></div>
+    <div class="cat"><h2><i>B</i>Tím a plánovanie</h2><ul>
+      <li><span class="box"></span>Rozpis smien a služieb<span class="hrs"></span></li>
+      <li><span class="box"></span>Dovolenky a dostupnosť ľudí<span class="hrs"></span></li>
+      <li><span class="box"></span>Zápisy z porád a rozdelenie úloh<span class="hrs"></span></li>
+      <li><span class="box"></span>Zaúčanie nového človeka (návody, postupy)<span class="hrs"></span></li>
+    </ul></div>
+    <div class="cat"><h2><i>C</i>Papiere a čísla</h2><ul>
+      <li><span class="box"></span>Prepisovanie faktúr a bločkov do tabuľky<span class="hrs"></span></li>
+      <li><span class="box"></span>Cenové ponuky pre klientov<span class="hrs"></span></li>
+      <li><span class="box"></span>Mesačné prehľady a reporty<span class="hrs"></span></li>
+      <li><span class="box"></span>Kontrola, kto už zaplatil<span class="hrs"></span></li>
+    </ul></div>
+    <div class="cat"><h2><i>D</i>Obsah a marketing</h2><ul>
+      <li><span class="box"></span>Príspevky na sociálne siete<span class="hrs"></span></li>
+      <li><span class="box"></span>Titulky a prepisy videí<span class="hrs"></span></li>
+      <li><span class="box"></span>Preklady textov<span class="hrs"></span></li>
+      <li><span class="box"></span>Popisy produktov a služieb<span class="hrs"></span></li>
+    </ul></div>
+    <div class="cat"><h2><i>E</i>Dáta a evidencia</h2><ul>
+      <li><span class="box"></span>Kopírovanie dát z jedného systému do druhého<span class="hrs"></span></li>
+      <li><span class="box"></span>Excely, ktoré si posielate mailom<span class="hrs"></span></li>
+      <li><span class="box"></span>Sklad, inventúra, evidencia techniky<span class="hrs"></span></li>
+      <li><span class="box"></span>Hľadanie informácií v starých správach<span class="hrs"></span></li>
+    </ul></div>
+    <div class="cat"><h2><i>F</i>Iné, čo vás brzdí</h2><ul>
+      <li><span class="box"></span><span></span><span class="hrs"></span></li>
+      <li><span class="box"></span><span></span><span class="hrs"></span></li>
+      <li><span class="box"></span><span></span><span class="hrs"></span></li>
+      <li><span class="box"></span><span></span><span class="hrs"></span></li>
+    </ul></div>
+  </div>
+  <div class="foot"><span>offthewallhack.github.io/rd2026</span><span>Pokračovanie na druhej strane →</span></div>
+</section>
+<section class="page">
+  <div class="top"><b><span class="dot"></span>Robert Ďurica</b><span>Checklist · 2 / 2</span></div>
+  <h2 class="sec" style="margin-top:7mm">1. Spočítaj to</h2>
+  <div class="calc">
+    <div><span class="label">Hodiny týždenne spolu</span><div class="v">h</div><small>súčet zo strany 1</small></div>
+    <div><span class="label">× 4 = hodiny mesačne</span><div class="v">h</div><small>toľko času mesačne</small></div>
+    <div class="eq"><span class="label">× cena tvojej hodiny</span><div class="v">€</div><small>toľko ťa to stojí každý mesiac</small></div>
+  </div>
+  <h2 class="sec">2. Vyber, kde začať</h2>
+  <p class="lead" style="margin-bottom:3mm">Prepíš sem 3 úlohy s najviac hodinami a odpovedz na tri otázky.</p>
+  <table class="test">
+    <tr><th>Úloha</th><th class="c">Opakuje sa každý týždeň?</th><th class="c">Robí sa vždy rovnako?</th><th class="c">Ľudí to otravuje?</th></tr>
+    <tr><td></td><td class="c"><span></span></td><td class="c"><span></span></td><td class="c"><span></span></td></tr>
+    <tr><td></td><td class="c"><span></span></td><td class="c"><span></span></td><td class="c"><span></span></td></tr>
+    <tr><td></td><td class="c"><span></span></td><td class="c"><span></span></td><td class="c"><span></span></td></tr>
+  </table>
+  <div class="rule"><span class="n">3× áno</span><p>Úloha, ktorá má <b>tri áno</b>, je tvoj kandidát číslo jeden. Opakuje sa, má jasný postup a nikto ju nechce robiť. Presne také veci vie počítač robiť za vás.</p></div>
+  <h2 class="sec">3. Čo si zapamätať</h2>
+  <div class="tips">
+    <div><b>Začni malým.</b>Jedna úloha, ktorá ušetrí 2 hodiny týždenne, je lepšia ako veľký systém, ktorý nikto nepoužíva.</div>
+    <div><b>Nie všetko je AI.</b>Často stačí dobrá tabuľka alebo jednoduchá appka. AI pridaj tam, kde sa píše alebo triedi text.</div>
+    <div><b>Dáta zostávajú vaše.</b>Než niečo zautomatizuješ, rozhodni, aké údaje do toho môžu ísť. Pomôže druhý súbor: Bezpečne s AI.</div>
+    <div><b>Merajte to.</b>Po mesiaci si znova spočítaj hodiny. Ak čísla neklesli, niečo treba upraviť.</div>
+  </div>
+  <div class="cta">
+    <div><b>Pošli mi odfotený checklist.</b><p>Na 15 min hovore zadarmo ti poviem, čo sa u vás oplatí ako prvé a koľko by to stálo.</p></div>
+    <div class="ct"><a href="https://offthewallhack.github.io/rd2026/#hovor" style="color:inherit">offthewallhack.github.io/rd2026</a><br><a href="mailto:rdurica1995@gmail.com" style="color:inherit">rdurica1995@gmail.com</a></div>
+  </div>
+  <div class="foot"><span>Služby fakturuje 142 design, s. r. o. · IČO 53389662</span><span>offthewallhack.github.io/rd2026</span></div>
+</section>
+</body></html>

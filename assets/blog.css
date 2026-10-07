@@ -45,3 +45,14 @@
 .post-list a:has(.pl-img) { grid-template-columns: minmax(0, 15rem) 1fr; align-items: start; }
 .pl-img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 10px; border: 1px solid var(--line); background: #0B0C0B; }
 @media (max-width: 560px) { .post-list a:has(.pl-img) { grid-template-columns: 1fr; } }
+/* download box inside an article */
+.post-dl { display: grid; grid-template-columns: 5.5rem 1fr; gap: 1rem; align-items: center; margin: 1.5rem 0; padding: .9rem; border: 1.5px solid var(--ink); border-radius: 14px; background: #fff; box-shadow: 4px 4px 0 var(--pulse); }
+.post-dl img { width: 100%; height: auto; border-radius: 3px; box-shadow: 0 6px 16px rgba(0,0,0,.15); rotate: -2deg; }
+.post-dl .label { color: var(--pulse-ink); margin: 0; font-size: .72rem; }
+.prose .post-dl b { display: block; font-size: 1.1rem; line-height: 1.2; margin: .2rem 0 .3rem; }
+.prose .post-dl p { margin: 0 0 .6rem; font-size: .95rem; line-height: 1.45; }
+.prose .post-dl .btn { color: #fff; text-decoration: none; }
+/* stern warning box */
+.prose .warn { margin: 1.5rem 0; padding: 1rem 1.2rem; border: 1.5px solid #D62B3A; border-left-width: 6px; border-radius: 10px; background: #FDF3F4; }
+.prose .warn p:last-child { margin: 0; }
+.prose .warn b { color: #B3121B; }

@@ -256,7 +256,7 @@ html.si .cust-pop .aisi .on { color: var(--pulse-ink); }
 .dl-all:hover { border-style: solid; background: #EAF7EF; }
 
 /* header brand: my monogram instead of the green dot */
-.brand .dot { width: 2rem; height: 2rem; border-radius: .55rem; background: #161616 url("../img/icons/monogram.svg") center / cover no-repeat; box-shadow: 0 0 0 1px rgba(0,0,0,.08); }
+.brand .dot { width: 2.15rem; height: 2.15rem; border-radius: .6rem; background: #161616 url("../img/icons/mark.webp") center / cover no-repeat; box-shadow: 0 0 0 1px rgba(0,0,0,.12), 0 3px 8px rgba(0,0,0,.18); }
 .brand .dot::after { display: none; }
 .brand { gap: .65rem; }
 @media (max-width: 26rem) { .brand .dot { width: 1.85rem; height: 1.85rem; } }

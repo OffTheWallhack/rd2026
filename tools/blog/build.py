@@ -58,7 +58,7 @@ HEAD = """<!doctype html>
 <meta name="theme-color" content="#F5F5F2">
 <meta name="author" content="Robert Ďurica">
 <meta name="goatcounter" content="">
-<link rel="icon" type="image/svg+xml" href="{rel}img/icons/monogram.svg">
+<link rel="icon" type="image/png" sizes="192x192" href="{rel}img/icons/mark-192.png">
 <link rel="icon" type="image/png" sizes="32x32" href="{rel}img/icons/favicon-32.png">
 <link rel="apple-touch-icon" href="{rel}img/icons/apple-touch-icon.png">
 <link rel="manifest" href="{rel}manifest.webmanifest">

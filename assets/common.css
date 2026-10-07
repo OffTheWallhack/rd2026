@@ -200,3 +200,4 @@ html.si .aisi .on { color: var(--pulse-ink); font-weight: 700; }
   .brand .bn-l { display: none; }
   .brand::after { content: "RĎ"; }
 }
+@media (max-width: 22.5rem) { .brand::after { content: none; } .bar-r { gap: .25rem; } .lang, .aisi { padding: 0 .4rem; min-width: 36px; } }

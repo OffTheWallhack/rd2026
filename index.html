@@ -32,28 +32,39 @@
 <script type="speculationrules">{"prerender":[{"urls":["kto-som/"],"eagerness":"moderate"}]}</script>
 <link rel="stylesheet" href="assets/common.css">
 <style>
-/* hero */
+/* hero: me on the left inside an ASCII ring, the headline on the right */
 .hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
 #field { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-.hero-in { position: relative; display: grid; gap: 2.5rem; padding-top: clamp(2.5rem, 8vw, 5.5rem); padding-bottom: clamp(3rem, 8vw, 5.5rem); }
-.hero-in { min-height: min(64vh, 38rem); align-content: center; }
-@media (max-width: 55.99rem) { .hero-in { min-height: 0; align-content: start; padding-bottom: 44vh; } }
-
-.hero-in > div { position: relative; z-index: 2; }
-.hero-cut { position: absolute; z-index: 1; bottom: 0; pointer-events: none; will-change: transform; }
-.hero-cut img { display: block; height: 100%; width: auto; }
+.hero-in { position: relative; display: grid; grid-template-columns: minmax(0, 36%) minmax(0, 1fr); grid-template-areas: "stage head" "stage rest"; column-gap: clamp(.75rem, 4vw, 3.5rem); align-items: start; padding-top: clamp(1.75rem, 6vw, 4.5rem); padding-bottom: clamp(2rem, 6vw, 4.5rem); }
+.hero-head { grid-area: head; position: relative; z-index: 4; align-self: end; }
+.hero-rest { grid-area: rest; position: relative; z-index: 4; }
+.hero-stage { grid-area: stage; position: relative; align-self: stretch; min-height: 100%; container-type: size; }
+.hero-ring, .field-front { position: absolute; top: -4%; left: -62%; width: 178%; height: 108%; pointer-events: none; }
+@media (min-width: 56rem) { .hero-ring, .field-front { left: -22%; width: 138%; } }
+.hero-ring { z-index: 0; } .field-front { z-index: 3; will-change: transform; }
+.hero-cut { position: absolute; z-index: 1; left: 50%; bottom: 0; width: min(112cqw, 28.9cqh); translate: -50% 0; pointer-events: none; will-change: transform; }
+.hero-cut img { display: block; width: 100%; height: auto; }
 .hero-cut::after { content: ""; position: absolute; left: 10%; right: 10%; bottom: -6px; height: 14px; border-radius: 50%; background: radial-gradient(closest-side, rgba(0,0,0,.28), transparent); z-index: -1; }
+/* ASCII censor band over the eyes */
+.eyebar { position: absolute; left: 27%; top: 4.9%; width: 41%; height: 2.5%; rotate: -4deg; background: var(--ink); color: var(--pulse); border-radius: 2px; overflow: hidden; display: flex; align-items: center; justify-content: center; font: 700 10px/1 var(--mono); letter-spacing: .02em; white-space: nowrap; box-shadow: 0 2px 0 rgba(31,175,111,.35); }
 @media (min-width: 56rem) {
-  .hero-cut { right: 10%; height: 94%; }
-  .hero-in > div { max-width: 60%; }
-  #h1 { font-size: clamp(2.8rem, 4.6vw, 4.2rem); }
+  .hero-in { grid-template-columns: minmax(0, 38%) minmax(0, 1fr); min-height: min(78vh, 46rem); align-content: center; }
+  .hero-head { padding-top: 1rem; }
+  #h1 { font-size: clamp(2.8rem, 4.8vw, 4.6rem); }
 }
 @media (max-width: 55.99rem) {
-  .hero-cut { left: 50%; height: 42vh; margin-left: -6vh; }
+  #h1 { font-size: clamp(1.75rem, 7.4vw, 3.4rem); line-height: 1.02; margin-bottom: .9rem; }
+  .hero-head .status { font-size: .66rem; margin-bottom: .6rem; }
+  .hero-sub { font-size: 1rem; }
+  .hero-rest .for .chip { font-size: .7rem; padding: .2rem .5rem; }
+  .hero-rest .actions { flex-direction: column; align-items: stretch; }
+  .hero-rest .actions .btn { padding-left: .6rem; padding-right: .6rem; font-size: .92rem; white-space: nowrap; }
 }
 @media (prefers-reduced-motion: no-preference) {
   html.js .hero-cut img { animation: rise 1.1s cubic-bezier(.2,.8,.2,1) both .15s; }
+  html.js .eyebar { animation: rise 1.1s cubic-bezier(.2,.8,.2,1) both .15s, barIn .5s steps(4) both 1.1s; }
   @keyframes rise { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: none; } }
+  @keyframes barIn { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
 }
 h1 .l1, h1 .l2 { display: inline-block; will-change: transform; }
 h1 {
@@ -81,30 +92,6 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.2rem); line-height: 1.05;
 .sec-head p { margin: 0; color: var(--muted); font-size: 1.1rem; }
 
 /* problem picker */
-.picker { display: grid; gap: 1.5rem; }
-@media (min-width: 56rem) { .picker { grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: start; } }
-.probs { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; }
-.prob {
-  width: 100%; text-align: left; cursor: pointer;
-  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-  font: 500 1.05rem var(--f); color: var(--ink);
-  background: transparent; border: 1px solid var(--line); border-radius: var(--r);
-  padding: .95rem 1.1rem; min-height: 56px;
-  transition: border-color .2s, background .2s;
-}
-.prob:hover { border-color: #B9B9B0; }
-.prob[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
-.prob .arr { font-family: var(--mono); opacity: .5; }
-.prob[aria-pressed="true"] .arr { opacity: 1; color: var(--pulse); }
-.answer {
-  background: #fff; border: 1px solid var(--line); border-radius: var(--r);
-  padding: clamp(1.5rem, 4vw, 2.25rem); position: sticky; top: 5.5rem;
-}
-.answer .label { display: flex; align-items: center; gap: .5rem; }
-.answer h3 { font-size: 1.6rem; line-height: 1.15; letter-spacing: -.02em; margin: .75rem 0 .75rem; }
-.answer p { margin: 0 0 1.5rem; color: #33332F; }
-.answer-meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; border-top: 1px solid var(--line); padding-top: 1.25rem; }
-.answer-meta .price { font-family: var(--mono); font-size: .9rem; color: var(--muted); }
 @media (prefers-reduced-motion: no-preference) {
   .answer.swap { animation: fadein .35s ease; }
   @keyframes fadein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
@@ -175,8 +162,6 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.2rem); line-height: 1.05;
 @media (prefers-reduced-motion: no-preference) {
   .btn { transition: background .2s, color .2s, border-color .2s, transform .2s ease, box-shadow .2s ease; }
   .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,.12); }
-  .prob { transition: border-color .2s, background .2s, padding-left .25s ease; }
-  .prob:hover { padding-left: 1.4rem; }
   .card, .care, .answer { transition: transform .25s ease, box-shadow .3s ease; transform-style: preserve-3d; }
   .card:hover, .care:hover { box-shadow: 0 24px 50px rgba(0,0,0,.08); }
   .socials a { transition: color .2s, transform .2s; }
@@ -211,12 +196,6 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.2rem); line-height: 1.05;
 .win img { width: 100%; display: block; background: #111; }
 .win figcaption { font: .78rem var(--mono); color: #B9B9B0; padding: .7rem .9rem .85rem; background: #1B1C1A; }
 
-.field-front { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; will-change: transform; }
-
-/* green answer */
-.answer { background: #EAF7EF; border: 1.5px solid var(--pulse); }
-.answer .label { color: var(--pulse-ink); }
-@media (max-width: 55.99rem) { .probs li .answer { margin: .5rem 0 .75rem; position: static; } }
 
 /* bonus */
 .care.bonus { position: relative; background: #F1FAF4; border: 1.5px dashed var(--pulse); margin-top: 1.5rem; }
@@ -244,44 +223,64 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.2rem); line-height: 1.05;
 .win-row span { display: block; font: .72rem var(--mono); color: #B9B9B0; padding: .5rem .7rem .65rem; }
 .win .win-main { width: 100%; height: auto; }
 
-/* problem buttons: each one in its own style */
-.prob { position: relative; overflow: hidden; }
-.prob .t { flex: 1; }
-.prob[aria-pressed="true"] { color: var(--ink); border-color: var(--pulse); box-shadow: 0 0 0 3px rgba(31,175,111,.28); }
-.prob[aria-pressed="true"]:not([class*="k-"]) { background: #fff; }
-.k-hand[aria-pressed="true"] { background: #fffdf3 repeating-linear-gradient(180deg, transparent 0 27px, rgba(70,110,200,.16) 27px 28px); }
-.k-sheet[aria-pressed="true"], .k-chat[aria-pressed="true"], .k-word[aria-pressed="true"] { background-color: #fff; }
-.k-hand .t { font-family: "Caveat", "Bradley Hand", cursive; font-size: 1.65rem; line-height: 1; font-weight: 700; color: #1d2a6b; }
-.k-hand { background: #fffdf3 repeating-linear-gradient(180deg, transparent 0 27px, rgba(70,110,200,.16) 27px 28px); }
-.k-sheet { padding-top: 1.55rem; font-family: var(--mono); font-size: .95rem; background-color: #fff;
-  background-image: linear-gradient(#1F7A45, #1F7A45), linear-gradient(90deg, rgba(0,0,0,.08) 1px, transparent 1px), linear-gradient(rgba(0,0,0,.08) 1px, transparent 1px);
-  background-size: 100% 6px, 64px 100%, 100% 26px; background-repeat: no-repeat, repeat, repeat; background-position: 0 0, 46px 0, 0 6px; }
-.k-sheet .cell { flex: none; font: 600 .7rem var(--mono); color: #1F7A45; border: 2px solid #1F7A45; padding: .1rem .3rem; background: #fff; }
-.k-sheet .t { background: #fff; padding: .05rem .25rem; }
-.k-subs { background: #0d0d0d linear-gradient(180deg, #2a2f33 0%, #0d0d0d 100%); border-color: #0d0d0d; justify-content: center; text-align: center; }
-.k-subs .t { font-family: "Helvetica Neue", Arial, sans-serif; font-weight: 700; color: #fff; text-shadow: 0 0 2px #000, 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 2px 6px rgba(0,0,0,.6); letter-spacing: .01em; }
-.k-subs .t::before { content: "— "; color: #ffe46b; } 
-.k-subs[aria-pressed="true"] { background: #0d0d0d linear-gradient(180deg, #2a2f33 0%, #0d0d0d 100%); color: #fff; }
-.k-chat { background: #fff; }
-.k-chat .av { flex: none; width: 1.9rem; height: 1.9rem; border-radius: 50%; background: radial-gradient(circle at 50% 38%, #fff 0 22%, transparent 23%), linear-gradient(135deg, #0A84FF, #7B5CFF); }
-.k-chat .t { flex: 0 1 auto; margin-right: auto; background: #0A84FF; color: #fff; border-radius: 18px 18px 18px 4px; padding: .5rem .85rem; font-family: -apple-system, "SF Pro Text", system-ui, sans-serif; font-weight: 500; }
-.k-word { background: #fff; box-shadow: inset 0 3px 0 #2B579A; }
-.k-word .t { font-family: "Times New Roman", Times, serif; font-size: 1.15rem; font-weight: 400; flex: 0 1 auto; }
-.k-word { gap: 0; }
-.k-word .arr { margin-left: 1rem; }
+/* problem picker: one panel, every example a tile of the same shape; only the text keeps its own voice */
+.picker { position: relative; display: grid; gap: 1rem; padding: clamp(.75rem, 2.5vw, 1.25rem); border: 1.5px solid var(--ink); border-radius: 16px; box-shadow: 5px 5px 0 var(--pulse);
+  background: #FBFBF8 radial-gradient(rgba(22,22,22,.09) 1px, transparent 1.2px) 0 0 / 14px 14px; }
+@media (min-width: 56rem) { .picker { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.25rem; align-items: start; } }
+.pick-head { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .1rem .2rem .2rem; font: 500 .74rem var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.pick-head b { color: var(--ink); font-weight: 500; display: inline-flex; align-items: center; gap: .5rem; }
+.probs { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; }
+.prob { width: 100%; min-height: 64px; display: flex; align-items: center; gap: .85rem; text-align: left; cursor: pointer; color: var(--ink);
+  background: #fff; border: 1.5px solid var(--line); border-radius: 12px; padding: .6rem .7rem .6rem .6rem; font: 500 1.02rem var(--f); }
+.prob:hover { border-color: #B9B9B0; }
+.prob .t { flex: 1; min-width: 0; }
+.prob .arr { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; border-radius: 50%; background: rgba(31,175,111,.14); color: var(--pulse-ink); font: 1rem var(--mono); }
+.prob[aria-pressed="true"] { border-color: var(--ink); box-shadow: 0 0 0 3px rgba(31,175,111,.3); }
+.prob[aria-pressed="true"] .arr { background: var(--pulse); color: #0B1A12; }
+@media (max-width: 55.99rem) { .prob[aria-pressed="true"] .arr { rotate: 90deg; } }
+/* the little icon on each tile says what kind of mess it is */
+.ico { flex: none; position: relative; width: 2.6rem; height: 2.6rem; border-radius: 9px; overflow: hidden; border: 1px solid rgba(0,0,0,.08); }
+.k-hand .ico { background: #FFF8DF repeating-linear-gradient(180deg, transparent 0 7px, rgba(70,110,200,.3) 7px 8px); }
+.k-hand .ico::after { content: ""; position: absolute; left: 30%; top: 0; bottom: 0; width: 1.5px; background: rgba(220,80,80,.5); }
+.k-sheet .ico { background: #fff linear-gradient(#1F7A45, #1F7A45) 0 0 / 100% 7px no-repeat, repeating-linear-gradient(90deg, transparent 0 12px, rgba(0,0,0,.12) 12px 13px), repeating-linear-gradient(180deg, transparent 0 9px, rgba(0,0,0,.12) 9px 10px); }
+.k-sheet .ico::after { content: "A1"; position: absolute; left: 50%; top: 58%; translate: -50% -50%; font: 700 .62rem/1 var(--mono); color: #1F7A45; background: #fff; border: 2px solid #1F7A45; padding: .12rem .2rem; }
+.k-subs .ico { background: linear-gradient(180deg, #2a2f33, #0d0d0d); }
+.k-subs .ico::before { content: ""; position: absolute; left: 50%; top: 38%; translate: -40% -50%; border: 7px solid transparent; border-left: 11px solid #fff; border-right: 0; }
+.k-subs .ico::after { content: ""; position: absolute; left: 22%; right: 22%; bottom: 7px; height: 3px; border-radius: 2px; background: #FFE46B; }
+.k-chat .ico { background: linear-gradient(135deg, #0A84FF, #7B5CFF); }
+.k-chat .ico::after { content: ""; position: absolute; left: 22%; top: 26%; width: 56%; height: 38%; background: #fff; border-radius: 8px 8px 8px 2px; }
+.k-word .ico { background: #fff; box-shadow: inset 0 4px 0 #2B579A; }
+.k-word .ico::after { content: ""; position: absolute; left: 22%; right: 22%; top: 12px; height: 15px; background: repeating-linear-gradient(180deg, #9AA8C3 0 2px, transparent 2px 5px); }
+.k-other .ico { background: var(--bg-2, #ECECE6); display: grid; place-items: center; font: 700 1.1rem var(--mono); color: var(--muted); }
+/* each text keeps its own voice */
+.k-hand .t { font-family: "Caveat", "Bradley Hand", cursive; font-size: 1.55rem; line-height: 1; font-weight: 700; color: #1d2a6b; }
+.k-sheet .t { font-family: var(--mono); font-size: .92rem; }
+.k-subs .t { flex: 0 1 auto; margin-right: auto; font-family: "Helvetica Neue", Arial, sans-serif; font-weight: 700; color: #fff; background: rgba(13,13,13,.9); border-radius: 4px; padding: .25rem .55rem; }
+.k-chat .t { flex: 0 1 auto; margin-right: auto; background: #0A84FF; color: #fff; border-radius: 18px 18px 18px 4px; padding: .45rem .85rem; font-family: -apple-system, "SF Pro Text", system-ui, sans-serif; font-weight: 500; }
+.k-word .t { flex: 0 1 auto; font-family: "Times New Roman", Times, serif; font-size: 1.15rem; font-weight: 400; }
 .k-word .caret { display: inline-block; width: 1.5px; height: 1.2em; background: #111; margin: 0 auto 0 2px; animation: caret 1s steps(1) infinite; }
 @keyframes caret { 50% { opacity: 0; } }
-
-/* problems: scroll cue */
-.prob .arr { display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; border-radius: 50%; background: rgba(31,175,111,.14); color: var(--pulse-ink); opacity: 1; flex: none; font-size: 1rem; }
-.prob[aria-pressed="true"] .arr { background: var(--pulse); color: #0B1A12; }
-.prob.focus:not([aria-pressed="true"]) { border-color: var(--pulse); }
-.prob.focus:not([aria-pressed="true"]):not([class*="k-"]) { background: #EAF7EF; }
-.prob.focus:not([aria-pressed="true"]) .arr { background: var(--pulse); color: #0B1A12; }
+/* answer: on a phone it opens right under the tile, joined to it */
+.answer { background: #EAF7EF; border: 1.5px solid var(--pulse); border-radius: 12px; padding: clamp(1.25rem, 3.5vw, 2rem); }
+.answer .label { display: flex; align-items: center; gap: .5rem; color: var(--pulse-ink); }
+.answer h3 { font-size: 1.5rem; line-height: 1.15; letter-spacing: -.02em; margin: .65rem 0; }
+.answer p { margin: 0 0 1.25rem; color: #33332F; }
+.answer-meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem 1rem; border-top: 1px solid rgba(31,175,111,.35); padding-top: 1.1rem; }
+.answer-meta .price { font-family: var(--mono); font-size: .88rem; color: #3F4A43; }
+.answer.empty { background: transparent; border: 1.5px dashed #C9C9C0; display: grid; place-items: center; text-align: center; min-height: 18rem; color: var(--muted); }
+.answer.empty p { margin: .6rem 0 0; max-width: 18em; }
+.answer.empty .big { font: 700 2.2rem var(--mono); color: var(--pulse-ink); }
+@media (min-width: 56rem) { .answer { position: sticky; top: 5.5rem; } }
+@media (max-width: 55.99rem) {
+  .answer.empty { display: none; }
+  .probs li .answer { border-radius: 0 0 12px 12px; border-top: 0; margin-top: -6px; padding-top: 1.4rem; }
+  .probs li:has(.answer) .prob { position: relative; z-index: 1; }
+}
 @media (prefers-reduced-motion: no-preference) {
-  .prob.focus:not([aria-pressed="true"]) { animation: tapPulse 1.8s ease-in-out infinite; }
+  .prob { transition: border-color .2s, box-shadow .2s, transform .2s; }
+  .prob:hover { transform: translateX(3px); }
+  .prob .arr { transition: rotate .25s ease, background .2s; }
   .prob.focus:not([aria-pressed="true"]) .arr { animation: nudge 1.2s ease-in-out infinite; }
-  @keyframes tapPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(31,175,111,.0); } 50% { box-shadow: 0 0 0 6px rgba(31,175,111,.22); } }
   @keyframes nudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
 }
 
@@ -513,14 +512,19 @@ html.vt-in .hero-cut img { animation: none !important; }
 
 <section class="hero" id="top" aria-labelledby="h1">
   <canvas id="field" aria-hidden="true"></canvas>
-  <div class="hero-cut"><img src="img/hero-cut.webp" width="373" height="1288" alt="Robert Ďurica so slúchadlami" data-en-alt="Robert Ďurica with headphones" fetchpriority="high"></div>
-  <canvas class="field-front" aria-hidden="true"></canvas>
   <div class="wrap hero-in">
-    <div>
+    <div class="hero-stage">
+      <canvas class="hero-ring" aria-hidden="true"></canvas>
+      <div class="hero-cut"><img src="img/hero-cut.webp" width="373" height="1288" alt="Robert Ďurica so slúchadlami" data-en-alt="Robert Ďurica with headphones" fetchpriority="high"><span class="eyebar" aria-hidden="true"></span></div>
+      <canvas class="field-front" aria-hidden="true"></canvas>
+    </div>
+    <div class="hero-head">
       <p class="status label"><span class="dot" aria-hidden="true"></span><span data-en="Available now">Som k dispozícii</span></p>
-      <h1 id="h1"><span class="l1" data-en="Scared of artificial intelligence?">Bojíš sa umelej inteligencie?</span><br><span class="soft l2" data-en="Chill, I’ll explain it.">Chill, ja ti to vysvetlím.</span></h1>
+      <h1 id="h1"><span class="l1" data-en="Scared of artificial intelligence?">Bojíš sa umelej inteligencie?</span> <span class="soft l2" data-en="Chill, I’ll explain it.">Chill, ja ti to vysvetlím.</span></h1>
+    </div>
+    <div class="hero-rest">
       <p class="hero-sub" data-en="I’ll help you automate your stuff and explain it right away. On your own data.">Pomôžem ti zautomatizovať tvoje veci a rovno ti to vysvetlím. Na tvojich dátach.</p>
-      <p class="for"><span class="label" data-en="For">Pre</span><span class="chip" data-en="small businesses">malé firmy</span><span class="chip" data-en="students">študentov</span><span class="chip" data-en="anyone lost in AI">každého, kto sa stratil v AI-čku</span></p>
+      <p class="for"><span class="label" data-en="For">Pre</span><span class="chip" data-en="small businesses">malé firmy</span><span class="chip" data-en="students">študentov</span><span class="chip" data-en="younger and older">mladších aj starších</span><span class="chip" data-en="anyone who wants to find their way in AI">každého, kto sa chce nájsť v AI-čku</span></p>
       <div class="actions">
         <a class="btn btn-dark" href="#hovor" data-en="Free 15-min call">15 min hovor zadarmo</a>
         <a class="btn wa" href="#kontakt" data-en="Message me on WhatsApp">Napíš mi na WhatsApp</a>
@@ -539,6 +543,7 @@ html.vt-in .hero-cut img { animation: none !important; }
       <p data-en="Pick from the examples below and I’ll tell you how I’d solve it.">Vyber si z príkladov nižšie a ja ti poviem, ako by som to vyriešil.</p>
     </div>
     <div class="picker">
+      <p class="pick-head"><b><span class="dot" aria-hidden="true"></span><span data-en="What’s bugging you?">Čo ťa trápi?</span></b><span data-en="tap one">ťukni na jeden</span></p>
       <ul class="probs rv stg" id="probs"></ul>
       <div class="answer rv" id="answer" aria-live="polite"></div>
     </div>
@@ -782,16 +787,16 @@ html.vt-in .hero-cut img { animation: none !important; }
       a: { sk: "Ukážem ti, čo všetko je dnes možné.", en: "I’ll show you what’s possible today." },
       d: { sk: "Za 3 hodiny prejdeme to, čo sám používam: ako si s AI postavíš vlastnú appku, ako ju uložíš na GitHub a dáš na web, a ako ju zabezpečíš, aby sa ti do nej nedostali boti. Odídeš s vecami, ktoré už bežia.", en: "In 3 hours we go through what I use myself: how to build your own app with AI, put it on GitHub and online, and secure it so bots can’t get in. You leave with things that already run." },
       svc: { sk: "Naučím ťa to", en: "I teach you" }, price: { sk: "150 € · session", en: "€150 · session" } },
-    { sk: "Niečo iné", en: "Something else",
+    { kind: "other", sk: "Niečo iné", en: "Something else",
       a: { sk: "Napíš mi pár viet.", en: "Send me a few sentences." },
       d: { sk: "Veľa vecí sa dá vyriešiť jednoduchšie, než si myslíš. Povieme si, čo by dávalo zmysel.", en: "Lots of things can be solved more simply than you think. We’ll figure out what makes sense." },
       svc: { sk: "Dohodneme sa", en: "Let’s talk" }, price: { sk: "podľa zadania", en: "depends on the job" } }
   ];
   var UI = {
-    sk: { sol: "Riešenie", svc: "Služba", cta: "Toto chcem" },
-    en: { sol: "Solution", svc: "Service", cta: "I want this" }
+    sk: { sol: "Riešenie", svc: "Služba", cta: "Toto chcem", empty: "Ťukni na príklad vľavo a ukážem ti, ako by som to vyriešil." },
+    en: { sol: "Solution", svc: "Service", cta: "I want this", empty: "Tap an example on the left and I’ll show you how I’d solve it." }
   };
-  var current = 0;
+  var current = -1;
   var probsEl = document.getElementById("probs");
   var ansEl = document.getElementById("answer");
 
@@ -812,14 +817,12 @@ html.vt-in .hero-cut img { animation: none !important; }
       b.type = "button"; b.className = "prob" + (p.kind ? " k-" + p.kind : "");
       b.setAttribute("aria-pressed", i === current ? "true" : "false");
       b.setAttribute("aria-controls", "answer");
-      var pre = "", post = "";
-      if (p.kind === "sheet") pre = "<span class='cell' aria-hidden='true'>A1</span>";
-      if (p.kind === "chat") pre = "<span class='av' aria-hidden='true'></span>";
-      if (p.kind === "word") post = "<i class='caret' aria-hidden='true'></i>";
-      b.innerHTML = pre + "<span class='t'></span>" + post + "<span class='arr' aria-hidden='true'>→</span>";
+      var post = p.kind === "word" ? "<i class='caret' aria-hidden='true'></i>" : "";
+      b.innerHTML = "<span class='ico' aria-hidden='true'>" + (p.kind === "other" ? "?" : "") + "</span><span class='t'></span>" + post + "<span class='arr' aria-hidden='true'>→</span>";
       b.querySelector(".t").textContent = p[RD.lang];
       b.addEventListener("click", function () {
-        current = i; renderProblems(); renderAnswer(true);
+        // on a phone a second tap closes it again
+        current = (current === i && window.innerWidth < 896) ? -1 : i; renderProblems(); renderAnswer(true);
         probsEl.querySelectorAll('.prob')[i].focus();
       });
       li.appendChild(b); probsEl.appendChild(li);
@@ -829,12 +832,14 @@ html.vt-in .hero-cut img { animation: none !important; }
 
   var pickerEl = document.querySelector(".picker");
   function placeAnswer() {
-    if (window.innerWidth < 896) { var li = probsEl.children[current]; if (li && ansEl.parentNode !== li) li.appendChild(ansEl); }
+    if (window.innerWidth < 896) { var li = probsEl.children[current]; if (li && ansEl.parentNode !== li) li.appendChild(ansEl); else if (!li && ansEl.parentNode !== pickerEl) pickerEl.appendChild(ansEl); }
     else if (ansEl.parentNode !== pickerEl) pickerEl.appendChild(ansEl);
   }
   window.addEventListener("resize", function () { placeAnswer(); });
   function renderAnswer(animate) {
     var p = PROBLEMS[current], u = UI[RD.lang];
+    ansEl.classList.toggle("empty", !p);
+    if (!p) { ansEl.innerHTML = "<div><span class='big' aria-hidden='true'>←</span><p></p></div>"; ansEl.querySelector("p").textContent = u.empty; placeAnswer(); return; }
     ansEl.innerHTML =
       "<p class='label'><span class='dot' aria-hidden='true'></span>" + u.sol + "</p>" +
       "<h3></h3><p class='d'></p>" +
@@ -851,8 +856,20 @@ html.vt-in .hero-cut img { animation: none !important; }
   RD.onLang(function () { renderProblems(); renderAnswer(false); });
 
 
-  RD.field(document.getElementById("field"), { ink: "rgba(22,22,22,", hot: "#1FAF6F", strength: .35,
-    torus: { x: .82, y: .52, size: .68, mx: .5, my: .84, msize: .95, alpha: .5, ring: true }, front: document.querySelector(".field-front") });
+  RD.field(document.getElementById("field"), { ink: "rgba(22,22,22,", hot: "#1FAF6F", strength: .3 });
+  // the ring around me in the hero, back half behind the photo and front half over it
+  RD.field(document.querySelector(".hero-ring"), { ink: "rgba(22,22,22,", hot: "#1FAF6F", strength: 0,
+    torus: { x: .5, y: .62, size: .86, mx: .5, my: .62, msize: .86, alpha: .62, ring: true }, front: document.querySelector(".field-front") });
+  // the band over my eyes keeps rewriting itself
+  (function () {
+    var bar = document.querySelector(".eyebar"); if (!bar) return;
+    var G = "01<>/{}#=+*$@", cut = document.querySelector(".hero-cut");
+    function fit() { bar.style.fontSize = Math.max(6, bar.offsetHeight * .78).toFixed(1) + "px"; }
+    function fill() { var n = Math.max(6, Math.round(bar.offsetWidth / (parseFloat(bar.style.fontSize) * .62))), t = ""; for (var i = 0; i < n; i++) t += G[Math.floor(Math.random() * G.length)]; bar.textContent = t; }
+    fit(); fill(); window.addEventListener("resize", function () { fit(); fill(); });
+    if (cut && "ResizeObserver" in window) new ResizeObserver(function () { fit(); fill(); }).observe(cut);
+    if (!still) setInterval(fill, 140);
+  })();
   RD.field(document.querySelector(".field-door"), { ink: "rgba(237,237,232,", hot: "#1FAF6F", strength: .45 });
   // the stage ring under the figure's feet, back and front halves on separate canvases
   RD.field(document.querySelector(".door-ring"), { ink: "rgba(237,237,232,", hot: "#1FAF6F", strength: 0,
@@ -864,7 +881,7 @@ html.vt-in .hero-cut img { animation: none !important; }
   // parallax: hero layers, section heads
   if (!still) {
     var heroPh = document.querySelector(".hero-cut"), frontCv = document.querySelector(".field-front");
-    var heroTx = document.querySelector(".hero-in > div");
+    var heroTx = document.querySelector(".hero-head"), heroRest = document.querySelector(".hero-rest");
     var l1 = document.querySelector("h1 .l1"), l2 = document.querySelector("h1 .l2");
     var heads = [].slice.call(document.querySelectorAll(".sec-head"));
     var ticking = false;
@@ -872,9 +889,9 @@ html.vt-in .hero-cut img { animation: none !important; }
       ticking = false;
       var vh = window.innerHeight, y = window.scrollY, m = RD.pointer();
       if (y < vh * 1.5) {
-        if (heroPh) heroPh.style.transform = "translate3d(0," + (y * 0.18).toFixed(1) + "px,0)";
-        if (frontCv) frontCv.style.transform = "translate3d(" + (m.x * -14).toFixed(1) + "px," + (y * 0.32).toFixed(1) + "px,0)";
-        if (heroTx) heroTx.style.opacity = Math.max(0, 1 - y / (vh * .85)).toFixed(3);
+        if (heroPh) heroPh.style.transform = "translate3d(0," + (y * 0.12).toFixed(1) + "px,0)";
+        if (frontCv) frontCv.style.transform = "translate3d(" + (m.x * -10).toFixed(1) + "px," + (y * 0.12).toFixed(1) + "px,0)";
+        if (heroTx) heroTx.style.opacity = heroRest.style.opacity = Math.max(0, 1 - y / (vh * .85)).toFixed(3);
         if (l1) l1.style.transform = "translate3d(" + (-y * 0.15).toFixed(1) + "px," + (y * 0.05).toFixed(1) + "px,0)";
         if (l2) l2.style.transform = "translate3d(" + (y * 0.25).toFixed(1) + "px," + (y * 0.12).toFixed(1) + "px,0)";
       }

@@ -183,3 +183,20 @@ li.ub { flex-shrink: 0; max-width: 100%; }
 .latest-post .lp-txt { display: grid; gap: .35rem; }
 .lp-img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); background: #0B0C0B; }
 @media (max-width: 640px) { .latest-post.has-img { grid-template-columns: 1fr; } }
+
+/* AI / SI switch in the header (added by common.js) */
+.aisi { white-space: nowrap; font: 500 .8rem var(--mono); background: none; border: 1px solid var(--line); color: var(--muted); padding: 0 .7rem; height: 40px; border-radius: var(--r); cursor: pointer; }
+.aisi .on { color: var(--ink); }
+html.si .aisi { border-color: var(--pulse); }
+html.si .aisi .on { color: var(--pulse-ink); font-weight: 700; }
+.aisi-toast { position: fixed; z-index: 90; left: 50%; bottom: calc(1rem + env(safe-area-inset-bottom, 0px)); translate: -50% 0; width: min(26rem, calc(100% - 2rem)); padding: .85rem 1rem; border-radius: 12px; background: var(--ink); color: #fff; font: 500 .92rem/1.4 var(--f); box-shadow: 4px 4px 0 var(--pulse), 0 18px 40px rgba(0,0,0,.25); transition: opacity .35s, translate .35s; }
+.aisi-toast.out { opacity: 0; translate: -50% 10px; }
+@media (prefers-reduced-motion: no-preference) { .aisi-toast { animation: toastIn .35s cubic-bezier(.2,.8,.2,1); } @keyframes toastIn { from { opacity: 0; translate: -50% 14px; } } }
+/* small phones: the two switches show only the active option, the name shrinks to initials */
+@media (max-width: 30rem) {
+  .lang, .aisi { font-size: 0; padding: 0 .55rem; min-width: 40px; }
+  .lang span, .aisi span { font-size: .8rem; }
+  .lang span:not(.on), .aisi span:not(.on) { display: none; }
+  .brand .bn-l { display: none; }
+  .brand::after { content: "RĎ"; }
+}

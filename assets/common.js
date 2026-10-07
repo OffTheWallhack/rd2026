@@ -48,6 +48,72 @@
   var langBtn = document.querySelector(".lang");
   if (langBtn) langBtn.addEventListener("click", function () { setLang(RD.lang === "sk" ? "en" : "sk"); });
 
+  // AI / SI switch: the US government now says "super intelligence" (SI) instead of AI, so the
+  // whole site can too. Text is rewritten in place and put back when switched off.
+  (function () {
+    var bar = document.querySelector(".bar-r"); if (!bar) return;
+    var on = false, touched = [], mo = null;
+    var RULES = [
+      [/\bAI\b/g, "SI"],
+      [/\b([Uu])mel(?:á|ej|ú|ou) inteligenci/g, function (m, u) { return (u === "U" ? "S" : "s") + "uper\u00ADinteligenci"; }],
+      [/\b([Aa])rtificial intelligence/g, function (m, a) { return (a === "A" ? "S" : "s") + "uper intelligence"; }],
+      [/(^|[^\wÀ-ž])([sSzZ]) (?=SI\b)/g, "$1$2o "]   // Slovak: "s AI" but "so SI"
+    ];
+    var SKIP = { SCRIPT: 1, STYLE: 1, TEXTAREA: 1, NOSCRIPT: 1 };
+    function fix(n) {
+      var p = n.parentNode; if (!p || SKIP[p.nodeName] || (p.closest && p.closest("[data-nosi]"))) return;
+      var t = n.data, u = t;
+      RULES.forEach(function (r) { u = u.replace(r[0], r[1]); });
+      if (u !== t) { touched.push([n, t, u]); n.data = u; }
+    }
+    function walk(root) {
+      if (root.nodeType === 3) return fix(root);
+      if (root.nodeType !== 1 || SKIP[root.nodeName]) return;
+      var w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT), n, list = [];
+      while ((n = w.nextNode())) list.push(n);
+      list.forEach(fix);
+    }
+    function set(v, user) {
+      on = v;
+      btn.setAttribute("aria-pressed", v ? "true" : "false");
+      btn.querySelectorAll("[data-m]").forEach(function (s) { s.classList.toggle("on", (s.dataset.m === "si") === v); });
+      html.classList.toggle("si", v);
+      if (v) {
+        walk(html);
+        if (!mo && "MutationObserver" in window) {
+          mo = new MutationObserver(function (ms) {
+            if (!on) return;
+            ms.forEach(function (m) { if (m.type === "characterData") fix(m.target); else m.addedNodes.forEach(walk); });
+          });
+          mo.observe(html, { childList: true, subtree: true, characterData: true });
+        }
+      } else {
+        touched.forEach(function (x) { if (x[0].isConnected && x[0].data === x[2]) x[0].data = x[1]; });
+        touched = [];
+      }
+      try { localStorage.setItem("aisi", v ? "si" : "ai"); } catch (e) {}
+      if (user && v) toast();
+    }
+    function toast() {
+      var old = document.querySelector(".aisi-toast"); if (old) old.remove();
+      var d = document.createElement("div"); d.className = "aisi-toast"; d.setAttribute("role", "status"); d.setAttribute("data-nosi", "");
+      d.textContent = RD.lang === "en"
+        ? "SI mode on. The US now officially says “super intelligence” instead of AI, so why not here too 😏"
+        : "SI mód zapnutý. V USA už AI oficiálne volajú „super intelligence“, tak prečo nie aj tu 😏";
+      document.body.appendChild(d);
+      setTimeout(function () { d.classList.add("out"); setTimeout(function () { d.remove(); }, 400); }, 5200);
+    }
+    var btn = document.createElement("button");
+    btn.type = "button"; btn.className = "aisi"; btn.setAttribute("data-nosi", "");
+    btn.setAttribute("aria-label", "Prepnúť AI / SI");
+    btn.innerHTML = "<span data-m='ai' class='on'>AI</span> / <span data-m='si'>SI</span>";
+    bar.insertBefore(btn, bar.querySelector(".lang") || bar.querySelector(".btn") || null);
+    btn.addEventListener("click", function () { set(!on, true); });
+    var start = false;
+    try { start = localStorage.getItem("aisi") === "si"; } catch (e) {}
+    if (start) set(true, false);
+  })();
+
   // reveal on scroll
   var rv = document.querySelectorAll(".rv");
   if ("IntersectionObserver" in window) {

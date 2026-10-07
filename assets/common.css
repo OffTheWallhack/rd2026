@@ -170,3 +170,12 @@ li.ub small { font: 500 .62rem var(--mono); letter-spacing: .02em; text-transfor
 li.ub { flex-shrink: 0; max-width: 100%; }
 @media (max-width: 24rem) { .door-tags li.ub { font-size: .64rem !important; } }
 @media (max-width: 21rem) { .door-tags li.ub { font-size: .56rem !important; gap: .25rem; } }
+
+/* "article of the day" teaser on the services page (filled by tools/blog/build.py) */
+.latest-post { display: grid; gap: .35rem; margin-top: 2rem; padding: 1.25rem 1.4rem; border: 1.5px solid var(--ink); border-radius: 12px; background: #fff; text-decoration: none; box-shadow: 4px 4px 0 var(--pulse); transition: transform .2s, box-shadow .2s; }
+.latest-post:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--pulse); }
+.latest-post .label { display: flex; align-items: center; gap: .5rem; color: var(--pulse-ink); }
+.latest-post b { font-size: clamp(1.2rem, 2.8vw, 1.5rem); letter-spacing: -.02em; line-height: 1.2; }
+.latest-post .lp-lead { color: #33332F; max-width: 46em; }
+.latest-post .lp-go { font: 500 .9rem var(--mono); color: var(--pulse-ink); }
+@media (max-width: 420px) { .nl-blog { display: none; } }

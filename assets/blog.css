@@ -56,3 +56,7 @@
 .prose .warn { margin: 1.5rem 0; padding: 1rem 1.2rem; border: 1.5px solid #D62B3A; border-left-width: 6px; border-radius: 10px; background: #FDF3F4; }
 .prose .warn p:last-child { margin: 0; }
 .prose .warn b { color: #B3121B; }
+/* screenshots row inside an article */
+.post-shots { margin: 1.5rem 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem; align-items: start; }
+.post-shots img { width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--line); background: #111; }
+.post-shots figcaption { grid-column: 1 / -1; font: .8rem var(--mono); color: var(--muted); }

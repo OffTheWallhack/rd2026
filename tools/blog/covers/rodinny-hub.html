@@ -1,0 +1,24 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../../cv/f/f.css"><style>html,body{margin:0;background:#0B0C0B}canvas{display:block}</style></head><body>
+<canvas id="c" width="1600" height="900"></canvas><script src="_base.js"></script><script>
+Promise.all([document.fonts.load('700 80px "Space Grotesk"'),document.fonts.load('600 30px "Space Grotesk"'),document.fonts.load('500 26px "JetBrains Mono"')]).then(()=>{
+bg('#101712','#070807'); ascii(.18,700);
+// house outline
+x.strokeStyle='#F5F5F2'; x.lineWidth=10; x.lineJoin='round';
+x.beginPath(); x.moveTo(470,330); x.lineTo(800,110); x.lineTo(1130,330); x.lineTo(1130,760); x.lineTo(470,760); x.closePath(); x.stroke();
+// screen inside
+x.fillStyle='#1E201D'; rr(540,360,520,330,18); x.fill(); x.strokeStyle='#3A3D38'; x.lineWidth=3; x.stroke();
+// calendar grid
+const days=['Po','Ut','St','Št','Pi','So','Ne'];
+x.font='600 22px "Space Grotesk", sans-serif'; x.fillStyle='#A3A39B';
+days.forEach((d,i)=>x.fillText(d,568+i*70,402));
+const cols=['#1FBF62','#0A84FF','#FFD400','#FF6B9D'];
+for(let r0=0;r0<3;r0++)for(let i=0;i<7;i++){const X=560+i*70,Y=420+r0*80;x.fillStyle='rgba(255,255,255,.05)';rr(X,Y,60,66,8);x.fill();
+ const n=Math.floor(r()*3);for(let k=0;k<n;k++){x.fillStyle=cols[Math.floor(r()*4)];x.beginPath();x.arc(X+14+k*16,Y+48,6,0,7);x.fill();}}
+// family avatars
+[['M',380,520,'#1FBF62'],['T',1220,470,'#0A84FF'],['B',1250,640,'#FFD400'],['D',330,680,'#FF6B9D']].forEach(([t,cx,cy,col])=>{x.fillStyle=col;x.beginPath();x.arc(cx,cy,46,0,7);x.fill();x.fillStyle='#0B0C0B';x.font='700 44px "Space Grotesk", sans-serif';x.textAlign='center';x.fillText(t,cx,cy+15);x.textAlign='left';
+ x.strokeStyle=col;x.globalAlpha=.4;x.lineWidth=3;x.setLineDash([8,10]);x.beginPath();x.moveTo(cx,cy);x.lineTo(800,525);x.stroke();x.setLineDash([]);x.globalAlpha=1;});
+// heart dot on roof
+x.fillStyle='#1FBF62'; x.beginPath(); x.arc(800,230,22,0,7); x.fill();
+glitch(6,60); vignette(); tag('RODINNÝ HUB · jedna obrazovka pre celú rodinu');
+});
+</script></body></html>

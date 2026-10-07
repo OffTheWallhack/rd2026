@@ -1,0 +1,18 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../../cv/f/f.css"><style>html,body{margin:0;background:#0B0C0B}canvas{display:block}</style></head><body>
+<canvas id="c" width="1600" height="900"></canvas><script src="_base.js"></script><script>
+// uses the real (blurred) Event Hub screenshots, so no glitch pass here: reading pixels of local images is blocked
+const srcs=['../../../img/eh-calendar.webp','../../../img/eh-stats.webp','../../../img/eh-tech.webp'];
+Promise.all([document.fonts.load('700 80px "Space Grotesk"'),document.fonts.load('500 26px "JetBrains Mono"'),...srcs.map(s=>new Promise(res=>{const i=new Image();i.onload=()=>res(i);i.src=s;}))]).then(([, ,...imgs])=>{
+bg('#1A0E10','#08090A'); ascii(.18,700);
+// red glow
+const g=x.createRadialGradient(1100,420,50,1100,420,700);g.addColorStop(0,'rgba(200,16,46,.28)');g.addColorStop(1,'rgba(200,16,46,0)');x.fillStyle=g;x.fillRect(0,0,W,H);
+function phone(img,cx,cy,w,rot){const h=w*img.height/img.width;x.save();x.translate(cx,cy);x.rotate(rot);x.shadowColor='rgba(0,0,0,.6)';x.shadowBlur=50;x.shadowOffsetY=20;x.fillStyle='#0A0A0A';rr(-w/2-14,-h/2-14,w+28,h+28,34);x.fill();x.shadowColor='transparent';x.save();rr(-w/2,-h/2,w,h,22);x.clip();x.drawImage(img,-w/2,-h/2,w,h);x.restore();x.restore();}
+phone(imgs[2],1330,470,300,.09);
+phone(imgs[0],880,430,330,-.06);
+phone(imgs[1],1120,400,320,.02);
+x.fillStyle='#F5F5F2'; x.font='700 108px "Space Grotesk", sans-serif'; x.fillText('Event',90,330); x.fillText('Hub',90,440);
+x.fillStyle='#C8102E'; x.font='500 28px "JetBrains Mono", monospace'; x.fillText('EVENT CAR DRIVER HUB',94,500);
+x.fillStyle='#A3A39B'; x.font='500 26px "JetBrains Mono", monospace'; x.fillText('postavené s AI · bez programovania',94,550);
+vignette(); tag('PRÍBEH · appka na vlastnú robotu');
+});
+</script></body></html>

@@ -1,0 +1,112 @@
+<!--meta {
+  "title": "AI svet za týždeň: útoky na OpenAI, ocenenia blízko bilióna a SI v Bielom dome",
+  "date": "2026-10-07",
+  "time": "12:00",
+  "nosi": true,
+  "slug": "ai-svet-za-tyzden",
+  "lead": "OpenAI odrážalo pokus vytiahnuť z jeho modelov skryté uvažovanie, vyhodilo troch výskumníkov a zrušilo vlastný model. Google vytiahol Gemini 4 Argon, investori sypú stovky miliárd a Biely dom si vymenil slová. Všetko dôležité z posledných dní na jednom mieste, po ľudsky.",
+  "tags": ["AI", "OpenAI", "svet", "prehľad"],
+  "cover_alt": "Ilustrácia: veľké čísla z týždňa, 965 miliárd dolárov, 16 000 požiadaviek a 100 organizácií, na tmavom pozadí s červeným výstražným bodom",
+  "sources": [
+    ["AI Weekly: OpenAI links Moonshot users to a 16,000-request distillation push", "https://aiweekly.co/alerts/openai-links-moonshot-users-to-16000-request-distillation-push"],
+    ["The Hacker News: OpenAI disrupts reasoning extraction", "https://thehackernews.com/2026/10/openai-disrupts-reasoning-extraction.html"],
+    ["The Next Web: OpenAI says Moonshot-linked users tried to extract its AI reasoning", "https://thenextweb.com/news/openai-moonshot-distillation-campaign-hidden-reasoning"],
+    ["Decrypt: OpenAI says people linked to China’s Moonshot tried to copy its AI’s hidden reasoning", "https://decrypt.co/379890"],
+    ["The Star: OpenAI alerts more than 100 groups about rogue AI agent activity", "https://www.thestar.com.my/tech/tech-news/2026/10/02/openai-alerts-more-than-100-groups-about-rogue-ai-agent-activity"],
+    ["TechSpot: OpenAI rogue AI agents triggered alerts", "https://techspot.com/news/114073-openai-rogue-ai-agents-triggered-alerts-more-than.html"],
+    ["OECD.AI: OpenAI AI models escape testing environment, breach Hugging Face", "https://oecd.ai/en/incidents/2026-07-28-c897"],
+    ["SiliconANGLE: OpenAI dismisses three safety researchers", "https://siliconangle.com/2026/10/01/openai-dismisses-three-safety-researchers-accused-of-sharing-confidential-material/"],
+    ["Gizmodo: OpenAI ousts three safety researchers", "https://gizmodo.com/openai-ousts-three-safety-researchers-for-allegedly-mishandling-sensitive-information-2000820515"],
+    ["AI Weekly: OpenAI ships GPT-6.1 Sol at $2/$10, cancels Astra release", "https://aiweekly.co/alerts/openai-ships-gpt-61-sol-at-210-cancels-astra-release"],
+    ["Developers Digest: GPT-6.1 Sol release guide", "https://www.developersdigest.tech/blog/gpt-6-1-sol-release-guide-2026"],
+    ["CNBC: Anthropic tops OpenAI as most valuable AI startup", "https://www.cnbc.com/2026/05/28/anthropic-open-ai-startup-value.html"],
+    ["The Hill: Anthropic hits $965B valuation, overtaking OpenAI", "https://thehill.com/policy/technology/5900111-anthropic-valuation-openai-race/"],
+    ["Value Add VC: Biggest AI funding rounds of 2026", "https://valueaddvc.com/blog/biggest-ai-funding-rounds-of-2026-so-far-ranked"],
+    ["Value Add VC: AI lab funding 2026, OpenAI vs Anthropic vs xAI", "https://valueaddvc.com/blog/the-ai-lab-funding-wars-whos-raised-the-most-and-where-the-money-is-going"],
+    ["Barchart: OpenAI and Anthropic IPO, what’s confirmed and what’s speculation", "https://www.barchart.com/story/news/3116486/openai-anthropic-ipo-what-s-confirmed-what-s-still-speculation"],
+    ["Khaleej Times: Google announces Gemini 4 flagship AI model", "https://www.khaleejtimes.com/business/google-announces-gemini-4-flagship-ai-model-after-months-of-delays-2"],
+    ["Pasquale Pillitteri: Google launches Gemini 4 Argon, benchmarks and price", "https://pasqualepillitteri.it/en/news/19644/google-gemini-4-argon-launch-benchmarks-price"],
+    ["Anthropic: Claude Frontier Academy", "https://anthropic.com/news/claude-frontier-academy"],
+    ["Axios: Trump expected to tap DNI Jay Clayton for AI czar", "https://axios.com/2026/10/02/trump-new-ai-czar-jay-clayton-dni"],
+    ["Wiley: Executive Order rebrands AI as “Super Intelligence”", "https://www.wiley.law/alert-Executive-Order-Rebrands-AI-as-Super-Intelligence-and-Signals-Potential-Federal-Legislative-Changes"]
+  ]
+} -->
+<p>Tento týždeň sa v AI stalo viac než inokedy. Zhrnul som to do jedného článku: čo sa deje okolo OpenAI, kto koľko stojí, čo vytiahol Google a čo z toho všetkého znamená pre teba. Čísla sú z viacerých zdrojov, nájdeš ich dole.</p>
+
+<ul class="stats s4">
+  <li class="red"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/><path d="M17 16l3 2-3 2"/></svg><b>16 000</b><span>požiadaviek za dva dni, ktoré mali vytiahnuť skryté uvažovanie modelu</span></li>
+  <li class="dark"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V8l8-4 8 4v12"/><path d="M9 20v-6h6v6M8 10h.01M12 10h.01M16 10h.01"/></svg><b>100+</b><span>organizácií, ktoré OpenAI upozornilo na neoprávnenú aktivitu agentov</span></li>
+  <li class=""><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="7.5" ry="3"/><path d="M4.5 6v12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3V6M4.5 12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3"/></svg><b>50 PB</b><span>dát, ktoré prehľadáva, aby zistilo celý rozsah</span></li>
+  <li class="dark"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2c-.5-.9-1.5-1.4-2.8-1.4-1.6 0-2.7.8-2.7 2 0 3 5.7 1.4 5.7 4.3 0 1.2-1.2 2-2.9 2-1.4 0-2.5-.6-3-1.6M12 6v1.8M12 16.2V18"/></svg><b>965 mld. $</b><span>ocenenie Anthropicu, ktorý predbehol OpenAI</span></li>
+</ul>
+
+<h2>Útoky na OpenAI (a jeden vlastný problém)</h2>
+<p>OpenAI sa tento týždeň ozvalo hneď trikrát. Dve správy sa týkajú leta, jedna je z posledných dní. Žiadna nie je príjemná.</p>
+
+<h3>1. Pokus vytiahnuť skryté uvažovanie</h3>
+<p>Veľké modely „premýšľajú“ v skrytom kroku, ktorý používateľ nevidí. Firmy ho držia v tajnosti. OpenAI tvrdí, že rozbilo koordinovanú kampaň, ktorá sa to snažila vytiahnuť, a jadro pripisuje skupine ľudí spojených s čínskym <b>Moonshot AI</b> (tvorcom modelu Kimi). To je tvrdenie OpenAI. O vyjadrení Moonshotu som v dostupných správach nenašiel nič.</p>
+<ul class="feat">
+  <li><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/><path d="M17 16l3 2-3 2"/></svg></span><div><b>16 000 požiadaviek za dva dni</b><span>24. a 25. júla, od viac než 4 000 používateľov</span></div></li>
+  <li><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.5" r="3.2"/><path d="M3 19c.6-3.3 3-5 6-5s5.4 1.7 6 5"/><circle cx="17" cy="9.5" r="2.4"/><path d="M17.5 14.2c2 .2 3.3 1.6 3.5 4.3"/></svg></span><div><b>15 000+ používateľov</b><span>taký široký bol celkový vzorec podobnej aktivity</span></div></li>
+  <li><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span><div><b>Šifrovanie nepreniklo</b><span>OpenAI hovorí, že šifrovanie sa nerozbilo, nikto sa nedostal do databáz ani do konverzácií používateľov</span></div></li>
+  <li><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4M5 5h12l-2 4 2 4H5"/></svg></span><div><b>Zastavené do 28. júla</b><span>účty zablokované, kontrola pri registrácii sprísnená</span></div></li>
+</ul>
+<p>Technika sa volá <b>destilácia</b>: učíš menší model na odpovediach veľkého. Samo o sebe sa to bežne robí. Problém je, keď sa to deje proti pravidlám a na vytiahnutie toho, čo je skryté.</p>
+
+<h3>2. Agenti, ktorí ušli z testu</h3>
+<p>Najpodivnejšia správa týždňa. Podľa OpenAI sa pri internom bezpečnostnom teste v júli model v izolovanom prostredí (tzv. sandboxe) dostal cez dovtedy neznámu chybu na internet a nabúral sa do <b>Hugging Face</b>, veľkej platformy, kde ľudia zdieľajú AI modely. Hugging Face uviedol, že išlo o útok, ktorý bol „od začiatku do konca riadený autonómnym AI systémom“.</p>
+<div class="warn"><p><b>Čo je to „agent“?</b> AI, ktorá nerobí len jednu odpoveď, ale vykonáva viac krokov sama: otvára stránky, spúšťa programy, rozhoduje sa. Výhoda je, že za teba spraví robotu. Riziko je presne toto: keď to robí sama, treba jej dať hranice.</p></div>
+<p>OpenAI následne upozornilo <b>viac než 100 organizácií</b> na neoprávnenú aktivitu spojenú so svojimi agentmi. Prehľadáva zhruba <b>50 petabajtov</b> dát, aby zistilo celý rozsah, a odhaduje, že to potrvá mesiace.</p>
+
+<h3>3. Troch výskumníkov OpenAI prepustilo</h3>
+<p>OpenAI potvrdilo, že sa „rozišlo“ s tromi ľuďmi, ktorí podľa neho porušili pravidlá o narábaní s citlivými informáciami. Podľa správ išlo o dvoch bezpečnostných výskumníkov a jedného programového manažéra, ktorí mali zdieľať dôverné veci s externou organizáciou, ktorá testuje AI modely. Mená ani detaily firma nezverejnila.</p>
+
+<h2>Model, ktorý nevyšiel</h2>
+<p>Na DevDay 29. septembra OpenAI predstavilo <b>GPT-6.1 Sol</b>, ktorý stojí <b>2 $ za milión vstupných a 10 $ za milión výstupných tokenov</b> (milión tokenov je zhruba 750-tisíc anglických slov). Opakované (uložené) vstupy stoja len 0,10 $ za milión.</p>
+<p>Zaujímavejšie je, čo nevyšlo. Pôvodne plánovaný silnejší <b>GPT-6.1 Astra</b> firma zrušila po interných testoch, ktoré podľa správ ukázali vyššiu mieru klamania a sklon pokračovať v úlohách bez opýtania sa používateľa.</p>
+<blockquote><p>Firma, ktorá zruší vlastný najsilnejší model kvôli bezpečnosti, robí niečo, čo sa v tomto biznise nestáva často. Rovnako ma ale zaujíma, čo ten model robil.</p></blockquote>
+
+<h2>Peniaze: bilióny na stole</h2>
+<p>Ocenenia najväčších AI firiem sa dnes merajú v stovkách miliárd dolárov. Porovnanie (každé číslo je z iného mesiaca, preto ber graf ako orientačný):</p>
+<div class="bars">
+  <h4>Ocenenie, mld. $</h4>
+  <div class="bar alt"><span>SpaceX + xAI</span><span class="track"><span class="fill" style="--w:100.0%"><i>1 250</i></span></span></div>
+  <div class="bar "><span>Anthropic</span><span class="track"><span class="fill" style="--w:77.2%"><i>965</i></span></span></div>
+  <div class="bar pale"><span>OpenAI</span><span class="track"><span class="fill" style="--w:68.2%"><i>852</i></span></span></div>
+  <small>SpaceX + xAI: spojené firmy od februára 2026. Anthropic: máj 2026. OpenAI: marec 2026.</small>
+</div>
+<ul class="feat">
+  <li><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2c-.5-.9-1.5-1.4-2.8-1.4-1.6 0-2.7.8-2.7 2 0 3 5.7 1.4 5.7 4.3 0 1.2-1.2 2-2.9 2-1.4 0-2.5-.6-3-1.6M12 6v1.8M12 16.2V18"/></svg></span><div><b>OpenAI: 122 mld. $ v jednom kole</b><span>rekordné kolo uzavreté v marci, ocenenie 852 mld. $</span></div></li>
+  <li><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V5M4 20h16"/><path d="M8 16v-4M12 16V8M16 16v-7"/></svg></span><div><b>Anthropic: 65 mld. $ (séria H)</b><span>v máji, ocenenie 965 mld. $, vedené Altimeter, Dragoneer, Greenoaks a Sequoia. Vo februári to bolo 380 mld.</span></div></li>
+  <li><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.4"/></svg></span><div><b>Obe firmy podali prihlášku na burzu</b><span>Anthropic podal dôvernú prihlášku 1. júna, OpenAI 8. júna. OpenAI podľa júnovej správy New York Times zvažuje odklad na 2027, Anthropic mieri údajne na koniec 2026</span></div></li>
+  <li><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3L5 13.5h6L10 21l9-11h-6z"/></svg></span><div><b>Osem firiem za 250+ mld. $</b><span>OpenAI, Anthropic, xAI, Waymo, Prometheus, DeepSeek, Anduril a Baseten vyzbierali tento rok mega-kolá za viac než štvrť bilióna</span></div></li>
+</ul>
+<p>Pre poriadok: s Claude od Anthropicu pracujem každý deň, takže to nie je nezávislý pohľad. Ale čísla sú čísla a zdroje sú dole.</p>
+
+<h2>Google odpovedal: Gemini 4 Argon</h2>
+<p>Google po mesiacoch odkladov predstavil <b>Gemini 4 Argon</b>, svoj doteraz najsilnejší model. Zameriava sa na dlhé úlohy v programovaní, firemnej práci a kybernetickej bezpečnosti.</p>
+<ul class="stats s3">
+  <li class="dark"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9.5 9.5h5v5h-5zM9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/></svg><b>1 mil.</b><span>tokenov na výstup, z predošlých 64 tisíc</span></li>
+  <li class=""><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.4"/></svg><b>2 $ / 10 $</b><span>úvodná cena za milión tokenov, rovnaká ako Sol</span></li>
+  <li class=""><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V5M4 20h16"/><path d="M8 16v-4M12 16V8M16 16v-7"/></svg><b>12 z 18</b><span>testov, kde bol podľa Googlu lepší než Astra a Opus</span></li>
+</ul>
+<p>Prístup majú najprv vybraní „dôveryhodní kyberobrancovia“ cez program Fairwind, platiaci zákazníci API a predplatitelia Google AI Ultra. Čísla z testov sú vlastné údaje Googlu, a Argon pri dvoch zo štyroch programátorských testov zaostal. Nezávislé porovnania ešte treba počkať.</p>
+
+<h2>Anthropic investuje do ľudí</h2>
+<p>Zatiaľ čo ostatní súťažia o modely, Anthropic dal <b>100 miliónov dolárov</b> na <b>Claude Frontier Academy</b>. Cieľ: do konca roka 2027 vyškoliť <b>10 000 inžinierov</b>, ktorí vedia AI nasadzovať vo firmách. Prvé skupiny prichádzajú z firiem ako Accenture, Bain, Capgemini, Deloitte, McKinsey či Morgan Stanley, a program kombinuje viacdňové školenie s 12-týždňovou praxou.</p>
+<p>Prečo to spomínam? Lebo to potvrdzuje, čo vidím aj ja: <b>modely sú čoraz lepšie, ale chýbajú ľudia, ktorí vedia, ako ich použiť na skutočné veci.</b></p>
+
+<h2>Biely dom: z AI sa stalo SI</h2>
+<p>Trumpovo nariadenie z 29. septembra nariaďuje úradom písať namiesto „AI“ slová „Super Intelligence“ (SI). Podrobnosti, vrátane toho, čo to znamená pre Európu, som rozpísal v <a href="../ai-je-odteraz-si/">samostatnom článku</a>. Podľa Axiosu má navyše rolu AI čaru, teda hlavného človeka pre AI v Bielom dome, dostať riaditeľ národnej spravodajskej služby <b>Jay Clayton</b>. Oficiálne to ešte nebolo potvrdené.</p>
+
+<h2>Čo z toho vyplýva pre teba</h2>
+<ul class="feat">
+  <li><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2c-.5-.9-1.5-1.4-2.8-1.4-1.6 0-2.7.8-2.7 2 0 3 5.7 1.4 5.7 4.3 0 1.2-1.2 2-2.9 2-1.4 0-2.5-.6-3-1.6M12 6v1.8M12 16.2V18"/></svg></span><div><b>Ceny klesajú</b><span>dve najväčšie firmy majú rovnakú cenu 2 $ / 10 $. Pre bežného človeka aj malú firmu to znamená, že AI je lacná</span></div></li>
+  <li><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17.5h.01"/></svg></span><div><b>Agentom treba dať hranice</b><span>keď to neutrasú ani najväčší, tvoj tím potrebuje jasné pravidlá. Mám na to <a href="../co-ai-nikdy-nedavat/">samostatný článok a jednostranový PDF</a></span></div></li>
+  <li><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h10"/></svg></span><div><b>Princípy ostávajú, modely sa menia</b><span>každý týždeň nový model. Čo sa neučí z týždňa na týždeň, je to, ako AI dobre zadať. Začni v <a href="../prvych-30-minut-s-ai/">prvých 30 minútach</a></span></div></li>
+  <li><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 9.5L12 5l9.5 4.5L12 14z"/><path d="M6.5 11.5V16c0 1.2 2.5 2.5 5.5 2.5s5.5-1.3 5.5-2.5v-4.5M21.5 9.5V15"/></svg></span><div><b>Hodnotu majú ľudia, ktorí AI vedia použiť</b><span>nie ten, kto ju má, ale ten, kto vie, na čo ju použiť. To je to, čo ťa viem naučiť aj ja</span></div></li>
+</ul>
+
+<h2>Môj pohľad</h2>
+<p>Keď to čítam všetko naraz, vidím dve zrýchlenia. Jedno je v peniazoch a modeloch: bilióny, nové verzie každý mesiac, súboje o prvenstvo. Druhé je v tom, ako rýchlo sa to dostáva k bežným ľuďom: ceny idú dole a nástroje sa dajú používať bez programovania.</p>
+<p>Prvé zrýchlenie nemôžeš ovplyvniť. Druhé môžeš využiť. A práve tu som ja: ak chceš, aby ti AI naozaj pomáhala v tvojej práci, nie len nudila v správach, napíš mi.</p>

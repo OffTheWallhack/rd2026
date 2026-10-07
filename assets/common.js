@@ -193,7 +193,7 @@
     var lb = document.getElementById("lb"); if (!lb) return;
     var stage = lb.querySelector(".lb-stage"), cap = lb.querySelector(".lb-cap"), cnt = lb.querySelector(".lb-count");
     var group = [], idx = 0, lastFocus = null;
-    var SEL = ".rm .th, .sk-media .m, .rl-media .m, .off .m, .pol, .sheet-mini";
+    var SEL = ".rm .th, .sk-media .m, .rl-media .m, .off .m, .pol, .sheet-mini, .post-shots figure";
     function media(fig) { return fig.querySelector("img, video"); }
     function show(i) {
       idx = (i + group.length) % group.length;
@@ -206,7 +206,7 @@
         var src = m.querySelector("source"); el.src = src ? src.src : m.currentSrc;
       } else { el = document.createElement("img"); el.src = m.currentSrc || m.src; el.alt = m.alt; }
       stage.appendChild(el);
-      var fc = fig.querySelector("figcaption"); cap.textContent = fc ? fc.textContent : (m.alt || "");
+      var fc = fig.querySelector("figcaption"); cap.textContent = fc ? (fc.innerText || fc.textContent).replace(/\s*\n+\s*/g, " · ") : (m.alt || "");
       cnt.textContent = group.length > 1 ? (idx + 1) + " / " + group.length : "";
       lb.querySelector(".lb-p").style.display = lb.querySelector(".lb-n").style.display = group.length > 1 ? "" : "none";
     }

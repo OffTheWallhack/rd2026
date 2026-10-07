@@ -1,0 +1,24 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../../cv/f/f.css"><style>html,body{margin:0;background:#0B0C0B}canvas{display:block}</style></head><body>
+<canvas id="c" width="1600" height="900"></canvas><script src="_base.js"></script><script>
+Promise.all([document.fonts.load('700 100px "Space Grotesk"'),document.fonts.load('500 28px "JetBrains Mono"'),document.fonts.load('700 30px "JetBrains Mono"')]).then(()=>{
+bg('#101310','#070807'); ascii(.2,900); glitch(7,60);
+// left: title
+x.textBaseline='alphabetic'; x.fillStyle='#F5F5F2'; x.font='700 112px "Space Grotesk", sans-serif';
+x.fillText('AI svet',80,300); x.fillText('za týždeň.',80,420);
+x.fillStyle='#1FBF62'; x.fillRect(84,458,150,10);
+x.fillStyle='#A3A39B'; x.font='500 30px "JetBrains Mono", monospace'; x.fillText('29. 9. – 7. 10. 2026',84,530);
+// red alert dot
+const g=x.createRadialGradient(150,640,5,150,640,90);g.addColorStop(0,'rgba(214,43,58,.9)');g.addColorStop(1,'rgba(214,43,58,0)');x.fillStyle=g;x.fillRect(40,540,220,200);
+x.fillStyle='#D62B3A';x.beginPath();x.arc(150,640,16,0,7);x.fill();
+x.fillStyle='#F5F5F2'; x.font='700 26px "JetBrains Mono", monospace'; x.fillText('OpenAI · ALERT',190,650);
+// right: stat tiles
+function tile(tx,ty,w,h,rot,bgc,fg,num,label,sh){x.save();x.translate(tx,ty);x.rotate(rot);x.shadowColor='rgba(0,0,0,.55)';x.shadowBlur=36;x.shadowOffsetY=16;x.fillStyle=bgc;rr(0,0,w,h,26);x.fill();x.shadowColor='transparent';x.strokeStyle=sh;x.lineWidth=5;rr(0,0,w,h,26);x.stroke();
+ x.fillStyle=fg;x.font='700 100px "Space Grotesk", sans-serif';x.fillText(num,34,h-84);x.font='500 22px "JetBrains Mono", monospace';x.fillStyle=fg==='#0B1A12'?'#10301F':(fg==='#161616'?'#4A4D48':'#B9B9B0');x.fillText(label,36,h-38);x.restore();}
+tile(790,80,380,200,-.04,'#1FBF62','#0B1A12','965','mld. $ · Anthropic','#0B1A12');
+tile(1190,120,370,200,.04,'#161616','#F5F5F2','16 000','požiadaviek · destilácia','#D62B3A');
+tile(810,320,370,200,.03,'#F5F5F2','#161616','100+','organizácií upozornených','#1FBF62');
+tile(1200,360,360,200,-.04,'#161616','#3BE08F','50 PB','dát v kontrole','#3BE08F');
+tile(880,570,560,190,-.02,'#222421','#F5F5F2','2 $ / 10 $','cena za milión tokenov','#4A4D48');
+vignette(); tag('DIGEST · OpenAI, peniaze, Google a Biely dom');
+});
+</script></body></html>

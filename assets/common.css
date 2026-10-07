@@ -171,7 +171,8 @@ li.ub { flex-shrink: 0; max-width: 100%; }
 @media (max-width: 21rem) { .door-tags li.ub { font-size: .56rem !important; gap: .25rem; } }
 
 /* newest blog posts on the services page (filled by tools/blog/build.py) */
-.lp-grid { display: grid; gap: 1rem; }
+.lp-grid { display: grid; gap: 1rem; grid-template-columns: minmax(0, 1fr); }
+.lp-grid > * { min-width: 0; overflow-wrap: anywhere; }
 @media (min-width: 48rem) { .lp-grid { grid-template-columns: 1.4fr 1fr; align-items: start; } .lp-grid .first { grid-row: span 3; } .latest-post:not(.first) .lp-lead { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; font-size: .88rem; } }
 .latest-post { display: grid; align-content: start; gap: .8rem; padding: .8rem; border: 1.5px solid var(--ink); border-radius: 14px; background: #fff; text-decoration: none; transition: transform .2s, box-shadow .2s; }
 .latest-post.first { box-shadow: 5px 5px 0 var(--pulse); }
@@ -253,3 +254,9 @@ html.si .cust-pop .aisi .on { color: var(--pulse-ink); }
 @media (min-width: 48rem) { .dl-card { grid-template-columns: 9.5rem 1fr; } .dl-soon { align-self: stretch; } }
 .dl-all { text-decoration: none; color: var(--ink); border-color: var(--ink); }
 .dl-all:hover { border-style: solid; background: #EAF7EF; }
+
+/* header brand: my monogram instead of the green dot */
+.brand .dot { width: 2rem; height: 2rem; border-radius: .55rem; background: #161616 url("../img/icons/monogram.svg") center / cover no-repeat; box-shadow: 0 0 0 1px rgba(0,0,0,.08); }
+.brand .dot::after { display: none; }
+.brand { gap: .65rem; }
+@media (max-width: 26rem) { .brand .dot { width: 1.85rem; height: 1.85rem; } }

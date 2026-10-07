@@ -5,10 +5,10 @@
 <script>document.documentElement.classList.add("js")</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Rodinný hub: jedna obrazovka pre celú rodinu | Robert Ďurica</title>
-<meta name="description" content="Spoločný kalendár, správy, dokumenty a prehľad, kto je kde. Na mobile aj na obrazovke u starých rodičov, ktorí si len otvoria web. Rovnaký princíp, na akom som si postavil appku na robotu, funguje aj doma.">
+<meta name="description" content="Spoločný kalendár, správy a dokumenty na jednom mieste. Dokument stačí odfotiť a poslať jednému kontaktu v telefóne. Starí rodičia si doma len zapnú webovú stránku a vidia všetko.">
 <link rel="canonical" href="https://offthewallhack.github.io/rd2026/blog/rodinny-hub/">
 <meta property="og:title" content="Rodinný hub: jedna obrazovka pre celú rodinu">
-<meta property="og:description" content="Spoločný kalendár, správy, dokumenty a prehľad, kto je kde. Na mobile aj na obrazovke u starých rodičov, ktorí si len otvoria web. Rovnaký princíp, na akom som si postavil appku na robotu, funguje aj doma.">
+<meta property="og:description" content="Spoločný kalendár, správy a dokumenty na jednom mieste. Dokument stačí odfotiť a poslať jednému kontaktu v telefóne. Starí rodičia si doma len zapnú webovú stránku a vidia všetko.">
 <meta property="og:image" content="https://offthewallhack.github.io/rd2026/img/blog/rodinny-hub-og.jpg">
 <meta property="og:url" content="https://offthewallhack.github.io/rd2026/blog/rodinny-hub/">
 <meta property="og:type" content="article">
@@ -17,6 +17,7 @@
 <meta name="theme-color" content="#F5F5F2">
 <meta name="author" content="Robert Ďurica">
 <meta name="goatcounter" content="">
+<link rel="icon" type="image/svg+xml" href="../../img/icons/monogram.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="../../img/icons/favicon-32.png">
 <link rel="apple-touch-icon" href="../../img/icons/apple-touch-icon.png">
 <link rel="manifest" href="../../manifest.webmanifest">
@@ -26,7 +27,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/common.css">
 <link rel="stylesheet" href="../../assets/blog.css">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Rodinný hub: jedna obrazovka pre celú rodinu", "description": "Spoločný kalendár, správy, dokumenty a prehľad, kto je kde. Na mobile aj na obrazovke u starých rodičov, ktorí si len otvoria web. Rovnaký princíp, na akom som si postavil appku na robotu, funguje aj doma.", "datePublished": "2026-10-07", "dateModified": "2026-10-07", "inLanguage": "sk", "url": "https://offthewallhack.github.io/rd2026/blog/rodinny-hub/", "author": {"@type": "Person", "name": "Robert Ďurica", "url": "https://offthewallhack.github.io/rd2026/kto-som/"}, "publisher": {"@type": "Person", "name": "Robert Ďurica"}, "image": "https://offthewallhack.github.io/rd2026/img/blog/rodinny-hub-og.jpg"}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Rodinný hub: jedna obrazovka pre celú rodinu", "description": "Spoločný kalendár, správy a dokumenty na jednom mieste. Dokument stačí odfotiť a poslať jednému kontaktu v telefóne. Starí rodičia si doma len zapnú webovú stránku a vidia všetko.", "datePublished": "2026-10-07", "dateModified": "2026-10-07", "inLanguage": "sk", "url": "https://offthewallhack.github.io/rd2026/blog/rodinny-hub/", "author": {"@type": "Person", "name": "Robert Ďurica", "url": "https://offthewallhack.github.io/rd2026/kto-som/"}, "publisher": {"@type": "Person", "name": "Robert Ďurica"}, "image": "https://offthewallhack.github.io/rd2026/img/blog/rodinny-hub-og.jpg"}</script>
 </head>
 <body>
 <a class="skip" href="#main">Preskočiť na obsah</a>
@@ -45,37 +46,44 @@
   <article class="post">
     <p class="label"><a href="../">Blog</a> · <time datetime="2026-10-07">7. októbra 2026</time></p>
     <h1>Rodinný hub: jedna obrazovka pre celú rodinu</h1>
-    <p class="lead">Spoločný kalendár, správy, dokumenty a prehľad, kto je kde. Na mobile aj na obrazovke u starých rodičov, ktorí si len otvoria web. Rovnaký princíp, na akom som si postavil appku na robotu, funguje aj doma.</p>
+    <p class="lead">Spoločný kalendár, správy a dokumenty na jednom mieste. Dokument stačí odfotiť a poslať jednému kontaktu v telefóne. Starí rodičia si doma len zapnú webovú stránku a vidia všetko.</p>
     <p class="tags"><span class="chip">AI</span><span class="chip">rodina</span><span class="chip">nápad</span></p>
     <figure class="post-cover"><img src="../../img/blog/rodinny-hub.webp" width="1600" height="900" alt="Ilustrácia: obrys domu, v ktorom je obrazovka so spoločným kalendárom a bodkami členov rodiny" fetchpriority="high"></figure>
     <div class="prose">
 <p>Keď som si postavil <a href="../event-hub-appka-na-vlastnu-robotu/">Event Hub</a>, appku na vlastnú robotu, došlo mi jedno: tento princíp nie je len pre prácu. Jedno miesto, kam sa všetko zbehne, a ktoré ti samo pripomenie, čo treba. Presne toto potrebuje aj väčšina rodín.</p>
 
 <h2>Čo je rodinný hub</h2>
-<p>Jednoduchá webová appka len pre vašu rodinu. Nič neinštaluješ. Otvoríš odkaz na mobile, na počítači alebo na tablete a vidíš:</p>
-<ul>
-  <li><b>Spoločný kalendár</b>: kto má kedy čo, krúžky, lekári, služobky, oslavy.</li>
-  <li><b>Správy a odkazy</b> na jednom mieste, nie roztrúsené v piatich skupinových chatoch.</li>
-  <li><b>Domácnosť a účty</b>: kedy sa platí čo, čo treba kúpiť, kto čo vybavuje.</li>
-  <li><b>Dokumenty</b>: poistky, záruky, návody a dôležité papiere, ktoré vždy hľadáš, keď ich treba.</li>
-  <li><b>Pripomienky</b>, ktoré prídu samy, aby nikto nič nezmeškal.</li>
+<p>Jednoduchá webová appka len pre vašu rodinu. Otvoríš odkaz na mobile, na počítači alebo na tablete a vidíš:</p>
+<ul class="feat">
+  <li><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></span><div><b>Spoločný kalendár</b><span>kto má kedy čo: krúžky, lekári, služobky, oslavy</span></div></li>
+  <li><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg></span><div><b>Dokumenty</b><span>poistky, záruky, návody a papiere, ktoré vždy hľadáš, keď ich treba</span></div></li>
+  <li><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5L12 4l8 7.5V20h-5.5v-5h-5v5H4z"/></svg></span><div><b>Domácnosť a účty</b><span>kedy sa platí čo, čo treba kúpiť, kto čo vybavuje</span></div></li>
+  <li><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15z"/><path d="M10 21h4"/></svg></span><div><b>Správy a pripomienky</b><span>na jednom mieste, nie v piatich skupinových chatoch</span></div></li>
 </ul>
+
+<h2>Ako sa tam dostanú veci? Jednoducho.</h2>
+<ol class="flow">
+  <li><span class="n">01</span><b>Odfotíš</b><span>dokument, bloček, papier od lekára</span></li>
+  <li><span class="n">02</span><b>Pošleš</b><span>na jeden kontakt, ktorý máš v telefóne</span></li>
+  <li><span class="n">03</span><b>Je v hube</b><span>uložené a roztriedené, všetci to vidia</span></li>
+</ol>
+<ul class="feat">
+  <li><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg></span><div><b>Cez kontakt v telefóne</b><span>odfotíš a pošleš, to je celé</span></div></li>
+  <li><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/></svg></span><div><b>Cez webovú stránku</b><span>prihlásiš sa v telefóne a odfotíš to aj z hocikoho iného telefónu</span></div></li>
+  <li><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></span><div><b>Aj hlasovka</b><span>niekto ti pošle hlasovku a ty ju vieš preposlať rovno do hubu</span></div></li>
+</ul>
+<p>Funguje to aj na cudzom telefóne. Vezmeš babke alebo kamarátovi telefón, odfotíš alebo nahráš, čo treba, označíš, komu to patrí, a cez webovú stránku to pošleš sebe do hubu.</p>
 
 <h2>Obrazovka pre starých rodičov</h2>
 <p>Toto je časť, ktorú mám najradšej. Starí rodičia si doma len zapnú webovú stránku na televízore alebo tablete a vidia všetko na jednej obrazovke. Kedy prídu vnúčatá, kto je práve kde, na akej akcii alebo projekte robia ich deti.</p>
 <blockquote><p>Áno, je to displej navyše. Ale pre starších rodičov môže znamenať, že sú v obraze, bez toho, aby sa museli učiť nové appky.</p></blockquote>
-<p>Žiadne zložité ovládanie. Žiadne heslá, ktoré zabudnú. Len obrazovka, ktorá sa sama aktualizuje.</p>
+<p>Žiadne zložité ovládanie. Len obrazovka, ktorá sa sama aktualizuje.</p>
 
-<h2>Háčik: súkromie</h2>
-<p>Rodinné dáta sú tie najcitlivejšie. Preto platí:</p>
-<ul>
-  <li>Kto je kde, sa zobrazuje <b>len so súhlasom</b> toho človeka a dá sa kedykoľvek vypnúť.</li>
-  <li>Prístup majú len ľudia, ktorých pozvete.</li>
-  <li>Žiadne dáta do verejných AI chatov. Viac o tom v článku <a href="../co-ai-nikdy-nedavat/">Čo AI nikdy nedávaj</a>.</li>
-</ul>
+<h2>Súkromie je základ</h2>
+<p>Rodinné dáta sú tie najcitlivejšie. Preto platí jednoduché pravidlo: <b>vidí to len ten, koho pozveš.</b> Kto je kde, sa ukazuje len so súhlasom daného človeka a dá sa to kedykoľvek vypnúť. A žiadne rodinné dáta nepatria do verejných AI chatov. Viac o tom v článku <a href="../co-ai-nikdy-nedavat/">Čo AI nikdy nedávaj</a>.</p>
 
-<h2>Prečo to nie je banka</h2>
-<p>Budem úprimný: nestavám bankové ani finančné systémy. Na to sú iní ľudia. Staviam veci, ktoré zjednodušujú bežný život: domácnosť, termíny, dokumenty, rodinu. A tie sa dajú spraviť rýchlo, za rozumné peniaze a presne podľa toho, ako žijete vy.</p>
+<h2>A čo bankové veci?</h2>
+<p>S bankovými a finančnými vecami osobne nerobím. Mám ale v tíme ľudí, ktorí vedia zabezpečiť aj také veci. Ak sa k tomu raz dostaneme, stretneme sa a vyriešime to spolu. Ja nebudem ten, kto to rieši, ale ten človek je pripravený.</p>
 
 <h2>Môj pohľad</h2>
 <p>Každá rodina má svoj chaos. Niekde je to kalendár, inde papiere, inde to, že babka nevie, kedy prídete. Rodinný hub nemusí vedieť všetko. Stačí, keď vyrieši tú jednu vec, ktorá vás najviac trápi.</p>
@@ -86,7 +94,7 @@
       <p><b>Chceš si niečo také vyskúšať sám?</b> Na 3-hodinovej session ťa to naučím na tvojich vlastných veciach.</p>
       <a class="btn btn-green" href="../../#hovor">15 min hovor zadarmo</a>
     </div>
-    <nav class="post-nav"><a href="../ai-je-odteraz-si/"><span class="label">Starší</span>AI je odteraz SI? Trump premenoval umelú inteligenciu</a><a class="nx" href="../event-hub-appka-na-vlastnu-robotu/"><span class="label">Novší</span>Postavil som si appku na vlastnú robotu. Bez programovania.</a></nav>
+    <section class="more-posts" aria-labelledby="mp-h"><h2 id="mp-h"><span class="dot" aria-hidden="true"></span>Ďalšie články</h2><div class="mp-grid"><a class="mp" href="../ai-svet-za-tyzden/"><img src="../../img/blog/ai-svet-za-tyzden-sm.webp" width="800" height="450" loading="lazy" alt=""><span><b>AI svet za týždeň: útoky na OpenAI, ocenenia blízko bilióna a SI v Bielom dome</b><small>7. októbra 2026</small></span></a><a class="mp" href="../event-hub-appka-na-vlastnu-robotu/"><img src="../../img/blog/event-hub-appka-na-vlastnu-robotu-sm.webp" width="800" height="450" loading="lazy" alt=""><span><b>Postavil som si appku na vlastnú robotu. Bez programovania.</b><small>7. októbra 2026</small></span></a><a class="mp" href="../ai-je-odteraz-si/"><img src="../../img/blog/ai-je-odteraz-si-sm.webp" width="800" height="450" loading="lazy" alt=""><span><b>AI je odteraz SI? Trump premenoval umelú inteligenciu</b><small>7. októbra 2026</small></span></a></div><p class="mp-all"><a class="btn" href="../">Všetky články →</a></p></section>
   </article>
 </main>
 <footer class="foot">
@@ -95,6 +103,7 @@
     <p><a href="../../">Služby</a> · <a href="../../ochrana-udajov/">Ochrana údajov</a> · © 2026 Robert Ďurica</p>
   </div>
 </footer>
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Obrázok"><span class="lb-count"></span><button class="lb-x" type="button" aria-label="Zavrieť">✕</button><button class="lb-p" type="button" aria-label="Predchádzajúci">‹</button><div class="lb-stage"></div><button class="lb-n" type="button" aria-label="Ďalší">›</button><p class="lb-cap"></p></div>
 <script src="../../assets/common.js"></script>
 </body>
 </html>

@@ -58,6 +58,7 @@ HEAD = """<!doctype html>
 <meta name="theme-color" content="#F5F5F2">
 <meta name="author" content="Robert Ďurica">
 <meta name="goatcounter" content="">
+<link rel="icon" type="image/svg+xml" href="{rel}img/icons/monogram.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="{rel}img/icons/favicon-32.png">
 <link rel="apple-touch-icon" href="{rel}img/icons/apple-touch-icon.png">
 <link rel="manifest" href="{rel}manifest.webmanifest">
@@ -84,6 +85,8 @@ HEAD = """<!doctype html>
 </header>
 <main id="main" class="wrap blog">
 """
+LB = """<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Obrázok"><span class="lb-count"></span><button class="lb-x" type="button" aria-label="Zavrieť">✕</button><button class="lb-p" type="button" aria-label="Predchádzajúci">‹</button><div class="lb-stage"></div><button class="lb-n" type="button" aria-label="Ďalší">›</button><p class="lb-cap"></p></div>
+"""
 FOOT = """</main>
 <footer class="foot">
   <div class="wrap">
@@ -91,7 +94,7 @@ FOOT = """</main>
     <p><a href="{rel}">Služby</a> · <a href="{rel}ochrana-udajov/">Ochrana údajov</a> · © 2026 Robert Ďurica</p>
   </div>
 </footer>
-<script src="{rel}assets/common.js"></script>
+""" + LB + """<script src="{rel}assets/common.js"></script>
 </body>
 </html>
 """
@@ -106,7 +109,7 @@ def cover(p):
 def tags_html(p):
     return "".join(f'<span class="chip">{esc(t)}</span>' for t in p.get("tags", []))
 
-def build_post(p, newer, older):
+def build_post(p, newer, older, posts=()):
     url = f"{BASE}blog/{p['slug']}/"
     ld = {"@context": "https://schema.org", "@type": "BlogPosting", "headline": p["title"], "description": p["lead"],
           "datePublished": p["date"], "dateModified": p["date"], "inLanguage": "sk", "url": url,
@@ -121,10 +124,13 @@ def build_post(p, newer, older):
     if p.get("sources"):
         src = '<aside class="sources"><p class="label">Zdroje</p><ul>' + "".join(
             f'<li><a href="{esc(u)}" target="_blank" rel="noopener">{esc(n)}</a></li>' for n, u in p["sources"]) + "</ul></aside>"
-    nav = '<nav class="post-nav">'
-    nav += f'<a href="../{older["slug"]}/"><span class="label">Starší</span>{esc(older["title"])}</a>' if older else "<span></span>"
-    nav += f'<a class="nx" href="../{newer["slug"]}/"><span class="label">Novší</span>{esc(newer["title"])}</a>' if newer else "<span></span>"
-    nav += "</nav>"
+    others = [q for q in posts if q["slug"] != p["slug"]][:3]
+    def card(q):
+        cv2 = cover(q)
+        img = f'<img src="../../img/blog/{cv2["sm"]}" width="800" height="450" loading="lazy" alt="">' if cv2 else ""
+        return f'<a class="mp" href="../{q["slug"]}/">{img}<span><b>{esc(q["title"])}</b><small>{sk_date(q["date"])}</small></span></a>'
+    nav = ('<section class="more-posts" aria-labelledby="mp-h"><h2 id="mp-h"><span class="dot" aria-hidden="true"></span>Ďalšie články</h2><div class="mp-grid">'
+           + "".join(card(q) for q in others) + '</div><p class="mp-all"><a class="btn" href="../">Všetky články →</a></p></section>') if others else ""
     cover_fig = (f'<figure class="post-cover"><img src="../../img/blog/{cv["big"]}" width="1600" height="900" alt="{esc(p.get("cover_alt", ""))}" fetchpriority="high"></figure>\n    ' if cv else "")
     nosi = " data-nosi" if p.get("nosi") else ""   # posts about the AI/SI rename keep their wording
     body = f"""  <article class="post"{nosi}>
@@ -211,6 +217,6 @@ if __name__ == "__main__":
     slugs = [p["slug"] for p in posts]
     if len(set(slugs)) != len(slugs): raise SystemExit("duplicate slug")
     for i, p in enumerate(posts):
-        build_post(p, posts[i-1] if i > 0 else None, posts[i+1] if i + 1 < len(posts) else None)
+        build_post(p, posts[i-1] if i > 0 else None, posts[i+1] if i + 1 < len(posts) else None, posts)
     build_index(posts); build_feed(posts); build_sitemap(posts); latest_teaser(posts)
     print(f"built {len(posts)} posts")

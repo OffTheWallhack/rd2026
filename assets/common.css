@@ -133,15 +133,15 @@ a { color: inherit; text-underline-offset: .2em; }
 ::view-transition-old(robo), ::view-transition-new(robo) { height: 100%; width: auto; object-fit: contain; }
 
 /* forum-signature userbars (personal tags on "who I am" and the services door) */
-li.ub { position: relative; overflow: hidden; display: inline-flex; align-items: center; gap: .4rem; padding: .28rem .6rem .28rem .45rem !important; border-radius: 4px !important; font: 700 .72rem/1.1 var(--mono) !important; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; }
+li.ub { position: relative; overflow: hidden; display: inline-flex; align-items: center; gap: .4rem; padding: .28rem .6rem .28rem .45rem !important; border-radius: 4px !important; font: 700 .66rem/1.1 var(--mono) !important; letter-spacing: .02em; text-transform: lowercase; white-space: nowrap; }
 li.ub::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(135deg, rgba(255,255,255,.09) 0 2px, transparent 2px 5px), linear-gradient(180deg, rgba(255,255,255,.22), rgba(255,255,255,0) 52%); }
 li.ub svg { width: 1.25em; height: 1.25em; flex: none; display: block; }
 li.ub small { font: 500 .62rem var(--mono); letter-spacing: .02em; text-transform: none; opacity: .85; padding-left: .4rem; border-left: 1px solid currentColor; }
 .ub-1 { background: #111211 !important; color: #FFD400 !important; box-shadow: inset 0 0 0 2px #FFD400, 0 6px 14px rgba(0,0,0,.4) !important; }
-.ub-2 { background: linear-gradient(90deg, #E5222B, #8E0C12) !important; color: #fff !important; box-shadow: inset 0 0 0 2px #FF4A4F, 0 6px 14px rgba(0,0,0,.4) !important; }
-.ub-2 .bat { display: inline-block; width: 1.9em; height: .8em; border: 1.5px solid #fff; border-radius: 2px; position: relative; }
-.ub-2 .bat::before { content: ""; position: absolute; left: 1px; top: 1px; bottom: 1px; width: 14%; background: #FFD400; }
-.ub-2 .bat::after { content: ""; position: absolute; right: -4px; top: 25%; height: 50%; width: 2px; background: #fff; }
+.ub-2 { background: #1A0809 !important; color: #FF4A4F !important; box-shadow: inset 0 0 0 2px #E5222B, 0 6px 14px rgba(0,0,0,.4) !important; }
+.ub-2 .use { display: inline-block; width: 2.6em; height: .7em; border-radius: 2px; background: rgba(229,34,43,.25); overflow: hidden; }
+.ub-2 .use i { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, #FF6B6F, #E5222B); }
+.ub-2 small { color: #fff; }
 .ub-3 { background: #FFD400 !important; color: #111211 !important; box-shadow: inset 0 0 0 2.5px #111211, 0 0 0 1.5px rgba(255,212,0,.6), 0 6px 14px rgba(0,0,0,.4) !important; }
 .ub-3 .eq { display: inline-flex; align-items: flex-end; gap: 2px; height: .9em; }
 .ub-3 .eq i { width: 2px; background: #111211; height: 40%; }
@@ -154,8 +154,8 @@ li.ub small { font: 500 .62rem var(--mono); letter-spacing: .02em; text-transfor
 .ub-8 { background: #5E615C !important; color: #F2F2EE !important; box-shadow: 0 6px 14px rgba(0,0,0,.4) !important; }
 .ub-8 .off { display: inline-block; width: .5em; height: .5em; border-radius: 50%; background: #9A9D96; margin-right: .25em; }
 @media (prefers-reduced-motion: no-preference) {
-  .ub-2 .bat::before { animation: ubLow 1.2s steps(2) infinite; }
-  @keyframes ubLow { 50% { opacity: .15; } }
+  .ub-2 .use i { animation: ubLow 1.2s steps(2) infinite; }
+  @keyframes ubLow { 50% { opacity: .5; } }
   .ub-3 svg { animation: ubSpin 2.4s linear infinite; }
   @keyframes ubSpin { to { transform: rotate(360deg); } }
   .ub-3 .eq i { animation: ubEq .9s ease-in-out infinite; }

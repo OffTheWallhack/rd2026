@@ -167,6 +167,11 @@ def build_index(posts):
   </header>
   <ul class="post-list">
 {items}  </ul>
+  <form class="nl" data-nosi onsubmit="event.preventDefault();var e=this.querySelector('input').value.trim();if(e)location.href='mailto:rdurica1995@gmail.com?subject='+encodeURIComponent('Newsletter: prihlásenie')+'&body='+encodeURIComponent('Ahoj Robo, prihlás ma prosím na AI digest.\\nMôj e-mail: '+e);">
+    <div class="nl-txt"><p class="label"><span class="dot" aria-hidden="true"></span> Newsletter</p><b>Novinky o AI každý deň. Z môjho pohľadu.</b><span>Overené, žiadne nezmysly, len krátky digest do mailu.</span></div>
+    <div class="nl-f"><input type="email" required placeholder="tvoj@email.sk" aria-label="E-mail" autocomplete="email"><button class="btn btn-green" type="submit">Odoberať</button></div>
+    <small class="nl-note">Otvorí sa ti mail s hotovou správou, stačí ho odoslať. Odhlásiš sa kedykoľvek. Alebo <a href="feed.xml">RSS</a>.</small>
+  </form>
 """
     open(os.path.join(ROOT, "blog", "index.html"), "w", encoding="utf-8").write(head + body + FOOT.format(rel="../"))
 

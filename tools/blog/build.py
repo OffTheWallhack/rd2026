@@ -130,6 +130,8 @@ def build_post(p, newer, older):
     {nav}
   </article>
 """
+    if "twitter-tweet" in p["body"]:
+        body += '  <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>\n'
     out = os.path.join(ROOT, "blog", p["slug"]); os.makedirs(out, exist_ok=True)
     open(os.path.join(out, "index.html"), "w", encoding="utf-8").write(head + body + FOOT.format(rel="../../"))
 

@@ -32,3 +32,9 @@
 .post-nav a { display: block; padding: 1rem; border: 1px solid var(--line); border-radius: var(--r); text-decoration: none; font-weight: 600; }
 .post-nav a .label { display: block; margin-bottom: .3rem; }
 .post-nav .nx { text-align: right; }
+/* embedded X post; before widgets.js loads it shows as a simple link card */
+.x-post { margin: 1.5rem 0; }
+.x-post .twitter-tweet { margin: 0 auto !important; }
+.x-post blockquote.twitter-tweet { max-width: 550px; padding: 1rem 1.25rem; border: 1.5px solid var(--ink); border-radius: 12px; background: #fff; font-size: 1rem; }
+.x-post blockquote.twitter-tweet p { margin: 0 0 .5rem; }
+.x-post blockquote.twitter-tweet a { font: 500 .9rem var(--mono); color: var(--pulse-ink); }

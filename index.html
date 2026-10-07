@@ -28,7 +28,7 @@
 <meta name="apple-mobile-web-app-title" content="Robert Ďurica">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script type="speculationrules">{"prerender":[{"urls":["kto-som/"],"eagerness":"moderate"}]}</script>
 <link rel="stylesheet" href="assets/common.css">
 <style>
@@ -236,28 +236,18 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.2rem); line-height: 1.05;
 .prob[aria-pressed="true"] { border-color: var(--ink); box-shadow: 0 0 0 3px rgba(31,175,111,.3); }
 .prob[aria-pressed="true"] .arr { background: var(--pulse); color: #0B1A12; }
 @media (max-width: 55.99rem) { .prob[aria-pressed="true"] .arr { rotate: 90deg; } }
-/* the little icon on each tile says what kind of mess it is */
-.ico { flex: none; position: relative; width: 2.6rem; height: 2.6rem; border-radius: 9px; overflow: hidden; border: 1px solid rgba(0,0,0,.08); }
-.k-hand .ico { background: #FFF8DF repeating-linear-gradient(180deg, transparent 0 7px, rgba(70,110,200,.3) 7px 8px); }
-.k-hand .ico::after { content: ""; position: absolute; left: 30%; top: 0; bottom: 0; width: 1.5px; background: rgba(220,80,80,.5); }
-.k-sheet .ico { background: #fff linear-gradient(#1F7A45, #1F7A45) 0 0 / 100% 7px no-repeat, repeating-linear-gradient(90deg, transparent 0 12px, rgba(0,0,0,.12) 12px 13px), repeating-linear-gradient(180deg, transparent 0 9px, rgba(0,0,0,.12) 9px 10px); }
-.k-sheet .ico::after { content: "A1"; position: absolute; left: 50%; top: 58%; translate: -50% -50%; font: 700 .62rem/1 var(--mono); color: #1F7A45; background: #fff; border: 2px solid #1F7A45; padding: .12rem .2rem; }
-.k-subs .ico { background: linear-gradient(180deg, #2a2f33, #0d0d0d); }
-.k-subs .ico::before { content: ""; position: absolute; left: 50%; top: 38%; translate: -40% -50%; border: 7px solid transparent; border-left: 11px solid #fff; border-right: 0; }
-.k-subs .ico::after { content: ""; position: absolute; left: 22%; right: 22%; bottom: 7px; height: 3px; border-radius: 2px; background: #FFE46B; }
-.k-chat .ico { background: linear-gradient(135deg, #0A84FF, #7B5CFF); }
-.k-chat .ico::after { content: ""; position: absolute; left: 22%; top: 26%; width: 56%; height: 38%; background: #fff; border-radius: 8px 8px 8px 2px; }
-.k-word .ico { background: #fff; box-shadow: inset 0 4px 0 #2B579A; }
-.k-word .ico::after { content: ""; position: absolute; left: 22%; right: 22%; top: 12px; height: 15px; background: repeating-linear-gradient(180deg, #9AA8C3 0 2px, transparent 2px 5px); }
-.k-other .ico { background: var(--bg-2, #ECECE6); display: grid; place-items: center; font: 700 1.1rem var(--mono); color: var(--muted); }
-/* each text keeps its own voice */
-.k-hand .t { font-family: "Caveat", "Bradley Hand", cursive; font-size: 1.55rem; line-height: 1; font-weight: 700; color: #1d2a6b; }
-.k-sheet .t { font-family: var(--mono); font-size: .92rem; }
-.k-subs .t { flex: 0 1 auto; margin-right: auto; font-family: "Helvetica Neue", Arial, sans-serif; font-weight: 700; color: #fff; background: rgba(13,13,13,.9); border-radius: 4px; padding: .25rem .55rem; }
-.k-chat .t { flex: 0 1 auto; margin-right: auto; background: #0A84FF; color: #fff; border-radius: 18px 18px 18px 4px; padding: .45rem .85rem; font-family: -apple-system, "SF Pro Text", system-ui, sans-serif; font-weight: 500; }
-.k-word .t { flex: 0 1 auto; font-family: "Times New Roman", Times, serif; font-size: 1.15rem; font-weight: 400; }
-.k-word .caret { display: inline-block; width: 1.5px; height: 1.2em; background: #111; margin: 0 auto 0 2px; animation: caret 1s steps(1) infinite; }
-@keyframes caret { 50% { opacity: 0; } }
+/* each tile: its own world on the left (notebook, spreadsheet, film, chat, document) fading into white towards the arrow */
+.prob { position: relative; padding-left: 1.15rem; background-color: #fff; }
+.prob::before { content: ""; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.35) 38%, #fff 72%); pointer-events: none; }
+.prob .t, .prob .arr { position: relative; z-index: 1; }
+.prob .t { font: 600 1.02rem/1.3 var(--f); color: var(--ink); }
+.k-hand { background: #FFF8DF repeating-linear-gradient(180deg, transparent 0 15px, rgba(70,110,200,.28) 15px 16px); box-shadow: inset 2.4rem 0 0 -2.25rem rgba(220,80,80,.55); padding-left: 3rem; }
+.k-sheet { background-color: #fff; background-image: linear-gradient(#1F7A45, #1F7A45), repeating-linear-gradient(90deg, transparent 0 46px, rgba(31,122,69,.22) 46px 47px), repeating-linear-gradient(180deg, transparent 0 15px, rgba(31,122,69,.18) 15px 16px); background-size: 100% 5px, auto, auto; background-repeat: no-repeat, repeat, repeat; }
+.k-subs { background-color: #ECECE6; background-image: repeating-linear-gradient(90deg, #2A2C29 0 10px, transparent 10px 18px), repeating-linear-gradient(90deg, #2A2C29 0 10px, transparent 10px 18px); background-size: 100% 6px; background-position: 0 3px, 0 calc(100% - 3px); background-repeat: no-repeat; }
+.k-subs .t { text-decoration: underline; text-decoration-color: #F2C230; text-decoration-thickness: .28em; text-underline-offset: -.05em; text-decoration-skip-ink: none; }
+.k-chat { background-color: #E3F0FF; background-image: radial-gradient(circle at 18px 50%, #0A84FF 0 8px, transparent 9px); padding-left: 2.6rem; }
+.k-word { background-color: #fff; background-image: linear-gradient(#2B579A, #2B579A), repeating-linear-gradient(180deg, transparent 0 11px, rgba(43,87,154,.14) 11px 12px); background-size: 100% 5px, auto; background-repeat: no-repeat, repeat; }
+.k-other { background: #F3F3EE radial-gradient(rgba(22,22,22,.18) 1.2px, transparent 1.5px) 0 0 / 10px 10px; }
 /* answer: on a phone it opens right under the tile, joined to it */
 .answer { background: #EAF7EF; border: 1.5px solid var(--pulse); border-radius: 12px; padding: clamp(1.25rem, 3.5vw, 2rem); }
 .answer .label { display: flex; align-items: center; gap: .5rem; color: var(--pulse-ink); }
@@ -547,6 +537,27 @@ html.vt-in .hero-cut img { animation: none !important; }
   @keyframes vtStay { to { transform: translateY(8%); filter: brightness(.7); } }
 }
 
+
+/* phone held sideways: smaller headline so the buttons are on the first screen */
+@media (orientation: landscape) and (max-height: 32rem) {
+  .hero-in { padding-top: 1rem; padding-bottom: 1.5rem; min-height: 0; }
+  #h1 { font-size: clamp(1.7rem, 4.6vw, 2.6rem) !important; margin-bottom: .6rem; }
+  .hero-sub { font-size: .98rem; margin-bottom: .6rem; }
+  .hero-rest .actions { flex-direction: row; flex-wrap: wrap; }
+}
+/* layout flow: section headings centred, so the page reads down the middle */
+.sec-head { margin-left: auto; margin-right: auto; text-align: center; }
+.sec-head .label { display: flex; justify-content: center; align-items: center; gap: .5rem; }
+.sec-head p { margin-left: auto; margin-right: auto; max-width: 34em; }
+.sec-head h2 { text-wrap: balance; }
+.faq { margin-left: auto; margin-right: auto; }
+.faq-note, .lp-all { text-align: center; }
+.sk-tools { justify-content: center; }
+.contact p.lead { margin-left: auto; margin-right: auto; }
+.contact .wrap { text-align: center; }
+.contact .status, .contact .actions, .contact .socials { justify-content: center; }
+.contact .lead { margin-left: auto; margin-right: auto; }
+.sec + .sec { border-top: 1px solid rgba(0,0,0,.05); }
 </style>
 </head>
 <body>
@@ -596,7 +607,7 @@ html.vt-in .hero-cut img { animation: none !important; }
   <div class="wrap">
     <div class="sec-head rv">
       <p class="label">01</p>
-      <h2 id="p-title" data-en="Your problem">Tvoj problém</h2>
+      <h2 id="p-title" data-en="Your <span class='hl'>problem</span>">Tvoj <span class="hl">problém</span></h2>
       <p data-en="Pick from the examples below and I’ll tell you how I’d solve it.">Vyber si z príkladov nižšie a ja ti poviem, ako by som to vyriešil.</p>
     </div>
     <div class="picker">
@@ -612,7 +623,7 @@ html.vt-in .hero-cut img { animation: none !important; }
   <div class="wrap">
     <div class="sec-head rv">
       <p class="label" data-en="02 · How I help">02 · Ako pomôžem</p>
-      <h2 id="s-title" data-en="2 ways I can help you.">2 možnosti, ako ti viem pomôcť.</h2>
+      <h2 id="s-title" data-en="<span class='hl'>2 ways</span> I can help you."><span class="hl">2 možnosti</span>, ako ti viem pomôcť.</h2>
     </div>
     <div class="svc stg rv">
       <article class="card card-a rv">
@@ -681,7 +692,7 @@ html.vt-in .hero-cut img { animation: none !important; }
   <div class="wrap">
     <div class="sec-head rv">
       <p class="label" data-en="03 · How it goes">03 · Ako to ide</p>
-      <h2 id="st-title" data-en="3 simple steps.">Jednoduché 3 kroky.</h2>
+      <h2 id="st-title" data-en="<span class='hl'>3 simple</span> steps.">Jednoduché <span class="hl">3 kroky</span>.</h2>
     </div>
     <ol class="steps flow rv">
       <li><span class="n">01</span><h3 data-en="You message me">Napíšeš mi</h3><p data-en="A few sentences on WhatsApp, or a free 15-minute call.">Pár viet na WhatsApp alebo 15 min hovor zadarmo.</p></li>
@@ -748,7 +759,7 @@ html.vt-in .hero-cut img { animation: none !important; }
         </div>
       </div>
     </div>
-    <p class="sk-tools"><span class="label" data-en="Tools">Nástroje</span><span class="chip">Claude Code</span><span class="chip">Grok</span></p>
+    <p class="sk-tools"><span class="label" data-en="Tools">Nástroje</span><span class="chip">Claude Code</span><span class="chip">Claude</span><span class="chip">ChatGPT</span><span class="chip">Gemini</span><span class="chip">Grok</span><span class="chip">Midjourney</span><span class="chip">Replit</span><span class="chip">Vercel</span><span class="chip">GitHub</span><span class="chip">Notion</span><span class="chip">Supabase</span></p>
   </div>
 </section>
 
@@ -757,7 +768,7 @@ html.vt-in .hero-cut img { animation: none !important; }
   <div class="wrap">
     <div class="sec-head rv">
       <p class="label"><span class="dot" aria-hidden="true"></span> <span data-en="Blog · every day">Blog · každý deň</span></p>
-      <h2 id="bl-title" data-en="AI every day.">AI každý deň.</h2>
+      <h2 id="bl-title" data-en="AI <span class='hl'>every day</span>.">AI <span class="hl">každý deň</span>.</h2>
       <p data-en="One short article a day on what’s happening in AI. In plain words.">Jeden krátky článok denne o tom, čo sa v AI práve deje. Po ľudsky.</p>
     </div>
     <div class="rv"><!--latest-post--><div class="lp-grid"><a class="latest-post first" href="blog/event-hub-appka-na-vlastnu-robotu/"><img class="lp-img" src="img/blog/event-hub-appka-na-vlastnu-robotu-sm.webp" width="800" height="450" loading="lazy" alt=""><span class="lp-txt"><span class="label"><span class="dot" aria-hidden="true"></span> Článok dňa</span><b>Postavil som si appku na vlastnú robotu. Bez programovania.</b><span class="lp-lead">Jazdím s Red Bull event autom a celé dni som na cestách alebo na akciách. Administratíva sa kopila v Exceli, poznámkach a správach. Tak som si s AI postavil Event Hub: jedno miesto, ktoré mi všetko zbiera, triedi a samo pripomína.</span></span></a><a class="latest-post" href="blog/rodinny-hub/"><img class="lp-img" src="img/blog/rodinny-hub-sm.webp" width="800" height="450" loading="lazy" alt=""><span class="lp-txt"><span class="label"><span class="dot" aria-hidden="true"></span> 7. októbra 2026</span><b>Rodinný hub: jedna obrazovka pre celú rodinu</b><span class="lp-lead">Spoločný kalendár, správy, dokumenty a prehľad, kto je kde. Na mobile aj na obrazovke u starých rodičov, ktorí si len otvoria web. Rovnaký princíp, na akom som si postavil appku na robotu, funguje aj doma.</span></span></a><a class="latest-post" data-nosi href="blog/ai-je-odteraz-si/"><img class="lp-img" src="img/blog/ai-je-odteraz-si-sm.webp" width="800" height="450" loading="lazy" alt=""><span class="lp-txt"><span class="label"><span class="dot" aria-hidden="true"></span> 7. októbra 2026</span><b>AI je odteraz SI? Trump premenoval umelú inteligenciu</b><span class="lp-lead">Americké úrady už nesmú písať „AI“. Odteraz je to „Super Intelligence“, skrátene SI. Musk hneď sľúbil premenovať aj svoju firmu. Čo sa vlastne zmenilo a čo to znamená pre nás v Európe?</span></span></a></div><p class="lp-all"><a class="btn" href="blog/">Všetky články →</a></p><!--/latest-post--></div>
@@ -769,7 +780,7 @@ html.vt-in .hero-cut img { animation: none !important; }
   <div class="wrap">
     <div class="sec-head rv">
       <p class="label"><span class="dot" aria-hidden="true"></span> <span data-en="Downloads · free">Na stiahnutie · zadarmo</span></p>
-      <h2 id="dl-title" data-en="Take it with you.">Zober si to so sebou.</h2>
+      <h2 id="dl-title" data-en="Take it <span class='hl'>with you</span>.">Zober si to <span class="hl">so sebou</span>.</h2>
       <p data-en="Guides, cheat sheets and templates I made for myself. Download, print, share.">Príručky, ťaháky a šablóny, ktoré som si spravil pre seba. Stiahni, vytlač, pošli ďalej.</p>
     </div>
     <div class="dl-grid rv">
@@ -927,8 +938,7 @@ html.vt-in .hero-cut img { animation: none !important; }
       b.type = "button"; b.className = "prob" + (p.kind ? " k-" + p.kind : "");
       b.setAttribute("aria-pressed", i === current ? "true" : "false");
       b.setAttribute("aria-controls", "answer");
-      var post = p.kind === "word" ? "<i class='caret' aria-hidden='true'></i>" : "";
-      b.innerHTML = "<span class='ico' aria-hidden='true'>" + (p.kind === "other" ? "?" : "") + "</span><span class='t'></span>" + post + "<span class='arr' aria-hidden='true'>→</span>";
+      b.innerHTML = "<span class='t'></span><span class='arr' aria-hidden='true'>→</span>";
       b.querySelector(".t").textContent = p[RD.lang];
       b.addEventListener("click", function () {
         // on a phone a second tap closes it again
@@ -991,9 +1001,6 @@ html.vt-in .hero-cut img { animation: none !important; }
   // parallax: hero layers, section heads
   if (!still) {
     var heroPh = document.querySelector(".hero-cut"), frontCv = document.querySelector(".field-front");
-    var heroTx = document.querySelector(".hero-head"), heroRest = document.querySelector(".hero-rest");
-    var l1 = document.querySelector("h1 .l1"), l2 = document.querySelector("h1 .l2");
-    var heads = [].slice.call(document.querySelectorAll(".sec-head"));
     var ticking = false;
     function px() {
       ticking = false;
@@ -1001,15 +1008,7 @@ html.vt-in .hero-cut img { animation: none !important; }
       if (y < vh * 1.5) {
         if (heroPh) heroPh.style.transform = "translate3d(0," + (y * 0.12).toFixed(1) + "px,0)";
         if (frontCv) frontCv.style.transform = "translate3d(" + (m.x * -10).toFixed(1) + "px," + (y * 0.12).toFixed(1) + "px,0)";
-        if (heroTx) heroTx.style.opacity = heroRest.style.opacity = Math.max(0, 1 - y / (vh * .85)).toFixed(3);
-        if (l1) l1.style.transform = "translate3d(" + (-y * 0.15).toFixed(1) + "px," + (y * 0.05).toFixed(1) + "px,0)";
-        if (l2) l2.style.transform = "translate3d(" + (y * 0.25).toFixed(1) + "px," + (y * 0.12).toFixed(1) + "px,0)";
       }
-      heads.forEach(function (h) {
-        var r = h.getBoundingClientRect();
-        if (r.bottom < -100 || r.top > vh + 100) return;
-        h.style.transform = "translate3d(0," + ((r.top - vh / 2) * 0.08).toFixed(1) + "px,0)";
-      });
     }
     window.addEventListener("scroll", function () { if (!ticking) { ticking = true; requestAnimationFrame(px); } }, { passive: true });
     window.addEventListener("resize", px);

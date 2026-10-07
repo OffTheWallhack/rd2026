@@ -18,6 +18,36 @@
     setLang: setLang
   };
 
+  // header: the same three links on every page (their own row on phones), and language plus
+  // AI/SI tucked under one "customize" button
+  var ROOT = ((document.currentScript && document.currentScript.src) || "").replace(/assets\/common\.js.*$/, "") || "./";
+  (function () {
+    var barIn = document.querySelector(".bar-in"), barR = document.querySelector(".bar-r"); if (!barIn || !barR) return;
+    var here = location.pathname.replace(/index\.html$/, ""), rootPath = new URL(ROOT, location.href).pathname;
+    var onHome = here === rootPath;
+    barR.querySelectorAll(".nav-link").forEach(function (a) { a.remove(); });
+    var nav = document.createElement("nav"); nav.className = "bar-nav"; nav.setAttribute("aria-label", "Menu");
+    [[onHome ? "#sluzby" : ROOT, "Služby", "Services", rootPath],
+     [ROOT + "blog/", "Blog", "Blog", rootPath + "blog/"],
+     [ROOT + "kto-som/", "Kto som", "About me", rootPath + "kto-som/"]].forEach(function (l) {
+      var a = document.createElement("a"); a.className = "nav-link"; a.href = l[0]; a.textContent = l[1]; a.setAttribute("data-en", l[2]);
+      if (here === l[3] || (l[3] !== rootPath && here.indexOf(l[3]) === 0)) a.setAttribute("aria-current", "page");
+      nav.appendChild(a);
+    });
+    barIn.insertBefore(nav, barR);
+    var cust = document.createElement("div"); cust.className = "cust";
+    cust.innerHTML = "<button class='cust-btn' type='button' aria-expanded='false' aria-haspopup='true' aria-label='Prispôsobiť' data-nosi>" +
+      "<svg viewBox='0 0 20 20' aria-hidden='true'><path d='M3 5h8M15 5h2M3 10h2M9 10h8M3 15h10M17 15h0' stroke='currentColor' stroke-width='1.8' stroke-linecap='round'/><circle cx='13' cy='5' r='2' fill='none' stroke='currentColor' stroke-width='1.8'/><circle cx='7' cy='10' r='2' fill='none' stroke='currentColor' stroke-width='1.8'/><circle cx='15' cy='15' r='2' fill='none' stroke='currentColor' stroke-width='1.8'/></svg></button>" +
+      "<div class='cust-pop' role='group' hidden><p class='cust-row cust-lang'><span class='label' data-en='Language'>Jazyk</span></p><p class='cust-row cust-si'><span class='label' data-en='Mode'>Režim</span></p></div>";
+    barR.insertBefore(cust, barR.firstChild);
+    var lang = barR.querySelector(".lang"); if (lang) cust.querySelector(".cust-lang").appendChild(lang);
+    var btn = cust.querySelector(".cust-btn"), pop = cust.querySelector(".cust-pop");
+    function open(v) { pop.hidden = !v; btn.setAttribute("aria-expanded", v ? "true" : "false"); }
+    btn.addEventListener("click", function (e) { e.stopPropagation(); open(pop.hidden); });
+    document.addEventListener("click", function (e) { if (!cust.contains(e.target)) open(false); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") open(false); });
+  })();
+
   var tr = document.querySelectorAll("[data-en]");
   var trAria = document.querySelectorAll("[data-en-aria]");
   var trAlt = document.querySelectorAll("[data-en-alt]");
@@ -56,8 +86,7 @@
     var RULES = [
       [/\bAI\b/g, "SI"],
       [/\b([Uu])mel(?:á|ej|ú|ou) inteligenci/g, function (m, u) { return (u === "U" ? "S" : "s") + "uper\u00ADinteligenci"; }],
-      [/\b([Aa])rtificial intelligence/g, function (m, a) { return (a === "A" ? "S" : "s") + "uper intelligence"; }],
-      [/(^|[^\wÀ-ž])([sSzZ]) (?=SI\b)/g, "$1$2o "]   // Slovak: "s AI" but "so SI"
+      [/\b([Aa])rtificial intelligence/g, function (m, a) { return (a === "A" ? "S" : "s") + "uper intelligence"; }]
     ];
     var SKIP = { SCRIPT: 1, STYLE: 1, TEXTAREA: 1, NOSCRIPT: 1 };
     function fix(n) {
@@ -107,7 +136,8 @@
     btn.type = "button"; btn.className = "aisi"; btn.setAttribute("data-nosi", "");
     btn.setAttribute("aria-label", "Prepnúť AI / SI");
     btn.innerHTML = "<span data-m='ai' class='on'>AI</span> / <span data-m='si'>SI</span>";
-    bar.insertBefore(btn, bar.querySelector(".lang") || bar.querySelector(".btn") || null);
+    var slot = document.querySelector(".cust-si");
+    if (slot) slot.appendChild(btn); else bar.insertBefore(btn, bar.querySelector(".btn") || null);
     btn.addEventListener("click", function () { set(!on, true); });
     var start = false;
     try { start = localStorage.getItem("aisi") === "si"; } catch (e) {}

@@ -206,13 +206,6 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.2rem); line-height: 1.05;
 .care.bonus .price-big { color: var(--pulse-ink); }
 
 .hl { background: linear-gradient(transparent 58%, rgba(31,175,111,.45) 58%); padding: 0 .1em; }
-.callout { display: flex; align-items: center; justify-content: space-between; gap: 1.25rem; background: var(--ink); color: #fff; border-radius: var(--r); padding: 1rem 1rem 1rem 1.25rem; margin: -1rem 0 2rem; max-width: 52rem; }
-.callout p { margin: 0; display: flex; align-items: center; gap: .8rem; font-size: clamp(1.05rem, 2.4vw, 1.3rem); font-weight: 600; }
-.callout p { min-width: 0; }
-@media (max-width: 22.5rem) { .callout { padding: .85rem; gap: .75rem; } .c-vid { width: 4.6rem; } .callout p { font-size: .95rem; } }
-.c-vid { margin: 0; flex: none; width: 6.5rem; text-align: center; }
-.c-vid video { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 6px; display: block; background: #222; }
-.c-vid figcaption { font: .62rem var(--mono); color: #A3A39B; margin-top: .35rem; line-height: 1.3; }
 
 /* skills accordion */
 .pn { font-weight: 700; }
@@ -288,6 +281,43 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.2rem); line-height: 1.05;
   .prob.focus:not([aria-pressed="true"]) .arr { animation: nudge 1.2s ease-in-out infinite; }
   @keyframes nudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
 }
+
+/* proof: three best things in one grid, Questwave as the big one */
+@media (min-width: 56rem) {
+  .proof { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); align-items: stretch; }
+  .proof .qw-card { grid-column: 1; grid-row: 1 / span 2; grid-template-columns: 1fr; gap: 1.5rem; align-content: start; }
+  .proof .eh-card { grid-column: 2; grid-row: 1; grid-template-columns: 1fr; }
+  .proof .proof-sheet { grid-column: 2; grid-row: 2; grid-template-columns: 1fr; margin: 0; }
+  .proof .eh-shots { justify-content: flex-start; }
+}
+.proof .eh-card, .proof .proof-sheet { box-shadow: 0 1px 0 rgba(0,0,0,.02); }
+
+/* services: each card opens into the full breakdown */
+@media (min-width: 56rem) { .svc { grid-template-columns: 1fr 1fr; align-items: start; } }
+.card .price-big { margin: 0 0 1rem; }
+.more { border-top: 1px solid rgba(0,0,0,.1); margin: 0 0 1.25rem; }
+.more summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .9rem 0 .2rem; font: 500 .92rem var(--mono); }
+.more summary::-webkit-details-marker { display: none; }
+.more summary i { flex: none; width: 1.9rem; height: 1.9rem; border-radius: 50%; background: currentColor; position: relative; opacity: .9; }
+.more summary i::before, .more summary i::after { content: ""; position: absolute; left: 50%; top: 50%; width: 10px; height: 2px; background: #fff; translate: -50% -50%; transition: rotate .25s; }
+.more summary i::after { rotate: 90deg; }
+.more[open] summary i::after { rotate: 0deg; }
+.card-a .more summary { color: var(--pulse-ink); } .card-b .more summary { color: #4A56D6; }
+.more-in { padding-top: .75rem; display: grid; gap: .75rem; }
+.more-in > ul { margin: 0; }
+.card .sub { background: #fff; border: 1px solid rgba(0,0,0,.08); border-radius: 10px; padding: 1rem 1.1rem; }
+.card .sub ul { margin: .4rem 0 .6rem; }
+.card .sub li { font-size: .97rem; }
+.sub-h { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .25rem 1rem; margin: 0 !important; color: var(--ink) !important; }
+.sub-h b { font-size: 1.1rem; }
+.sub-h span { font-weight: 700; white-space: nowrap; }
+.sub-h small { font: 400 .8rem var(--mono); color: var(--muted); }
+.sub-note { margin: 0 0 .6rem !important; font-size: .93rem; color: var(--muted) !important; }
+.sub-note .label { color: inherit; }
+.card .team-list { margin: .5rem 0 .9rem; }
+.card .team-list li { padding: .5rem .6rem; border-top: 1px solid var(--line); }
+.card .team-list li::before { display: none; }
+@media (prefers-reduced-motion: no-preference) { .more[open] .more-in { animation: fadein .35s ease; } }
 
 /* two ways: different colours */
 .card { position: relative; overflow: hidden; }
@@ -398,7 +428,6 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.2rem); line-height: 1.05;
 }
 
 /* 04 · proof: what I've already built */
-.built-sec .callout { margin-top: 0; }
 .proof { display: grid; gap: 1rem; }
 .proof .eh-card, .proof .qw-card { margin: 0; }
 .proof-sheet { margin-top: .5rem; display: grid; gap: 1.25rem; align-items: center; border: 1px solid var(--line); border-radius: var(--r); padding: clamp(1.25rem, 4vw, 2rem); background: #fff; }
@@ -444,6 +473,20 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.2rem); line-height: 1.05;
 .call-topic .label { display: block; margin-bottom: .5rem; }
 .call-topic input { width: 100%; min-height: 48px; padding: 0 .9rem; font: 1rem var(--f); border: 1px solid var(--line); border-radius: var(--r); background: var(--bg); color: var(--ink); }
 .call-topic input:focus { outline: 3px solid var(--pulse); outline-offset: 1px; }
+/* the call block is the one green thing on the page, so it stands out */
+.call { position: relative; overflow: hidden; border: 0; border-radius: 18px; color: #0B1A12; box-shadow: 6px 6px 0 var(--ink);
+  background: radial-gradient(rgba(11,26,18,.13) 1px, transparent 1.3px) 0 0 / 14px 14px, linear-gradient(135deg, #22C27B, #1FAF6F 55%, #179A5F); }
+.call h2 { color: #0B1A12; }
+.call h2 .big15 { display: inline-block; background: #0B1A12; color: #3BE08F; border-radius: 10px; padding: 0 .2em; margin-right: .1em; }
+.call-txt .label { color: #0B1A12; }
+.call-txt .label .dot { background: #0B1A12; box-shadow: 0 0 0 4px rgba(11,26,18,.15); }
+.call-txt p:not(.label) { color: #10301F; }
+.call-form { background: #fff; border-radius: 14px; padding: clamp(1rem, 3vw, 1.5rem); box-shadow: 0 18px 40px rgba(11,26,18,.18); }
+.call .pick button[aria-pressed="true"] { background: #0B1A12; border-color: #0B1A12; color: #fff; }
+.call .pick button[aria-pressed="true"] small { color: #3BE08F; }
+.call .pick button:hover { border-color: #0B1A12; }
+.call #callWa { background: #0B1A12; border-color: #0B1A12; color: #fff; }
+.call #callWa:hover { background: var(--pulse); border-color: var(--pulse); color: #0B1A12; }
 
 /* 05 · questions */
 .faq { border-top: 2px solid var(--ink); max-width: 52rem; }
@@ -529,7 +572,7 @@ html.vt-in .hero-cut img { animation: none !important; }
     </div>
     <div class="hero-rest">
       <p class="hero-sub" data-en="I’ll help you automate your stuff and explain it right away. On your own data.">Pomôžem ti zautomatizovať tvoje veci a rovno ti to vysvetlím. Na tvojich dátach.</p>
-      <p class="for"><span class="label" data-en="For">Pre</span><span class="chip" data-en="small businesses">malé firmy</span><span class="chip" data-en="students">študentov</span><span class="chip" data-en="younger and older">mladších aj starších</span><span class="chip" data-en="anyone who wants to find their way in AI">každého, kto sa chce nájsť v AI-čku</span></p>
+      <p class="for"><span class="label" data-en="For">Pre</span><span class="chip" data-en="small businesses">malé firmy</span><span class="chip" data-en="students">študentov</span><span class="chip" data-en="literally anyone">naozaj hocikoho</span></p>
       <div class="actions">
         <a class="btn btn-dark" href="#hovor" data-en="Free 15-min call">15 min hovor zadarmo</a>
         <a class="btn wa" href="#kontakt" data-en="Message me on WhatsApp">Napíš mi na WhatsApp</a>
@@ -566,58 +609,60 @@ html.vt-in .hero-cut img { animation: none !important; }
       <article class="card card-a rv">
         <p class="label" data-en="No time">Nemáš čas</p>
         <h3 data-en="I build it for you">Spravím to za teba</h3>
-        <p data-en="Tell me what slows you down. I build a tool that does it for you, hand it over and show you how to use it.">Povieš mi, čo ťa brzdí. Postavím nástroj, ktorý to robí za teba, odovzdám ti ho a ukážem, ako ho používať.</p>
-        <ul>
-          <li data-en="A working tool made for your job">Hotový nástroj na mieru tvojej roboty</li>
-          <li data-en="Handover where I show you how it works">Odovzdanie, pri ktorom ti ukážem, ako funguje</li>
-          <li data-en="A short guide so you can use it alone">Krátky návod, aby si to zvládol sám</li>
-        </ul>
-        <div class="card-foot">
-          <p class="price-big">500–1000 € <small data-en="one-off, by complexity">jednorazovo, podľa zložitosti</small></p>
-          <a class="btn btn-green wa" href="#kontakt" data-en="I want this">Chcem toto</a>
-        </div>
+        <p data-en="Tell me what slows you down. I build a tool that does it for you, hand it over and look after it.">Povieš mi, čo ťa brzdí. Postavím nástroj, ktorý to robí za teba, odovzdám ti ho a postarám sa oň.</p>
+        <p class="price-big">500–1000 € <small data-en="one-off, by complexity">jednorazovo, podľa zložitosti</small></p>
+        <details class="more">
+          <summary><span data-en="See what’s included">Pozri, čo všetko dostaneš</span><i aria-hidden="true"></i></summary>
+          <div class="more-in">
+            <ul>
+              <li data-en="A working tool made for your job">Hotový nástroj na mieru tvojej roboty</li>
+              <li data-en="Handover where I show you how it works">Odovzdanie, pri ktorom ti ukážem, ako funguje</li>
+              <li data-en="A short guide so you can use it alone">Krátky návod, aby si to zvládol sám</li>
+            </ul>
+            <div class="sub">
+              <p class="sub-h"><b data-en="+ Care &amp; upkeep">+ Starostlivosť a údržba</b><span>30 € <small data-en="/ month">/ mesiac</small></span></p>
+              <ul>
+                <li data-en="It runs on a server, I keep it working">Beží to na serveri a ja sa starám, aby fungovalo</li>
+                <li data-en="Small tweaks when something changes">Malé úpravy, keď sa niečo zmení</li>
+                <li data-en="Come back anytime and I’ll explain again">Kedykoľvek sa vrátiš a dovysvetlím ti to</li>
+              </ul>
+              <p class="sub-note" data-en="Optional. Without it the tool and the guide are still yours.">Nepovinné. Aj bez nej ostáva nástroj aj návod tvoj.</p>
+            </div>
+          </div>
+        </details>
+        <div class="card-foot"><a class="btn btn-green wa" href="#kontakt" data-en="I want this">Chcem toto</a></div>
       </article>
       <article class="card card-b rv">
         <p class="label" data-en="Want to learn">Chceš to vedieť</p>
         <h3 data-en="I teach you">Naučím ťa to</h3>
-        <p data-en="We sit down together and set AI up for your actual work. No theory, straight on your own stuff.">Sadneme si spolu a nastavíme AI na tvoju konkrétnu robotu. Žiadna teória, rovno na tvojich veciach.</p>
-        <ul>
-          <li data-en="3 hours on your own tasks">3 hodiny na tvojich úlohách</li>
-          <li data-en="Bring your laptop, I’ll install everything you need">Prinesieš svoj notebook, nainštalujem ti všetko potrebné</li>
-          <li data-en="Notes to come back to">Poznámky, ku ktorým sa vieš vrátiť</li>
-        </ul>
-        <p class="example"><span class="label" data-en="For example">Napríklad</span><span data-en="Build your own app with AI, put it on GitHub and online, and secure it so bots can’t get in.">Postavíš si s AI vlastnú appku, dáš ju na GitHub a na web a zabezpečíš ju, aby sa do nej nedostali boti.</span></p>
-        <div class="card-foot">
-          <p class="price-big">150 € <small data-en="per 3-hour session">za session (3 hodiny)</small></p>
-          <a class="btn btn-indigo wa" href="#kontakt" data-en="I want this">Chcem toto</a>
-        </div>
+        <p data-en="We set AI up for your actual work. No theory, straight on your own stuff. Just you, or your whole team.">Nastavíme AI na tvoju konkrétnu robotu. Žiadna teória, rovno na tvojich veciach. Len ty, alebo celý tvoj tím.</p>
+        <p class="price-big"><span data-en="from">od</span> 150 € <small data-en="for a 3-hour session">za 3-hodinovú session</small></p>
+        <details class="more">
+          <summary><span data-en="See both options">Pozri obe možnosti</span><i aria-hidden="true"></i></summary>
+          <div class="more-in">
+            <div class="sub">
+              <p class="sub-h"><b data-en="One on one">Školenie 1:1</b><span>150 € <small data-en="/ 3 hours">/ 3 hodiny</small></span></p>
+              <ul>
+                <li data-en="3 hours on your own tasks">3 hodiny na tvojich úlohách</li>
+                <li data-en="Bring your laptop, I’ll install everything you need">Prinesieš svoj notebook, nainštalujem ti všetko potrebné</li>
+                <li data-en="Notes to come back to">Poznámky, ku ktorým sa vieš vrátiť</li>
+              </ul>
+              <p class="sub-note"><span class="label" data-en="For example">Napríklad</span> <span data-en="Build your own app with AI, put it on GitHub and online, and secure it so bots can’t get in.">Postavíš si s AI vlastnú appku, dáš ju na GitHub a na web a zabezpečíš ju, aby sa do nej nedostali boti.</span></p>
+            </div>
+            <div class="sub">
+              <p class="sub-h"><b data-en="For companies and groups">Pre firmy a skupiny</b><span data-en="by agreement">dohodou</span></p>
+              <p class="sub-note" data-en="For a whole team, class or company we come together. Everyone leaves with AI set up on their own work.">Pre celý tím, triedu alebo firmu prídeme spolu. Každý odíde s AI nastavenou na svoju vlastnú robotu.</p>
+              <ul class="team-list">
+                <li><span class="av">RĎ</span><div><b>Robert Ďurica</b><span data-en="AI tools and automation">AI nástroje a automatizácia</span></div></li>
+                <li><span class="av">RP</span><div><b>Radoslav „Piry“ Pirožek</b><span data-en="helps me with the team">pomáha mi s tímom</span></div></li>
+                <li><span class="av">AL</span><div><b>Amida Lamoot</b><span data-en="helps me with the team">pomáha mi s tímom</span></div></li>
+              </ul>
+              <a class="btn btn-sm wa" href="#kontakt" data-wa-sk="väčším školením pre skupinu" data-wa-en="a bigger training for a group" data-en="Ask about a group training">Opýtať sa na skupinové školenie</a>
+            </div>
+          </div>
+        </details>
+        <div class="card-foot"><a class="btn btn-indigo wa" href="#kontakt" data-en="I want this">Chcem toto</a></div>
       </article>
-    </div>
-    <div class="care bonus rv"><span class="bonus-tag" aria-hidden="true">+ BONUS</span>
-      <div>
-        <p class="label"><span class="dot" aria-hidden="true"></span><span data-en="Bonus to every job">Bonus ku každej zákazke</span></p>
-        <h3 data-en="Care &amp; upkeep">Starostlivosť a údržba</h3>
-        <p data-en="For anything I build for you. So you’re never left alone with it.">Ku všetkému, čo ti spravím. Aby si s tým nikdy neostal sám.</p>
-      </div>
-      <ul>
-        <li data-en="It runs on a server, I keep it working">Beží to na serveri a ja sa starám, aby fungovalo</li>
-        <li data-en="Small tweaks when something changes">Malé úpravy, keď sa niečo zmení</li>
-        <li data-en="Come back anytime and I’ll explain again">Kedykoľvek sa vrátiš a dovysvetlím ti to</li>
-      </ul>
-      <p class="price-big">30 € <small data-en="per month">mesačne</small></p>
-    </div>
-    <div class="team rv">
-      <div class="team-txt">
-        <p class="label"><span class="dot" aria-hidden="true"></span><span data-en="For companies and groups">Pre firmy a skupiny</span></p>
-        <h3 data-en="Bigger trainings, as a team">Väčšie školenia, v tíme</h3>
-        <p data-en="For a whole team, class or company we come together. A workshop where everyone leaves with AI set up on their own work. Length and price depend on the group.">Pre celý tím, triedu alebo firmu prídeme spolu. Workshop, z ktorého každý odíde s AI nastavenou na svoju vlastnú robotu. Dĺžku a cenu dohodneme podľa skupiny.</p>
-        <a class="btn btn-dark wa" href="#kontakt" data-wa-sk="väčším školením pre skupinu" data-wa-en="a bigger training for a group" data-en="Ask about a training">Opýtať sa na školenie</a>
-      </div>
-      <ul class="team-list">
-        <li><span class="av">RĎ</span><div><b>Robert Ďurica</b><span data-en="AI tools and automation">AI nástroje a automatizácia</span></div></li>
-        <li><span class="av">RP</span><div><b>Radoslav „Piry“ Pirožek</b><span data-en="helps me with the team">pomáha mi s tímom</span></div></li>
-        <li><span class="av">AL</span><div><b>Amida Lamoot</b><span data-en="helps me with the team">pomáha mi s tímom</span></div></li>
-      </ul>
     </div>
   </div>
 </section>
@@ -648,7 +693,7 @@ html.vt-in .hero-cut img { animation: none !important; }
     <div class="call rv">
       <div class="call-txt">
         <p class="label"><span class="dot" aria-hidden="true"></span><span data-en="Free">Zadarmo</span></p>
-        <h2 id="h-title" data-en="15 minutes on a call. Free.">15 minút na telefóne. Zadarmo.</h2>
+        <h2 id="h-title" data-en="<span class='big15'>15</span> minutes on a call. Free."><span class="big15">15</span> minút na telefóne. Zadarmo.</h2>
         <p data-en="Not sure what to write? Let’s just talk. Pick a day and a time, I’ll confirm the exact time and call you. No obligations.">Nevieš, čo napísať? Tak si to povedzme. Vyber deň a čas, ja ti potvrdím presnú hodinu a zavolám. Nič ťa to nezaväzuje.</p>
       </div>
       <form class="call-form" id="callForm" novalidate>
@@ -672,7 +717,6 @@ html.vt-in .hero-cut img { animation: none !important; }
       <h2 id="b-title"><span data-en="What I’ve already built.">Čo som už postavil.</span> <span class="hl" data-en="Not just talk.">Nie sú to len reči.</span></h2>
       <p data-en="Apps and systems that actually run. Some for my own work, some for the whole world.">Appky a systémy, ktoré naozaj bežia. Niektoré na moju vlastnú robotu, iné pre celý svet.</p>
     </div>
-    <div class="callout rv"><p><span class="dot" aria-hidden="true"></span><span data-en="I’ve worked with data and automation since 2020, without AI. AI just makes it faster today.">S dátami a automatizáciou robím od roku 2020, bez AI. AI to dnes len zrýchľuje.</span></p><figure class="c-vid"><video muted loop playsinline preload="none" poster="img/livestream-done-poster.webp" aria-label="Robert sa teší, že livestream prebehol bez chyby" data-en-aria="Robert celebrating a livestream that went without a hitch"><source src="vid/livestream-done.mp4" type="video/mp4"></video><figcaption data-en="When the livestream goes without a fail">Keď livestream prejde bez chyby</figcaption></figure></div>
     <div class="proof">
       <article class="eh-card"><div class="eh-text"><p class="label"><span class="dot" aria-hidden="true"></span><span>Live</span></p><h3>Event Hub</h3><p class="eh-tag">Event car driver hub</p><p data-en="My personal app for my own work: schedule, trips, costs, payouts, garage, gear and stock in one place. Built with AI.">Moja osobná appka na moju prácu: rozpis, jazdy, náklady, výplaty, garáž, technika aj sklad na jednom mieste. Postavená s AI.</p></div><div class="rm eh-shots"><figure class="th "><img src="img/eh-calendar.webp" width="700" height="972" loading="lazy" alt="Event Hub: kalendár akcií, názvy sú rozmazané" data-en-alt="Event Hub: event calendar, names blurred"><figcaption data-en="Calendar">Kalendár</figcaption></figure><figure class="th "><img src="img/eh-stats.webp" width="700" height="954" loading="lazy" alt="Event Hub: mesačný prehľad akcií a vyťaženosti" data-en-alt="Event Hub: monthly overview of events and workload"><figcaption data-en="Monthly overview">Mesačný prehľad</figcaption></figure><figure class="th "><img src="img/eh-tech.webp" width="700" height="628" loading="lazy" alt="Event Hub: prehľad techniky, CDJ a konzola" data-en-alt="Event Hub: gear overview, CDJs and mixer"><figcaption data-en="Gear">Technika</figcaption></figure></div></article>
       <article class="qw-card">
@@ -689,14 +733,25 @@ html.vt-in .hero-cut img { animation: none !important; }
       <div class="proof-sheet rv">
         <figure class="sheet-mini"><img src="img/sheet-control.webp" width="1600" height="807" loading="lazy" alt="Ukážka turnajového systému v tabuľke" data-en-alt="A glimpse of the tournament system in a spreadsheet"></figure>
         <div>
-          <p class="label" data-en="Before AI · 2020–2023">Pred AI · 2020–2023</p>
+          <p class="label" data-en="Before AI · since 2020">Pred AI · od 2020</p>
           <h3 data-en="One spreadsheet ran the whole broadcast.">Jedna tabuľka riadila celý prenos.</h3>
           <p data-en="For REPUBLEAGUE, ESL and CCT I built a tournament system in a spreadsheet, wired straight to the live graphics. The score changed at the venue and the screen updated by itself: groups, bracket, map veto, texts. No AI back then. Today AI just makes this kind of thing faster.">Pre REPUBLEAGUE, ESL a CCT som postavil turnajový systém v tabuľke, prepojený priamo s live grafikou. Na turnaji sa zmenilo skóre a obrazovka sa prepísala sama: skupiny, pavúk, veto máp aj texty. Vtedy ešte bez AI. Dnes to AI len zrýchľuje.</p>
         </div>
       </div>
     </div>
     <p class="sk-tools"><span class="label" data-en="Tools">Nástroje</span><span class="chip">Claude Code</span><span class="chip">Grok</span></p>
-    <div class="rv"><!--latest-post--><a class="latest-post has-img" href="blog/ai-remixovanie-hier/"><img class="lp-img" src="img/blog/ai-remixovanie-hier-sm.webp" width="800" height="450" loading="lazy" alt=""><span class="lp-txt"><span class="label"><span class="dot" aria-hidden="true"></span> Článok dňa · 7. októbra 2026</span><b>Minecraft v Elden Ringu: AI začala remixovať videohry</b><span class="lp-lead">Internet zaplavili videá, kde sa jedna hra objaví vnútri druhej. Za väčšinou z nich je AI, ktorá za pár hodín napíše kód, na ktorý by modder kedysi potreboval mesiace. Čo sa vlastne deje a prečo to nie je len zábava?</span><span class="lp-go">Čítať →</span></span></a><!--/latest-post--></div>
+  </div>
+</section>
+
+<!-- BLOG -->
+<section class="sec blog-sec" id="blog-home" aria-labelledby="bl-title">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <p class="label"><span class="dot" aria-hidden="true"></span> <span data-en="Blog · every day">Blog · každý deň</span></p>
+      <h2 id="bl-title" data-en="AI every day.">AI každý deň.</h2>
+      <p data-en="One short article a day on what’s happening in AI. In plain words.">Jeden krátky článok denne o tom, čo sa v AI práve deje. Po ľudsky.</p>
+    </div>
+    <div class="rv"><!--latest-post--><div class="lp-grid"><a class="latest-post first" href="blog/ai-remixovanie-hier/"><img class="lp-img" src="img/blog/ai-remixovanie-hier-sm.webp" width="800" height="450" loading="lazy" alt=""><span class="lp-txt"><span class="label"><span class="dot" aria-hidden="true"></span> Článok dňa</span><b>Minecraft v Elden Ringu: AI začala remixovať videohry</b><span class="lp-lead">Internet zaplavili videá, kde sa jedna hra objaví vnútri druhej. Za väčšinou z nich je AI, ktorá za pár hodín napíše kód, na ktorý by modder kedysi potreboval mesiace. Čo sa vlastne deje a prečo to nie je len zábava?</span></span></a></div><p class="lp-all"><a class="btn" href="blog/">Všetky články →</a></p><!--/latest-post--></div>
   </div>
 </section>
 

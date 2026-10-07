@@ -186,14 +186,17 @@ def build_sitemap(posts):
     open(p, "w", encoding="utf-8").write(s)
 
 def latest_teaser(posts):
-    """Keeps the 'latest article' card on the services page in sync."""
+    """Keeps the 'from the blog' block on the services page in sync: the newest 3 posts."""
     p = os.path.join(ROOT, "index.html"); s = open(p, encoding="utf-8").read()
     if not posts or "<!--latest-post-->" not in s: return
-    q = posts[0]
-    cv = cover(q)
-    img = f'<img class="lp-img" src="img/blog/{cv["sm"]}" width="800" height="450" loading="lazy" alt="">' if cv else ""
-    card = f"""<!--latest-post--><a class="latest-post{' has-img' if cv else ''}" href="blog/{q['slug']}/">{img}<span class="lp-txt"><span class="label"><span class="dot" aria-hidden="true"></span> Článok dňa · {sk_date(q['date'])}</span><b>{esc(q['title'])}</b><span class="lp-lead">{esc(q['lead'])}</span><span class="lp-go">Čítať →</span></span></a><!--/latest-post-->"""
-    s = re.sub(r"<!--latest-post-->.*?<!--/latest-post-->", card, s, flags=re.S)
+    cards = ""
+    for n, q in enumerate(posts[:3]):
+        cv = cover(q)
+        img = f'<img class="lp-img" src="img/blog/{cv["sm"]}" width="800" height="450" loading="lazy" alt="">' if cv else ""
+        tag = "Článok dňa" if n == 0 else sk_date(q["date"])
+        cards += f"""<a class="latest-post{' first' if n == 0 else ''}" href="blog/{q['slug']}/">{img}<span class="lp-txt"><span class="label"><span class="dot" aria-hidden="true"></span> {tag}</span><b>{esc(q['title'])}</b><span class="lp-lead">{esc(q['lead'])}</span></span></a>"""
+    block = f"""<!--latest-post--><div class="lp-grid">{cards}</div><p class="lp-all"><a class="btn" href="blog/">Všetky články →</a></p><!--/latest-post-->"""
+    s = re.sub(r"<!--latest-post-->.*?<!--/latest-post-->", block, s, flags=re.S)
     open(p, "w", encoding="utf-8").write(s)
 
 if __name__ == "__main__":

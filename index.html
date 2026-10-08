@@ -270,7 +270,8 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.2rem); line-height: 1.05;
 @keyframes online { 50% { opacity: .35; } }
 .k-sheet .deco { background: #fff; color: #1F7A45; border: 2px solid #1F7A45; }
 .k-word .deco { background: #E8EEF9; color: #2B579A; }
-@media (max-width: 24rem) { .prob .deco { font-size: .64rem; padding: .25rem .35rem; } }
+.picker, .probs, .probs li, .prob { min-width: 0; } .picker { grid-template-columns: minmax(0, 1fr); } @media (min-width: 56rem) { .picker { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+@media (max-width: 24rem) { .prob .deco { font-size: .62rem; padding: .22rem .3rem; } .prob { gap: .55rem; padding-left: .8rem; } .k-hand .deco, .k-word .deco { display: none; } }
 .k-other { background: #F3F3EE radial-gradient(rgba(22,22,22,.18) 1.2px, transparent 1.5px) 0 0 / 10px 10px; }
 /* answer: on a phone it opens right under the tile, joined to it */
 .answer { background: #EAF7EF; border: 1.5px solid var(--pulse); border-radius: 12px; padding: clamp(1.25rem, 3.5vw, 2rem); }

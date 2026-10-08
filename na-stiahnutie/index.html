@@ -46,6 +46,31 @@
 .dls-cta b { font-size: 1.25rem; display: block; }
 .dls-cta p { margin: .2rem 0 0; }
 @media (max-width: 30rem) { .dl { grid-template-columns: 5.6rem 1fr; gap: .8rem; padding: .9rem; } .dl-act .btn { padding-left: .9rem; padding-right: .9rem; } }
+/* desktop view: files as icons, a window opens on click (cards stay as the no-JS fallback) */
+.desk { display: none; }
+html.js .desk { display: grid; grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr)); gap: 1.4rem .8rem; padding: clamp(1.4rem, 4vw, 2.4rem); margin: 2rem 0 1rem; border: 1.5px solid var(--ink); border-radius: 18px; box-shadow: 6px 6px 0 var(--pulse); background: radial-gradient(rgba(22,22,22,.1) 1px, transparent 1.3px) 0 0 / 14px 14px, #FBFBF8; }
+html.js .dls { display: none; }
+.dicon { display: grid; justify-items: center; gap: .55rem; padding: .6rem .3rem; background: none; border: 0; border-radius: 12px; cursor: pointer; color: var(--ink); font: 500 .88rem/1.25 var(--f); text-align: center; }
+.dicon:hover, .dicon:focus-visible { background: rgba(31,175,111,.14); outline: 0; }
+.dicon:focus-visible { box-shadow: 0 0 0 2px var(--pulse); }
+.dicon .doc { position: relative; width: 4.6rem; height: 5.9rem; border-radius: 6px 20px 6px 6px; background: #fff; border: 1.5px solid var(--ink); box-shadow: 3px 3px 0 rgba(22,22,22,.18); overflow: hidden; transition: transform .25s cubic-bezier(.2,.8,.2,1); }
+.dicon:hover .doc { transform: translateY(-5px) rotate(-2deg); }
+.dicon .doc::before { content: ""; position: absolute; right: -1.5px; top: -1.5px; width: 1.4rem; height: 1.4rem; background: linear-gradient(225deg, #FBFBF8 50%, var(--ink) 50%); border-bottom-left-radius: 6px; }
+.dicon .doc img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; opacity: .96; }
+.dicon .doc em { position: absolute; left: 0; right: 0; bottom: 0; padding: .2rem 0; font: 700 .62rem var(--mono); font-style: normal; letter-spacing: .12em; background: var(--ink); color: #3BE08F; }
+.dicon small { display: block; font: .7rem var(--mono); color: var(--muted); }
+.dwin { width: min(34rem, calc(100% - 1.5rem)); padding: 0; border: 1.5px solid var(--ink); border-radius: 14px; background: #fff; color: var(--ink); box-shadow: 6px 6px 0 var(--pulse); overflow: hidden; }
+.dwin::backdrop { background: rgba(10,12,10,.5); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+.dwin-bar { display: flex; align-items: center; gap: .45rem; padding: .6rem .8rem; background: #161616; color: #B9B9B0; font: .74rem var(--mono); }
+.dwin-bar i { width: 11px; height: 11px; border-radius: 50%; background: #4A4B47; } .dwin-bar i:nth-child(1) { background: #E5534B; cursor: pointer; } .dwin-bar i:nth-child(2) { background: #E2B33D; } .dwin-bar i:nth-child(3) { background: #1FAF6F; }
+.dwin-bar span { margin-left: .4rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dwin-in { display: grid; grid-template-columns: 8rem 1fr; gap: 1.1rem; padding: 1.2rem; align-items: start; }
+@media (max-width: 30rem) { .dwin-in { grid-template-columns: 1fr; } .dwin-in .dwin-paper { max-width: 9rem; } }
+.dwin-paper img { width: 100%; height: auto; border-radius: 4px; border: 1px solid var(--line); box-shadow: 0 8px 20px rgba(0,0,0,.15); rotate: -2deg; }
+.dwin-txt h2 { font-size: 1.35rem; letter-spacing: -.02em; line-height: 1.15; margin: 0 0 .5rem; }
+.dwin-txt p { margin: 0 0 .7rem; color: #33332F; font-size: .97rem; }
+.dwin-txt .dl-meta { font: .78rem var(--mono); color: var(--muted); }
+@media (prefers-reduced-motion: no-preference) { .dwin[open] { animation: popIn .3s cubic-bezier(.2,.8,.2,1); } @keyframes popIn { from { opacity: 0; transform: translateY(14px) scale(.96); } } }
 </style>
 </head>
 <body>
@@ -65,8 +90,10 @@
   <header class="dls-head">
     <p class="label"><span class="dot" aria-hidden="true"></span> <span data-en="Free downloads">Na stiahnutie · zadarmo</span></p>
     <h1 data-en="Take it. It’s free.">Vezmi si to. Zadarmo.</h1>
-    <p class="lead" data-en="No e-mail, no sign-up. Download, print, use. The files are in Slovak.">Žiadny email, žiadna registrácia. Stiahni, vytlač, používaj.</p>
+    <p class="lead" data-en="No e-mail, no sign-up. Click an icon like on a desktop. The files are in Slovak.">Žiadny email, žiadna registrácia. Klikni na ikonu ako na ploche a otvorí sa ti okno.</p>
   </header>
+  <div class="desk" id="desk" aria-label="Súbory na stiahnutie"></div>
+  <dialog class="dwin" id="dwin" aria-labelledby="dwinT"><div class="dwin-bar"><i title="Zavrieť"></i><i></i><i></i><span id="dwinName">súbor.pdf</span></div><div class="dwin-in"><div class="dwin-paper"></div><div class="dwin-txt"></div></div></dialog>
   <div class="dls">
     <article class="dl rv">
       <a class="dl-paper" href="../stiahni/ai-prirucka.pdf" download="AI-prirucka-Robert-Durica.pdf"><img src="../img/stiahni/ai-prirucka.webp" width="600" height="848" loading="lazy" alt="Náhľad: AI príručka"></a>
@@ -123,5 +150,28 @@
   </div>
 </footer>
 <script src="../assets/common.js"></script>
+<script>
+(function () {
+  var desk = document.getElementById("desk"), win = document.getElementById("dwin"); if (!desk || !win || !win.showModal) { document.documentElement.classList.remove("js"); return; }
+  var cards = document.querySelectorAll(".dls .dl");
+  cards.forEach(function (c, i) {
+    var img = c.querySelector(".dl-paper img"), h = c.querySelector("h2").textContent, meta = c.querySelector(".dl-meta").textContent, href = c.querySelector(".dl-paper").getAttribute("href");
+    var b = document.createElement("button"); b.type = "button"; b.className = "dicon";
+    b.innerHTML = "<span class='doc'><img alt='' loading='lazy'><em>PDF</em></span><span></span>"; b.querySelector("img").src = img.src; b.lastChild.textContent = h;
+    b.addEventListener("click", function () {
+      win.querySelector("#dwinName").textContent = (href.split("/").pop() || h);
+      win.querySelector(".dwin-paper").innerHTML = ""; var im = img.cloneNode(); im.removeAttribute("loading"); win.querySelector(".dwin-paper").appendChild(im);
+      var t = win.querySelector(".dwin-txt"); t.innerHTML = "";
+      var h2 = document.createElement("h2"); h2.id = "dwinT"; h2.textContent = h; t.appendChild(h2);
+      [].slice.call(c.querySelectorAll(".dl-txt > p:not(.label):not(.dl-meta)")).forEach(function (p) { t.appendChild(p.cloneNode(true)); });
+      var m = document.createElement("p"); m.className = "dl-meta"; m.textContent = meta; t.appendChild(m);
+      var act = c.querySelector(".dl-act").cloneNode(true); t.appendChild(act); win.showModal();
+    });
+    desk.appendChild(b);
+  });
+  win.querySelector(".dwin-bar i").addEventListener("click", function () { win.close(); });
+  win.addEventListener("click", function (e) { if (e.target === win) win.close(); });
+})();
+</script>
 </body>
 </html>

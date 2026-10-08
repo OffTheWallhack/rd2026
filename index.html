@@ -46,8 +46,18 @@
 .hero-cut { position: absolute; z-index: 1; left: 50%; bottom: 0; width: min(112cqw, 28.9cqh); translate: -50% 0; pointer-events: none; will-change: transform; }
 .hero-cut img { display: block; width: 100%; height: auto; }
 .hero-cut::after { content: ""; position: absolute; left: 10%; right: 10%; bottom: -6px; height: 14px; border-radius: 50%; background: radial-gradient(closest-side, rgba(0,0,0,.28), transparent); z-index: -1; }
-/* ASCII censor band over the eyes */
-.eyebar { position: absolute; left: 27%; top: 4.9%; width: 41%; height: 2.5%; rotate: -4deg; background: var(--ink); color: var(--pulse); border-radius: 2px; overflow: hidden; display: flex; align-items: center; justify-content: center; font: 700 10px/1 var(--mono); letter-spacing: .02em; white-space: nowrap; box-shadow: 0 2px 0 rgba(31,175,111,.35); }
+/* ASCII censor band over the eyes: two halves that tilt into angry eyes once the infection arrives */
+.eyebar { position: absolute; left: 27%; top: 4.9%; width: 41%; height: 2.5%; rotate: -4deg; display: flex; gap: 3%; color: var(--pulse); font: 700 10px/1 var(--mono); }
+.eyebar i { flex: 1; display: flex; align-items: center; justify-content: center; font-style: normal; white-space: nowrap; overflow: hidden; background: var(--ink); border-radius: 2px; box-shadow: 0 2px 0 rgba(31,175,111,.35); transition: rotate 1.4s ease, background .8s, color .8s, box-shadow .8s, translate 1.4s ease; }
+.eyebar.angry { rotate: 0deg; color: #FF5A63; }
+.eyebar.angry i { box-shadow: 0 2px 0 rgba(235,50,60,.55), 0 0 10px rgba(235,50,60,.35); }
+.eyebar.angry i:first-child { rotate: 9deg; translate: 0 1%; } .eyebar.angry i:last-child { rotate: -9deg; translate: 0 1%; }
+.infect { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; -webkit-mask-image: url(img/hero-cut.webp); mask-image: url(img/hero-cut.webp); -webkit-mask-size: 100% 100%; mask-size: 100% 100%; mix-blend-mode: normal; }
+.hero-cut .eyebar { z-index: 3; }
+.bubble.alert { background: #D62B3A; color: #fff; border-color: #7A0F18; box-shadow: 3px 3px 0 #7A0F18; }
+.bubble.alert b { color: #fff; }
+.bubble.alert:hover { box-shadow: 4px 5px 0 #7A0F18; }
+@media (prefers-reduced-motion: no-preference) { .bubble.alert { animation: bubBob 4s ease-in-out infinite, alertPulse 1.6s ease-in-out infinite; } @keyframes alertPulse { 50% { box-shadow: 3px 3px 0 #7A0F18, 0 0 0 7px rgba(214,43,58,.22); } } }
 @media (min-width: 56rem) {
   .hero-in { grid-template-columns: minmax(0, 38%) minmax(0, 1fr); min-height: min(78vh, 46rem); align-content: center; }
   .hero-head { padding-top: 1rem; }
@@ -242,12 +252,25 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.2rem); line-height: 1.05;
 .prob::before { content: ""; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.35) 38%, #fff 72%); pointer-events: none; }
 .prob .t, .prob .arr { position: relative; z-index: 1; }
 .prob .t { font: 600 1.02rem/1.3 var(--f); color: var(--ink); }
-.k-hand { background: #FFF8DF repeating-linear-gradient(180deg, transparent 0 15px, rgba(70,110,200,.28) 15px 16px); box-shadow: inset 2.4rem 0 0 -2.25rem rgba(220,80,80,.55); padding-left: 3rem; }
+.k-hand { background: #FFF8DF repeating-linear-gradient(180deg, transparent 0 15px, rgba(70,110,200,.28) 15px 16px); }
+.k-hand::after { content: ""; position: absolute; left: .75rem; top: 0; bottom: 0; width: 1.5px; background: rgba(220,80,80,.5); }
+.k-web { background-color: #fff; background-image: linear-gradient(#161616, #161616), radial-gradient(circle at .75rem 7px, #D62B3A 0 2px, transparent 2.5px), radial-gradient(circle at 1.4rem 7px, #E2B33D 0 2px, transparent 2.5px), radial-gradient(circle at 2.05rem 7px, #1FAF6F 0 2px, transparent 2.5px); background-size: 100% 14px, auto, auto, auto; background-repeat: no-repeat; padding-top: 1.1rem; }
 .k-sheet { background-color: #fff; background-image: linear-gradient(#1F7A45, #1F7A45), repeating-linear-gradient(90deg, transparent 0 46px, rgba(31,122,69,.22) 46px 47px), repeating-linear-gradient(180deg, transparent 0 15px, rgba(31,122,69,.18) 15px 16px); background-size: 100% 5px, auto, auto; background-repeat: no-repeat, repeat, repeat; }
 .k-subs { background-color: #ECECE6; background-image: repeating-linear-gradient(90deg, #2A2C29 0 10px, transparent 10px 18px), repeating-linear-gradient(90deg, #2A2C29 0 10px, transparent 10px 18px); background-size: 100% 6px; background-position: 0 3px, 0 calc(100% - 3px); background-repeat: no-repeat; }
 .k-subs .t { text-decoration: underline; text-decoration-color: #F2C230; text-decoration-thickness: .28em; text-underline-offset: -.05em; text-decoration-skip-ink: none; }
-.k-chat { background-color: #E3F0FF; background-image: radial-gradient(circle at 18px 50%, #0A84FF 0 8px, transparent 9px); padding-left: 2.6rem; }
+.k-chat { background-color: #E3F0FF; }
 .k-word { background-color: #fff; background-image: linear-gradient(#2B579A, #2B579A), repeating-linear-gradient(180deg, transparent 0 11px, rgba(43,87,154,.14) 11px 12px); background-size: 100% 5px, auto; background-repeat: no-repeat, repeat; }
+.prob .t { text-align: left; }
+.prob .deco { position: relative; z-index: 1; flex: none; margin-left: auto; font: 600 .74rem/1 var(--mono); padding: .32rem .5rem; border-radius: 6px; background: rgba(22,22,22,.07); color: #33332F; white-space: nowrap; }
+.k-web .deco { background: #161616; color: #3BE08F; }
+.k-hand .deco { background: transparent; font-size: 1.3rem; padding: 0; color: #1d2a6b; }
+.k-subs .deco { background: #161616; color: #F2C230; letter-spacing: .02em; }
+.k-chat .deco { background: #fff; color: #0F7A4A; padding-left: 1.05rem; position: relative; }
+.k-chat .deco::before { content: ""; position: absolute; left: .45rem; top: 50%; width: 6px; height: 6px; margin-top: -3px; border-radius: 50%; background: #1FAF6F; box-shadow: 0 0 0 3px rgba(31,175,111,.25); animation: online 1.6s ease-in-out infinite; }
+@keyframes online { 50% { opacity: .35; } }
+.k-sheet .deco { background: #fff; color: #1F7A45; border: 2px solid #1F7A45; }
+.k-word .deco { background: #E8EEF9; color: #2B579A; }
+@media (max-width: 24rem) { .prob .deco { font-size: .64rem; padding: .25rem .35rem; } }
 .k-other { background: #F3F3EE radial-gradient(rgba(22,22,22,.18) 1.2px, transparent 1.5px) 0 0 / 10px 10px; }
 /* answer: on a phone it opens right under the tile, joined to it */
 .answer { background: #EAF7EF; border: 1.5px solid var(--pulse); border-radius: 12px; padding: clamp(1.25rem, 3.5vw, 2rem); }
@@ -643,6 +666,23 @@ html.vt-in .hero-cut img { animation: none !important; }
 .sec-head.left { margin-left: 0; text-align: left; }
 .sec-head.left .label { justify-content: flex-start; }
 .sec-head.left p { margin-left: 0; }
+/* "who is behind this": eye band pinned to my face, dust around the dirty sneakers, parallax layers, centred on phones */
+.door-cut { will-change: translate; }
+.door-eye { position: absolute; left: 27%; top: 4.9%; width: 41%; height: 2.5%; rotate: -4deg; display: flex; gap: 3%; z-index: 2; }
+.door-eye i { flex: 1; background: #0B0C0B; border-radius: 2px; position: relative; overflow: hidden; box-shadow: 0 0 0 1px rgba(31,191,98,.5); }
+.door-eye i::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, #1FBF62 0 2px, transparent 2px 5px); opacity: .7; animation: eyeScan 1.4s steps(6) infinite; }
+@keyframes eyeScan { to { transform: translateX(5px); } }
+.dirt { position: absolute; left: 6%; right: 6%; bottom: 0; height: 9%; pointer-events: none; }
+.dirt i { position: absolute; bottom: 4%; width: .55rem; height: .55rem; border-radius: 50%; background: rgba(168,150,124,.75); filter: blur(.4px); opacity: 0; animation: dust 3.4s ease-out infinite; }
+.dirt i:nth-child(1) { left: 6%; animation-delay: .1s; } .dirt i:nth-child(2) { left: 22%; animation-delay: .9s; width: .4rem; height: .4rem; } .dirt i:nth-child(3) { left: 38%; animation-delay: 1.6s; } .dirt i:nth-child(4) { left: 55%; animation-delay: .4s; width: .35rem; height: .35rem; } .dirt i:nth-child(5) { left: 70%; animation-delay: 2.2s; } .dirt i:nth-child(6) { left: 84%; animation-delay: 1.2s; width: .45rem; height: .45rem; } .dirt i:nth-child(7) { left: 48%; animation-delay: 2.8s; }
+@keyframes dust { 0% { opacity: 0; transform: translate(0, 0) scale(.6); } 15% { opacity: .85; } 100% { opacity: 0; transform: translate(var(--dx, 14px), -2.2rem) scale(1.6); } }
+.dirt i:nth-child(odd) { --dx: -16px; }
+@media (prefers-reduced-motion: reduce) { .dirt i, .door-eye i::after { animation: none; } .dirt i { opacity: .5; } }
+@media (max-width: 55.99rem) {
+  .door-txt { text-align: center; } .door-txt .label { justify-content: center; } .door-txt p { margin-left: auto; margin-right: auto; }
+  .door-fig { max-width: 26rem; width: 100%; margin: 0 auto; }
+  .built { text-align: center; } .built .label { justify-content: center; } .built .sk-tools { justify-content: center; }
+}
 /* layout flow: section headings centred, so the page reads down the middle */
 .sec-head { margin-left: auto; margin-right: auto; text-align: center; }
 .sec-head .label { display: flex; justify-content: center; align-items: center; gap: .5rem; }
@@ -681,7 +721,7 @@ html.vt-in .hero-cut img { animation: none !important; }
   <div class="wrap hero-in">
     <div class="hero-stage">
       <canvas class="hero-ring" aria-hidden="true"></canvas>
-      <div class="hero-cut"><img src="img/hero-cut.webp" width="373" height="1288" alt="Robert Ďurica so slúchadlami" data-en-alt="Robert Ďurica with headphones" fetchpriority="high"><span class="eyebar" aria-hidden="true"></span></div>
+      <div class="hero-cut"><img src="img/hero-cut.webp" width="373" height="1288" alt="Robert Ďurica so slúchadlami" data-en-alt="Robert Ďurica with headphones" fetchpriority="high"><span class="eyebar" aria-hidden="true"><i></i><i></i></span></div>
       <canvas class="field-front" aria-hidden="true"></canvas>
       <button class="bubble" type="button" aria-haspopup="dialog" aria-controls="dlPop"><span data-en="Psst… want my AI cheat sheets?">Psst… chceš moje ťaháky na AI?</span><b data-en="Free ↓">Zadarmo ↓</b></button>
     </div>
@@ -844,7 +884,7 @@ html.vt-in .hero-cut img { animation: none !important; }
     </div>
     <a class="door-fig" href="kto-som/" tabindex="-1" aria-hidden="true">
       <canvas class="door-ring"></canvas>
-      <span class="door-cut"><img src="img/hero-cut.webp" width="373" height="1288" loading="lazy" alt=""></span>
+      <span class="door-cut"><img src="img/hero-cut.webp" width="373" height="1288" loading="lazy" alt=""><span class="door-eye" aria-hidden="true"><i></i><i></i></span><span class="dirt" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></span>
       <canvas class="door-ring-front"></canvas>
       <ul class="door-tags" aria-label="Robert"><li class="ub ub-1"><svg viewBox="0 0 26 16" aria-hidden="true"><path fill="currentColor" d="M1 3.5C1 2.7 1.7 2 2.5 2H15l5.5 4.5H24c.6 0 1 .4 1 1V12h-2.2a2.6 2.6 0 0 0-5.1 0H9.3a2.6 2.6 0 0 0-5.1 0H1z"/><path fill="#111211" d="M15.5 3.6l3.7 3H15.5z"/><circle cx="6.8" cy="12.5" r="2" fill="currentColor"/><circle cx="20.2" cy="12.5" r="2" fill="currentColor"/></svg><b>event car driver</b><small>on tour</small></li><li class="ub ub-2"><span class="use" aria-hidden="true"><i></i></span><b>usage drainer</b><small>100% used</small></li><li class="ub ub-3"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7.3" fill="#111211"/><circle cx="8" cy="8" r="5.2" fill="none" stroke="#FFD400" stroke-width=".6" opacity=".55"/><circle cx="8" cy="8" r="3.6" fill="none" stroke="#FFD400" stroke-width=".5" opacity=".4"/><circle cx="8" cy="8" r="2.1" fill="#FFD400"/><circle cx="8" cy="8" r=".6" fill="#111211"/></svg><b>dj</b><span class="eq"><i></i><i></i><i></i><i></i></span><small>dnb · jungle</small></li><li class="ub ub-4"><svg viewBox="0 0 16 16" aria-hidden="true"><g stroke="#2B2350" stroke-width="1.4" stroke-linecap="round"><path d="M8 .9v1.8M8 13.3v1.8M.9 8h1.8M13.3 8h1.8M3 3l1.3 1.3M11.7 11.7 13 13M3 13l1.3-1.3M11.7 4.3 13 3"/></g><circle cx="8" cy="8" r="3.6" fill="#FFF3A8" stroke="#2B2350" stroke-width="1.2"/><path d="M6.5 8.6c.4.7 2.6.7 3 0" fill="none" stroke="#2B2350" stroke-width="1" stroke-linecap="round"/></svg><b>life enjoyer</b><small>good vibes only</small></li><li class="ub ub-5"><svg viewBox="0 0 12 18" aria-hidden="true"><rect x="1.5" y="1" width="9" height="16" rx="2" fill="#B8BFC9"/><rect x="1.5" y="5" width="9" height="8" fill="#1C2B6B"/><path d="M1.5 5h9v1.2h-9zM1.5 11.8h9V13h-9z" fill="#D7DCE4"/><circle cx="6" cy="9" r="1.6" fill="#E5222B"/><rect x="3.5" y="1.6" width="5" height="1" rx=".5" fill="#8A929C"/></svg><b>red bull addict</b><small>+1 can</small></li><li class="ub ub-6"><svg viewBox="0 0 18 14" aria-hidden="true"><path d="M5 2 1 7l4 5M13 2l4 5-4 5M10.5 1.5l-3 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><b>&gt; vibecoder</b><small>claude code<span class="cur"></span></small></li><li class="ub ub-7"><span class="holo"></span><b>collector</b><small>★ rare holo</small></li><li class="ub ub-8"><svg viewBox="0 0 22 14" aria-hidden="true"><path fill="currentColor" d="M5.5 1h11a4.5 4.5 0 0 1 4.3 5.8l-1.3 4.6a2 2 0 0 1-3.4.8L14 10H8l-2.1 2.2a2 2 0 0 1-3.4-.8L1.2 6.8A4.5 4.5 0 0 1 5.5 1z" opacity=".9"/><path d="M5 5v3M3.5 6.5h3" stroke="#5E615C" stroke-width="1.2" stroke-linecap="round"/><circle cx="15.5" cy="5.6" r=".9" fill="#5E615C"/><circle cx="17.3" cy="7.4" r=".9" fill="#5E615C"/></svg><b>ex-gamer</b><small><span class="off"></span>offline</small></li></ul>
     </a>
@@ -867,11 +907,11 @@ html.vt-in .hero-cut img { animation: none !important; }
 <section class="sec blog-sec" id="blog-home" aria-labelledby="bl-title">
   <div class="wrap">
     <div class="sec-head rv">
-      <p class="label"><span class="dot" aria-hidden="true"></span> <span data-en="Blog · every day">Blog · každý deň</span></p>
-      <h2 id="bl-title" data-en="AI <span class='hl'>every day</span>.">AI <span class="hl">každý deň</span>.</h2>
-      <p data-en="One short article a day on what’s happening in AI. In plain words.">Jeden krátky článok denne o tom, čo sa v AI práve deje. Po ľudsky.</p>
+      <p class="label"><span class="dot" aria-hidden="true"></span> <span data-en="Blog · picked by me">Blog · vyberám ja</span></p>
+      <h2 id="bl-title" data-en="AI news <span class='hl'>I care about</span>.">AI novinky, ktoré <span class="hl">ma zaujímajú</span>.</h2>
+      <p data-en="Current news from the world of AI and things from my life. I pick the topics myself, in plain words.">Aktuálne novinky zo sveta AI a veci z môjho života. Témy vyberám ja sám, po ľudsky.</p>
     </div>
-    <div class="rv"><!--latest-post--><div class="lp-grid"><a class="latest-post first" href="blog/ex-gamer/"><img class="lp-img" src="img/blog/ex-gamer-sm.webp" width="800" height="450" loading="lazy" alt=""><span class="lp-txt"><span class="label"><span class="dot" aria-hidden="true"></span> Článok dňa</span><b>Ex-gamer: skončil som v deň, keď vyšlo CS2</b><span class="lp-lead">Od červeného autíčka na diskete cez Counter-Strike 1.6 u kamošov až po deň, keď vyšlo CS2 a ja som s e-športom skončil. Príbeh človeka, ktorý vedel hrať na mape, na ktorej nikto iný nevedel.</span></span></a><a class="latest-post" data-nosi href="blog/ai-svet-za-tyzden/"><img class="lp-img" src="img/blog/ai-svet-za-tyzden-sm.webp" width="800" height="450" loading="lazy" alt=""><span class="lp-txt"><span class="label"><span class="dot" aria-hidden="true"></span> 7. októbra 2026</span><b>AI svet za týždeň: útoky na OpenAI, ocenenia blízko bilióna a SI v Bielom dome</b><span class="lp-lead">OpenAI odrážalo pokus vytiahnuť z jeho modelov skryté uvažovanie, vyhodilo troch výskumníkov a zrušilo vlastný model. Google vytiahol Gemini 4 Argon, investori sypú stovky miliárd a Biely dom si vymenil slová. Všetko dôležité z posledných dní na jednom mieste, po ľudsky.</span></span></a><a class="latest-post" href="blog/event-hub-appka-na-vlastnu-robotu/"><img class="lp-img" src="img/blog/event-hub-appka-na-vlastnu-robotu-sm.webp" width="800" height="450" loading="lazy" alt=""><span class="lp-txt"><span class="label"><span class="dot" aria-hidden="true"></span> 7. októbra 2026</span><b>Postavil som si appku na vlastnú robotu. Bez programovania.</b><span class="lp-lead">Celé dni som na cestách alebo na akciách a administratíva sa mi kopila v Exceli, poznámkach a správach. Tak som si s AI postavil Event Hub: jedno miesto, ktoré mi všetko zbiera, triedi a samo pripomína.</span></span></a></div><p class="lp-all"><a class="btn" href="blog/">Všetky články →</a></p><!--/latest-post--></div>
+    <div class="rv"><!--latest-post--><div class="lp-grid"><a class="latest-post first" href="blog/ex-gamer/"><span class="lp-txt"><span class="label"><span class="dot" aria-hidden="true"></span> Článok dňa</span><b>Ex-gamer: skončil som v deň, keď vyšlo CS2</b><span class="lp-lead">Od červeného autíčka na diskete cez Counter-Strike 1.6 u kamošov až po deň, keď vyšlo CS2 a ja som s e-športom skončil. Príbeh človeka, ktorý vedel hrať na mape, na ktorej nikto iný nevedel.</span></span><img class="lp-img" src="img/blog/ex-gamer-sm.webp" width="800" height="450" loading="lazy" alt=""></a><a class="latest-post" data-nosi href="blog/ai-svet-za-tyzden/"><span class="lp-txt"><span class="label"><span class="dot" aria-hidden="true"></span> 7. októbra 2026</span><b>AI svet za týždeň: útoky na OpenAI, ocenenia blízko bilióna a SI v Bielom dome</b><span class="lp-lead">OpenAI odrážalo pokus vytiahnuť z jeho modelov skryté uvažovanie, vyhodilo troch výskumníkov a zrušilo vlastný model. Google vytiahol Gemini 4 Argon, investori sypú stovky miliárd a Biely dom si vymenil slová. Všetko dôležité z posledných dní na jednom mieste, po ľudsky.</span></span><img class="lp-img" src="img/blog/ai-svet-za-tyzden-sm.webp" width="800" height="450" loading="lazy" alt=""></a><a class="latest-post" href="blog/event-hub-appka-na-vlastnu-robotu/"><span class="lp-txt"><span class="label"><span class="dot" aria-hidden="true"></span> 7. októbra 2026</span><b>Postavil som si appku na vlastnú robotu. Bez programovania.</b><span class="lp-lead">Celé dni som na cestách alebo na akciách a administratíva sa mi kopila v Exceli, poznámkach a správach. Tak som si s AI postavil Event Hub: jedno miesto, ktoré mi všetko zbiera, triedi a samo pripomína.</span></span><img class="lp-img" src="img/blog/event-hub-appka-na-vlastnu-robotu-sm.webp" width="800" height="450" loading="lazy" alt=""></a></div><p class="lp-all"><a class="btn" href="blog/">Všetky články →</a></p><!--/latest-post--></div>
     <form class="nl rv" action="mailto:rdurica1995@gmail.com" method="get" data-nosi>
       <div class="nl-txt">
         <p class="label"><span class="dot" aria-hidden="true"></span><span data-en="Newsletter">Newsletter</span></p>
@@ -945,27 +985,32 @@ html.vt-in .hero-cut img { animation: none !important; }
 </footer>
 
 <script src="assets/common.js"></script>
+<script src="assets/infect.js" defer></script>
 <script>
 (function () {
   var RD = window.RD, still = RD.still;
   var PROBLEMS = [
-    { kind: "hand", sk: "Ručne skladám rozpis smien", en: "I build shift schedules by hand",
+    { kind: "web", sk: "Potrebujem svoj vlastný web", en: "I need my own website", deco: "2–3 000 €",
+      a: { sk: "Postavím ti web, na ktorom sa deje všetko naraz.", en: "I’ll build you a website where everything happens at once." },
+      d: { sk: "Nie vizitka, ale web, ktorý predáva, rezervuje a vysvetľuje za teba: dizajn, texty, objednávky, platby aj správa obsahu na jednom mieste. Cena podľa rozsahu, spravidla 2 000 až 3 000 €.", en: "Not a business card, a site that sells, books and explains for you: design, copy, orders, payments and content management in one place. Price depends on scope, usually €2,000 to €3,000." },
+      svc: { sk: "Spravím to za teba", en: "I build it for you" }, price: { sk: "2 000–3 000 € + 30 €/mes.", en: "€2,000–3,000 + €30/mo" } },
+    { kind: "hand", sk: "Ručne skladám rozpis smien", en: "I build shift schedules by hand", deco: "✎",
       a: { sk: "Postavím ti plánovač, ktorý rozpis poskladá sám.", en: "I’ll build a planner that makes the schedule for you." },
       d: { sk: "Z dostupnosti ľudí vyskladá týždeň a férovo rozdelí hodiny.", en: "It builds the week from people’s availability and splits hours fairly." },
       svc: { sk: "Spravím to za teba", en: "I build it for you" }, price: { sk: "500–1000 € + 30 €/mes.", en: "€500–1000 + €30/mo" } },
-    { kind: "sheet", sk: "Všetko mám v Exceli a správach", en: "Everything lives in spreadsheets and chats",
+    { kind: "sheet", sk: "Všetko mám porozhadzované v Exceloch", en: "Everything is scattered across spreadsheets", deco: "7 × .xlsx",
       a: { sk: "Spravím ti jednoduchú appku pre tím.", en: "I’ll make you a simple app for your team." },
       d: { sk: "Termíny, úlohy a náklady na jednom mieste, na mobile aj v počítači. Žiadne hľadanie v správach.", en: "Dates, tasks and costs in one place, on phone and laptop. No digging through chats." },
       svc: { sk: "Spravím to za teba", en: "I build it for you" }, price: { sk: "500–1000 € podľa zložitosti + 30 €/mes., ak treba", en: "€500–1000 by complexity + €30/mo if needed" } },
-    { kind: "subs", sk: "Mám hodiny videí bez titulkov", en: "I have hours of video without subtitles",
+    { kind: "subs", sk: "Mám hodiny videí bez titulkov", en: "I have hours of video without subtitles", deco: "00:00 / 48 h",
       a: { sk: "Nastavím ti prepis videí do textu a titulkov.", en: "I’ll set up video-to-text and subtitles for you." },
       d: { sk: "Ukážem ti presne, ktorú AI použiť a ako na to. Potom to zvládneš sám.", en: "I’ll show you exactly which AI to use and how. Then you can do it yourself." },
       svc: { sk: "Naučím ťa to", en: "I teach you" }, price: { sk: "150 € · session (3 hodiny)", en: "€150 · 3-hour session" } },
-    { kind: "chat", sk: "Potrebujem chatbota", en: "I need a chatbot",
+    { kind: "chat", sk: "Potrebujem chatbota na web", en: "I need a chatbot for my website", deco: "online",
       a: { sk: "Spravím ti chatbota, ktorý odpovedá za teba.", en: "I’ll build you a chatbot that replies for you." },
       d: { sk: "Odpovedá podľa tvojich pravidiel a cien, aj keď spíš. Ty len kontroluješ.", en: "It replies following your rules and prices, even while you sleep. You just keep an eye on it." },
       svc: { sk: "Spravím to za teba", en: "I build it for you" }, price: { sk: "700 € + 30 €/mes.", en: "€700 + €30/mo" } },
-    { kind: "word", sk: "Neviem, kde s AI začať", en: "I don’t know where to start with AI",
+    { kind: "word", sk: "Neviem, kde s AI začať", en: "I don’t know where to start with AI", deco: "?",
       a: { sk: "Ukážem ti, čo všetko je dnes možné.", en: "I’ll show you what’s possible today." },
       d: { sk: "Za 3 hodiny prejdeme to, čo sám používam: ako si s AI postavíš vlastnú appku, ako ju uložíš na GitHub a dáš na web, a ako ju zabezpečíš, aby sa ti do nej nedostali boti. Odídeš s vecami, ktoré už bežia.", en: "In 3 hours we go through what I use myself: how to build your own app with AI, put it on GitHub and online, and secure it so bots can’t get in. You leave with things that already run." },
       svc: { sk: "Naučím ťa to", en: "I teach you" }, price: { sk: "150 € · session", en: "€150 · session" } },
@@ -999,7 +1044,8 @@ html.vt-in .hero-cut img { animation: none !important; }
       b.type = "button"; b.className = "prob" + (p.kind ? " k-" + p.kind : "");
       b.setAttribute("aria-pressed", i === current ? "true" : "false");
       b.setAttribute("aria-controls", "answer");
-      b.innerHTML = "<span class='t'></span><span class='arr' aria-hidden='true'>→</span>";
+      b.innerHTML = "<span class='t'></span>" + (p.deco ? "<span class='deco' aria-hidden='true'></span>" : "") + "<span class='arr' aria-hidden='true'>→</span>";
+      if (p.deco) b.querySelector(".deco").textContent = p.deco;
       b.querySelector(".t").textContent = p[RD.lang];
       b.addEventListener("click", function () {
         // on a phone a second tap closes it again
@@ -1040,7 +1086,7 @@ html.vt-in .hero-cut img { animation: none !important; }
   (function () {
     var pop = document.getElementById("dlPop"), bub = document.querySelector(".bubble");
     if (!pop || !bub || !pop.showModal) return;
-    bub.addEventListener("click", function () { pop.showModal(); });
+    bub.addEventListener("click", function () { var go = bub.getAttribute("data-go"); if (go) location.href = go; else pop.showModal(); });
     pop.querySelector(".dl-x").addEventListener("click", function () { pop.close(); });
     pop.addEventListener("click", function (e) { if (e.target === pop) pop.close(); });
   })();
@@ -1067,12 +1113,21 @@ html.vt-in .hero-cut img { animation: none !important; }
   // the ring around me in the hero, back half behind the photo and front half over it
   RD.field(document.querySelector(".hero-ring"), { ink: "rgba(22,22,22,", hot: "#1FAF6F", strength: 0,
     torus: { x: .5, y: .62, size: .86, mx: .5, my: .62, msize: .86, alpha: .62, ring: true }, front: document.querySelector(".field-front") });
-  // the band over my eyes keeps rewriting itself
+  // the band over my eyes keeps rewriting itself; when the infection reaches my head it turns red, angry, and starts naming things
   (function () {
     var bar = document.querySelector(".eyebar"); if (!bar) return;
-    var G = "01<>/{}#=+*$@", cut = document.querySelector(".hero-cut");
+    var halves = bar.querySelectorAll("i"), G = "01<>/{}#=+*$@", cut = document.querySelector(".hero-cut");
+    var W = ["hugging face", "usage", "offline", "401", "leak", "agent", "sandbox", "token", "50 PB", "403"];
     function fit() { bar.style.fontSize = Math.max(6, bar.offsetHeight * .78).toFixed(1) + "px"; }
-    function fill() { var n = Math.max(6, Math.round(bar.offsetWidth / (parseFloat(bar.style.fontSize) * .62))), t = ""; for (var i = 0; i < n; i++) t += G[Math.floor(Math.random() * G.length)]; bar.textContent = t; }
+    function fill() {
+      var bad = bar.classList.contains("angry");
+      [].forEach.call(halves, function (h, k) {
+        var n = Math.max(3, Math.round(h.offsetWidth / (parseFloat(bar.style.fontSize || 8) * .62))), t = "";
+        for (var i = 0; i < n; i++) t += G[Math.floor(Math.random() * G.length)];
+        if (bad && Math.random() < .5) { var w = W[Math.floor(Math.random() * W.length)]; if (w.length < n) { var p = Math.floor(Math.random() * (n - w.length)); t = t.slice(0, p) + w + t.slice(p + w.length); } }
+        h.textContent = t;
+      });
+    }
     fit(); fill(); window.addEventListener("resize", function () { fit(); fill(); });
     if (cut && "ResizeObserver" in window) new ResizeObserver(function () { fit(); fill(); }).observe(cut);
     if (!still) setInterval(fill, 140);
@@ -1097,6 +1152,15 @@ html.vt-in .hero-cut img { animation: none !important; }
         if (frontCv) frontCv.style.transform = "translate3d(" + (m.x * -10).toFixed(1) + "px," + (y * 0.12).toFixed(1) + "px,0)";
       }
     }
+    var door = document.querySelector(".door-fig"), dCut = document.querySelector(".door-cut"), dTags = document.querySelector(".door-tags"), dRings = document.querySelectorAll(".door-ring, .door-ring-front"), pt = { x: 0, y: 0 };
+    function doorPx() {
+      if (!door) return; var r = door.getBoundingClientRect(), vh = window.innerHeight; if (r.bottom < -50 || r.top > vh + 50) return;
+      var k = (r.top + r.height / 2 - vh / 2) / vh, m = RD.pointer();
+      if (dCut) dCut.style.translate = (m.x * 14).toFixed(1) + "px " + (k * -34 + m.y * 8).toFixed(1) + "px";
+      if (dTags) dTags.style.transform = "translate3d(" + (m.x * -22).toFixed(1) + "px," + (k * 46 + m.y * -10).toFixed(1) + "px,0)";
+      dRings.forEach(function (c) { c.style.transform = "translate3d(" + (m.x * 8).toFixed(1) + "px," + (k * -14).toFixed(1) + "px,0)"; });
+    }
+    window.addEventListener("scroll", doorPx, { passive: true }); window.addEventListener("pointermove", doorPx, { passive: true }); doorPx();
     window.addEventListener("scroll", function () { if (!ticking) { ticking = true; requestAnimationFrame(px); } }, { passive: true });
     window.addEventListener("resize", px);
     px();

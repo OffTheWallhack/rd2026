@@ -260,3 +260,8 @@ html.si .cust-pop .aisi .on { color: var(--pulse-ink); }
 .brand .dot::after { display: none; }
 .brand { gap: .65rem; }
 @media (max-width: 26rem) { .brand .dot { width: 1.85rem; height: 1.85rem; } }
+/* cards on the home page: text first, picture under it, alternating white / black / green */
+.latest-post { grid-template-columns: 1fr !important; align-content: space-between; }
+.latest-post .lp-txt { order: 0; } .latest-post .lp-img { order: 1; }
+.latest-post:nth-child(3n+2) { background: #161616; color: #F5F5F2; } .latest-post:nth-child(3n+2) b { color: #fff; } .latest-post:nth-child(3n+2) .lp-lead { color: #B9B9B0; } .latest-post:nth-child(3n+2) .label { color: #3BE08F; }
+.latest-post:nth-child(3n+3) { background: linear-gradient(135deg, #22C27B, #1FAF6F); } .latest-post:nth-child(3n+3) b, .latest-post:nth-child(3n+3) .lp-lead, .latest-post:nth-child(3n+3) .label { color: #0B1A12; }

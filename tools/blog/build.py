@@ -128,7 +128,7 @@ def build_post(p, newer, older, posts=()):
     def card(q):
         cv2 = cover(q)
         img = f'<img src="../../img/blog/{cv2["sm"]}" width="800" height="450" loading="lazy" alt="">' if cv2 else ""
-        return f'<a class="mp" href="../{q["slug"]}/">{img}<span><b>{esc(q["title"])}</b><small>{sk_date(q["date"])}</small></span></a>'
+        return f'<a class="mp" href="../{q["slug"]}/"><span><small>{sk_date(q["date"])}</small><b>{esc(q["title"])}</b></span>{img}</a>'
     nav = ('<section class="more-posts" aria-labelledby="mp-h"><h2 id="mp-h"><span class="dot" aria-hidden="true"></span>Ďalšie články</h2><div class="mp-grid">'
            + "".join(card(q) for q in others) + '</div><p class="mp-all"><a class="btn" href="../">Všetky články →</a></p></section>') if others else ""
     cover_fig = (f'<figure class="post-cover"><img src="../../img/blog/{cv["big"]}" width="1600" height="900" alt="{esc(p.get("cover_alt", ""))}" fetchpriority="high"></figure>\n    ' if cv else "")
@@ -158,18 +158,21 @@ def build_index(posts):
     url = BASE + "blog/"
     ld = {"@context": "https://schema.org", "@type": "Blog", "name": "Robert Ďurica – blog", "url": url, "inLanguage": "sk",
           "blogPost": [{"@type": "BlogPosting", "headline": p["title"], "datePublished": p["date"], "url": f"{url}{p['slug']}/"} for p in posts[:20]]}
-    head = HEAD.format(title="Blog – AI každý deň | Robert Ďurica", desc="Každý deň jeden krátky článok o AI, automatizácii a tom, čo sa práve deje. Po ľudsky, bez odborných slov.",
-                       url=url, ogtitle="Blog – AI každý deň", base=BASE, ogtype="blog", rel="../", ogimg=BASE + "img/og.jpg",
+    head = HEAD.format(title="Blog – AI novinky, ktoré ma zaujímajú | Robert Ďurica", desc="Aktuálne novinky zo sveta AI a veci z môjho života. Témy vyberám ja sám. Po ľudsky, bez odborných slov.",
+                       url=url, ogtitle="Blog – AI novinky, ktoré ma zaujímajú", base=BASE, ogtype="blog", rel="../", ogimg=BASE + "img/og.jpg",
                        ld='<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False) + "</script>")
     def thumb(p):
         cv = cover(p)
         return f'<img class="pl-img" src="../img/blog/{cv["sm"]}" width="800" height="450" loading="lazy" alt="">' if cv else ""
-    items = "".join(f"""      <li{' data-nosi' if p.get('nosi') else ''}><a href="{p['slug']}/">{thumb(p)}<span class="pl-txt"><time datetime="{p['date']}">{sk_date(p['date'])}</time><h2>{esc(p['title'])}</h2><p>{esc(p['lead'])}</p><span class="tags">{tags_html(p)}</span></span></a></li>
+    items = "".join(f"""      <li{' data-nosi' if p.get('nosi') else ''}><a href="{p['slug']}/"><span class="pl-txt"><time datetime="{p['date']}">{sk_date(p['date'])}</time><h2>{esc(p['title'])}</h2><p>{esc(p['lead'])}</p><span class="tags">{tags_html(p)}</span></span>{thumb(p)}</a></li>
 """ for p in posts)
     body = f"""  <header class="blog-head">
-    <p class="label"><span class="dot" aria-hidden="true"></span> Blog · každý deň</p>
-    <h1>AI každý deň.</h1>
-    <p class="lead">Jeden krátky článok denne o tom, čo sa v AI práve deje, a čo to znamená pre teba. Po ľudsky, bez odborných slov.</p>
+    <p class="label"><span class="dot" aria-hidden="true"></span> Blog · vyberám ja</p>
+    <h1>AI novinky, <span class="hl">ktoré ma zaujímajú.</span></h1>
+    <p class="lead">Aktuálne novinky zo sveta AI a veci z môjho života. Témy vyberám ja sám, po ľudsky, bez odborných slov.</p>
+    <form class="nl-mini" data-nosi onsubmit="event.preventDefault();var e=this.querySelector('input').value.trim();if(e)location.href='mailto:rdurica1995@gmail.com?subject='+encodeURIComponent('Newsletter: prihlásenie')+'&body='+encodeURIComponent('Ahoj Robo, prihlás ma prosím na AI digest.\\nMôj e-mail: '+e);">
+      <input type="email" required placeholder="tvoj@email.sk" aria-label="E-mail" autocomplete="email"><button class="btn btn-green" type="submit">Odoberať digest</button>
+    </form>
   </header>
   <ul class="post-list">
 {items}  </ul>
@@ -207,7 +210,7 @@ def latest_teaser(posts):
         cv = cover(q)
         img = f'<img class="lp-img" src="img/blog/{cv["sm"]}" width="800" height="450" loading="lazy" alt="">' if cv else ""
         tag = "Článok dňa" if n == 0 else sk_date(q["date"])
-        cards += f"""<a class="latest-post{' first' if n == 0 else ''}"{' data-nosi' if q.get('nosi') else ''} href="blog/{q['slug']}/">{img}<span class="lp-txt"><span class="label"><span class="dot" aria-hidden="true"></span> {tag}</span><b>{esc(q['title'])}</b><span class="lp-lead">{esc(q['lead'])}</span></span></a>"""
+        cards += f"""<a class="latest-post{' first' if n == 0 else ''}"{' data-nosi' if q.get('nosi') else ''} href="blog/{q['slug']}/"><span class="lp-txt"><span class="label"><span class="dot" aria-hidden="true"></span> {tag}</span><b>{esc(q['title'])}</b><span class="lp-lead">{esc(q['lead'])}</span></span>{img}</a>"""
     block = f"""<!--latest-post--><div class="lp-grid">{cards}</div><p class="lp-all"><a class="btn" href="blog/">Všetky články →</a></p><!--/latest-post-->"""
     s = re.sub(r"<!--latest-post-->.*?<!--/latest-post-->", block, s, flags=re.S)
     open(p, "w", encoding="utf-8").write(s)

@@ -71,6 +71,13 @@ html.js .dls { display: none; }
 .dwin-txt p { margin: 0 0 .7rem; color: #33332F; font-size: .97rem; }
 .dwin-txt .dl-meta { font: .78rem var(--mono); color: var(--muted); }
 @media (prefers-reduced-motion: no-preference) { .dwin[open] { animation: popIn .3s cubic-bezier(.2,.8,.2,1); } @keyframes popIn { from { opacity: 0; transform: translateY(14px) scale(.96); } } }
+.dl-nl { margin: .5rem 0 1.5rem; display: grid; gap: .9rem 1.5rem; align-items: center; padding: clamp(1.1rem, 3vw, 1.6rem); border: 1.5px solid var(--ink); border-radius: 16px; background: #161616; color: #F5F5F2; box-shadow: 5px 5px 0 var(--pulse); }
+@media (min-width: 56rem) { .dl-nl { grid-template-columns: 1fr minmax(0, 26rem); } }
+.dl-nl b { display: block; font-size: 1.25rem; letter-spacing: -.02em; margin-bottom: .2rem; }
+.dl-nl span { color: #B9B9B0; }
+.dl-nl-f { display: flex; gap: .5rem; }
+.dl-nl-f input { flex: 1; min-width: 0; min-height: 48px; padding: 0 .9rem; font: 1rem var(--f); border: 1.5px solid #3A3B38; border-radius: var(--r); background: #222321; color: #fff; }
+@media (max-width: 30rem) { .dl-nl-f { flex-direction: column; } }
 </style>
 </head>
 <body>
@@ -136,6 +143,10 @@ html.js .dls { display: none; }
       </div>
     </article>
   </div>
+  <form class="dl-nl rv" data-nosi onsubmit="event.preventDefault();var e=this.querySelector('input').value.trim();if(e)location.href='mailto:rdurica1995@gmail.com?subject='+encodeURIComponent('Nové súbory: prihlásenie')+'&body='+encodeURIComponent('Ahoj Robo, pošli mi prosím nový súbor, keď ho spravíš.\\nMôj e-mail: '+e);">
+    <div><b data-en="Want the next file first?">Chceš ďalší súbor ako prvý?</b><span data-en="Leave your e-mail. When I make a new cheat sheet or guide, I’ll send it to you.">Nechaj mi e-mail. Keď spravím nový ťahák alebo príručku, pošlem ti ho.</span></div>
+    <div class="dl-nl-f"><input type="email" required placeholder="tvoj@email.sk" aria-label="E-mail" autocomplete="email"><button class="btn btn-green" type="submit" data-en="Send me new files">Posielaj mi novinky</button></div>
+  </form>
   <p class="dls-note" data-en="Something missing that would help you? Message me and I may make it next.">Chýba ti tu niečo, čo by ti pomohlo? Napíš mi, možno to bude ďalší súbor.</p>
   <div class="dls-cta rv">
     <div><b data-en="Want it set up in your company?">Chceš to rovno nastaviť u vás vo firme?</b><p data-en="15 minutes on a call, free. I’ll tell you what’s worth doing first.">15 minút na telefóne, zadarmo. Poviem ti, čo sa oplatí ako prvé.</p></div>

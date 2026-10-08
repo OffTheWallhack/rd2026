@@ -163,3 +163,6 @@
 .mp > span small { margin: 0 0 .1rem; order: -1; }
 .mp:nth-child(3n+2) { background: #161616; } .mp:nth-child(3n+2) b { color: #fff; } .mp:nth-child(3n+2) small { color: #B9B9B0; }
 .mp:nth-child(3n+3) { background: linear-gradient(135deg, #22C27B, #1FAF6F); } .mp:nth-child(3n+3) b, .mp:nth-child(3n+3) small { color: #0B1A12; }
+/* chips: green on white and black cards, white on green ones */
+.post-list .chip, .post .tags .chip { background: #1FAF6F; color: #0B1A12; border-color: transparent; }
+.post-list li:nth-child(3n+3) .chip { background: #fff; color: #0B1A12; }

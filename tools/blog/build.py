@@ -158,8 +158,8 @@ def build_index(posts):
     url = BASE + "blog/"
     ld = {"@context": "https://schema.org", "@type": "Blog", "name": "Robert Ďurica – blog", "url": url, "inLanguage": "sk",
           "blogPost": [{"@type": "BlogPosting", "headline": p["title"], "datePublished": p["date"], "url": f"{url}{p['slug']}/"} for p in posts[:20]]}
-    head = HEAD.format(title="Blog – AI novinky, ktoré ma zaujímajú | Robert Ďurica", desc="Aktuálne novinky zo sveta AI a veci z môjho života. Témy vyberám ja sám. Po ľudsky, bez odborných slov.",
-                       url=url, ogtitle="Blog – AI novinky, ktoré ma zaujímajú", base=BASE, ogtype="blog", rel="../", ogimg=BASE + "img/og.jpg",
+    head = HEAD.format(title="Blog – z môjho sveta a zo sveta AI | Robert Ďurica", desc="Novinky z AI, ktoré ma zaujali, aj kúsky z môjho života. Témy vyberám ja sám, po ľudsky.",
+                       url=url, ogtitle="Blog – z môjho sveta a zo sveta AI", base=BASE, ogtype="blog", rel="../", ogimg=BASE + "img/og.jpg",
                        ld='<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False) + "</script>")
     def thumb(p):
         cv = cover(p)
@@ -167,9 +167,9 @@ def build_index(posts):
     items = "".join(f"""      <li{' data-nosi' if p.get('nosi') else ''}><a href="{p['slug']}/"><span class="pl-txt"><time datetime="{p['date']}">{sk_date(p['date'])}</time><h2>{esc(p['title'])}</h2><p>{esc(p['lead'])}</p><span class="tags">{tags_html(p)}</span></span>{thumb(p)}</a></li>
 """ for p in posts)
     body = f"""  <header class="blog-head">
-    <p class="label"><span class="dot" aria-hidden="true"></span> Blog · vyberám ja</p>
-    <h1>AI novinky, <span class="hl">ktoré ma zaujímajú.</span></h1>
-    <p class="lead">Aktuálne novinky zo sveta AI a veci z môjho života. Témy vyberám ja sám, po ľudsky, bez odborných slov.</p>
+    <p class="label"><span class="dot" aria-hidden="true"></span> Blog</p>
+    <h1>Z môjho sveta <span class="hl">a zo sveta AI.</span></h1>
+    <p class="lead">Novinky z AI, ktoré ma zaujali, aj kúsky z môjho života. Témy vyberám ja sám, po ľudsky.</p>
     <form class="nl-mini" data-nosi onsubmit="event.preventDefault();var e=this.querySelector('input').value.trim();if(e)location.href='mailto:rdurica1995@gmail.com?subject='+encodeURIComponent('Newsletter: prihlásenie')+'&body='+encodeURIComponent('Ahoj Robo, prihlás ma prosím na AI digest.\\nMôj e-mail: '+e);">
       <input type="email" required placeholder="tvoj@email.sk" aria-label="E-mail" autocomplete="email"><button class="btn btn-green" type="submit">Odoberať digest</button>
     </form>

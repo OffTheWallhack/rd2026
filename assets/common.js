@@ -73,6 +73,20 @@
     document.addEventListener("keydown", function (e) { if (e.key === "Escape") open(false); });
   })();
 
+  // Slovak typography: a one-letter word (a, i, k, o, s, u, v, z) never stays alone at the end of a line
+  var ONE = /(^|[\s(„])([aikosuvzAIKOSUVZ]) (?=\S)/g;
+  function glue(root) {
+    var w = document.createTreeWalker(root || document.body, NodeFilter.SHOW_TEXT), n, list = [];
+    while ((n = w.nextNode())) { var p = n.parentNode; if (p && !/^(SCRIPT|STYLE|TEXTAREA|CODE|PRE)$/.test(p.nodeName) && ONE.test(n.data)) list.push(n); ONE.lastIndex = 0; }
+    list.forEach(function (t) { t.data = t.data.replace(ONE, "$1$2\u00A0"); });
+  }
+  RD.glue = glue; glue(document.body);
+  document.querySelectorAll("[data-en]").forEach(function (el) { el.setAttribute("data-en", el.getAttribute("data-en").replace(/(^|[\s(“])(a|I|A) (?=\S)/g, "$1$2\u00A0")); });
+  if ("MutationObserver" in window) {
+    var gq = false;
+    new MutationObserver(function (ms) { if (gq) return; if (ms.every(function (m) { var t = m.target; return t.nodeType === 1 && t.closest && t.closest("[aria-hidden='true'], .lb, canvas"); })) return; gq = true; requestAnimationFrame(function () { gq = false; glue(document.body); }); }).observe(document.body, { childList: true, subtree: true });
+  }
+
   var tr = document.querySelectorAll("[data-en]");
   var trAria = document.querySelectorAll("[data-en-aria]");
   var trAlt = document.querySelectorAll("[data-en-alt]");

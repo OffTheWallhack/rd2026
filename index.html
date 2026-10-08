@@ -325,13 +325,6 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.2rem); line-height: 1.05;
 .svc > .card { min-width: 0; }
 .card .sub .btn { white-space: normal; text-align: center; height: auto; min-height: 40px; padding-top: .45rem; padding-bottom: .45rem; line-height: 1.25; }
 .more-in { grid-template-columns: minmax(0, 1fr); } .more-in > *, .card .sub, .card .team-list li > div { min-width: 0; } .card .sub, .card .sub * { overflow-wrap: anywhere; }
-/* big, faint illustration behind each card */
-.card > * { position: relative; z-index: 1; }
-.card > .card-pic { position: absolute; z-index: 0; top: -.9rem; right: -2rem; width: clamp(12rem, 62%, 18rem); height: auto; pointer-events: none; --pic: rgba(22,22,22,.13); --pic-g: rgba(31,175,111,.5); }
-.card > .card-pic .b { stroke: var(--pic); } .card > .card-pic .g { stroke: var(--pic-g); }
-.card-b > .card-pic { --pic: rgba(255,255,255,.14); --pic-g: rgba(59,224,143,.5); }
-.card h3, .card > p:not(.price-big) { max-width: 21rem; }
-@media (prefers-reduced-motion: no-preference) { .card > .card-pic { transition: transform .5s cubic-bezier(.2,.8,.2,1); } .card:hover > .card-pic { transform: translateY(-6px) rotate(-2deg); } }
 @media (max-width: 22.5rem) { .card { padding: 1.25rem 1rem; } .card .sub { padding: .85rem .8rem; } .sub-h span { white-space: normal; } }
 .card .sub { background: #fff; border: 1px solid rgba(0,0,0,.08); border-radius: 10px; padding: 1rem 1.1rem; }
 .card .sub ul { margin: .4rem 0 .6rem; }
@@ -585,7 +578,8 @@ html.vt-in .hero-cut img { animation: none !important; }
 .k-web { background: #161616 !important; color: #fff; }
 .k-web .t { color: #fff; }
 .k-web::after { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 14px; background: #2A2C29 radial-gradient(circle at .75rem 7px, #D62B3A 0 2.5px, transparent 3px), radial-gradient(circle at 1.4rem 7px, #E2B33D 0 2.5px, transparent 3px), radial-gradient(circle at 2.05rem 7px, #1FAF6F 0 2.5px, transparent 3px); }
-.k-web { padding-top: 1.2rem; }
+.k-web::after { height: 10px !important; background-size: auto !important; }
+.prob { padding-top: .75rem !important; padding-bottom: .75rem !important; align-items: center; }
 /* chalkboard */
 .k-hand { background: radial-gradient(120% 140% at 15% 20%, rgba(255,255,255,.1), transparent 55%), radial-gradient(90% 90% at 85% 90%, rgba(255,255,255,.05), transparent 60%), #26332D !important; border-color: #6B4A2B !important; border-width: 3px; }
 .k-hand .t { color: #F4F1E6; text-shadow: 0 0 1px rgba(255,255,255,.6); letter-spacing: .01em; }
@@ -817,7 +811,6 @@ html.vt-in .hero-cut img { animation: none !important; }
     </div>
     <div class="svc stg rv">
       <article class="card card-a rv">
-        <svg class="card-pic" viewBox="0 0 220 180" aria-hidden="true" fill="none" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><g class="b"><rect x="62" y="8" width="84" height="150" rx="14"/><path d="M62 30h84M92 18h24"/><rect x="76" y="46" width="14" height="14" rx="3"/><path d="M98 53h34"/><rect x="76" y="76" width="14" height="14" rx="3"/><path d="M98 83h28"/><rect x="76" y="106" width="14" height="14" rx="3"/><path d="M98 113h36"/><path d="M76 138h56"/></g><g class="g"><path d="M79 53l3 3 6-7M79 83l3 3 6-7"/><circle cx="156" cy="124" r="32"/><path d="M141 124l10 10 20-22"/><path d="M26 40v18M17 49h18M188 34v12M182 40h12"/></g></svg>
         <h3 data-en="I build it for you">Spravím to za teba</h3>
         <p data-en="Tell me what slows you down. I build a tool that does it for you, hand it over and look after it.">Povieš mi, čo ťa brzdí. Postavím nástroj, ktorý to robí za teba, odovzdám ti ho a postarám sa oň.</p>
         <p class="price-big">500–1000 € <small data-en="one-off, by complexity">jednorazovo, podľa zložitosti</small></p>
@@ -843,7 +836,6 @@ html.vt-in .hero-cut img { animation: none !important; }
         <div class="card-foot"><a class="btn btn-green wa" href="#kontakt" data-en="I want this">Chcem toto</a></div>
       </article>
       <article class="card card-b rv">
-        <svg class="card-pic" viewBox="0 0 220 180" aria-hidden="true" fill="none" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><g class="b"><rect x="26" y="50" width="130" height="86" rx="9"/><path d="M12 150h158l-10-14H22z"/><path d="M44 74h30M44 92h56M44 110h40"/></g><g class="g"><path d="M112 74h8"/><path d="M112 18h66a14 14 0 0 1 14 14v22a14 14 0 0 1-14 14h-28l-18 14V68h-20a14 14 0 0 1-14-14V32a14 14 0 0 1 14-14z" transform="translate(6 0)"/><path d="M134 42l10 10 18-20"/><path d="M190 108v16M182 116h16M30 22v12M24 28h12"/></g></svg>
         <h3 data-en="I teach you">Naučím ťa to</h3>
         <p data-en="We set AI up for your actual work. No theory, straight on your own stuff. Just you, or your whole team.">Nastavíme AI na tvoju konkrétnu robotu. Žiadna teória, rovno na tvojich veciach. Len ty, alebo celý tvoj tím.</p>
         <p class="price-big"><span data-en="from">od</span> 150 € <small data-en="for a 3-hour session">za 3-hodinovú session</small></p>
@@ -958,9 +950,9 @@ html.vt-in .hero-cut img { animation: none !important; }
 <section class="sec blog-sec" id="blog-home" aria-labelledby="bl-title">
   <div class="wrap">
     <div class="sec-head rv">
-      <p class="label"><span class="dot" aria-hidden="true"></span> <span data-en="Blog · picked by me">Blog · vyberám ja</span></p>
-      <h2 id="bl-title" data-en="AI news <span class='hl'>I care about</span>.">AI novinky, ktoré <span class="hl">ma zaujímajú</span>.</h2>
-      <p data-en="Current news from the world of AI and things from my life. I pick the topics myself, in plain words.">Aktuálne novinky zo sveta AI a veci z môjho života. Témy vyberám ja sám, po ľudsky.</p>
+      <p class="label"><span class="dot" aria-hidden="true"></span> <span>Blog</span></p>
+      <h2 id="bl-title" data-en="From my world <span class='hl'>and the world of AI</span>.">Z môjho sveta <span class="hl">a zo sveta AI</span>.</h2>
+      <p data-en="AI news that caught my eye, and bits of my own life. I pick the topics myself.">Novinky z AI, ktoré ma zaujali, aj kúsky z môjho života. Témy vyberám ja sám.</p>
     </div>
     <div class="rv"><!--latest-post--><div class="lp-grid"><a class="latest-post first" href="blog/ex-gamer/"><span class="lp-txt"><span class="label"><span class="dot" aria-hidden="true"></span> Článok dňa</span><b>Ex-gamer: skončil som v deň, keď vyšlo CS2</b><span class="lp-lead">Od červeného autíčka na diskete cez Counter-Strike 1.6 u kamošov až po deň, keď vyšlo CS2 a ja som s e-športom skončil. Príbeh človeka, ktorý vedel hrať na mape, na ktorej nikto iný nevedel.</span></span><img class="lp-img" src="img/blog/ex-gamer-sm.webp" width="800" height="450" loading="lazy" alt=""></a><a class="latest-post" data-nosi href="blog/ai-svet-za-tyzden/"><span class="lp-txt"><span class="label"><span class="dot" aria-hidden="true"></span> 7. októbra 2026</span><b>AI svet za týždeň: útoky na OpenAI, ocenenia blízko bilióna a SI v Bielom dome</b><span class="lp-lead">OpenAI odrážalo pokus vytiahnuť z jeho modelov skryté uvažovanie, vyhodilo troch výskumníkov a zrušilo vlastný model. Google vytiahol Gemini 4 Argon, investori sypú stovky miliárd a Biely dom si vymenil slová. Všetko dôležité z posledných dní na jednom mieste, po ľudsky.</span></span><img class="lp-img" src="img/blog/ai-svet-za-tyzden-sm.webp" width="800" height="450" loading="lazy" alt=""></a><a class="latest-post" href="blog/event-hub-appka-na-vlastnu-robotu/"><span class="lp-txt"><span class="label"><span class="dot" aria-hidden="true"></span> 7. októbra 2026</span><b>Postavil som si appku na vlastnú robotu. Bez programovania.</b><span class="lp-lead">Celé dni som na cestách alebo na akciách a administratíva sa mi kopila v Exceli, poznámkach a správach. Tak som si s AI postavil Event Hub: jedno miesto, ktoré mi všetko zbiera, triedi a samo pripomína.</span></span><img class="lp-img" src="img/blog/event-hub-appka-na-vlastnu-robotu-sm.webp" width="800" height="450" loading="lazy" alt=""></a></div><p class="lp-all"><a class="btn" href="blog/">Všetky články →</a></p><!--/latest-post--></div>
     <form class="nl rv" action="mailto:rdurica1995@gmail.com" method="get" data-nosi>
@@ -1041,10 +1033,10 @@ html.vt-in .hero-cut img { animation: none !important; }
 (function () {
   var RD = window.RD, still = RD.still;
   var PROBLEMS = [
-    { kind: "web", sk: "Potrebujem svoj vlastný web", en: "I need my own website", deco: "2–3 000 €",
+    { kind: "web", sk: "Potrebujem svoj vlastný web", en: "I need my own website",
       a: { sk: "Postavím ti web, na ktorom sa deje všetko naraz.", en: "I’ll build you a website where everything happens at once." },
-      d: { sk: "Nie vizitka, ale web, ktorý predáva, rezervuje a vysvetľuje za teba: dizajn, texty, objednávky, platby aj správa obsahu na jednom mieste. Cena podľa rozsahu, spravidla 2 000 až 3 000 €.", en: "Not a business card, a site that sells, books and explains for you: design, copy, orders, payments and content management in one place. Price depends on scope, usually €2,000 to €3,000." },
-      svc: { sk: "Spravím to za teba", en: "I build it for you" }, price: { sk: "2 000–3 000 € + 30 €/mes.", en: "€2,000–3,000 + €30/mo" } },
+      d: { sk: "Nie vizitka, ale web, ktorý predáva, rezervuje a vysvetľuje za teba: dizajn, texty, objednávky, platby aj správa obsahu na jednom mieste.", en: "Not a business card, a site that sells, books and explains for you: design, copy, orders, payments and content management in one place. " },
+      svc: { sk: "Spravím to za teba", en: "I build it for you" }, price: { sk: "cenu dohodneme podľa rozsahu", en: "price by scope" } },
     { kind: "hand", sk: "Ručne skladám rozpis smien", en: "I build shift schedules by hand", deco: "✎",
       a: { sk: "Postavím ti plánovač, ktorý rozpis poskladá sám.", en: "I’ll build a planner that makes the schedule for you." },
       d: { sk: "Z dostupnosti ľudí vyskladá týždeň a férovo rozdelí hodiny.", en: "It builds the week from people’s availability and splits hours fairly." },

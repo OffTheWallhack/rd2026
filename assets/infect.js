@@ -7,6 +7,8 @@
   if (!cut || !img || window.RD && window.RD.still) return;
   var cv = document.createElement("canvas"); cv.className = "infect"; cv.setAttribute("aria-hidden", "true");
   cut.insertBefore(cv, bar); var ctx = cv.getContext("2d");
+  var ring = document.querySelector(".hero-ring"), bg = null, bctx = null, BW = 0, BH = 0;
+  if (ring) { bg = document.createElement("canvas"); bg.className = "infect-bg"; bg.setAttribute("aria-hidden", "true"); ring.parentNode.insertBefore(bg, ring.nextSibling); bctx = bg.getContext("2d"); }
   var W = 0, H = 0, dpr = 1, ch = 11, cw = 7, cols = 0, rows = 0, grid = null, t0 = null, last = 0, raf = 0, ang = false, alerted = false;
   var CH = "01<>/{}#=+*$@%&;:", WORDS = ["hugging face", "usage", "offline", "401", "leak", "agent", "sandbox", "token", "root", "403", "kill -9", "50 PB"];
   var T1 = 26000, T2 = 7000, DELAY = 2200;            // slow part (feet to knees), fast part (knees to head)
@@ -15,8 +17,9 @@
   function size() {
     dpr = Math.min(window.devicePixelRatio || 1, 2); W = img.clientWidth; H = img.clientHeight; if (!W) return;
     cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ch = W < 200 ? 9 : 11; cw = ch * .62; cols = Math.ceil(W / cw); rows = Math.ceil(H / ch);
+    ch = W < 200 ? 12 : 15; cw = ch * .62; cols = Math.ceil(W / cw); rows = Math.ceil(H / ch);
     grid = new Uint8Array(cols * rows); for (var i = 0; i < grid.length; i++) grid[i] = Math.floor(Math.random() * CH.length);
+    if (bg) { BW = bg.clientWidth; BH = bg.clientHeight; bg.width = BW * dpr; bg.height = BH * dpr; bctx.setTransform(dpr, 0, 0, dpr, 0, 0); }
   }
   function col(yn, a) {
     if (yn > KNEE) return "rgba(31,191,98," + a + ")";
@@ -43,14 +46,39 @@
   function draw(now) {
     raf = requestAnimationFrame(draw); if (now - last < 45) return; last = now;
     if (t0 === null) t0 = now; if (!W) { size(); if (!W) return; }
-    var f = front(now - t0); ctx.clearRect(0, 0, W, H); ctx.font = "500 " + (ch - 1) + "px 'JetBrains Mono', ui-monospace, monospace"; ctx.textBaseline = "top";
-    var r0 = Math.max(0, Math.floor(f * rows));
+    var f = front(now - t0); ctx.clearRect(0, 0, W, H); ctx.font = "700 " + (ch - 1) + "px 'JetBrains Mono', ui-monospace, monospace"; ctx.textBaseline = "top";
+    var r0 = Math.max(0, Math.floor(f * rows)), y0 = r0 * ch;
+    // tint the whole body below the front, so it looks swallowed, not just sprinkled
+    for (var y = y0; y < H; y += 6) { var tn = y / H; ctx.fillStyle = col(tn, .34); ctx.fillRect(0, y, W, 6); }
     for (var r = r0; r < rows; r++) {
-      var yn = r / rows, edge = Math.max(0, 1 - (r - r0) / 5);
+      var yn = r / rows, edge = Math.max(0, 1 - (r - r0) / 7);
       for (var c = 0; c < cols; c++) {
-        var i = r * cols + c; if (Math.random() < .08) grid[i] = Math.floor(Math.random() * CH.length);
-        if (Math.random() > .62 + edge * .3) continue;
-        ctx.fillStyle = col(yn, edge > .2 ? .95 : .5 + Math.random() * .35); ctx.fillText(CH[grid[i]], c * cw, r * ch);
+        var i = r * cols + c; if (Math.random() < .1) grid[i] = Math.floor(Math.random() * CH.length);
+        if (Math.random() > .8 + edge * .2) continue;
+        ctx.fillStyle = col(yn, edge > .15 ? 1 : .72 + Math.random() * .28); ctx.fillText(CH[grid[i]], c * cw, r * ch);
+      }
+    }
+    // aura around the figure: glow plus large faint code, below the same front line
+    if (bctx && BW) {
+      var cr0 = cut.getBoundingClientRect(), br0 = bg.getBoundingClientRect(), ox = cr0.left - br0.left, oy = cr0.top - br0.top, fy = oy + f * cr0.height;
+      bctx.clearRect(0, 0, BW, BH);
+      var sr = ring.parentNode.getBoundingClientRect(), sl = sr.left - br0.left + 2, shr = sr.right - br0.left - 2;
+      var cxm = ox + cr0.width / 2, rx = cr0.width * 1.55, ry = cr0.height * .62;
+      for (var gy = Math.max(0, fy); gy < BH; gy += 10) {
+        var tn2 = Math.min(1, Math.max(0, (gy - oy) / cr0.height)), fade = Math.min(1, (gy - fy) / 70 + .25), k = Math.max(0, 1 - Math.pow((gy - (oy + cr0.height * .62)) / ry, 2));
+        var half = rx * Math.sqrt(k); if (half < 2) continue;
+        var lo = Math.max(cxm - half, sl), hi = Math.min(cxm + half, shr); if (hi - lo < 4) continue;
+        var g = bctx.createLinearGradient(lo, 0, hi, 0), cc = col(tn2, .30 * fade), c0 = col(tn2, 0);
+        g.addColorStop(0, c0); g.addColorStop(.22, cc); g.addColorStop(.78, cc); g.addColorStop(1, c0); bctx.fillStyle = g; bctx.fillRect(lo, gy, hi - lo, 10);
+      }
+      bctx.font = "700 14px 'JetBrains Mono', ui-monospace, monospace"; bctx.textBaseline = "top";
+      for (var gy2 = Math.max(0, Math.floor(fy / 17) * 17); gy2 < BH; gy2 += 17) {
+        var tn3 = Math.min(1, Math.max(0, (gy2 - oy) / cr0.height)), k2 = Math.max(0, 1 - Math.pow((gy2 - (oy + cr0.height * .62)) / ry, 2)), half2 = rx * Math.sqrt(k2); if (half2 < 4) continue;
+        for (var gx = Math.max(cxm - half2, sl); gx < Math.min(cxm + half2, shr - 6); gx += 10) {
+          var inside = gx > ox - 4 && gx < ox + cr0.width + 4, d = Math.abs(gx - cxm) / half2; if (inside && Math.random() < .5) continue;
+          if (Math.random() > .5 - d * .38) continue;
+          bctx.fillStyle = col(tn3, .22 + Math.random() * .38 * (1 - d)); bctx.fillText(CH[Math.floor(Math.random() * CH.length)], gx, gy2);
+        }
       }
     }
     // bubble: when the front passes it

@@ -63,9 +63,6 @@ HEAD = """<!doctype html>
 <link rel="apple-touch-icon" href="{rel}img/icons/apple-touch-icon.png">
 <link rel="manifest" href="{rel}manifest.webmanifest">
 <link rel="alternate" type="application/rss+xml" title="Robert Ďurica – blog" href="{base}blog/feed.xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{rel}assets/common.css">
 <link rel="stylesheet" href="{rel}assets/blog.css">
 {ld}
@@ -170,17 +167,19 @@ def build_index(posts):
     <p class="label"><span class="dot" aria-hidden="true"></span> Blog</p>
     <h1>Z môjho sveta <span class="hl">a zo sveta AI.</span></h1>
     <p class="lead">Novinky z AI, ktoré ma zaujali, aj kúsky z môjho života. Témy vyberám ja sám, po ľudsky.</p>
-    <form class="nl-mini" data-nosi onsubmit="event.preventDefault();var e=this.querySelector('input').value.trim();if(e)location.href='mailto:rdurica1995@gmail.com?subject='+encodeURIComponent('Newsletter: prihlásenie')+'&body='+encodeURIComponent('Ahoj Robo, prihlás ma prosím na AI digest.\\nMôj e-mail: '+e);">
-      <input type="email" required placeholder="tvoj@email.sk" aria-label="E-mail" autocomplete="email"><button class="btn btn-green" type="submit">Odoberať digest</button>
-    </form>
+    <p class="nl-follow" data-nosi><span>Odber do mailu zatiaľ nemám.</span> <a class="btn btn-green btn-sm" href="feed.xml">Odoberať RSS</a> <a class="btn btn-sm" href="mailto:rdurica1995@gmail.com">Napíš mi</a></p>
   </header>
   <ul class="post-list">
 {items}  </ul>
-  <form class="nl" data-nosi onsubmit="event.preventDefault();var e=this.querySelector('input').value.trim();if(e)location.href='mailto:rdurica1995@gmail.com?subject='+encodeURIComponent('Newsletter: prihlásenie')+'&body='+encodeURIComponent('Ahoj Robo, prihlás ma prosím na AI digest.\\nMôj e-mail: '+e);">
-    <div class="nl-txt"><p class="label"><span class="dot" aria-hidden="true"></span> Newsletter</p><b>Novinky o AI každý deň. Z môjho pohľadu.</b><span>Overené, žiadne nezmysly, len krátky digest do mailu.</span></div>
-    <div class="nl-f"><input type="email" required placeholder="tvoj@email.sk" aria-label="E-mail" autocomplete="email"><button class="btn btn-green" type="submit">Odoberať</button></div>
-    <small class="nl-note">Otvorí sa ti mail s hotovou správou, stačí ho odoslať. Odhlásiš sa kedykoľvek. Alebo <a href="feed.xml">RSS</a>.</small>
-  </form>
+  <aside class="nl" data-nosi>
+    <div class="nl-txt"><p class="label"><span class="dot" aria-hidden="true"></span> Newsletter</p><b>Novinky o AI. Z môjho pohľadu.</b><span>Odber do mailu zatiaľ nemám. Sleduj blog cez RSS, alebo mi napíš.</span></div>
+    <div class="nl-acts"><a class="btn btn-green" href="feed.xml">Odoberať RSS</a><a class="btn" href="mailto:rdurica1995@gmail.com">Napíš mi</a></div>
+    <!--
+      Newsletter neskôr (Buttondown alebo MailerLite).
+      Keď bude účet, vlož sem ich embed a zmaž tento komentár.
+      ID účtu sem nedávaj, kým ho naozaj nemáš.
+    -->
+  </aside>
 """
     open(os.path.join(ROOT, "blog", "index.html"), "w", encoding="utf-8").write(head + body + FOOT.format(rel="../"))
 

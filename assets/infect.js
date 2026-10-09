@@ -5,6 +5,8 @@
   var cut = document.querySelector(".hero-cut"), img = cut && cut.querySelector("img"),
       bar = document.querySelector(".eyebar"), bub = document.querySelector(".bubble");
   if (!cut || !img || window.RD && window.RD.still) return;
+  // The climb is a long main-thread loop. Phones keep the still portrait.
+  if (window.matchMedia("(max-width: 56rem)").matches) return;
   var cv = document.createElement("canvas"); cv.className = "infect"; cv.setAttribute("aria-hidden", "true");
   cut.insertBefore(cv, bar); var ctx = cv.getContext("2d");
   var ring = document.querySelector(".hero-ring"), bg = null, bctx = null, BW = 0, BH = 0;
@@ -44,6 +46,7 @@
     if (!bar || ang) return; ang = true; bar.classList.add("angry"); window.__angryEyes = true;
   }
   function draw(now) {
+    if (document.hidden) { raf = 0; return; }
     raf = requestAnimationFrame(draw); if (now - last < 45) return; last = now;
     if (t0 === null) t0 = now; if (!W) { size(); if (!W) return; }
     var f = front(now - t0); ctx.clearRect(0, 0, W, H); ctx.font = "700 " + (ch - 1) + "px 'JetBrains Mono', ui-monospace, monospace"; ctx.textBaseline = "top";
@@ -88,6 +91,15 @@
   }
   window.addEventListener("resize", size);
   if (img.complete) size(); else img.addEventListener("load", size);
-  var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { if (!raf) raf = requestAnimationFrame(draw); } else { cancelAnimationFrame(raf); raf = 0; } }, { threshold: .1 });
+  var seen = false;
+  var io = new IntersectionObserver(function (es) {
+    seen = es[0].isIntersecting;
+    if (seen && !document.hidden) { if (!raf) raf = requestAnimationFrame(draw); }
+    else { cancelAnimationFrame(raf); raf = 0; }
+  }, { threshold: .1 });
   io.observe(cut);
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden || !seen) { cancelAnimationFrame(raf); raf = 0; }
+    else if (!raf) raf = requestAnimationFrame(draw);
+  });
 })();

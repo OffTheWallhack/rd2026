@@ -27,9 +27,6 @@
 <link rel="apple-touch-icon" href="img/icons/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-title" content="Robert Ďurica">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script type="speculationrules">{"prerender":[{"urls":["kto-som/"],"eagerness":"moderate"}]}</script>
 <link rel="stylesheet" href="assets/common.css">
 <style>
@@ -705,6 +702,8 @@ html.vt-in .hero-cut img { animation: none !important; }
 .nl-f input { flex: 1; min-width: 0; min-height: 48px; padding: 0 .9rem; font: 1rem var(--f); border: 1.5px solid var(--line); border-radius: var(--r); background: var(--bg); }
 .nl-f input:focus { outline: 3px solid var(--pulse); outline-offset: 1px; }
 .nl-note { grid-column: 1 / -1; font: .75rem var(--mono); color: var(--muted); }
+.nl-acts { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+@media (max-width: 55.99rem) { .nl-acts { flex-direction: column; align-items: stretch; } }
 /* blog on home: three equal cards */
 #blog-home .lp-grid { grid-template-columns: 1fr; }
 @media (min-width: 48rem) { #blog-home .lp-grid { grid-template-columns: repeat(3, 1fr); align-items: stretch; } #blog-home .lp-grid .first { grid-row: auto; } #blog-home .latest-post:not(.first) { grid-template-columns: 1fr; } #blog-home .latest-post .lp-lead { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; font-size: .9rem; } #blog-home .latest-post.first b { font-size: 1.1rem; } }
@@ -766,7 +765,7 @@ html.vt-in .hero-cut img { animation: none !important; }
   <div class="wrap hero-in">
     <div class="hero-stage">
       <canvas class="hero-ring" aria-hidden="true"></canvas>
-      <div class="hero-cut"><img src="img/hero-cut.webp" width="373" height="1288" alt="Robert Ďurica so slúchadlami" data-en-alt="Robert Ďurica with headphones" fetchpriority="high"><span class="eyebar" aria-hidden="true"><i></i><i></i></span></div>
+      <div class="hero-cut"><img src="img/hero-cut.webp" srcset="img/hero-cut-200.webp 200w, img/hero-cut-280.webp 280w, img/hero-cut.webp 373w" sizes="(max-width: 56rem) 42vw, 260px" width="373" height="1288" alt="Robert Ďurica so slúchadlami" data-en-alt="Robert Ďurica with headphones" fetchpriority="high"><span class="eyebar" aria-hidden="true"><i></i><i></i></span></div>
       <canvas class="field-front" aria-hidden="true"></canvas>
       <button class="bubble" type="button" aria-haspopup="dialog" aria-controls="dlPop"><span data-en="Psst… want my AI cheat sheets?">Psst… chceš moje ťaháky na AI?</span><b data-en="Free ↓">Zadarmo ↓</b></button>
     </div>
@@ -927,7 +926,7 @@ html.vt-in .hero-cut img { animation: none !important; }
     </div>
     <a class="door-fig" href="kto-som/" tabindex="-1" aria-hidden="true">
       <canvas class="door-ring"></canvas>
-      <span class="door-cut"><img src="img/hero-cut.webp" width="373" height="1288" loading="lazy" alt=""><span class="door-eye" aria-hidden="true"><i></i><i></i></span><span class="dirt" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></span>
+      <span class="door-cut"><img src="img/hero-cut.webp" srcset="img/hero-cut-200.webp 200w, img/hero-cut-280.webp 280w, img/hero-cut.webp 373w" sizes="(max-width: 56rem) 34vw, 200px" width="373" height="1288" loading="lazy" alt=""><span class="door-eye" aria-hidden="true"><i></i><i></i></span><span class="dirt" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></span>
       <canvas class="door-ring-front"></canvas>
       <ul class="door-tags" aria-label="Robert"><li class="ub ub-1"><svg viewBox="0 0 26 16" aria-hidden="true"><path fill="currentColor" d="M1 3.5C1 2.7 1.7 2 2.5 2H15l5.5 4.5H24c.6 0 1 .4 1 1V12h-2.2a2.6 2.6 0 0 0-5.1 0H9.3a2.6 2.6 0 0 0-5.1 0H1z"/><path fill="#111211" d="M15.5 3.6l3.7 3H15.5z"/><circle cx="6.8" cy="12.5" r="2" fill="currentColor"/><circle cx="20.2" cy="12.5" r="2" fill="currentColor"/></svg><b>event car driver</b><small>on tour</small></li><li class="ub ub-2"><span class="use" aria-hidden="true"><i></i></span><b>usage drainer</b><small>100% used</small></li><li class="ub ub-3"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7.3" fill="#111211"/><circle cx="8" cy="8" r="5.2" fill="none" stroke="#FFD400" stroke-width=".6" opacity=".55"/><circle cx="8" cy="8" r="3.6" fill="none" stroke="#FFD400" stroke-width=".5" opacity=".4"/><circle cx="8" cy="8" r="2.1" fill="#FFD400"/><circle cx="8" cy="8" r=".6" fill="#111211"/></svg><b>dj</b><span class="eq"><i></i><i></i><i></i><i></i></span><small>dnb · jungle</small></li><li class="ub ub-4"><svg viewBox="0 0 16 16" aria-hidden="true"><g stroke="#2B2350" stroke-width="1.4" stroke-linecap="round"><path d="M8 .9v1.8M8 13.3v1.8M.9 8h1.8M13.3 8h1.8M3 3l1.3 1.3M11.7 11.7 13 13M3 13l1.3-1.3M11.7 4.3 13 3"/></g><circle cx="8" cy="8" r="3.6" fill="#FFF3A8" stroke="#2B2350" stroke-width="1.2"/><path d="M6.5 8.6c.4.7 2.6.7 3 0" fill="none" stroke="#2B2350" stroke-width="1" stroke-linecap="round"/></svg><b>life enjoyer</b><small>good vibes only</small></li><li class="ub ub-5"><svg viewBox="0 0 12 18" aria-hidden="true"><rect x="1.5" y="1" width="9" height="16" rx="2" fill="#B8BFC9"/><rect x="1.5" y="5" width="9" height="8" fill="#1C2B6B"/><path d="M1.5 5h9v1.2h-9zM1.5 11.8h9V13h-9z" fill="#D7DCE4"/><circle cx="6" cy="9" r="1.6" fill="#E5222B"/><rect x="3.5" y="1.6" width="5" height="1" rx=".5" fill="#8A929C"/></svg><b>red bull addict</b><small>+1 can</small></li><li class="ub ub-6"><svg viewBox="0 0 18 14" aria-hidden="true"><path d="M5 2 1 7l4 5M13 2l4 5-4 5M10.5 1.5l-3 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><b>&gt; vibecoder</b><small>claude code<span class="cur"></span></small></li><li class="ub ub-7"><span class="holo"></span><b>collector</b><small>★ rare holo</small></li><li class="ub ub-8"><svg viewBox="0 0 22 14" aria-hidden="true"><path fill="currentColor" d="M5.5 1h11a4.5 4.5 0 0 1 4.3 5.8l-1.3 4.6a2 2 0 0 1-3.4.8L14 10H8l-2.1 2.2a2 2 0 0 1-3.4-.8L1.2 6.8A4.5 4.5 0 0 1 5.5 1z" opacity=".9"/><path d="M5 5v3M3.5 6.5h3" stroke="#5E615C" stroke-width="1.2" stroke-linecap="round"/><circle cx="15.5" cy="5.6" r=".9" fill="#5E615C"/><circle cx="17.3" cy="7.4" r=".9" fill="#5E615C"/></svg><b>ex-gamer</b><small><span class="off"></span>offline</small></li></ul>
     </a>
@@ -955,15 +954,22 @@ html.vt-in .hero-cut img { animation: none !important; }
       <p data-en="AI news that caught my eye, and bits of my own life. I pick the topics myself.">Novinky z AI, ktoré ma zaujali, aj kúsky z môjho života. Témy vyberám ja sám.</p>
     </div>
     <div class="rv"><!--latest-post--><div class="lp-grid"><a class="latest-post first" href="blog/ex-gamer/"><span class="lp-txt"><span class="label"><span class="dot" aria-hidden="true"></span> Článok dňa</span><b>Ex-gamer: skončil som v deň, keď vyšlo CS2</b><span class="lp-lead">Od červeného autíčka na diskete cez Counter-Strike 1.6 u kamošov až po deň, keď vyšlo CS2 a ja som s e-športom skončil. Príbeh človeka, ktorý vedel hrať na mape, na ktorej nikto iný nevedel.</span></span><img class="lp-img" src="img/blog/ex-gamer-sm.webp" width="800" height="450" loading="lazy" alt=""></a><a class="latest-post" data-nosi href="blog/ai-svet-za-tyzden/"><span class="lp-txt"><span class="label"><span class="dot" aria-hidden="true"></span> 7. októbra 2026</span><b>AI svet za týždeň: útoky na OpenAI, ocenenia blízko bilióna a SI v Bielom dome</b><span class="lp-lead">OpenAI odrážalo pokus vytiahnuť z jeho modelov skryté uvažovanie, vyhodilo troch výskumníkov a zrušilo vlastný model. Google vytiahol Gemini 4 Argon, investori sypú stovky miliárd a Biely dom si vymenil slová. Všetko dôležité z posledných dní na jednom mieste, po ľudsky.</span></span><img class="lp-img" src="img/blog/ai-svet-za-tyzden-sm.webp" width="800" height="450" loading="lazy" alt=""></a><a class="latest-post" href="blog/event-hub-appka-na-vlastnu-robotu/"><span class="lp-txt"><span class="label"><span class="dot" aria-hidden="true"></span> 7. októbra 2026</span><b>Postavil som si appku na vlastnú robotu. Bez programovania.</b><span class="lp-lead">Celé dni som na cestách alebo na akciách a administratíva sa mi kopila v Exceli, poznámkach a správach. Tak som si s AI postavil Event Hub: jedno miesto, ktoré mi všetko zbiera, triedi a samo pripomína.</span></span><img class="lp-img" src="img/blog/event-hub-appka-na-vlastnu-robotu-sm.webp" width="800" height="450" loading="lazy" alt=""></a></div><p class="lp-all"><a class="btn" href="blog/">Všetky články →</a></p><!--/latest-post--></div>
-    <form class="nl rv" action="mailto:rdurica1995@gmail.com" method="get" data-nosi>
+    <aside class="nl rv" data-nosi>
       <div class="nl-txt">
         <p class="label"><span class="dot" aria-hidden="true"></span><span data-en="Newsletter">Newsletter</span></p>
-        <b data-en="AI news, every day, from my point of view.">Novinky o AI každý deň. Z môjho pohľadu.</b>
-        <span data-en="Checked, no nonsense, just a short digest in your inbox.">Overené, žiadne nezmysly, len krátky digest do mailu.</span>
+        <b data-en="AI news, from my point of view.">Novinky o AI. Z môjho pohľadu.</b>
+        <span data-en="No mailing list yet. Follow the blog by RSS, or just write to me.">Odber do mailu zatiaľ nemám. Sleduj blog cez RSS, alebo mi napíš.</span>
       </div>
-      <div class="nl-f"><input type="email" name="e" required placeholder="tvoj@email.sk" aria-label="E-mail" autocomplete="email"><button class="btn btn-green" type="submit" data-en="Subscribe">Odoberať</button></div>
-      <small class="nl-note" data-en="Your mail app opens with the message ready, just send it. Unsubscribe anytime.">Otvorí sa ti mail s hotovou správou, stačí ho odoslať. Odhlásiš sa kedykoľvek.</small>
-    </form>
+      <div class="nl-acts">
+        <a class="btn btn-green" href="blog/feed.xml" data-en="Follow RSS">Odoberať RSS</a>
+        <a class="btn" href="mailto:rdurica1995@gmail.com" data-en="Write me">Napíš mi</a>
+      </div>
+      <!--
+        Newsletter neskôr (Buttondown alebo MailerLite).
+        Keď bude účet, vlož sem ich embed a zmaž tento komentár.
+        ID účtu sem nedávaj, kým ho naozaj nemáš.
+      -->
+    </aside>
   </div>
 </section>
 
@@ -1013,7 +1019,7 @@ html.vt-in .hero-cut img { animation: none !important; }
   <h2 id="dlPopT" data-en="You just click things on the internet?">Len tak klikáš na veci na internete?</h2>
   <p data-en="Fine, this time it’s safe. Here are my AI cheat sheets. Free, no sign-up, no catch.">Dobre, tentoraz je to v pohode. Tu máš moje ťaháky na AI. Zadarmo, bez registrácie, bez háčika.</p>
   <ul class="dl-list">
-    <li><a href="stiahni/ai-prirucka.pdf" download="AI-prirucka-Robert-Durica.pdf"><b data-en="AI handbook">AI príručka</b><span data-en="AI in plain words · 17 pages">AI po ľudsky · 17 strán</span><i aria-hidden="true">↓</i></a></li>
+    <li><a href="na-stiahnutie/ai-prirucka.pdf" download="AI-prirucka-Robert-Durica.pdf"><b data-en="AI handbook">AI príručka</b><span data-en="AI in plain words · 17 pages">AI po ľudsky · 17 strán</span><i aria-hidden="true">↓</i></a></li>
     <li><a href="na-stiahnutie/checklist-automatizacia.pdf" download><b data-en="Checklist: what to automate">Checklist: čo zautomatizovať</b><span data-en="for your company · 2 pages">pre tvoju firmu · 2 strany</span><i aria-hidden="true">↓</i></a></li>
     <li><a href="na-stiahnutie/bezpecne-s-ai.pdf" download><b data-en="Safe with AI">Bezpečne s AI</b><span data-en="10 rules for your team · 1 page">10 pravidiel pre tím · 1 strana</span><i aria-hidden="true">↓</i></a></li>
   </ul>
@@ -1140,18 +1146,6 @@ html.vt-in .hero-cut img { animation: none !important; }
     window.addEventListener("hashchange", chk); chk();
     document.querySelectorAll('a[href="#hovor"]').forEach(function (a) { a.addEventListener("click", function () { more.open = true; }); });
   })();
-  // newsletter: no third-party service, it prepares an e-mail to me
-  (function () {
-    var f = document.querySelector(".nl"); if (!f) return;
-    f.addEventListener("submit", function (e) {
-      e.preventDefault();
-      var em = f.querySelector("input").value.trim(); if (!em) return;
-      location.href = "mailto:rdurica1995@gmail.com?subject=" + encodeURIComponent("Newsletter: prihlásenie") +
-        "&body=" + encodeURIComponent("Ahoj Robo, prihlás ma prosím na AI digest.\nMôj e-mail: " + em);
-    });
-  })();
-
-
   RD.field(document.getElementById("field"), { ink: "rgba(22,22,22,", hot: "#1FAF6F", strength: .3 });
   // the ring around me in the hero, back half behind the photo and front half over it
   RD.field(document.querySelector(".hero-ring"), { ink: "rgba(22,22,22,", hot: "#1FAF6F", strength: 0,

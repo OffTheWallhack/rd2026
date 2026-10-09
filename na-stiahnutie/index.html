@@ -8,7 +8,15 @@
 <meta name="description" content="Zadarmo a bez registrácie: AI príručka po ľudsky, checklist, čo zautomatizovať vo firme, 10 pravidiel bezpečnej práce s AI pre tím (podľa EU AI Act čl. 4) a moje CV.">
 <link rel="canonical" href="https://offthewallhack.github.io/rd2026/na-stiahnutie/">
 <meta property="og:title" content="Na stiahnutie zadarmo – Robert Ďurica">
+<meta property="og:description" content="Zadarmo a bez registrácie: AI príručka, checklist, pravidlá pre tím a moje CV.">
 <meta property="og:image" content="https://offthewallhack.github.io/rd2026/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://offthewallhack.github.io/rd2026/na-stiahnutie/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Na stiahnutie zadarmo – Robert Ďurica">
+<meta name="twitter:description" content="Zadarmo a bez registrácie: AI príručka, checklist, pravidlá pre tím a moje CV.">
+<meta name="twitter:image" content="https://offthewallhack.github.io/rd2026/img/og.jpg">
 <meta name="theme-color" content="#F5F5F2">
 <meta name="goatcounter" content="">
 <link rel="icon" type="image/png" sizes="192x192" href="../img/icons/mark-192.png">
@@ -17,9 +25,6 @@
 <link rel="apple-touch-icon" href="../img/icons/apple-touch-icon.png">
 <link rel="manifest" href="../manifest.webmanifest">
 <meta name="apple-mobile-web-app-title" content="Robert Ďurica">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/common.css">
 <style>
 .dls-head { max-width: 44rem; padding-top: clamp(2.5rem, 7vw, 4.5rem); }
@@ -75,7 +80,9 @@ html.js .dls { display: none; }
 @media (min-width: 56rem) { .dl-nl { grid-template-columns: 1fr minmax(0, 26rem); } }
 .dl-nl b { display: block; font-size: 1.25rem; letter-spacing: -.02em; margin-bottom: .2rem; }
 .dl-nl span { color: #B9B9B0; }
-.dl-nl-f { display: flex; gap: .5rem; }
+.dl-nl-f { display: flex; flex-wrap: wrap; gap: .5rem; }
+.dl-nl .btn:not(.btn-green) { color: #F5F5F2; border-color: #EDEDE8; }
+.dl-nl .btn:not(.btn-green):hover { background: #fff; color: #111; }
 .dl-nl-f input { flex: 1; min-width: 0; min-height: 48px; padding: 0 .9rem; font: 1rem var(--f); border: 1.5px solid #3A3B38; border-radius: var(--r); background: #222321; color: #fff; }
 @media (max-width: 30rem) { .dl-nl-f { flex-direction: column; } }
 </style>
@@ -103,13 +110,13 @@ html.js .dls { display: none; }
   <dialog class="dwin" id="dwin" aria-labelledby="dwinT"><div class="dwin-bar"><i title="Zavrieť"></i><i></i><i></i><span id="dwinName">súbor.pdf</span></div><div class="dwin-in"><div class="dwin-paper"></div><div class="dwin-txt"></div></div></dialog>
   <div class="dls">
     <article class="dl rv">
-      <a class="dl-paper" href="../stiahni/ai-prirucka.pdf" download="AI-prirucka-Robert-Durica.pdf"><img src="../img/stiahni/ai-prirucka.webp" width="600" height="848" loading="lazy" alt="Náhľad: AI príručka"></a>
+      <a class="dl-paper" href="ai-prirucka.pdf" download="AI-prirucka-Robert-Durica.pdf"><img src="../img/stiahni/ai-prirucka.webp" width="600" height="848" loading="lazy" alt="Náhľad: AI príručka"></a>
       <div class="dl-txt">
         <p class="label"><span class="dot" aria-hidden="true"></span> Príručka</p>
         <h2>AI príručka</h2>
         <p>Umelá inteligencia po ľudsky: 14 pojmov (AI, LLM, agent…), AGI a superinteligencia, ako písať prompty, 10 hotových promptov, môj tím AI botov a ťahák na 7 dní.</p>
         <p class="dl-meta">PDF · 17 strán · 102 kB</p>
-        <div class="dl-act"><a class="btn btn-dark" href="../stiahni/ai-prirucka.pdf" download="AI-prirucka-Robert-Durica.pdf">Stiahnuť PDF</a><a class="dl-art" href="../blog/prvych-30-minut-s-ai/">Ako s tým začať →</a></div>
+        <div class="dl-act"><a class="btn btn-dark" href="ai-prirucka.pdf" download="AI-prirucka-Robert-Durica.pdf">Stiahnuť PDF</a><a class="dl-art" href="../blog/prvych-30-minut-s-ai/">Ako s tým začať →</a></div>
       </div>
     </article>
     <article class="dl rv">
@@ -138,15 +145,20 @@ html.js .dls { display: none; }
         <p class="label"><span class="dot" aria-hidden="true"></span> <span data-en="About me">O mne</span></p>
         <h2 data-en="My CV">Moje CV</h2>
         <p data-en="Everything I’ve done, on two pages. In Slovak and in English.">Všetko, čo som robil, na dvoch stranách. Po slovensky aj po anglicky.</p>
-        <p class="dl-meta">PDF · 2 strany · ~1,1 MB</p>
+        <p class="dl-meta">PDF · 2 strany · SK 654 kB, EN 598 kB</p>
         <div class="dl-act"><a class="btn btn-dark" href="../cv-robert-durica-sk.pdf" download>CV · SK</a><a class="btn" href="../cv-robert-durica.pdf" download>CV · EN</a></div>
       </div>
     </article>
   </div>
-  <form class="dl-nl rv" data-nosi onsubmit="event.preventDefault();var e=this.querySelector('input').value.trim();if(e)location.href='mailto:rdurica1995@gmail.com?subject='+encodeURIComponent('Nové súbory: prihlásenie')+'&body='+encodeURIComponent('Ahoj Robo, pošli mi prosím nový súbor, keď ho spravíš.\\nMôj e-mail: '+e);">
-    <div><b data-en="Want the next file first?">Chceš ďalší súbor ako prvý?</b><span data-en="Leave your e-mail. When I make a new cheat sheet or guide, I’ll send it to you.">Nechaj mi e-mail. Keď spravím nový ťahák alebo príručku, pošlem ti ho.</span></div>
-    <div class="dl-nl-f"><input type="email" required placeholder="tvoj@email.sk" aria-label="E-mail" autocomplete="email"><button class="btn btn-green" type="submit" data-en="Send me new files">Posielaj mi novinky</button></div>
-  </form>
+  <aside class="dl-nl rv" data-nosi>
+    <div><b data-en="Want the next file?">Chceš ďalší súbor?</b><span data-en="No mailing list yet. Follow the blog by RSS, or write to me and I’ll send it.">Odber do mailu zatiaľ nemám. Sleduj blog cez RSS, alebo mi napíš a pošlem ti ho.</span></div>
+    <div class="dl-nl-f"><a class="btn btn-green" href="../blog/feed.xml" data-en="Follow RSS">Odoberať RSS</a><a class="btn" href="mailto:rdurica1995@gmail.com" data-en="Write me">Napíš mi</a></div>
+    <!--
+      Newsletter neskôr (Buttondown alebo MailerLite).
+      Keď bude účet, vlož sem ich embed a zmaž tento komentár.
+      ID účtu sem nedávaj, kým ho naozaj nemáš.
+    -->
+  </aside>
   <p class="dls-note" data-en="Something missing that would help you? Message me and I may make it next.">Chýba ti tu niečo, čo by ti pomohlo? Napíš mi, možno to bude ďalší súbor.</p>
   <div class="dls-cta rv">
     <div><b data-en="Want it set up in your company?">Chceš to rovno nastaviť u vás vo firme?</b><p data-en="15 minutes on a call, free. I’ll tell you what’s worth doing first.">15 minút na telefóne, zadarmo. Poviem ti, čo sa oplatí ako prvé.</p></div>

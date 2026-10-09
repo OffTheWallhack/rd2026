@@ -1,0 +1,11 @@
+# GitHub Pages runs Jekyll unless .nojekyll is present.
+# These paths stay in the repo (build scripts and article sources) and are not published.
+exclude:
+  - tools
+  - blog/posts
+  - README.md
+  - vendor
+  - node_modules
+  - Gemfile
+  - Gemfile.lock
+  - _site

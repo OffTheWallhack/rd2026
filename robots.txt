@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /rd2026/tools/
+Disallow: /rd2026/blog/posts/
 
 Sitemap: https://offthewallhack.github.io/rd2026/sitemap.xml

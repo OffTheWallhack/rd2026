@@ -1,5 +1,10 @@
 // shared by both pages: language switch, WhatsApp links, reveal, lightbox, videos, progress bar, ASCII field
 (function () {
+  // GoatCounter, one place for the whole site. Paste the count URL or leave "".
+  // Example: "https://yoursite.goatcounter.com/count"
+  // An empty value loads no script and sends no request. See README.
+  var GOATCOUNTER = "";
+
   var WA = ["541", "109", "908", "421"].reverse().join("");
   var WA_TEXT = { sk: "Ahoj Robo, potreboval by som pomôcť s: ", en: "Hi Robo, I could use help with: " };
   var still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -46,7 +51,7 @@
         // on a computer, hovering "downloads" shows the files right away
         var wrap = document.createElement("span"); wrap.className = "nav-dd"; wrap.appendChild(a);
         wrap.insertAdjacentHTML("beforeend", "<span class='dd'>" +
-          "<a href='" + ROOT + "stiahni/ai-prirucka.pdf' download='AI-prirucka-Robert-Durica.pdf'><b data-en='AI handbook'>AI príručka</b><span data-en='AI in plain words, 17 pages'>AI po ľudsky, 17 strán</span></a>" +
+          "<a href='" + ROOT + "na-stiahnutie/ai-prirucka.pdf' download='AI-prirucka-Robert-Durica.pdf'><b data-en='AI handbook'>AI príručka</b><span data-en='AI in plain words, 17 pages'>AI po ľudsky, 17 strán</span></a>" +
           "<a href='" + ROOT + "na-stiahnutie/checklist-automatizacia.pdf' download><b>Checklist</b><span data-en='What to automate in a company'>Čo vo firme zautomatizovať</span></a>" +
           "<a href='" + ROOT + "na-stiahnutie/bezpecne-s-ai.pdf' download><b data-en='Safe with AI'>Bezpečne s AI</b><span data-en='10 rules for your team'>10 pravidiel pre tím</span></a>" +
           "<a href='" + ROOT + "na-stiahnutie/'><b data-en='All files →'>Všetky súbory →</b><span data-en='incl. my CV'>aj moje CV</span></a></span>");
@@ -94,12 +99,17 @@
   trAria.forEach(function (el) { el.dataset.skAria = el.getAttribute("aria-label"); });
   trAlt.forEach(function (el) { el.dataset.skAlt = el.getAttribute("alt"); });
 
+  // The HTML is Slovak. Rewriting every node on the first paint is skipped unless English was chosen.
+  var applied = "sk";
   function setLang(l) {
     RD.lang = l;
-    tr.forEach(function (el) { el.innerHTML = l === "en" ? el.dataset.en : el.dataset.sk; });
-    trAria.forEach(function (el) { el.setAttribute("aria-label", l === "en" ? el.dataset.enAria : el.dataset.skAria); });
-    trAlt.forEach(function (el) { el.setAttribute("alt", l === "en" ? el.dataset.enAlt : el.dataset.skAlt); });
-    html.lang = l;
+    if (l !== applied) {
+      tr.forEach(function (el) { el.innerHTML = l === "en" ? el.dataset.en : el.dataset.sk; });
+      trAria.forEach(function (el) { el.setAttribute("aria-label", l === "en" ? el.dataset.enAria : el.dataset.skAria); });
+      trAlt.forEach(function (el) { el.setAttribute("alt", l === "en" ? el.dataset.enAlt : el.dataset.skAlt); });
+      applied = l;
+    }
+    html.lang = l === "en" ? "en" : "sk";
     document.title = TITLE[l];
     document.querySelectorAll(".lang [data-l]").forEach(function (s) { s.classList.toggle("on", s.dataset.l === l); });
     document.querySelectorAll("a.wa").forEach(function (a) { a.href = RD.waHref(a.getAttribute("data-wa-" + l) || ""); a.target = "_blank"; a.rel = "noopener"; });
@@ -107,11 +117,10 @@
     try { localStorage.setItem("lang", l); } catch (e) {}
   }
 
+  // Slovak for everyone. English only after the manual switch, remembered here.
   var start = "sk";
   try {
-    var saved = localStorage.getItem("lang");
-    if (saved === "sk" || saved === "en") start = saved;
-    else if (!/^(sk|cs)/i.test(navigator.language || "")) start = "en";
+    if (localStorage.getItem("lang") === "en") start = "en";
   } catch (e) {}
   setLang(start);
   var langBtn = document.querySelector(".lang");
@@ -273,6 +282,8 @@
   RD.field = function (cv, opt) {
     var ctx = cv && cv.getContext("2d"); if (!ctx) return;
     var W, H, dpr, cell = 16, t0 = performance.now(), running = true, last = 0;
+    // Phones get one still frame (coarser). Desktop keeps the loop, paused off-screen or in a hidden tab.
+    var lite = window.matchMedia("(max-width: 56rem)").matches;
     var A = .6, B = .2, ringP = 0, zb = null, ob = null, zf = null, of = null, cols = 0, rows = 0, cw = 8, ch = 12;
     var fcv = opt.front, fctx = fcv && fcv.getContext("2d");
     var CH = " .·:-=+*";
@@ -283,6 +294,7 @@
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       cell = W < 600 ? 14 : 16;
       cw = W < 600 ? 7 : 9; ch = W < 600 ? 11 : 14;
+      if (lite) { cell = 24; cw = 12; ch = 18; }
       cols = Math.ceil(W / cw); rows = Math.ceil(H / ch);
       zb = new Float32Array(cols * rows); ob = new Int8Array(cols * rows);
       zf = new Float32Array(cols * rows); of = new Int8Array(cols * rows);
@@ -300,9 +312,10 @@
       spin *= .92;
       zb.fill(0); ob.fill(-1); zf.fill(0); of.fill(-1);
       var cA = Math.cos(A), sA = Math.sin(A), cB = Math.cos(B), sB = Math.sin(B);
-      for (var th = 0; th < 6.283; th += .07) {
+      var dTh = lite ? .2 : .07, dPh = lite ? .09 : .025;
+      for (var th = 0; th < 6.283; th += dTh) {
         var ct = Math.cos(th), st = Math.sin(th);
-        for (var ph = 0; ph < 6.283; ph += .025) {
+        for (var ph = 0; ph < 6.283; ph += dPh) {
           var cp = Math.cos(ph), sp = Math.sin(ph);
           var ox = R2 + R1 * ct, oy = R1 * st;
           var x = ox * (cB * cp + sA * sB * sp) - oy * cA * sB;
@@ -330,9 +343,10 @@
       if (fctx) { fctx.clearRect(0, 0, W, H); paint(fctx, of, Math.min(1, tor.alpha * 1.1)); }
     }
     function draw(now) {
-      if (running && !still) requestAnimationFrame(draw);
-      if (!still && now - last < 33) return;
-      var dt = Math.min((now - last) / 1000, .1); last = now;
+      var live = running && !still && !lite && !document.hidden;
+      if (live) requestAnimationFrame(draw);
+      if (live && now - last < 33) return;
+      var dt = last ? Math.min((now - last) / 1000, .1) : .016; last = now;
       var t = (now - t0) / 1000;
       ctx.clearRect(0, 0, W, H);
       ctx.textAlign = "center"; ctx.textBaseline = "middle";
@@ -354,21 +368,36 @@
       }
       if (opt.torus) torus(t, dt);
     }
-    size(); requestAnimationFrame(draw);
-    window.addEventListener("resize", function () { size(); if (still) requestAnimationFrame(draw); });
+    size();
+    function kick() { requestAnimationFrame(draw); }
+    // On a phone, wait until the browser is idle so the still frame is not part of the load.
+    if (lite && !still) {
+      if (window.requestIdleCallback) requestIdleCallback(kick, { timeout: 1500 });
+      else window.addEventListener("load", function () { setTimeout(kick, 60); });
+    } else kick();
+    document.addEventListener("visibilitychange", function () {
+      if (!document.hidden && running && !still && !lite) requestAnimationFrame(draw);
+    });
+    window.addEventListener("resize", function () {
+      var next = window.matchMedia("(max-width: 56rem)").matches;
+      var woke = lite && !next;
+      lite = next;
+      size();
+      if (still || lite || woke) requestAnimationFrame(draw);
+    });
     if ("IntersectionObserver" in window && !still) {
       new IntersectionObserver(function (es) {
         var vis = es[0].isIntersecting;
-        if (vis && !running) { running = true; requestAnimationFrame(draw); }
+        if (vis && !running && !lite && !document.hidden) { running = true; requestAnimationFrame(draw); }
         running = vis;
       }).observe(cv);
     }
   };
 
-  // analytics: privacy-friendly GoatCounter, no cookies. Off until the site code is filled in
-  // <meta name="goatcounter" content="https://CODE.goatcounter.com/count"> on each page.
-  var gc = document.querySelector('meta[name="goatcounter"]'), gcUrl = gc && gc.content;
-  if (gcUrl) {
+  // analytics: privacy-friendly GoatCounter, no cookies. Off while GOATCOUNTER (and the meta tag) are empty.
+  var gcMeta = document.querySelector('meta[name="goatcounter"]');
+  var gcUrl = (GOATCOUNTER || (gcMeta && gcMeta.content) || "").replace(/^\s+|\s+$/g, "");
+  if (gcUrl && /^https:\/\/[a-z0-9.-]+\.goatcounter\.com\/count\/?$/i.test(gcUrl)) {
     var sc = document.createElement("script"); sc.async = true; sc.src = "https://gc.zgo.at/count.js";
     sc.setAttribute("data-goatcounter", gcUrl); document.head.appendChild(sc);
     document.addEventListener("click", function (e) {

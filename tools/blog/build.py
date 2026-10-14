@@ -229,11 +229,34 @@ def latest_teaser(posts):
     s = re.sub(r"<!--latest-post-->.*?<!--/latest-post-->", block, s, flags=re.S)
     open(p, "w", encoding="utf-8").write(s)
 
+def blog_strip(posts):
+    """Small rotating strip under the hero on the services page: the newest 3 posts, one at a time.
+    Rewrites everything between <!--blog-strip--> and <!--/blog-strip--> in index.html (the script that rotates it lives outside the markers)."""
+    p = os.path.join(ROOT, "index.html"); s = open(p, encoding="utf-8").read()
+    if not posts or "<!--blog-strip-->" not in s: return
+    top = posts[:3]
+    items = ""
+    for n, q in enumerate(top):
+        cv = cover(q)
+        img = f'<img src="img/blog/{cv["sm"]}" width="800" height="450" alt=""{"" if n == 0 else " loading=\"lazy\""}>' if cv else ""
+        items += (f'<a class="bs-item{" on" if n == 0 else ""}{"" if cv else " nc"}"{" data-nosi" if q.get("nosi") else ""} href="blog/{q["slug"]}/">{img}'
+                  f'<span class="bs-t"><small{den(q, "title_en", en_date(q["date"]))}>{sk_date(q["date"])}</small><b{den(q, "title_en", q.get("title_en", ""))}>{esc(q["title"])}</b></span>'
+                  f'<span class="bs-go" aria-hidden="true">→</span></a>')
+    dots = "".join(f'<button class="bs-dot" type="button" aria-label="Článok {n + 1}" data-en-aria="Article {n + 1}" aria-current="{"true" if n == 0 else "false"}"></button>' for n in range(len(top)))
+    block = ('<!--blog-strip--><section class="bs" id="blog-strip" role="region" aria-roledescription="carousel" aria-label="Z blogu" data-en-aria="From the blog"><div class="wrap"><div class="bs-in">'
+             '<p class="label"><span class="dot" aria-hidden="true"></span><span data-en="From the blog">Z blogu</span></p>'
+             f'<div class="bs-view" aria-live="off">{items}</div>'
+             f'<div class="bs-ctl"><button class="bs-prev" type="button" aria-label="Predchádzajúci článok" data-en-aria="Previous article">‹</button>{dots}'
+             '<button class="bs-next" type="button" aria-label="Ďalší článok" data-en-aria="Next article">›</button></div>'
+             '</div></div></section><!--/blog-strip-->')
+    s = re.sub(r"<!--blog-strip-->.*?<!--/blog-strip-->", lambda m: block, s, flags=re.S)
+    open(p, "w", encoding="utf-8").write(s)
+
 if __name__ == "__main__":
     posts = read_posts()
     slugs = [p["slug"] for p in posts]
     if len(set(slugs)) != len(slugs): raise SystemExit("duplicate slug")
     for i, p in enumerate(posts):
         build_post(p, posts[i-1] if i > 0 else None, posts[i+1] if i + 1 < len(posts) else None, posts)
-    build_index(posts); build_feed(posts); build_sitemap(posts); latest_teaser(posts)
+    build_index(posts); build_feed(posts); build_sitemap(posts); latest_teaser(posts); blog_strip(posts)
     print(f"built {len(posts)} posts")

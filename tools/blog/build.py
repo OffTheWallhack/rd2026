@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Builds the blog from blog/posts/*.html.
+"""Builds the blog from tools/blog/posts/*.html (sources live outside /blog so they are not indexed as pages).
 
 Each post file starts with a JSON header between <!--meta and -->:
   {"title": "...", "date": "2026-10-07", "slug": "...", "lead": "...", "tags": ["AI", "hry"],
@@ -25,7 +25,7 @@ def sk_date(d):
 
 def read_posts():
     posts = []
-    for f in glob.glob(os.path.join(ROOT, "blog", "posts", "*.html")):
+    for f in glob.glob(os.path.join(ROOT, "tools", "blog", "posts", "*.html")):
         raw = open(f, encoding="utf-8").read()
         m = re.match(r"\s*<!--meta\s*(\{.*?\})\s*-->\s*(.*)", raw, re.S)
         if not m:

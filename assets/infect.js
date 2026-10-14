@@ -72,10 +72,10 @@
   function setBubble() {
     if (!bub || alerted) return; alerted = true; bub.classList.add("alert");
     var s = bub.querySelector("span"), b = bub.querySelector("b");
-    s.setAttribute("data-en", "Read about the threat of AI agents"); s.dataset.sk = "Prečítaj si o hrozbách AI agentov";
+    s.setAttribute("data-en", "Read what you should never give AI"); s.dataset.sk = "Prečítaj si, čo AI nikdy nedávať";
     b.setAttribute("data-en", "Right now →"); b.dataset.sk = "Teraz hneď →";
     var en = document.documentElement.lang === "en"; s.textContent = en ? s.getAttribute("data-en") : s.dataset.sk; b.textContent = en ? b.getAttribute("data-en") : b.dataset.sk;
-    bub.setAttribute("data-go", "blog/ai-svet-za-tyzden/#agenti"); bub.removeAttribute("aria-controls");
+    bub.setAttribute("data-go", "blog/co-ai-nikdy-nedavat/"); bub.removeAttribute("aria-controls");
   }
   function angry() {
     if (!bar || ang) return; ang = true; bar.classList.add("angry"); window.__angryEyes = true;

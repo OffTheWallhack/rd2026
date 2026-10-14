@@ -749,9 +749,9 @@ html.js .bs-item.on { z-index: 1; opacity: 1; visibility: visible; transition: o
 .bs-pill { position: fixed; z-index: 49; right: .6rem; bottom: calc(5.3rem + env(safe-area-inset-bottom, 0px)); display: inline-flex; align-items: center; gap: .45rem; padding: .5rem .8rem; border-radius: 999px; background: #0E0F0E; color: #F5F5F2; text-decoration: none; font: 500 .8rem var(--f); box-shadow: 0 0 0 1px rgba(255,255,255,.12) inset, 0 10px 24px rgba(0,0,0,.3); }
 .bs-pill b { color: var(--pulse); font-family: var(--mono); }
 .bs-pill:hover { background: #1b1d1b; }
-/* desktop: floating card pinned bottom-right, aligned with the right edge of the page content */
+/* tablet / normal desktop: a compact dark card inside the content width, phone-style layout */
 @media (min-width: 48rem) {
-  .bs { position: fixed; z-index: 40; width: 18.5rem; right: max(1rem, calc(50vw - min(50vw, var(--wrap) / 2) + var(--pad))); bottom: 1.25rem; padding: .75rem; border-radius: 16px; box-shadow: 0 0 0 1px rgba(255,255,255,.12) inset, 0 18px 44px rgba(0,0,0,.35); }
+  .bs { width: min(36rem, calc(100% - 2 * var(--pad))); margin: 1.25rem 0 0 max(var(--pad), calc(50vw - var(--wrap) / 2 + var(--pad))); padding: .75rem .85rem; border-radius: 16px; }
   .bs > .wrap { padding: 0; max-width: none; }
   .bs-in { display: grid; grid-template-columns: 1fr auto; grid-template-areas: "label x" "view view" "ctl ctl"; gap: .2rem .75rem; align-items: center; }
   .bs .label { grid-area: label; margin: 0; display: flex; align-items: center; gap: .5rem; color: var(--pulse); }
@@ -765,11 +765,16 @@ html.js .bs-item.on { z-index: 1; opacity: 1; visibility: visible; transition: o
   .bs-x { grid-area: x; justify-self: end; font-size: 1.3rem !important; }
   .bs-ctl .bs-dot::before { content: ""; width: .42rem; height: .42rem; border-radius: 50%; background: rgba(255,255,255,.35); transition: background .2s, scale .2s; }
   .bs-ctl .bs-dot[aria-current="true"]::before { background: var(--pulse); scale: 1.35; }
-  html.js .bs { transition: opacity .45s ease, transform .45s ease; }
-  html.js .bs.late { opacity: 0; transform: translateY(14px); pointer-events: none; }
-  .bs-pill { right: max(1rem, calc(50vw - min(50vw, var(--wrap) / 2) + var(--pad))); bottom: 1.25rem; }
+  .bs-pill { right: 1rem; bottom: 1.25rem; }
 }
-@media (prefers-reduced-motion: reduce) { html.js .bs, html.js .bs-item { transition: none; } }
+/* wide screens: pinned card in the free space to the right of the page content, outside the page itself */
+@media (min-width: 105rem) {
+  .bs { position: fixed; z-index: 40; margin: 0; width: 17.5rem; left: calc(50vw + var(--wrap) / 2 - var(--pad) + 1.5rem); bottom: 1.5rem; padding: .75rem; box-shadow: 0 0 0 1px rgba(255,255,255,.12) inset, 0 18px 44px rgba(0,0,0,.3); }
+  .bs-item, .bs-item.nc { grid-template-columns: minmax(0, 1fr); gap: .55rem; align-items: start; }
+  .bs-item img { border-radius: 9px; }
+  .bs-pill { right: auto; left: calc(50vw + var(--wrap) / 2 - var(--pad) + 1.5rem); }
+}
+@media (prefers-reduced-motion: reduce) { html.js .bs-item { transition: none; } }
 .sec-head.left { margin-left: 0; text-align: left; }
 .sec-head.left .label { justify-content: flex-start; }
 .sec-head.left p { margin-left: 0; }
@@ -854,12 +859,6 @@ html.js .bs-item.on { z-index: 1; opacity: 1; visibility: visible; transition: o
   var items = [].slice.call(root.querySelectorAll(".bs-item")), dots = [].slice.call(root.querySelectorAll(".bs-dot"));
   var ctl = root.querySelector(".bs-ctl");
   var xb = root.querySelector(".bs-x");
-  /* desktop: the floating card waits until the visitor scrolls a bit, so it never covers the hero buttons */
-  if (window.matchMedia("(min-width: 48rem)").matches) {
-    root.classList.add("late");
-    var wake = function () { if (window.scrollY > 200) { root.classList.remove("late"); removeEventListener("scroll", wake); } };
-    addEventListener("scroll", wake, { passive: true }); setTimeout(function () { root.classList.remove("late"); }, 12000);
-  }
   var pill = document.getElementById("blog-pill");
   function closeIt(save) { root.hidden = true; if (pill) pill.hidden = false; if (save) { try { sessionStorage.setItem("bs-x", "1"); } catch (e) {} } }
   try { if (sessionStorage.getItem("bs-x")) closeIt(false); } catch (e) {}

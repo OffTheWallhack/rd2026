@@ -746,15 +746,15 @@ html.js .bs-item.on { opacity: 1; visibility: visible; transition-delay: 0s; }
 @media (min-width: 48rem) {
   .bs { position: fixed; z-index: 40; width: 18.5rem; right: max(1rem, calc(50vw - min(50vw, var(--wrap) / 2) + var(--pad))); bottom: 1.25rem; padding: .75rem; border-radius: 16px; box-shadow: 0 0 0 1px rgba(255,255,255,.12) inset, 0 18px 44px rgba(0,0,0,.35); }
   .bs > .wrap { padding: 0; max-width: none; }
-  html.js .bs { animation: bsIn .6s cubic-bezier(.2,.8,.2,1) both .8s; }
-  @keyframes bsIn { from { opacity: 0; transform: translateY(14px); } }
+  html.js .bs { transition: opacity .45s ease, transform .45s ease; }
+  html.js .bs.late { opacity: 0; transform: translateY(14px); pointer-events: none; }
   .bs-item, .bs-item.nc { grid-template-columns: minmax(0, 1fr); gap: .55rem; align-items: start; }
   .bs-item img { border-radius: 9px; }
   .bs-go { display: none; }
   .bs-t b { font-size: .98rem; }
   .bs-pill { right: max(1rem, calc(50vw - min(50vw, var(--wrap) / 2) + var(--pad))); bottom: 1.25rem; }
 }
-@media (prefers-reduced-motion: reduce) { html.js .bs, html.js .bs-item { animation: none; transition: none; } }
+@media (prefers-reduced-motion: reduce) { html.js .bs, html.js .bs-item { transition: none; } }
 .sec-head.left { margin-left: 0; text-align: left; }
 .sec-head.left .label { justify-content: flex-start; }
 .sec-head.left p { margin-left: 0; }
@@ -839,6 +839,12 @@ html.js .bs-item.on { opacity: 1; visibility: visible; transition-delay: 0s; }
   var items = [].slice.call(root.querySelectorAll(".bs-item")), dots = [].slice.call(root.querySelectorAll(".bs-dot"));
   var ctl = root.querySelector(".bs-ctl");
   var xb = root.querySelector(".bs-x");
+  /* desktop: the floating card waits until the visitor scrolls a bit, so it never covers the hero buttons */
+  if (window.matchMedia("(min-width: 48rem)").matches) {
+    root.classList.add("late");
+    var wake = function () { if (window.scrollY > 200) { root.classList.remove("late"); removeEventListener("scroll", wake); } };
+    addEventListener("scroll", wake, { passive: true }); setTimeout(function () { root.classList.remove("late"); }, 12000);
+  }
   var pill = document.getElementById("blog-pill");
   function closeIt(save) { root.hidden = true; if (pill) pill.hidden = false; if (save) { try { sessionStorage.setItem("bs-x", "1"); } catch (e) {} } }
   try { if (sessionStorage.getItem("bs-x")) closeIt(false); } catch (e) {}

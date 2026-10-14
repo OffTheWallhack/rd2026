@@ -3,18 +3,18 @@
 // uses the real usage screenshots from img/; no glitch pass: reading pixels of local images is blocked
 const srcs=['../../../img/usage-claude.webp','../../../img/usage-day1.webp'];
 Promise.all([document.fonts.load('700 80px "Space Grotesk"'),document.fonts.load('500 26px "JetBrains Mono"'),...srcs.map(s=>new Promise(res=>{const i=new Image();i.onload=()=>res(i);i.src=s;}))]).then(([, ,...imgs])=>{
-bg('#1A0E10','#08090A'); ascii(.18,700);
-// red glow behind the meters
-const g=x.createRadialGradient(1170,430,50,1170,430,700);g.addColorStop(0,'rgba(200,16,46,.30)');g.addColorStop(1,'rgba(200,16,46,0)');x.fillStyle=g;x.fillRect(0,0,W,H);
-// draws a region of a tile as a framed card
-function card(img,sx,sy,sw,sh,cx,cy,w,rot){const h=w*sh/sw;x.save();x.translate(cx,cy);x.rotate(rot);x.shadowColor='rgba(0,0,0,.6)';x.shadowBlur=50;x.shadowOffsetY=20;x.fillStyle='#0A0A0A';rr(-w/2-14,-h/2-14,w+28,h+28,34);x.fill();x.shadowColor='transparent';x.save();rr(-w/2,-h/2,w,h,22);x.clip();x.drawImage(img,sx,sy,sw,sh,-w/2,-h/2,w,h);x.restore();x.restore();}
-// Claude usage screen (700x619)
-card(imgs[0],0,0,700,619,1160,400,520,.04);
-// "day one" strip (700x163)
-card(imgs[1],0,0,700,163,1060,690,460,-.05);
-x.fillStyle='#F5F5F2'; x.font='700 104px "Space Grotesk", sans-serif'; x.fillText('Zabi chaos,',90,300); x.fillText('zachrániš',90,410); x.fillText('usage.',90,520);
-x.fillStyle='#C8102E'; x.font='500 28px "JetBrains Mono", monospace'; x.fillText('USAGE · AI OS · INDEX',94,585);
-x.fillStyle='#A3A39B'; x.font='500 26px "JetBrains Mono", monospace'; x.fillText('systém na šetrenie, ktorý zjedol celý týždeň',94,635);
-vignette(); tag('PRÍBEH · usage · Notion · index');
+// thumbnail style: big title + the two real screenshots, nothing else
+bg('#2A0B10','#0C0506');
+let g=x.createRadialGradient(1150,450,40,1150,450,820);g.addColorStop(0,'rgba(214,30,52,.55)');g.addColorStop(1,'rgba(214,30,52,0)');x.fillStyle=g;x.fillRect(0,0,W,H);
+g=x.createRadialGradient(260,450,20,260,450,620);g.addColorStop(0,'rgba(120,10,24,.35)');g.addColorStop(1,'rgba(120,10,24,0)');x.fillStyle=g;x.fillRect(0,0,W,H);
+function card(img,sx,sy,sw,sh,cx,cy,w,rot){const h=w*sh/sw;x.save();x.translate(cx,cy);x.rotate(rot);x.shadowColor='rgba(0,0,0,.7)';x.shadowBlur=70;x.shadowOffsetY=28;x.fillStyle='#0A0A0A';rr(-w/2-16,-h/2-16,w+32,h+32,38);x.fill();x.shadowColor='transparent';x.save();rr(-w/2,-h/2,w,h,24);x.clip();x.drawImage(img,sx,sy,sw,sh,-w/2,-h/2,w,h);x.restore();x.restore();}
+// Claude usage screen (700x619), big
+card(imgs[0],0,0,700,619,1150,410,700,.035);
+// Grok weekly strip (700x163), overlapping bottom-left of it
+card(imgs[1],0,0,700,163,980,760,600,-.045);
+x.textBaseline='alphabetic';x.fillStyle='#FFFFFF';x.shadowColor='rgba(0,0,0,.55)';x.shadowBlur=30;
+x.font='700 138px "Space Grotesk", sans-serif'; x.fillText('Zabi chaos,',70,300); x.fillText('zachrániš',70,440);
+x.fillStyle='#FF3B4E'; x.fillText('usage.',70,580); x.shadowColor='transparent';
+vignette();
 });
 </script></body></html>

@@ -170,3 +170,30 @@
 /* chips: green on white and black cards, white on green ones */
 .post-list .chip, .post .tags .chip { background: #1FAF6F; color: #0B1A12; border-color: transparent; }
 .post-list li:nth-child(3n+3) .chip { background: #fff; color: #0B1A12; }
+/* green box: glossary and "what I learned myself" */
+.prose .green-box { margin: 2rem 0; padding: 1.1rem 1.2rem 1.2rem; border: 1.5px solid var(--pulse); border-radius: 14px; background: #F1FAF4; }
+.prose .green-box h2 { margin-top: .2rem; }
+.prose .green-box .feat { margin-bottom: 0; }
+.prose .green-box .feat li { background: #fff; }
+.prose .green-box ul:not(.feat) { margin: .4rem 0 0; }
+.prose .green-box .gb-h { margin: 0 0 .2rem; font: 600 .8rem var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--pulse-ink); }
+/* before / after */
+.prose .ba { display: grid; gap: .75rem; margin: 1.4rem 0 1rem; }
+@media (min-width: 40rem) { .prose .ba { grid-template-columns: 1fr 1fr; } }
+.prose .ba-col { padding: 1rem 1.1rem; border-radius: 14px; border: 1.5px solid var(--ink); }
+.prose .ba-col.before { box-shadow: 3px 3px 0 #D62B3A; }
+.prose .ba-col.after { background: #161616; color: #F5F5F2; border-color: #161616; box-shadow: 3px 3px 0 var(--pulse); }
+.prose .ba-col ul { margin: 0; padding-left: 1.1rem; }
+.prose .ba-col li { margin: .35rem 0; }
+.prose .ba-h { margin: 0 0 .3rem; font: 700 .78rem var(--mono); text-transform: uppercase; letter-spacing: .1em; color: #B3121B; }
+.prose .ba-col.after .ba-h { color: #3BE08F; }
+/* screenshots: two side by side, or one on its own */
+@media (min-width: 40rem) { .post-shots.wide.two { grid-template-columns: 1fr 1fr; } .post-shots.wide.one { grid-template-columns: minmax(0, 26rem); } }
+/* official tips: numbered cards */
+.prose .tips { list-style: none; counter-reset: tip; margin: 1.2rem 0; padding: 0; display: grid; gap: .55rem; }
+.prose .tips li { counter-increment: tip; position: relative; margin: 0; padding: .75rem .9rem .75rem 3.1rem; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+.prose .tips li::before { content: counter(tip, decimal-leading-zero); position: absolute; left: .85rem; top: .8rem; font: 700 .85rem var(--mono); color: var(--pulse-ink); }
+.prose .finale { margin-top: 1.6rem; font-size: clamp(1.25rem, 3.6vw, 1.55rem); line-height: 1.3; letter-spacing: -.01em; }
+.prose a.btn { text-decoration: none; }
+.prose a.btn-green { color: #0B1A12; }
+.prose a.btn-green:hover { background: #161616; border-color: #161616; color: #fff; }

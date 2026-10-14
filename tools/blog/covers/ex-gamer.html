@@ -8,21 +8,17 @@ x.fillStyle='#14140F';x.fillRect(0,560,W,H-560);
 for(let i=0;i<900;i++){x.fillStyle=`rgba(255,255,255,${r()*.05})`;x.fillRect(r()*W,r()*H,2,2);}
 ascii(.14,500); glitch(6,50);
 // crosshair
-const cx=1020,cy=420; x.strokeStyle='#39FF88'; x.lineWidth=5; x.lineCap='butt';
-[[-70,-20,0],[20,70,0]].forEach(([a,b])=>{x.beginPath();x.moveTo(cx+a,cy);x.lineTo(cx+b,cy);x.stroke();});
-[[-70,-20],[20,70]].forEach(([a,b])=>{x.beginPath();x.moveTo(cx,cy+a);x.lineTo(cx,cy+b);x.stroke();});
-x.fillStyle='#39FF88';x.fillRect(cx-3,cy-3,6,6);
-x.strokeStyle='rgba(57,255,136,.25)';x.lineWidth=2;x.beginPath();x.arc(cx,cy,110,0,7);x.stroke();
+const cx=1250,cy=470; x.strokeStyle='#39FF88'; x.lineWidth=9; x.lineCap='butt';
+[[-130,-36,0],[36,130,0]].forEach(([a,b])=>{x.beginPath();x.moveTo(cx+a,cy);x.lineTo(cx+b,cy);x.stroke();});
+[[-130,-36],[36,130]].forEach(([a,b])=>{x.beginPath();x.moveTo(cx,cy+a);x.lineTo(cx,cy+b);x.stroke();});
+x.fillStyle='#39FF88';x.fillRect(cx-5,cy-5,10,10);
+x.strokeStyle='rgba(57,255,136,.3)';x.lineWidth=3;x.beginPath();x.arc(cx,cy,220,0,7);x.stroke();
 // title
-x.textBaseline='alphabetic';x.fillStyle='#F5F5F2';x.font='700 150px "Space Grotesk", sans-serif';x.fillText('EX-',80,330);x.fillText('GAMER',80,470);
-x.fillStyle='#39FF88';x.fillRect(84,505,170,10);
-x.fillStyle='#CFCFC6';x.font='500 30px "JetBrains Mono", monospace';x.fillText('de_westwood · 1.6 · CS2 day one',84,570);
+x.textBaseline='alphabetic';x.fillStyle='#FFFFFF';x.shadowColor='rgba(0,0,0,.6)';x.shadowBlur=30;x.font='700 210px "Space Grotesk", sans-serif';x.fillText('EX-',70,400);x.fillText('GAMER',70,600);x.shadowColor='transparent';
+x.fillStyle='#39FF88';x.fillRect(78,640,240,14);
 // kill feed
 const feed=[['TV Banan','Kalachoviny'],['TV Banan','Aztegoviny'],['Adam','dom (lava)']];
 feed.forEach(([a,b],i)=>{const y=70+i*54;const t=a+'  ✕  '+b;x.font='500 26px "JetBrains Mono", monospace';const w=x.measureText(t).width+36;x.fillStyle='rgba(0,0,0,.55)';x.fillRect(W-w-60,y,w,42);x.strokeStyle=i<2?'#D62B3A':'rgba(255,255,255,.18)';x.lineWidth=2;x.strokeRect(W-w-60,y,w,42);x.fillStyle='#F5F5F2';x.fillText(t,W-w-42,y+30);});
-// HUD
-x.fillStyle='#FFB000';x.font='700 76px "JetBrains Mono", monospace';x.fillText('100',90,740);x.font='500 22px "JetBrains Mono", monospace';x.fillText('HP',100,768);
-x.font='700 76px "JetBrains Mono", monospace';x.fillText('0 | 0',1210,740);x.font='500 22px "JetBrains Mono", monospace';x.fillText('AMMO',1450,768);
-vignette();tag('PRÍBEH · ex-gamer');
+vignette();
 });
 </script></body></html>

@@ -211,3 +211,22 @@
 .prose .stats li.green svg { color: #0B1A12; }
 .prose .stats li.green span { color: #10321F; }
 .prose .stats .emo { font-size: .8em; vertical-align: .05em; }
+/* CS timeline: yellow = at friends', green = at home; Global Offensive is the big one */
+.prose .tl-legend { display: flex; gap: 1rem; margin: 1rem 0 -.4rem; font: .78rem var(--mono); color: var(--muted); }
+.prose .tl-legend .lg::before { content: ""; display: inline-block; width: .6rem; height: .6rem; border-radius: 50%; margin-right: .4rem; vertical-align: .02em; }
+.prose .tl-legend .yel::before { background: #F2C230; } .prose .tl-legend .grn::before { background: var(--pulse); }
+.prose .tl li.friends::before { background: #F2C230; box-shadow: 0 0 0 4px rgba(242,194,48,.25); }
+.prose .tl li.go { padding: .9rem .9rem 1rem; margin-left: -.6rem; border-radius: 14px; background: #161616; color: #F5F5F2; box-shadow: 0 0 0 1px rgba(31,175,111,.5), 0 0 28px rgba(31,175,111,.35); }
+.prose .tl li.go::before { left: -1.55rem; top: 1rem; width: 1.3rem; height: 1.3rem; box-shadow: 0 0 0 6px rgba(31,175,111,.3), 0 0 26px 6px rgba(31,175,111,.7); }
+.prose .tl li.go > b { font-size: 1.5rem; color: #3BE08F; text-shadow: 0 0 18px rgba(59,224,143,.6); }
+.prose .tl li.go > span, .prose .tl li.go .tl-sub span { color: #C9C9C0; }
+.prose .tl li.go a { color: #3BE08F; }
+.prose .tl-sub { list-style: none; margin: .8rem 0 0; padding: 0 0 0 1.1rem; border-left: 2px dashed rgba(59,224,143,.45); display: grid; gap: .65rem; }
+.prose .tl-sub li::before { left: -1.48rem; top: .4rem; width: .6rem; height: .6rem; }
+.prose .tl-sub b { font-size: 1rem; color: #F5F5F2; }
+@media (prefers-reduced-motion: no-preference) {
+  .prose .tl li.go::before { animation: goPulse 1.6s ease-in-out infinite; }
+  .prose .tl li.go { animation: goGlow 2.4s ease-in-out infinite; }
+  @keyframes goPulse { 50% { box-shadow: 0 0 0 10px rgba(31,175,111,.15), 0 0 40px 12px rgba(31,175,111,.9); } }
+  @keyframes goGlow { 50% { box-shadow: 0 0 0 1px rgba(31,175,111,.8), 0 0 46px rgba(31,175,111,.55); } }
+}

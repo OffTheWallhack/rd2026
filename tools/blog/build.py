@@ -239,7 +239,8 @@ def blog_strip(posts):
     for n, q in enumerate(top):
         cv = cover(q)
         img = f'<img src="img/blog/{cv["sm"]}" width="800" height="450" alt=""{"" if n == 0 else " loading=\"lazy\""}>' if cv else ""
-        items += (f'<a class="bs-item{" on" if n == 0 else ""}{"" if cv else " nc"}"{" data-nosi" if q.get("nosi") else ""} href="blog/{q["slug"]}/">{img}'
+        bg = f' style="--bg:url(img/blog/{cv["sm"]})"' if cv else ""
+        items += (f'<a class="bs-item{" on" if n == 0 else ""}{"" if cv else " nc"}"{" data-nosi" if q.get("nosi") else ""} href="blog/{q["slug"]}/"{bg}>{img}'
                   f'<span class="bs-t"><small{den(q, "title_en", en_date(q["date"]))}>{sk_date(q["date"])}</small><b{den(q, "title_en", q.get("title_en", ""))}>{esc(q["title"])}</b></span>'
                   f'<span class="bs-go" aria-hidden="true">→</span></a>')
     dots = "".join(f'<button class="bs-dot" type="button" aria-label="Článok {n + 1}" data-en-aria="Article {n + 1}" aria-current="{"true" if n == 0 else "false"}"></button>' for n in range(len(top)))
@@ -249,7 +250,8 @@ def blog_strip(posts):
              f'<div class="bs-ctl"><button class="bs-prev" type="button" aria-label="Predchádzajúci článok" data-en-aria="Previous article">‹</button>{dots}'
              '<button class="bs-next" type="button" aria-label="Ďalší článok" data-en-aria="Next article">›</button></div>'
              '<button class="bs-x" type="button" aria-label="Zavrieť" data-en-aria="Close">×</button>'
-             '</div></div></section><!--/blog-strip-->')
+             '</div></div></section>'
+             '<a class="bs-pill" id="blog-pill" href="blog/" hidden><span data-en="All articles are here">Všetky články nájdeš tu</span><b aria-hidden="true">→</b></a><!--/blog-strip-->')
     s = re.sub(r"<!--blog-strip-->.*?<!--/blog-strip-->", lambda m: block, s, flags=re.S)
     open(p, "w", encoding="utf-8").write(s)
 

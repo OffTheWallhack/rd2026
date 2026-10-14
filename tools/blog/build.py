@@ -19,9 +19,20 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 BASE = "https://offthewallhack.github.io/rd2026/"
 MONTHS = ["januára", "februára", "marca", "apríla", "mája", "júna", "júla", "augusta", "septembra", "októbra", "novembra", "decembra"]
 
+MONTHS_EN = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+
 def sk_date(d):
     y, m, dd = map(int, d.split("-"))
     return f"{dd}. {MONTHS[m-1]} {y}"
+
+def en_date(d):
+    y, m, dd = map(int, d.split("-"))
+    return f"{MONTHS_EN[m-1]} {dd}, {y}"
+
+def den(p, en_key, text):
+    """data-en attribute for the site's language switch (assets/common.js swaps innerHTML).
+    Only posts with an English version (meta keys title_en, lead_en, cover_alt_en) get it."""
+    return f' data-en="{html.escape(text, quote=True)}"' if p.get(en_key) else ""
 
 def read_posts():
     posts = []
@@ -120,6 +131,8 @@ def build_post(p, newer, older, posts=()):
     head = HEAD.format(title=esc(p["title"]) + " | Robert Ďurica", desc=esc(p["lead"]), url=url, ogtitle=esc(p["title"]),
                        base=BASE, ogtype="article", rel="../../", ogimg=BASE + ("img/blog/" + cv["og"] if cv else "img/og.jpg"),
                        ld='<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False) + "</script>")
+    if p.get("title_en"):
+        head = head.replace('<html lang="sk">', f'<html lang="sk" data-title-en="{esc(p["title_en"])} | Robert Ďurica">', 1)
     src = ""
     if p.get("sources"):
         src = '<aside class="sources"><p class="label">Zdroje</p><ul>' + "".join(
@@ -131,12 +144,13 @@ def build_post(p, newer, older, posts=()):
         return f'<a class="mp" href="../{q["slug"]}/"><span><small>{sk_date(q["date"])}</small><b>{esc(q["title"])}</b></span>{img}</a>'
     nav = ('<section class="more-posts" aria-labelledby="mp-h"><h2 id="mp-h"><span class="dot" aria-hidden="true"></span>Ďalšie články</h2><div class="mp-grid">'
            + "".join(card(q) for q in others) + '</div><p class="mp-all"><a class="btn" href="../">Všetky články →</a></p></section>') if others else ""
-    cover_fig = (f'<figure class="post-cover"><img src="../../img/blog/{cv["big"]}" width="1600" height="900" alt="{esc(p.get("cover_alt", ""))}" fetchpriority="high"></figure>\n    ' if cv else "")
+    alt_en = f' data-en-alt="{esc(p["cover_alt_en"])}"' if p.get("cover_alt_en") else ""
+    cover_fig = (f'<figure class="post-cover"><img src="../../img/blog/{cv["big"]}" width="1600" height="900" alt="{esc(p.get("cover_alt", ""))}"{alt_en} fetchpriority="high"></figure>\n    ' if cv else "")
     nosi = " data-nosi" if p.get("nosi") else ""   # posts about the AI/SI rename keep their wording
     body = f"""  <article class="post"{nosi}>
-    <p class="label"><a href="../">Blog</a> · <time datetime="{p['date']}">{sk_date(p['date'])}</time></p>
-    <h1>{esc(p['title'])}</h1>
-    <p class="lead">{esc(p['lead'])}</p>
+    <p class="label"><a href="../">Blog</a> · <time datetime="{p['date']}"{den(p, 'title_en', en_date(p['date']))}>{sk_date(p['date'])}</time></p>
+    <h1{den(p, 'title_en', p.get('title_en', ''))}>{esc(p['title'])}</h1>
+    <p class="lead"{den(p, 'lead_en', p.get('lead_en', ''))}>{esc(p['lead'])}</p>
     <p class="tags">{tags_html(p)}</p>
     {cover_fig}<div class="prose">
 {p['body']}
@@ -164,7 +178,7 @@ def build_index(posts):
     def thumb(p):
         cv = cover(p)
         return f'<img class="pl-img" src="../img/blog/{cv["sm"]}" width="800" height="450" loading="lazy" alt="">' if cv else ""
-    items = "".join(f"""      <li{' data-nosi' if p.get('nosi') else ''}><a href="{p['slug']}/"><span class="pl-txt"><time datetime="{p['date']}">{sk_date(p['date'])}</time><h2>{esc(p['title'])}</h2><p>{esc(p['lead'])}</p><span class="tags">{tags_html(p)}</span></span>{thumb(p)}</a></li>
+    items = "".join(f"""      <li{' data-nosi' if p.get('nosi') else ''}><a href="{p['slug']}/"><span class="pl-txt"><time datetime="{p['date']}"{den(p, 'title_en', en_date(p['date']))}>{sk_date(p['date'])}</time><h2{den(p, 'title_en', p.get('title_en', ''))}>{esc(p['title'])}</h2><p{den(p, 'lead_en', p.get('lead_en', ''))}>{esc(p['lead'])}</p><span class="tags">{tags_html(p)}</span></span>{thumb(p)}</a></li>
 """ for p in posts)
     body = f"""  <header class="blog-head">
     <p class="label"><span class="dot" aria-hidden="true"></span> Blog</p>
@@ -210,7 +224,7 @@ def latest_teaser(posts):
         cv = cover(q)
         img = f'<img class="lp-img" src="img/blog/{cv["sm"]}" width="800" height="450" loading="lazy" alt="">' if cv else ""
         tag = "Článok dňa" if n == 0 else sk_date(q["date"])
-        cards += f"""<a class="latest-post{' first' if n == 0 else ''}"{' data-nosi' if q.get('nosi') else ''} href="blog/{q['slug']}/"><span class="lp-txt"><span class="label"><span class="dot" aria-hidden="true"></span> {tag}</span><b>{esc(q['title'])}</b><span class="lp-lead">{esc(q['lead'])}</span></span>{img}</a>"""
+        cards += f"""<a class="latest-post{' first' if n == 0 else ''}"{' data-nosi' if q.get('nosi') else ''} href="blog/{q['slug']}/"><span class="lp-txt"><span class="label"><span class="dot" aria-hidden="true"></span> {tag}</span><b{den(q, 'title_en', q.get('title_en', ''))}>{esc(q['title'])}</b><span class="lp-lead"{den(q, 'lead_en', q.get('lead_en', ''))}>{esc(q['lead'])}</span></span>{img}</a>"""
     block = f"""<!--latest-post--><div class="lp-grid">{cards}</div><p class="lp-all"><a class="btn" href="blog/">Všetky články →</a></p><!--/latest-post-->"""
     s = re.sub(r"<!--latest-post-->.*?<!--/latest-post-->", block, s, flags=re.S)
     open(p, "w", encoding="utf-8").write(s)

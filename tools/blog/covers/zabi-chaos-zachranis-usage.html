@@ -1,0 +1,20 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../../cv/f/f.css"><style>html,body{margin:0;background:#0B0C0B}canvas{display:block}</style></head><body>
+<canvas id="c" width="1600" height="900"></canvas><script src="_base.js"></script><script>
+// uses the real usage screenshots from img/; no glitch pass: reading pixels of local images is blocked
+const srcs=['../../../img/usage-claude.webp','../../../img/usage-day1.webp'];
+Promise.all([document.fonts.load('700 80px "Space Grotesk"'),document.fonts.load('500 26px "JetBrains Mono"'),...srcs.map(s=>new Promise(res=>{const i=new Image();i.onload=()=>res(i);i.src=s;}))]).then(([, ,...imgs])=>{
+bg('#1A0E10','#08090A'); ascii(.18,700);
+// red glow behind the meters
+const g=x.createRadialGradient(1170,430,50,1170,430,700);g.addColorStop(0,'rgba(200,16,46,.30)');g.addColorStop(1,'rgba(200,16,46,0)');x.fillStyle=g;x.fillRect(0,0,W,H);
+// draws a region of a tile as a framed card
+function card(img,sx,sy,sw,sh,cx,cy,w,rot){const h=w*sh/sw;x.save();x.translate(cx,cy);x.rotate(rot);x.shadowColor='rgba(0,0,0,.6)';x.shadowBlur=50;x.shadowOffsetY=20;x.fillStyle='#0A0A0A';rr(-w/2-14,-h/2-14,w+28,h+28,34);x.fill();x.shadowColor='transparent';x.save();rr(-w/2,-h/2,w,h,22);x.clip();x.drawImage(img,sx,sy,sw,sh,-w/2,-h/2,w,h);x.restore();x.restore();}
+// Claude usage screen (700x619)
+card(imgs[0],0,0,700,619,1160,400,520,.04);
+// "day one" strip (700x163)
+card(imgs[1],0,0,700,163,1060,690,460,-.05);
+x.fillStyle='#F5F5F2'; x.font='700 104px "Space Grotesk", sans-serif'; x.fillText('Zabi chaos,',90,300); x.fillText('zachrániš',90,410); x.fillText('usage.',90,520);
+x.fillStyle='#C8102E'; x.font='500 28px "JetBrains Mono", monospace'; x.fillText('USAGE · AI OS · INDEX',94,585);
+x.fillStyle='#A3A39B'; x.font='500 26px "JetBrains Mono", monospace'; x.fillText('systém na šetrenie, ktorý zjedol celý týždeň',94,635);
+vignette(); tag('PRÍBEH · usage · Notion · index');
+});
+</script></body></html>

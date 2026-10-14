@@ -197,10 +197,12 @@
 .prose a.btn { text-decoration: none; }
 .prose a.btn-green { color: #0B1A12; }
 .prose a.btn-green:hover { background: #161616; border-color: #161616; color: #fff; }
-/* Trackmania-style clan tag: slanted, wide, pale blue + yellow on a dark chip */
-.prose .tm-tag { display: inline-block; padding: .05rem .55rem .1rem; border-radius: 6px; background: #161616; font: 700 1em var(--f); letter-spacing: .12em; transform: skewX(-14deg); text-shadow: 0 0 6px rgba(255,255,255,.25); white-space: nowrap; }
-.prose .tm-tag .hwk { color: #9FD3FF; margin-right: .35em; }
-.prose .tm-tag .bn { color: #FFD400; }
+/* Trackmania-style clan tag: slanted, wide, glowing pale blue + yellow, no dark chip */
+.prose .tm-tag { display: inline-block; padding: 0 .15rem; font: 700 1.05em var(--f); letter-spacing: .14em; transform: skewX(-14deg); white-space: nowrap; -webkit-text-stroke: 1.2px #12324F; paint-order: stroke fill; font-size: 1.15em; }
+.prose .tm-tag .hwk { color: #A8E4FF; margin-right: .35em; text-shadow: 0 0 6px #7FD4FF, 0 0 14px rgba(90,190,255,.85), 0 0 26px rgba(90,190,255,.55); }
+.prose .tm-tag .bn { color: #FFD400; -webkit-text-stroke-color: #4A3700; text-shadow: 0 0 6px rgba(255,212,0,.8), 0 0 16px rgba(255,190,0,.5); }
+.post-shots .shot-note { margin: .2rem 0 0; text-align: right; font: italic .82rem/1.3 var(--f); color: var(--muted); }
+.prose .later { margin-top: 3.2rem; }
 .prose .stats.s3 li:last-child:nth-child(odd) { grid-column: 1 / -1; }
 @media (min-width: 40rem) { .prose .stats.s3 li:last-child:nth-child(odd) { grid-column: auto; } }
 /* YouTube embed (privacy-enhanced domain) */

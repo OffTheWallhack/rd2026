@@ -1,69 +1,31 @@
 <!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../../cv/f/f.css"><style>html,body{margin:0;background:#0B0C0B}canvas{display:block}</style></head><body>
 <canvas id="c" width="1600" height="900"></canvas><script src="_base.js"></script><script>
-// thumbnail: a big glowing brain, the app's real screens and a few UI bits flying out of it. No title.
+// thumbnail: short title, the app's real screens and a few UI bits
 const srcs=['../../../img/eh-calendar.webp','../../../img/eh-stats.webp','../../../img/eh-tech.webp']; // [1] (stats) is not drawn: it shows client names
 Promise.all([document.fonts.load('600 30px "Space Grotesk"'),document.fonts.load('500 24px "JetBrains Mono"'),...srcs.map(s=>new Promise(res=>{const i=new Image();i.onload=()=>res(i);i.src=s;}))]).then(([, ,...imgs])=>{
 bg('#0F1412','#060807');
-let g=x.createRadialGradient(560,450,40,560,450,760);g.addColorStop(0,'rgba(31,191,98,.28)');g.addColorStop(1,'rgba(31,191,98,0)');x.fillStyle=g;x.fillRect(0,0,W,H);
-const BX=500,BY=420;
-// brain seen from the side, facing left: outline, cerebellum, stem
-const m=document.createElement('canvas');m.width=W;m.height=H;const b=m.getContext('2d');
-function outline(c){c.beginPath();c.moveTo(BX-330,BY+40);
- c.bezierCurveTo(BX-380,BY-60,BX-330,BY-210,BX-200,BY-255);
- c.bezierCurveTo(BX-90,BY-300,BX+80,BY-300,BX+200,BY-245);
- c.bezierCurveTo(BX+320,BY-190,BX+360,BY-60,BX+330,BY+60);
- c.bezierCurveTo(BX+315,BY+120,BX+280,BY+150,BX+240,BY+150);
- c.bezierCurveTo(BX+150,BY+150,BX+60,BY+200,BX-60,BY+200);
- c.bezierCurveTo(BX-160,BY+200,BX-240,BY+170,BX-280,BY+120);
- c.bezierCurveTo(BX-310,BY+95,BX-325,BY+70,BX-330,BY+40);c.closePath();}
-function cereb(c){c.beginPath();c.ellipse(BX+215,BY+190,120,68,-.15,0,7);c.closePath();}
-// stem
-b.fillStyle='#14784D';b.beginPath();b.moveTo(BX+70,BY+175);b.bezierCurveTo(BX+80,BY+250,BX+75,BY+290,BX+90,BY+330);b.lineTo(BX+130,BY+330);b.bezierCurveTo(BX+120,BY+280,BX+125,BY+230,BX+135,BY+175);b.fill();
-// cerebellum with fine stripes
-const cg=b.createLinearGradient(0,BY+120,0,BY+260);cg.addColorStop(0,'#2FD487');cg.addColorStop(1,'#0E6A43');b.fillStyle=cg;cereb(b);b.fill();
-b.save();cereb(b);b.clip();b.strokeStyle='rgba(4,40,24,.6)';b.lineWidth=5;for(let yy=BY+128;yy<BY+262;yy+=15){b.beginPath();b.moveTo(BX+90,yy);b.bezierCurveTo(BX+170,yy+12,BX+260,yy-10,BX+340,yy+6);b.stroke();}b.restore();
-// cerebrum
-const fg=b.createRadialGradient(BX-120,BY-150,30,BX,BY,470);fg.addColorStop(0,'#7DF7B8');fg.addColorStop(.5,'#22B873');fg.addColorStop(1,'#0B5536');
-b.fillStyle=fg;outline(b);b.fill();
-b.save();outline(b);b.clip();b.lineCap='round';b.lineJoin='round';
-let s=5;const rr2=()=>(s=(s*16807)%2147483647)/2147483647;
-// folds: short meandering grooves (gyri), smoothed through midpoints
-for(let k=0;k<62;k++){
- let px=BX-340+rr2()*680,py=BY-270+rr2()*450,a=rr2()*6.28;const pts=[[px,py]];
- for(let j=0;j<7;j++){a+=(rr2()-.5)*2.4;px+=Math.cos(a)*38;py+=Math.sin(a)*38;pts.push([px,py]);}
- b.beginPath();b.moveTo(pts[0][0],pts[0][1]);
- for(let j=1;j<pts.length-1;j++){const mx=(pts[j][0]+pts[j+1][0])/2,my=(pts[j][1]+pts[j+1][1])/2;b.quadraticCurveTo(pts[j][0],pts[j][1],mx,my);}
- b.strokeStyle='rgba(4,45,27,.5)';b.lineWidth=10;b.stroke();
- b.save();b.translate(-2,-3);b.strokeStyle='rgba(210,255,230,.28)';b.lineWidth=3;b.stroke();b.restore();}
-// central sulcus and the big side fissure
-b.strokeStyle='rgba(4,40,24,.7)';b.lineWidth=7;
-b.beginPath();b.moveTo(BX+40,BY-285);b.bezierCurveTo(BX+10,BY-200,BX+40,BY-120,BX-10,BY+20);b.stroke();
-b.beginPath();b.moveTo(BX-230,BY+110);b.bezierCurveTo(BX-140,BY+40,BX-40,BY+30,BX+120,BY-30);b.stroke();
-b.restore();
-// rim light
-b.strokeStyle='rgba(180,255,215,.55)';b.lineWidth=4;outline(b);b.stroke();
-// glow + draw
-x.save();x.shadowColor='rgba(60,255,150,.65)';x.shadowBlur=80;x.drawImage(m,0,0);x.restore();x.drawImage(m,0,0);
+let g=x.createRadialGradient(1150,470,40,1150,470,760);g.addColorStop(0,'rgba(31,191,98,.28)');g.addColorStop(1,'rgba(31,191,98,0)');x.fillStyle=g;x.fillRect(0,0,W,H);
+// no brain: the app's screens are the picture
 // cards
 function card(img,cx,cy,w,rot,sh){const h=w*img.height/img.width;x.save();x.translate(cx,cy);x.rotate(rot);x.shadowColor='rgba(0,0,0,.7)';x.shadowBlur=60;x.shadowOffsetY=24;x.fillStyle='#0A0A0A';rr(-w/2-12,-h/2-12,w+24,h+24,28);x.fill();x.shadowColor='transparent';x.save();rr(-w/2,-h/2,w,h,18);x.clip();x.drawImage(img,0,0,img.width,sh||img.height,-w/2,-h/2,w,h*(sh?1:1));x.restore();x.restore();}
 // glowing links from the brain to each screen
 function link(x0,y0,x1,y1){const gr=x.createLinearGradient(x0,y0,x1,y1);gr.addColorStop(0,'rgba(92,240,164,.9)');gr.addColorStop(1,'rgba(92,240,164,.15)');x.strokeStyle=gr;x.lineWidth=4;x.setLineDash([2,14]);x.lineCap='round';x.beginPath();x.moveTo(x0,y0);x.bezierCurveTo((x0+x1)/2,y0,(x0+x1)/2,y1,x1,y1);x.stroke();x.setLineDash([]);x.fillStyle='#5CF0A4';x.beginPath();x.arc(x0,y0,7,0,7);x.fill();}
-link(850,330,1050,290);link(820,560,1080,660);
-card(imgs[0],1200,330,360,-.05);
-card(imgs[2],1290,700,380,.04);
-// small UI bits around the brain
+card(imgs[0],1080,420,430,-.05);
+card(imgs[2],1380,600,400,.05);
+x.textBaseline='alphabetic';x.fillStyle='#FFFFFF';x.shadowColor='rgba(0,0,0,.6)';x.shadowBlur=30;x.font='700 132px "Space Grotesk", sans-serif';x.fillText('Bez',80,400);x.fillStyle='#5CF0A4';x.fillText('programo-',80,530);x.fillText('vania.',80,660);x.shadowColor='transparent';x.textBaseline='middle';
+// small UI bits
 function chip(cx,cy,w,h,fill,stroke){x.save();x.shadowColor='rgba(0,0,0,.55)';x.shadowBlur=30;x.fillStyle=fill;rr(cx,cy,w,h,h/2>22?18:h/2);x.fill();x.restore();if(stroke){x.strokeStyle=stroke;x.lineWidth=2;rr(cx,cy,w,h,h/2>22?18:h/2);x.stroke();}}
 // notification
-chip(110,110,330,86,'#1C1F1D','rgba(255,255,255,.12)');x.fillStyle='#1FBF62';x.beginPath();x.arc(152,153,20,0,7);x.fill();
-x.fillStyle='#0B1A12';x.font='700 24px "JetBrains Mono"';x.textAlign='center';x.textBaseline='middle';x.fillText('!',152,154);x.textAlign='left';
-x.fillStyle='#F5F5F2';x.font='600 26px "Space Grotesk"';x.fillText('Zajtra 9:00',188,140);x.fillStyle='#9A9A92';x.font='500 20px "JetBrains Mono"';x.fillText('event · Bratislava',188,172);
+chip(80,100,330,86,'#1C1F1D','rgba(255,255,255,.12)');x.fillStyle='#1FBF62';x.beginPath();x.arc(122,143,20,0,7);x.fill();
+x.fillStyle='#0B1A12';x.font='700 24px "JetBrains Mono"';x.textAlign='center';x.textBaseline='middle';x.fillText('!',122,144);x.textAlign='left';
+x.fillStyle='#F5F5F2';x.font='600 26px "Space Grotesk"';x.fillText('Zajtra 9:00',158,130);x.fillStyle='#9A9A92';x.font='500 20px "JetBrains Mono"';x.fillText('event · Bratislava',158,162);
 // toggle
-chip(140,720,120,62,'#1FAF6F');x.fillStyle='#fff';x.beginPath();x.arc(229,751,24,0,7);x.fill();
+chip(80,740,120,62,'#1FAF6F');x.fillStyle='#fff';x.beginPath();x.arc(169,771,24,0,7);x.fill();
 // check chip
-chip(300,725,170,54,'#1C1F1D','rgba(255,255,255,.12)');x.strokeStyle='#5CF0A4';x.lineWidth=6;x.lineCap='round';x.beginPath();x.moveTo(322,752);x.lineTo(334,764);x.lineTo(356,738);x.stroke();
-x.fillStyle='#E9E9E2';x.font='600 24px "Space Grotesk"';x.fillText('Hotovo',370,753);
+chip(230,744,170,54,'#1C1F1D','rgba(255,255,255,.12)');x.strokeStyle='#5CF0A4';x.lineWidth=6;x.lineCap='round';x.beginPath();x.moveTo(252,771);x.lineTo(264,783);x.lineTo(286,757);x.stroke();
+x.fillStyle='#E9E9E2';x.font='600 24px "Space Grotesk"';x.fillText('Hotovo',300,772);
 // mini bar chart
-chip(820,70,190,120,'#1C1F1D','rgba(255,255,255,.12)');[40,70,52,92,64].forEach((v,i)=>{x.fillStyle=i===3?'#5CF0A4':'rgba(92,240,164,.45)';rr(845+i*32,170-v,20,v,5);x.fill();});
+chip(1330,90,190,120,'#1C1F1D','rgba(255,255,255,.12)');[40,70,52,92,64].forEach((v,i)=>{x.fillStyle=i===3?'#5CF0A4':'rgba(92,240,164,.45)';rr(1355+i*32,190-v,20,v,5);x.fill();});
 vignette();
 });
 </script></body></html>

@@ -241,8 +241,10 @@ def blog_strip(posts):
         img = f'<img src="img/blog/{cv["sm"]}" width="800" height="450" alt=""{"" if n == 0 else " loading=\"lazy\""}>' if cv else ""
         bg = f' style="--bg:url(img/blog/{cv["sm"]})"' if cv else ""
         items += (f'<a class="bs-item{" on" if n == 0 else ""}{"" if cv else " nc"}"{" data-nosi" if q.get("nosi") else ""} href="blog/{q["slug"]}/"{bg}>{img}'
-                  f'<span class="bs-t"><small{den(q, "title_en", en_date(q["date"]))}>{sk_date(q["date"])}</small><b{den(q, "title_en", q.get("title_en", ""))}>{esc(q["title"])}</b></span>'
-                  f'<span class="bs-go" aria-hidden="true">→</span></a>')
+                  f'<span class="bs-t"><small class="bs-meta"><span class="dot" aria-hidden="true"></span><span class="bs-k">Blog –</span> <span{den(q, "title_en", en_date(q["date"]))}>{sk_date(q["date"])}</span></small>'
+                  f'<b{den(q, "title_en", q.get("title_en", ""))}>{esc(q["title"])}</b>'
+                  f'<span class="bs-lead"{den(q, "lead_en", q.get("lead_en", ""))}>{esc(q.get("lead", ""))}</span>'
+                  f'<span class="bs-more" data-en="Read the whole article →">Prečítaj si celý článok →</span></span></a>')
     dots = "".join(f'<button class="bs-dot" type="button" aria-label="Článok {n + 1}" data-en-aria="Article {n + 1}" aria-current="{"true" if n == 0 else "false"}"></button>' for n in range(len(top)))
     block = ('<!--blog-strip--><section class="bs" id="blog-strip" role="region" aria-roledescription="carousel" aria-label="Blog" data-en-aria="Blog"><div class="wrap"><div class="bs-in">'
              '<p class="label"><span class="dot" aria-hidden="true"></span><span>Blog</span></p>'

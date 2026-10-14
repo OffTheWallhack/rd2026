@@ -270,23 +270,55 @@
   window.addEventListener("scroll", function () { var y = window.scrollY; spin += Math.min(Math.abs(y - lastY), 80) * .004; lastY = y; }, { passive: true });
   RD.pointer = function () { return { x: mx, y: my }; };
   var LUM = ".,-~:;=!*#$@";
+  // glyph atlas: every character is drawn once per font + colour, then only copied with drawImage.
+  // Copying a small bitmap is far cheaper than fillText for thousands of characters per frame (that was the stutter on phones).
+  var atlases = {};
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { atlases = {}; });
+  RD.glyphs = function (chars, px, weight, color, dpr) {
+    var key = chars + "|" + px + "|" + weight + "|" + color + "|" + dpr, a = atlases[key];
+    if (a) return a;
+    var w = Math.ceil(px * .75) + 2, h = Math.ceil(px * 1.3) + 2, sw = Math.ceil(w * dpr), sh = Math.ceil(h * dpr);
+    var c = document.createElement("canvas"); c.width = sw * chars.length; c.height = sh;
+    var x = c.getContext("2d"); x.scale(dpr, dpr);
+    x.font = weight + " " + px + "px 'JetBrains Mono', ui-monospace, monospace"; x.textAlign = "center"; x.textBaseline = "middle"; x.fillStyle = color;
+    for (var i = 0; i < chars.length; i++) x.fillText(chars[i], (i * sw + sw / 2) / dpr, h / 2);
+    a = atlases[key] = { put: function (ctx, k, cx, cy) { ctx.drawImage(c, k * sw, 0, sw, sh, cx - w / 2, cy - h / 2, w, h); } };
+    return a;
+  };
+  // canvases only re-measure when their own box really changes (not when the phone's address bar slides in and out)
+  RD.watchSize = function (el, fn) {
+    var lw = -1, lh = -1;
+    function chk() { var w = el.clientWidth, h = el.clientHeight; if (w !== lw || Math.abs(h - lh) > 1) { lw = w; lh = h; fn(); } }
+    if ("ResizeObserver" in window) new ResizeObserver(chk).observe(el); else window.addEventListener("resize", chk);
+    chk();
+  };
   RD.field = function (cv, opt) {
     var ctx = cv && cv.getContext("2d"); if (!ctx) return;
-    var W, H, dpr, cell = 16, t0 = performance.now(), running = true, last = 0;
+    var W, H, dpr, cell = 16, t0 = performance.now(), running = true, last = 0, small = false, step = 33;
     var A = .6, B = .2, ringP = 0, zb = null, ob = null, zf = null, of = null, cols = 0, rows = 0, cw = 8, ch = 12;
     var fcv = opt.front, fctx = fcv && fcv.getContext("2d");
     var CH = " .·:-=+*";
     function size() {
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-      W = cv.clientWidth; H = cv.clientHeight;
+      W = cv.clientWidth; H = cv.clientHeight; small = W < 600;
+      dpr = Math.min(window.devicePixelRatio || 1, small ? 1.5 : 2);
+      step = opt.torus ? (small ? 40 : 33) : (small ? 80 : 50);   // the faint background wave moves slowly, it does not need 30 fps
       cv.width = W * dpr; cv.height = H * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      cell = W < 600 ? 14 : 16;
-      cw = W < 600 ? 7 : 9; ch = W < 600 ? 11 : 14;
+      cell = small ? 15 : 16;
+      cw = small ? 7 : 9; ch = small ? 11 : 14;
       cols = Math.ceil(W / cw); rows = Math.ceil(H / ch);
       zb = new Float32Array(cols * rows); ob = new Int8Array(cols * rows);
       zf = new Float32Array(cols * rows); of = new Int8Array(cols * rows);
       if (fctx) { fcv.width = W * dpr; fcv.height = H * dpr; fctx.setTransform(dpr, 0, 0, dpr, 0, 0); }
+    }
+    function paint(cx2, buf, alpha) {
+      var ink = RD.glyphs(LUM, ch - 1, 500, opt.ink + "1)", dpr), hot = RD.glyphs(LUM, ch - 1, 500, opt.hot, dpr);
+      for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++) {
+        var v = buf[r * cols + c]; if (v < 0) continue;
+        if (v >= 11) { cx2.globalAlpha = alpha; hot.put(cx2, v, c * cw + cw / 2, r * ch + ch / 2); }
+        else { cx2.globalAlpha = alpha * (.25 + v / 11 * .75); ink.put(cx2, v, c * cw + cw / 2, r * ch + ch / 2); }
+      }
+      cx2.globalAlpha = 1;
     }
     function torus(t, dt) {
       var tor = opt.torus, wide = W >= 896;
@@ -300,9 +332,11 @@
       spin *= .92;
       zb.fill(0); ob.fill(-1); zf.fill(0); of.fill(-1);
       var cA = Math.cos(A), sA = Math.sin(A), cB = Math.cos(B), sB = Math.sin(B);
-      for (var th = 0; th < 6.283; th += .07) {
+      // on phones the character cells are coarse, so fewer sample points cover them just as well
+      var dth = small ? .09 : .07, dph = small ? .034 : .025;
+      for (var th = 0; th < 6.283; th += dth) {
         var ct = Math.cos(th), st = Math.sin(th);
-        for (var ph = 0; ph < 6.283; ph += .025) {
+        for (var ph = 0; ph < 6.283; ph += dph) {
           var cp = Math.cos(ph), sp = Math.sin(ph);
           var ox = R2 + R1 * ct, oy = R1 * st;
           var x = ox * (cB * cp + sA * sB * sp) - oy * cA * sB;
@@ -317,45 +351,36 @@
           else if (ooz > zb[i]) { zb[i] = ooz; ob[i] = lv; }
         }
       }
-      function paint(cx2, buf, alpha) {
-        cx2.font = "500 " + (ch - 1) + "px 'JetBrains Mono', ui-monospace, monospace";
-        cx2.textAlign = "center"; cx2.textBaseline = "middle";
-        for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++) {
-          var v = buf[r * cols + c]; if (v < 0) continue;
-          cx2.fillStyle = v >= 11 ? opt.hot + Math.round(alpha * 255).toString(16).padStart(2, "0") : opt.ink + (alpha * (.25 + v / 11 * .75)).toFixed(3) + ")";
-          cx2.fillText(LUM[v], c * cw + cw / 2, r * ch + ch / 2);
-        }
-      }
       paint(ctx, ob, tor.alpha);
       if (fctx) { fctx.clearRect(0, 0, W, H); paint(fctx, of, Math.min(1, tor.alpha * 1.1)); }
     }
     function draw(now) {
       if (running && !still) requestAnimationFrame(draw);
-      if (!still && now - last < 33) return;
+      if (!W) return;
+      if (!still && now - last < step) return;
       var dt = Math.min((now - last) / 1000, .1); last = now;
       var t = (now - t0) / 1000;
       ctx.clearRect(0, 0, W, H);
-      ctx.textAlign = "center"; ctx.textBaseline = "middle";
       if (opt.strength > 0) {
-        ctx.font = "500 " + (cell - 3) + "px 'JetBrains Mono', ui-monospace, monospace";
-        var cx = W * .5 + mx * 120, cy = H * .5 + my * 90;
+        var gl = RD.glyphs(CH, cell - 3, 500, opt.ink + "1)", dpr);
+        var cx = W * .5 + mx * 120, cy = H * .5 + my * 90, inten = opt.strength;
         for (var y = cell / 2; y < H; y += cell) {
           for (var x = cell / 2; x < W; x += cell) {
             var dx = x - cx, dy = y - cy, d = Math.sqrt(dx * dx + dy * dy);
             var v = Math.sin(d / 40 - t * 1.6) * .5 + .5;
             v *= .5 + .5 * Math.sin(x * .04 - y * .03 + t * .6);
-            var inten = opt.strength;
             var idx = Math.floor(v * inten * (CH.length - 1) + .15);
             if (idx <= 0) continue;
-            ctx.fillStyle = opt.ink + (.06 + v * .16 * inten).toFixed(3) + ")";
-            ctx.fillText(CH[idx], x, y);
+            ctx.globalAlpha = .06 + v * .16 * inten;
+            gl.put(ctx, idx, x, y);
           }
         }
+        ctx.globalAlpha = 1;
       }
       if (opt.torus) torus(t, dt);
     }
-    size(); requestAnimationFrame(draw);
-    window.addEventListener("resize", function () { size(); if (still) requestAnimationFrame(draw); });
+    RD.watchSize(cv, function () { size(); if (still) requestAnimationFrame(draw); });
+    requestAnimationFrame(draw);
     if ("IntersectionObserver" in window && !still) {
       new IntersectionObserver(function (es) {
         var vis = es[0].isIntersecting;

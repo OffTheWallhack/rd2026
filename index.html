@@ -756,7 +756,8 @@ html.js .bs-item.on { z-index: 1; opacity: 1; visibility: visible; transition: o
   .bs-in { display: grid; grid-template-columns: 1fr auto; grid-template-areas: "label x" "view view" "ctl ctl"; gap: .2rem .75rem; align-items: center; }
   .bs .label { grid-area: label; margin: 0; display: flex; align-items: center; gap: .5rem; color: var(--pulse); }
   .bs-view { grid-area: view; }
-  .bs-item { gap: .55rem; align-items: start; }
+  .bs-item { grid-template-columns: 7rem minmax(0, 1fr); gap: .85rem; align-items: center; }
+  .bs-item.nc { grid-template-columns: minmax(0, 1fr); }
   .bs-item::before { display: none; }
   .bs-item img { aspect-ratio: 16 / 9; border-radius: 9px; border: 1px solid rgba(255,255,255,.2); box-shadow: 0 6px 16px rgba(0,0,0,.45); }
   .bs-meta .dot, .bs-k, .bs-lead, .bs-more { display: none; }

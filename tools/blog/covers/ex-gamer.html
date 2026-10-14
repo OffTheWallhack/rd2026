@@ -13,12 +13,9 @@ const cx=1250,cy=470; x.strokeStyle='#39FF88'; x.lineWidth=9; x.lineCap='butt';
 [[-130,-36],[36,130]].forEach(([a,b])=>{x.beginPath();x.moveTo(cx,cy+a);x.lineTo(cx,cy+b);x.stroke();});
 x.fillStyle='#39FF88';x.fillRect(cx-5,cy-5,10,10);
 x.strokeStyle='rgba(57,255,136,.3)';x.lineWidth=3;x.beginPath();x.arc(cx,cy,220,0,7);x.stroke();
-// title
-x.textBaseline='alphabetic';x.fillStyle='#FFFFFF';x.shadowColor='rgba(0,0,0,.6)';x.shadowBlur=30;x.font='700 210px "Space Grotesk", sans-serif';x.fillText('EX-',70,400);x.fillText('GAMER',70,600);x.shadowColor='transparent';
-x.fillStyle='#39FF88';x.fillRect(78,640,240,14);
-// kill feed
-const feed=[['TV Banan','Kalachoviny'],['TV Banan','Aztegoviny'],['Adam','dom (lava)']];
-feed.forEach(([a,b],i)=>{const y=70+i*54;const t=a+'  ✕  '+b;x.font='500 26px "JetBrains Mono", monospace';const w=x.measureText(t).width+36;x.fillStyle='rgba(0,0,0,.55)';x.fillRect(W-w-60,y,w,42);x.strokeStyle=i<2?'#D62B3A':'rgba(255,255,255,.18)';x.lineWidth=2;x.strokeRect(W-w-60,y,w,42);x.fillStyle='#F5F5F2';x.fillText(t,W-w-42,y+30);});
+// title: as few words as possible
+x.textBaseline='alphabetic';x.fillStyle='#FFFFFF';x.shadowColor='rgba(0,0,0,.6)';x.shadowBlur=30;x.font='700 200px "Space Grotesk", sans-serif';x.fillText('Videohry',70,450);
+x.fillStyle='#39FF88';x.font='700 76px "Space Grotesk", sans-serif';x.fillText('od zábavy až po prácu',78,570);x.shadowColor='transparent';
 vignette();
 });
 </script></body></html>

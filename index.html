@@ -709,37 +709,34 @@ html.vt-in .hero-cut img { animation: none !important; }
 #blog-home .lp-grid { grid-template-columns: 1fr; }
 @media (min-width: 48rem) { #blog-home .lp-grid { grid-template-columns: repeat(3, 1fr); align-items: stretch; } #blog-home .lp-grid .first { grid-row: auto; } #blog-home .latest-post:not(.first) { grid-template-columns: 1fr; } #blog-home .latest-post .lp-lead { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; font-size: .9rem; } #blog-home .latest-post.first b { font-size: 1.1rem; } }
 /* blog strip: the newest posts one at a time, right under the hero (filled in by tools/blog/build.py) */
-.bs { background: var(--bg-2); border-bottom: 1px solid var(--line); padding: .8rem 0; }
-.bs-in { display: grid; grid-template-columns: 1fr auto; gap: .6rem 1rem; align-items: center; }
-.bs .label { margin: 0; display: flex; align-items: center; gap: .5rem; color: var(--pulse-ink); }
-.bs-view { grid-column: 1 / -1; display: grid; }
-.bs-item { grid-area: 1 / 1; display: grid; grid-template-columns: 5.5rem minmax(0, 1fr) auto; gap: .85rem; align-items: center; text-decoration: none; color: var(--ink); }
-.bs-item.nc { grid-template-columns: minmax(0, 1fr) auto; }
+.bs { position: relative; isolation: isolate; overflow: hidden; background: #0E0F0E; color: #F5F5F2; padding: .55rem 0; }
+.bs-in { display: grid; grid-template-columns: 1fr auto; grid-template-areas: "label x" "view view" "ctl ctl"; gap: .15rem .75rem; align-items: center; }
+.bs .label { grid-area: label; margin: 0; display: flex; align-items: center; gap: .5rem; color: var(--pulse); }
+.bs-view { grid-area: view; display: grid; }
+.bs-item { grid-area: 1 / 1; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .85rem; align-items: center; text-decoration: none; color: inherit; }
 .bs-item:nth-child(n+2) { display: none; }
 html.js .bs-item:nth-child(n+2) { display: grid; }
-html.js .bs-item { opacity: 0; visibility: hidden; transform: translateY(6px); transition: opacity .45s ease, transform .45s ease, visibility 0s .45s; }
-html.js .bs-item.on { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
-.bs-item img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 6px; border: 1px solid var(--line); background: var(--bg); }
+html.js .bs-item { opacity: 0; visibility: hidden; transition: opacity .5s ease, visibility 0s .5s; }
+html.js .bs-item.on { opacity: 1; visibility: visible; transition-delay: 0s; }
+.bs-item img { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; object-fit: cover; transform: scale(1.3); filter: blur(16px) brightness(.5) saturate(1.2); }
 .bs-t { display: grid; gap: .1rem; min-width: 0; }
-.bs-t small { font: 400 .74rem var(--mono); color: var(--muted); }
+.bs-t small { font: 400 .74rem var(--mono); color: #B8B8AF; }
 .bs-t b { font-size: 1rem; line-height: 1.25; letter-spacing: -.01em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .bs-item:hover b, .bs-item:focus-visible b { text-decoration: underline; text-underline-offset: .2em; }
-.bs-go { font: 700 1.1rem var(--mono); color: var(--pulse-ink); transition: translate .2s; }
+.bs-go { font: 700 1.1rem var(--mono); color: var(--pulse); transition: translate .2s; }
 .bs-item:hover .bs-go { translate: .25rem 0; }
-.bs-ctl { display: flex; align-items: center; gap: .15rem; }
-.bs-ctl button { width: 2rem; height: 2rem; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; background: none; color: var(--muted); font: 700 1.1rem/1 var(--mono); cursor: pointer; }
-.bs-ctl button:hover { color: var(--ink); background: rgba(0,0,0,.05); }
-.bs-ctl .bs-dot::before { content: ""; width: .5rem; height: .5rem; border-radius: 50%; background: #C9C9C0; transition: background .2s, scale .2s; }
-.bs-ctl .bs-dot[aria-current="true"]::before { background: var(--pulse); scale: 1.3; }
+.bs-ctl { grid-area: ctl; display: flex; align-items: center; gap: 0; }
+.bs button { width: 1.6rem; height: 1.6rem; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; background: none; color: #B8B8AF; font: 700 1.1rem/1 var(--mono); cursor: pointer; }
+.bs button:hover { color: #fff; background: rgba(255,255,255,.12); }
+.bs-x { grid-area: x; justify-self: end; font-size: 1.3rem !important; }
+.bs-ctl .bs-dot::before { content: ""; width: .42rem; height: .42rem; border-radius: 50%; background: rgba(255,255,255,.35); transition: background .2s, scale .2s; }
+.bs-ctl .bs-dot[aria-current="true"]::before { background: var(--pulse); scale: 1.35; }
 @media (min-width: 48rem) {
-  .bs { padding: .9rem 0; }
-  .bs-in { grid-template-columns: auto minmax(0, 1fr) auto; gap: 1.5rem; }
-  .bs-view { grid-column: auto; }
-  .bs-item { grid-template-columns: 6.5rem minmax(0, 1fr) auto; }
-  .bs-item.nc { grid-template-columns: minmax(0, 1fr) auto; }
-  .bs-t b { font-size: 1.05rem; }
+  .bs { padding: .6rem 0; }
+  .bs-in { grid-template-columns: auto minmax(0, 1fr) auto auto; grid-template-areas: "label view ctl x"; gap: 1.5rem; }
+  .bs-t b { font-size: 1.05rem; -webkit-line-clamp: 1; }
 }
-@media (prefers-reduced-motion: reduce) { html.js .bs-item { transition: none; transform: none; } }
+@media (prefers-reduced-motion: reduce) { html.js .bs-item { transition: none; } }
 .sec-head.left { margin-left: 0; text-align: left; }
 .sec-head.left .label { justify-content: flex-start; }
 .sec-head.left p { margin-left: 0; }
@@ -816,13 +813,16 @@ html.js .bs-item.on { opacity: 1; visibility: visible; transform: none; transiti
     </div>
   </div>
 </section>
-<!--blog-strip--><section class="bs" id="blog-strip" role="region" aria-roledescription="carousel" aria-label="Z blogu" data-en-aria="From the blog"><div class="wrap"><div class="bs-in"><p class="label"><span class="dot" aria-hidden="true"></span><span data-en="From the blog">Z blogu</span></p><div class="bs-view" aria-live="off"><a class="bs-item on" href="blog/zabi-chaos-zachranis-usage/"><img src="img/blog/zabi-chaos-zachranis-usage-sm.webp" width="800" height="450" alt=""><span class="bs-t"><small data-en="October 14, 2026">14. októbra 2026</small><b data-en="I built a system to save usage. It ate my usage.">Postavil som systém na šetrenie usage. Zožral mi usage.</b></span><span class="bs-go" aria-hidden="true">→</span></a><a class="bs-item" href="blog/ex-gamer/"><img src="img/blog/ex-gamer-sm.webp" width="800" height="450" alt="" loading="lazy"><span class="bs-t"><small>7. októbra 2026</small><b>Ex-gamer: skončil som v deň, keď vyšlo CS2</b></span><span class="bs-go" aria-hidden="true">→</span></a><a class="bs-item" data-nosi href="blog/ai-svet-za-tyzden/"><img src="img/blog/ai-svet-za-tyzden-sm.webp" width="800" height="450" alt="" loading="lazy"><span class="bs-t"><small>7. októbra 2026</small><b>AI svet za týždeň: útoky na OpenAI, ocenenia blízko bilióna a SI v Bielom dome</b></span><span class="bs-go" aria-hidden="true">→</span></a></div><div class="bs-ctl"><button class="bs-prev" type="button" aria-label="Predchádzajúci článok" data-en-aria="Previous article">‹</button><button class="bs-dot" type="button" aria-label="Článok 1" data-en-aria="Article 1" aria-current="true"></button><button class="bs-dot" type="button" aria-label="Článok 2" data-en-aria="Article 2" aria-current="false"></button><button class="bs-dot" type="button" aria-label="Článok 3" data-en-aria="Article 3" aria-current="false"></button><button class="bs-next" type="button" aria-label="Ďalší článok" data-en-aria="Next article">›</button></div></div></div></section><!--/blog-strip-->
+<!--blog-strip--><section class="bs" id="blog-strip" role="region" aria-roledescription="carousel" aria-label="Blog" data-en-aria="Blog"><div class="wrap"><div class="bs-in"><p class="label"><span class="dot" aria-hidden="true"></span><span>Blog</span></p><div class="bs-view" aria-live="off"><a class="bs-item on" href="blog/zabi-chaos-zachranis-usage/"><img src="img/blog/zabi-chaos-zachranis-usage-sm.webp" width="800" height="450" alt=""><span class="bs-t"><small data-en="October 14, 2026">14. októbra 2026</small><b data-en="I built a system to save usage. It ate my usage.">Postavil som systém na šetrenie usage. Zožral mi usage.</b></span><span class="bs-go" aria-hidden="true">→</span></a><a class="bs-item" href="blog/ex-gamer/"><img src="img/blog/ex-gamer-sm.webp" width="800" height="450" alt="" loading="lazy"><span class="bs-t"><small>7. októbra 2026</small><b>Ex-gamer: skončil som v deň, keď vyšlo CS2</b></span><span class="bs-go" aria-hidden="true">→</span></a><a class="bs-item" data-nosi href="blog/ai-svet-za-tyzden/"><img src="img/blog/ai-svet-za-tyzden-sm.webp" width="800" height="450" alt="" loading="lazy"><span class="bs-t"><small>7. októbra 2026</small><b>AI svet za týždeň: útoky na OpenAI, ocenenia blízko bilióna a SI v Bielom dome</b></span><span class="bs-go" aria-hidden="true">→</span></a><a class="bs-item" href="blog/event-hub-appka-na-vlastnu-robotu/"><img src="img/blog/event-hub-appka-na-vlastnu-robotu-sm.webp" width="800" height="450" alt="" loading="lazy"><span class="bs-t"><small>7. októbra 2026</small><b>Postavil som si appku na vlastnú robotu. Bez programovania.</b></span><span class="bs-go" aria-hidden="true">→</span></a><a class="bs-item" href="blog/rodinny-hub/"><img src="img/blog/rodinny-hub-sm.webp" width="800" height="450" alt="" loading="lazy"><span class="bs-t"><small>7. októbra 2026</small><b>Rodinný hub: jedna obrazovka pre celú rodinu</b></span><span class="bs-go" aria-hidden="true">→</span></a><a class="bs-item" data-nosi href="blog/ai-je-odteraz-si/"><img src="img/blog/ai-je-odteraz-si-sm.webp" width="800" height="450" alt="" loading="lazy"><span class="bs-t"><small>7. októbra 2026</small><b>AI je odteraz SI? Trump premenoval umelú inteligenciu</b></span><span class="bs-go" aria-hidden="true">→</span></a><a class="bs-item" href="blog/co-ai-nikdy-nedavat/"><img src="img/blog/co-ai-nikdy-nedavat-sm.webp" width="800" height="450" alt="" loading="lazy"><span class="bs-t"><small>7. októbra 2026</small><b>Čo AI nikdy nedávaj. Vážne.</b></span><span class="bs-go" aria-hidden="true">→</span></a><a class="bs-item" href="blog/prvych-30-minut-s-ai/"><img src="img/blog/prvych-30-minut-s-ai-sm.webp" width="800" height="450" alt="" loading="lazy"><span class="bs-t"><small>7. októbra 2026</small><b>Prvých 30 minút s AI: 5 vecí, ktoré vyskúšaj ešte dnes</b></span><span class="bs-go" aria-hidden="true">→</span></a></div><div class="bs-ctl"><button class="bs-prev" type="button" aria-label="Predchádzajúci článok" data-en-aria="Previous article">‹</button><button class="bs-dot" type="button" aria-label="Článok 1" data-en-aria="Article 1" aria-current="true"></button><button class="bs-dot" type="button" aria-label="Článok 2" data-en-aria="Article 2" aria-current="false"></button><button class="bs-dot" type="button" aria-label="Článok 3" data-en-aria="Article 3" aria-current="false"></button><button class="bs-dot" type="button" aria-label="Článok 4" data-en-aria="Article 4" aria-current="false"></button><button class="bs-dot" type="button" aria-label="Článok 5" data-en-aria="Article 5" aria-current="false"></button><button class="bs-dot" type="button" aria-label="Článok 6" data-en-aria="Article 6" aria-current="false"></button><button class="bs-dot" type="button" aria-label="Článok 7" data-en-aria="Article 7" aria-current="false"></button><button class="bs-dot" type="button" aria-label="Článok 8" data-en-aria="Article 8" aria-current="false"></button><button class="bs-next" type="button" aria-label="Ďalší článok" data-en-aria="Next article">›</button></div><button class="bs-x" type="button" aria-label="Zavrieť" data-en-aria="Close">×</button></div></div></section><!--/blog-strip-->
 <script>
 /* blog strip: auto-rotates every 5 s, stops on hover/focus/touch and for good once the visitor uses the controls; no auto-rotation with reduced motion */
 (function () {
   var root = document.getElementById("blog-strip"); if (!root) return;
   var items = [].slice.call(root.querySelectorAll(".bs-item")), dots = [].slice.call(root.querySelectorAll(".bs-dot"));
   var ctl = root.querySelector(".bs-ctl");
+  var xb = root.querySelector(".bs-x");
+  try { if (sessionStorage.getItem("bs-x")) root.hidden = true; } catch (e) {}
+  if (xb) xb.addEventListener("click", function () { root.hidden = true; try { sessionStorage.setItem("bs-x", "1"); } catch (e) {} });
   if (items.length < 2) { if (ctl) ctl.hidden = true; return; }
   var i = 0, held = false, stopped = window.matchMedia("(prefers-reduced-motion: reduce)").matches, seen = true, x0 = null;
   function show(n) {

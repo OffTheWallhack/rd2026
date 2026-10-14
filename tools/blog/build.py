@@ -216,7 +216,7 @@ def build_sitemap(posts):
     open(p, "w", encoding="utf-8").write(s)
 
 def latest_teaser(posts):
-    """Keeps the 'from the blog' block on the services page in sync: the newest 3 posts."""
+    """Keeps the 'from the blog' block on the services page in sync: the newest 8 posts."""
     p = os.path.join(ROOT, "index.html"); s = open(p, encoding="utf-8").read()
     if not posts or "<!--latest-post-->" not in s: return
     cards = ""
@@ -230,11 +230,11 @@ def latest_teaser(posts):
     open(p, "w", encoding="utf-8").write(s)
 
 def blog_strip(posts):
-    """Small rotating strip under the hero on the services page: the newest 3 posts, one at a time.
+    """Small rotating strip under the hero on the services page: the newest 8 posts, one at a time.
     Rewrites everything between <!--blog-strip--> and <!--/blog-strip--> in index.html (the script that rotates it lives outside the markers)."""
     p = os.path.join(ROOT, "index.html"); s = open(p, encoding="utf-8").read()
     if not posts or "<!--blog-strip-->" not in s: return
-    top = posts[:3]
+    top = posts[:8]
     items = ""
     for n, q in enumerate(top):
         cv = cover(q)
@@ -243,11 +243,12 @@ def blog_strip(posts):
                   f'<span class="bs-t"><small{den(q, "title_en", en_date(q["date"]))}>{sk_date(q["date"])}</small><b{den(q, "title_en", q.get("title_en", ""))}>{esc(q["title"])}</b></span>'
                   f'<span class="bs-go" aria-hidden="true">→</span></a>')
     dots = "".join(f'<button class="bs-dot" type="button" aria-label="Článok {n + 1}" data-en-aria="Article {n + 1}" aria-current="{"true" if n == 0 else "false"}"></button>' for n in range(len(top)))
-    block = ('<!--blog-strip--><section class="bs" id="blog-strip" role="region" aria-roledescription="carousel" aria-label="Z blogu" data-en-aria="From the blog"><div class="wrap"><div class="bs-in">'
-             '<p class="label"><span class="dot" aria-hidden="true"></span><span data-en="From the blog">Z blogu</span></p>'
+    block = ('<!--blog-strip--><section class="bs" id="blog-strip" role="region" aria-roledescription="carousel" aria-label="Blog" data-en-aria="Blog"><div class="wrap"><div class="bs-in">'
+             '<p class="label"><span class="dot" aria-hidden="true"></span><span>Blog</span></p>'
              f'<div class="bs-view" aria-live="off">{items}</div>'
              f'<div class="bs-ctl"><button class="bs-prev" type="button" aria-label="Predchádzajúci článok" data-en-aria="Previous article">‹</button>{dots}'
              '<button class="bs-next" type="button" aria-label="Ďalší článok" data-en-aria="Next article">›</button></div>'
+             '<button class="bs-x" type="button" aria-label="Zavrieť" data-en-aria="Close">×</button>'
              '</div></div></section><!--/blog-strip-->')
     s = re.sub(r"<!--blog-strip-->.*?<!--/blog-strip-->", lambda m: block, s, flags=re.S)
     open(p, "w", encoding="utf-8").write(s)

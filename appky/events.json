@@ -1,0 +1,15 @@
+{
+  "vzor": true,
+  "poznamka": "Eventy pre robOS. Uprav tento súbor priamo na GitHube. datum je RRRR-MM-DD, obrazok je cesta k obrázku na webe (najlepšie na šírku 2:1). Keď budú termíny skutočné, prepni vzor na false.",
+  "eventy": [
+    { "datum": "2026-11-07", "nazov": "GOSko #3", "popis": "Game of Skate", "miesto": "Bratislava", "stitok": "GOSko", "obrazok": "img/gosko-mic.webp" },
+    { "datum": "2026-11-21", "nazov": "Drop Ups pop-up", "popis": "Techno a drum & bass", "miesto": "Bratislava", "stitok": "Drop Ups", "obrazok": "img/dropups-garage-poster.webp" },
+    { "datum": "2026-12-12", "nazov": "KALAMITA vol. 2", "popis": "Zimný rave pod mostom", "miesto": "Bratislava", "stitok": "Drop Ups" },
+    { "datum": "2027-03-20", "nazov": "Red Bull Dance Your Style", "popis": "Tanečné battle, event auto na mieste", "miesto": "Bratislava", "stitok": "Red Bull", "obrazok": "img/sugga-roof.webp" },
+    { "datum": "2027-07-23", "nazov": "Uprising Festival", "popis": "Event auto na festivale", "miesto": "Bratislava", "stitok": "Festival", "obrazok": "img/on-the-event.webp" },
+    { "datum": "2026-07-24", "nazov": "Uprising Festival 2026", "popis": "Event auto na festivale", "miesto": "Bratislava", "stitok": "Festival" },
+    { "datum": "2026-06-13", "nazov": "GOSko Žilina", "popis": "Game of Skate", "miesto": "Žilina", "stitok": "GOSko", "obrazok": "img/gosko-poster.webp" },
+    { "datum": "2026-05-09", "nazov": "GOSko Bratislava", "popis": "Game of Skate", "miesto": "Bratislava", "stitok": "GOSko" },
+    { "datum": "2026-02-14", "nazov": "KALAMITA", "popis": "Drop Ups × aligned.cph", "miesto": "Bratislava", "stitok": "Drop Ups" }
+  ]
+}

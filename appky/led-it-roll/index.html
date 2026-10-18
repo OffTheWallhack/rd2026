@@ -1,0 +1,1049 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>LED IT ROLL</title>
+<meta name="description" content="Napíš. Zapni. Ukáž celej miestnosti. Scrollujúci LED banner na celú obrazovku, ktorý tancuje do hudby.">
+<meta name="theme-color" content="#0b0a10">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="LED IT ROLL">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="../img/led-192.png" type="image/png">
+<link rel="apple-touch-icon" href="../img/led-180.png">
+<meta property="og:title" content="LED IT ROLL">
+<meta property="og:description" content="Napíš. Zapni. Ukáž celej miestnosti.">
+<meta property="og:image" content="https://offthewallhack.github.io/rd2026/appky/img/led-512.png">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<script data-goatcounter="https://durica.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</head>
+<body>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=Bebas+Neue&family=Fredoka:wght@600&family=Rubik:wght@400;500;700&family=Rubik+Mono+One&family=Staatliches&family=VT323&display=swap">
+<style>
+:root{
+  /* Layout: one centered column. LED logo, sticky 16:9 screen, centered PLAY, tabbed controls. Single dark look on purpose (it is a lit panel). */
+  --bg:#0b0a10; --panel:#14121c; --panel2:#1d1a29; --line:#2d2942;
+  --fg:#f4efe6; --muted:#a39cba; --accent:#ffb21a; --accent-ink:#1b1200;
+  --ui:'Rubik',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --display:'Anton','Bebas Neue',system-ui,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{margin:0;color:var(--fg);font:15px/1.45 var(--ui);padding-block:12px 48px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body.playing{overflow:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:720px;margin:0 auto}
+
+.top{display:flex;flex-direction:column;align-items:center;gap:8px;padding-block:8px 12px;text-align:center}
+.wm{margin:0;line-height:0}
+#logo{display:block;cursor:pointer;touch-action:manipulation;max-width:100%}
+.tag{margin:0;color:var(--muted);font-size:14px}
+
+.stage{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:6px 12px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.bezel{background:#040308;border:1px solid var(--line);border-radius:16px;padding:6px}
+.screen{position:relative;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#000;
+  width:min(704px,calc(100vw - 46px - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px)),calc(34vh * 16 / 9))}
+.screen canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.play{display:flex;gap:10px;align-items:center;justify-content:center;width:min(100%,260px);min-height:54px;border:0;border-radius:12px;
+  background:var(--accent);color:var(--accent-ink);font:400 24px/1 var(--display);letter-spacing:.14em;cursor:pointer;
+  box-shadow:0 0 28px rgba(255,178,26,.28)}
+.play:hover{filter:brightness(1.08)}
+
+.btn,.chip{appearance:none;background:var(--panel2);border:1px solid var(--line);color:var(--fg);border-radius:10px;
+  min-height:40px;padding:8px 12px;cursor:pointer;line-height:1.2}
+.btn:hover,.chip:hover{border-color:#4a4468}
+.btn.on,.chip.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;min-width:0;text-align:center}
+.tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;background:var(--bg);padding:4px;border-radius:12px;margin-bottom:4px}
+.tab{appearance:none;border:0;background:transparent;color:var(--muted);min-height:42px;border-radius:9px;cursor:pointer;font-size:13px}
+.tab[aria-selected="true"]{background:var(--panel2);color:var(--fg);box-shadow:inset 0 -2px 0 var(--accent)}
+
+.row{display:grid;gap:8px;margin-top:16px;justify-items:center}
+.row>*{max-width:100%}
+.row>label,.row>.lab{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.row>label.check{font-size:15px;letter-spacing:0;text-transform:none;color:var(--fg)}
+.range{display:flex;align-items:center;gap:12px;width:100%}
+.range input{flex:1;min-width:0;accent-color:var(--accent)}
+.range output{min-width:3em;text-align:right;font-variant-numeric:tabular-nums}
+textarea,input[type="text"]{width:100%;background:#0e0c15;border:1px solid var(--line);border-radius:12px;color:var(--fg);padding:12px;font:500 20px/1.35 var(--ui);text-align:center}
+textarea{min-height:96px;resize:vertical}
+.check{display:flex;gap:10px;align-items:center;justify-content:center;min-height:40px;cursor:pointer}
+.check input{width:20px;height:20px;accent-color:var(--accent)}
+.colors,.seg,.fonts,.emojis,.filerow{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center}
+.colors{gap:10px}
+.sw{width:34px;height:34px;border-radius:50%;border:2px solid var(--line);padding:0;cursor:pointer}
+.sw.on{border-color:var(--fg);box-shadow:0 0 0 2px var(--accent)}
+input[type="color"]{width:44px;height:40px;border:1px solid var(--line);background:var(--panel2);border-radius:10px;padding:3px;cursor:pointer}
+.fontchip{font-size:17px}
+.emo{font-size:22px;min-width:44px;min-height:44px;padding:4px;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
+.hint{margin:0;font-size:13px;color:var(--muted)}
+.meter{width:100%;height:10px;border-radius:6px;background:var(--bg);border:1px solid var(--line);overflow:hidden}
+.meter i{display:block;height:100%;background:var(--accent);transform-origin:left;transform:scaleX(0)}
+.linkbtn{background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;padding:6px 0;font-size:13px}
+
+.foot{margin-top:22px;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--muted);font-size:13px;text-align:center}
+.foot a{color:var(--accent)}
+
+#play{position:fixed;inset:0;z-index:100;background:#000;touch-action:none}
+#play canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+#play.idle{cursor:none}
+.ctl{position:absolute;left:0;right:0;top:0;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;
+  padding:calc(12px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 14px max(16px,env(safe-area-inset-left,0px));
+  background:linear-gradient(rgba(0,0,0,.78),rgba(0,0,0,0));opacity:0;pointer-events:none;transition:opacity .25s}
+.ctl.on{opacity:1;pointer-events:auto}
+.ctl .group{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center}
+.ctl .btn{background:rgba(20,18,28,.9);min-height:44px}
+.ctl output{min-width:6em;text-align:center;font-variant-numeric:tabular-nums}
+.rot{display:none;position:absolute;left:50%;bottom:calc(28px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);
+  background:rgba(8,6,12,.82);border:1px solid var(--line);border-radius:999px;padding:10px 18px;white-space:nowrap;pointer-events:none}
+@media(orientation:portrait){.rot{display:block}}
+.toast{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(8,6,12,.82);border:1px solid var(--line);border-radius:999px;padding:12px 20px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .4s}
+.toast.on{opacity:1}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-height:62%;overflow:auto;overscroll-behavior:contain;touch-action:pan-y;background:rgba(20,18,28,.96);border-top:1px solid var(--line);border-radius:18px 18px 0 0;
+  padding:12px max(16px,env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.sheet .panel{border:0;background:transparent;padding:0;max-width:720px;margin:0 auto}
+.sheet-head{display:flex;justify-content:center;margin-bottom:8px}
+.sheet-head .btn{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);min-width:140px}
+.screen canvas{cursor:pointer}
+@media(prefers-reduced-motion:reduce){.ctl{transition:none}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <h1 class="wm"><canvas id="logo" role="img" aria-label="LED IT ROLL"></canvas></h1>
+    <p class="tag">Napíš. Zapni. Ukáž celej miestnosti.</p>
+  </header>
+
+  <section class="stage" aria-label="Náhľad banneru">
+    <div class="bezel"><div class="screen"><canvas id="previewCanvas" aria-label="Náhľad banneru. Ťukni pre čistú obrazovku, ťahaj prstom a rozsvieti sa."></canvas></div></div>
+    <button class="play" id="playBtn" type="button">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="currentColor"/></svg>
+      PLAY
+    </button>
+  </section>
+
+  <section class="panel" aria-label="Nastavenia">
+    <div class="tabs" role="tablist" aria-label="Sekcie nastavení">
+      <button class="tab" role="tab" type="button" data-tab="text" aria-selected="true">Text</button>
+      <button class="tab" role="tab" type="button" data-tab="font" aria-selected="false">Písmo</button>
+      <button class="tab" role="tab" type="button" data-tab="bg" aria-selected="false">Pozadie</button>
+      <button class="tab" role="tab" type="button" data-tab="move" aria-selected="false">Pohyb</button>
+      <button class="tab" role="tab" type="button" data-tab="music" aria-selected="false">Hudba</button>
+    </div>
+
+    <div class="tabpanel" data-panel="text" role="tabpanel">
+      <div class="row">
+        <label for="text">Správa</label>
+        <textarea id="text" data-k="text" maxlength="300" placeholder="Napíš čokoľvek…"></textarea>
+        <button class="linkbtn" type="button" id="clearText">Vymazať text</button>
+        <p class="hint">Pri posúvaní hore alebo dole ide každý riadok zvlášť. Pri posúvaní do strán sa riadky spoja.</p>
+      </div>
+      <div class="row">
+        <span class="lab">Vložiť emoji</span>
+        <div class="emojis" id="emojiBar"></div>
+      </div>
+    </div>
+
+    <div class="tabpanel" data-panel="font" role="tabpanel" hidden>
+      <div class="row"><span class="lab">Písmo</span><div class="fonts" id="fontList"></div></div>
+      <div class="row">
+        <span class="lab">Vzhľad textu</span>
+        <div class="seg" data-seg="style">
+          <button class="chip" type="button" data-v="led">LED bodky</button>
+          <button class="chip" type="button" data-v="smooth">Hladké</button>
+        </div>
+      </div>
+      <div class="row">
+        <label for="size">Veľkosť písma</label>
+        <div class="range"><input id="size" type="range" min="20" max="100" step="1" data-k="size"><output data-out="size" data-unit="%"></output></div>
+      </div>
+      <div class="row" data-show="style=led">
+        <label for="rows">Hustota bodiek</label>
+        <div class="range"><input id="rows" type="range" min="12" max="80" step="1" data-k="rows"><output data-out="rows"></output></div>
+        <p class="hint">Viac riadkov dá jemnejší panel, menej dá hrubé retro bodky.</p>
+      </div>
+      <div class="row"><span class="lab">Farba textu</span><div class="colors" id="swatches"><input type="color" id="colorPick" data-k="color" aria-label="Vlastná farba textu"></div></div>
+      <div class="row">
+        <label for="glow">Žiara</label>
+        <div class="range"><input id="glow" type="range" min="0" max="100" step="1" data-k="glow"><output data-out="glow"></output></div>
+      </div>
+    </div>
+
+    <div class="tabpanel" data-panel="bg" role="tabpanel" hidden>
+      <div class="row">
+        <span class="lab">Pozadie</span>
+        <div class="seg" data-seg="bgType">
+          <button class="chip" type="button" data-v="solid">Farba</button>
+          <button class="chip" type="button" data-v="gradient">Gradient</button>
+          <button class="chip" type="button" data-v="rainbow">Dúha</button>
+          <button class="chip" type="button" data-v="image">Obrázok</button>
+        </div>
+      </div>
+      <div class="row" data-hide="bgType=rainbow"><span class="lab">Farba pozadia</span><div class="colors"><input type="color" data-k="bg1" aria-label="Farba pozadia"></div></div>
+      <div class="row" data-show="bgType=gradient"><span class="lab">Druhá farba</span><div class="colors"><input type="color" data-k="bg2" aria-label="Druhá farba gradientu"></div></div>
+      <div class="row" data-show="bgType=image">
+        <span class="lab">Obrázok</span>
+        <div class="filerow">
+          <label class="btn">Vybrať obrázok<input type="file" id="bgFile" accept="image/*" hidden></label>
+        </div>
+        <span class="hint" id="imgNote"></span>
+        <label for="dim" class="lab">Stmavenie obrázka</label>
+        <div class="range"><input id="dim" type="range" min="0" max="90" step="1" data-k="dim"><output data-out="dim" data-unit="%"></output></div>
+      </div>
+      <div class="row"><label class="check"><input type="checkbox" data-k="pulseBg"> Pozadie pulzuje</label></div>
+      <div class="row"><label class="check"><input type="checkbox" data-k="rain"> Emoji v pozadí</label></div>
+      <div data-show="rain">
+        <div class="row">
+          <span class="lab">Pohyb emoji</span>
+          <div class="seg" data-seg="rainMode">
+            <button class="chip" type="button" data-v="fall">Padajú</button>
+            <button class="chip" type="button" data-v="rise">Stúpajú</button>
+            <button class="chip" type="button" data-v="pulse">Pulzujú</button>
+          </div>
+        </div>
+        <div class="row"><label for="rainSet">Ktoré emoji</label><input id="rainSet" type="text" data-k="rainSet" maxlength="40" placeholder="🎉🔥🥳"></div>
+        <div class="row">
+          <label for="rainAmount">Počet</label>
+          <div class="range"><input id="rainAmount" type="range" min="4" max="80" step="1" data-k="rainAmount"><output data-out="rainAmount"></output></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabpanel" data-panel="move" role="tabpanel" hidden>
+      <div class="row">
+        <span class="lab">Smer</span>
+        <div class="seg" data-seg="dir">
+          <button class="chip" type="button" data-v="left">← Doľava</button>
+          <button class="chip" type="button" data-v="right">Doprava →</button>
+          <button class="chip" type="button" data-v="up">↑ Hore</button>
+          <button class="chip" type="button" data-v="down">↓ Dole</button>
+        </div>
+      </div>
+      <div class="row">
+        <label for="speed">Rýchlosť</label>
+        <div class="range"><input id="speed" type="range" min="0" max="100" step="1" data-k="speed"><output data-out="speed"></output></div>
+      </div>
+      <div class="row">
+        <label class="check"><input type="checkbox" data-k="touch"> Ťahanie prstom kreslí svetlom</label>
+        <p class="hint">Ťahaj prstom po banneri. V LED režime svietia bodky, v hladkom lietajú emoji. Ťuknutie otvorí čistú obrazovku.</p>
+      </div>
+      <div class="row">
+        <span class="lab">Podpis v rohu</span>
+        <div class="seg" data-seg="signature">
+          <button class="chip" type="button" data-v="start">Na začiatku</button>
+          <button class="chip" type="button" data-v="always">Stále</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabpanel" data-panel="music" role="tabpanel" hidden>
+      <div class="row">
+        <span class="lab">Text tancuje do hudby</span>
+        <div class="seg" data-seg="music">
+          <button class="chip" type="button" data-v="off">Vypnuté</button>
+          <button class="chip" type="button" data-v="demo">Demo rytmus</button>
+          <button class="chip" type="button" data-v="mic">Mikrofón</button>
+          <button class="chip" type="button" data-v="file">Pieseň</button>
+        </div>
+        <p class="hint" id="musicNote"></p>
+      </div>
+      <div class="row" data-show="music=file">
+        <span class="lab">Pieseň zo súboru</span>
+        <div class="filerow">
+          <label class="btn">Vybrať pieseň<input type="file" id="audioFile" accept="audio/*" hidden></label>
+          <button class="btn" type="button" id="audioStop">Zastaviť</button>
+        </div>
+      </div>
+      <div class="row"><span class="lab">Úroveň basov</span><div class="meter" aria-hidden="true"><i id="meterFill"></i></div></div>
+      <div class="row">
+        <label for="sens">Citlivosť</label>
+        <div class="range"><input id="sens" type="range" min="0" max="100" step="1" data-k="sens"><output data-out="sens"></output></div>
+      </div>
+      <div class="row">
+        <label for="power">Sila efektu</label>
+        <div class="range"><input id="power" type="range" min="0" max="100" step="1" data-k="power"><output data-out="power"></output></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span>LED IT ROLL · hračka od <a href="https://instagram.com/robodurica" target="_blank" rel="noopener">@robodurica</a></span>
+    <button class="linkbtn" type="button" id="resetBtn">Obnoviť pôvodné nastavenie</button>
+  </footer>
+</div>
+
+<div id="play" hidden>
+  <canvas id="playCanvas" aria-label="Banner na celú obrazovku"></canvas>
+  <div class="ctl" id="ctl">
+    <button class="btn" type="button" id="pClose">✕ Zavrieť</button>
+    <div class="group">
+      <button class="btn" type="button" id="pSlow" aria-label="Pomalšie">−</button>
+      <output id="pSpeed">Rýchlosť 50</output>
+      <button class="btn" type="button" id="pFast" aria-label="Rýchlejšie">+</button>
+      <button class="btn" type="button" id="pPause">Pauza</button>
+      <button class="btn" type="button" id="pFull">Celá obrazovka</button>
+      <button class="btn" type="button" id="pEdit">Nastavenia</button>
+    </div>
+  </div>
+  <div class="rot">Otoč telefón na šírku</div>
+  <div class="toast" id="toast">Ťukni pre nastavenia</div>
+  <div class="sheet" id="sheet" hidden><div class="sheet-head"><button class="btn" type="button" id="sheetClose">Hotovo</button></div></div>
+</div>
+
+<script>
+(() => {
+'use strict';
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const mod = (a, n) => ((a % n) + n) % n;
+const reduced = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+/* ---------- fonts ---------- */
+const FONTS = [
+  {n:'Bebas Neue',w:400},{n:'Anton',w:400},{n:'Staatliches',w:400},{n:'Archivo Black',w:400},
+  {n:'Rubik Mono One',w:400},{n:'VT323',w:400},{n:'Fredoka',w:600}
+];
+const FM = Object.fromEntries(FONTS.map(f => [f.n, f]));
+const fontStr = (f, px) => `${f.w} ${px}px "${f.n}", "Rubik", sans-serif`;
+const EMOJI_FONT = '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
+const ACCENTS = ['#ffb21a','#ff2d55','#35f2ff','#39ff88','#ff3dd8','#ffffff','#ffe600','#7a5cff'];
+const EMOJIS = ['🔥','🎉','🥳','🎂','🎈','🔊','🎧','📣','🙌','💃','🕺','🚗','✈️','❤️','⭐','👑','😂','🤙','🍻','⏳','📝','🛬','🤗','✨'];
+
+/* ---------- state ---------- */
+const DEF = {
+  text:'LED IT ROLL 🔥 NAPÍŠ. ZAPNI. UKÁŽ CELEJ MIESTNOSTI. 📣',
+  font:'Bebas Neue', style:'led', size:72, rows:53, color:'#ffb21a', glow:55,
+  bgType:'solid', bg1:'#09080d', bg2:'#5b1fff', dim:35, pulseBg:false,
+  rain:false, rainMode:'fall', rainSet:'🎉🔥🥳', rainAmount:24,
+  dir:'left', speed:50, touch:true,
+  music:'off', sens:60, power:60, signature:'start'
+};
+let S = Object.assign({}, DEF);
+try {
+  const raw = localStorage.getItem('ledItRoll.v2');
+  if (raw) { const o = JSON.parse(raw); for (const k in DEF) if (k in o && typeof o[k] === typeof DEF[k]) S[k] = o[k]; }
+} catch (e) {}
+if (!FM[S.font]) S.font = DEF.font;
+if (S.music === 'mic' || S.music === 'file') S.music = 'off';
+
+let saveT = 0;
+function save() { clearTimeout(saveT); saveT = setTimeout(() => { try { localStorage.setItem('ledItRoll.v2', JSON.stringify(S)); } catch (e) {} }, 500); }
+
+/* ---------- helpers ---------- */
+function rgba(hex, a) {
+  let h = String(hex).replace('#', '');
+  if (h.length === 3) h = h.split('').map(c => c + c).join('');
+  const n = parseInt(h, 16) || 0;
+  return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
+}
+let segmenter = null;
+try { segmenter = new Intl.Segmenter(undefined, {granularity:'grapheme'}); } catch (e) {}
+const graphemes = s => (segmenter ? Array.from(segmenter.segment(s), g => g.segment) : Array.from(s)).filter(g => g.trim());
+function wrapLines(ctx, text, maxW) {
+  const out = [];
+  for (const para of text.split('\n')) {
+    const words = para.split(/\s+/).filter(Boolean);
+    if (!words.length) { out.push(''); continue; }
+    let line = '';
+    for (const w of words) {
+      const t = line ? line + ' ' + w : w;
+      if (!line || ctx.measureText(t).width <= maxW) line = t; else { out.push(line); line = w; }
+    }
+    out.push(line);
+  }
+  return out;
+}
+
+/* ---------- audio ---------- */
+const audio = {
+  ctx:null, an:null, data:null, stream:null, micSrc:null, fileSrc:null, buf:null,
+  mode:'off', level:0, peak:0.15,
+  async ensure() {
+    if (!this.ctx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      this.ctx = new AC();
+      this.an = this.ctx.createAnalyser();
+      this.an.fftSize = 1024;
+      this.an.smoothingTimeConstant = 0.55;
+      this.data = new Uint8Array(this.an.frequencyBinCount);
+    }
+    if (this.ctx.state === 'suspended') await this.ctx.resume();
+  },
+  dropMic() {
+    if (this.stream) { this.stream.getTracks().forEach(t => t.stop()); this.stream = null; }
+    if (this.micSrc) { try { this.micSrc.disconnect(); } catch (e) {} this.micSrc = null; }
+  },
+  stopFile() {
+    if (this.fileSrc) { try { this.fileSrc.stop(); } catch (e) {} try { this.fileSrc.disconnect(); } catch (e) {} this.fileSrc = null; }
+  },
+  async startMic() {
+    await this.ensure();
+    this.stopFile(); this.dropMic();
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error('nomic');
+    const s = await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false, noiseSuppression:false, autoGainControl:false}});
+    this.stream = s;
+    this.micSrc = this.ctx.createMediaStreamSource(s);
+    this.micSrc.connect(this.an);
+    try { this.an.disconnect(); } catch (e) {}
+  },
+  async playBuf() {
+    await this.ensure();
+    this.dropMic(); this.stopFile();
+    if (!this.buf) return false;
+    const src = this.ctx.createBufferSource();
+    src.buffer = this.buf; src.loop = true;
+    src.connect(this.an);
+    this.an.connect(this.ctx.destination);
+    src.start();
+    this.fileSrc = src;
+    return true;
+  },
+  async loadFile(file) {
+    await this.ensure();
+    const ab = await file.arrayBuffer();
+    this.buf = await this.ctx.decodeAudioData(ab);
+    return this.playBuf();
+  },
+  update(dt, now) {
+    let v = 0;
+    if (this.mode === 'demo') {
+      const ph = ((now / 1000) * (126 / 60)) % 1;
+      v = Math.exp(-ph * 5.5);
+      v = Math.max(v, Math.exp(-((ph + 0.5) % 1) * 9) * 0.4);
+    } else if ((this.mode === 'mic' || this.mode === 'file') && this.an) {
+      this.an.getByteFrequencyData(this.data);
+      let s = 0; for (let i = 1; i <= 6; i++) s += this.data[i];
+      const raw = s / (6 * 255);
+      this.peak = Math.max(this.peak * Math.pow(0.5, dt / 6), raw, 0.08);
+      v = clamp(((raw / this.peak) - 0.5) / 0.5, 0, 1);
+      v = clamp(v * (0.4 + S.sens / 100 * 1.6), 0, 1);
+    }
+    this.level = v > this.level ? v : this.level * Math.exp(-dt * 9);
+  }
+};
+const soft = now => audio.mode === 'off' ? 0.5 + 0.5 * Math.sin(now / 1000 * Math.PI * 2 * 1.5) : audio.level;
+
+let bgBmp = null;
+let fontVer = 0;
+
+/* ---------- banner renderer ---------- */
+class Banner {
+  constructor(canvas, isPlay) {
+    this.c = canvas; this.x = canvas.getContext('2d'); this.isPlay = isPlay;
+    this.off = document.createElement('canvas');
+    this.ox = this.off.getContext('2d', {willReadFrequently:true});
+    this.grid = null; this.gridKey = ''; this.ledKey = ''; this.led = null;
+    this.wrapKey = ''; this.wrapRes = [];
+    this.parts = []; this.pos = 0; this.dpr = 1; this.t0 = performance.now(); this.stampUntil = 0;
+    this.paint = new Map(); this.ripples = []; this.sparks = []; this.lastPoke = 0;
+    this.ro = new ResizeObserver(() => this.resize());
+    this.ro.observe(canvas);
+    this.resize();
+  }
+  reset() { this.pos = 0; this.t0 = performance.now(); this.stampUntil = 0; this.parts = []; }
+  resize() {
+    const r = this.c.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    this.dpr = dpr;
+    const w = Math.round(r.width * dpr), h = Math.round(r.height * dpr);
+    if (w >= 2 && h >= 2 && (this.c.width !== w || this.c.height !== h)) { this.c.width = w; this.c.height = h; }
+  }
+  geom(W, H) {
+    const rows = S.rows, pitch = H / rows, cols = Math.max(4, Math.floor(W / pitch));
+    return {rows, pitch, cols, ox0:(W - cols * pitch) / 2};
+  }
+  frame(now, dt) {
+    const W = this.c.width, H = this.c.height;
+    if (W < 4 || H < 4) return;
+    const x = this.x;
+    x.setTransform(1, 0, 0, 1, 0, 0);
+    x.globalAlpha = 1; x.shadowBlur = 0;
+    this.bg(x, W, H, now);
+    this.rain(x, W, H, now, dt);
+    this.text(x, W, H, dt);
+    this.touchFx(x, W, H, now);
+    this.stamp(x, W, H, now);
+  }
+  bg(x, W, H, now) {
+    let fill = S.bg1;
+    if (S.bgType === 'gradient') {
+      const g = x.createLinearGradient(0, 0, W, H); g.addColorStop(0, S.bg1); g.addColorStop(1, S.bg2); fill = g;
+    } else if (S.bgType === 'rainbow') {
+      const h = (now / 1000 * 22) % 360;
+      const g = x.createLinearGradient(0, 0, W, H);
+      g.addColorStop(0, `hsl(${h},90%,48%)`); g.addColorStop(1, `hsl(${(h + 80) % 360},90%,42%)`); fill = g;
+    }
+    x.fillStyle = fill; x.fillRect(0, 0, W, H);
+    if (S.bgType === 'image' && bgBmp) {
+      const s = Math.max(W / bgBmp.width, H / bgBmp.height), dw = bgBmp.width * s, dh = bgBmp.height * s;
+      x.drawImage(bgBmp, (W - dw) / 2, (H - dh) / 2, dw, dh);
+      x.fillStyle = `rgba(0,0,0,${S.dim / 100})`; x.fillRect(0, 0, W, H);
+    }
+    if (S.pulseBg) { x.fillStyle = rgba(S.color, soft(now) * 0.3); x.fillRect(0, 0, W, H); }
+  }
+  rain(x, W, H, now, dt) {
+    if (!S.rain) return;
+    const em = graphemes(S.rainSet);
+    if (!em.length) return;
+    const n = S.rainAmount;
+    while (this.parts.length < n) this.parts.push({x:Math.random(), y:Math.random(), s:.6 + Math.random() * .8, v:.55 + Math.random() * .9, ph:Math.random() * 6.28, e:this.parts.length});
+    if (this.parts.length > n) this.parts.length = n;
+    const base = H * 0.12, lv = soft(now);
+    x.textAlign = 'center'; x.textBaseline = 'middle';
+    for (const p of this.parts) {
+      if (S.rainMode === 'fall') { p.y += dt * p.v * 0.2; if (p.y > 1.12) { p.y = -0.12; p.x = Math.random(); } }
+      else if (S.rainMode === 'rise') { p.y -= dt * p.v * 0.2; if (p.y < -0.12) { p.y = 1.12; p.x = Math.random(); } }
+      const l = (S.rainMode === 'pulse' && audio.mode === 'off') ? 0.5 + 0.5 * Math.sin(now / 1000 * 9 + p.ph) : lv;
+      const sz = base * p.s * (1 + (S.rainMode === 'pulse' ? 0.45 : 0.2) * l);
+      x.font = `${sz}px ${EMOJI_FONT}`;
+      x.fillText(em[p.e % em.length], (p.x + Math.sin(now / 1000 * p.v + p.ph) * 0.015) * W, p.y * H);
+    }
+  }
+  text(x, W, H, dt) {
+    const vertical = S.dir === 'up' || S.dir === 'down';
+    const k = audio.mode === 'off' ? 0 : audio.level * (S.power / 100);
+    x.save();
+    if (S.style === 'led') this.led_(x, W, H, dt, vertical, k); else this.smooth(x, W, H, dt, vertical, k);
+    x.restore();
+  }
+  wrapCached(x, text, maxW, key) {
+    const k = [text, key, Math.round(maxW), fontVer].join('|');
+    if (k !== this.wrapKey) { this.wrapRes = wrapLines(x, text, maxW); this.wrapKey = k; }
+    return this.wrapRes;
+  }
+  smooth(x, LW, LH, dt, vertical, k) {
+    const f = FM[S.font];
+    const px = vertical ? LW * S.size / 100 * 0.5 : LH * S.size / 100 * 0.9;
+    x.font = fontStr(f, px); x.textBaseline = 'middle';
+    const sc = 1 + 0.16 * k;
+    x.translate(LW / 2, LH / 2); x.scale(sc, sc); x.translate(-LW / 2, -LH / 2);
+    this.pos += px * (0.2 + S.speed / 100 * 3) * dt;
+    const draw = (t, tx, ty) => {
+      x.shadowColor = S.color; x.shadowBlur = S.glow > 0 ? px * 0.3 * (S.glow / 100) * (1 + k) : 0;
+      x.fillStyle = S.color; x.fillText(t, tx, ty);
+    };
+    if (!vertical) {
+      x.textAlign = 'left';
+      const t = S.text.replace(/\s*\n+\s*/g, '   ').trim() || ' ';
+      const period = x.measureText(t).width + px * 1.3;
+      const p = mod(this.pos, period);
+      const x0 = S.dir === 'right' ? p - period : -p;
+      for (let xx = x0; xx < LW; xx += period) draw(t, xx, LH / 2);
+    } else {
+      x.textAlign = 'center';
+      const lines = this.wrapCached(x, S.text, LW * 0.9, S.font + px);
+      const lh = px * 1.12, block = lines.length * lh + px * 1.2;
+      const p = mod(this.pos, block);
+      const y0 = S.dir === 'down' ? p - block : -p;
+      for (let yy = y0; yy < LH; yy += block) {
+        for (let i = 0; i < lines.length; i++) {
+          const cy = yy + i * lh + lh / 2;
+          if (lines[i] && cy > -lh && cy < LH + lh) draw(lines[i], LW / 2, cy);
+        }
+      }
+    }
+    x.shadowBlur = 0;
+  }
+  buildLed(rows, cols, vertical, f) {
+    const o = this.off, c = this.ox;
+    const fontM = vertical ? cols * S.size / 100 * 0.5 : rows * S.size / 100 * 0.9;
+    const fs = fontStr(f, fontM);
+    o.width = 2; o.height = 2; c.font = fs;
+    if (!vertical) {
+      const t = S.text.replace(/\s*\n+\s*/g, '   ').trim() || ' ';
+      const mw = c.measureText(t).width;
+      const W = Math.max(8, Math.ceil(mw + fontM * 1.1));
+      o.width = W; o.height = rows;
+      c.font = fs; c.textBaseline = 'middle'; c.textAlign = 'left';
+      c.fillStyle = S.color; c.fillText(t, 0, rows / 2);
+      this.led = {d:c.getImageData(0, 0, W, rows).data, W, H:rows, fontM};
+    } else {
+      const lines = wrapLines(c, S.text, cols * 0.9);
+      const lh = fontM * 1.15, H = Math.max(8, Math.ceil(lines.length * lh + fontM * 1.2));
+      o.width = cols; o.height = H;
+      c.font = fs; c.textBaseline = 'middle'; c.textAlign = 'center';
+      c.fillStyle = S.color;
+      lines.forEach((ln, i) => { if (ln) c.fillText(ln, cols / 2, i * lh + lh / 2); });
+      this.led = {d:c.getImageData(0, 0, cols, H).data, W:cols, H, fontM};
+    }
+  }
+  getGrid(LW, LH, cols, rows, pitch) {
+    const key = [Math.round(LW), Math.round(LH), cols, rows].join();
+    if (key !== this.gridKey || !this.grid) {
+      const g = this.grid || (this.grid = document.createElement('canvas'));
+      g.width = Math.ceil(LW); g.height = Math.ceil(LH);
+      const gx = g.getContext('2d');
+      const ox0 = (LW - cols * pitch) / 2, r = pitch * 0.3;
+      gx.fillStyle = 'rgba(255,255,255,0.07)'; gx.beginPath();
+      for (let c = 0; c < cols; c++) for (let rr = 0; rr < rows; rr++) {
+        const cx = ox0 + (c + 0.5) * pitch, cy = (rr + 0.5) * pitch;
+        gx.moveTo(cx + r, cy); gx.arc(cx, cy, r, 0, 6.2832);
+      }
+      gx.fill(); this.gridKey = key;
+    }
+    return this.grid;
+  }
+  led_(x, LW, LH, dt, vertical, k) {
+    const {rows, pitch, cols, ox0} = this.geom(LW, LH);
+    const key = [S.text, S.font, S.size, S.color, rows, cols, vertical, fontVer].join('|');
+    if (key !== this.ledKey) { this.buildLed(rows, cols, vertical, FM[S.font]); this.ledKey = key; }
+    const L = this.led, d = L.d;
+    this.pos += L.fontM * (0.2 + S.speed / 100 * 3) * dt;
+    const shift = Math.floor(this.pos);
+    const rad = Math.min(pitch * 0.5, pitch * 0.4 * (1 + 0.22 * k));
+    x.drawImage(this.getGrid(LW, LH, cols, rows, pitch), 0, 0);
+    const paths = new Map();
+    const fwd = S.dir === 'right' || S.dir === 'down';
+    for (let c = 0; c < cols; c++) {
+      const sc = vertical ? c : mod(fwd ? c - shift : c + shift, L.W);
+      for (let r = 0; r < rows; r++) {
+        const sr = vertical ? mod(fwd ? r - shift : r + shift, L.H) : r;
+        const i = (sr * L.W + sc) * 4;
+        if (d[i + 3] > 110) {
+          const key2 = ((d[i] >> 3) << 10) | ((d[i + 1] >> 3) << 5) | (d[i + 2] >> 3);
+          let p = paths.get(key2);
+          if (!p) { p = {path:new Path2D(), col:`rgb(${d[i]},${d[i + 1]},${d[i + 2]})`}; paths.set(key2, p); }
+          const cx = ox0 + (c + 0.5) * pitch, cy = (r + 0.5) * pitch;
+          p.path.moveTo(cx + rad, cy); p.path.arc(cx, cy, rad, 0, 6.2832);
+        }
+      }
+    }
+    const blur = S.glow > 0 ? pitch * (0.6 + 1.4 * S.glow / 100) * (1 + k * 0.6) : 0;
+    for (const p of paths.values()) {
+      x.fillStyle = p.col; x.shadowColor = p.col; x.shadowBlur = blur; x.fill(p.path);
+    }
+    x.shadowBlur = 0;
+  }
+  /* finger toy: paint with light on the LED grid, emoji sparks on smooth text */
+  pointer(e, down) {
+    if (!S.touch) return;
+    const r = this.c.getBoundingClientRect();
+    if (!r.width || !r.height) return;
+    const now = performance.now();
+    if (!down && now - this.lastPoke < 25) return;
+    this.lastPoke = now;
+    const W = this.c.width, H = this.c.height;
+    const px = (e.clientX - r.left) * (W / r.width), py = (e.clientY - r.top) * (H / r.height);
+    if (S.style === 'led') {
+      const g = this.geom(W, H);
+      const c = Math.floor((px - g.ox0) / g.pitch), rr = Math.floor(py / g.pitch);
+      const hue = (now / 5) % 360;
+      for (let dc = -1; dc <= 1; dc++) for (let dr = -1; dr <= 1; dr++) {
+        const cc = c + dc, r2 = rr + dr;
+        if (cc < 0 || cc >= g.cols || r2 < 0 || r2 >= g.rows) continue;
+        const it = (dc === 0 && dr === 0) ? 1 : 0.45, key = cc * 1000 + r2, o = this.paint.get(key);
+        if (!o || o.i <= it || now - o.t > 200) this.paint.set(key, {t:now, i:it, h:hue});
+      }
+      if (down) { this.ripples.push({c, r:rr, t:now}); if (this.ripples.length > 4) this.ripples.shift(); }
+    } else {
+      const em = graphemes(S.rainSet), set = em.length ? em : ['✨', '⭐', '💥'];
+      const n = down ? 7 : 2;
+      for (let i = 0; i < n; i++) {
+        this.sparks.push({x:px, y:py, vx:(Math.random() - 0.5) * H * 0.9, vy:-Math.random() * H * 0.7, t:now, e:set[Math.floor(Math.random() * set.length)]});
+      }
+      if (this.sparks.length > 90) this.sparks.splice(0, this.sparks.length - 90);
+    }
+  }
+  touchFx(x, W, H, now) {
+    if (S.style === 'led') {
+      if (!this.paint.size && !this.ripples.length) return;
+      const g = this.geom(W, H), rad = g.pitch * 0.42;
+      for (const [key, o] of this.paint) {
+        const age = (now - o.t) / 1400;
+        if (age >= 1) { this.paint.delete(key); continue; }
+        const c = Math.floor(key / 1000), r = key % 1000;
+        x.fillStyle = `hsla(${o.h},95%,62%,${Math.pow(1 - age, 1.4) * o.i})`;
+        x.beginPath(); x.arc(g.ox0 + (c + 0.5) * g.pitch, (r + 0.5) * g.pitch, rad * (0.8 + 0.3 * o.i), 0, 6.2832); x.fill();
+      }
+      this.ripples = this.ripples.filter(rp => now - rp.t < 1100);
+      for (const rp of this.ripples) {
+        const age = (now - rp.t) / 1100, R = age * Math.max(g.cols, g.rows) * 0.5, fade = 1 - age;
+        const c0 = Math.max(0, Math.floor(rp.c - R - 2)), c1 = Math.min(g.cols - 1, Math.ceil(rp.c + R + 2));
+        const r0 = Math.max(0, Math.floor(rp.r - R - 2)), r1 = Math.min(g.rows - 1, Math.ceil(rp.r + R + 2));
+        for (let c = c0; c <= c1; c++) for (let r = r0; r <= r1; r++) {
+          const dd = Math.hypot(c - rp.c, r - rp.r) - R, ring = Math.exp(-(dd * dd) / 1.6);
+          if (ring < 0.1) continue;
+          x.fillStyle = `hsla(40,100%,72%,${ring * fade * 0.8})`;
+          x.beginPath(); x.arc(g.ox0 + (c + 0.5) * g.pitch, (r + 0.5) * g.pitch, rad, 0, 6.2832); x.fill();
+        }
+      }
+    } else if (this.sparks.length) {
+      x.textAlign = 'center'; x.textBaseline = 'middle'; x.font = `${H * 0.08}px ${EMOJI_FONT}`;
+      this.sparks = this.sparks.filter(s => now - s.t < 1200);
+      for (const s of this.sparks) {
+        const age = (now - s.t) / 1200, t = (now - s.t) / 1000;
+        x.globalAlpha = 1 - age;
+        x.fillText(s.e, s.x + s.vx * t, s.y + s.vy * t + 0.5 * H * 1.4 * t * t);
+      }
+      x.globalAlpha = 1;
+    }
+  }
+  stamp(x, W, H, now) {
+    let a = 0.8;
+    if (this.isPlay && S.signature !== 'always') {
+      const age = (now - this.t0) / 1000;
+      a = age < 4 ? 0.8 : Math.max(0, 0.8 * (5 - age));
+      if (now < this.stampUntil) a = 0.8;
+    }
+    if (a < 0.02) return;
+    const fs = Math.max(10 * this.dpr, H * 0.03), pad = fs * 0.9, txt = 'LED IT ROLL · by robodurica';
+    x.save(); x.globalAlpha = a; x.shadowBlur = 0;
+    x.font = `500 ${fs}px Rubik, sans-serif`; x.textBaseline = 'middle'; x.textAlign = 'left';
+    const tw = x.measureText(txt).width, ph = fs * 1.9, pw = tw + fs * 2.2, px = W - pad - pw, py = H - pad - ph;
+    x.fillStyle = 'rgba(8,6,12,.72)'; x.beginPath();
+    if (x.roundRect) x.roundRect(px, py, pw, ph, ph / 2); else x.rect(px, py, pw, ph);
+    x.fill();
+    x.fillStyle = '#ffb21a'; x.beginPath(); x.arc(px + fs * 0.95, py + ph / 2, fs * 0.28, 0, 6.2832); x.fill();
+    x.fillStyle = '#fff'; x.fillText(txt, px + fs * 1.6, py + ph / 2 + fs * 0.03);
+    x.restore();
+  }
+}
+
+const preview = new Banner($('#previewCanvas'), false);
+const play = new Banner($('#playCanvas'), true);
+
+/* ---------- LED logo (header). Poke it. ---------- */
+const logo = {c:$('#logo'), cols:0, rows:13, pad:5, pitch:6, dpr:1, lit:null, rip:[], raf:0, last:0};
+async function buildLogo() {
+  try { await document.fonts.load('400 40px "Anton"', 'LED IT ROLL'); } catch (e) {}
+  const rows = logo.rows, text = 'LED IT ROLL', fam = '"Anton","Bebas Neue",sans-serif';
+  const off = document.createElement('canvas'), o = off.getContext('2d', {willReadFrequently:true});
+  o.font = `400 100px ${fam}`;
+  let m = o.measureText(text);
+  const hh = ((m.actualBoundingBoxAscent || 72) + (m.actualBoundingBoxDescent || 0)) || 72;
+  const fs = 100 * (rows - 2) / hh;
+  o.font = `400 ${fs}px ${fam}`;
+  m = o.measureText(text);
+  const cols = Math.ceil(m.width) + logo.pad * 2;
+  off.width = cols; off.height = rows;
+  o.font = `400 ${fs}px ${fam}`; o.textBaseline = 'alphabetic'; o.textAlign = 'center'; o.fillStyle = '#fff';
+  const asc = m.actualBoundingBoxAscent || fs * 0.72, desc = m.actualBoundingBoxDescent || 0;
+  o.fillText(text, cols / 2, (rows + asc - desc) / 2);
+  const d = o.getImageData(0, 0, cols, rows).data;
+  logo.lit = new Uint8Array(cols * rows);
+  for (let i = 0; i < cols * rows; i++) logo.lit[i] = d[i * 4 + 3] > 120 ? 1 : 0;
+  logo.cols = cols;
+  layoutLogo();
+}
+function layoutLogo() {
+  if (!logo.lit) return;
+  const w = $('.top').clientWidth || 340;
+  logo.pitch = clamp(w / logo.cols, 2, 6);
+  logo.dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const cw = logo.cols * logo.pitch, ch = logo.rows * logo.pitch;
+  logo.c.style.width = cw + 'px'; logo.c.style.height = ch + 'px';
+  logo.c.width = Math.round(cw * logo.dpr); logo.c.height = Math.round(ch * logo.dpr);
+  drawLogo(0);
+}
+function drawLogo(now) {
+  if (!logo.lit) return;
+  const {cols, rows, pitch:p} = logo;
+  const x = logo.c.getContext('2d');
+  x.setTransform(logo.dpr, 0, 0, logo.dpr, 0, 0);
+  x.clearRect(0, 0, cols * p, rows * p);
+  logo.rip = logo.rip.filter(q => now - q.t < 1000);
+  const un = new Path2D(), on = new Path2D(), hot = [], warm = [], rr = p * 0.4;
+  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+    const lit = logo.lit[r * cols + c];
+    let ring = 0;
+    for (const q of logo.rip) {
+      const age = (now - q.t) / 1000, R = age * cols * 0.6, dd = Math.hypot(c - q.c, r - q.r) - R;
+      ring = Math.max(ring, Math.exp(-(dd * dd) / 6) * (1 - age));
+    }
+    const cx = (c + 0.5) * p, cy = (r + 0.5) * p;
+    if (lit) { if (ring > 0.2) hot.push([cx, cy, ring]); else { on.moveTo(cx + rr, cy); on.arc(cx, cy, rr, 0, 6.2832); } }
+    else if (ring > 0.12) warm.push([cx, cy, ring]);
+    else { un.moveTo(cx + p * 0.28, cy); un.arc(cx, cy, p * 0.28, 0, 6.2832); }
+  }
+  x.fillStyle = 'rgba(255,255,255,0.07)'; x.fill(un);
+  x.shadowColor = '#ffb21a'; x.shadowBlur = p * 1.4; x.fillStyle = '#ffb21a'; x.fill(on); x.shadowBlur = 0;
+  for (const [cx, cy, g] of warm) { x.fillStyle = `rgba(255,178,26,${g * 0.7})`; x.beginPath(); x.arc(cx, cy, p * 0.3, 0, 6.2832); x.fill(); }
+  for (const [cx, cy, g] of hot) { x.fillStyle = `rgba(255,244,214,${0.6 + g * 0.4})`; x.beginPath(); x.arc(cx, cy, rr * (1 + g * 0.35), 0, 6.2832); x.fill(); }
+}
+function logoLoop() {
+  const now = performance.now();
+  drawLogo(now);
+  if (logo.rip.length) logo.raf = requestAnimationFrame(logoLoop); else { logo.raf = 0; drawLogo(0); }
+}
+function pokeLogo(e) {
+  const now = performance.now();
+  if (e.type === 'pointermove' && now - logo.last < 90) return;
+  logo.last = now;
+  const r = logo.c.getBoundingClientRect();
+  if (!r.width) return;
+  logo.rip.push({c:(e.clientX - r.left) / r.width * logo.cols, r:(e.clientY - r.top) / r.height * logo.rows, t:now});
+  if (logo.rip.length > 5) logo.rip.shift();
+  if (!logo.raf) logo.raf = requestAnimationFrame(logoLoop);
+}
+logo.c.addEventListener('pointerdown', pokeLogo);
+logo.c.addEventListener('pointermove', e => { if (e.buttons) pokeLogo(e); });
+if (window.ResizeObserver) new ResizeObserver(layoutLogo).observe($('.top'));
+
+/* ---------- fonts loading ---------- */
+async function loadFont() {
+  const f = FM[S.font];
+  try {
+    await Promise.race([
+      document.fonts.load(`${f.w} 40px "${f.n}"`, S.text + 'áäčďéíľĺňóôŕšťúýžÁÄČĎÉÍĽĹŇÓÔŔŠŤÚÝŽ'),
+      new Promise(r => setTimeout(r, 2500))
+    ]);
+  } catch (e) {}
+  fontVer++;
+}
+let fontTimer = 0;
+
+/* ---------- UI ---------- */
+function syncUI() {
+  $$('[data-k]').forEach(el => {
+    const v = S[el.dataset.k];
+    if (el.type === 'checkbox') el.checked = !!v; else if (el.value !== String(v)) el.value = v;
+  });
+  $$('output[data-out]').forEach(o => { o.textContent = S[o.dataset.out] + (o.dataset.unit || ''); });
+  $$('[data-seg]').forEach(box => $$('button', box).forEach(b => b.classList.toggle('on', String(S[box.dataset.seg]) === b.dataset.v)));
+  $$('.sw').forEach(b => b.classList.toggle('on', b.dataset.c.toLowerCase() === S.color.toLowerCase()));
+  $$('.fontchip').forEach(b => b.classList.toggle('on', b.dataset.font === S.font));
+  $$('[data-show]').forEach(el => { const [k, v] = el.dataset.show.split('='); el.hidden = v === undefined ? !S[k] : String(S[k]) !== v; });
+  $$('[data-hide]').forEach(el => { const [k, v] = el.dataset.hide.split('='); el.hidden = String(S[k]) === v; });
+  $('#imgNote').textContent = S.bgType === 'image' && !bgBmp ? 'Vyber obrázok z mobilu alebo počítača.' : '';
+  $('#pSpeed').textContent = 'Rýchlosť ' + S.speed;
+}
+
+async function applyMusic(mode) {
+  const note = $('#musicNote');
+  if (mode === 'mic') {
+    try {
+      await audio.startMic(); audio.mode = 'mic'; S.music = 'mic';
+      note.textContent = 'Mikrofón beží. Pusti hudbu nahlas pri zariadení.';
+    } catch (e) {
+      audio.dropMic(); audio.mode = 'off'; S.music = 'off';
+      note.textContent = 'Mikrofón sa tu nepodarilo zapnúť, prehliadač ho nepustil. Skús Demo rytmus alebo pieseň zo súboru.';
+    }
+  } else if (mode === 'file') {
+    audio.dropMic();
+    if (audio.buf) { await audio.playBuf(); audio.mode = 'file'; note.textContent = 'Hrá tvoja pieseň v slučke.'; }
+    else { audio.stopFile(); audio.mode = 'off'; note.textContent = 'Vyber pieseň zo svojho zariadenia.'; }
+  } else if (mode === 'demo') {
+    audio.dropMic(); audio.stopFile(); audio.mode = 'demo';
+    note.textContent = 'Demo rytmus, 126 úderov za minútu. Funguje bez zvuku.';
+  } else {
+    audio.dropMic(); audio.stopFile(); audio.mode = 'off';
+    note.textContent = 'Text sa hýbe len podľa nastavenej rýchlosti.';
+  }
+  syncUI(); save();
+}
+
+function onChange(k) {
+  if (k === 'font') loadFont();
+  if (k === 'text') { clearTimeout(fontTimer); fontTimer = setTimeout(loadFont, 300); }
+  if (k === 'music') applyMusic(S.music);
+  save(); syncUI();
+}
+
+function buildStatic() {
+  const fl = $('#fontList');
+  FONTS.forEach(f => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'chip fontchip'; b.dataset.font = f.n; b.textContent = f.n;
+    b.style.fontFamily = `"${f.n}", "Rubik", sans-serif`; b.style.fontWeight = f.w;
+    b.addEventListener('click', () => { S.font = f.n; onChange('font'); });
+    fl.appendChild(b);
+  });
+  const sw = $('#swatches'), pick = $('#colorPick');
+  ACCENTS.forEach(c => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'sw'; b.dataset.c = c; b.style.background = c; b.setAttribute('aria-label', 'Farba ' + c);
+    b.addEventListener('click', () => { S.color = c; onChange('color'); });
+    sw.insertBefore(b, pick);
+  });
+  const eb = $('#emojiBar'), ta = $('#text');
+  EMOJIS.forEach(e => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'chip emo'; b.textContent = e; b.setAttribute('aria-label', 'Vložiť ' + e);
+    b.addEventListener('click', () => {
+      const s = ta.selectionStart ?? ta.value.length, en = ta.selectionEnd ?? ta.value.length;
+      ta.value = ta.value.slice(0, s) + e + ta.value.slice(en);
+      ta.selectionStart = ta.selectionEnd = s + e.length;
+      ta.dispatchEvent(new Event('input', {bubbles:true}));
+    });
+    eb.appendChild(b);
+  });
+}
+
+function bindControls() {
+  $$('[data-k]').forEach(el => {
+    el.addEventListener('input', () => {
+      const k = el.dataset.k;
+      S[k] = el.type === 'checkbox' ? el.checked : el.type === 'range' ? Number(el.value) : el.value;
+      onChange(k);
+    });
+  });
+  $$('[data-seg]').forEach(box => {
+    box.addEventListener('click', e => {
+      const b = e.target.closest('button[data-v]');
+      if (!b) return;
+      S[box.dataset.seg] = b.dataset.v;
+      onChange(box.dataset.seg);
+    });
+  });
+  $$('.tab').forEach(t => t.addEventListener('click', () => {
+    $$('.tab').forEach(o => o.setAttribute('aria-selected', String(o === t)));
+    $$('.tabpanel').forEach(p => { p.hidden = p.dataset.panel !== t.dataset.tab; });
+  }));
+  $('#clearText').addEventListener('click', () => {
+    S.text = ''; onChange('text'); const ta = $('#text'); ta.value = ''; ta.focus();
+  });
+  const pc = $('#previewCanvas');
+  let pDown = null;
+  pc.addEventListener('pointerdown', e => { pDown = {x:e.clientX, y:e.clientY, d:0}; try { pc.setPointerCapture(e.pointerId); } catch (err) {} });
+  pc.addEventListener('pointermove', e => {
+    if (!e.buttons || !pDown) return;
+    pDown.d = Math.max(pDown.d, Math.hypot(e.clientX - pDown.x, e.clientY - pDown.y));
+    if (pDown.d > 8) preview.pointer(e, false);
+  });
+  pc.addEventListener('pointerup', () => { if (pDown && pDown.d <= 8) openPlay(); pDown = null; });
+  pc.addEventListener('pointercancel', () => { pDown = null; });
+  $('#bgFile').addEventListener('change', async e => {
+    const f = e.target.files && e.target.files[0];
+    if (!f) return;
+    try { bgBmp = await createImageBitmap(f); S.bgType = 'image'; save(); syncUI(); }
+    catch (err) { $('#imgNote').textContent = 'Obrázok sa nepodarilo načítať.'; }
+  });
+  $('#audioFile').addEventListener('change', async e => {
+    const f = e.target.files && e.target.files[0];
+    if (!f) return;
+    const note = $('#musicNote');
+    note.textContent = 'Načítavam pieseň…';
+    try {
+      await audio.loadFile(f); audio.mode = 'file'; S.music = 'file';
+      note.textContent = 'Hrá tvoja pieseň v slučke.'; syncUI(); save();
+    } catch (err) { note.textContent = 'Pieseň sa nepodarilo načítať. Skús MP3 alebo WAV.'; }
+  });
+  $('#audioStop').addEventListener('click', () => {
+    audio.stopFile(); audio.mode = 'off'; S.music = 'off';
+    $('#musicNote').textContent = 'Pieseň je zastavená.'; syncUI(); save();
+  });
+  $('#resetBtn').addEventListener('click', () => {
+    S = Object.assign({}, DEF); audio.dropMic(); audio.stopFile(); audio.mode = 'off';
+    preview.reset(); play.reset(); syncUI(); loadFont(); save();
+    $('#musicNote').textContent = '';
+  });
+}
+
+/* ---------- play mode ---------- */
+let playing = false, paused = false, ctlT = 0, wake = null, dragDist = 0, downX = 0, downY = 0;
+const playEl = $('#play'), ctl = $('#ctl'), sheet = $('#sheet'), toast = $('#toast');
+const panel = $('.panel'), panelHome = panel.parentNode, panelNext = panel.nextSibling;
+let sheetOpen = false, toastT = 0;
+function hideUi() {
+  clearTimeout(ctlT); ctl.classList.remove('on'); playEl.classList.add('idle');
+}
+function showCtl() {
+  ctl.classList.add('on'); playEl.classList.remove('idle');
+  toast.classList.remove('on');
+  play.stampUntil = performance.now() + 3500;
+  clearTimeout(ctlT);
+  if (!sheetOpen) ctlT = setTimeout(hideUi, 4000);
+}
+function openSheet() {
+  sheet.appendChild(panel); sheet.hidden = false; sheetOpen = true; showCtl();
+}
+function closeSheet() {
+  if (!sheetOpen) return;
+  panelHome.insertBefore(panel, panelNext); sheet.hidden = true; sheetOpen = false;
+}
+function toggleUi() {
+  if (sheetOpen || ctl.classList.contains('on')) { closeSheet(); hideUi(); }
+  else showCtl();
+}
+function openPlay() {
+  playing = true; paused = false; $('#pPause').textContent = 'Pauza';
+  playEl.hidden = false; document.body.classList.add('playing');
+  play.reset(); play.resize(); hideUi(); syncUI();
+  toast.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => toast.classList.remove('on'), 2200);
+  try {
+    const p = playEl.requestFullscreen && playEl.requestFullscreen();
+    if (p && p.then) p.then(() => { try { screen.orientation.lock('landscape').catch(() => {}); } catch (e) {} }).catch(() => {});
+  } catch (e) {}
+  try { if (navigator.wakeLock) navigator.wakeLock.request('screen').then(w => { wake = w; }).catch(() => {}); } catch (e) {}
+}
+function closePlay() {
+  closeSheet();
+  playing = false; playEl.hidden = true; document.body.classList.remove('playing');
+  clearTimeout(ctlT); clearTimeout(toastT); toast.classList.remove('on');
+  try { if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); } catch (e) {}
+  try { if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {}); } catch (e) {}
+  try { if (wake && wake.release) wake.release().catch(() => {}); } catch (e) {}
+  wake = null;
+}
+function nudgeSpeed(d) { S.speed = clamp(S.speed + d, 0, 100); syncUI(); save(); showCtl(); }
+$('#playBtn').addEventListener('click', openPlay);
+$('#pClose').addEventListener('click', closePlay);
+$('#pEdit').addEventListener('click', () => { if (sheetOpen) { closeSheet(); showCtl(); } else openSheet(); });
+$('#sheetClose').addEventListener('click', () => { closeSheet(); hideUi(); });
+$('#pSlow').addEventListener('click', () => nudgeSpeed(-8));
+$('#pFast').addEventListener('click', () => nudgeSpeed(8));
+$('#pPause').addEventListener('click', () => { paused = !paused; $('#pPause').textContent = paused ? 'Ďalej' : 'Pauza'; showCtl(); });
+$('#pFull').addEventListener('click', () => {
+  try {
+    if (document.fullscreenElement) { document.exitFullscreen().catch(() => {}); }
+    else { const p = playEl.requestFullscreen && playEl.requestFullscreen(); if (p && p.catch) p.catch(() => {}); }
+  } catch (e) {}
+  showCtl();
+});
+let downOnScreen = false;
+playEl.addEventListener('pointerdown', e => {
+  downX = e.clientX; downY = e.clientY; dragDist = 0;
+  downOnScreen = !e.target.closest('.ctl, .sheet');
+});
+playEl.addEventListener('pointermove', e => {
+  if (!downOnScreen || !e.buttons) return;
+  dragDist = Math.max(dragDist, Math.hypot(e.clientX - downX, e.clientY - downY));
+  if (dragDist > 10) play.pointer(e, false);
+});
+playEl.addEventListener('pointerup', e => {
+  if (!downOnScreen) return;
+  downOnScreen = false;
+  if (dragDist <= 10) toggleUi();
+});
+document.addEventListener('keydown', e => {
+  if (!playing) return;
+  if (e.target.closest && e.target.closest('.sheet')) { if (e.key === 'Escape') { closeSheet(); hideUi(); } return; }
+  if (e.key === 'Escape') closePlay();
+  else if (e.key === ' ') { e.preventDefault(); $('#pPause').click(); }
+  else if (e.key === 'ArrowUp' || e.key === 'ArrowRight') nudgeSpeed(5);
+  else if (e.key === 'ArrowDown' || e.key === 'ArrowLeft') nudgeSpeed(-5);
+});
+
+/* ---------- loop ---------- */
+const meter = $('#meterFill');
+let last = performance.now();
+function tick(now) {
+  const dt = Math.min(0.05, Math.max(0, (now - last) / 1000)); last = now;
+  audio.update(dt, now);
+  meter.style.transform = 'scaleX(' + audio.level.toFixed(3) + ')';
+  if (playing) play.frame(now, paused ? 0 : dt); else preview.frame(now, reduced ? 0 : dt);
+  requestAnimationFrame(tick);
+}
+
+buildStatic();
+bindControls();
+syncUI();
+applyMusic(S.music);
+loadFont();
+buildLogo();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { fontVer++; buildLogo(); });
+requestAnimationFrame(tick);
+})();
+</script>
+
+</body>
+</html>

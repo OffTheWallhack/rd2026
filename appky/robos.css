@@ -4,6 +4,8 @@
 #robos {
   --ro-amber: #ffb21a; --ro-amber-ink: #1b1200;
   --ro-sys: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --ro-round: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-text-size-adjust: 100%; text-size-adjust: 100%;
   --ro-glass: rgba(18, 11, 28, .46);
   --ro-card: rgba(10, 7, 16, .64);
   --ro-shadow: 0 10px 28px rgba(0, 0, 0, .38), 0 1px 0 rgba(255, 255, 255, .06) inset;
@@ -42,13 +44,13 @@
 .ro-launch { display: none; position: fixed; z-index: 66; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px));
   align-items: center; gap: 10px; padding: 6px 18px 6px 6px; border: 0; border-radius: 999px; background: #17151d; color: #fff; font: 600 16px/1 var(--ro-sys);
   box-shadow: 0 12px 30px -8px rgba(0, 0, 0, .45); cursor: pointer; }
-.ro-launch img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; object-position: 50% 20%; background: #2a1d3a; }
+.ro-launch img { width: 40px; height: 40px; border-radius: 11px; object-fit: cover; object-position: 50% 20%; background: #2a1d3a; }
 .tabbar.ro-tabs { grid-template-columns: repeat(5, 1fr) !important; }
 .tabbar .ro-tab { cursor: pointer; }
-.tabbar .ro-tab img { width: 22px; height: 22px; border-radius: 50%; object-fit: cover; object-position: 50% 15%; background: #2a1d3a; }
+.tabbar .ro-tab img { width: 22px; height: 22px; border-radius: 6px; object-fit: cover; object-position: 50% 15%; background: #2a1d3a; }
 
 /* page mode (/appky/): the phone is the page */
-html.ro-page, html.ro-page body { height: 100%; margin: 0; background: #0d0a12; }
+html.ro-page, html.ro-page body { height: 100%; margin: 0; background: #0d0a12; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 html.ro-page .ro-phone { position: fixed; left: 50%; top: 50%; right: auto; bottom: auto; transform-origin: center center; transition: none; }
 html.ro-page .ro-hide { display: none; }
 
@@ -65,14 +67,8 @@ html.ro-page .ro-hide { display: none; }
 
 /* ---------- inside the phone ---------- */
 .ro-layer { position: absolute; inset: 0; }
-.ro-wall { background:
-   radial-gradient(120% 70% at 85% 8%, #ff8a1a 0%, rgba(255, 138, 26, 0) 55%),
-   radial-gradient(90% 60% at 10% 40%, #7a2cff 0%, rgba(122, 44, 255, 0) 60%),
-   radial-gradient(110% 70% at 70% 100%, #ff2d6d 0%, rgba(255, 45, 109, 0) 60%),
-   #1a0f2b; }
-.ro-wall::after { content: ""; position: absolute; inset: 0; opacity: .22;
-  background-image: radial-gradient(circle, rgba(255, 255, 255, .9) .9px, transparent 1.3px); background-size: 9px 9px;
-  -webkit-mask-image: linear-gradient(transparent 0%, #000 55%, #000 100%); mask-image: linear-gradient(transparent 0%, #000 55%, #000 100%); }
+.ro-wall { background: #15121c center / cover no-repeat; background-image: var(--ro-wall); }
+.ro-light .ro-status, .ro-light .ro-lock { color: #16141a; }
 
 .ro-status { position: absolute; top: 0; left: 0; right: 0; height: 54px; z-index: 55; display: flex; align-items: center; justify-content: space-between;
   padding: 4px 34px 0 40px; font-weight: 600; font-size: 16px; letter-spacing: -.01em; pointer-events: none; }
@@ -89,8 +85,11 @@ html.ro-page .ro-hide { display: none; }
 /* boot */
 .ro-boot { z-index: 58; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; transition: opacity .5s; }
 .ro-boot.gone { opacity: 0; pointer-events: none; }
-.ro-bootface { width: 150px; height: auto; display: block; filter: drop-shadow(0 0 24px rgba(255, 255, 255, .12)); }
-.ro-word { font: 700 30px/1 var(--ro-sys); letter-spacing: -.02em; margin-top: 10px; }
+.ro-mark { display: grid; grid-template-columns: repeat(5, 14px); gap: 6px; }
+.ro-mark i { width: 14px; height: 14px; border-radius: 50%; background: rgba(255, 255, 255, .08); }
+.ro-mark i.on { background: rgba(255, 178, 26, .15); transition: background .25s, box-shadow .25s; }
+.ro-boot.run .ro-mark i.on { background: #ffb21a; box-shadow: 0 0 12px rgba(255, 160, 20, .8); }
+.ro-word { font: 700 30px/1 var(--ro-sys); letter-spacing: -.02em; margin-top: 22px; }
 .ro-word b { color: var(--ro-amber); font-weight: 700; }
 .ro-bar { width: 120px; height: 4px; border-radius: 2px; background: rgba(255, 255, 255, .18); overflow: hidden; margin-top: 26px; }
 .ro-bar i { display: block; height: 100%; width: 100%; background: #fff; transform: scaleX(0); transform-origin: left; }
@@ -100,19 +99,29 @@ html.ro-page .ro-hide { display: none; }
 .ro-lock { z-index: 50; transition: transform .45s cubic-bezier(.2, .9, .2, 1), opacity .45s; touch-action: none; cursor: grab; }
 .ro-lock.drag { transition: none; }
 .ro-lock.away { transform: translateY(-104%) !important; opacity: 0; pointer-events: none; }
-.ro-lockcol { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; padding-top: 72px; }
-@media (max-width: 47.99rem) { .ro-lockcol { padding-top: calc(60px + env(safe-area-inset-top, 0px)); } }
-.ro-lockdate { font-size: 19px; font-weight: 600; opacity: .92; text-shadow: 0 1px 8px rgba(0, 0, 0, .2); }
-.ro-locktime { font: 700 98px/1 var(--ro-sys); letter-spacing: -.035em; margin-top: 0; font-variant-numeric: tabular-nums; text-shadow: 0 2px 18px rgba(0, 0, 0, .18); }
-.ro-notif { margin-top: auto; width: calc(100% - 28px); margin-bottom: 22px; display: flex; gap: 12px; align-items: center; padding: 13px 14px; border-radius: 22px;
-  background: var(--ro-card); box-shadow: var(--ro-shadow); -webkit-backdrop-filter: blur(24px) saturate(1.3); backdrop-filter: blur(24px) saturate(1.3); }
-.ro-notif .ro-ic { width: 38px; height: 38px; flex: none; border-radius: 10px; }
-.ro-notif .ro-tx { min-width: 0; flex: 1; font-size: 14px; line-height: 1.3; }
-.ro-notif .ro-tx b { display: flex; justify-content: space-between; gap: 8px; font-size: 12.5px; opacity: .7; font-weight: 600; }
-.ro-notif .ro-tx span { display: block; font-weight: 600; }
-.ro-notif .ro-tx em { display: block; font-style: normal; opacity: .82; }
-.ro-unlock { appearance: none; border: 0; background: none; color: #fff; margin-bottom: 46px; font: 500 15px/1 var(--ro-sys); opacity: .9; cursor: pointer;
-  animation: ro-nudge 2.4s ease-in-out infinite; padding: 10px 18px; }
+.ro-lockcol { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; padding-top: 70px; }
+@media (max-width: 47.99rem) { .ro-lockcol { padding-top: calc(58px + env(safe-area-inset-top, 0px)); } }
+.ro-lockdate { font: 600 19px/1.2 var(--ro-sys); text-shadow: 0 1px 8px rgba(0, 0, 0, .18); }
+.ro-locktime { font: 700 98px/1 var(--ro-round); letter-spacing: -.02em; margin-top: 2px; font-variant-numeric: tabular-nums; white-space: nowrap;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .96) 0%, rgba(255, 255, 255, .62) 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, .5); filter: drop-shadow(0 2px 10px rgba(0, 0, 0, .22)); }
+.ro-light .ro-locktime { background-image: linear-gradient(180deg, rgba(20, 18, 26, .92) 0%, rgba(20, 18, 26, .6) 100%); -webkit-text-stroke-color: rgba(20, 18, 26, .25); filter: none; }
+.ro-lockw { width: calc(100% - 64px); max-width: 300px; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 14px; margin-top: 10px;
+  font: 500 15px/1.25 var(--ro-sys); text-shadow: 0 1px 6px rgba(0, 0, 0, .25); }
+.ro-light .ro-lockw { text-shadow: none; }
+.ro-lockw b { display: block; font-weight: 700; }
+.ro-lockw span, .ro-lockw em { display: block; font-style: normal; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ro-lockw em { opacity: .72; }
+.ro-lockw .ro-wx b { display: flex; align-items: center; gap: 6px; }
+.ro-lockw .ro-wx b svg { width: 18px; height: 18px; flex: none; }
+.ro-lockw .ro-wxt { font: 600 34px/1.05 var(--ro-round); letter-spacing: -.01em; }
+.ro-lockbot { margin-top: auto; margin-bottom: 40px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+@media (max-width: 47.99rem) { .ro-lockbot { margin-bottom: calc(40px + env(safe-area-inset-bottom, 0px)); } }
+.ro-pill { appearance: none; border: 0; display: inline-flex; align-items: center; gap: 8px; padding: 11px 20px; border-radius: 999px; cursor: pointer;
+  font: 600 16px/1 var(--ro-sys); color: #fff; background: rgba(30, 26, 38, .5); box-shadow: 0 0 0 1px rgba(255, 255, 255, .14) inset;
+  -webkit-backdrop-filter: blur(18px) saturate(1.4); backdrop-filter: blur(18px) saturate(1.4); }
+.ro-unlock { appearance: none; border: 0; background: none; color: inherit; font: 500 15px/1 var(--ro-sys); opacity: .85; cursor: pointer;
+  animation: ro-nudge 2.4s ease-in-out infinite; padding: 8px 18px; }
 @keyframes ro-nudge { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
 
 /* home */
@@ -120,18 +129,19 @@ html.ro-page .ro-hide { display: none; }
 .ro-home.back { transform: scale(.93); filter: blur(3px) brightness(.7); }
 @media (max-width: 47.99rem) { .ro-home { padding-top: calc(62px + env(safe-area-inset-top, 0px)); } }
 .ro-widgets { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.ro-wg { appearance: none; border: 0; text-align: left; color: #fff; height: 172px; border-radius: 24px; padding: 14px 15px; display: flex; flex-direction: column;
+.ro-wg { appearance: none; border: 0; text-align: left; color: #fff; min-height: 168px; border-radius: 24px; padding: 14px 15px; display: flex; flex-direction: column;
   background: var(--ro-glass); box-shadow: var(--ro-shadow); -webkit-backdrop-filter: blur(26px) saturate(1.4); backdrop-filter: blur(26px) saturate(1.4);
   min-width: 0; overflow: hidden; font-family: var(--ro-sys); }
 .ro-wg .ro-k { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ro-amber); }
-.ro-wg .ro-big { font: 700 46px/1 var(--ro-sys); letter-spacing: -.035em; margin-top: auto; font-variant-numeric: tabular-nums; }
+.ro-wg .ro-big { font: 600 46px/1 var(--ro-round); letter-spacing: -.035em; margin-top: auto; font-variant-numeric: tabular-nums; }
 .ro-wg .ro-sm { font-size: 12.5px; opacity: .85; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ro-wg .ro-ttl { font-size: 15px; font-weight: 700; line-height: 1.15; margin-top: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ro-ev { padding: 0; cursor: pointer; }
 .ro-ev .ro-pic { display: block; width: 100%; aspect-ratio: 2 / 1; object-fit: cover; background: #2a1d3a; flex: none; }
-.ro-ev .ro-in { padding: 9px 13px 12px; display: flex; flex-direction: column; min-height: 0; flex: 1; }
+.ro-ev .ro-in { padding: 9px 13px 12px; display: flex; flex-direction: column; gap: 2px; flex: 1; }
+.ro-wg .ro-wxi { width: 26px; height: 26px; margin-top: 8px; }
 .ro-ev .ro-ttl { margin-top: 3px; }
-.ro-ev .ro-sm { margin-top: auto; }
+.ro-ev .ro-sm { margin-top: 2px; }
 .ro-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px 0; margin-top: 24px; justify-items: center; }
 .ro-app { appearance: none; border: 0; background: none; padding: 0; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; color: #fff;
   font: 500 11.5px/1.1 var(--ro-sys); width: 76px; -webkit-tap-highlight-color: transparent; text-shadow: 0 1px 4px rgba(0, 0, 0, .35); }
@@ -205,6 +215,29 @@ html.ro-page .ro-hide { display: none; }
 .ro-homebar[aria-hidden="true"] { pointer-events: none; }
 @media (max-width: 47.99rem) { .ro-homebar { padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px)); height: calc(28px + env(safe-area-inset-bottom, 0px)); } }
 
+/* wallpaper picker (like customising the iPhone lock screen) */
+.ro-pick { z-index: 56; background: #000; display: flex; flex-direction: column; align-items: center; padding-top: 64px; opacity: 0; pointer-events: none; transition: opacity .3s; }
+.ro-pick.on { opacity: 1; pointer-events: auto; }
+@media (max-width: 47.99rem) { .ro-pick { padding-top: calc(58px + env(safe-area-inset-top, 0px)); } }
+.ro-pick h3 { margin: 0; font: 700 15px/1 var(--ro-sys); letter-spacing: .08em; color: #fff; }
+.ro-pick .ro-pname { margin-top: 6px; font: 500 13px/1 var(--ro-sys); color: #aaa3b8; }
+.ro-cards { width: 100%; flex: 1; min-height: 0; display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 18px 18% 10px;
+  scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.ro-cards::-webkit-scrollbar { display: none; }
+.ro-card { flex: none; width: 100%; height: 100%; max-height: 520px; scroll-snap-align: center; border-radius: 30px; overflow: hidden; position: relative;
+  background: #15121c center / cover no-repeat; box-shadow: 0 0 0 1px rgba(255, 255, 255, .14) inset; border: 0; padding: 0; cursor: pointer; color: #fff; }
+.ro-card.light { color: #16141a; }
+.ro-card .ro-cd { position: absolute; left: 0; right: 0; top: 13%; text-align: center; font: 600 12px/1 var(--ro-sys); }
+.ro-card .ro-ct { position: absolute; left: 0; right: 0; top: 17%; text-align: center; font: 700 54px/1 var(--ro-round); letter-spacing: -.02em; }
+.ro-dots { display: flex; gap: 7px; margin: 10px 0 14px; }
+.ro-dots i { width: 7px; height: 7px; border-radius: 50%; background: #55505f; }
+.ro-dots i.on { background: #fff; }
+.ro-pickbar { display: flex; gap: 12px; width: calc(100% - 40px); margin-bottom: 30px; }
+@media (max-width: 47.99rem) { .ro-pickbar { margin-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); } }
+.ro-pickbar button { flex: 1; min-height: 52px; border-radius: 999px; border: 0; cursor: pointer; font: 600 17px/1 var(--ro-sys); background: #1f1c26; color: #fff;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .1) inset; }
+.ro-pickbar .ro-use { background: #fff; color: #111; }
+
 /* sheets (save to home screen, mail) */
 .ro-sheet { z-index: 40; display: flex; align-items: flex-end; background: rgba(0, 0, 0, .4); opacity: 0; pointer-events: none; transition: opacity .3s; }
 .ro-sheet.on { opacity: 1; pointer-events: auto; }
@@ -236,6 +269,13 @@ html.ro-page .ro-hide { display: none; }
 html.ro-lockscroll, html.ro-lockscroll body { overflow: hidden; }
 
 @media (prefers-reduced-motion: reduce) {
-  .ro-phone, .ro-lock, .ro-home, .ro-win, .ro-sheetcard, .ro-sheet, .ro-boot, .ro-toast, .ro-scrim { transition: none !important; }
+  .ro-phone, .ro-lock, .ro-home, .ro-win, .ro-sheetcard, .ro-sheet, .ro-boot, .ro-toast, .ro-scrim, .ro-pick, .ro-mark i { transition: none !important; }
   .ro-unlock { animation: none; }
 }
+
+/* weather icons */
+.ro-wxi svg, .ro-lockw .ro-wx b [data-ro-wx-icon] svg { display: block; width: 100%; height: 100%; }
+.ro-lockw .ro-wx b [data-ro-wx-icon] { display: inline-flex; width: 18px; height: 18px; flex: none; overflow: visible; }
+.ro-wg .ro-wxi { display: block; }
+@media (max-width: 47.99rem) { .ro-locktime { font-size: min(112px, 27vw); } }
+.ro-lockw .ro-wx.off { visibility: hidden; }

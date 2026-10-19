@@ -20,8 +20,15 @@
     bgMaker: 'https://bg-maker-gamma.vercel.app',
     led: BASE + 'led-it-roll/',
     me: ROOT + 'img/portrait.webp',
-    head: BASE + 'img/head-cut.webp'
+    icon: BASE + 'img/robos-192.png',
+    wallBase: BASE + 'tapety/'
   };
+  // wallpapers in appky/tapety/ (light: dark clock on a light picture)
+  var WALLS = [
+    { id: 'fialovy', name: 'Fialový západ' }, { id: 'grafit', name: 'Grafit' }, { id: 'okruh', name: 'Okruh' },
+    { id: 'chrom', name: 'Chróm', light: true }, { id: 'halftone', name: 'Halftone' }, { id: 'grafika', name: 'Čiernobiela' },
+    { id: 'obloha', name: 'Obloha' }, { id: 'led', name: 'LED' }, { id: 'rave', name: 'Rave' }, { id: 'beton', name: 'Betón', light: true }
+  ];
   var TAGC = { 'GOSko': '#39ff88', 'Drop Ups': '#b98cff', 'Red Bull': '#ff6170', 'Festival': '#ffb21a' };
   var reduced = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
   var mobileMQ = window.matchMedia('(max-width: 47.99rem)');
@@ -60,7 +67,7 @@
   /* ---------- markup ---------- */
   var html =
   '<div class="ro-scrim"></div>' +
-  '<button class="ro-launch" type="button" aria-label="Otvoriť moje appky"><img src="' + CFG.head + '" alt="">Moje appky</button>' +
+  '<button class="ro-launch" type="button" aria-label="Otvoriť moje appky"><img src="' + CFG.icon + '" alt="">Moje appky</button>' +
   '<div class="ro-phone peek" role="button" tabindex="0" aria-label="robOS, telefón s mojimi appkami. Otvoriť.">' +
    '<div class="ro-body">' +
     '<span class="ro-side ro-s1"></span><span class="ro-side ro-s2"></span><span class="ro-side ro-s3"></span><span class="ro-side ro-s4"></span>' +
@@ -80,7 +87,7 @@
 
      '<div class="ro-layer ro-home">' +
       '<div class="ro-widgets">' +
-       '<div class="ro-wg"><span class="ro-k">Bratislava</span><span class="ro-big" data-ro-time>12:00</span><span class="ro-sm" data-ro-date-short></span></div>' +
+       '<div class="ro-wg ro-wxw" aria-label="Počasie v Bratislave"><span class="ro-k">Bratislava</span><span class="ro-wxi" data-ro-wx-icon></span><span class="ro-big" data-ro-wx-t></span><span class="ro-sm" data-ro-wx-d>Počasie sa načítava</span><span class="ro-sm" data-ro-wx-hl></span></div>' +
        '<button class="ro-wg ro-ev" type="button" data-ro-open="eventy" aria-label="Najbližší event"><img class="ro-pic" alt="" hidden><span class="ro-in"><span class="ro-k">Najbližší event</span><span class="ro-ttl" data-ro-next-t>Načítavam…</span><span class="ro-sm" data-ro-next-m></span></span></button>' +
       '</div>' +
       '<div class="ro-grid">' +
@@ -137,13 +144,22 @@
       '<button class="ro-done" type="button" data-ro-close>Zavrieť</button>' +
      '</div></div>' +
 
+     '<div class="ro-layer ro-pick" aria-hidden="true" role="dialog" aria-label="Vyber tapetu"><h3>TAPETA</h3><span class="ro-pname"></span>' +
+      '<div class="ro-cards"></div><div class="ro-dots" aria-hidden="true"></div>' +
+      '<div class="ro-pickbar"><button type="button" data-ro-pick-close>Zrušiť</button><button type="button" class="ro-use">Použiť</button></div>' +
+     '</div>' +
+
      '<div class="ro-layer ro-lock"><div class="ro-layer ro-wall"></div><div class="ro-lockcol">' +
       '<span class="ro-lockdate" data-ro-date-long></span><span class="ro-locktime" data-ro-time>12:00</span>' +
-      '<div class="ro-notif"><span class="ro-ic" data-ro-icon="cal"></span><span class="ro-tx"><b><span>EVENTY</span><span>teraz</span></b><span data-ro-next-t>Načítavam…</span><em data-ro-next-m></em></span></div>' +
-      '<button class="ro-unlock" type="button">Potiahni hore</button>' +
+      '<div class="ro-lockw">' +
+       '<div><b data-ro-next-d>Eventy</b><span data-ro-next-t>Načítavam…</span><em data-ro-next-p></em></div>' +
+       '<div class="ro-wx off"><b><span data-ro-wx-icon></span>Bratislava</b><span class="ro-wxt" data-ro-wx-t></span></div>' +
+      '</div>' +
+      '<div class="ro-lockbot"><button class="ro-pill" type="button" data-ro-pick-open><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 16l5-5 4 4 3-3 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>Prispôsobiť</button>' +
+      '<button class="ro-unlock" type="button">Potiahni hore</button></div>' +
      '</div></div>' +
 
-     '<div class="ro-layer ro-boot"><img class="ro-bootface" src="' + CFG.head + '" alt=""><span class="ro-word">rob<b>OS</b></span><span class="ro-bar"><i></i></span></div>' +
+     '<div class="ro-layer ro-boot">' + '<span class="ro-mark" aria-hidden="true">' + ['11110','10001','10001','11110','10100','10010','10001'].join('').split('').map(function (c, i) { return '<i' + (c === '1' ? ' class="on" style="transition-delay:' + (i * 28) + 'ms"' : '') + '></i>'; }).join('') + '</span>' + '<span class="ro-word">rob<b>OS</b></span><span class="ro-bar"><i></i></span></div>' +
      '<button class="ro-homebar" type="button" aria-label="Späť na plochu" aria-hidden="true"><i></i></button>' +
      '<div class="ro-toast" role="status">Späť na plochu: ťukni na pásik dole</div>' +
     '</div>' +
@@ -197,6 +213,8 @@
     var nx = up[0];
     $$('[data-ro-next-t]').forEach(function (e) { e.textContent = nx ? nx.nazov : 'Čoskoro'; });
     $$('[data-ro-next-m]').forEach(function (e) { e.textContent = nx ? shortDate(parse(nx.datum)) + ' · ' + (nx.miesto || '') : 'Nové eventy pribudnú'; });
+    $$('[data-ro-next-d]').forEach(function (e) { var d = nx && parse(nx.datum); e.textContent = d ? DSH[d.getDay()] + ', ' + d.getDate() + '. ' + MSH[d.getMonth()].toLowerCase() : 'Eventy'; });
+    $$('[data-ro-next-p]').forEach(function (e) { e.textContent = nx ? (nx.miesto || '') : ''; });
     var pic = $('.ro-ev .ro-pic');
     if (nx && nx.obrazok) { pic.src = img(nx.obrazok); pic.hidden = false; } else pic.hidden = true;
   }
@@ -257,7 +275,7 @@
     var tabs = document.querySelector('.tabbar');
     if (!tabs || tabs.querySelector('.ro-tab')) return;
     var a = document.createElement('a'); a.className = 'ro-tab'; a.href = BASE; a.setAttribute('role', 'button');
-    a.innerHTML = '<img src="' + CFG.head + '" alt=""><span>Appky</span>';
+    a.innerHTML = '<img src="' + CFG.icon + '" alt=""><span>Appky</span>';
     a.querySelector('span').setAttribute('data-en', 'Apps');
     a.addEventListener('click', function (e) { e.preventDefault(); openPhone(); });
     tabs.appendChild(a); tabs.classList.add('ro-tabs');
@@ -352,10 +370,86 @@
 
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape' || !isOpen) return;
-    if (root.querySelector('.ro-sheet.on')) closeSheets();
+    if (pick.classList.contains('on')) closePick();
+    else if (root.querySelector('.ro-sheet.on')) closeSheets();
     else if (current) closeApp();
     else closePhone();
   });
+
+  /* ---------- wallpaper ---------- */
+  var screen = $('.ro-screen'), wallIdx = 0;
+  try { var saved = localStorage.getItem('robos.wall'); WALLS.forEach(function (w, i) { if (w.id === saved) wallIdx = i; }); } catch (err) {}
+  function setWall(i) {
+    var w = WALLS[i]; wallIdx = i;
+    screen.style.setProperty('--ro-wall', 'url("' + CFG.wallBase + w.id + '.webp")');
+    screen.classList.toggle('ro-light', !!w.light);
+    try { localStorage.setItem('robos.wall', w.id); } catch (err) {}
+  }
+  setWall(wallIdx);
+  var pick = $('.ro-pick'), cards = $('.ro-cards'), dots = $('.ro-dots'), pname = $('.ro-pname'), pickIdx = 0;
+  WALLS.forEach(function (w, i) {
+    var c = document.createElement('button'); c.type = 'button'; c.className = 'ro-card' + (w.light ? ' light' : '');
+    c.style.backgroundImage = 'url("' + CFG.wallBase + w.id + '-s.webp")'; c.setAttribute('aria-label', 'Tapeta ' + w.name);
+    c.innerHTML = '<span class="ro-cd" data-ro-date-long></span><span class="ro-ct" data-ro-time></span>';
+    c.addEventListener('click', function () { if (pickIdx === i) usePick(); else c.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', inline: 'center', block: 'nearest' }); });
+    cards.appendChild(c); dots.appendChild(document.createElement('i'));
+  });
+  var loadedBig = {};
+  function markPick(i) {
+    pickIdx = i; pname.textContent = WALLS[i].name;
+    Array.prototype.forEach.call(dots.children, function (d, k) { d.classList.toggle('on', k === i); });
+    // swap the small preview for the full picture once the card is in view
+    var w = WALLS[i], c = cards.children[i];
+    if (!loadedBig[w.id]) { loadedBig[w.id] = 1; var im = new Image(); im.onload = function () { c.style.backgroundImage = 'url("' + im.src + '")'; }; im.src = CFG.wallBase + w.id + '.webp'; }
+  }
+  cards.addEventListener('scroll', function () {
+    var mid = cards.scrollLeft + cards.clientWidth / 2, best = 0, bd = 1e9;
+    Array.prototype.forEach.call(cards.children, function (c, k) { var d = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid); if (d < bd) { bd = d; best = k; } });
+    if (best !== pickIdx) markPick(best);
+  }, { passive: true });
+  function openPick() {
+    tick(); pick.classList.add('on'); pick.setAttribute('aria-hidden', 'false'); markPick(wallIdx);
+    requestAnimationFrame(function () { var c = cards.children[wallIdx]; cards.scrollLeft = c.offsetLeft - (cards.clientWidth - c.offsetWidth) / 2; });
+  }
+  function closePick() { pick.classList.remove('on'); pick.setAttribute('aria-hidden', 'true'); }
+  function usePick() { setWall(pickIdx); closePick(); }
+  $('[data-ro-pick-open]').addEventListener('pointerdown', function (e) { e.stopPropagation(); });
+  $('[data-ro-pick-open]').addEventListener('click', function (e) { e.stopPropagation(); openPick(); });
+  $('[data-ro-pick-close]').addEventListener('click', closePick);
+  $('.ro-use').addEventListener('click', usePick);
+
+  /* ---------- weather (Open-Meteo, free, no key) ---------- */
+  var WX = [
+    [[0], 'Jasno', 'sun'], [[1], 'Prevažne jasno', 'sun'], [[2], 'Polojasno', 'part'], [[3], 'Zamračené', 'cloud'],
+    [[45, 48], 'Hmla', 'fog'], [[51, 53, 55, 56, 57], 'Mrholenie', 'rain'], [[61, 63, 65, 66, 67, 80, 81, 82], 'Dážď', 'rain'],
+    [[71, 73, 75, 77, 85, 86], 'Sneh', 'snow'], [[95, 96, 99], 'Búrka', 'storm']
+  ];
+  var WXI = {
+    sun: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5" fill="#ffd34d"/><g stroke="#ffd34d" stroke-width="2" stroke-linecap="round"><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></g></svg>',
+    moon: '<svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 019.5 4a8 8 0 1010.5 10.5z" fill="#e8e4f7"/></svg>',
+    part: '<svg viewBox="0 0 24 24"><circle cx="9" cy="9" r="4" fill="#ffd34d"/><path d="M8 20h9.5a3.5 3.5 0 000-7 5 5 0 00-9.4 1.5A2.8 2.8 0 008 20z" fill="#fff"/></svg>',
+    cloud: '<svg viewBox="0 0 24 24"><path d="M6.5 19h11a4 4 0 000-8 6 6 0 00-11.3 1.8A3.2 3.2 0 006.5 19z" fill="#fff"/></svg>',
+    fog: '<svg viewBox="0 0 24 24"><g stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M4 9h16M3 13h18M5 17h14"/></g></svg>',
+    rain: '<svg viewBox="0 0 24 24"><path d="M6.5 15h11a4 4 0 000-8 6 6 0 00-11.3 1.8A3.2 3.2 0 006.5 15z" fill="#fff"/><g stroke="#5ab0ff" stroke-width="2" stroke-linecap="round"><path d="M8 18l-1 3M12 18l-1 3M16 18l-1 3"/></g></svg>',
+    snow: '<svg viewBox="0 0 24 24"><path d="M6.5 15h11a4 4 0 000-8 6 6 0 00-11.3 1.8A3.2 3.2 0 006.5 15z" fill="#fff"/><g fill="#cfe8ff"><circle cx="8" cy="19" r="1.3"/><circle cx="12" cy="20.5" r="1.3"/><circle cx="16" cy="19" r="1.3"/></g></svg>',
+    storm: '<svg viewBox="0 0 24 24"><path d="M6.5 14h11a4 4 0 000-8 6 6 0 00-11.3 1.8A3.2 3.2 0 006.5 14z" fill="#fff"/><path d="M12 14l-2.5 4.5H12L10.5 22l4-6h-2.5l1.5-2z" fill="#ffd34d"/></svg>'
+  };
+  function wxInfo(code, day) {
+    for (var k = 0; k < WX.length; k++) if (WX[k][0].indexOf(code) >= 0) { var ic = WX[k][2]; if (!day && (ic === 'sun')) ic = 'moon'; return [WX[k][1], ic]; }
+    return ['', 'cloud'];
+  }
+  function loadWeather() {
+    fetch('https://api.open-meteo.com/v1/forecast?latitude=48.1486&longitude=17.1077&current=temperature_2m,weather_code,is_day&daily=temperature_2m_max,temperature_2m_min&forecast_days=1&timezone=Europe%2FBratislava')
+      .then(function (r) { return r.json(); }).then(function (d) {
+        var c = d.current, info = wxInfo(c.weather_code, c.is_day);
+        $$('[data-ro-wx-t]').forEach(function (e) { e.textContent = Math.round(c.temperature_2m) + '°'; });
+        $('.ro-lockw .ro-wx').classList.remove('off');
+        $$('[data-ro-wx-icon]').forEach(function (e) { e.innerHTML = WXI[info[1]]; });
+        $$('[data-ro-wx-d]').forEach(function (e) { e.textContent = info[0]; });
+        $$('[data-ro-wx-hl]').forEach(function (e) { e.textContent = 'Max ' + Math.round(d.daily.temperature_2m_max[0]) + '° · Min ' + Math.round(d.daily.temperature_2m_min[0]) + '°'; });
+      }).catch(function () { $$('[data-ro-wx-d]').forEach(function (e) { e.textContent = 'Počasie teraz nejde'; }); });
+  }
+  loadWeather(); setInterval(loadWeather, 30 * 60 * 1000);
 
   /* ---------- start ---------- */
   tick(); setInterval(tick, 15000);

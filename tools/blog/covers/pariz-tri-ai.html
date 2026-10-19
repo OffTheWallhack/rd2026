@@ -1,0 +1,26 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../../cv/f/f.css"><style>html,body{margin:0;background:#0B0C0B}canvas{display:block}</style></head><body>
+<canvas id="c" width="1600" height="900"></canvas><script src="_base.js"></script><script>
+// thumbnail style: Limoges fire still as background, the three real prompt screenshots, two words of text
+const srcs=['../../../img/blog/paris-x-limoges.webp','../../../img/blog/paris-prompt-grok.webp','../../../img/blog/paris-prompt-gemini.webp','../../../img/blog/paris-prompt-claude.webp'];
+Promise.all([document.fonts.load('700 80px "Space Grotesk"'),document.fonts.load('500 26px "JetBrains Mono"'),...srcs.map(s=>new Promise(res=>{const i=new Image();i.onload=()=>res(i);i.src=s;}))]).then(([, ,...imgs])=>{
+const [fire,grok,gem,cla]=imgs;
+// fire fills the left part, fades into dark on the right
+x.fillStyle='#0B0605';x.fillRect(0,0,W,H);
+const fw=900,fh=fw*fire.height/fire.width; x.drawImage(fire,-40,(H-fh)/2+60,fw,fh);
+let g=x.createLinearGradient(380,0,980,0);g.addColorStop(0,'rgba(11,6,5,0)');g.addColorStop(1,'rgba(11,6,5,1)');x.fillStyle=g;x.fillRect(0,0,W,H);
+g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'rgba(11,6,5,.15)');g.addColorStop(.6,'rgba(11,6,5,0)');g.addColorStop(1,'rgba(11,6,5,.75)');x.fillStyle=g;x.fillRect(0,0,W,H);
+g=x.createRadialGradient(1220,430,40,1220,430,700);g.addColorStop(0,'rgba(255,90,30,.28)');g.addColorStop(1,'rgba(255,90,30,0)');x.fillStyle=g;x.fillRect(0,0,W,H);
+function card(img,cx,cy,w,rot,label){const h=w*img.height/img.width;x.save();x.translate(cx,cy);x.rotate(rot);x.shadowColor='rgba(0,0,0,.75)';x.shadowBlur=60;x.shadowOffsetY=24;x.fillStyle='#0A0A0A';rr(-w/2-12,-h/2-12,w+24,h+24,30);x.fill();x.shadowColor='transparent';x.save();rr(-w/2,-h/2,w,h,20);x.clip();x.drawImage(img,-w/2,-h/2,w,h);x.restore();
+x.fillStyle='#F5F5F2';rr(-w/2+18,-h/2-34,label.length*17+36,48,24);x.fill();x.fillStyle='#161616';x.font='700 26px "JetBrains Mono", monospace';x.fillText(label,-w/2+36,-h/2-2);x.restore();}
+card(grok,1010,560,360,-.07,'Grok');
+card(gem,1395,300,360,.05,'Gemini');
+card(cla,1330,660,360,-.02,'Claude');
+vignette();
+// dark pool behind the words so they read on top of the fire
+g=x.createRadialGradient(330,300,40,330,300,560);g.addColorStop(0,'rgba(8,4,3,.82)');g.addColorStop(1,'rgba(8,4,3,0)');x.fillStyle=g;x.fillRect(0,0,W,H);
+x.textBaseline='alphabetic';x.lineJoin='round';
+function word(t,size,col,px,py){x.font='700 '+size+'px "Space Grotesk", sans-serif';x.shadowColor='rgba(0,0,0,.8)';x.shadowBlur=40;x.lineWidth=14;x.strokeStyle='rgba(8,4,3,.9)';x.strokeText(t,px,py);x.shadowColor='transparent';x.fillStyle=col;x.fillText(t,px,py);}
+word('3 AI.',220,'#FFFFFF',70,310);
+word('1 otázka.',128,'#FFD23F',76,450);
+});
+</script></body></html>

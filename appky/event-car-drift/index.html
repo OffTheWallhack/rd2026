@@ -1129,8 +1129,9 @@ function buildSugga() {
 }
 
 const CARS = {
-  zubor: { engine: 'v8', build: buildZubor, name: 'ZUBOR', accel: 11.5, top: 31, grip: 5.4, drift: 1.9, yaw: 2.35, yawResp: 6.5, mass: 1.25, roll: .07 },
-  sugga: { engine: 'diesel', build: buildSugga, name: 'SUGGA', accel: 9, top: 26, grip: 6.4, drift: 2.3, yaw: 2.75, yawResp: 8, mass: 1, roll: .06 }
+  // Zubor weighs 3.4 t: slow to steer (sl), slow to build and shed yaw (yawResp), limited lateral g at speed (latG), long braking, big lazy body roll
+  zubor: { engine: 'v8', build: buildZubor, name: 'ZUBOR', accel: 11.5, top: 31, grip: 5.0, drift: 1.55, yaw: 2.2, yawResp: 3.4, mass: 1.5, roll: .07, rollLag: 3.2, pitchK: 1.9, sl: 6.5, latG: 19, brake: 15, bounce: 1.15, hitK: 1.5, flick: 1 },
+  sugga: { engine: 'diesel', build: buildSugga, name: 'SUGGA', accel: 9, top: 26, grip: 6.4, drift: 2.3, yaw: 2.75, yawResp: 8, mass: 1, roll: .06, rollLag: 6, pitchK: 1, sl: 12, latG: 0, brake: 26, bounce: 1.4, hitK: 1, flick: 0 }
 };
 let model = null, P = CARS.zubor, carKey = store.get('car', 'zubor'), carIn = 1;
 function setCar(key) {
@@ -1252,11 +1253,11 @@ function physics(dt) {
   const fx = Math.sin(S.th), fz = Math.cos(S.th), rx = -Math.cos(S.th), rz = Math.sin(S.th);
   let vF = S.vx * fx + S.vz * fz, vR = S.vx * rx + S.vz * rz;
   const speed = Math.hypot(S.vx, S.vz);
-  S.steer = lerp(S.steer, input.steer, 1 - Math.exp(-dt * 12));
+  S.steer = lerp(S.steer, input.steer, 1 - Math.exp(-dt * P.sl));
   // engine / brake / reverse
   if (input.gas > 0) vF += input.gas * P.accel * (1 - clamp(vF / P.top, 0, 1) ** 1.6) * dt / P.mass * 1.05;
   if (input.brake > 0) {
-    if (vF > 0.6) vF -= 26 * input.brake * dt;
+    if (vF > 0.6) vF -= P.brake * input.brake * dt;
     else vF = Math.max(vF - 7 * dt, -9);
   }
   if (input.hb) vF *= Math.exp(-0.5 * dt);
@@ -1267,6 +1268,8 @@ function physics(dt) {
   if (S.drifting && a < .1 && !input.hb) S.drifting = false;
   // lateral grip: high normally, low while drifting (lower still with throttle = power oversteer)
   let grip = P.grip;
+  if (P.flick && !S.drifting && !input.gas && Math.abs(S.steer) > .45 && speed > 11) grip *= .55;   // weight shifts forward, the rear lets go
+  if (P.flick && !S.drifting && input.gas > .85 && Math.abs(S.steer) > .6 && speed > 7 && speed < 17) grip *= .6;   // 400 hp on the rear axle: a power slide out of slow corners
   if (S.drifting) grip = P.drift + (1 - input.gas) * 1.1;
   if (input.hb) grip = .7;
   const vR2 = vR * Math.exp(-grip * dt);
@@ -1275,6 +1278,10 @@ function physics(dt) {
   // yaw: steering sets a target turn rate; handbrake adds bite; counter-steer just reduces it
   const auth = clamp(speed / 7, 0, 1) * (1 - .3 * clamp(speed / 40, 0, 1));
   let target = S.steer * P.yaw * auth * (vF >= 0 ? 1 : -1);
+  if (P.latG && !input.hb && !S.drifting) {
+    const lim = P.latG / Math.max(speed, 6), raw = Math.abs(target);
+    if (raw > lim) { vF *= Math.exp(-(raw / lim - 1) * .3 * dt); target = clamp(target, -lim, lim); }   // pushing past the limit: the nose ploughs wide and scrubs speed
+  }   // tyres run out of grip: wide, heavy corners at speed
   if (input.hb) target *= 1.45;
   if (S.drifting) target += Math.sin(slipAng) * .9 * clamp(speed / 12, 0, 1) * (input.gas ? 1 : .4); // the rear wants to keep coming round
   S.w = lerp(S.w, target, 1 - Math.exp(-dt * (input.hb ? 5 : P.yawResp)));
@@ -1291,8 +1298,8 @@ function physics(dt) {
   void nfx; void nfz; void nrx; void nrz;
   // body roll / pitch for feel
   const latAcc = S.w * S.speed;
-  S.tilt = lerp(S.tilt, clamp(-latAcc * .012, -.12, .12) * P.roll / .06, 1 - Math.exp(-dt * 6));
-  S.pitch = lerp(S.pitch, clamp((input.brake ? .05 : 0) - input.gas * .025, -.06, .06), 1 - Math.exp(-dt * 5));
+  S.tilt = lerp(S.tilt, clamp(-latAcc * .012, -.12, .12) * P.roll / .06, 1 - Math.exp(-dt * P.rollLag));
+  S.pitch = lerp(S.pitch, clamp((input.brake ? .05 : 0) - input.gas * .025, -.06, .06) * P.pitchK, 1 - Math.exp(-dt * (P.rollLag * .8)));
   collide(dt);
 }
 
@@ -1320,7 +1327,7 @@ function collide() {
       const nx = dx / d, nz = dz / d, pen = CAR_R - d;
       S.x += nx * pen; S.z += nz * pen;
       const vn = S.vx * nx + S.vz * nz;
-      if (vn < 0) { hit(-vn); S.vx -= 1.4 * vn * nx; S.vz -= 1.4 * vn * nz; S.vx *= .85; S.vz *= .85; S.w *= .6; }
+      if (vn < 0) { hit(-vn * P.hitK); S.vx -= P.bounce * vn * nx; S.vz -= P.bounce * vn * nz; S.vx *= .85; S.vz *= .85; S.w *= .6; }
     }
   }
 }
@@ -2438,7 +2445,7 @@ function updMarker(dt, okNow) {
 }
 
 /* physics */
-const JP_ZUBOR = { acc: 5.2, top: 10.5, rev: 3.7, racc: 3.4, brake: 17, coast: 2.4, L: 3.7, steer: .62, grip: 11, tr: 0 };
+const JP_ZUBOR = { acc: 4.7, top: 10.5, rev: 3.7, racc: 3.2, brake: 15, coast: 2.4, L: 3.8, steer: .62, sd: .003, sl: 8.5, yl: 10, grip: 11, tr: 0 };   // 3.4 t: lazier steering and yaw
 // Sugga: lighter and shorter, 200 hp diesel, 4x4 (tr = how much it keeps traction on grass and snow)
 const JP_SUGGA = { acc: 2.3, top: 7.6, rev: 3.0, racc: 2.6, brake: 15, coast: 2.6, L: 3.0, steer: .5, sd: .014, climb: 2.6, grip: 12, tr: .45 };
 const GA = 15;                                                    // gravity while flying off a ramp
@@ -2492,13 +2499,13 @@ function jobPhysics(dt) {
   if (S.air) { airStep(dt); return; }
   let fx = Math.sin(S.th), fz = Math.cos(S.th);
   const sid = surfAt(S.x, S.z), sf = SURFX[sid], gr = tGrad(S.x, S.z);
-  S.steer = lerp(S.steer, input.steer, 1 - Math.exp(-dt * 9));
+  S.steer = lerp(S.steer, input.steer, 1 - Math.exp(-dt * (JP.sl || 9)));
   let vF = S.vx * fx + S.vz * fz;
   // yaw from a bicycle model; low grip lets the velocity lag behind the heading (understeer on snow)
   const wmax = .8 + 1.7 * sf.grip;
   let tw = clamp(vF * Math.tan(S.steer * JP.steer / (1 + vF * vF * (JP.sd || 0))) / JP.L, -wmax, wmax);
   if (input.hb && Math.abs(vF) > 2.5) tw *= 1.2;
-  S.w = lerp(S.w, tw, 1 - Math.exp(-dt * 11));
+  S.w = lerp(S.w, tw, 1 - Math.exp(-dt * (JP.yl || 11)));
   const dth = S.w * dt; S.th += dth;
   const carry = 1 - clamp(1 - sf.grip * 1.12, 0, .6) * .55, rot = dth * carry, c = Math.cos(rot), s = Math.sin(rot);
   const nvx = S.vx * c + S.vz * s, nvz = -S.vx * s + S.vz * c; S.vx = nvx; S.vz = nvz;
@@ -3522,7 +3529,7 @@ const mmss = s => { s = Math.max(0, Math.round(s)); return Math.floor(s / 60) + 
 
 const STAT_DEFS = [['RÝCHLOSŤ', 'speed'], ['ZRÝCHLENIE', 'accel'], ['ŠMYK', 'slide'], ['OBRATNOSŤ', 'agil']];
 const INFO = {
-  zubor: { desc: 'Pancierová dodávka. 5,7 V8 HEMI, 400 koní, 3,4 t a takmer 6 m. Pomalší rozjazd, ale dlhé a ladné šmyky.', speed: 86, accel: 60, slide: 94, agil: 56 },
+  zubor: { desc: 'Pancierová dodávka. 5,7 V8 HEMI, 400 koní, 3,4 t a takmer 6 m. Ťažké zatáčanie, dlhšie brzdenie, ale ladné šmyky.', speed: 86, accel: 54, slide: 90, agil: 44 },
   sugga: { desc: 'Vintage 4x4 len na offroad. Starší diesel okolo 200 koní, ľahké auto, výborná trakcia na svahu a v snehu.', speed: 48, accel: 52, slide: 55, agil: 92 }
 };
 const MODE_TXT = {
@@ -3821,7 +3828,7 @@ toMenu(true); clearMarks();
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { layoutStage(); });
 requestAnimationFrame(() => { layoutStage(); updateCamera(0, true); });
 requestAnimationFrame(loop);
-window.__drift = { rp, ORT, offUpdate, dvUpdate, HOLES: () => HOLES, holeAt, sg, stageSnap, stageReady: () => modelReady(sg.target), sound, get JP() { return JP; }, placeMarker, jobPhysics, jobDamage, jobTasks, jobFX, carShape, job, get TASKS() { return TASKS; }, TRAIL, WALK, OBS, carHits, jobRespawn, jobStart, jobSetWorld, buildJobWorld, terrainH, trailAt, surfAt, endJob, jobScore, S, input, game, camera, stage, music, settings, stats, get model() { return model; }, scene, setTab, startRun, toMenu, endRun, togglePause };
+window.__drift = { physics, setCar, rp, ORT, offUpdate, dvUpdate, HOLES: () => HOLES, holeAt, sg, stageSnap, stageReady: () => modelReady(sg.target), sound, get JP() { return JP; }, placeMarker, jobPhysics, jobDamage, jobTasks, jobFX, carShape, job, get TASKS() { return TASKS; }, TRAIL, WALK, OBS, carHits, jobRespawn, jobStart, jobSetWorld, buildJobWorld, terrainH, trailAt, surfAt, endJob, jobScore, S, input, game, camera, stage, music, settings, stats, get model() { return model; }, scene, setTab, startRun, toMenu, endRun, togglePause };
 })();
 </script>
 </body>

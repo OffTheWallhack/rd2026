@@ -54,16 +54,26 @@ html.ro-page, html.ro-page body { height: 100%; margin: 0; background: #0d0a12; 
 html.ro-page .ro-phone { position: fixed; left: 50%; top: 50%; right: auto; bottom: auto; transform-origin: center center; transition: none; }
 html.ro-page .ro-hide { display: none; }
 
+/* on a phone the website shows a smaller framed iPhone floating over the page (its scale is set in robos.js).
+   Only the standalone /appky/ page (saved to the home screen) fills the whole screen. */
 @media (max-width: 47.99rem) {
   .ro-launch { display: flex; }
   html.has-tabbar .ro-launch { display: none; }
-  .ro-phone, html.ro-page .ro-phone { left: 0; right: 0; top: 0; bottom: 0; width: auto; height: auto; transform: translateY(105%); z-index: 95; }
-  .ro-phone.open, html.ro-page .ro-phone { transform: none; }
-  .ro-body { border-radius: 0; padding: 0; box-shadow: none; background: #000; }
-  .ro-side, .ro-hide, .ro-island { display: none; }
-  .ro-screen { border-radius: 0; }
-  .ro-scrim { display: none; }
+  html.ro-docked .ro-phone { left: 50%; right: auto; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); transform-origin: bottom center; z-index: 95; }
+  html.ro-docked .ro-scrim { z-index: 90; }
+  html.ro-docked .ro-hide { display: none; }
+  html.ro-docked .ro-x { display: grid; }
+  html.ro-page .ro-phone { left: 0; right: 0; top: 0; bottom: 0; width: auto; height: auto; transform: none; z-index: 95; }
+  html.ro-page .ro-body { border-radius: 0; padding: 0; box-shadow: none; background: #000; }
+  html.ro-page .ro-side, html.ro-page .ro-island { display: none; }
+  html.ro-page .ro-screen { border-radius: 0; }
 }
+/* close button for the framed phone on a phone (the round button beside the phone is off screen there) */
+.ro-x { display: none; position: fixed; z-index: 96; top: calc(10px + env(safe-area-inset-top, 0px)); right: 12px; width: 40px; height: 40px; border-radius: 50%; border: 0;
+  background: rgba(27, 26, 32, .92); color: #fff; place-items: center; cursor: pointer; opacity: 0; pointer-events: none; transition: opacity .3s;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .35); }
+.ro-x.on { opacity: 1; pointer-events: auto; }
+.ro-probe { position: fixed; left: 0; top: 0; width: 0; height: 0; visibility: hidden; pointer-events: none; padding-bottom: env(safe-area-inset-bottom, 0px); }
 
 /* ---------- inside the phone ---------- */
 .ro-layer { position: absolute; inset: 0; }
@@ -75,11 +85,11 @@ html.ro-page .ro-hide { display: none; }
 .ro-status .ro-r { display: flex; gap: 6px; align-items: center; }
 .ro-webback { display: none; }
 @media (max-width: 47.99rem) {
-  .ro-status { padding: calc(6px + env(safe-area-inset-top, 0px)) 18px 0; height: calc(52px + env(safe-area-inset-top, 0px)); }
-  .ro-status .ro-r { display: none; }
-  .ro-webback { display: inline-flex; align-items: center; gap: 4px; pointer-events: auto; border: 0; background: rgba(255, 255, 255, .16);
+  html.ro-page .ro-status { padding: calc(6px + env(safe-area-inset-top, 0px)) 18px 0; height: calc(52px + env(safe-area-inset-top, 0px)); }
+  html.ro-page .ro-status .ro-r { display: none; }
+  html.ro-page .ro-webback { display: inline-flex; align-items: center; gap: 4px; pointer-events: auto; border: 0; background: rgba(255, 255, 255, .16);
     -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-radius: 999px; padding: 7px 14px 7px 10px; font: 600 14px/1 var(--ro-sys); color: #fff; cursor: pointer; }
-  .ro-status .ro-t { font-size: 14px; opacity: .85; }
+  html.ro-page .ro-status .ro-t { font-size: 14px; opacity: .85; }
 }
 
 /* boot */
@@ -100,7 +110,7 @@ html.ro-page .ro-hide { display: none; }
 .ro-lock.drag { transition: none; }
 .ro-lock.away { transform: translateY(-104%) !important; opacity: 0; pointer-events: none; }
 .ro-lockcol { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; padding-top: 70px; }
-@media (max-width: 47.99rem) { .ro-lockcol { padding-top: calc(58px + env(safe-area-inset-top, 0px)); } }
+@media (max-width: 47.99rem) { html.ro-page .ro-lockcol { padding-top: calc(58px + env(safe-area-inset-top, 0px)); } }
 .ro-lockdate { font: 600 19px/1.2 var(--ro-sys); text-shadow: 0 1px 8px rgba(0, 0, 0, .18); }
 .ro-locktime { font: 700 98px/1 var(--ro-round); letter-spacing: -.02em; margin-top: 2px; font-variant-numeric: tabular-nums; white-space: nowrap;
   background: linear-gradient(180deg, rgba(255, 255, 255, .96) 0%, rgba(255, 255, 255, .62) 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
@@ -116,7 +126,7 @@ html.ro-page .ro-hide { display: none; }
 .ro-lockw .ro-wx b svg { width: 18px; height: 18px; flex: none; }
 .ro-lockw .ro-wxt { font: 600 34px/1.05 var(--ro-round); letter-spacing: -.01em; }
 .ro-lockbot { margin-top: auto; margin-bottom: 40px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
-@media (max-width: 47.99rem) { .ro-lockbot { margin-bottom: calc(40px + env(safe-area-inset-bottom, 0px)); } }
+@media (max-width: 47.99rem) { html.ro-page .ro-lockbot { margin-bottom: calc(40px + env(safe-area-inset-bottom, 0px)); } }
 .ro-pill { appearance: none; border: 0; display: inline-flex; align-items: center; gap: 8px; padding: 11px 20px; border-radius: 999px; cursor: pointer;
   font: 600 16px/1 var(--ro-sys); color: #fff; background: rgba(30, 26, 38, .5); box-shadow: 0 0 0 1px rgba(255, 255, 255, .14) inset;
   -webkit-backdrop-filter: blur(18px) saturate(1.4); backdrop-filter: blur(18px) saturate(1.4); }
@@ -127,7 +137,7 @@ html.ro-page .ro-hide { display: none; }
 /* home */
 .ro-home { z-index: 10; padding: 62px 20px 0; transition: transform .42s cubic-bezier(.2, .9, .25, 1), filter .42s; }
 .ro-home.back { transform: scale(.93); filter: blur(3px) brightness(.7); }
-@media (max-width: 47.99rem) { .ro-home { padding-top: calc(62px + env(safe-area-inset-top, 0px)); } }
+@media (max-width: 47.99rem) { html.ro-page .ro-home { padding-top: calc(62px + env(safe-area-inset-top, 0px)); } }
 .ro-widgets { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .ro-wg { appearance: none; border: 0; text-align: left; color: #fff; min-height: 168px; border-radius: 24px; padding: 14px 15px; display: flex; flex-direction: column;
   background: var(--ro-glass); box-shadow: var(--ro-shadow); -webkit-backdrop-filter: blur(26px) saturate(1.4); backdrop-filter: blur(26px) saturate(1.4);
@@ -158,7 +168,7 @@ html.ro-page .ro-hide { display: none; }
   background: rgba(255, 255, 255, .2); -webkit-backdrop-filter: blur(26px) saturate(1.6); backdrop-filter: blur(26px) saturate(1.6); }
 .ro-dock .ro-app { width: auto; }
 .ro-dock .ro-app > span:not(.ro-ic) { display: none; }
-@media (max-width: 47.99rem) { .ro-dock { bottom: calc(22px + env(safe-area-inset-bottom, 0px)); } }
+@media (max-width: 47.99rem) { html.ro-page .ro-dock { bottom: calc(22px + env(safe-area-inset-bottom, 0px)); } }
 
 /* apps */
 .ro-apps { z-index: 30; pointer-events: none; }
@@ -166,7 +176,7 @@ html.ro-page .ro-hide { display: none; }
   pointer-events: none; overflow: hidden; border-radius: 44px; }
 .ro-win.open { opacity: 1; transform: none; pointer-events: auto; border-radius: 0; }
 .ro-scroll { position: absolute; inset: 0; overflow-y: auto; overscroll-behavior: contain; padding: 64px 20px 56px; user-select: text; -webkit-user-select: text; }
-@media (max-width: 47.99rem) { .ro-scroll { padding-top: calc(66px + env(safe-area-inset-top, 0px)); } }
+@media (max-width: 47.99rem) { html.ro-page .ro-scroll { padding-top: calc(66px + env(safe-area-inset-top, 0px)); } }
 .ro-win h2 { margin: 0; font: 700 34px/1.05 var(--ro-sys); letter-spacing: -.02em; display: flex; align-items: center; gap: 10px; color: #fff; }
 .ro-lead { margin: 8px 0 0; color: #b9b3c7; font-size: 14.5px; line-height: 1.45; }
 .ro-chip { font: 700 10.5px/1 var(--ro-sys); letter-spacing: .08em; padding: 5px 8px; border-radius: 6px; background: rgba(255, 178, 26, .16); color: var(--ro-amber); }
@@ -206,19 +216,19 @@ html.ro-page .ro-hide { display: none; }
   font: 700 16px/1 var(--ro-sys); border: 0; width: 100%; cursor: pointer; }
 .ro-cta.alt { background: #2a2633; color: #fff !important; }
 .ro-frame { position: absolute; left: 0; right: 0; top: 52px; border: 0; width: 100%; height: calc(100% - 80px); background: #0b0a10; }
-@media (max-width: 47.99rem) { .ro-frame { top: calc(52px + env(safe-area-inset-top, 0px)); height: calc(100% - 80px - env(safe-area-inset-top, 0px)); } }
+@media (max-width: 47.99rem) { html.ro-page .ro-frame { top: calc(52px + env(safe-area-inset-top, 0px)); height: calc(100% - 80px - env(safe-area-inset-top, 0px)); } }
 
 .ro-homebar { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); width: 200px; height: 28px; z-index: 57; border: 0; background: none; padding: 0 0 8px; cursor: pointer;
   display: flex; align-items: flex-end; justify-content: center; touch-action: none; }
 .ro-homebar i { display: block; width: 136px; height: 5px; border-radius: 3px; background: #fff; opacity: .9; transition: transform .2s; }
 .ro-homebar:hover i { transform: scaleX(1.08); }
 .ro-homebar[aria-hidden="true"] { pointer-events: none; }
-@media (max-width: 47.99rem) { .ro-homebar { padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px)); height: calc(28px + env(safe-area-inset-bottom, 0px)); } }
+@media (max-width: 47.99rem) { html.ro-page .ro-homebar { padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px)); height: calc(28px + env(safe-area-inset-bottom, 0px)); } }
 
 /* wallpaper picker (like customising the iPhone lock screen) */
 .ro-pick { z-index: 56; background: #000; display: flex; flex-direction: column; align-items: center; padding-top: 64px; opacity: 0; pointer-events: none; transition: opacity .3s; }
 .ro-pick.on { opacity: 1; pointer-events: auto; }
-@media (max-width: 47.99rem) { .ro-pick { padding-top: calc(58px + env(safe-area-inset-top, 0px)); } }
+@media (max-width: 47.99rem) { html.ro-page .ro-pick { padding-top: calc(58px + env(safe-area-inset-top, 0px)); } }
 .ro-pick h3 { margin: 0; font: 700 15px/1 var(--ro-sys); letter-spacing: .08em; color: #fff; }
 .ro-pick .ro-pname { margin-top: 6px; font: 500 13px/1 var(--ro-sys); color: #aaa3b8; }
 .ro-cards { width: 100%; flex: 1; min-height: 0; display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 18px 18% 10px;
@@ -233,7 +243,7 @@ html.ro-page .ro-hide { display: none; }
 .ro-dots i { width: 7px; height: 7px; border-radius: 50%; background: #55505f; }
 .ro-dots i.on { background: #fff; }
 .ro-pickbar { display: flex; gap: 12px; width: calc(100% - 40px); margin-bottom: 30px; }
-@media (max-width: 47.99rem) { .ro-pickbar { margin-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); } }
+@media (max-width: 47.99rem) { html.ro-page .ro-pickbar { margin-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); } }
 .ro-pickbar button { flex: 1; min-height: 52px; border-radius: 999px; border: 0; cursor: pointer; font: 600 17px/1 var(--ro-sys); background: #1f1c26; color: #fff;
   box-shadow: 0 0 0 1px rgba(255, 255, 255, .1) inset; }
 .ro-pickbar .ro-use { background: #fff; color: #111; }
@@ -243,7 +253,7 @@ html.ro-page .ro-hide { display: none; }
 .ro-sheet.on { opacity: 1; pointer-events: auto; }
 .ro-sheetcard { width: 100%; background: #1a1722; border-radius: 30px 30px 0 0; padding: 10px 20px 40px; transform: translateY(100%); transition: transform .42s cubic-bezier(.2, .9, .25, 1);
   user-select: text; -webkit-user-select: text; }
-@media (max-width: 47.99rem) { .ro-sheetcard { padding-bottom: calc(30px + env(safe-area-inset-bottom, 0px)); } }
+@media (max-width: 47.99rem) { html.ro-page .ro-sheetcard { padding-bottom: calc(30px + env(safe-area-inset-bottom, 0px)); } }
 .ro-sheet.on .ro-sheetcard { transform: none; }
 .ro-grab { width: 40px; height: 5px; border-radius: 3px; background: #4a4555; margin: 0 auto 14px; }
 .ro-sheetcard h3 { margin: 0; font: 700 22px/1.15 var(--ro-sys); color: #fff; }
@@ -277,5 +287,5 @@ html.ro-lockscroll, html.ro-lockscroll body { overflow: hidden; }
 .ro-wxi svg, .ro-lockw .ro-wx b [data-ro-wx-icon] svg { display: block; width: 100%; height: 100%; }
 .ro-lockw .ro-wx b [data-ro-wx-icon] { display: inline-flex; width: 18px; height: 18px; flex: none; overflow: visible; }
 .ro-wg .ro-wxi { display: block; }
-@media (max-width: 47.99rem) { .ro-locktime { font-size: min(112px, 27vw); } }
+@media (max-width: 47.99rem) { html.ro-page .ro-locktime { font-size: min(112px, 27vw); } }
 .ro-lockw .ro-wx.off { visibility: hidden; }

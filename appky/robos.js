@@ -1,6 +1,7 @@
 /* robOS: the phone with my apps.
    Include robos.css + robos.js on any page. On the website the phone peeks from the bottom-right corner on a
-   computer and slides up on click (like GTA). On a phone it opens full screen from the "Appky" tab.
+   computer and slides up on click (like GTA). On a phone it opens as a smaller framed iPhone over the page
+   from the "Appky" tab. Apps that are separate websites (LED IT ROLL, BG Maker) open full screen in a new tab.
    On /appky/ (html data-robos="page") the phone is the whole page.
    Events live in appky/events.json, so updating them means editing one file. */
 (function () {
@@ -31,6 +32,7 @@
     { id: 'chrom', name: 'Chróm', light: true }, { id: 'halftone', name: 'Halftone' }, { id: 'grafika', name: 'Čiernobiela' },
     { id: 'obloha', name: 'Obloha' }, { id: 'led', name: 'LED' }, { id: 'rave', name: 'Rave' }, { id: 'beton', name: 'Betón', light: true }
   ];
+  var AWAY = { led: CFG.led, bg: CFG.bgMaker };      // on the website these open full screen in a new tab
   var TAGC = { 'GOSko': '#39ff88', 'Drop Ups': '#b98cff', 'Red Bull': '#ff6170', 'Festival': '#ffb21a' };
   var reduced = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
   var mobileMQ = window.matchMedia('(max-width: 47.99rem)');
@@ -70,6 +72,8 @@
   /* ---------- markup ---------- */
   var html =
   '<div class="ro-scrim"></div>' +
+  '<span class="ro-probe" aria-hidden="true"></span>' +
+  '<button class="ro-x" type="button" aria-label="Zavrieť telefón"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>' +
   '<button class="ro-launch" type="button" aria-label="Otvoriť moje appky"><img src="' + CFG.icon + '" alt="">Moje appky</button>' +
   '<div class="ro-phone peek" role="button" tabindex="0" aria-label="robOS, telefón s mojimi appkami. Otvoriť.">' +
    '<div class="ro-body">' +
@@ -177,7 +181,7 @@
   document.documentElement.classList.add(PAGE ? 'ro-page' : 'ro-docked');
 
   var phone = $('.ro-phone'), scrim = $('.ro-scrim'), lock = $('.ro-lock'), bootEl = $('.ro-boot'), home = $('.ro-home'),
-      homebar = $('.ro-homebar'), toast = $('.ro-toast'), launch = $('.ro-launch');
+      homebar = $('.ro-homebar'), toast = $('.ro-toast'), launch = $('.ro-launch'), xBtn = $('.ro-x');
 
   /* ---------- clock ---------- */
   function tick() {
@@ -239,10 +243,22 @@
 
   /* ---------- placement ---------- */
   var isOpen = false, hover = false, booted = false;
+  function safeBottom() { var pr = $('.ro-probe'); return pr ? (parseFloat(getComputedStyle(pr).paddingBottom) || 0) : 0; }
   function place() {
-    if (mobileMQ.matches) { phone.style.transform = ''; return; }
-    var H = 802, s = Math.min(1, (window.innerHeight - 40) / H);
-    if (PAGE) { phone.style.transform = 'translate(-50%,-50%) scale(' + s + ')'; return; }
+    var H = 802, W = 382;
+    if (PAGE) {
+      if (mobileMQ.matches) { phone.style.transform = ''; return; }        // installed on a phone: the phone is the whole screen
+      phone.style.transform = 'translate(-50%,-50%) scale(' + Math.min(1, (window.innerHeight - 40) / H) + ')'; return;
+    }
+    if (mobileMQ.matches) {                                                 // website on a phone: smaller framed iPhone over the page
+      var sm = Math.min(.88, (window.innerWidth - 28) / W, (window.innerHeight - 56 - 18 - safeBottom()) / H);
+      phone.style.transform = 'translateX(-50%) translateY(' + (isOpen ? '0px' : '115%') + ') scale(' + sm + ')';
+      // the close button sits just above the top-right corner of the phone
+      xBtn.style.top = Math.max(8, window.innerHeight - 18 - safeBottom() - H * sm - 48) + 'px';
+      xBtn.style.right = Math.max(8, (window.innerWidth - W * sm) / 2) + 'px';
+      return;
+    }
+    var s = Math.min(1, (window.innerHeight - 40) / H);
     var peek = 236 * s + (hover ? 22 : 0);
     phone.style.transform = 'translateY(' + (isOpen ? -24 : (H * s - peek)) + 'px) scale(' + s + ')';
   }
@@ -252,14 +268,14 @@
   }
   function openPhone() {
     isOpen = true; phone.classList.remove('peek'); phone.classList.add('open'); setPeekAria(false);
-    if (!PAGE) scrim.classList.add('on');
+    if (!PAGE) { scrim.classList.add('on'); xBtn.classList.add('on'); }
     if (mobileMQ.matches) document.documentElement.classList.add('ro-lockscroll');
     place(); if (!booted) boot();
   }
   function closePhone() {
     if (PAGE) { location.href = ROOT; return; }
     isOpen = false; phone.classList.add('peek'); phone.classList.remove('open'); setPeekAria(true);
-    scrim.classList.remove('on'); document.documentElement.classList.remove('ro-lockscroll');
+    scrim.classList.remove('on'); xBtn.classList.remove('on'); document.documentElement.classList.remove('ro-lockscroll');
     closeApp(true); closeSheets(); place();
     setTimeout(function () { if (!isOpen) lockScreen(); }, 600);
   }
@@ -271,6 +287,7 @@
   $('.ro-hide').addEventListener('click', function (e) { e.stopPropagation(); closePhone(); });
   $('.ro-webback').addEventListener('click', function (e) { e.stopPropagation(); closePhone(); });
   launch.addEventListener('click', openPhone);
+  xBtn.addEventListener('click', function (e) { e.stopPropagation(); closePhone(); });
   window.addEventListener('resize', place);
   if (mobileMQ.addEventListener) mobileMQ.addEventListener('change', function () { if (isOpen && !PAGE) closePhone(); place(); });
 
@@ -324,7 +341,7 @@
     if (current) return;
     var win = root.querySelector('[data-ro-win="' + id + '"]'); if (!win) return;
     var scr = $('.ro-screen').getBoundingClientRect(), r = fromEl.getBoundingClientRect();
-    var k = phone.offsetWidth && !mobileMQ.matches ? phone.getBoundingClientRect().width / phone.offsetWidth : 1;
+    var k = phone.offsetWidth ? phone.getBoundingClientRect().width / phone.offsetWidth : 1;
     win.style.transformOrigin = ((r.left + r.width / 2 - scr.left) / k) + 'px ' + ((r.top + r.height / 2 - scr.top) / k) + 'px';
     if (id === 'led' && !ledFrame) {
       ledFrame = document.createElement('iframe'); ledFrame.className = 'ro-frame'; ledFrame.title = 'LED IT ROLL';
@@ -343,7 +360,12 @@
     setHomebar();
   }
   $$('[data-ro-open]').forEach(function (b) {
-    b.addEventListener('click', function (e) { e.stopPropagation(); openApp(b.getAttribute('data-ro-open'), b.querySelector('.ro-ic') || b); });
+    b.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var id = b.getAttribute('data-ro-open');
+      if (!PAGE && AWAY[id]) { window.open(AWAY[id], '_blank', 'noopener'); return; }
+      openApp(id, b.querySelector('.ro-ic') || b);
+    });
   });
   homebar.addEventListener('click', function () { closeApp(); });
 

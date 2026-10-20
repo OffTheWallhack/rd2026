@@ -18,6 +18,8 @@
     instagram: 'https://instagram.com/robodurica',
     x: 'https://x.com/',                              // doplniť handle na X
     bgMaker: 'https://bg-maker-gamma.vercel.app',
+    game: 'https://offthewallhack.github.io/usage-of-empires/',
+    gameIcon: BASE + 'img/uoe-192.png',
     led: BASE + 'led-it-roll/',
     me: ROOT + 'img/portrait.webp',
     icon: BASE + 'img/robos-192.png',
@@ -60,6 +62,7 @@
     mail: '<svg viewBox="0 0 62 62"><defs><linearGradient id="roMl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4fb6ff"/><stop offset="1" stop-color="#1f6bff"/></linearGradient></defs><rect width="62" height="62" fill="url(#roMl)"/><rect x="13" y="19" width="36" height="25" rx="4" fill="#fff"/><path d="M14 21l17 13 17-13" fill="none" stroke="#1f6bff" stroke-width="2.6" stroke-linejoin="round"/></svg>',
     ig: '<svg viewBox="0 0 62 62"><rect width="62" height="62" fill="#ffb21a"/><text x="31" y="42" text-anchor="middle" font-family="-apple-system,system-ui,sans-serif" font-size="32" font-weight="800" fill="#1b1200">@</text></svg>',
     x: '<svg viewBox="0 0 62 62"><rect width="62" height="62" fill="#000"/><rect x=".75" y=".75" width="60.5" height="60.5" rx="14" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="1.5"/><text x="31" y="42" text-anchor="middle" font-family="-apple-system,system-ui,sans-serif" font-size="30" font-weight="800" fill="#fff">X</text></svg>',
+    uoe: '<img src="' + CFG.gameIcon + '" alt="">',
     web: '<svg viewBox="0 0 62 62"><rect width="62" height="62" fill="#2a2633"/><circle cx="31" cy="31" r="15" fill="none" stroke="#fff" stroke-width="2.6"/><path d="M16 31h30M31 16c-5 4.5-5 25.5 0 30M31 16c5 4.5 5 25.5 0 30" fill="none" stroke="#fff" stroke-width="2.2"/></svg>'
   };
   var CHEV = '<svg class="ro-chev" width="10" height="16" viewBox="0 0 10 16" aria-hidden="true"><path d="M2 2l6 6-6 6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -95,6 +98,7 @@
        '<button class="ro-app" type="button" data-ro-open="bg"><span class="ro-ic" data-ro-icon="bg"></span><span>BG Maker</span></button>' +
        '<button class="ro-app" type="button" data-ro-open="eventy"><span class="ro-ic" data-ro-icon="cal"></span><span>Eventy</span></button>' +
        '<button class="ro-app" type="button" data-ro-open="me"><span class="ro-ic" data-ro-icon="me"></span><span>O mne</span></button>' +
+       '<a class="ro-app" href="' + CFG.game + '" target="_blank" rel="noopener" aria-label="Usage of Empires, hra. Otvoriť na GitHube."><span class="ro-ic" data-ro-icon="uoe"></span><span>Empires</span></a>' +
       '</div>' +
       '<button class="ro-save" type="button" data-ro-sheet="save"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true" style="flex:none"><rect x="8" y="2" width="14" height="26" rx="3.5" fill="none" stroke="#fff" stroke-width="2"/><path d="M15 9v9m-4-4l4 4 4-4" fill="none" stroke="#ffb21a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Ulož si robOS na plochu<small>Bude ako appka v tvojom telefóne</small></span>' + CHEV + '</button>' +
       '<nav class="ro-dock" aria-label="Dock">' +

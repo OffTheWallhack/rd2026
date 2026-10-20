@@ -502,12 +502,6 @@ body.mplay .pp svg.i-play{display:none}
       <section class="tab" data-tab="controls">
         <header class="th"><h2>OVLÁDANIE</h2><p>Ako riadiť a odkiaľ sa pozerať.</p></header>
         <div class="tb">
-          <p class="lab2">RIADENIE NA DOTYK</p>
-          <div class="cards three" id="steerCards">
-            <button class="card on" type="button" data-steer="wheel"><b>VOLANT</b><small>Otáčaš kruhom.</small></button>
-            <button class="card" type="button" data-steer="slider"><b>SLIDER</b><small>Ťaháš do strán.</small></button>
-            <button class="card" type="button" data-steer="arrows"><b>ŠÍPKY</b><small>Dve tlačidlá.</small></button>
-          </div>
           <p class="lab2">KAMERA</p>
           <div class="cards four" id="camCards">
             <button class="card" type="button" data-cam="near"><b>BLÍZKO</b><small>Tesne za autom.</small></button>
@@ -3131,11 +3125,9 @@ window.addEventListener('keydown', e => {
 window.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
 window.addEventListener('blur', () => { for (const k in keys) keys[k] = false; });
 const touch = { steer: 0, gas: 0, brake: 0, hb: 0 };
-let arrowDir = 0;
 function readInput(dt) {
   const kl = keys.arrowleft || keys.a, kr = keys.arrowright || keys.d;
   let st = touch.steer;
-  if (steerMode === 'arrows' && arrowDir) st = clamp(input.steer + arrowDir * dt * 5, -1, 1) ; else if (steerMode === 'arrows') st = 0;
   if (kl || kr) st = (kl ? 1 : 0) - (kr ? 1 : 0);
   input.steer = st;
   input.gas = (keys.arrowup || keys.w) ? 1 : touch.gas;
@@ -3149,37 +3141,18 @@ function hold(el, key) {
 }
 hold($('#padGas'), 'gas'); hold($('#padHb'), 'hb'); hold($('#padBr'), 'brake');
 
-let steerMode = store.get('steer', 'wheel');
 const left = $('#ctlLeft');
+// on-screen steering is a single slider (no wheel, no arrow buttons)
 function buildSteer() {
-  left.textContent = ''; touch.steer = 0; arrowDir = 0;
-  if (steerMode === 'wheel') {
-    left.innerHTML = '<div class="wheel" id="wheel"><svg viewBox="0 0 100 100" aria-hidden="true"><g id="wg"><circle cx="50" cy="50" r="44" fill="rgba(14,12,20,.55)" stroke="#f3f1ec" stroke-width="7"/><circle cx="50" cy="50" r="10" fill="#f3f1ec"/><path d="M8 50h32M60 50h32M50 60v32" stroke="#f3f1ec" stroke-width="7" stroke-linecap="round"/><rect x="45" y="3" width="10" height="10" rx="2" fill="#ffb21a"/></g></svg></div>';
-    const w = $('#wheel'), wg = $('#wg'); let id = null, a0 = 0, rot = 0;
-    const ang = e => { const r = w.getBoundingClientRect(); return Math.atan2(e.clientY - (r.top + r.height / 2), e.clientX - (r.left + r.width / 2)); };
-    w.addEventListener('pointerdown', e => { e.preventDefault(); id = e.pointerId; try { w.setPointerCapture(id); } catch (x) {} a0 = ang(e); sound.init(); });
-    w.addEventListener('pointermove', e => { if (e.pointerId !== id) return; const r = w.getBoundingClientRect(); if (Math.hypot(e.clientX - (r.left + r.width / 2), e.clientY - (r.top + r.height / 2)) < r.width * .12) return; const a = ang(e); let d = a - a0; d = Math.atan2(Math.sin(d), Math.cos(d)); a0 = a; rot = clamp(rot + d, -2.1, 2.1); });
-    const end = e => { if (e.pointerId === id) id = null; };
-    w.addEventListener('pointerup', end); w.addEventListener('pointercancel', end);
-    (function spring() { if (steerMode !== 'wheel' || !document.body.contains(w)) return; if (id === null) rot *= .78; touch.steer = clamp(-rot / 1.6, -1, 1); wg.setAttribute('transform', `rotate(${rot * 57.3} 50 50)`); requestAnimationFrame(spring); })();
-  } else if (steerMode === 'slider') {
-    left.innerHTML = '<div class="slider" id="sl"><div class="tr"></div><div class="kn" id="kn"></div></div>';
-    const sl = $('#sl'), kn = $('#kn'); let id = null, val = 0;
-    const set = e => { const r = sl.getBoundingClientRect(); val = clamp((e.clientX - (r.left + r.width / 2)) / (r.width / 2 - 20), -1, 1); };
-    sl.addEventListener('pointerdown', e => { e.preventDefault(); id = e.pointerId; try { sl.setPointerCapture(id); } catch (x) {} set(e); sound.init(); });
-    sl.addEventListener('pointermove', e => { if (e.pointerId === id) set(e); });
-    const end = e => { if (e.pointerId === id) id = null; };
-    sl.addEventListener('pointerup', end); sl.addEventListener('pointercancel', end);
-    (function spring() { if (steerMode !== 'slider' || !document.body.contains(sl)) return; if (id === null) val *= .7; touch.steer = -val; kn.style.transform = `translateX(${val * (sl.clientWidth / 2 - 20)}px)`; requestAnimationFrame(spring); })();
-  } else {
-    left.innerHTML = '<div class="arrows"><div class="pad" id="arL"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4l-8 8 8 8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="pad" id="arR"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4l8 8-8 8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>';
-    [['#arL', 1], ['#arR', -1]].forEach(([s, d]) => {
-      const el = $(s);
-      el.addEventListener('pointerdown', e => { e.preventDefault(); try { el.setPointerCapture(e.pointerId); } catch (x) {} arrowDir = d; el.classList.add('on'); sound.init(); });
-      const off = () => { if (arrowDir === d) arrowDir = 0; el.classList.remove('on'); };
-      el.addEventListener('pointerup', off); el.addEventListener('pointercancel', off);
-    });
-  }
+  left.textContent = ''; touch.steer = 0;
+  left.innerHTML = '<div class="slider" id="sl"><div class="tr"></div><div class="kn" id="kn"></div></div>';
+  const sl = $('#sl'), kn = $('#kn'); let id = null, val = 0;
+  const set = e => { const r = sl.getBoundingClientRect(); val = clamp((e.clientX - (r.left + r.width / 2)) / (r.width / 2 - 20), -1, 1); };
+  sl.addEventListener('pointerdown', e => { e.preventDefault(); id = e.pointerId; try { sl.setPointerCapture(id); } catch (x) {} set(e); sound.init(); });
+  sl.addEventListener('pointermove', e => { if (e.pointerId === id) set(e); });
+  const end = e => { if (e.pointerId === id) id = null; };
+  sl.addEventListener('pointerup', end); sl.addEventListener('pointercancel', end);
+  (function spring() { if (!document.body.contains(sl)) return; if (id === null) val *= .7; touch.steer = -val; kn.style.transform = `translateX(${val * (sl.clientWidth / 2 - 20)}px)`; requestAnimationFrame(spring); })();
 }
 
 /* ================= camera: showroom orbit in the menu, chase cam in the game ================= */
@@ -3592,7 +3565,6 @@ function renderMode() {
   $$('#modeCards .card').forEach(c => c.classList.toggle('on', c.dataset.mode === pendingMode));
   const d = MODE_TXT[pendingMode]; $('#modeDesc').textContent = typeof d === 'function' ? d() : d;
 }
-const renderSteer = () => $$('#steerCards .card').forEach(c => c.classList.toggle('on', c.dataset.steer === steerMode));
 const renderCam = () => $$('#camCards .card').forEach(c => c.classList.toggle('on', c.dataset.cam === settings.cam));
 const renderQ = () => $$('#qCards .card').forEach(c => c.classList.toggle('on', +c.dataset.q === settings.q));
 function renderRecords() {
@@ -3750,7 +3722,6 @@ $('#carCards').addEventListener('click', e => {
   store.set('mode', pendingMode); stageShow(c.dataset.car); store.set('car', carKey); renderCar(); renderMode();
 });
 $('#modeCards').addEventListener('click', e => { const c = e.target.closest('.card'); if (!c || c.disabled) return; pendingMode = c.dataset.mode; store.set('mode', pendingMode); const want = pendingMode === 'off' ? 'sugga' : 'zubor'; if (carKey !== want) { stageShow(want); store.set('car', want); renderCar(); } renderMode(); });
-$('#steerCards').addEventListener('click', e => { const c = e.target.closest('.card'); if (!c) return; steerMode = c.dataset.steer; store.set('steer', steerMode); renderSteer(); buildSteer(); });
 $('#camCards').addEventListener('click', e => { const c = e.target.closest('.card'); if (!c) return; settings.cam = c.dataset.cam; store.set('cam', settings.cam); renderCam(); });
 $('#qCards').addEventListener('click', e => { const c = e.target.closest('.card'); if (!c) return; settings.q = +c.dataset.q; store.set('q', settings.q); renderQ(); applyQuality(); });
 function wireSwitch(id, key, after) {
@@ -3822,7 +3793,7 @@ window.addEventListener('pagehide', saveStats);
 stageInit(); jobInitHud();
 applyQuality(); buildSteer();
 { const want0 = pendingMode === 'off' ? 'sugga' : 'zubor'; if (carKey !== want0) { carKey = want0; P = CARS[want0]; } }
-syncVol(); renderCar(); renderMode(); renderSteer(); renderCam(); renderQ(); setTab('play');
+syncVol(); renderCar(); renderMode(); renderCam(); renderQ(); setTab('play');
 renderTracks(); collectEq(); music.on(renderMusicUI); renderMusicUI();
 toMenu(true); clearMarks();
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { layoutStage(); });

@@ -1,0 +1,16 @@
+{
+  "name": "Event Car Drift",
+  "short_name": "Car Drift",
+  "description": "Drift a presnosť v 3D prehliadači. Postavené s AI.",
+  "lang": "sk",
+  "start_url": "/rd2026/appky/event-car-drift/",
+  "scope": "/rd2026/appky/event-car-drift/",
+  "display": "fullscreen",
+  "orientation": "any",
+  "background_color": "#0b0b0e",
+  "theme_color": "#0b0b0e",
+  "icons": [
+    { "src": "../img/drift-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "../img/drift-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

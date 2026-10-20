@@ -22,6 +22,7 @@
     game: 'https://offthewallhack.github.io/usage-of-empires/',
     gameIcon: BASE + 'img/uoe-192.png',
     led: BASE + 'led-it-roll/',
+    drift: BASE + 'event-car-drift/',
     me: ROOT + 'img/portrait.webp',
     icon: BASE + 'img/robos-192.png',
     wallBase: BASE + 'tapety/'
@@ -57,6 +58,7 @@
   }
   var ICONS = {
     led: ledIcon(),
+    drift: '<img src="' + BASE + 'img/drift-192.png" alt="">',
     bg: '<svg viewBox="0 0 62 62"><defs><radialGradient id="roB1" cx=".2" cy=".2" r=".9"><stop offset="0" stop-color="#ff3dd8"/><stop offset="1" stop-color="#ff3dd8" stop-opacity="0"/></radialGradient><radialGradient id="roB2" cx=".9" cy=".9" r=".9"><stop offset="0" stop-color="#ffb21a"/><stop offset="1" stop-color="#ffb21a" stop-opacity="0"/></radialGradient><pattern id="roSt" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)"><rect width="2" height="6" fill="rgba(255,255,255,.12)"/></pattern></defs><rect width="62" height="62" fill="#2a1450"/><rect width="62" height="62" fill="url(#roB1)"/><rect width="62" height="62" fill="url(#roB2)"/><rect width="62" height="62" fill="url(#roSt)"/><rect x="17" y="17" width="28" height="28" rx="6" fill="none" stroke="#fff" stroke-width="2.6"/><path d="M21 39l7-8 5 5 4-4 5 7" fill="none" stroke="#fff" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/></svg>',
     cal: '<svg viewBox="0 0 62 62"><rect width="62" height="62" fill="#17141d"/><rect width="62" height="18" fill="#ffb21a"/><text class="ro-calmon" x="31" y="13.5" text-anchor="middle" font-family="-apple-system,system-ui,sans-serif" font-size="10.5" font-weight="800" letter-spacing="1" fill="#1b1200">OKT</text><text class="ro-calday" x="31" y="49" text-anchor="middle" font-family="-apple-system,system-ui,sans-serif" font-size="28" font-weight="700" fill="#fff">18</text></svg>',
     me: '<img src="' + CFG.me + '" alt="" style="object-position:50% 12%">',
@@ -99,6 +101,7 @@
       '</div>' +
       '<div class="ro-grid">' +
        '<button class="ro-app" type="button" data-ro-open="led"><span class="ro-ic" data-ro-icon="led"></span><span>LED IT ROLL</span></button>' +
+       '<button class="ro-app" type="button" data-ro-open="drift"><span class="ro-ic" data-ro-icon="drift"></span><span>Car Game</span></button>' +
        '<button class="ro-app" type="button" data-ro-open="bg"><span class="ro-ic" data-ro-icon="bg"></span><span>BG Maker</span></button>' +
        '<button class="ro-app" type="button" data-ro-open="eventy"><span class="ro-ic" data-ro-icon="cal"></span><span>Eventy</span></button>' +
        '<button class="ro-app" type="button" data-ro-open="me"><span class="ro-ic" data-ro-icon="me"></span><span>O mne</span></button>' +
@@ -115,6 +118,7 @@
 
      '<div class="ro-layer ro-apps">' +
       '<section class="ro-win" data-ro-win="led" aria-label="LED IT ROLL"></section>' +
+      '<section class="ro-win" data-ro-win="drift" aria-label="Event Car Drift"></section>' +
       '<section class="ro-win" data-ro-win="bg" aria-label="BG Maker"><div class="ro-scroll">' +
        '<h2>BG Maker</h2><p class="ro-lead">Generátor pozadí pre Instagram a socials. Textúry, farby, slidery a export obrázkov aj loopov.</p>' +
        '<div class="ro-bgcard"><div class="ro-bgart" aria-hidden="true"></div><div class="ro-in"><a class="ro-cta" href="' + CFG.bgMaker + '" target="_blank" rel="noopener">Otvoriť BG Maker <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div></div>' +
@@ -335,7 +339,8 @@
   $('.ro-unlock').addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); unlock(); } });
 
   /* ---------- apps ---------- */
-  var current = null, toastShown = false, ledFrame = null;
+  var current = null, toastShown = false, frames = {};
+  var FRAMES = { led: { src: CFG.led, title: 'LED IT ROLL', allow: 'fullscreen; microphone; autoplay; screen-wake-lock' }, drift: { src: CFG.drift, title: 'Event Car Drift', allow: 'fullscreen; autoplay; accelerometer; gyroscope' } };
   function setHomebar() { homebar.setAttribute('aria-hidden', isOpen && lock.classList.contains('away') && current ? 'false' : 'true'); }
   function openApp(id, fromEl) {
     if (current) return;
@@ -343,9 +348,9 @@
     var scr = $('.ro-screen').getBoundingClientRect(), r = fromEl.getBoundingClientRect();
     var k = phone.offsetWidth ? phone.getBoundingClientRect().width / phone.offsetWidth : 1;
     win.style.transformOrigin = ((r.left + r.width / 2 - scr.left) / k) + 'px ' + ((r.top + r.height / 2 - scr.top) / k) + 'px';
-    if (id === 'led' && !ledFrame) {
-      ledFrame = document.createElement('iframe'); ledFrame.className = 'ro-frame'; ledFrame.title = 'LED IT ROLL';
-      ledFrame.allow = 'fullscreen; microphone; autoplay; screen-wake-lock'; ledFrame.src = CFG.led; win.appendChild(ledFrame);
+    if (FRAMES[id] && !frames[id]) {
+      var fr = document.createElement('iframe'); fr.className = 'ro-frame'; fr.title = FRAMES[id].title;
+      fr.allow = FRAMES[id].allow; fr.src = FRAMES[id].src; win.appendChild(fr); frames[id] = fr;
     }
     current = win;
     requestAnimationFrame(function () { requestAnimationFrame(function () { win.classList.add('open'); home.classList.add('back'); }); });
@@ -356,7 +361,8 @@
     if (!current) return;
     var win = current; current = null;
     win.classList.remove('open'); home.classList.remove('back');
-    if (win.getAttribute('data-ro-win') === 'led' && ledFrame) { var f = ledFrame; ledFrame = null; setTimeout(function () { f.remove(); }, instant ? 0 : 450); }
+    var wid = win.getAttribute('data-ro-win');
+    if (frames[wid]) { var f = frames[wid]; delete frames[wid]; setTimeout(function () { f.remove(); }, instant ? 0 : 450); }
     setHomebar();
   }
   $$('[data-ro-open]').forEach(function (b) {

@@ -79,6 +79,7 @@ HEAD = """<!doctype html>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{rel}assets/common.css">
 <link rel="stylesheet" href="{rel}assets/blog.css">
+<link rel="stylesheet" href="{rel}appky/robos.css">
 {ld}
 </head>
 <body>
@@ -106,6 +107,7 @@ FOOT = """</main>
   </div>
 </footer>
 """ + LB + """<script src="{rel}assets/common.js"></script>
+<script src="{rel}appky/robos.js" defer></script>
 </body>
 </html>
 """

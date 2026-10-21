@@ -398,9 +398,7 @@ body.mplay .pp svg.i-play{display:none}
 @media (prefers-reduced-motion:reduce){.pop{animation-duration:.01s}.cover.spin{animation:none}.tab.on{animation:none}}
 #carStats{display:grid;gap:8px}
 #fallFade{position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;z-index:60;transition:opacity .28s linear}
-</style>
-</head>
-<body>
+</style></head><body>
 
 <canvas id="gl" aria-label="Drift hra"></canvas>
 
@@ -1145,12 +1143,12 @@ function buildSugga() {
    and goes over past `over`. Sugga is lighter, lower, weaker: harder to roll, easier to place. */
 const CARS = {
   zubor: { engine: 'v8', build: buildZubor, name: 'ZUBOR',
-    L: 3.7, pw: 110, aMax: 3.6, top: 27, rev: 4.5, raMax: 2.2, brake: 5.6, brakeRamp: 3.5, coast: .7,
-    steerMax: .68, steerFall: 9, steerLag: 5.5, yawLag: 3, ayMax: 7.0, grip: 6.0, drift: 1.9, hbGrip: .7, kick: .6,
-    rollGain: .2, rollW: 3.6, rollZ: .2, tip: .235, over: .31, pitGain: .13, pitW: 6.3, pitZ: .45,
+    L: 3.7, pw: 110, aMax: 3.8, top: 27, rev: 4.5, raMax: 2.2, brake: 8.2, brakeRamp: 6, coast: .8,
+    steerMax: .68, steerFall: 9, steerLag: 6.5, yawLag: 3.8, ayMax: 7.0, grip: 6.0, drift: 1.9, hbGrip: .7, kick: .6,
+    rollGain: .17, rollW: 3.8, rollZ: .26, tip: .215, over: .27, pitGain: .13, pitW: 6.3, pitZ: .5,
     power: 1, hitK: 1.5, bounce: 1.15 },
   sugga: { engine: 'diesel', build: buildSugga, name: 'SUGGA',
-    L: 2.9, pw: 52, aMax: 2.9, top: 22, rev: 4, raMax: 2, brake: 6.4, brakeRamp: 5, coast: .9,
+    L: 2.9, pw: 52, aMax: 2.9, top: 22, rev: 4, raMax: 2, brake: 8.4, brakeRamp: 7, coast: .9,
     steerMax: .62, steerFall: 8, steerLag: 8, yawLag: 5, ayMax: 7.4, grip: 7, drift: 2.1, hbGrip: .8, kick: .7,
     rollGain: .15, rollW: 6.9, rollZ: .45, tip: .24, over: .38, pitGain: .09, pitW: 7.5, pitZ: .5,
     power: 0, hitK: 1, bounce: 1.4 }
@@ -1362,7 +1360,7 @@ function carCore(dt, env) {
   if (rolled) { const f = Math.exp(-dt * 3.5); S.vx *= f; S.vz *= f; }
   S.x += S.vx * dt; S.z += S.vz * dt;
   S.speed = Math.hypot(S.vx, S.vz); S.vF = vF; S.slip = slipAng;
-  S.tilt = S.rolled ? 0 : S.roll; S.pitch = -S.pit;
+  S.tilt = S.rolled ? 0 : S.roll; S.pitch = S.pit;   // braking: nose dips (+x), accelerating: squats
 }
 function onTwoWheels() { if (game.view !== 'play') return; popText('DVE KOLESÁ!', true); sound.tick(); }
 function startRollover(dir) {
@@ -4030,6 +4028,4 @@ requestAnimationFrame(() => { layoutStage(); updateCamera(0, true); });
 requestAnimationFrame(loop);
 window.__drift = { physics, updateCones, setCar, CARS, LEVELS, LV, store, renderMode, curLevel, lvCones, endJob, steerMaxAt: v => P.steerMax / (1 + Math.pow(Math.max(0, Math.abs(v) - 4) / P.steerFall, 1.3)), get P() { return P; }, rp, ORT, offUpdate, dvUpdate, HOLES: () => HOLES, holeAt, sg, stageSnap, stageReady: () => modelReady(sg.target), sound, get JP() { return JP; }, placeMarker, jobPhysics, jobDamage, jobTasks, jobFX, carShape, job, get TASKS() { return TASKS; }, TRAIL, WALK, OBS, carHits, jobRespawn, jobStart, jobSetWorld, buildJobWorld, terrainH, trailAt, surfAt, endJob, jobScore, S, input, game, camera, stage, music, settings, stats, get model() { return model; }, scene, setTab, startRun, toMenu, endRun, togglePause };
 })();
-</script>
-</body>
-</html>
+</script></body></html>

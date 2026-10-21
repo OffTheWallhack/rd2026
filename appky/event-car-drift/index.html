@@ -59,6 +59,7 @@ button{font:inherit;color:inherit}
 .timer{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:5;font:700 30px/1 var(--hud);
   font-variant-numeric:tabular-nums;pointer-events:none;text-shadow:0 2px 10px rgba(0,0,0,.6)}
 .timer.low{color:#ff6b6b}
+@media (max-aspect-ratio:1/1){.timer{bottom:auto;top:calc(62px + env(safe-area-inset-top,0px))}.combo{top:calc(98px + env(safe-area-inset-top,0px))}}
 
 /* touch controls */
 .ctl{position:fixed;z-index:6;bottom:calc(16px + env(safe-area-inset-bottom,0px));display:none}
@@ -79,6 +80,14 @@ body.touch.playing .ctl.right{display:flex}
 .pad.on{background:rgba(255,178,26,.28);border-color:var(--amber)}
 .pad svg{width:30px;height:30px}
 .pad.gas{width:92px;height:128px;border-radius:24px}
+/* portrait: the steering slider gets its own full-width row, the pedals sit above it, so a thumb on the slider never lands on the handbrake */
+@media (max-aspect-ratio:1/1){
+  body.touch .ctl.left{right:max(18px,env(safe-area-inset-right,0px))}
+  body.touch .slider{width:100%}
+  body.touch .ctl.right{bottom:calc(100px + env(safe-area-inset-bottom,0px))}
+}
+button,.card,.pad,.slider,.nv,.go,.lv,.ibtn{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
+.slider,.pad{touch-action:none}
 .pad.hb{width:86px;height:86px;border-radius:50%}
 .pad.br{width:64px;height:64px;border-radius:16px;font-size:11px}
 .pad .lab{display:flex;flex-direction:column;align-items:center;gap:4px}
@@ -273,7 +282,7 @@ body.mplay .pp svg.i-play{display:none}
 #jMap{position:absolute;right:max(14px,env(safe-area-inset-right,0px));top:calc(64px + env(safe-area-inset-top,0px));width:110px;height:148px;border-radius:10px;border:1px solid var(--line);opacity:.94}
 .jreset{position:absolute;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);pointer-events:auto;cursor:pointer;background:var(--glass);border:1px solid var(--line);border-radius:12px;padding:8px 14px;font:700 12px/1 var(--hud);letter-spacing:.08em;color:var(--ink)}
 @media (max-width:760px),(max-height:430px){#jMap{width:78px;height:105px}.jdmg{width:112px}.jtop{max-width:44vw}.jt span{display:none}}
-@media (max-aspect-ratio:1/1){body.touch .jreset{bottom:calc(150px + env(safe-area-inset-bottom,0px))}.jtop{top:calc(62px + env(safe-area-inset-top,0px));max-width:calc(100vw - 28px)}.jdmg{top:calc(118px + env(safe-area-inset-top,0px))}#jMap{top:calc(118px + env(safe-area-inset-top,0px))}}
+@media (max-aspect-ratio:1/1){body.touch .jreset{top:calc(168px + env(safe-area-inset-top,0px));bottom:auto;left:max(14px,env(safe-area-inset-left,0px));transform:none}.jtop{top:calc(62px + env(safe-area-inset-top,0px));max-width:calc(100vw - 28px)}.jdmg{top:calc(118px + env(safe-area-inset-top,0px))}#jMap{top:calc(118px + env(safe-area-inset-top,0px))}}
 .rot{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:4;padding:10px 16px;border-radius:999px;background:var(--glass);border:1px solid var(--line);
   font:500 13px system-ui,sans-serif;pointer-events:none;display:none}
 @media (orientation:portrait){body.touch.playing .rot{display:block;animation:fade 3s 1.5s forwards}}
@@ -335,8 +344,8 @@ body.mplay .pp svg.i-play{display:none}
 .card.car.on .ci{opacity:1;transform:scale(1.05)}
 .card.car .ct b{font-size:18px}
 .card.car:disabled{opacity:.45;cursor:default}
-.chip{position:absolute;top:9px;right:9px;font:700 italic 9.5px/1 var(--hud);letter-spacing:.14em;font-style:normal;padding:4px 6px;border-radius:4px;background:rgba(255,255,255,.1);color:var(--muted)}
-.chip.off{background:rgba(123,224,90,.16);color:#9cf07f}
+.card .chip{position:absolute;top:9px;right:9px;font:700 italic 9.5px/1 var(--hud);letter-spacing:.14em;font-style:normal;padding:4px 6px;border-radius:4px;background:rgba(255,255,255,.1);color:var(--muted)}
+.card .chip.off{background:rgba(123,224,90,.16);color:#9cf07f}
 .card.car.on .chip{background:var(--amber);color:#1b1200}
 .card.car.on .chip.off{background:#7be05a}
 .cards.modes{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -357,8 +366,23 @@ body.mplay .pp svg.i-play{display:none}
 .lv.on{border-color:#3ddcff;background:rgba(61,220,255,.14);box-shadow:0 0 0 1px #3ddcff inset}
 .lv.lock{opacity:.42;cursor:not-allowed}
 .lv.sugga small{color:#7be05a}
+.lvh{grid-column:1/-1;margin:10px 0 0;font:700 11px/1 system-ui,sans-serif;letter-spacing:.16em;color:var(--muted);display:flex;align-items:center;gap:8px}
+.lvh:first-child{margin-top:2px}.lvh::after{content:"";flex:1;height:1px;background:var(--line)}
+.steps{display:flex;gap:6px;margin:0 0 2px}
+.steps button{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:6px 8px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.04);color:#cfcbd8;font:700 12px/1 system-ui,sans-serif;letter-spacing:.14em;cursor:pointer}
+.steps button b{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.12);font:700 11px/1 system-ui,sans-serif;letter-spacing:0}
+.steps button.on{border-color:var(--amber);color:#fff;background:rgba(255,178,26,.12)}
+.steps button.on b{background:var(--amber);color:#111}
+.steps button.done b{background:#39e075;color:#111}
+.steps button[hidden]{display:none}
+.wz{display:grid;gap:12px;align-content:start}
+.wz[hidden]{display:none}
+.wnext{width:100%;margin-top:4px}
+#jMap.lot{width:148px;height:110px}
+@media (max-width:760px),(max-height:430px){#jMap.lot{width:104px;height:77px}}
 .jlevel{position:absolute;left:50%;top:calc(7px + env(safe-area-inset-top,0px));transform:translateX(-50%);font:700 9.5px/1 system-ui,sans-serif;letter-spacing:.2em;color:#3ddcff;text-shadow:0 1px 4px rgba(0,0,0,.7);white-space:nowrap}
 .jlevel:not([hidden])~.jtop{top:calc(24px + env(safe-area-inset-top,0px))}
+@media (max-aspect-ratio:1/1){.jlevel{top:calc(58px + env(safe-area-inset-top,0px))}.jlevel:not([hidden])~.jtop{top:calc(72px + env(safe-area-inset-top,0px))}.jdmg,#jMap{top:calc(128px + env(safe-area-inset-top,0px))}body.touch .jreset{top:calc(180px + env(safe-area-inset-top,0px))}}
 .hint{padding:10px 12px;border-left:3px solid var(--amber);background:rgba(255,255,255,.04);border-radius:0 8px 8px 0;color:#d4d0da}
 .go{position:relative;overflow:hidden;justify-content:space-between;padding:0 18px}
 .go::after{content:"";position:absolute;top:0;bottom:0;width:60px;left:-80px;background:linear-gradient(100deg,rgba(255,255,255,0),rgba(255,255,255,.55),rgba(255,255,255,0));transform:skewX(-18deg);animation:shine 3.4s ease-in-out infinite}
@@ -396,7 +420,8 @@ body.mplay .pp svg.i-play{display:none}
 @media (prefers-reduced-motion:reduce){.pop{animation-duration:.01s}.cover.spin{animation:none}.tab.on{animation:none}}
 #carStats{display:grid;gap:8px}
 #fallFade{position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;z-index:60;transition:opacity .28s linear}
-</style></head><body>
+</style>
+</head><body>
 
 <canvas id="gl" aria-label="Drift hra"></canvas>
 
@@ -404,6 +429,7 @@ body.mplay .pp svg.i-play{display:none}
   <div class="l">
     <button class="chip ibtn" id="pauseBtn" type="button" aria-label="Pauza"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="2" width="3.5" height="12" rx="1" fill="currentColor"/><rect x="9.5" y="2" width="3.5" height="12" rx="1" fill="currentColor"/></svg></button>
     <button class="chip ibtn" id="camBtn" type="button" aria-label="Zmeniť kameru"><svg width="19" height="19" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h2l1.4-2h6.2L16.5 6h2A2.5 2.5 0 0 1 21 8.5v9a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="3.6"/></svg></button>
+    <button class="chip ibtn" id="resetBtn" type="button" aria-label="Späť na štart" title="Späť na štart (R)"><svg width="19" height="19" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.6-5.9"/><path d="M4 4v5h5"/></svg></button>
     <div class="chip speed"><b id="spd">0</b><small>km/h</small></div>
   </div>
   <div class="r">
@@ -465,23 +491,35 @@ body.mplay .pp svg.i-play{display:none}
       <section class="tab on" data-tab="play">
         <header class="th"><h2>HRAJ</h2><p>Vyber auto a režim, potom ŠTART.</p></header>
         <div class="tb">
-          <p class="lab2">AUTO</p>
-          <div class="cards cars" id="carCards">
-            <button class="card car on" type="button" data-car="zubor"><img class="ci" src="img/car-zubor.webp" alt="Zubor" draggable="false"><span class="ct"><b>ZUBOR</b><small>Dodávka · asfalt</small></span><i class="chip">ASFALT</i></button>
-            <button class="card car" type="button" data-car="sugga"><img class="ci" src="img/car-sugga.webp" alt="Sugga" draggable="false"><span class="ct"><b>SUGGA</b><small>Vintage 4×4 · divočina</small></span><i class="chip off">OFFROAD</i></button>
+          <nav class="steps" id="steps" aria-label="Kroky">
+            <button type="button" data-step="1" class="on"><b>1</b><span>AUTO</span></button>
+            <button type="button" data-step="2"><b>2</b><span>REŽIM</span></button>
+            <button type="button" data-step="3" hidden><b>3</b><span>LEVEL</span></button>
+          </nav>
+          <div class="wz" data-step="1">
+            <p class="lab2">VYBER AUTO</p>
+            <div class="cards cars" id="carCards">
+              <button class="card car on" type="button" data-car="zubor"><img class="ci" src="img/car-zubor.webp" alt="Zubor" draggable="false"><span class="ct"><b>ZUBOR</b><small>Dodávka · asfalt</small></span><i class="chip">ASFALT</i></button>
+              <button class="card car" type="button" data-car="sugga"><img class="ci" src="img/car-sugga.webp" alt="Sugga" draggable="false"><span class="ct"><b>SUGGA</b><small>Vintage 4×4 · divočina</small></span><i class="chip off">OFFROAD</i></button>
+            </div>
+            <div class="detail"><p id="carDesc"></p><div id="carStats"></div></div>
+            <p class="hint" id="carNote" hidden>V tréningu auto určuje level, preto ho vyberieš až v treťom kroku.</p>
+            <button class="go alt wnext" type="button" data-go="2"><span class="go-t"><span>DALEJ</span><em>VYBER REŽIM</em></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l7 7-7 7zM13 5l7 7-7 7z"/></svg></button>
           </div>
-          <div class="detail"><p id="carDesc"></p><div id="carStats"></div></div>
-          <p class="lab2">REŽIM</p>
-          <div class="cards modes" id="modeCards">
+          <div class="wz" data-step="2" hidden>
+            <p class="lab2">VYBER REŽIM</p>
+            <div class="cards modes" id="modeCards">
             <button class="card mode on" type="button" data-mode="free" style="--ac:#ffb21a"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 12c0-2.5 2-4.5 4.5-4.5 4 0 5 9 9 9M4 16.5c4 0 5-9 9-9"/><circle cx="12" cy="12" r="0" /></svg><b>VOĽNÝ</b><small>Bez času</small></button>
             <button class="card mode" type="button" data-mode="t60" style="--ac:#ff6a3d"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 9v5l3 2M9.5 3h5M12 3v3"/></svg><b>60 S</b><small>Na skóre</small></button>
-            <button class="card mode" type="button" data-mode="train" style="--ac:#3ddcff"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16M6 19V9l6-4 6 4v10M10 19v-5h4v5"/></svg><b>TRÉNING</b><small>Parkovisko · levely</small></button>
-            <button class="card mode" type="button" data-mode="dovoz" style="--ac:#7be05a"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18h18M5 18V8h6v10M11 18v-6h8v6M7.5 11h1M7.5 14h1"/></svg><b>DOVOZ</b><small>Mesto · Zubor</small></button>
-            <button class="card mode" type="button" data-mode="off" style="--ac:#d9a35a"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 19l6-10 4 6 3-4 7 8z"/></svg><b>DIVOČINA</b><small>Offroad · Sugga</small></button>
+            <button class="card mode" type="button" data-mode="train" style="--ac:#3ddcff"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16M6 19V9l6-4 6 4v10M10 19v-5h4v5"/></svg><b>TRÉNING</b><small>Levely · krok za krokom</small></button>
             <button class="card mode" type="button" data-mode="tokyo" style="--ac:#c58bff" disabled><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg><b>TOKYO DRIFT</b><small>Už čoskoro</small></button>
+            </div>
+            <p class="hint" id="modeDesc"></p>
+            <button class="go alt wnext" id="toLevel" type="button" data-go="3" hidden><span class="go-t"><span>DALEJ</span><em>VYBER LEVEL</em></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l7 7-7 7zM13 5l7 7-7 7z"/></svg></button>
           </div>
-          <p class="hint" id="modeDesc"></p>
-          <div id="lvWrap" hidden><p class="lab2">LEVEL</p><div class="lvlist" id="lvList"></div><p class="hint" id="lvDesc"></p></div>
+          <div class="wz" data-step="3" hidden>
+            <div id="lvWrap"><p class="lab2">VYBER LEVEL</p><div class="lvlist" id="lvList"></div><p class="hint" id="lvDesc"></p></div>
+          </div>
         </div>
       </section>
 
@@ -756,7 +794,7 @@ solid(0, 38.5, 4.2, 1);
 // tyre stacks
 (function tyres() {
   const g = new THREE.TorusGeometry(.45, .2, 8, 16), m = new THREE.MeshStandardMaterial({ color: 0x111113, roughness: .9 });
-  [[52, 36], [-52, -36], [8, 8], [-40, -8]].forEach(([x, z]) => {
+  [[56, 40], [-58, -40], [58, -40], [-58, 41]].forEach(([x, z]) => {
     for (let k = 0; k < 4; k++) { const t = new THREE.Mesh(g, m); t.rotation.x = Math.PI / 2; t.position.set(x, .2 + k * .38, z); t.castShadow = true; scene.add(t); }
     solid(x, z, .7, .7);
   });
@@ -779,7 +817,7 @@ const cones = [];
   window.makeCone = (x, z) => {
     const g = new THREE.Group(); const c = new THREE.Mesh(geo, mat); const b = new THREE.Mesh(base, bmat);
     c.castShadow = true; b.castShadow = true; g.add(c, b); g.position.set(x, 0, z); scene.add(g);
-    const o = { g, home: [x, z], x, z, vx: 0, vz: 0, spin: 0, tip: 0, down: false }; cones.push(o); return o;
+    const o = { g, home: [x, z], x, z, vx: 0, vz: 0, spin: 0, tip: 0, down: false, hid: false }; cones.push(o); return o;
   };
   spots.forEach(([x, z]) => makeCone(x, z));
 })();
@@ -806,7 +844,9 @@ const balls = [];
 })();
 function updateBalls(dt) {
   for (const b of balls) {
-    const dx = b.x - S.x, dz = b.z - S.z, d = Math.hypot(dx, dz), R = b.r + CAR_R * .8;
+    if (b.hid) continue;
+    let px = S.x, pz = S.z, d = 1e9; for (const q of carCircles()) { const dd = Math.hypot(b.x - q[0], b.z - q[1]); if (dd < d) { d = dd; px = q[0]; pz = q[1]; } }
+    const dx = b.x - px, dz = b.z - pz, R = b.r + CAR_CR;
     if (d < R && d > 1e-4) {
       const nx = dx / d, nz = dz / d, pen = R - d; b.x += nx * pen; b.z += nz * pen;
       const vn = (b.vx - S.vx) * nx + (b.vz - S.vz) * nz;
@@ -1260,7 +1300,9 @@ const S = { x: 0, z: -22, th: 0, vx: 0, vz: 0, w: 0, steer: 0, slip: 0, speed: 0
   roll: 0, rollV: 0, pit: 0, pitV: 0, ay: 0, ax: 0, thr: 0, brk: 0, two: 0, rolled: 0, rollDir: 0, sid: 0 };
 const CAR_RESET = { vx: 0, vz: 0, w: 0, steer: 0, slip: 0, speed: 0, drifting: false, tilt: 0, pitch: 0, vF: 0, roll: 0, rollV: 0, pit: 0, pitV: 0, ay: 0, ax: 0, thr: 0, brk: 0, two: 0, rolled: 0, rollDir: 0 };
 const input = { steer: 0, gas: 0, brake: 0, hb: 0 };
-const CAR_R = 2.1;
+const CAR_R = 2.1;   // legacy (ball push)
+const CAR_CR = 1.1;   // lot collisions: the body is three circles (front, middle, rear) of body half-width + a little skin
+function carCircles() { const off = P.L * .46, sx = Math.sin(S.th) * off, cz = Math.cos(S.th) * off; return [[S.x + sx, S.z + cz], [S.x, S.z], [S.x - sx, S.z - cz]]; }
 
 function resetCar() {
   Object.assign(S, CAR_RESET, { x: 0, z: -22, th: 0, gy: 0, tp: 0, tr: 0 });
@@ -1394,35 +1436,41 @@ function hit(power) {
   if (power > 6) breakCombo();
 }
 function collide() {
-  // lot walls
-  const bx = LOT.x - CAR_R + .2, bz = LOT.z - CAR_R + .2;
-  if (S.x > bx) { hit(Math.abs(S.vx)); S.x = bx; S.vx = -S.vx * .35; S.vz *= .8; }
-  if (S.x < -bx) { hit(Math.abs(S.vx)); S.x = -bx; S.vx = -S.vx * .35; S.vz *= .8; }
-  if (S.z > bz) { hit(Math.abs(S.vz)); S.z = bz; S.vz = -S.vz * .35; S.vx *= .8; }
-  if (S.z < -bz) { hit(Math.abs(S.vz)); S.z = -bz; S.vz = -S.vz * .35; S.vx *= .8; }
-  // static boxes: circle vs AABB
-  for (const s of solids) {
-    const cx = clamp(S.x, s.x - s.hx, s.x + s.hx), cz = clamp(S.z, s.z - s.hz, s.z + s.hz);
-    let dx = S.x - cx, dz = S.z - cz, d = Math.hypot(dx, dz);
-    if (d < CAR_R) {
-      if (d < 1e-4) { dx = S.x - s.x; dz = S.z - s.z; d = Math.hypot(dx, dz) || 1; }
-      const nx = dx / d, nz = dz / d, pen = CAR_R - d;
-      S.x += nx * pen; S.z += nz * pen;
-      const vn = S.vx * nx + S.vz * nz;
-      if (vn < 0) { hit(-vn * P.hitK); S.vx -= P.bounce * vn * nx; S.vz -= P.bounce * vn * nz; S.vx *= .85; S.vz *= .85; S.w *= .6; }
+  const R = CAR_CR;
+  for (let pass = 0; pass < 2; pass++) for (const [px, pz] of carCircles()) {
+    // lot walls (inner face of the barriers is at LOT.x / LOT.z)
+    if (px > LOT.x - R) { S.x -= px - (LOT.x - R); if (S.vx > 0) { hit(S.vx); S.vx = -S.vx * .35; S.vz *= .8; } }
+    else if (px < -LOT.x + R) { S.x += -LOT.x + R - px; if (S.vx < 0) { hit(-S.vx); S.vx = -S.vx * .35; S.vz *= .8; } }
+    if (pz > LOT.z - R) { S.z -= pz - (LOT.z - R); if (S.vz > 0) { hit(S.vz); S.vz = -S.vz * .35; S.vx *= .8; } }
+    else if (pz < -LOT.z + R) { S.z += -LOT.z + R - pz; if (S.vz < 0) { hit(-S.vz); S.vz = -S.vz * .35; S.vx *= .8; } }
+    // static boxes: circle vs AABB
+    for (const o of solids) {
+      const cx = clamp(px, o.x - o.hx, o.x + o.hx), cz = clamp(pz, o.z - o.hz, o.z + o.hz);
+      let dx = px - cx, dz = pz - cz, d = Math.hypot(dx, dz);
+      if (d < R) {
+        if (d < 1e-4) { dx = px - o.x; dz = pz - o.z; d = Math.hypot(dx, dz) || 1; }
+        const nx = dx / d, nz = dz / d, pen = R - d;
+        S.x += nx * pen; S.z += nz * pen;
+        const vn = S.vx * nx + S.vz * nz;
+        if (vn < 0) { hit(-vn * P.hitK); S.vx -= P.bounce * vn * nx; S.vz -= P.bounce * vn * nz; S.vx *= .85; S.vz *= .85; S.w *= .6; }
+      }
     }
   }
 }
 let coneHits = 0;
 function updateCones(dt) {
   updateBalls(dt); radarTick();
+  const cc = carCircles();
   for (const c of cones) {
-    const dx = c.x - S.x, dz = c.z - S.z, d = Math.hypot(dx, dz);
-    if (d < CAR_R * .85 + .3) {
+    if (c.hid) continue;
+    let px = S.x, pz = S.z, d = 1e9;
+    for (const q of cc) { const dd = Math.hypot(c.x - q[0], c.z - q[1]); if (dd < d) { d = dd; px = q[0]; pz = q[1]; } }
+    const dx = c.x - px, dz = c.z - pz, lim = CAR_CR + .3;
+    if (d < lim) {
       const nx = dx / (d || 1), nz = dz / (d || 1);
       const push = Math.max(2, S.speed * 1.15);
       c.vx = S.vx * .9 + nx * push * .6; c.vz = S.vz * .9 + nz * push * .6; c.spin = (Math.random() - .5) * 14;
-      const pen = CAR_R * .85 + .3 - d; c.x += nx * pen; c.z += nz * pen;
+      const pen = lim - d; c.x += nx * pen; c.z += nz * pen;
       if (!c.down && S.speed > 3) { c.down = true; coneHits++; stats.cones++; sound.tick(); }
     }
     if (c.vx || c.vz) {
@@ -2500,10 +2548,19 @@ function offUpdate(dt) {                                  // moving things in th
    Finishing earns 1–3 stars; one star unlocks the next level. The two full missions close the list. */
 const E = Math.PI / 2, N = 0, W = -Math.PI / 2, SS = Math.PI;
 const gate = (x, z, r, name, hint) => ({ id: 'g' + x + '_' + z, name, hint: hint || '', type: 'gate', x, z, r: r || 3 });
-const stopBox = (x, z, name, hint) => ({ id: 's' + x + '_' + z, name, hint: hint || '', type: 'park', x, z, r: 2.4, tol: 9 });
-const parkBox = (x, z, th, name, hint) => ({ id: 'p' + x + '_' + z, name, hint: hint || '', type: 'park', x, z, th, r: 1.7, tol: .3 });
-const speedGate = (x, z, kmh, name, hint) => ({ id: 'v' + x + '_' + z, name, hint: hint || '', type: 'speed', x, z, r: 3.5, min: kmh / 3.6 });
-const box4 = (x, z) => [[x - 2.4, z - 3.2], [x + 2.4, z - 3.2], [x - 2.4, z + 3.2], [x + 2.4, z + 3.2], [x - 2.4, z], [x + 2.4, z]];
+// a stopping box lies along the heading `th` (the car must stand in it facing roughly that way)
+const stopBox = (x, z, th, name, hint) => ({ id: 's' + x + '_' + z, name, hint: hint || '', type: 'park', x, z, th, r: 2.6, tol: .75 });
+const parkBox = (x, z, th, name, hint) => ({ id: 'p' + x + '_' + z, name, hint: hint || '', type: 'park', x, z, th, r: 1.9, tol: .4 });
+const speedGate = (x, z, kmh, name, hint) => ({ id: 'v' + x + '_' + z, name, hint: hint || '', type: 'speed', x, z, r: 3.6, min: kmh / 3.6, sign: 'RADAR ' + kmh + ' km/h' });
+// cones framing a box along heading th: four corners and the middle of both long sides
+const boxCones = (x, z, th, w, l) => { const f = [Math.sin(th), Math.cos(th)], r = [-Math.cos(th), Math.sin(th)], out = []; [[-1, -1], [1, -1], [-1, 1], [1, 1], [-1, 0], [1, 0]].forEach(([a, b]) => out.push([x + r[0] * a * w + f[0] * b * l, z + r[1] * a * w + f[1] * b * l])); return out; };
+// a slalom line from (x0,z0) along heading th: a cone every `sp` metres, a gate beside each, alternating sides (first = right of the line)
+const slalomLine = (x0, z0, th, sp, n, first, off, r) => {
+  const f = [Math.sin(th), Math.cos(th)], rg = [-Math.cos(th), Math.sin(th)], cones = [], tasks = [];   // rg: the driver's right-hand side on screen
+  for (let i = 0; i < n; i++) { const cx = x0 + f[0] * i * sp, cz = z0 + f[1] * i * sp, side = (i % 2 === 0 ? 1 : -1) * (first || 1); cones.push([cx, cz]);
+    tasks.push(Object.assign(gate(+(cx + rg[0] * side * off).toFixed(2), +(cz + rg[1] * side * off).toFixed(2), r || 1.9, side > 0 ? 'VPRAVO' : 'VĽAVO'), { sign: side > 0 ? 'VPRAVO ▶' : '◀ VĽAVO' })); }
+  return { cones, tasks };
+};
 const dv = id => { const T = TASKS_DOVOZ.find(t => t.id === id); if (!T) throw new Error('dv ' + id); return T; };
 const dvFrom = id => { const f = dv(id).from; return typeof f === 'function' ? f() : f; };
 const ofs = (a, b) => TASKS_OFF.slice(a - 1, b);
@@ -2511,27 +2568,24 @@ const ofs = (a, b) => TASKS_OFF.slice(a - 1, b);
 const slalom = (x, z0, sp, n, side, r) => { const cones = [], tasks = []; for (let i = 0; i < n; i++) cones.push([x, z0 + i * sp]); for (let i = 0; i < n; i++) { const dir = (i % 2 === 0 ? 1 : -1) * (side || 1); tasks.push(gate(x + dir * 2.6, z0 + i * sp + sp / 2, r || 2.2, dir > 0 ? 'VĽAVO' : 'VPRAVO')); } return { cones, tasks }; };
 const LEVELS = [
   // --- parking lot, Zubor ---
-  { id: 'l1', name: 'ROZJAZD A BRZDA', car: 'zubor', world: 'lot', start: [-52, -40, E], lesson: 'Zubor má 3,5 tony. Brzdiť začni oveľa skôr, než si myslíš.',
-    tasks: [gate(-10, -40, 3, 'ROZBEHNI SA', 'Plný plyn rovno dopredu'), stopBox(30, -40, 'ZASTAV V BOXE', 'Zastav tak, aby auto stálo medzi kužeľmi')],
-    cones: box4(30, -40), par: 22 },
-  (() => { const sl = slalom(-20, -36, 15, 5, 1); return { id: 'l2', name: 'SLALOM', car: 'zubor', world: 'lot', start: [-20, -44, N], lesson: 'Kužele 15 metrov od seba. Volantom plynulo a včas. Kužeľ = škoda.',
-    tasks: sl.tasks.concat([gate(-20, 36, 3, 'CIEĽ', 'Rovno von zo slalomu')]), cones: sl.cones, par: 32 }; })(),
-  { id: 'l3', name: 'CÚVANIE', car: 'zubor', world: 'lot', start: [20, -20, N], lesson: 'Cúvaj pomaly, pozeraj na kužele. Cúvací senzor pípa, keď si blízko.',
-    tasks: [parkBox(20, -40, N, 'ZACÚVAJ DO BOXU', 'Box je za tebou. Zacúvaj a zastav medzi kužeľmi')],
-    cones: box4(20, -40), par: 26 },
-  { id: 'l4', name: 'OSMIČKA', car: 'zubor', world: 'lot', start: [-36, -42, N], lesson: 'Dve slučky okolo kužeľov. Sleduj, ako sa karoséria nakláňa.',
-    tasks: [gate(-36, -20, 2.5, 'STRED'), gate(-28, -12, 2.5, 'OKOLO PRAVÉHO'), gate(-20, -20, 2.5, 'OKOLO PRAVÉHO'), gate(-28, -28, 2.5, 'OKOLO PRAVÉHO'), gate(-36, -20, 2.5, 'STRED'), gate(-44, -28, 2.5, 'OKOLO ĽAVÉHO'), gate(-52, -20, 2.5, 'OKOLO ĽAVÉHO'), gate(-44, -12, 2.5, 'OKOLO ĽAVÉHO'), gate(-36, -20, 2.5, 'STRED'), gate(-36, -2, 3, 'CIEĽ')],
+  { id: 'l1', name: 'ROZJAZD A BRZDA', car: 'zubor', world: 'lot', start: [-54, -16, E], lesson: 'Zubor má 3,5 tony. Brzdiť začni oveľa skôr, než si myslíš.',
+    tasks: [Object.assign(gate(-8, -16, 3.2, 'ROZBEHNI SA', 'Plný plyn rovno dopredu'), { sign: 'PLYN!' }), Object.assign(stopBox(38, -16, E, 'ZASTAV V BOXE', 'Zastav tak, aby auto stálo celé v boxe'), { sign: 'STOP' })],
+    cones: boxCones(38, -16, E, 2.6, 4.2), par: 22 },
+  { id: 'l2', name: 'RADAR A BRZDA', car: 'zubor', world: 'lot', start: [-54, 14, E], lesson: 'Prejdi radarom nad 60 km/h a hneď brzdi. Brzdná dráha zo 60 je vyše 15 metrov a Zubor je ťažký.',
+    tasks: [speedGate(8, 14, 60, 'RADAR', 'Prejdi radarom rýchlejšie ako 60 km/h'), Object.assign(stopBox(48, 14, E, 'ZASTAV', 'Zastav v boxe pred bariérou'), { sign: 'STOP' })],
+    cones: boxCones(48, 14, E, 2.6, 4.2), par: 18 },
+  (() => { const sl = slalomLine(-20, -26, N, 14, 5, 1, 3.4, 1.9); return { id: 'l3', name: 'SLALOM', car: 'zubor', world: 'lot', start: [-20, -39, N], lesson: 'Kužele sú po 14 metroch. Prechádzaj ich striedavo z pravej a z ľavej strany, volantom plynulo a včas.',
+    tasks: sl.tasks.concat([Object.assign(gate(-20, 36, 3.4, 'CIEĽ', 'Rovno von zo slalomu'), { sign: 'CIEĽ' })]), cones: sl.cones, par: 34 }; })(),
+  { id: 'l4', name: 'CÚVANIE DO BOXU', car: 'zubor', world: 'lot', start: [24, 19, E], lesson: 'Prejdi pred box, zastav a cúvaj doňho. Box je vľavo za tebou, hore je malá mapka. Cúvací senzor pípa, keď si blízko kužeľa.',
+    tasks: [Object.assign(gate(46, 19, 3.4, 'PREJDI ZA BOX', 'Choď dopredu, potom cúvaj'), { sign: 'ZA BOX, POTOM CÚVAJ' }), Object.assign(parkBox(34, 9, N, 'ZACÚVAJ DO BOXU', 'Cúvaj doľava do boxu medzi kužeľmi'), { sign: 'BOX ▼' })],
+    cones: boxCones(34, 9, N, 2.6, 4.2), par: 34 },
+  { id: 'l5', name: 'OSMIČKA', car: 'zubor', world: 'lot', start: [-36, -38, N], lesson: 'Dve slučky okolo kužeľov. Sleduj, ako sa karoséria nakláňa.',
+    tasks: [gate(-36, -20, 2.6, 'STRED'), gate(-28, -12, 2.6, 'OKOLO PRAVÉHO'), gate(-20, -20, 2.6, 'OKOLO PRAVÉHO'), gate(-28, -28, 2.6, 'OKOLO PRAVÉHO'), gate(-36, -20, 2.6, 'STRED'), gate(-44, -28, 2.6, 'OKOLO ĽAVÉHO'), gate(-52, -20, 2.6, 'OKOLO ĽAVÉHO'), gate(-44, -12, 2.6, 'OKOLO ĽAVÉHO'), gate(-36, -20, 2.6, 'STRED'), Object.assign(gate(-36, 2, 3.4, 'CIEĽ'), { sign: 'CIEĽ' })],
     cones: [[-28, -20], [-44, -20]], par: 55 },
-  (() => { const sl = slalom(10, -38, 19, 4, -1, 2.4); return { id: 'l5', name: 'RÝCHLY SLALOM', car: 'zubor', world: 'lot', start: [10, -44, N], lesson: 'Kužele ďalej od seba, tempo vyššie. Žiadne prudké pohyby, inak sa auto rozkýve.',
-    tasks: sl.tasks.concat([gate(10, 34, 3, 'CIEĽ')]), cones: sl.cones, par: 20 }; })(),
-  { id: 'l6', name: 'RADAR A BRZDA', car: 'zubor', world: 'lot', start: [-56, -14, E], lesson: 'Rozbehni sa nad 60 km/h a zastav v boxe. Brzdná dráha zo 60 je vyše 25 metrov.',
-    tasks: [speedGate(18, -14, 60, 'RADAR', 'Prejdi radarom rýchlejšie ako 60 km/h'), stopBox(54, -14, 'ZASTAV', 'Zastav v boxe pred bariérou')],
-    cones: box4(54, -14), par: 18 },
-  { id: 'l7', name: 'KĽUKATÁ', car: 'zubor', world: 'lot', start: [-58, -39, E], lesson: 'Vľavo, vpravo, vľavo. Keď auto rozkývaš v rytme, zdvihne kolesá a prevráti sa. Plynulo a radšej pomalšie.',
-    tasks: [gate(-44, -35.5, 2.6, 'VĽAVO'), gate(-22, -42.5, 2.6, 'VPRAVO'), gate(0, -35.5, 2.6, 'VĽAVO'), gate(22, -42.5, 2.6, 'VPRAVO'), gate(44, -36, 2.6, 'VĽAVO'), gate(56, -39, 3, 'CIEĽ')],
-    cones: [[-33, -39], [-11, -39], [11, -39], [33, -39]], par: 19 },
-  { id: 'l8', name: 'RUČNÁ OTOČKA', car: 'zubor', world: 'lot', start: [-56, 32, E], lesson: 'Rozbehni sa, strhni volant a potiahni ručnú. Otoč sa na mieste a vráť sa.',
-    tasks: [gate(-8, 32, 3, 'ROZJAZD', 'Choď až k značke'), { id: 'uturn', name: 'OTOČ SA', hint: 'Vráť sa späť nosom na západ', type: 'gate', x: -30, z: 38, r: 3.2, th: W, tol: .8 }],
+  (() => { const sl = slalomLine(-30, -12, E, 18, 5, -1, 3.6, 2); return { id: 'l6', name: 'RÝCHLY SLALOM', car: 'zubor', world: 'lot', start: [-54, -12, E], lesson: 'Kužele ďalej od seba a tempo vyššie. Auto rozkývaš v rytme, preto plynulo a radšej o trošku pomalšie.',
+    tasks: sl.tasks.concat([Object.assign(gate(58, -12, 3.4, 'CIEĽ'), { sign: 'CIEĽ' })]), cones: sl.cones, par: 22 }; })(),
+  { id: 'l7', name: 'RUČNÁ OTOČKA', car: 'zubor', world: 'lot', start: [-54, 0, E], lesson: 'Rozbehni sa, strhni volant a potiahni ručnú. Otoč sa a vráť sa späť.',
+    tasks: [Object.assign(gate(-6, 0, 3.4, 'ROZJAZD', 'Choď až k značke'), { sign: 'ROZJAZD' }), Object.assign({ id: 'uturn', name: 'OTOČ SA', hint: 'Vráť sa späť nosom na západ', type: 'gate', x: -32, z: 8, r: 3.6, th: W, tol: .8 }, { sign: 'OTOČ SA' })],
     par: 17 },
   // --- town, Zubor ---
   { id: 'd1', name: 'NAKLADACIA RAMPA', car: 'zubor', world: 'dovoz', start: JOB_START, lesson: 'Zacúvaj medzi kontajnery. Pomaly, s citom, nič sa nedotkni.', tasks: [dv('bay')], par: 40 },
@@ -2556,13 +2610,14 @@ const LEVELS = [
   { id: 'm1', name: 'MISIA: DOVOZ', car: 'zubor', world: 'dovoz', start: JOB_START, lesson: 'Celá cesta mestom až na vrchol. Vrátane neónovej zóny.', tasks: TASKS_DOVOZ, par: 480, mission: 'job' },
   { id: 'm2', name: 'MISIA: DIVOČINA', car: 'sugga', world: 'off', start: OFF_START, lesson: 'Celá divočina od lúky po vrchol.', tasks: TASKS_OFF, par: 420, mission: 'off' }
 ];
-{ const cnt = {}; LEVELS.forEach(L => { cnt[L.world] = (cnt[L.world] || 0) + 1; L.n = cnt[L.world]; }); }   // numbered inside each world
+{ let n = 0; LEVELS.forEach(L => { L.n = L.mission ? 0 : ++n; }); }   // one numbered list; the two full missions close it
+const lvTag = L => L.mission ? 'MISIA' : 'LEVEL ' + L.n;
 LEVELS.forEach(L => { if (!L.start) { const f = L.tasks[0].from; L.start = typeof f === 'function' ? f() : f; } });
-const LV = { prog: store.get('lv', {}), sel: store.get('lvSel', 'l1'), cur: null, cones: [] };
+const LV = { prog: store.get('lv2', {}), sel: store.get('lvSel', 'l1'), cur: null, cones: [] };
 const lvStars = id => (LV.prog[id] && LV.prog[id].s) || 0;
-const lvUnlocked = i => { if (store.get('lvAll', 0)) return true; let j = i - 1; while (j >= 0 && LEVELS[j].world !== LEVELS[i].world) j--; return j < 0 || lvStars(LEVELS[j].id) > 0; };   // each world is its own chain: its first level is always open
+const lvUnlocked = i => store.get('lvAll', 0) || i <= 0 || lvStars(LEVELS[i - 1].id) > 0;   // one chain through the whole training: a star on the previous level opens the next
 const lvIndex = id => LEVELS.findIndex(L => L.id === id);
-const lvNext = L => { for (let j = lvIndex(L.id) + 1; j < LEVELS.length; j++) if (LEVELS[j].world === L.world) return LEVELS[j]; return null; };   // next level of the same world
+const lvNext = L => LEVELS[lvIndex(L.id) + 1] || null;
 function lvRate(L) {   // 3 stars: fast and clean; 2: finished with little damage; 1: finished
   const t = job.t, d = job.dmg;
   if (d < 5 && t <= L.par && !job.rolls) return 3;
@@ -2586,9 +2641,35 @@ const mkPark = new THREE.Group(); MK.add(mkPark);
   const am = new THREE.Mesh(new THREE.ShapeGeometry(a), m); am.rotation.x = -Math.PI / 2; am.position.y = .07; mkPark.add(am);
   mkPark.userData.m = m;
 })();
+/* a floating sign over the current target and a dim ring + guide line to the one after it */
+const mkSignCv = document.createElement('canvas'); mkSignCv.width = 512; mkSignCv.height = 128;
+const mkSignTex = new THREE.CanvasTexture(mkSignCv);
+const mkSign = new THREE.Sprite(new THREE.SpriteMaterial({ map: mkSignTex, transparent: true, depthWrite: false, fog: false }));
+mkSign.scale.set(6.4, 1.6, 1); mkSign.position.y = 5.2; MK.add(mkSign);
+function drawSign(txt) {
+  const g = mkSignCv.getContext('2d'); g.clearRect(0, 0, 512, 128);
+  g.fillStyle = 'rgba(12,12,16,.82)'; g.beginPath(); g.roundRect ? g.roundRect(6, 14, 500, 100, 22) : g.rect(6, 14, 500, 100); g.fill();
+  g.lineWidth = 5; g.strokeStyle = '#ffb21a'; g.stroke();
+  let fs = 62; g.font = '700 ' + fs + 'px system-ui, sans-serif'; while (g.measureText(txt).width > 460 && fs > 22) { fs -= 4; g.font = '700 ' + fs + 'px system-ui, sans-serif'; }
+  g.fillStyle = '#fff'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(txt, 256, 66); mkSignTex.needsUpdate = true;
+}
+const NX = new THREE.Group(); NX.visible = false; scene.add(NX);
+const nxRing = new THREE.Mesh(new THREE.RingGeometry(.86, 1, 48), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: .5, depthWrite: false, side: THREE.DoubleSide })); nxRing.rotation.x = -Math.PI / 2; NX.add(nxRing);
+const nxPath = new THREE.Mesh(new THREE.BoxGeometry(1, .02, 1), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: .3, depthWrite: false })); scene.add(nxPath); nxPath.visible = false;
+function placeNext() {
+  const T = TASKS[job.i], N2 = TASKS[job.i + 1];
+  NX.visible = !!(T && N2) && !(job.level && job.level.mission);
+  nxPath.visible = false; if (!NX.visible) return;
+  nxRing.scale.set(N2.r, 1, N2.r); NX.position.set(N2.x, (job.kind === 'lot' ? 0 : terrainH(N2.x, N2.z)) + .1, N2.z);
+  if (job.kind === 'lot') {
+    const dx = N2.x - T.x, dz = N2.z - T.z, len = Math.hypot(dx, dz);
+    nxPath.scale.set(.3, 1, Math.max(.1, len - T.r - N2.r)); const k = (T.r + (len - T.r - N2.r) / 2) / len;
+    nxPath.position.set(T.x + dx * k, .07, T.z + dz * k); nxPath.rotation.y = Math.atan2(dx, dz); nxPath.visible = len > T.r + N2.r + 1;
+  }
+}
 function placeMarker() {
-  const T = TASKS[job.i]; if (!T) { MK.visible = false; return; }
-  MK.visible = true; MK.userData.T = T;
+  const T = TASKS[job.i]; if (!T) { MK.visible = false; NX.visible = false; nxPath.visible = false; return; }
+  MK.visible = true; MK.userData.T = T; drawSign(T.sign || T.name); placeNext();
   mkRing.scale.set(T.r, 1, T.r); mkBeam.scale.set(T.r * .85, 1, T.r * .85);
   mkPark.visible = T.type === 'park'; mkPark.rotation.y = T.th || 0;
   MK.position.set(T.x, terrainH(T.x, T.z) + .08, T.z);
@@ -2721,6 +2802,16 @@ function jobTasks(dt) {
 }
 const jobFmtT = t => Math.floor(t / 60) + ':' + String(Math.floor(t % 60)).padStart(2, '0');
 let mapT = 0;
+function lotMapDraw(T) {
+  const c = jEl.ctx, W = 148, H = 110, MX = x => (x + LOT.x) / (2 * LOT.x) * W, MZ = z => (LOT.z - z) / (2 * LOT.z) * H, k = W / (2 * LOT.x);
+  c.fillStyle = '#1b1b22'; c.fillRect(0, 0, W, H); c.strokeStyle = '#555'; c.lineWidth = 1; c.strokeRect(.5, .5, W - 1, H - 1);
+  c.fillStyle = '#3a3a45'; solids.forEach(o => c.fillRect(MX(o.x - o.hx), MZ(o.z + o.hz), o.hx * 2 * k, o.hz * 2 * k));
+  c.fillStyle = '#ff7a2a'; LV.cones.forEach(q => { if (q.down) return; c.beginPath(); c.arc(MX(q.x), MZ(q.z), 1.8, 0, 6.3); c.fill(); });
+  const N2 = TASKS[job.i + 1];
+  if (N2) { c.strokeStyle = 'rgba(255,255,255,.55)'; c.lineWidth = 1.2; c.beginPath(); c.arc(MX(N2.x), MZ(N2.z), Math.max(2.5, N2.r * k), 0, 6.3); c.stroke(); c.setLineDash([3, 3]); c.beginPath(); c.moveTo(MX(T.x), MZ(T.z)); c.lineTo(MX(N2.x), MZ(N2.z)); c.stroke(); c.setLineDash([]); }
+  c.fillStyle = '#39e075'; c.beginPath(); c.arc(MX(T.x), MZ(T.z), Math.max(3.2, T.r * k), 0, 6.3); c.fill();
+  c.save(); c.translate(MX(S.x), MZ(S.z)); c.rotate(S.th); c.fillStyle = '#ffb21a'; c.strokeStyle = '#111'; c.lineWidth = 1; c.beginPath(); c.moveTo(0, -5); c.lineTo(3.4, 4); c.lineTo(-3.4, 4); c.closePath(); c.fill(); c.stroke(); c.restore();
+}
 function jobHudTick(dt) {
   const T = TASKS[job.i]; if (!T) return;
   const dx = T.x - S.x, dz = T.z - S.z, dist = Math.hypot(dx, dz);
@@ -2730,6 +2821,7 @@ function jobHudTick(dt) {
   jEl.score.textContent = jobFmtT(job.t);
   mapT += dt;
   const MMAP = job.kind === 'off' ? OW.minimap : job.kind === 'lot' ? null : JW.minimap;
+  if (job.kind === 'lot' && mapT > .08) { mapT = 0; lotMapDraw(T); }
   if (mapT > .08 && MMAP) {
     mapT = 0; const c = jEl.ctx, mm = MMAP;
     c.drawImage(mm.c, 0, 0);
@@ -2793,18 +2885,23 @@ function jobStart() {
   Object.assign(job, { i: 0, dmg: 0, t: 0, hold: 0, over: false, resets: 0, rolls: 0, cone: 0, pop: 0, beepT: 0, slowPop: 0, best: store.get(pre + 'Best', 0), bestT: store.get(pre + 'BestT', 0) });
   Object.assign(S, CAR_RESET, { x: st[0], z: st[1], th: st[2], gy: lot ? 0 : terrainH(st[0], st[1]), tp: 0, tr: 0, vy: 0, air: false });
   job.fall = 0; fadeEl.style.opacity = 0; clearMarks();
-  if (lot) { resetCar(); Object.assign(S, { x: st[0], z: st[1], th: st[2] }); lvCones(L ? L.cones : null); coneHits = 0; lotCone0 = 0; }
+  if (lot) { resetCar(); Object.assign(S, { x: st[0], z: st[1], th: st[2] }); lvCones(L ? L.cones : null); setAmbient(false); coneHits = 0; lotCone0 = 0; }
   else lvCones(null);
   jEl.jDmgV.textContent = '0 %'; jEl.jDmgBar.style.transform = 'scaleX(0)'; jEl.jDmgBar.parentNode.classList.remove('hot');
   placeMarker(); jobStepHud(); mapT = 1;
-  jEl.jMap.hidden = lot;
-  const lab = $('#jLevel'); if (lab) { lab.hidden = !L; if (L) lab.textContent = 'LEVEL ' + L.n + ' · ' + L.name; }
+  { const cm = jEl.jMap; cm.hidden = false; cm.classList.toggle('lot', lot); cm.width = lot ? 148 : 110; cm.height = lot ? 110 : 148; jEl.ctx = cm.getContext('2d'); }
+  const lab = $('#jLevel'); if (lab) { lab.hidden = !L; if (L) lab.textContent = lvTag(L) + ' · ' + L.name; }
 }
 // cones that exist only for one level
 function lvCones(list) {
   LV.cones.forEach(c => { scene.remove(c.g); const i = cones.indexOf(c); if (i >= 0) cones.splice(i, 1); }); LV.cones = [];
   if (!list) return;
-  list.forEach(([x, z]) => { const c = makeCone(x, z); LV.cones.push(c); });
+  list.forEach(([x, z]) => { const c = makeCone(x, z); c.lv = true; LV.cones.push(c); });
+}
+// the loose party props (donut cones, barrels, beach balls) are in the way of the exercises, so they are put away there
+function setAmbient(on) {
+  cones.forEach(c => { if (!c.lv) { c.hid = !on; c.g.visible = on; } });
+  balls.forEach(b => { b.hid = !on; b.m.visible = on; });
 }
 const GRADES = [[9000, 'S'], [7500, 'A'], [5500, 'B'], [3500, 'C'], [0, 'D']];
 const JOB_PAR = 480;
@@ -2841,14 +2938,14 @@ function endJob(ok) {
 function lvSave(L, stars) {
   const o = LV.prog[L.id] || { s: 0, t: 0 };
   o.s = Math.max(o.s, stars); if (!o.t || job.t < o.t) o.t = Math.round(job.t * 10) / 10;
-  LV.prog[L.id] = o; store.set('lv', LV.prog);
+  LV.prog[L.id] = o; store.set('lv2', LV.prog);
 }
 function endLevel(ok, L) {
   const stars = ok ? lvRate(L) : 0, prev = lvStars(L.id);
   if (ok) { lvSave(L, stars); stats.levels = (stats.levels || 0) + 1; }
   stats.maxSpd = Math.max(stats.maxSpd, runMaxSpd); saveStats();
   const last = !lvNext(L);
-  $('#endTitle').innerHTML = ok ? 'LEVEL ' + L.n + ' <span>HOTOVÝ</span>' : 'LEVEL ' + L.n + ' <span>NEVYŠIEL</span>';
+  $('#endTitle').innerHTML = ok ? lvTag(L) + ' <span>HOTOVÝ</span>' : lvTag(L) + ' <span>NEVYŠIEL</span>';
   $('#endScoreLab').textContent = L.name;
   $('#endScore').innerHTML = '<span style="color:var(--amber)">' + '★'.repeat(stars) + '</span><span style="opacity:.28">' + '☆'.repeat(3 - stars) + '</span>';
   $('#endL1').textContent = 'ČAS'; $('#endBest').textContent = jobFmtT(job.t) + (L.par ? ' / ' + jobFmtT(L.par) : '');
@@ -2863,8 +2960,8 @@ function endLevel(ok, L) {
   else if (job.t > L.par) note = 'Hotovo, ale pomaly. Na tri hviezdy to chce čas pod ' + jobFmtT(L.par) + (job.dmg >= 5 ? ' a bez nárazov' : '') + '.';
   else note = 'Hotovo, ale s nárazmi. Na tri hviezdy to chce škodu pod 5 %.';
   $('#endNote').textContent = note;
-  shareTxt = ok ? 'Event Car Game, tréning level ' + L.n + ' (' + L.name + '): ' + '★'.repeat(stars) + ', čas ' + jobFmtT(job.t) + '. Dokážeš to lepšie?' : null;
-  endEl.hidden = false; $('#hud').hidden = true; jEl.jobHud.hidden = true; MK.visible = false; document.body.classList.remove('playing');
+  shareTxt = ok ? 'Event Car Game, tréning ' + lvTag(L).toLowerCase() + ' (' + L.name + '): ' + '★'.repeat(stars) + ', čas ' + jobFmtT(job.t) + '. Dokážeš to lepšie?' : null;
+  endEl.hidden = false; $('#hud').hidden = true; jEl.jobHud.hidden = true; MK.visible = false; NX.visible = false; nxPath.visible = false; document.body.classList.remove('playing');
   sound.quiet(); checkBadges();
 }
 
@@ -3314,7 +3411,7 @@ window.addEventListener('keydown', e => {
     const k = e.key.toLowerCase();
     if (k === 'm') music.toggle();
     else if (k === 'n') music.next();
-    else if (k === 'r') jobRespawn();
+    else if (k === 'r') resetToStart();
     else if (k === 'c' && game.running) cycleCam();
     else if (!game.running) menuKey(e);
   }
@@ -3336,6 +3433,10 @@ function hold(el, key) {
   const off = () => { touch[key] = 0; el.classList.remove('on'); };
   el.addEventListener('pointerdown', on); el.addEventListener('pointerup', off); el.addEventListener('pointercancel', off); el.addEventListener('lostpointercapture', off);
 }
+function resetToStart() { if (!game.running) return; if (job.on) { jobRespawn(); return; } if (game.paused) return; resetCar(); popText('SPÄŤ NA ŠTART', true); updateCamera(0, true); }
+$('#resetBtn').addEventListener('click', resetToStart);
+['dblclick', 'gesturestart', 'gesturechange', 'gestureend'].forEach(t => document.addEventListener(t, e => e.preventDefault()));
+document.addEventListener('contextmenu', e => { if (document.body.classList.contains('touch')) e.preventDefault(); });
 hold($('#padGas'), 'gas'); hold($('#padHb'), 'hb'); hold($('#padBr'), 'brake');
 
 const left = $('#ctlLeft');
@@ -3700,10 +3801,9 @@ const gov = { n: 0, t: 0, c: 0 };
 const $$ = s => [...document.querySelectorAll(s)];
 const menuEl = $('#menu'), pauseEl = $('#pauseMenu'), endEl = $('#endMenu'), curtain = $('#curtain'), stageEl = $('#stage'), muteBtn = $('#muteBtn');
 let pendingMode = store.get('mode', 'free'), tab = 'play', wiped = false;
-if (pendingMode === 'job') pendingMode = 'dovoz';
-if (!['free', 't60', 'train', 'dovoz', 'off'].includes(pendingMode)) pendingMode = 'free';
-const MODE_WORLD = { train: 'lot', dovoz: 'dovoz', off: 'off' };
-const isLv = m => !!MODE_WORLD[m];
+if (['job', 'dovoz', 'off'].includes(pendingMode)) pendingMode = 'train';
+if (!['free', 't60', 'train'].includes(pendingMode)) pendingMode = 'free';
+const isLv = m => m === 'train';
 const mmss = s => { s = Math.max(0, Math.round(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
 
 const STAT_DEFS = [['RÝCHLOSŤ', 'speed'], ['ZRÝCHLENIE', 'accel'], ['ŠMYK', 'slide'], ['OBRATNOSŤ', 'agil']];
@@ -3714,9 +3814,7 @@ const INFO = {
 const MODE_TXT = {
   free: 'Bez času a bez tlaku. Jazdi, driftuj a zbieraj combo.',
   t60: () => 'Minúta na čo najvyššie skóre.' + (game.best ? ' Tvoj rekord: ' + fmt(game.best) + '.' : ''),
-  train: () => 'Tréning na parkovisku v ' + LEVELS.filter(L => L.world === 'lot').length + ' leveloch: rozjazd, brzdenie, slalomy, cúvanie. Jedna hviezda odomkne ďalší level, tri sú za rýchly a čistý prejazd.',
-  dovoz: () => 'Dovoz auta mestom so Zuborom: ' + LEVELS.filter(L => L.world === 'dovoz').length + ' levelov od rampy a cúvania po kopec, na konci celá misia. Jedna hviezda odomkne ďalší.',
-  off: () => 'Divočina so Suggou: ' + LEVELS.filter(L => L.world === 'off').length + ' levelov od lúky po vrchol, na konci celá misia. Jedna hviezda odomkne ďalší.',
+  train: () => 'Jedna cesta od parkoviska cez mesto až po divočinu: ' + LEVELS.filter(L => !L.mission).length + ' levelov a na konci dve celé misie. Jedna hviezda odomkne ďalší level, tri sú za rýchly a čistý prejazd.',
   tokyo: 'Už čoskoro.'
 };
 const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>';
@@ -3768,33 +3866,50 @@ function renderCar() {
   if (!box.children.length) STAT_DEFS.forEach(([lab]) => box.insertAdjacentHTML('beforeend', '<div class="st"><span>' + lab + '</span><i></i></div>'));
   STAT_DEFS.forEach(([, key], n) => box.children[n].querySelector('i').style.setProperty('--v', I[key] + '%'));
 }
-const MODE_NAME = { free: 'VOĽNÝ', t60: '60 S', train: 'TRÉNING', dovoz: 'DOVOZ', off: 'DIVOČINA', tokyo: 'TOKYO DRIFT' };
-function renderSum() { const e = $('#goSum'); if (!e) return; const L = isLv(pendingMode) ? curLevel() : null; e.textContent = L ? 'LEVEL ' + L.n + ' · ' + L.name : carKey.toUpperCase() + ' · ' + (MODE_NAME[pendingMode] || ''); }
-const lvList = () => LEVELS.filter(L => L.world === (MODE_WORLD[pendingMode] || 'lot'));
+const MODE_NAME = { free: 'VOĽNÝ', t60: '60 S', train: 'TRÉNING', tokyo: 'TOKYO DRIFT' };
+function renderSum() { const e = $('#goSum'); if (!e) return; const L = isLv(pendingMode) ? curLevel() : null; e.textContent = L ? lvTag(L) + ' · ' + L.name : carKey.toUpperCase() + ' · ' + (MODE_NAME[pendingMode] || ''); }
+const lvList = () => LEVELS;
 function curLevel() {
-  const gl = lvList(); let i = gl.findIndex(L => L.id === LV.sel);
-  if (i < 0 || !lvUnlocked(lvIndex(gl[i].id))) { i = 0; while (i + 1 < gl.length && lvUnlocked(lvIndex(gl[i + 1].id)) && lvStars(gl[i].id) > 0) i++; LV.sel = gl[i].id; }
-  return gl[i];
+  let i = LEVELS.findIndex(L => L.id === LV.sel);
+  if (i < 0 || !lvUnlocked(i)) { i = 0; while (i + 1 < LEVELS.length && lvUnlocked(i + 1) && lvStars(LEVELS[i].id) > 0) i++; LV.sel = LEVELS[i].id; }
+  return LEVELS[i];
 }
+const LV_SECT = { lot: 'PARKOVISKO · ZUBOR', dovoz: 'MESTO · ZUBOR', off: 'DIVOČINA · SUGGA' };
 function renderLevels() {
-  const wrap = $('#lvWrap'); wrap.hidden = !isLv(pendingMode); if (wrap.hidden) return;
   const L = curLevel(); const el = $('#lvList'); el.textContent = '';
+  let sect = '';
   lvList().forEach(M => { const i = lvIndex(M.id);
+    const key = M.mission ? 'mis' : M.world;
+    if (key !== sect) { sect = key; const h = document.createElement('div'); h.className = 'lvh'; h.textContent = M.mission ? 'CELÉ MISIE' : LV_SECT[M.world]; el.appendChild(h); }
     const b = document.createElement('button'); b.type = 'button'; const un = lvUnlocked(i), st = lvStars(M.id);
     b.className = 'lv' + (M.id === L.id ? ' on' : '') + (un ? '' : ' lock') + (M.car === 'sugga' ? ' sugga' : ''); b.dataset.lv = M.id;
-    b.innerHTML = '<small>' + (M.mission ? 'MISIA' : (M.world === 'lot' ? 'PARKOVISKO' : M.world === 'dovoz' ? 'MESTO' : 'DIVOČINA') + ' · ' + M.n) + '</small><b>' + M.name + '</b><i' + (st ? '' : ' class="e"') + '>' + (un ? '★'.repeat(st) + '☆'.repeat(3 - st) : '🔒') + '</i>';
+    b.innerHTML = '<small>' + (M.mission ? 'MISIA' : 'LEVEL ' + M.n) + '</small><b>' + M.name + '</b><i' + (st ? '' : ' class="e"') + '>' + (un ? '★'.repeat(st) + '☆'.repeat(3 - st) : '🔒') + '</i>';
     el.appendChild(b);
   });
   $('#lvDesc').textContent = L.lesson + (LV.prog[L.id] && LV.prog[L.id].t ? '  ·  Najlepší čas ' + jobFmtT(LV.prog[L.id].t) : '');
-  if (carKey !== L.car && !stageBusy()) { stageShow(L.car); store.set('car', L.car); renderCar(); }
-  const on = $('#lvList .lv.on'); if (on) { const r = on.getBoundingClientRect(), er = el.getBoundingClientRect(); el.scrollLeft += (r.left - er.left) - (er.width - r.width) / 2; }   // centre the level in a horizontal strip, never scroll the page
+  if (isLv(pendingMode) && carKey !== L.car && !stageBusy()) { stageShow(L.car); store.set('car', L.car); renderCar(); }
+  const on = $('#lvList .lv.on'), tb = $('#lvList').closest('.tb');
+  if (on && tb && wiz.step === 3) { const r = on.getBoundingClientRect(), tr = tb.getBoundingClientRect(); if (r.top < tr.top + 40 || r.bottom > tr.bottom - 10) tb.scrollTop += (r.top - tr.top) - (tr.height - r.height) / 2; }   // keep the chosen level in view inside the panel only
+}
+/* the HRAJ screen is a wizard: 1 car, 2 mode, 3 level (only for the training) */
+const wiz = { step: 1 };
+function setStep(n) {
+  if (n === 3 && !isLv(pendingMode)) n = 2;
+  wiz.step = n;
+  $$('.wz').forEach(w => { w.hidden = +w.dataset.step !== n; });
+  $$('#steps button').forEach(b => { const k = +b.dataset.step; b.classList.toggle('on', k === n); b.classList.toggle('done', k < n); });
+  const tb = $('#steps').closest('.tb'); if (tb) tb.scrollTop = 0;
+  if (n === 3) renderLevels();
 }
 function renderMode() {
   renderSum();
   $$('#modeCards .card').forEach(c => c.classList.toggle('on', c.dataset.mode === pendingMode));
   const d = MODE_TXT[pendingMode]; $('#modeDesc').textContent = typeof d === 'function' ? d() : d;
+  const tr = isLv(pendingMode);
+  $('#steps [data-step="3"]').hidden = !tr; $('#toLevel').hidden = !tr; $('#carNote').hidden = !tr;
+  $$('#carCards .card').forEach(c => { c.disabled = tr; });
+  if (wiz.step === 3 && !tr) setStep(2);
   renderLevels();
-  $$('#carCards .card').forEach(c => { c.disabled = isLv(pendingMode); });
 }
 const renderCam = () => $$('#camCards .card').forEach(c => c.classList.toggle('on', c.dataset.cam === settings.cam));
 const renderQ = () => $$('#qCards .card').forEach(c => c.classList.toggle('on', +c.dataset.q === settings.q));
@@ -3899,8 +4014,8 @@ function startRun() {
     game.mode = L ? 'job' : pendingMode; job.kind = L ? L.world : 'dovoz'; game.running = true; game.paused = false; game.view = 'play'; game.score = 0; game.combo = 0; game.mult = 1; game.comboT = 0; game.time = 60;
     coneHits = 0; runMaxSpd = 0; runBestCombo = 0; stats.runs++;
     sound.pause(false);
-    if (game.mode === 'job') { jobSetWorld(true); jobStart(); } else { jobSetWorld(false); resetCar(); }
-    $('#jobHud').hidden = game.mode !== 'job';
+    if (game.mode === 'job') { jobSetWorld(true); jobStart(); } else { jobSetWorld(false); lvCones(null); setAmbient(true); resetCar(); }
+    $('#jobHud').hidden = game.mode !== 'job'; $('#resetBtn').hidden = game.mode === 'job';
     menuEl.hidden = true; endEl.hidden = true; pauseEl.hidden = true; $('#hud').hidden = false;
     elTimer.hidden = game.mode !== 't60'; elTimer.textContent = '60'; elTimer.classList.remove('low');
     $('#scoreLab').textContent = game.mode === 'job' ? 'ČAS' : game.mode === 't60' ? 'SKÓRE · REKORD ' + fmt(game.best) : 'SKÓRE';
@@ -3941,10 +4056,29 @@ function endRun() {
   endEl.hidden = false; $('#hud').hidden = true; elTimer.hidden = true; document.body.classList.remove('playing');
   countUp($('#endScore'), game.score, 900); sound.quiet(); checkBadges();
 }
+const SHARE_URL = 'https://offthewallhack.github.io/rd2026/appky/event-car-drift/';
+function copyText(t) {
+  try {
+    const ta = document.createElement('textarea'); ta.value = t; ta.setAttribute('readonly', '');
+    ta.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0;-webkit-user-select:text;user-select:text';
+    document.body.appendChild(ta); ta.focus(); ta.select(); ta.setSelectionRange(0, t.length);
+    const ok = document.execCommand('copy'); ta.remove(); return ok;
+  } catch (e) { return false; }
+}
+function shareBox(t) {   // last resort: show the text so it can be copied by hand
+  const o = document.createElement('div');
+  o.style.cssText = 'position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.7);display:grid;place-items:center;padding:20px';
+  o.innerHTML = '<div style="background:#15141c;border:1px solid rgba(255,255,255,.2);border-radius:16px;padding:16px;max-width:420px;width:100%;color:#fff;font:500 14px/1.4 system-ui,sans-serif"><b style="display:block;margin-bottom:8px">Skopíruj a pošli</b><textarea readonly style="width:100%;height:96px;background:#0d0c12;color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:8px;font:inherit;-webkit-user-select:text;user-select:text"></textarea><button type="button" style="margin-top:10px;width:100%;padding:12px;border:0;border-radius:12px;background:#ffb21a;color:#1b1200;font:700 14px system-ui,sans-serif">ZAVRIEŤ</button></div>';
+  o.querySelector('textarea').value = t; o.querySelector('button').onclick = () => o.remove(); document.body.appendChild(o);
+  const ta = o.querySelector('textarea'); ta.focus(); ta.select();
+}
 async function share() {
   const txt = shareTxt || ('Dal som ' + fmt(game.score) + ' bodov v Event Car Game (60 s). Prebi ma!');
-  try { if (navigator.share) { await navigator.share({ title: 'Event Car Game', text: txt, url: location.href }); return; } } catch (e) { return; }
-  try { await navigator.clipboard.writeText(txt + ' ' + location.href); toast('Skopírované'); } catch (e) { toast('Skopírovanie sa nepodarilo'); }
+  const full = txt + ' ' + SHARE_URL;
+  try { if (navigator.share) { await navigator.share({ title: 'Event Car Game', text: txt, url: SHARE_URL }); return; } } catch (e) { if (e && e.name === 'AbortError') return; }   // blocked inside a frame: fall through to copying
+  try { if (navigator.clipboard && navigator.clipboard.writeText) { await navigator.clipboard.writeText(full); toast('Skopírované'); return; } } catch (e) { /* try the old way */ }
+  if (copyText(full)) { toast('Skopírované'); return; }
+  shareBox(full);
 }
 
 /* ---------- wiring ---------- */
@@ -3956,7 +4090,9 @@ $('#carCards').addEventListener('click', e => {
   if (isLv(pendingMode)) return;
   stageShow(c.dataset.car); store.set('car', carKey); renderCar(); renderMode();
 });
-$('#modeCards').addEventListener('click', e => { const c = e.target.closest('.card'); if (!c || c.disabled) return; pendingMode = c.dataset.mode; store.set('mode', pendingMode); if (!isLv(pendingMode) && carKey !== 'zubor' && !stageBusy()) { stageShow('zubor'); store.set('car', 'zubor'); renderCar(); } renderMode(); });
+$('#modeCards').addEventListener('click', e => { const c = e.target.closest('.card'); if (!c || c.disabled) return; pendingMode = c.dataset.mode; store.set('mode', pendingMode); if (!isLv(pendingMode) && carKey !== 'zubor' && !stageBusy()) { stageShow('zubor'); store.set('car', 'zubor'); renderCar(); } renderMode(); if (isLv(pendingMode)) setStep(3); });
+$('#steps').addEventListener('click', e => { const b = e.target.closest('button'); if (b && !b.hidden) setStep(+b.dataset.step); });
+$$('.wnext').forEach(b => b.addEventListener('click', () => setStep(+b.dataset.go)));
 $('#lvList').addEventListener('click', e => { const b = e.target.closest('.lv'); if (!b) return; const i = lvIndex(b.dataset.lv); if (i < 0 || !lvUnlocked(i)) { toast('Najprv dokonči predchádzajúci level'); return; } LV.sel = b.dataset.lv; store.set('lvSel', LV.sel); renderMode(); });
 $('#nextBtn').addEventListener('click', () => { const n = lvNext(LEVELS[Math.max(0, lvIndex(LV.sel))]); if (n) { LV.sel = n.id; store.set('lvSel', LV.sel); } startRun(); });
 $('#camCards').addEventListener('click', e => { const c = e.target.closest('.card'); if (!c) return; settings.cam = c.dataset.cam; store.set('cam', settings.cam); renderCam(); });
@@ -4036,6 +4172,7 @@ toMenu(true); clearMarks();
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { layoutStage(); });
 requestAnimationFrame(() => { layoutStage(); updateCamera(0, true); });
 requestAnimationFrame(loop);
-window.__drift = { physics, updateCones, setCar, CARS, LEVELS, LV, store, renderMode, curLevel, lvCones, endJob, steerMaxAt: v => P.steerMax / (1 + Math.pow(Math.max(0, Math.abs(v) - 4) / P.steerFall, 1.3)), get P() { return P; }, rp, ORT, offUpdate, dvUpdate, HOLES: () => HOLES, holeAt, sg, stageSnap, stageReady: () => modelReady(sg.target), sound, get JP() { return JP; }, placeMarker, jobPhysics, jobDamage, jobTasks, jobFX, carShape, job, get TASKS() { return TASKS; }, TRAIL, WALK, OBS, carHits, jobRespawn, jobStart, jobSetWorld, buildJobWorld, terrainH, trailAt, surfAt, endJob, jobScore, S, input, game, camera, stage, music, settings, stats, get model() { return model; }, scene, setTab, startRun, toMenu, endRun, togglePause };
+window.__drift = { solids, cones, physics, updateCones, setCar, CARS, LEVELS, LV, store, renderMode, curLevel, lvCones, endJob, steerMaxAt: v => P.steerMax / (1 + Math.pow(Math.max(0, Math.abs(v) - 4) / P.steerFall, 1.3)), get P() { return P; }, rp, ORT, offUpdate, dvUpdate, HOLES: () => HOLES, holeAt, sg, stageSnap, stageReady: () => modelReady(sg.target), sound, get JP() { return JP; }, placeMarker, jobPhysics, jobDamage, jobTasks, jobFX, carShape, job, get TASKS() { return TASKS; }, TRAIL, WALK, OBS, carHits, jobRespawn, jobStart, jobSetWorld, buildJobWorld, terrainH, trailAt, surfAt, endJob, jobScore, S, input, game, camera, stage, music, settings, stats, get model() { return model; }, scene, setTab, startRun, toMenu, endRun, togglePause };
 })();
-</script></body></html>
+</script>
+</body></html>

@@ -118,7 +118,7 @@
 
      '<div class="ro-layer ro-apps">' +
       '<section class="ro-win" data-ro-win="led" aria-label="LED IT ROLL"></section>' +
-      '<section class="ro-win" data-ro-win="drift" aria-label="Event Car Drift"></section>' +
+      '<section class="ro-win" data-ro-win="drift" aria-label="Event Car Game"></section>' +
       '<section class="ro-win" data-ro-win="bg" aria-label="BG Maker"><div class="ro-scroll">' +
        '<h2>BG Maker</h2><p class="ro-lead">Generátor pozadí pre Instagram a socials. Textúry, farby, slidery a export obrázkov aj loopov.</p>' +
        '<div class="ro-bgcard"><div class="ro-bgart" aria-hidden="true"></div><div class="ro-in"><a class="ro-cta" href="' + CFG.bgMaker + '" target="_blank" rel="noopener">Otvoriť BG Maker <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div></div>' +
@@ -340,7 +340,7 @@
 
   /* ---------- apps ---------- */
   var current = null, toastShown = false, frames = {};
-  var FRAMES = { led: { src: CFG.led, title: 'LED IT ROLL', allow: 'fullscreen; microphone; autoplay; screen-wake-lock' }, drift: { src: CFG.drift, title: 'Event Car Drift', allow: 'fullscreen; autoplay; accelerometer; gyroscope' } };
+  var FRAMES = { led: { src: CFG.led, title: 'LED IT ROLL', allow: 'fullscreen; microphone; autoplay; screen-wake-lock' }, drift: { src: CFG.drift, title: 'Event Car Game', allow: 'fullscreen; autoplay; accelerometer; gyroscope' } };
   function setHomebar() { homebar.setAttribute('aria-hidden', isOpen && lock.classList.contains('away') && current ? 'false' : 'true'); }
   function openApp(id, fromEl) {
     if (current) return;

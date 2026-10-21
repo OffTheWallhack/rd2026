@@ -3,18 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<title>Event Car Drift · Robert Ďurica</title>
-<meta name="description" content="3D hra s event autami: tréning v 27 leveloch od brzdenia a slalomu po mesto a divočinu, plus voľný drift na parkovisku. Postavené s AI, bez programovania.">
+<title>Event Car Game · Robert Ďurica</title>
+<meta name="description" content="3D hra s event autami Zubor a Sugga: tréning na parkovisku, dovoz mestom a divočina v 27 leveloch, plus voľná jazda. Postavené s AI, bez programovania.">
 <meta name="theme-color" content="#0b0b0e">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Event Car Drift">
+<meta name="apple-mobile-web-app-title" content="Event Car Game">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="../img/drift-192.png" type="image/png">
 <link rel="apple-touch-icon" href="../img/drift-180.png">
-<meta property="og:title" content="Event Car Drift">
-<meta property="og:description" content="Drift a presnosť v 3D prehliadači. Postavené s AI.">
+<meta property="og:title" content="Event Car Game">
+<meta property="og:description" content="Presná jazda s ťažkou dodávkou v 3D prehliadači. Postavené s AI.">
 <meta property="og:image" content="https://offthewallhack.github.io/rd2026/appky/img/drift-512.png">
 <script data-goatcounter="https://durica.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,500;0,700;1,700&display=swap">
@@ -331,10 +331,8 @@ body.mplay .pp svg.i-play{display:none}
 .nv.on{box-shadow:0 8px 24px -10px rgba(255,178,26,.8),0 0 0 3px rgba(255,178,26,calc(.1 + var(--beat)*.2))}
 .cards.cars{grid-template-columns:1fr 1fr;gap:10px}
 .card.car{position:relative;display:grid;gap:8px;padding:12px 12px 11px;overflow:hidden}
-.card.car .ci{width:80%;height:44px;fill:rgba(255,255,255,.1);stroke:rgba(255,255,255,.55);stroke-width:1.6;stroke-linejoin:round;transition:fill .2s,stroke .2s,transform .3s}
-.card.car .ci .gl{fill:rgba(255,255,255,.06);stroke-width:1.2}
-.card.car .ci circle{fill:#0d0c12}
-.card.car.on .ci{fill:rgba(255,178,26,.22);stroke:var(--amber);transform:translateX(3px)}
+.card.car .ci{width:100%;height:92px;object-fit:contain;object-position:center;filter:drop-shadow(0 6px 7px rgba(0,0,0,.55)) brightness(1.18) contrast(1.05);opacity:.85;transition:transform .3s,opacity .2s;pointer-events:none}
+.card.car.on .ci{opacity:1;transform:scale(1.05)}
 .card.car .ct b{font-size:18px}
 .card.car:disabled{opacity:.45;cursor:default}
 .chip{position:absolute;top:9px;right:9px;font:700 italic 9.5px/1 var(--hud);letter-spacing:.14em;font-style:normal;padding:4px 6px;border-radius:4px;background:rgba(255,255,255,.1);color:var(--muted)}
@@ -383,14 +381,14 @@ body.mplay .pp svg.i-play{display:none}
   .m-plate{right:50%;transform:translateX(50%);bottom:auto;top:calc(88px + env(safe-area-inset-top,0px));padding:6px 8px;gap:8px}
   .pl-t{min-width:120px}.pl-t b{font-size:22px}.pl-t span{display:none}
   .pl-a{width:36px;height:36px}
-  .card.car .ci{height:34px}
+  .card.car .ci{height:70px}
   .go{min-height:54px}
   .card.mode{padding:8px 10px}
 }
 @media (max-height:460px) and (min-aspect-ratio:1/1){
   .m-plate{bottom:calc(30px + env(safe-area-inset-bottom,0px));padding:6px 8px;gap:8px}.pl-t b{font-size:22px}.pl-t span{display:none}.pl-t{min-width:110px}
   .pl-a{width:32px;height:32px}
-  .card.car .ci{height:28px}
+  .card.car .ci{height:58px}
   .card.mode{padding:6px 9px}
   .go-t em{display:none}
 }
@@ -440,11 +438,10 @@ body.mplay .pp svg.i-play{display:none}
   <div class="m-grid">
     <div class="m-left">
       <header class="m-head">
-        <h1 class="logo">EVENT CAR <span>DRIFT</span></h1>
-        <p class="sub">Parkovisko je tvoje. Gumy nie.</p>
+        <h1 class="logo">EVENT CAR <span>GAME</span></h1>
       </header>
       <nav class="m-nav" id="nav" aria-label="Hlavné menu">
-        <button class="nv on" type="button" data-tab="play"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2"/><path d="M3.5 10h6M14.5 10h6M12 14.2V21"/></svg><span>JAZDA</span></button>
+        <button class="nv on" type="button" data-tab="play"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2"/><path d="M3.5 10h6M14.5 10h6M12 14.2V21"/></svg><span>HRAJ</span></button>
         <button class="nv" type="button" data-tab="music"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg><span>HUDBA</span></button>
         <button class="nv" type="button" data-tab="controls"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="7" width="19" height="11" rx="5"/><path d="M7 10.5v4M5 12.5h4"/><circle cx="16" cy="11.5" r=".9"/><circle cx="18.5" cy="14" r=".9"/></svg><span>OVLÁDANIE</span></button>
         <button class="nv" type="button" data-tab="settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg><span>NASTAVENIA</span></button>
@@ -466,19 +463,21 @@ body.mplay .pp svg.i-play{display:none}
 
     <main class="m-panel" id="panel">
       <section class="tab on" data-tab="play">
-        <header class="th"><h2>JAZDA</h2><p>Vyber auto a režim, potom ŠTART.</p></header>
+        <header class="th"><h2>HRAJ</h2><p>Vyber auto a režim, potom ŠTART.</p></header>
         <div class="tb">
           <p class="lab2">AUTO</p>
           <div class="cards cars" id="carCards">
-            <button class="card car on" type="button" data-car="zubor"><svg class="ci" viewBox="0 0 96 40" aria-hidden="true"><path d="M5 31V9h60l8 2 14 11 4 4v5z"/><path d="M10 13h26v9H10zM40 13h22l8 9H40z" class="gl"/><circle cx="22" cy="32" r="7"/><circle cx="72" cy="32" r="7"/></svg><span class="ct"><b>ZUBOR</b><small>Dodávka · asfalt</small></span><i class="chip">ASFALT</i></button>
-            <button class="card car" type="button" data-car="sugga"><svg class="ci" viewBox="0 0 96 40" aria-hidden="true"><path d="M8 29V19l8-2 6-9h34l10 9 14 2v10z"/><path d="M26 10h14v7H21zM44 10h12l7 7H44z" class="gl"/><circle cx="26" cy="30" r="8"/><circle cx="72" cy="30" r="8"/></svg><span class="ct"><b>SUGGA</b><small>Vintage 4×4 · divočina</small></span><i class="chip off">OFFROAD</i></button>
+            <button class="card car on" type="button" data-car="zubor"><img class="ci" src="img/car-zubor.webp" alt="Zubor" draggable="false"><span class="ct"><b>ZUBOR</b><small>Dodávka · asfalt</small></span><i class="chip">ASFALT</i></button>
+            <button class="card car" type="button" data-car="sugga"><img class="ci" src="img/car-sugga.webp" alt="Sugga" draggable="false"><span class="ct"><b>SUGGA</b><small>Vintage 4×4 · divočina</small></span><i class="chip off">OFFROAD</i></button>
           </div>
           <div class="detail"><p id="carDesc"></p><div id="carStats"></div></div>
           <p class="lab2">REŽIM</p>
           <div class="cards modes" id="modeCards">
             <button class="card mode on" type="button" data-mode="free" style="--ac:#ffb21a"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 12c0-2.5 2-4.5 4.5-4.5 4 0 5 9 9 9M4 16.5c4 0 5-9 9-9"/><circle cx="12" cy="12" r="0" /></svg><b>VOĽNÝ</b><small>Bez času</small></button>
             <button class="card mode" type="button" data-mode="t60" style="--ac:#ff6a3d"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 9v5l3 2M9.5 3h5M12 3v3"/></svg><b>60 S</b><small>Na skóre</small></button>
-            <button class="card mode" type="button" data-mode="train" style="--ac:#3ddcff"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16M6 19V9l6-4 6 4v10M10 19v-5h4v5"/></svg><b>TRÉNING</b><small>Levely od ľahkých po ťažké</small></button>
+            <button class="card mode" type="button" data-mode="train" style="--ac:#3ddcff"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16M6 19V9l6-4 6 4v10M10 19v-5h4v5"/></svg><b>TRÉNING</b><small>Parkovisko · levely</small></button>
+            <button class="card mode" type="button" data-mode="dovoz" style="--ac:#7be05a"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18h18M5 18V8h6v10M11 18v-6h8v6M7.5 11h1M7.5 14h1"/></svg><b>DOVOZ</b><small>Mesto · Zubor</small></button>
+            <button class="card mode" type="button" data-mode="off" style="--ac:#d9a35a"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 19l6-10 4 6 3-4 7 8z"/></svg><b>DIVOČINA</b><small>Offroad · Sugga</small></button>
             <button class="card mode" type="button" data-mode="tokyo" style="--ac:#c58bff" disabled><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg><b>TOKYO DRIFT</b><small>Už čoskoro</small></button>
           </div>
           <p class="hint" id="modeDesc"></p>
@@ -548,7 +547,7 @@ body.mplay .pp svg.i-play{display:none}
           <div class="row" id="vibRow"><div><b>VIBRÁCIE</b><small>Pri náraze, ak to telefón vie.</small></div><button class="sw" id="swVib" type="button" role="switch" aria-checked="true" aria-label="Vibrácie"></button></div>
           <div class="row"><div><b>UKAZOVATEĽ FPS</b><small>Pre ladenie výkonu.</small></div><button class="sw" id="swFps" type="button" role="switch" aria-checked="false" aria-label="Ukazovateľ FPS"></button></div>
           <button class="go alt danger" id="resetBtn" type="button">Vymazať rekordy a nastavenia</button>
-          <p class="hint">Event Car Drift · vyrobené v Bratislave</p>
+          <p class="hint">Event Car Game · vyrobené v Bratislave</p>
         </div>
       </section>
 
@@ -1143,9 +1142,9 @@ function buildSugga() {
    and goes over past `over`. Sugga is lighter, lower, weaker: harder to roll, easier to place. */
 const CARS = {
   zubor: { engine: 'v8', build: buildZubor, name: 'ZUBOR',
-    L: 3.7, pw: 110, aMax: 3.8, top: 27, rev: 4.5, raMax: 2.2, brake: 8.2, brakeRamp: 6, coast: .8,
+    L: 3.7, pw: 110, aMax: 3.8, top: 27, rev: 4.5, raMax: 2.2, brake: 9.4, brakeRamp: 8, coast: .8,
     steerMax: .68, steerFall: 9, steerLag: 6.5, yawLag: 3.8, ayMax: 7.0, grip: 6.0, drift: 1.9, hbGrip: .7, kick: .6,
-    rollGain: .17, rollW: 3.8, rollZ: .26, tip: .215, over: .27, pitGain: .13, pitW: 6.3, pitZ: .5,
+    rollGain: .16, rollW: 3.8, rollZ: .26, tip: .215, over: .262, pitGain: .13, pitW: 6.3, pitZ: .5,
     power: 1, hitK: 1.5, bounce: 1.15 },
   sugga: { engine: 'diesel', build: buildSugga, name: 'SUGGA',
     L: 2.9, pw: 52, aMax: 2.9, top: 22, rev: 4, raMax: 2, brake: 8.4, brakeRamp: 7, coast: .9,
@@ -1346,7 +1345,7 @@ function carCore(dt, env) {
   // --- body roll (spring, underdamped) and pitch ---
   if (!rolled) {
     // slow manoeuvres only lean the body; it takes real speed to put enough energy into the roll to lift the wheels
-    const rT = P.rollGain * ay * (.6 + .4 * clamp((speed - 6) / 10, 0, 1)) / 9.8, w0 = P.rollW, k = 1 - .55 * Math.min(1, (S.roll / P.tip) * (S.roll / P.tip));   // the higher the body leans, the less it wants to come back
+    const rT = P.rollGain * (env.rollK || 1) * ay * (.6 + .4 * clamp((speed - 6) / 10, 0, 1)) / 9.8, w0 = P.rollW, k = 1 - .55 * Math.min(1, (S.roll / P.tip) * (S.roll / P.tip));   // the higher the body leans, the less it wants to come back
     S.rollV += (w0 * w0 * (rT - S.roll * k) - 2 * P.rollZ * w0 * S.rollV) * dt; S.roll += S.rollV * dt;
     const two = Math.abs(S.roll) > P.tip;
     if (two && !S.two) { S.two = 1; onTwoWheels(); } else if (!two && S.two) S.two = 0;
@@ -2557,11 +2556,13 @@ const LEVELS = [
   { id: 'm1', name: 'MISIA: DOVOZ', car: 'zubor', world: 'dovoz', start: JOB_START, lesson: 'Celá cesta mestom až na vrchol. Vrátane neónovej zóny.', tasks: TASKS_DOVOZ, par: 480, mission: 'job' },
   { id: 'm2', name: 'MISIA: DIVOČINA', car: 'sugga', world: 'off', start: OFF_START, lesson: 'Celá divočina od lúky po vrchol.', tasks: TASKS_OFF, par: 420, mission: 'off' }
 ];
-LEVELS.forEach((L, i) => { L.n = i + 1; if (!L.start) { const f = L.tasks[0].from; L.start = typeof f === 'function' ? f() : f; } });
+{ const cnt = {}; LEVELS.forEach(L => { cnt[L.world] = (cnt[L.world] || 0) + 1; L.n = cnt[L.world]; }); }   // numbered inside each world
+LEVELS.forEach(L => { if (!L.start) { const f = L.tasks[0].from; L.start = typeof f === 'function' ? f() : f; } });
 const LV = { prog: store.get('lv', {}), sel: store.get('lvSel', 'l1'), cur: null, cones: [] };
 const lvStars = id => (LV.prog[id] && LV.prog[id].s) || 0;
-const lvUnlocked = i => i === 0 || lvStars(LEVELS[i - 1].id) > 0 || !!store.get('lvAll', 0);
+const lvUnlocked = i => { if (store.get('lvAll', 0)) return true; let j = i - 1; while (j >= 0 && LEVELS[j].world !== LEVELS[i].world) j--; return j < 0 || lvStars(LEVELS[j].id) > 0; };   // each world is its own chain: its first level is always open
 const lvIndex = id => LEVELS.findIndex(L => L.id === id);
+const lvNext = L => { for (let j = lvIndex(L.id) + 1; j < LEVELS.length; j++) if (LEVELS[j].world === L.world) return LEVELS[j]; return null; };   // next level of the same world
 function lvRate(L) {   // 3 stars: fast and clean; 2: finished with little damage; 1: finished
   const t = job.t, d = job.dmg;
   if (d < 5 && t <= L.par && !job.rolls) return 3;
@@ -2609,7 +2610,7 @@ const JP_ZUBOR = { spd: .42, tr: 0 };
 const JP_SUGGA = { spd: .38, climb: 2.6, tr: .45 };
 Object.defineProperty(JP_ZUBOR, 'L', { get: () => CARS.zubor.L }); Object.defineProperty(JP_ZUBOR, 'steer', { get: () => CARS.zubor.steerMax });
 Object.defineProperty(JP_SUGGA, 'L', { get: () => CARS.sugga.L }); Object.defineProperty(JP_SUGGA, 'steer', { get: () => CARS.sugga.steerMax });
-const JENV = { grip: 1, acc: 1, drag: 0, slF: 0, slR: 0, G: 7.6, spd: .4, climb: 1, holdCap: 99 };
+const JENV = { grip: 1, acc: 1, drag: 0, slF: 0, slR: 0, G: 7.6, spd: .4, climb: 1, holdCap: 99, rollK: .55 };   // town and wilderness: slow speeds, the van only leans, it does not tip easily
 const GA = 15;                                                    // gravity while flying off a ramp
 let JP = JP_ZUBOR, SURFX = SURF;
 const fadeEl = document.createElement('div'); fadeEl.id = 'fallFade'; document.body.appendChild(fadeEl);
@@ -2831,9 +2832,9 @@ function endJob(ok) {
   $('#endL1').textContent = 'ČAS'; $('#endBest').textContent = jobFmtT(job.t);
   $('#endL2').textContent = 'ŠKODA'; $('#endCombo').textContent = Math.round(job.dmg) + ' %';
   $('#endL3').textContent = 'REKORD'; $('#endCones').textContent = job.best ? fmt(job.best) : '–';
-  $('#endBadge').hidden = !newBest; $('#nextBtn').hidden = !(ok && L && lvIndex(L.id) + 1 < LEVELS.length);
+  $('#endBadge').hidden = !newBest; $('#nextBtn').hidden = !(ok && L && lvNext(L));
   $('#endNote').textContent = ok ? (job.dmg < 5 ? 'Čistá práca. Ani škrabanec.' : 'Auto je na mieste. Skús to ešte bez nárazov.') : 'Auto to nezvládlo. Pomalšie a plynulejšie, cúvaj opatrne.';
-  shareTxt = ok ? (offk ? 'Prešiel som divočinu so Suggou v Event Car Drift: OFFROAD. Hodnotenie ' : 'Dovezl som auto v Event Car Drift: DOVOZ. Hodnotenie ') + gr + ', ' + fmt(sc) + ' bodov, škoda ' + Math.round(job.dmg) + ' %. Dokážeš to lepšie?' : null;
+  shareTxt = ok ? (offk ? 'Prešiel som divočinu so Suggou v Event Car Game: OFFROAD. Hodnotenie ' : 'Dovezl som auto v Event Car Game: DOVOZ. Hodnotenie ') + gr + ', ' + fmt(sc) + ' bodov, škoda ' + Math.round(job.dmg) + ' %. Dokážeš to lepšie?' : null;
   endEl.hidden = false; $('#hud').hidden = true; jEl.jobHud.hidden = true; MK.visible = false; document.body.classList.remove('playing');
   countUp($('#endScore'), sc, 900); sound.quiet(); checkBadges();
 }
@@ -2846,7 +2847,7 @@ function endLevel(ok, L) {
   const stars = ok ? lvRate(L) : 0, prev = lvStars(L.id);
   if (ok) { lvSave(L, stars); stats.levels = (stats.levels || 0) + 1; }
   stats.maxSpd = Math.max(stats.maxSpd, runMaxSpd); saveStats();
-  const last = lvIndex(L.id) + 1 >= LEVELS.length;
+  const last = !lvNext(L);
   $('#endTitle').innerHTML = ok ? 'LEVEL ' + L.n + ' <span>HOTOVÝ</span>' : 'LEVEL ' + L.n + ' <span>NEVYŠIEL</span>';
   $('#endScoreLab').textContent = L.name;
   $('#endScore').innerHTML = '<span style="color:var(--amber)">' + '★'.repeat(stars) + '</span><span style="opacity:.28">' + '☆'.repeat(3 - stars) + '</span>';
@@ -2862,7 +2863,7 @@ function endLevel(ok, L) {
   else if (job.t > L.par) note = 'Hotovo, ale pomaly. Na tri hviezdy to chce čas pod ' + jobFmtT(L.par) + (job.dmg >= 5 ? ' a bez nárazov' : '') + '.';
   else note = 'Hotovo, ale s nárazmi. Na tri hviezdy to chce škodu pod 5 %.';
   $('#endNote').textContent = note;
-  shareTxt = ok ? 'Event Car Drift, tréning level ' + L.n + ' (' + L.name + '): ' + '★'.repeat(stars) + ', čas ' + jobFmtT(job.t) + '. Dokážeš to lepšie?' : null;
+  shareTxt = ok ? 'Event Car Game, tréning level ' + L.n + ' (' + L.name + '): ' + '★'.repeat(stars) + ', čas ' + jobFmtT(job.t) + '. Dokážeš to lepšie?' : null;
   endEl.hidden = false; $('#hud').hidden = true; jEl.jobHud.hidden = true; MK.visible = false; document.body.classList.remove('playing');
   sound.quiet(); checkBadges();
 }
@@ -3699,8 +3700,10 @@ const gov = { n: 0, t: 0, c: 0 };
 const $$ = s => [...document.querySelectorAll(s)];
 const menuEl = $('#menu'), pauseEl = $('#pauseMenu'), endEl = $('#endMenu'), curtain = $('#curtain'), stageEl = $('#stage'), muteBtn = $('#muteBtn');
 let pendingMode = store.get('mode', 'free'), tab = 'play', wiped = false;
-if (pendingMode === 'job' || pendingMode === 'off') pendingMode = 'train';
-if (!['free', 't60', 'train'].includes(pendingMode)) pendingMode = 'free';
+if (pendingMode === 'job') pendingMode = 'dovoz';
+if (!['free', 't60', 'train', 'dovoz', 'off'].includes(pendingMode)) pendingMode = 'free';
+const MODE_WORLD = { train: 'lot', dovoz: 'dovoz', off: 'off' };
+const isLv = m => !!MODE_WORLD[m];
 const mmss = s => { s = Math.max(0, Math.round(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
 
 const STAT_DEFS = [['RÝCHLOSŤ', 'speed'], ['ZRÝCHLENIE', 'accel'], ['ŠMYK', 'slide'], ['OBRATNOSŤ', 'agil']];
@@ -3711,7 +3714,9 @@ const INFO = {
 const MODE_TXT = {
   free: 'Bez času a bez tlaku. Jazdi, driftuj a zbieraj combo.',
   t60: () => 'Minúta na čo najvyššie skóre.' + (game.best ? ' Tvoj rekord: ' + fmt(game.best) + '.' : ''),
-  train: 'Tréning v ' + LEVELS.length + ' leveloch: od rozjazdu a brzdenia cez slalomy a cúvanie až po mesto a divočinu. Jedna hviezda odomkne ďalší level, tri sú za rýchly a čistý prejazd.',
+  train: () => 'Tréning na parkovisku v ' + LEVELS.filter(L => L.world === 'lot').length + ' leveloch: rozjazd, brzdenie, slalomy, cúvanie. Jedna hviezda odomkne ďalší level, tri sú za rýchly a čistý prejazd.',
+  dovoz: () => 'Dovoz auta mestom so Zuborom: ' + LEVELS.filter(L => L.world === 'dovoz').length + ' levelov od rampy a cúvania po kopec, na konci celá misia. Jedna hviezda odomkne ďalší.',
+  off: () => 'Divočina so Suggou: ' + LEVELS.filter(L => L.world === 'off').length + ' levelov od lúky po vrchol, na konci celá misia. Jedna hviezda odomkne ďalší.',
   tokyo: 'Už čoskoro.'
 };
 const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>';
@@ -3763,13 +3768,18 @@ function renderCar() {
   if (!box.children.length) STAT_DEFS.forEach(([lab]) => box.insertAdjacentHTML('beforeend', '<div class="st"><span>' + lab + '</span><i></i></div>'));
   STAT_DEFS.forEach(([, key], n) => box.children[n].querySelector('i').style.setProperty('--v', I[key] + '%'));
 }
-const MODE_NAME = { free: 'VOĽNÝ', t60: '60 S', train: 'TRÉNING', tokyo: 'TOKYO DRIFT' };
-function renderSum() { const e = $('#goSum'); if (!e) return; const L = pendingMode === 'train' ? curLevel() : null; e.textContent = L ? 'LEVEL ' + L.n + ' · ' + L.name : carKey.toUpperCase() + ' · ' + (MODE_NAME[pendingMode] || ''); }
-function curLevel() { let i = lvIndex(LV.sel); if (i < 0 || !lvUnlocked(i)) { i = 0; while (i + 1 < LEVELS.length && lvUnlocked(i + 1) && lvStars(LEVELS[i].id) > 0) i++; LV.sel = LEVELS[i].id; } return LEVELS[i]; }
+const MODE_NAME = { free: 'VOĽNÝ', t60: '60 S', train: 'TRÉNING', dovoz: 'DOVOZ', off: 'DIVOČINA', tokyo: 'TOKYO DRIFT' };
+function renderSum() { const e = $('#goSum'); if (!e) return; const L = isLv(pendingMode) ? curLevel() : null; e.textContent = L ? 'LEVEL ' + L.n + ' · ' + L.name : carKey.toUpperCase() + ' · ' + (MODE_NAME[pendingMode] || ''); }
+const lvList = () => LEVELS.filter(L => L.world === (MODE_WORLD[pendingMode] || 'lot'));
+function curLevel() {
+  const gl = lvList(); let i = gl.findIndex(L => L.id === LV.sel);
+  if (i < 0 || !lvUnlocked(lvIndex(gl[i].id))) { i = 0; while (i + 1 < gl.length && lvUnlocked(lvIndex(gl[i + 1].id)) && lvStars(gl[i].id) > 0) i++; LV.sel = gl[i].id; }
+  return gl[i];
+}
 function renderLevels() {
-  const wrap = $('#lvWrap'); wrap.hidden = pendingMode !== 'train'; if (wrap.hidden) return;
+  const wrap = $('#lvWrap'); wrap.hidden = !isLv(pendingMode); if (wrap.hidden) return;
   const L = curLevel(); const el = $('#lvList'); el.textContent = '';
-  LEVELS.forEach((M, i) => {
+  lvList().forEach(M => { const i = lvIndex(M.id);
     const b = document.createElement('button'); b.type = 'button'; const un = lvUnlocked(i), st = lvStars(M.id);
     b.className = 'lv' + (M.id === L.id ? ' on' : '') + (un ? '' : ' lock') + (M.car === 'sugga' ? ' sugga' : ''); b.dataset.lv = M.id;
     b.innerHTML = '<small>' + (M.mission ? 'MISIA' : (M.world === 'lot' ? 'PARKOVISKO' : M.world === 'dovoz' ? 'MESTO' : 'DIVOČINA') + ' · ' + M.n) + '</small><b>' + M.name + '</b><i' + (st ? '' : ' class="e"') + '>' + (un ? '★'.repeat(st) + '☆'.repeat(3 - st) : '🔒') + '</i>';
@@ -3777,14 +3787,14 @@ function renderLevels() {
   });
   $('#lvDesc').textContent = L.lesson + (LV.prog[L.id] && LV.prog[L.id].t ? '  ·  Najlepší čas ' + jobFmtT(LV.prog[L.id].t) : '');
   if (carKey !== L.car && !stageBusy()) { stageShow(L.car); store.set('car', L.car); renderCar(); }
-  const on = $('#lvList .lv.on'); if (on && on.scrollIntoView) { try { on.scrollIntoView({ block: 'nearest' }); } catch (e) {} }
+  const on = $('#lvList .lv.on'); if (on) { const r = on.getBoundingClientRect(), er = el.getBoundingClientRect(); el.scrollLeft += (r.left - er.left) - (er.width - r.width) / 2; }   // centre the level in a horizontal strip, never scroll the page
 }
 function renderMode() {
   renderSum();
   $$('#modeCards .card').forEach(c => c.classList.toggle('on', c.dataset.mode === pendingMode));
   const d = MODE_TXT[pendingMode]; $('#modeDesc').textContent = typeof d === 'function' ? d() : d;
   renderLevels();
-  $$('#carCards .card').forEach(c => { c.disabled = pendingMode === 'train'; });
+  $$('#carCards .card').forEach(c => { c.disabled = isLv(pendingMode); });
 }
 const renderCam = () => $$('#camCards .card').forEach(c => c.classList.toggle('on', c.dataset.cam === settings.cam));
 const renderQ = () => $$('#qCards .card').forEach(c => c.classList.toggle('on', +c.dataset.q === settings.q));
@@ -3880,12 +3890,12 @@ function applyQuality() {
 
 /* ---------- run lifecycle ---------- */
 function startRun() {
-  if (game.view === 'menu' && pendingMode === 'train') { const L = curLevel(); if (carKey !== L.car || sg.target !== L.car) { stageShow(L.car); store.set('car', L.car); renderCar(); } }
+  if (game.view === 'menu' && isLv(pendingMode)) { const L = curLevel(); if (carKey !== L.car || sg.target !== L.car) { stageShow(L.car); store.set('car', L.car); renderCar(); } }
   if (game.view === 'menu' && (stageBusy() || sg.shown !== sg.target) && !stageSnap()) { $('#startBtn').classList.add('wait'); return; }
   sound.init();
   const fromMenu = game.view === 'menu';
   const go = () => {
-    const L = pendingMode === 'train' ? curLevel() : null; job.level = L;
+    const L = isLv(pendingMode) ? curLevel() : null; job.level = L;
     game.mode = L ? 'job' : pendingMode; job.kind = L ? L.world : 'dovoz'; game.running = true; game.paused = false; game.view = 'play'; game.score = 0; game.combo = 0; game.mult = 1; game.comboT = 0; game.time = 60;
     coneHits = 0; runMaxSpd = 0; runBestCombo = 0; stats.runs++;
     sound.pause(false);
@@ -3899,7 +3909,7 @@ function startRun() {
     if (!fromMenu || game.mode === 'job') updateCamera(0, true);
     last = performance.now(); saveStats(); music.announce(true);
   };
-  if (fromMenu && pendingMode !== 'train') go(); else fadeThen(go);
+  if (fromMenu && !isLv(pendingMode)) go(); else fadeThen(go);
 }
 function togglePause() {
   if (!game.running) return;
@@ -3932,8 +3942,8 @@ function endRun() {
   countUp($('#endScore'), game.score, 900); sound.quiet(); checkBadges();
 }
 async function share() {
-  const txt = shareTxt || ('Dal som ' + fmt(game.score) + ' bodov v Event Car Drift (60 s). Prebi ma!');
-  try { if (navigator.share) { await navigator.share({ title: 'Event Car Drift', text: txt, url: location.href }); return; } } catch (e) { return; }
+  const txt = shareTxt || ('Dal som ' + fmt(game.score) + ' bodov v Event Car Game (60 s). Prebi ma!');
+  try { if (navigator.share) { await navigator.share({ title: 'Event Car Game', text: txt, url: location.href }); return; } } catch (e) { return; }
   try { await navigator.clipboard.writeText(txt + ' ' + location.href); toast('Skopírované'); } catch (e) { toast('Skopírovanie sa nepodarilo'); }
 }
 
@@ -3943,12 +3953,12 @@ $('#carPrev').addEventListener('click', otherCar); $('#carNext').addEventListene
 $('#nav').addEventListener('click', e => { const b = e.target.closest('.nv'); if (b) setTab(b.dataset.tab); });
 $('#carCards').addEventListener('click', e => {
   const c = e.target.closest('.card'); if (!c) return;
-  if (pendingMode === 'train') return;
+  if (isLv(pendingMode)) return;
   stageShow(c.dataset.car); store.set('car', carKey); renderCar(); renderMode();
 });
-$('#modeCards').addEventListener('click', e => { const c = e.target.closest('.card'); if (!c || c.disabled) return; pendingMode = c.dataset.mode; store.set('mode', pendingMode); if (pendingMode !== 'train' && carKey !== 'zubor' && !stageBusy()) { stageShow('zubor'); store.set('car', 'zubor'); renderCar(); } renderMode(); });
+$('#modeCards').addEventListener('click', e => { const c = e.target.closest('.card'); if (!c || c.disabled) return; pendingMode = c.dataset.mode; store.set('mode', pendingMode); if (!isLv(pendingMode) && carKey !== 'zubor' && !stageBusy()) { stageShow('zubor'); store.set('car', 'zubor'); renderCar(); } renderMode(); });
 $('#lvList').addEventListener('click', e => { const b = e.target.closest('.lv'); if (!b) return; const i = lvIndex(b.dataset.lv); if (i < 0 || !lvUnlocked(i)) { toast('Najprv dokonči predchádzajúci level'); return; } LV.sel = b.dataset.lv; store.set('lvSel', LV.sel); renderMode(); });
-$('#nextBtn').addEventListener('click', () => { const i = lvIndex(LV.sel); if (i + 1 < LEVELS.length) { LV.sel = LEVELS[i + 1].id; store.set('lvSel', LV.sel); } startRun(); });
+$('#nextBtn').addEventListener('click', () => { const n = lvNext(LEVELS[Math.max(0, lvIndex(LV.sel))]); if (n) { LV.sel = n.id; store.set('lvSel', LV.sel); } startRun(); });
 $('#camCards').addEventListener('click', e => { const c = e.target.closest('.card'); if (!c) return; settings.cam = c.dataset.cam; store.set('cam', settings.cam); renderCam(); });
 $('#qCards').addEventListener('click', e => { const c = e.target.closest('.card'); if (!c) return; settings.q = +c.dataset.q; store.set('q', settings.q); renderQ(); applyQuality(); });
 function wireSwitch(id, key, after) {

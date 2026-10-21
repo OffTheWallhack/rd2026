@@ -366,9 +366,13 @@ body.mplay .pp svg.i-play{display:none}
 .lv.on{border-color:#3ddcff;background:rgba(61,220,255,.14);box-shadow:0 0 0 1px #3ddcff inset}
 .lv.lock{opacity:.42;cursor:not-allowed}
 .lv.sugga small{color:#7be05a}
+.lvtabs{display:flex;gap:6px;position:sticky;top:44px;z-index:2;background:#15141c;padding:6px 0 4px;margin-top:-4px}
+.lvtabs button{flex:1;min-height:40px;padding:6px 6px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.04);color:#cfcbd8;font:700 11.5px/1 system-ui,sans-serif;letter-spacing:.1em;cursor:pointer}
+.lvtabs button.on{border-color:#3ddcff;background:rgba(61,220,255,.14);color:#fff}
+.lv.mis{grid-column:1/-1}
 .lvh{grid-column:1/-1;margin:10px 0 0;font:700 11px/1 system-ui,sans-serif;letter-spacing:.16em;color:var(--muted);display:flex;align-items:center;gap:8px}
 .lvh:first-child{margin-top:2px}.lvh::after{content:"";flex:1;height:1px;background:var(--line)}
-.steps{display:flex;gap:6px;margin:0 0 2px}
+.steps{display:flex;gap:6px;margin:0 0 2px;position:sticky;top:-6px;z-index:3;background:#15141c;padding:6px 0 4px}
 .steps button{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:6px 8px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.04);color:#cfcbd8;font:700 12px/1 system-ui,sans-serif;letter-spacing:.14em;cursor:pointer}
 .steps button b{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.12);font:700 11px/1 system-ui,sans-serif;letter-spacing:0}
 .steps button.on{border-color:var(--amber);color:#fff;background:rgba(255,178,26,.12)}
@@ -518,7 +522,7 @@ body.mplay .pp svg.i-play{display:none}
             <button class="go alt wnext" id="toLevel" type="button" data-go="3" hidden><span class="go-t"><span>DALEJ</span><em>VYBER LEVEL</em></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l7 7-7 7zM13 5l7 7-7 7z"/></svg></button>
           </div>
           <div class="wz" data-step="3" hidden>
-            <div id="lvWrap"><p class="lab2">VYBER LEVEL</p><div class="lvlist" id="lvList"></div><p class="hint" id="lvDesc"></p></div>
+            <div id="lvWrap"><p class="lab2">VYBER LEVEL</p><div class="lvtabs" id="lvTabs"></div><p class="hint" id="lvSect"></p><div class="lvlist" id="lvList"></div><p class="hint" id="lvDesc"></p></div>
           </div>
         </div>
       </section>
@@ -1182,12 +1186,12 @@ function buildSugga() {
    and goes over past `over`. Sugga is lighter, lower, weaker: harder to roll, easier to place. */
 const CARS = {
   zubor: { engine: 'v8', build: buildZubor, name: 'ZUBOR',
-    L: 3.7, pw: 110, aMax: 3.8, top: 27, rev: 4.5, raMax: 2.2, brake: 9.4, brakeRamp: 8, coast: .8,
+    L: 3.7, pw: 110, aMax: 3.4, top: 27, rev: 4.5, raMax: 2.2, brake: 9.4, brakeRamp: 8, coast: .8,
     steerMax: .68, steerFall: 9, steerLag: 6.5, yawLag: 3.8, ayMax: 7.0, grip: 6.0, drift: 1.9, hbGrip: .7, kick: .6,
     rollGain: .16, rollW: 3.8, rollZ: .26, tip: .215, over: .262, pitGain: .13, pitW: 6.3, pitZ: .5,
     power: 1, hitK: 1.5, bounce: 1.15 },
   sugga: { engine: 'diesel', build: buildSugga, name: 'SUGGA',
-    L: 2.9, pw: 52, aMax: 2.9, top: 22, rev: 4, raMax: 2, brake: 8.4, brakeRamp: 7, coast: .9,
+    L: 2.9, pw: 52, aMax: 2.7, top: 22, rev: 4, raMax: 2, brake: 8.4, brakeRamp: 7, coast: .9,
     steerMax: .62, steerFall: 8, steerLag: 8, yawLag: 5, ayMax: 7.4, grip: 7, drift: 2.1, hbGrip: .8, kick: .7,
     rollGain: .15, rollW: 6.9, rollZ: .45, tip: .24, over: .38, pitGain: .09, pitW: 7.5, pitZ: .5,
     power: 0, hitK: 1, bounce: 1.4 }
@@ -1327,7 +1331,7 @@ function carCore(dt, env) {
   const gas = rolled ? 0 : input.gas, brake = rolled ? 0 : input.brake, hb = rolled ? 0 : input.hb, stIn = rolled ? 0 : input.steer;
   // --- driver inputs with lag (a 3.5 t van does not snap) ---
   S.steer = lerp(S.steer, stIn, 1 - Math.exp(-dt * P.steerLag));
-  S.thr += (gas - S.thr) * (1 - Math.exp(-dt * (gas > S.thr ? 3 : 10)));
+  S.thr += (gas - S.thr) * (1 - Math.exp(-dt * (gas > S.thr ? 3.5 : 10)));
   S.brk += (brake - S.brk) * (1 - Math.exp(-dt * (brake > S.brk ? P.brakeRamp : 12)));
   // --- longitudinal ---
   const top = P.top * spd * env.acc, aMax = P.aMax * (spd < 1 ? .6 + .4 * spd : 1) * env.acc;
@@ -1348,7 +1352,7 @@ function carCore(dt, env) {
   // --- lateral: what the tyres can give ---
   const lim0 = P.ayMax * env.grip;
   const lim = lim0 * (1 - .15 * clamp(Math.abs(S.roll) / P.tip, 0, 1)) * (S.two ? .55 : 1);  // leaning / on two wheels: less grip
-  const dMax = P.steerMax / (1 + Math.pow(Math.max(0, Math.abs(vF) - 4) / P.steerFall, 1.3));   // full lock at a crawl, less and less lock with speed
+  const dMax = P.steerMax / (1 + Math.pow(Math.max(0, Math.abs(vF) - 6) / P.steerFall, 1.3));   // full lock up to a brisk walk of a van (~20 km/h), then less and less lock with speed
   const delta = S.steer * dMax;
   let wT = vF * Math.tan(delta) / P.L;                                                      // bicycle model yaw rate
   const wCap = lim / Math.max(Math.abs(vF), 2.5);                                            // the fastest the tyres can bend the path
@@ -1376,7 +1380,7 @@ function carCore(dt, env) {
   }
   if (rolled) wT = 0;
   // yaw inertia only matters once there is speed: at a crawl the nose follows the wheels, at speed the 3.5 t take their time
-  const yawK = (S.drifting ? P.yawLag * 1.6 : P.yawLag) / clamp(Math.abs(vF) / 12, .2, 1) * (S.two ? .5 : 1);
+  const yawK = (S.drifting ? P.yawLag * 1.6 : P.yawLag) / clamp(Math.abs(vF) / 12, .2, 1.6) * (S.two ? .5 : 1);   // below ~40 km/h the nose follows the wheels quickly, above it the van takes its time to change direction
   S.w = lerp(S.w, wT, 1 - Math.exp(-dt * yawK));
   const vR2 = vR + aSide * dt;
   if (vR * vR2 < 0 || Math.abs(vR2) < .02) { vF += Math.abs(vR) * .3 * Math.sign(vF || 1); vR = 0; } else { vF += Math.abs(vR - vR2) * .3 * Math.sign(vF || 1); vR = vR2; }
@@ -2588,7 +2592,10 @@ const LEVELS = [
     tasks: [Object.assign(gate(-6, 0, 3.4, 'ROZJAZD', 'Choď až k značke'), { sign: 'ROZJAZD' }), Object.assign({ id: 'uturn', name: 'OTOČ SA', hint: 'Vráť sa späť nosom na západ', type: 'gate', x: -32, z: 8, r: 3.6, th: W, tol: .8 }, { sign: 'OTOČ SA' })],
     par: 17 },
   // --- town, Zubor ---
-  { id: 'd1', name: 'NAKLADACIA RAMPA', car: 'zubor', world: 'dovoz', start: JOB_START, lesson: 'Zacúvaj medzi kontajnery. Pomaly, s citom, nič sa nedotkni.', tasks: [dv('bay')], par: 40 },
+  { id: 'd1', name: 'NAKLADACIA RAMPA', car: 'zubor', world: 'dovoz', start: JOB_START, lesson: 'Zacúvaj medzi kontajnery, vylož aparatúru a vyjdi von. Pri cúvaní sa kamera sama prepne zhora.',
+    tasks: [dv('bay'), { id: 'unl', name: 'VYLOŽ', hint: 'Stoj v ráme a počkaj, kým sa vyloží aparatúra', type: 'unload', x: -12, z: -78.5, r: 2.4, secs: 3, from: [-12, -70, 0], sign: 'VYKLADÁM' }, { id: 'ext', name: 'VYJDI Z RAMPY', hint: 'Vyjdi dopredu na ulicu', type: 'gate', x: -10, z: -60, r: 3.6, from: [-12, -70, 0] }], par: 55 },
+  { id: 'dr', name: 'DLHÉ CÚVANIE', car: 'zubor', world: 'dovoz', start: [-21, -28, -Math.PI / 2], lesson: 'Vycúvaj celú slepú uličku na ulicu. Pozeraj na mapu hore, kamera ide zhora, kým cúvaš.',
+    tasks: [{ id: 'r1', name: 'CÚVAJ', hint: 'Cúvaj stredom uličky', type: 'gate', x: -14, z: -27.4, r: 3, rev: true, from: [-21, -28, -Math.PI / 2], sign: 'CÚVAJ ▶' }, { id: 'r2', name: 'CÚVAJ', hint: 'Drž stred, nedotkni sa stien', type: 'gate', x: -7, z: -27, r: 3, rev: true, from: [-14, -27.4, -Math.PI / 2], sign: 'CÚVAJ ▶' }, { id: 'r3', name: 'VYCÚVAJ NA ULICU', hint: 'Cúvaj až na ulicu', type: 'gate', x: 1, z: -26.5, r: 3.4, rev: true, from: [-7, -27, -Math.PI / 2], sign: 'ULICA' }], par: 40 },
   { id: 'd2', name: 'STARÉ MESTO', car: 'zubor', world: 'dovoz', start: dvFrom('alley'), lesson: 'Ulička je len o kúsok širšia než auto. Drž stred.', tasks: [dv('alley')], par: 28 },
   { id: 'd3', name: 'SLEPÁ ULIČKA', car: 'zubor', world: 'dovoz', start: dvFrom('dead'), lesson: 'Zájdi na koniec a otoč sa na tri razy. Cúvanie s citom.', tasks: [dv('dead'), dv('turn')], par: 55 },
   { id: 'd4', name: 'OBLÚK', car: 'zubor', world: 'dovoz', start: dvFrom('arch'), lesson: 'Pod oblúkom je miesto len na centimetre.', tasks: [dv('arch')], par: 30 },
@@ -2610,14 +2617,14 @@ const LEVELS = [
   { id: 'm1', name: 'MISIA: DOVOZ', car: 'zubor', world: 'dovoz', start: JOB_START, lesson: 'Celá cesta mestom až na vrchol. Vrátane neónovej zóny.', tasks: TASKS_DOVOZ, par: 480, mission: 'job' },
   { id: 'm2', name: 'MISIA: DIVOČINA', car: 'sugga', world: 'off', start: OFF_START, lesson: 'Celá divočina od lúky po vrchol.', tasks: TASKS_OFF, par: 420, mission: 'off' }
 ];
-{ let n = 0; LEVELS.forEach(L => { L.n = L.mission ? 0 : ++n; }); }   // one numbered list; the two full missions close it
+{ const cnt = {}; LEVELS.forEach(L => { cnt[L.world] = (cnt[L.world] || 0) + (L.mission ? 0 : 1); L.n = L.mission ? 0 : cnt[L.world]; }); }   // numbered inside each section; the full missions are unnumbered
 const lvTag = L => L.mission ? 'MISIA' : 'LEVEL ' + L.n;
 LEVELS.forEach(L => { if (!L.start) { const f = L.tasks[0].from; L.start = typeof f === 'function' ? f() : f; } });
 const LV = { prog: store.get('lv2', {}), sel: store.get('lvSel', 'l1'), cur: null, cones: [] };
 const lvStars = id => (LV.prog[id] && LV.prog[id].s) || 0;
-const lvUnlocked = i => store.get('lvAll', 0) || i <= 0 || lvStars(LEVELS[i - 1].id) > 0;   // one chain through the whole training: a star on the previous level opens the next
+const lvUnlocked = i => { if (store.get('lvAll', 0)) return true; const L = LEVELS[i]; if (L.mission) return true; let j = i - 1; while (j >= 0 && (LEVELS[j].world !== L.world || LEVELS[j].mission)) j--; return j < 0 || lvStars(LEVELS[j].id) > 0; };   // the full missions are always open; inside a section a star on the previous level opens the next
 const lvIndex = id => LEVELS.findIndex(L => L.id === id);
-const lvNext = L => LEVELS[lvIndex(L.id) + 1] || null;
+const lvNext = L => { const n = LEVELS[lvIndex(L.id) + 1]; return n && !L.mission && n.world === L.world && !n.mission ? n : null; };
 function lvRate(L) {   // 3 stars: fast and clean; 2: finished with little damage; 1: finished
   const t = job.t, d = job.dmg;
   if (d < 5 && t <= L.par && !job.rolls) return 3;
@@ -2678,6 +2685,7 @@ function placeMarker() {
 function updMarker(dt, okNow) {
   const k = 1 + .05 * Math.sin(performance.now() / 260);
   const T = MK.userData.T; if (!T) return;
+  mkSign.visible = !(revCam || settings.cam === 'top');   // seen from straight above the sign would just cover the van
   mkRing.scale.set(T.r * k, 1, T.r * k);
   const c = okNow ? 0x39e075 : 0xffb21a;
   mkRing.material.color.setHex(c); mkPark.userData.m.color.setHex(c); mkBeam.material.color.setHex(c);
@@ -2780,21 +2788,38 @@ function jobRespawn(roll) {
   job.resets++; if (roll) { job.rolls++; jobDamage(25); popText('PREVRÁTIL SI SA  +25 % škoda', true); } else { jobDamage(3); popText('SPÄŤ NA STANICU  +3 % škoda', true); } shake = 0;
   updateCamera(0, true);
 }
+// the unloaded gear (two speakers and a case) stands on the left of the van
+let cargoG = null;
+function clearCargo() { if (cargoG) { cargoG.parent && cargoG.parent.remove(cargoG); cargoG = null; } }
+function spawnCargo(x, z, th) {
+  clearCargo(); const g = new THREE.Group(), dk = new THREE.MeshStandardMaterial({ color: 0x17171c, roughness: .6 }), ring = new THREE.MeshStandardMaterial({ color: 0x333339, roughness: .5 });
+  [[0, 0], [1.1, .3]].forEach(([a, b]) => { const m = new THREE.Mesh(new THREE.BoxGeometry(.7, 1.2, .6), dk); m.position.set(a, .6, b); g.add(m); const w = new THREE.Mesh(new THREE.CylinderGeometry(.22, .22, .06, 16), ring); w.rotation.x = Math.PI / 2; w.position.set(a, .8, b + .32); g.add(w); });
+  const cs = new THREE.Mesh(new THREE.BoxGeometry(1, .5, .6), new THREE.MeshStandardMaterial({ color: 0xffb21a, roughness: .5 })); cs.position.set(-1.2, .25, -.2); g.add(cs);
+  const lx = Math.cos(th), lz = -Math.sin(th);   // left of the driver
+  g.position.set(x + lx * 3.2, (job.kind === 'lot' ? 0 : terrainH(x, z)), z + lz * 3.2); g.rotation.y = th; g.traverse(m => { if (m.isMesh) m.castShadow = true; });
+  scene.add(g); cargoG = g;
+}
 function jobTasks(dt) {
   const T = TASKS[job.i]; if (!T) return false;
   const d = Math.hypot(S.x - T.x, S.z - T.z);
   let ok = d < T.r;
   if (ok && T.th !== undefined) ok = Math.abs(angDiff(S.th, T.th)) < T.tol;
+  if (ok && T.rev) ok = S.vF < -.2;                       // a reversing gate only counts when you are backing through it
   let fire = false;
   if (T.type === 'park') {
     ok = ok && S.speed < 1.3;
     job.hold = ok ? job.hold + dt : Math.max(0, job.hold - dt * 2);
     fire = job.hold > .8;
+  } else if (T.type === 'unload') {
+    ok = ok && S.speed < 1.2; const need = T.secs || 3;
+    job.hold = ok ? job.hold + dt : Math.max(0, job.hold - dt * 2);
+    fire = job.hold > need;
+    jEl.jHint.textContent = ok ? 'VYKLADÁM… ' + Math.max(0, need - job.hold).toFixed(1) + ' s' : T.hint;
   } else if (T.type === 'speed') { ok = ok && S.speed >= T.min; fire = ok; if (d < T.r && !ok && !job.slowPop) { job.slowPop = 1; popText('POMALY! ' + Math.round(S.speed * 3.6) + ' km/h', true); } }
   else fire = ok;
   updMarker(dt, ok);
   if (fire) {
-    job.hold = 0; job.i++; sound.bank();
+    job.hold = 0; if (T.type === 'unload') spawnCargo(S.x, S.z, S.th); job.i++; sound.bank();
     if (job.i >= NT) { MK.visible = false; endJob(true); return true; }
     toast(TASKS[job.i - 1].name + ' ✓', true); placeMarker(); jobStepHud();
   }
@@ -2835,7 +2860,7 @@ function jobFrame(dt) {
   job.t += dt;
   if (job.kind === 'lot') return lotFrame(dt);
   if (job.kind === 'off') offUpdate(dt); else dvUpdate();
-  { const tp = settings.cam === 'top'; for (let i = 0; i < HIDE_TOP.length; i++) if (HIDE_TOP[i].visible === tp) HIDE_TOP[i].visible = !tp; }
+  { const tp = settings.cam === 'top' || revCam; for (let i = 0; i < HIDE_TOP.length; i++) if (HIDE_TOP[i].visible === tp) HIDE_TOP[i].visible = !tp; }
   const sub = 4; for (let i = 0; i < sub; i++) { jobPhysics(dt / sub); if (jobFX.dmg > 0) { job.pop += jobFX.dmg; jobDamage(jobFX.dmg); } }
   if (jobFX.big > 2.2) { shake = Math.min(1, shake + jobFX.big / 16); }
   if (jobFX.scrape > 0 && !reduced) { const n = Math.random() < .5 ? 1 : 0; if (n) puff(jobFX.sx, jobFX.sz, S.vx * .1, S.vz * .1, .5); }
@@ -2884,7 +2909,7 @@ function jobStart() {
   JP = off ? JP_SUGGA : JP_ZUBOR; JENV.spd = JP.spd; SURFX = JP.tr ? SURF.map(q => { const k = q.ice ? JP.tr * .22 : JP.tr; return { name: q.name, grip: q.grip + (1 - q.grip) * k, acc: q.acc + (1 - q.acc) * k * .7, drag: q.drag * (1 - k * .5) }; }) : SURF;
   Object.assign(job, { i: 0, dmg: 0, t: 0, hold: 0, over: false, resets: 0, rolls: 0, cone: 0, pop: 0, beepT: 0, slowPop: 0, best: store.get(pre + 'Best', 0), bestT: store.get(pre + 'BestT', 0) });
   Object.assign(S, CAR_RESET, { x: st[0], z: st[1], th: st[2], gy: lot ? 0 : terrainH(st[0], st[1]), tp: 0, tr: 0, vy: 0, air: false });
-  job.fall = 0; fadeEl.style.opacity = 0; clearMarks();
+  job.fall = 0; fadeEl.style.opacity = 0; clearMarks(); clearCargo();
   if (lot) { resetCar(); Object.assign(S, { x: st[0], z: st[1], th: st[2] }); lvCones(L ? L.cones : null); setAmbient(false); coneHits = 0; lotCone0 = 0; }
   else lvCones(null);
   jEl.jDmgV.textContent = '0 %'; jEl.jDmgBar.style.transform = 'scaleX(0)'; jEl.jDmgBar.parentNode.classList.remove('hot');
@@ -3419,12 +3444,15 @@ window.addEventListener('keydown', e => {
 window.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
 window.addEventListener('blur', () => { for (const k in keys) keys[k] = false; });
 const touch = { steer: 0, gas: 0, brake: 0, hb: 0 };
+let gasT = 0;
 function readInput(dt) {
   const kl = keys.arrowleft || keys.a, kr = keys.arrowright || keys.d;
   let st = touch.steer;
   if (kl || kr) st = (kl ? 1 : 0) - (kr ? 1 : 0);
   input.steer = st;
-  input.gas = (keys.arrowup || keys.w) ? 1 : touch.gas;
+  const g = (keys.arrowup || keys.w) ? 1 : touch.gas;
+  gasT = g ? Math.min(1.5, gasT + dt) : Math.max(0, gasT - dt * 4);   // progressive pedal: a tap is a gentle push, a long hold is full power
+  input.gas = g ? Math.min(1, .3 + .7 * Math.pow(gasT / 1.5, .85)) : 0;
   input.brake = (keys.arrowdown || keys.s) ? 1 : touch.brake;
   input.hb = (keys[' '] || touch.hb) ? 1 : 0;
 }
@@ -3450,7 +3478,7 @@ function buildSteer() {
   sl.addEventListener('pointermove', e => { if (e.pointerId === id) set(e); });
   const end = e => { if (e.pointerId === id) id = null; };
   sl.addEventListener('pointerup', end); sl.addEventListener('pointercancel', end);
-  (function spring() { if (!document.body.contains(sl)) return; if (id === null) val *= .7; touch.steer = -val; kn.style.transform = `translateX(${val * (sl.clientWidth / 2 - 20)}px)`; requestAnimationFrame(spring); })();
+  (function spring() { if (!document.body.contains(sl)) return; if (id === null) val *= .7; touch.steer = -Math.sign(val) * Math.pow(Math.abs(val), 1.35); kn.style.transform = `translateX(${val * (sl.clientWidth / 2 - 20)}px)`; requestAnimationFrame(spring); })();
 }
 
 /* ================= camera: showroom orbit in the menu, chase cam in the game ================= */
@@ -3489,12 +3517,16 @@ function layoutStage() {
 }
 window.addEventListener('resize', layoutStage);
 
+// reversing switches to the top-down view (roofs and mushroom caps hidden) until the van drives forward again above ~5 km/h
+let revCam = false;
 function updateCamera(dt, snap) {
   if (window.__freeCam) return;
   const menu = game.view === 'menu';
   // chase state is always kept up to date so the fly-in from the menu starts from the right place
   const portrait = camera.aspect < 1, cp = CAMS[settings.cam] || CAMS.chase;
   const vF = S.vx * Math.sin(S.th) + S.vz * Math.cos(S.th);
+  if (menu || !game.running) revCam = false; else if (vF < -.5) revCam = true; else if (vF > 1.4) revCam = false;
+  const topCam = settings.cam === 'top' || revCam;
   let yawT = S.th;
   const jobW = job.on && job.kind !== 'lot';
   if (vF > 2 && !jobW) yawT = lerpAng(S.th, Math.atan2(S.vx, S.vz), clamp((S.speed - 2) / 10, 0, .7));
@@ -3505,7 +3537,7 @@ function updateCamera(dt, snap) {
   let dT = ((portrait ? 10.5 : 8.6) + S.speed * .1) * cp.d, hT = ((portrait ? 4.4 : 3.3) + S.speed * .035) * cp.h;
   if (jobW) { dT = ((portrait ? 11 : 8.6) + S.speed * .15) * cp.d; hT = ((portrait ? 8.6 : 6.3) + S.speed * .08) * cp.h; }
   if (offCam) { dT = ((portrait ? 13.5 : 9) + S.speed * .2) * cp.d; hT = ((portrait ? 11.5 : 6.8) + S.speed * .1) * cp.h; }
-  if (settings.cam === 'top') { dT = 2.4; hT = (job.on ? 17 : 16) * (portrait ? 1.3 : 1) + S.speed * .12; }
+  if (topCam) { dT = 2.4; hT = ((job.on ? 17 : 16) + (revCam ? 3 : 0)) * (portrait ? 1.3 : 1) + S.speed * .12; }
   const kk = hard ? 1 : 1 - Math.exp(-dt * 2.5);
   cam.dist = lerp(cam.dist, dT, kk); cam.h = lerp(cam.h, hT, kk);
   let sx = 0, sy = 0;
@@ -3519,7 +3551,7 @@ function updateCamera(dt, snap) {
     if (shake > 0) { sx = (Math.random() - .5) * shake * .9; sy = (Math.random() - .5) * shake * .5; shake = Math.max(0, shake - dt * 2.5); }
     const bx = Math.sin(cam.yaw), bz = Math.cos(cam.yaw);
     camLook = jobW ? lerp(camLook, S.vF < -.6 ? -2.6 : (offCam ? (portrait ? 8 : 4.5) + S.speed * .6 : 2.6), hard ? 1 : 1 - Math.exp(-dt * 3)) : (job.on && S.vF < -.6 ? lerp(camLook, -2.6, hard ? 1 : 1 - Math.exp(-dt * 3)) : lerp(camLook, 2.5, hard ? 1 : 1 - Math.exp(-dt * 3)));
-    const cl = settings.cam === 'top' ? (jobW ? camLook * 1.5 : 3) : camLook;
+    const cl = revCam ? -3.4 : settings.cam === 'top' ? (jobW ? camLook * 1.5 : 3) : camLook;
     T = { a: cam.yaw + Math.PI, r: cam.dist, h: cam.h, lx: S.x + bx * cl, ly: 1.1 + (job.on ? S.gy : 0), lz: S.z + bz * cl, sx: 0, sy: 0 };
   }
   const mode = menu ? 'menu' : 'game';
@@ -3814,7 +3846,7 @@ const INFO = {
 const MODE_TXT = {
   free: 'Bez času a bez tlaku. Jazdi, driftuj a zbieraj combo.',
   t60: () => 'Minúta na čo najvyššie skóre.' + (game.best ? ' Tvoj rekord: ' + fmt(game.best) + '.' : ''),
-  train: () => 'Jedna cesta od parkoviska cez mesto až po divočinu: ' + LEVELS.filter(L => !L.mission).length + ' levelov a na konci dve celé misie. Jedna hviezda odomkne ďalší level, tri sú za rýchly a čistý prejazd.',
+  train: () => 'Parkovisko, staré mesto a divočina: ' + LEVELS.filter(L => !L.mission).length + ' levelov a dve celé misie (DOVOZ a DIVOČINA). Jedna hviezda odomkne ďalší level, tri sú za rýchly a čistý prejazd.',
   tokyo: 'Už čoskoro.'
 };
 const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>';
@@ -3870,19 +3902,26 @@ const MODE_NAME = { free: 'VOĽNÝ', t60: '60 S', train: 'TRÉNING', tokyo: 'TOK
 function renderSum() { const e = $('#goSum'); if (!e) return; const L = isLv(pendingMode) ? curLevel() : null; e.textContent = L ? lvTag(L) + ' · ' + L.name : carKey.toUpperCase() + ' · ' + (MODE_NAME[pendingMode] || ''); }
 const lvList = () => LEVELS;
 function curLevel() {
-  let i = LEVELS.findIndex(L => L.id === LV.sel);
-  if (i < 0 || !lvUnlocked(i)) { i = 0; while (i + 1 < LEVELS.length && lvUnlocked(i + 1) && lvStars(LEVELS[i].id) > 0) i++; LV.sel = LEVELS[i].id; }
-  return LEVELS[i];
+  let L = LEVELS.find(x => x.id === LV.sel);
+  if (!L || !lvUnlocked(lvIndex(L.id))) {
+    const w = L ? L.world : 'lot', g = LEVELS.filter(x => x.world === w && !x.mission);
+    L = g.find(x => lvUnlocked(lvIndex(x.id)) && !lvStars(x.id)) || g[g.length - 1]; LV.sel = L.id;
+  }
+  return L;
 }
-const LV_SECT = { lot: 'PARKOVISKO · ZUBOR', dovoz: 'MESTO · ZUBOR', off: 'DIVOČINA · SUGGA' };
+const LV_SECT = { lot: 'PARKOVISKO', dovoz: 'MESTO', off: 'DIVOČINA' };
+const LV_SECT_INFO = { lot: 'Zubor · rozjazd, brzda, slalomy, cúvanie', dovoz: 'Zubor · staré mesto, cúvanie a vykladanie, na konci celá misia DOVOZ', off: 'Sugga · lúka, bažina, ľad a vrchol, na konci celá misia' };
 function renderLevels() {
   const L = curLevel(); const el = $('#lvList'); el.textContent = '';
-  let sect = '';
-  lvList().forEach(M => { const i = lvIndex(M.id);
-    const key = M.mission ? 'mis' : M.world;
-    if (key !== sect) { sect = key; const h = document.createElement('div'); h.className = 'lvh'; h.textContent = M.mission ? 'CELÉ MISIE' : LV_SECT[M.world]; el.appendChild(h); }
+  const tabs = $('#lvTabs'); tabs.textContent = '';
+  Object.keys(LV_SECT).forEach(w => { const b = document.createElement('button'); b.type = 'button'; b.dataset.sect = w; b.className = w === L.world ? 'on' : ''; b.textContent = LV_SECT[w]; tabs.appendChild(b); });
+  $('#lvSect').textContent = LV_SECT_INFO[L.world];
+  const list = LEVELS.filter(M => M.world === L.world), ordered = list.filter(M => M.mission).concat(list.filter(M => !M.mission));   // the whole mission first
+  ordered.forEach(M => { const i = lvIndex(M.id);
+    if (M === ordered[0] && M.mission) { const h = document.createElement('div'); h.className = 'lvh'; h.textContent = 'CELÁ MISIA'; el.appendChild(h); }
+    if (M === ordered.find(x => !x.mission)) { const h = document.createElement('div'); h.className = 'lvh'; h.textContent = 'LEVELY PO KROKOCH'; el.appendChild(h); }
     const b = document.createElement('button'); b.type = 'button'; const un = lvUnlocked(i), st = lvStars(M.id);
-    b.className = 'lv' + (M.id === L.id ? ' on' : '') + (un ? '' : ' lock') + (M.car === 'sugga' ? ' sugga' : ''); b.dataset.lv = M.id;
+    b.className = 'lv' + (M.mission ? ' mis' : '') + (M.id === L.id ? ' on' : '') + (un ? '' : ' lock') + (M.car === 'sugga' ? ' sugga' : ''); b.dataset.lv = M.id;
     b.innerHTML = '<small>' + (M.mission ? 'MISIA' : 'LEVEL ' + M.n) + '</small><b>' + M.name + '</b><i' + (st ? '' : ' class="e"') + '>' + (un ? '★'.repeat(st) + '☆'.repeat(3 - st) : '🔒') + '</i>';
     el.appendChild(b);
   });
@@ -4093,6 +4132,7 @@ $('#carCards').addEventListener('click', e => {
 $('#modeCards').addEventListener('click', e => { const c = e.target.closest('.card'); if (!c || c.disabled) return; pendingMode = c.dataset.mode; store.set('mode', pendingMode); if (!isLv(pendingMode) && carKey !== 'zubor' && !stageBusy()) { stageShow('zubor'); store.set('car', 'zubor'); renderCar(); } renderMode(); if (isLv(pendingMode)) setStep(3); });
 $('#steps').addEventListener('click', e => { const b = e.target.closest('button'); if (b && !b.hidden) setStep(+b.dataset.step); });
 $$('.wnext').forEach(b => b.addEventListener('click', () => setStep(+b.dataset.go)));
+$('#lvTabs').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; const w = b.dataset.sect, g = LEVELS.filter(x => x.world === w && !x.mission); const n = g.find(x => lvUnlocked(lvIndex(x.id)) && !lvStars(x.id)) || g[g.length - 1]; LV.sel = n.id; store.set('lvSel', LV.sel); renderMode(); });
 $('#lvList').addEventListener('click', e => { const b = e.target.closest('.lv'); if (!b) return; const i = lvIndex(b.dataset.lv); if (i < 0 || !lvUnlocked(i)) { toast('Najprv dokonči predchádzajúci level'); return; } LV.sel = b.dataset.lv; store.set('lvSel', LV.sel); renderMode(); });
 $('#nextBtn').addEventListener('click', () => { const n = lvNext(LEVELS[Math.max(0, lvIndex(LV.sel))]); if (n) { LV.sel = n.id; store.set('lvSel', LV.sel); } startRun(); });
 $('#camCards').addEventListener('click', e => { const c = e.target.closest('.card'); if (!c) return; settings.cam = c.dataset.cam; store.set('cam', settings.cam); renderCam(); });
@@ -4172,7 +4212,7 @@ toMenu(true); clearMarks();
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { layoutStage(); });
 requestAnimationFrame(() => { layoutStage(); updateCamera(0, true); });
 requestAnimationFrame(loop);
-window.__drift = { solids, cones, physics, updateCones, setCar, CARS, LEVELS, LV, store, renderMode, curLevel, lvCones, endJob, steerMaxAt: v => P.steerMax / (1 + Math.pow(Math.max(0, Math.abs(v) - 4) / P.steerFall, 1.3)), get P() { return P; }, rp, ORT, offUpdate, dvUpdate, HOLES: () => HOLES, holeAt, sg, stageSnap, stageReady: () => modelReady(sg.target), sound, get JP() { return JP; }, placeMarker, jobPhysics, jobDamage, jobTasks, jobFX, carShape, job, get TASKS() { return TASKS; }, TRAIL, WALK, OBS, carHits, jobRespawn, jobStart, jobSetWorld, buildJobWorld, terrainH, trailAt, surfAt, endJob, jobScore, S, input, game, camera, stage, music, settings, stats, get model() { return model; }, scene, setTab, startRun, toMenu, endRun, togglePause };
+window.__drift = { readInput, keys, solids, cones, physics, updateCones, setCar, CARS, LEVELS, LV, store, renderMode, curLevel, lvCones, endJob, steerMaxAt: v => P.steerMax / (1 + Math.pow(Math.max(0, Math.abs(v) - 4) / P.steerFall, 1.3)), get P() { return P; }, rp, ORT, offUpdate, dvUpdate, HOLES: () => HOLES, holeAt, sg, stageSnap, stageReady: () => modelReady(sg.target), sound, get JP() { return JP; }, placeMarker, jobPhysics, jobDamage, jobTasks, jobFX, carShape, job, get TASKS() { return TASKS; }, TRAIL, WALK, OBS, carHits, jobRespawn, jobStart, jobSetWorld, buildJobWorld, terrainH, trailAt, surfAt, endJob, jobScore, S, input, game, camera, stage, music, settings, stats, get model() { return model; }, scene, setTab, startRun, toMenu, endRun, togglePause };
 })();
 </script>
 </body></html>

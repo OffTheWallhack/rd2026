@@ -111,3 +111,10 @@ pre{margin:0;font-family:'JetBrains Mono',ui-monospace,monospace}
 
 a:focus-visible{outline:2px solid var(--green);outline-offset:3px}
 @media (prefers-reduced-motion:reduce){.dot::after,.fx-pulse,.fx-glow,.scan{animation:none}.ph,.arr,.go{transition:none}}
+
+/* pásy fotiek v riadkoch */
+.strip{position:absolute;inset:0;display:flex;gap:2px;background:var(--ink)}
+.lk .strip img{position:static;inset:auto;flex:1 1 0;min-width:0;width:auto;height:100%;object-fit:cover}
+.shade.side.lt{background:linear-gradient(90deg,rgba(18,19,18,.9) 0%,rgba(18,19,18,.74) 42%,rgba(18,19,18,0) 82%)}
+.row .tx b,.row .tx em{text-shadow:0 1px 8px rgba(0,0,0,.55)}
+.game .gt b,.game .gt em,.game .k{text-shadow:0 1px 10px rgba(0,0,0,.7)}

@@ -61,6 +61,9 @@ button{font:inherit;color:inherit}
 .timer.low{color:#ff6b6b}
 @media (max-aspect-ratio:1/1){.timer{bottom:auto;top:calc(62px + env(safe-area-inset-top,0px))}.combo{top:calc(98px + env(safe-area-inset-top,0px))}}
 
+/* the soundtrack runs by itself (Drift Song, D&B mix, again): nothing to switch */
+.np-prev,.np-next,#shufBtn,#addTrack,#trackList,#seek,.times,.mp-ctl .prev,.mp-ctl .next,[data-tab="music"] .lab2,[data-tab="music"] .hint{display:none!important}
+
 /* touch controls */
 .ctl{position:fixed;z-index:6;bottom:calc(16px + env(safe-area-inset-bottom,0px));display:none}
 body.touch.playing .ctl{display:block}
@@ -424,8 +427,49 @@ body.mplay .pp svg.i-play{display:none}
 @media (prefers-reduced-motion:reduce){.pop{animation-duration:.01s}.cover.spin{animation:none}.tab.on{animation:none}}
 #carStats{display:grid;gap:8px}
 #fallFade{position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;z-index:60;transition:opacity .28s linear}
-</style>
-</head><body>
+
+/* gear dial (round knob + P R N D plate) and the latching throttle lever */
+.gear{position:fixed;left:50%;top:calc(8px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:7;display:none;align-items:center;gap:10px;padding:5px 12px 5px 6px;border-radius:999px;background:var(--glass);border:1px solid var(--line)}
+body.touch.playing .gear{display:flex}
+.gknob{width:54px;height:54px;border-radius:50%;padding:4px;touch-action:none;cursor:grab;background:radial-gradient(circle at 34% 26%,#fff 0,#d6dae1 10%,#868b94 42%,#23262c 100%);box-shadow:0 3px 10px rgba(0,0,0,.65),inset 0 0 0 1px rgba(255,255,255,.4)}
+.gknob i{display:block;width:100%;height:100%;border-radius:50%;--a:0deg;background:repeating-conic-gradient(from var(--a),#20232a 0 6deg,#363a43 6deg 12deg);box-shadow:inset 0 3px 6px rgba(255,255,255,.2),inset 0 -4px 8px rgba(0,0,0,.65)}
+.gknob.drag{cursor:grabbing}
+.gplate{display:flex;gap:2px;background:#0b0d11;border:1px solid rgba(255,255,255,.16);border-radius:9px;padding:3px}
+.gplate b{width:27px;height:32px;display:grid;place-items:center;font:700 18px/1 var(--hud);color:#6f7581;border-radius:6px;transition:background .12s,color .12s}
+.gplate b.on{color:#14100a;background:var(--amber);box-shadow:0 0 12px rgba(255,178,26,.55)}
+.gplate b.on[data-g="P"]{background:#ff6b6b;box-shadow:0 0 12px rgba(255,107,107,.55)}
+.gplate b.on[data-g="D"]{background:#5be08a;box-shadow:0 0 12px rgba(91,224,138,.5)}
+.gear.bad{animation:gshake .28s}
+@keyframes gshake{25%{transform:translateX(calc(-50% - 5px))}75%{transform:translateX(calc(-50% + 5px))}}
+.padcol{display:flex;flex-direction:column;gap:12px;align-items:center}
+.lever{position:relative;width:80px;height:176px;border-radius:26px;background:var(--glass);border:1px solid var(--line);touch-action:none;flex:none}
+.lever .lticks{position:absolute;left:0;right:0;top:0;bottom:0;pointer-events:none}
+.lever .lticks i{position:absolute;left:50%;width:34px;margin-left:-17px;height:2px;border-radius:1px;background:rgba(255,255,255,.2)}
+.lever .lticks i:nth-child(5n+1){background:rgba(255,255,255,.42);width:46px;margin-left:-23px}
+.lever .lk{position:absolute;left:6px;right:6px;height:48px;top:6px;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;pointer-events:none;
+  background:linear-gradient(#ffd466,#e8940f);color:#1b1305;box-shadow:0 4px 12px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.55)}
+.lever .lk b{font:700 17px/1 var(--hud);font-variant-numeric:tabular-nums}
+.lever .lk small{font-size:9px;font-weight:700;letter-spacing:.12em;opacity:.7}
+.lever.cut .lk{filter:saturate(.2) brightness(.8)}
+.lever.off .lk{filter:grayscale(1) brightness(.65)}
+/* the dial sits at the top centre: whatever lived there steps down */
+body.touch.playing .jlevel{top:calc(70px + env(safe-area-inset-top,0px))}
+body.touch.playing .jtop{top:calc(72px + env(safe-area-inset-top,0px))}
+body.touch.playing .jlevel:not([hidden])~.jtop{top:calc(86px + env(safe-area-inset-top,0px))}
+body.touch.playing .combo{top:calc(72px + env(safe-area-inset-top,0px))}
+@media (max-height:430px){.lever{height:150px}.gknob{width:48px;height:48px}.gplate b{height:28px}}
+@media (max-aspect-ratio:1/1){
+  .lever{height:150px}
+  body.touch.playing .gear{top:calc(58px + env(safe-area-inset-top,0px))}
+  body.touch.playing .jlevel{top:calc(124px + env(safe-area-inset-top,0px))}
+  body.touch.playing .jtop{top:calc(128px + env(safe-area-inset-top,0px))}
+  body.touch.playing .jlevel:not([hidden])~.jtop{top:calc(138px + env(safe-area-inset-top,0px))}
+  body.touch.playing .timer{top:calc(124px + env(safe-area-inset-top,0px))}
+  body.touch.playing .combo{top:calc(160px + env(safe-area-inset-top,0px))}
+  body.touch.playing .jdmg,body.touch.playing #jMap{top:calc(196px + env(safe-area-inset-top,0px))}
+  body.touch.playing .jreset{top:calc(248px + env(safe-area-inset-top,0px))}
+}
+</style></head><body>
 
 <canvas id="gl" aria-label="Drift hra"></canvas>
 
@@ -453,13 +497,17 @@ body.mplay .pp svg.i-play{display:none}
 </div>
 <div class="rot">Otoč telefón na šírku, jazdí sa lepšie</div>
 
+<div class="gear" id="gear" aria-label="Radenie">
+  <div class="gknob" id="gKnob"><i id="gKnobI"></i></div>
+  <div class="gplate" id="gPlate"><b data-g="P">P</b><b data-g="R">R</b><b data-g="N">N</b><b data-g="D">D</b></div>
+</div>
 <div class="ctl left" id="ctlLeft"></div>
 <div class="ctl right" id="ctlRight">
-  <div style="display:flex;flex-direction:column;gap:12px;align-items:center">
-    <div class="pad br" id="padBr"><span class="lab">BRZDA<small style="font-size:9px;opacity:.7">/ CÚVAŤ</small></span></div>
+  <div class="padcol">
+    <div class="pad br" id="padBr"><span class="lab">BRZDA</span></div>
     <div class="pad hb" id="padHb"><span class="lab"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><circle cx="12" cy="18" r="3" fill="none" stroke="currentColor" stroke-width="2.2"/></svg>RUČNÁ</span></div>
   </div>
-  <div class="pad gas" id="padGas"><span class="lab"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l7 9h-4v7H9v-7H5z" fill="currentColor"/></svg>PLYN</span></div>
+  <div class="lever" id="lever"><div class="lticks" id="lTicks"></div><div class="lk" id="lk"><b id="lkv">0</b><small>PLYN</small></div></div>
 </div>
 
 <div class="menu" id="menu">
@@ -569,8 +617,10 @@ body.mplay .pp svg.i-play{display:none}
             <div><span>Riadenie</span><span><kbd>←</kbd><kbd>→</kbd><kbd>A</kbd><kbd>D</kbd></span></div>
             <div><span>Ručná brzda</span><span><kbd>MEDZERNÍK</kbd></span></div>
             <div><span>Pauza</span><span><kbd>Esc</kbd></span></div>
-            <div><span>Hudba, ďalšia skladba</span><span><kbd>M</kbd><kbd>N</kbd></span></div>
+            <div><span>Hudba, pauza</span><span><kbd>M</kbd></span></div>
           </div>
+          <p class="lab2">DOTYK</p>
+          <ul class="tips"><li>Hore uprostred je volič P R N D. Otáčaš ním okrúhly gombík. Hra začína v P, otoč na D.</li><li>Plyn je páčka vpravo. Potiahni ju nadol, zostane kde ju necháš. Hore ubereš, dole pridáš.</li><li>Cúvaš v R. Brzda len brzdí a vľavo od páčky je ručná.</li><li>P a R sa zaradia, až keď auto skoro stojí.</li></ul>
           <p class="lab2">AKO DRIFTOVAŤ</p>
           <ul class="tips"><li>Rozbehni sa a v zákrute stlač ručnú brzdu.</li><li>Potom drž plyn a riaď proti šmyku.</li><li>Čím dlhší šmyk, tým rastie násobič (až ×5). Náraz combo zruší.</li></ul>
         </div>
@@ -1302,14 +1352,15 @@ loadCarModel('sugga', 'sugga', 1.07, .345, .42);   // Sugga is 7 % bigger than t
 /* ================= car state & physics ================= */
 const S = { x: 0, z: -22, th: 0, vx: 0, vz: 0, w: 0, steer: 0, slip: 0, speed: 0, drifting: false, spin: 0, gearRpm: 0, tilt: 0, pitch: 0, gy: 0, tp: 0, tr: 0, vF: 0, vy: 0, air: false,
   roll: 0, rollV: 0, pit: 0, pitV: 0, ay: 0, ax: 0, thr: 0, brk: 0, two: 0, rolled: 0, rollDir: 0, sid: 0 };
-const CAR_RESET = { vx: 0, vz: 0, w: 0, steer: 0, slip: 0, speed: 0, drifting: false, tilt: 0, pitch: 0, vF: 0, roll: 0, rollV: 0, pit: 0, pitV: 0, ay: 0, ax: 0, thr: 0, brk: 0, two: 0, rolled: 0, rollDir: 0 };
-const input = { steer: 0, gas: 0, brake: 0, hb: 0 };
+const CAR_RESET = { vx: 0, vz: 0, w: 0, steer: 0, slip: 0, speed: 0, drifting: false, tilt: 0, pitch: 0, vF: 0, roll: 0, rollV: 0, pit: 0, pitV: 0, ay: 0, ax: 0, thr: 0, brk: 0, two: 0, rolled: 0, rollDir: 0, rv: 0 };
+const input = { steer: 0, gas: 0, brake: 0, hb: 0, rev: 0, gm: 0 };   // gm: the gear dial and pedal lever are in use (reverse is then its own input, the brake only brakes)
+const gasIn = () => Math.max(input.gas, input.rev || 0);
 const CAR_R = 2.1;   // legacy (ball push)
 const CAR_CR = 1.1;   // lot collisions: the body is three circles (front, middle, rear) of body half-width + a little skin
 function carCircles() { const off = P.L * .46, sx = Math.sin(S.th) * off, cz = Math.cos(S.th) * off; return [[S.x + sx, S.z + cz], [S.x, S.z], [S.x - sx, S.z - cz]]; }
 
 function resetCar() {
-  Object.assign(S, CAR_RESET, { x: 0, z: -22, th: 0, gy: 0, tp: 0, tr: 0 });
+  Object.assign(S, CAR_RESET, { x: 0, z: -22, th: 0, gy: 0, tp: 0, tr: 0 }); if (typeof setPedal === 'function') setPedal(0, true);
   cones.forEach(c => { c.x = c.home[0]; c.z = c.home[1]; c.vx = c.vz = 0; c.spin = 0; c.tip = 0; c.down = false; c.g.rotation.set(0, 0, 0); });
   balls.forEach(b => { b.x = b.home[0]; b.z = b.home[1]; b.vx = b.vz = 0; b.m.position.set(b.x, b.r, b.z); });
   RADAR.px = 1e9;
@@ -1333,6 +1384,8 @@ function carCore(dt, env) {
   S.steer = lerp(S.steer, stIn, 1 - Math.exp(-dt * P.steerLag));
   S.thr += (gas - S.thr) * (1 - Math.exp(-dt * (gas > S.thr ? 3.5 : 10)));
   S.brk += (brake - S.brk) * (1 - Math.exp(-dt * (brake > S.brk ? P.brakeRamp : 12)));
+  const gm = !!input.gm, revIn = rolled ? 0 : (input.rev || 0);
+  S.rv += (revIn - S.rv) * (1 - Math.exp(-dt * (revIn > S.rv ? 3.5 : 10)));
   // --- longitudinal ---
   const top = P.top * spd * env.acc, aMax = P.aMax * (spd < 1 ? .6 + .4 * spd : 1) * env.acc;
   let ax = 0;
@@ -1342,12 +1395,18 @@ function carCore(dt, env) {
   }
   if (S.brk > .01) {
     if (vF > .45) ax -= P.brake * S.brk * (.45 + .55 * env.grip);                        // service brake
-    else if (vF > -P.rev * spd * env.acc) ax -= P.raMax * S.brk * env.acc;                 // reverse
-  } else if (S.thr < .01) { const cc = (P.coast + env.drag * 7); ax -= clamp(vF / dt, -cc, cc); }
+    else if (gm) { if (vF < -.45) ax += P.brake * S.brk * (.45 + .55 * env.grip); }       // with the gear dial the brake only brakes (also while reversing), it never drives backwards
+    else if (vF > -P.rev * spd * env.acc) ax -= P.raMax * S.brk * env.acc;                 // old keyboard way: the brake key also reverses
+  }
+  if (gm && S.rv > .01) {                                                                 // gear R: the pedal drives backwards
+    if (vF > .45) ax -= 4 * S.rv;
+    else if (vF > -P.rev * spd * env.acc * (.35 + .65 * S.rv)) ax -= P.raMax * S.rv * env.acc;
+  }
+  if (S.brk <= .01 && S.thr < .01 && S.rv < .01) { const cc = (P.coast + env.drag * 7); ax -= clamp(vF / dt, -cc, cc); }
   if (hb) { const cc = 2.4 * (.4 + .6 * env.grip); ax -= clamp(vF / dt, -cc, cc); }   // rear wheels locked
   ax -= env.slF * env.G;                                                                  // gravity along the slope
   const holdCap = env.holdCap === undefined ? 99 : env.holdCap, aS = -env.slF * env.G;
-  if (Math.abs(vF) < .3 && S.thr < .05 && !S.brk && !hb && Math.abs(aS) < holdCap) vF *= 1 - Math.min(1, dt * 12); // parked on a slope
+  if (Math.abs(vF) < (gm && S.brk > .3 ? .6 : .3) && S.thr < .05 && S.rv < .05 && (!S.brk || (gm && S.brk > .3)) && !hb && Math.abs(aS) < holdCap) vF *= 1 - Math.min(1, dt * 12); // parked on a slope (or held by the brake)
   else vF += ax * dt;
   // --- lateral: what the tyres can give ---
   const lim0 = P.ayMax * env.grip;
@@ -2784,7 +2843,7 @@ function jobStepHud() {
 function jobRespawn(roll) {
   if (!job.on || !game.running || (game.paused && !roll)) return;
   const T = TASKS[job.i], f = T.from ? (typeof T.from === 'function' ? T.from() : T.from) : job.level.start;
-  Object.assign(S, CAR_RESET); S.x = f[0]; S.z = f[1]; S.th = f[2]; job.fall = 0; S.air = false; S.vy = 0; S.gy = job.kind === 'lot' ? 0 : terrainH(S.x, S.z); fadeEl.style.opacity = 0;
+  Object.assign(S, CAR_RESET); if (typeof setPedal === 'function') setPedal(0, true); S.x = f[0]; S.z = f[1]; S.th = f[2]; job.fall = 0; S.air = false; S.vy = 0; S.gy = job.kind === 'lot' ? 0 : terrainH(S.x, S.z); fadeEl.style.opacity = 0;
   job.resets++; if (roll) { job.rolls++; jobDamage(25); popText('PREVRÁTIL SI SA  +25 % škoda', true); } else { jobDamage(3); popText('SPÄŤ NA STANICU  +3 % škoda', true); } shake = 0;
   updateCamera(0, true);
 }
@@ -2890,7 +2949,7 @@ function lotFrame(dt) {
   const fin = jobTasks(dt);
   stats.dist += S.speed * dt; stats.time += dt; if (S.speed > runMaxSpd) runMaxSpd = S.speed;
   elSpd.textContent = Math.round(S.speed * 3.6);
-  sound.setEngine(P.engine); sound.update(rpmOf(), input.gas, squealK);
+  sound.setEngine(P.engine); sound.update(rpmOf(), gasIn(), squealK);
   if (!fin) jobHudTick(dt);
 }
 function jobSetWorld(on) {
@@ -3058,7 +3117,7 @@ function wheelFX(dt) {
   let k = 0;
   if (S.speed > 4 && (S.drifting || input.hb)) k = clamp((a - .12) * 2.2 + (input.hb ? .35 : 0), 0, 1);
   if (input.brake && S.speed > 10 && !S.drifting) k = Math.max(k, .45);
-  if (input.gas && S.speed < 7 && S.speed > .5 && !S.drifting) k = Math.max(k, .35 * input.gas); // launch wheelspin
+  if (gasIn() && S.speed < 7 && S.speed > .5 && !S.drifting) k = Math.max(k, .35 * gasIn()); // launch wheelspin
   if (k > .05) {
     if (lastWheel) { addMark(lastWheel[0][0], lastWheel[0][1], wl[0], wl[1], .55 * k + .15); addMark(lastWheel[1][0], lastWheel[1][1], wr[0], wr[1], .55 * k + .15); }
     lastWheel = [wl, wr];
@@ -3107,7 +3166,7 @@ const sound = (() => {
   let smp = null, smpG = null, smpF = null, smpS = null; const smpBuf = { loop: null, start: null };
   let engBus = null, eng = null, engS = null, engF = null, engG = null, shelf = null, roarG = null, roarF = null, raspG = null, clatG = null, clatO = null, turboO = null, turboG = null, sq = null, sqG = null;
   const waves = {};
-  const level = () => (paused ? 0 : .7 * vol);
+  const level = () => (paused ? 0 : .4 * vol);   // quieter overall: the engine and tyres were far too loud
   /* Two engines. V8 = 5.7 HEMI (cross-plane: 4 firings per revolution, uneven burble, exhaust flaps that open with load).
      DIESEL = old 6-cyl turbo diesel (3 firings per revolution, sharp clatter, turbo whistle). Both are one oscillator running at
      the 4-stroke cycle frequency (rpm/120) with a hand-made harmonic recipe, then saturated, filtered and mixed with noise layers. */
@@ -3303,12 +3362,12 @@ const music = (() => {
   ];
   const el = new Audio(); el.preload = 'none';
   let idx = clamp(store.get('track', 0) | 0, 0, TRACKS.length - 1), loaded = -1;
-  let want = store.get('music', true), shuffle = store.get('shuffle', false), vol = clamp(store.get('mvol', .55), 0, 1);
+  let want = store.get('music', true), shuffle = false, vol = clamp(store.get('mvol', .5), 0, 1);
   let ctx = null, gain = null, an = null, data = null, started = false, held = false, state = 'idle', beat = 0, avg = 0;
   const bands = [0, 0, 0, 0, 0], listeners = [];
   const emit = () => listeners.forEach(f => f());
   let duck = 1, seekTo = 0;
-  const g = () => vol * vol * duck;
+  const g = () => .6 * vol * vol * duck;
 
   function attach(c) {
     if (ctx) return; ctx = c;
@@ -3400,7 +3459,7 @@ const music = (() => {
   function announce(force) { if ((force || announced !== idx) && game.view === 'play') { announced = idx; toast(TRACKS[idx].title); } }
   return {
     TRACKS, attach, play, pause, toggle, next, prev, select, seek, hold, addFiles, tick, announce, bands,
-    begin() { if (want && !started) { if (typeof stageBusy === 'function' && stageBusy()) return; cue(CAR_MUSIC[carKey]); } },
+    begin() { if (want && !started) { duck = 1; if (gain) gain.gain.setValueAtTime(g(), ctx.currentTime); else el.volume = g(); load(0); play(); } },   // from the very first tap: Drift Song from its start, then the D&B mix, then round again
     cue,
     setDuck(k) { duck = clamp(k, 0, 1); if (gain) gain.gain.setTargetAtTime(g(), ctx.currentTime, .03); else el.volume = g(); },
     silence() { held = false; el.pause(); state = 'paused'; emit(); },
@@ -3435,7 +3494,6 @@ window.addEventListener('keydown', e => {
   else if (!e.repeat) {
     const k = e.key.toLowerCase();
     if (k === 'm') music.toggle();
-    else if (k === 'n') music.next();
     else if (k === 'r') resetToStart();
     else if (k === 'c' && game.running) cycleCam();
     else if (!game.running) menuKey(e);
@@ -3443,19 +3501,100 @@ window.addEventListener('keydown', e => {
 });
 window.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
 window.addEventListener('blur', () => { for (const k in keys) keys[k] = false; });
-const touch = { steer: 0, gas: 0, brake: 0, hb: 0 };
+const touch = { steer: 0, gas: 0, brake: 0, hb: 0, pedal: 0 };
 let gasT = 0;
 function readInput(dt) {
   const kl = keys.arrowleft || keys.a, kr = keys.arrowright || keys.d;
   let st = touch.steer;
   if (kl || kr) st = (kl ? 1 : 0) - (kr ? 1 : 0);
   input.steer = st;
-  const g = (keys.arrowup || keys.w) ? 1 : touch.gas;
-  gasT = g ? Math.min(1.5, gasT + dt) : Math.max(0, gasT - dt * 4);   // progressive pedal: a tap is a gentle push, a long hold is full power
-  input.gas = g ? Math.min(1, .3 + .7 * Math.pow(gasT / 1.5, .85)) : 0;
-  input.brake = (keys.arrowdown || keys.s) ? 1 : touch.brake;
+  const kUp = keys.arrowup || keys.w, kDn = keys.arrowdown || keys.s;
+  if (isTouch && !kUp && !kDn) {
+    // touch: gear dial + latching lever. The lever stays where it was left; the brake pad lifts it off while pressed.
+    const ped = touch.brake ? 0 : touch.pedal;
+    input.gm = 1; gasT = 0;
+    input.gas = gear === 'D' ? ped : 0;
+    input.rev = gear === 'R' ? ped : 0;
+    input.brake = gear === 'P' ? 1 : touch.brake;
+  } else {
+    input.gm = 0; input.rev = 0;
+    const g = kUp ? 1 : touch.gas;
+    gasT = g ? Math.min(1.5, gasT + dt) : Math.max(0, gasT - dt * 4);   // progressive pedal: a tap is a gentle push, a long hold is full power
+    input.gas = g ? Math.min(1, .3 + .7 * Math.pow(gasT / 1.5, .85)) : 0;
+    input.brake = kDn ? 1 : touch.brake;
+  }
   input.hb = (keys[' '] || touch.hb) ? 1 : 0;
 }
+/* ---- gear dial: P R N D, rotate the round knob ---- */
+const GEARS = ['P', 'R', 'N', 'D']; let gear = 'P', gearBad = 0;
+const gearEl = $('#gear'), gKnob = $('#gKnob'), gKnobI = $('#gKnobI'), leverEl = $('#lever'), lk = $('#lk'), lkv = $('#lkv');
+function gearAllowed(g) {
+  const v = S.vF || 0;
+  if (g === 'P') return Math.abs(v) < 1.2;
+  if (g === 'R') return v < 1.5;
+  if (g === 'D') return v > -1.5;
+  return true;
+}
+function gearShow(angle) {
+  const i = GEARS.indexOf(gear);
+  gKnobI.style.setProperty('--a', (angle === undefined ? i * 40 : angle) + 'deg');
+  gearEl.querySelectorAll('.gplate b').forEach(b => b.classList.toggle('on', b.dataset.g === gear));
+  leverEl.classList.toggle('off', gear === 'P' || gear === 'N');
+}
+function setPedal(v, quiet) {
+  v = clamp(Math.round(v * 10) / 10, 0, 1);
+  if (v !== touch.pedal && !quiet && navigator.vibrate && settings.vib) { try { navigator.vibrate(7); } catch (e) {} }
+  touch.pedal = v;
+  const H = leverEl.clientHeight || 176, y = 6 + v * (H - 12 - 48);
+  lk.style.top = y + 'px'; lkv.textContent = Math.round(v * 100);
+}
+function leverLayout() {
+  const H = leverEl.clientHeight || 176, t = $('#lTicks'); t.textContent = '';
+  for (let n = 0; n <= 10; n++) { const e = document.createElement('i'); e.style.top = (6 + 24 + n / 10 * (H - 12 - 48) - 1) + 'px'; t.appendChild(e); }
+  setPedal(touch.pedal, true);
+}
+function setGear(g, force) {
+  // every step of the dial is tried in turn, so turning D to P at speed stops at N (R and P refuse while rolling)
+  let i = GEARS.indexOf(gear); const to = GEARS.indexOf(g); let refused = false;
+  while (i !== to) {
+    const n = i + Math.sign(to - i);
+    if (!force && !gearAllowed(GEARS[n])) { refused = true; break; }
+    i = n;
+  }
+  const changed = GEARS[i] !== gear;
+  gear = GEARS[i];
+  if (changed) { setPedal(0, true); if (navigator.vibrate && settings.vib) { try { navigator.vibrate(18); } catch (e) {} } }
+  if (refused) {
+    const now = performance.now();
+    if (now - gearBad > 900) { gearBad = now; popText('NAJPRV ZASTAV', true); gearEl.classList.remove('bad'); void gearEl.offsetWidth; gearEl.classList.add('bad'); }
+  }
+  gearShow();
+  return !refused;
+}
+(function gearDial() {
+  let id = null, a0 = 0, i0 = 0;
+  const ang = e => { const r = gKnob.getBoundingClientRect(); return Math.atan2(e.clientY - (r.top + r.height / 2), e.clientX - (r.left + r.width / 2)) * 180 / Math.PI; };
+  gKnob.addEventListener('pointerdown', e => { e.preventDefault(); try { gKnob.setPointerCapture(e.pointerId); } catch (x) {} id = e.pointerId; a0 = ang(e); i0 = GEARS.indexOf(gear); gKnob.classList.add('drag'); sound.init(); });
+  gKnob.addEventListener('pointermove', e => {
+    if (e.pointerId !== id) return;
+    let d = ang(e) - a0; d = ((d + 540) % 360) - 180;
+    const t = clamp(Math.round(i0 + d / 40), 0, 3);
+    if (GEARS[t] !== gear) setGear(GEARS[t]);
+    gearShow(clamp(i0 * 40 + d, 0, 120));
+  });
+  const end = e => { if (e.pointerId !== id) return; id = null; gKnob.classList.remove('drag'); gearShow(); };
+  gKnob.addEventListener('pointerup', end); gKnob.addEventListener('pointercancel', end);
+  gearEl.querySelectorAll('.gplate b').forEach(b => b.addEventListener('pointerdown', e => { e.preventDefault(); setGear(b.dataset.g); }));
+  // the lever: drag anywhere on it; it stays where you leave it, with a small tick at every tenth
+  let lid = null;
+  const at = e => { const r = leverEl.getBoundingClientRect(); setPedal((e.clientY - r.top - 6 - 24) / (r.height - 12 - 48)); };
+  leverEl.addEventListener('pointerdown', e => { e.preventDefault(); try { leverEl.setPointerCapture(e.pointerId); } catch (x) {} lid = e.pointerId; sound.init(); at(e); });
+  leverEl.addEventListener('pointermove', e => { if (e.pointerId === lid) at(e); });
+  const lend = e => { if (e.pointerId === lid) lid = null; };
+  leverEl.addEventListener('pointerup', lend); leverEl.addEventListener('pointercancel', lend);
+  window.addEventListener('resize', leverLayout);
+})();
+setInterval(() => { leverEl.classList.toggle('cut', !!touch.brake && touch.pedal > 0); }, 120);
 function hold(el, key) {
   const on = e => { e.preventDefault(); try { el.setPointerCapture(e.pointerId); } catch (x) {} touch[key] = 1; el.classList.add('on'); sound.init(); };
   const off = () => { touch[key] = 0; el.classList.remove('on'); };
@@ -3465,7 +3604,7 @@ function resetToStart() { if (!game.running) return; if (job.on) { jobRespawn();
 $('#resetBtn').addEventListener('click', resetToStart);
 ['dblclick', 'gesturestart', 'gesturechange', 'gestureend'].forEach(t => document.addEventListener(t, e => e.preventDefault()));
 document.addEventListener('contextmenu', e => { if (document.body.classList.contains('touch')) e.preventDefault(); });
-hold($('#padGas'), 'gas'); hold($('#padHb'), 'hb'); hold($('#padBr'), 'brake');
+hold($('#padHb'), 'hb'); hold($('#padBr'), 'brake');
 
 const left = $('#ctlLeft');
 // on-screen steering is a single slider (no wheel, no arrow buttons)
@@ -3551,8 +3690,8 @@ function updateCamera(dt, snap) {
     if (shake > 0) { sx = (Math.random() - .5) * shake * .9; sy = (Math.random() - .5) * shake * .5; shake = Math.max(0, shake - dt * 2.5); }
     const bx = Math.sin(cam.yaw), bz = Math.cos(cam.yaw);
     camLook = jobW ? lerp(camLook, S.vF < -.6 ? -2.6 : (offCam ? (portrait ? 8 : 4.5) + S.speed * .6 : 2.6), hard ? 1 : 1 - Math.exp(-dt * 3)) : (job.on && S.vF < -.6 ? lerp(camLook, -2.6, hard ? 1 : 1 - Math.exp(-dt * 3)) : lerp(camLook, 2.5, hard ? 1 : 1 - Math.exp(-dt * 3)));
-    const cl = revCam ? -3.4 : settings.cam === 'top' ? (jobW ? camLook * 1.5 : 3) : camLook;
-    T = { a: cam.yaw + Math.PI, r: cam.dist, h: cam.h, lx: S.x + bx * cl, ly: 1.1 + (job.on ? S.gy : 0), lz: S.z + bz * cl, sx: 0, sy: 0 };
+    const cl = revCam ? (portrait ? -3.8 : -2.6) : settings.cam === 'top' ? (jobW ? camLook * 1.5 : 3) : camLook;
+    T = { a: cam.yaw + Math.PI, r: cam.dist - (revCam ? cl : 0), h: cam.h, lx: S.x + bx * cl, ly: 1.1 + (job.on ? S.gy : 0), lz: S.z + bz * cl, sx: 0, sy: 0 };
   }
   const mode = menu ? 'menu' : 'game';
   if (snap || !camNow) { camTrans = null; camNow = Object.assign({}, T); camMode = mode; }
@@ -3600,7 +3739,7 @@ function updateCarVisual(dt) {
   else if (model.car.scale.x !== 1) model.car.scale.setScalar(1);
   model.body.rotation.z = S.tilt; model.body.rotation.x = S.pitch;
   const vF = S.vx * Math.sin(S.th) + S.vz * Math.cos(S.th);
-  let spinRate = vF / .5 + (input.gas && S.drifting ? 12 : 0);
+  let spinRate = vF / .5 + (gasIn() && S.drifting ? 12 : 0);
   if (sg.fx) {   // showroom animation: fall, landing squash, drive-away
     const c = model.car; c.rotation.order = 'YXZ';
     c.position.x += sg.px; c.position.z += sg.pz; c.position.y += sg.dy; c.rotation.y = S.th + sg.yaw; c.rotation.x = sg.rx; c.scale.y = c.scale.x * sg.sy;
@@ -3683,7 +3822,6 @@ function stageLand() {
   sg.dy = 0; sg.state = 'landed'; sg.t = 0; sg.wave = .001; menuShake = 1; sound.boom();
   for (let i = 0; i < 30; i++) { const a = i / 30 * Math.PI * 2, r = 2.2; puff(S.x + Math.sin(a) * r, S.z + Math.cos(a) * r, Math.sin(a) * 6.5, Math.cos(a) * 6.5, 1.6); }
   swave.position.set(S.x, .09, S.z); swave.visible = true;
-  music.cue(CAR_MUSIC[sg.shown]);
 }
 function stageLeaveStart() {
   const cx = S.x - camera.position.x, cz = S.z - camera.position.z, l = Math.hypot(cx, cz) || 1;
@@ -3763,8 +3901,8 @@ function rpmOf() {
   const kmh = S.speed * 3.6, bands = [0, 38, 66, 96, 128, 170];
   let g = 0; while (g < bands.length - 2 && kmh > bands[g + 1]) g++;
   let r = .22 + .78 * clamp((kmh - bands[g]) / (bands[g + 1] - bands[g]), 0, 1);
-  if (S.drifting && input.gas) r = Math.min(1, r + .25 + Math.abs(S.slip) * .3);
-  if (input.gas && S.speed < 1) r = .45;
+  if (S.drifting && gasIn()) r = Math.min(1, r + .25 + Math.abs(S.slip) * .3);
+  if (gasIn() && S.speed < 1) r = .45;
   return r;
 }
 let squealK = 0, fpsT = 0, fpsN = 0, lastBeat = -1, runMaxSpd = 0, runBestCombo = 0, eqs = [];
@@ -3790,7 +3928,7 @@ function frame(dt) {
     scoring(dt);
     stats.dist += S.speed * dt; stats.time += dt; if (S.speed > runMaxSpd) runMaxSpd = S.speed;
     elSpd.textContent = Math.round(S.speed * 3.6);
-    sound.setEngine(P.engine); sound.update(rpmOf(), input.gas, squealK);
+    sound.setEngine(P.engine); sound.update(rpmOf(), gasIn(), squealK);
     if (game.mode === 't60') {
       game.time -= dt; const t = Math.max(0, game.time);
       elTimer.textContent = Math.ceil(t); elTimer.classList.toggle('low', t < 10);
@@ -3798,7 +3936,7 @@ function frame(dt) {
     }
   } else if (game.view === 'end') {
     // time is up: the car rolls to a stop behind the results card
-    input.gas = 0; input.steer = 0; input.hb = 0; input.brake = job.on ? 1 : .5;
+    input.gas = 0; input.rev = 0; input.steer = 0; input.hb = 0; input.brake = job.on ? 1 : .5;
     if (game.mode === 'job') { jobPhysics(dt); squealK = 0; } else { physics(dt / 2); physics(dt / 2); updateCones(dt); squealK = wheelFX(dt); }
     sound.quiet();
   } else if (game.view === 'menu') {
@@ -4053,6 +4191,7 @@ function startRun() {
     game.mode = L ? 'job' : pendingMode; job.kind = L ? L.world : 'dovoz'; game.running = true; game.paused = false; game.view = 'play'; game.score = 0; game.combo = 0; game.mult = 1; game.comboT = 0; game.time = 60;
     coneHits = 0; runMaxSpd = 0; runBestCombo = 0; stats.runs++;
     sound.pause(false);
+    gear = 'P'; setPedal(0, true); gearShow(); requestAnimationFrame(() => requestAnimationFrame(leverLayout)); if (isTouch) setTimeout(() => { if (game.running && gear === 'P') popText('OTOČ VOLIČ NA D'); }, 700);
     if (game.mode === 'job') { jobSetWorld(true); jobStart(); } else { jobSetWorld(false); lvCones(null); setAmbient(true); resetCar(); }
     $('#jobHud').hidden = game.mode !== 'job'; $('#resetBtn').hidden = game.mode === 'job';
     menuEl.hidden = true; endEl.hidden = true; pauseEl.hidden = true; $('#hud').hidden = false;
@@ -4095,7 +4234,7 @@ function endRun() {
   endEl.hidden = false; $('#hud').hidden = true; elTimer.hidden = true; document.body.classList.remove('playing');
   countUp($('#endScore'), game.score, 900); sound.quiet(); checkBadges();
 }
-const SHARE_URL = 'https://durica.si/appky/event-car-drift/';
+const SHARE_URL = 'https://offthewallhack.github.io/rd2026/appky/event-car-drift/';
 function copyText(t) {
   try {
     const ta = document.createElement('textarea'); ta.value = t; ta.setAttribute('readonly', '');
@@ -4161,8 +4300,6 @@ $('#resetBtn').addEventListener('click', e => {
 document.addEventListener('click', e => {
   const b = e.target.closest && e.target.closest('button'); if (!b) return;
   if (b.classList.contains('np-play') || b.id === 'muteBtn') music.toggle();
-  else if (b.classList.contains('np-prev')) music.prev();
-  else if (b.classList.contains('np-next')) music.next();
   else if (b.classList.contains('np-cover')) { if (!menuEl.hidden) setTab('music'); else music.toggle(); }
   else if (b.id === 'shufBtn') music.setShuffle(!music.shuffle);
   else if (b.classList.contains('trk')) music.select(+b.dataset.i);
@@ -4212,7 +4349,7 @@ toMenu(true); clearMarks();
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { layoutStage(); });
 requestAnimationFrame(() => { layoutStage(); updateCamera(0, true); });
 requestAnimationFrame(loop);
-window.__drift = { readInput, keys, solids, cones, physics, updateCones, setCar, CARS, LEVELS, LV, store, renderMode, curLevel, lvCones, endJob, steerMaxAt: v => P.steerMax / (1 + Math.pow(Math.max(0, Math.abs(v) - 4) / P.steerFall, 1.3)), get P() { return P; }, rp, ORT, offUpdate, dvUpdate, HOLES: () => HOLES, holeAt, sg, stageSnap, stageReady: () => modelReady(sg.target), sound, get JP() { return JP; }, placeMarker, jobPhysics, jobDamage, jobTasks, jobFX, carShape, job, get TASKS() { return TASKS; }, TRAIL, WALK, OBS, carHits, jobRespawn, jobStart, jobSetWorld, buildJobWorld, terrainH, trailAt, surfAt, endJob, jobScore, S, input, game, camera, stage, music, settings, stats, get model() { return model; }, scene, setTab, startRun, toMenu, endRun, togglePause };
+window.__drift = { setGear, get gear() { return gear; }, setPedal, touch, readInput, keys, solids, cones, physics, updateCones, setCar, CARS, LEVELS, LV, store, renderMode, curLevel, lvCones, endJob, steerMaxAt: v => P.steerMax / (1 + Math.pow(Math.max(0, Math.abs(v) - 4) / P.steerFall, 1.3)), get P() { return P; }, rp, ORT, offUpdate, dvUpdate, HOLES: () => HOLES, holeAt, sg, stageSnap, stageReady: () => modelReady(sg.target), sound, get JP() { return JP; }, placeMarker, jobPhysics, jobDamage, jobTasks, jobFX, carShape, job, get TASKS() { return TASKS; }, TRAIL, WALK, OBS, carHits, jobRespawn, jobStart, jobSetWorld, buildJobWorld, terrainH, trailAt, surfAt, endJob, jobScore, S, input, game, camera, stage, music, settings, stats, get model() { return model; }, scene, setTab, startRun, toMenu, endRun, togglePause };
 })();
 </script>
 </body></html>

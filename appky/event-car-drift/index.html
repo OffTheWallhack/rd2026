@@ -59,7 +59,6 @@ button{font:inherit;color:inherit}
 .timer{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:5;font:700 30px/1 var(--hud);
   font-variant-numeric:tabular-nums;pointer-events:none;text-shadow:0 2px 10px rgba(0,0,0,.6)}
 .timer.low{color:#ff6b6b}
-@media (max-aspect-ratio:1/1){.timer{bottom:auto;top:calc(62px + env(safe-area-inset-top,0px))}.combo{top:calc(98px + env(safe-area-inset-top,0px))}}
 
 /* the soundtrack runs by itself (Drift Song, D&B mix, again): nothing to switch */
 .np-prev,.np-next,#shufBtn,#addTrack,#trackList,#seek,.times,.mp-ctl .prev,.mp-ctl .next,[data-tab="music"] .lab2,[data-tab="music"] .hint{display:none!important}
@@ -83,45 +82,17 @@ body.touch.playing .ctl.right{display:flex}
 .pad.on{background:rgba(255,178,26,.28);border-color:var(--amber)}
 .pad svg{width:30px;height:30px}
 .pad.gas{width:92px;height:128px;border-radius:24px}
-/* portrait: the steering slider gets its own full-width row, the pedals sit above it, so a thumb on the slider never lands on the handbrake */
-@media (max-aspect-ratio:1/1){
-  body.touch .ctl.left{right:max(18px,env(safe-area-inset-right,0px))}
-  body.touch .slider{width:100%}
-  body.touch .ctl.right{bottom:calc(100px + env(safe-area-inset-bottom,0px))}
-}
 button,.card,.pad,.slider,.nv,.go,.lv,.ibtn{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
 .slider,.pad{touch-action:none}
 .pad.hb{width:86px;height:86px;border-radius:50%}
 .pad.br{width:64px;height:64px;border-radius:16px;font-size:11px}
 .pad .lab{display:flex;flex-direction:column;align-items:center;gap:4px}
-
-/* menus: a garage-style main menu over a live showroom (the car turns on the lot behind the panels) */
-.menu{position:fixed;inset:0;z-index:10;display:block;overflow:hidden;--beat:0}
 .menu[hidden]{display:none}
-.m-stage{position:absolute;inset:0;cursor:grab;touch-action:none}
-.m-stage.drag{cursor:grabbing}
-.m-scrim{position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(90deg,rgba(6,6,9,.9) 0,rgba(6,6,9,.7) 40%,rgba(6,6,9,0) 74%),
-    radial-gradient(90% 60% at 72% 108%,rgba(232,50,60,calc(.14 + var(--beat)*.16)),rgba(0,0,0,0) 62%)}
-.m-grid{position:absolute;inset:0;display:grid;gap:12px 18px;pointer-events:none;
-  padding:calc(14px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(14px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
-  grid-template-columns:clamp(176px,23vw,290px) clamp(310px,41vw,500px) 1fr;grid-template-rows:minmax(0,1fr)}
-.m-grid>*{pointer-events:auto}
-.m-left{display:flex;flex-direction:column;gap:12px;min-height:0}
-.m-sp{flex:1;min-height:0;pointer-events:none}
-.m-hint{position:absolute;right:max(22px,env(safe-area-inset-right,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));color:rgba(255,255,255,.55);font:500 12px system-ui,sans-serif;pointer-events:none;letter-spacing:.02em}
 
 .logo{margin:0;font:700 italic clamp(30px,3.7vw,50px)/.92 var(--hud);letter-spacing:-.01em;text-shadow:0 4px 24px rgba(0,0,0,.6)}
 .logo span{color:var(--amber);text-shadow:0 0 calc(var(--beat)*28px) rgba(255,178,26,.9),0 4px 24px rgba(0,0,0,.6)}
 .logo.sm{font-size:42px}
 .sub{margin:6px 0 0;color:var(--muted);font:500 13px/1.3 system-ui,sans-serif}
-
-.m-nav{display:grid;gap:6px}
-.nv{appearance:none;display:flex;align-items:center;gap:11px;width:100%;min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:5px 15px 5px 15px;background:rgba(14,12,20,.74);
-  color:var(--ink);cursor:pointer;font:700 italic 16px/1 var(--hud);letter-spacing:.07em;text-align:left;transition:transform .15s,background .15s,border-color .15s}
-.nv svg{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
-.nv:hover{transform:translateX(4px);border-color:rgba(255,255,255,.32)}
-.nv.on{background:var(--amber);color:#1b1200;border-color:var(--amber);transform:translateX(8px);box-shadow:0 8px 24px -10px rgba(255,178,26,.8)}
 
 #startBtn.wait{opacity:.5;filter:saturate(.4)}
 .go{appearance:none;display:flex;align-items:center;justify-content:center;gap:10px;border:0;border-radius:6px 18px 6px 18px;min-height:56px;padding:0 16px;cursor:pointer;background:var(--amber);color:#1b1200;
@@ -154,8 +125,6 @@ button,.card,.pad,.slider,.nv,.go,.lv,.ibtn{-webkit-user-select:none;user-select
 .card small{display:block;color:var(--muted);font:500 11.5px/1.3 system-ui,sans-serif;margin-top:4px}
 .card.on{border-color:var(--amber);background:rgba(255,178,26,.14);box-shadow:0 0 0 1px var(--amber) inset}
 .card[disabled]{opacity:.42;cursor:default}
-.detail{border:1px solid var(--line);border-radius:5px 14px 5px 14px;padding:12px 14px;background:rgba(0,0,0,.28);display:grid;gap:9px}
-.detail p{margin:0;font:500 13px/1.45 system-ui,sans-serif;color:#d9d6df}
 .st{display:grid;grid-template-columns:92px 1fr;gap:10px;align-items:center;font:700 10.5px/1 var(--hud);letter-spacing:.12em;color:var(--muted)}
 .st i{display:block;height:6px;border-radius:3px;background:rgba(255,255,255,.12);position:relative;overflow:hidden}
 .st i::after{content:"";position:absolute;inset:0 auto 0 0;width:var(--v,0%);background:linear-gradient(90deg,var(--amber),#ffd36b);border-radius:3px;transition:width .45s cubic-bezier(.2,.8,.2,1)}
@@ -285,111 +254,13 @@ body.mplay .pp svg.i-play{display:none}
 #jMap{position:absolute;right:max(14px,env(safe-area-inset-right,0px));top:calc(64px + env(safe-area-inset-top,0px));width:110px;height:148px;border-radius:10px;border:1px solid var(--line);opacity:.94}
 .jreset{position:absolute;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);pointer-events:auto;cursor:pointer;background:var(--glass);border:1px solid var(--line);border-radius:12px;padding:8px 14px;font:700 12px/1 var(--hud);letter-spacing:.08em;color:var(--ink)}
 @media (max-width:760px),(max-height:430px){#jMap{width:78px;height:105px}.jdmg{width:112px}.jtop{max-width:44vw}.jt span{display:none}}
-@media (max-aspect-ratio:1/1){body.touch .jreset{top:calc(168px + env(safe-area-inset-top,0px));bottom:auto;left:max(14px,env(safe-area-inset-left,0px));transform:none}.jtop{top:calc(62px + env(safe-area-inset-top,0px));max-width:calc(100vw - 28px)}.jdmg{top:calc(118px + env(safe-area-inset-top,0px))}#jMap{top:calc(118px + env(safe-area-inset-top,0px))}}
-.rot{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:4;padding:10px 16px;border-radius:999px;background:var(--glass);border:1px solid var(--line);
-  font:500 13px system-ui,sans-serif;pointer-events:none;display:none}
-@media (orientation:portrait){body.touch.playing .rot{display:block;animation:fade 3s 1.5s forwards}}
 @keyframes fade{to{opacity:0}}
-
-/* portrait phones: car on top, sheet below, tab bar at the bottom */
-@media (max-aspect-ratio:1/1){
-  .m-scrim{background:linear-gradient(180deg,rgba(6,6,9,.55) 0,rgba(6,6,9,0) 22%,rgba(6,6,9,0) 52%,rgba(6,6,9,.88) 100%),radial-gradient(90% 40% at 50% 60%,rgba(232,50,60,calc(.12 + var(--beat)*.14)),rgba(0,0,0,0) 70%)}
-  .m-grid{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(90px,1fr) auto auto auto auto;gap:10px}
-  .m-left{display:contents}
-  .m-head{grid-row:1}
-  .m-sp{grid-row:2}
-  .m-panel{grid-row:3;height:min(47vh,420px);height:min(47dvh,420px)}
-  .m-grid>.go{grid-row:4}
-  .go{min-height:52px;font-size:22px}
-  .np{grid-row:5;grid-template-columns:40px minmax(0,1fr) auto;grid-template-areas:"c t b";padding:7px 10px}
-  .np .cover{width:40px;height:40px}
-  .np .ib2.prev,.np .ib2.next{display:none}
-  .m-nav{grid-row:6;grid-auto-flow:column;grid-auto-columns:1fr;gap:5px}
-  .nv{flex-direction:column;justify-content:center;gap:4px;min-height:52px;padding:6px 2px;font-size:10px;letter-spacing:.04em;text-align:center;border-radius:4px 12px 4px 12px}
-  .nv:hover,.nv.on{transform:none}
-  .m-hint{display:none}
-  .logo{font-size:34px}
-  .m-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
-  .m-head .sub{margin:0}
-}
-@media (max-height:460px) and (min-aspect-ratio:1/1){
-  .m-head .sub{display:none}
-  .logo{font-size:28px}
-  .m-left{gap:8px}
-  .m-nav{gap:4px}
-  .nv{min-height:34px;font-size:13px;padding:0 10px;gap:8px}
-  .nv svg{width:16px;height:16px}
-  .go{min-height:44px;font-size:20px}
-  .np{grid-template-columns:34px minmax(0,1fr) auto;grid-template-areas:"c t b";padding:6px 8px}
-  .np .cover{width:34px;height:34px}
-  .np .ib2.prev,.np .ib2.next{display:none}
-  .th{padding:10px 14px 4px}
-  .th h2{font-size:20px}
-  .th p{display:none}
-  .tb{padding:4px 14px 12px;gap:10px}
-}
-@media (max-aspect-ratio:1/1) and (max-height:720px){
-  .th p,.np-txt small{display:none}
-  .th{padding:11px 16px 2px}
-  .th h2{font-size:21px}
-  .tb{padding:4px 16px 14px}
-}
-/* ---- menu v2: garage look ---- */
-#carStats{display:grid;grid-template-columns:1fr 1fr;gap:9px 18px}
-#carStats .st{grid-template-columns:62px 1fr}
-#carStats .st span{font-size:9.5px;letter-spacing:.08em}
 .m-panel{backdrop-filter:blur(14px) saturate(1.2);-webkit-backdrop-filter:blur(14px) saturate(1.2);background:linear-gradient(160deg,rgba(24,20,34,.86),rgba(10,9,16,.88));box-shadow:0 24px 60px -24px rgba(0,0,0,.8)}
 .m-panel::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(115deg,rgba(255,255,255,.022) 0 2px,rgba(0,0,0,0) 2px 14px);border-radius:inherit}
-.nv.on{box-shadow:0 8px 24px -10px rgba(255,178,26,.8),0 0 0 3px rgba(255,178,26,calc(.1 + var(--beat)*.2))}
-.cards.cars{grid-template-columns:1fr 1fr;gap:10px}
-.card.car{position:relative;display:grid;gap:8px;padding:12px 12px 11px;overflow:hidden}
-.card.car .ci{width:100%;height:92px;object-fit:contain;object-position:center;filter:drop-shadow(0 6px 7px rgba(0,0,0,.55)) brightness(1.18) contrast(1.05);opacity:.85;transition:transform .3s,opacity .2s;pointer-events:none}
-.card.car.on .ci{opacity:1;transform:scale(1.05)}
-.card.car .ct b{font-size:18px}
-.card.car:disabled{opacity:.45;cursor:default}
-.card .chip{position:absolute;top:9px;right:9px;font:700 italic 9.5px/1 var(--hud);letter-spacing:.14em;font-style:normal;padding:4px 6px;border-radius:4px;background:rgba(255,255,255,.1);color:var(--muted)}
-.card .chip.off{background:rgba(123,224,90,.16);color:#9cf07f}
-.card.car.on .chip{background:var(--amber);color:#1b1200}
-.card.car.on .chip.off{background:#7be05a}
-.cards.modes{grid-template-columns:repeat(2,minmax(0,1fr))}
-.card.mode{position:relative;display:grid;grid-template-columns:30px minmax(0,1fr);grid-template-areas:"i b" "i s";gap:1px 10px;align-items:center;padding:10px 12px;overflow:hidden}
-.card.mode::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ac,var(--amber));opacity:.55;transition:opacity .15s,width .15s}
-.card.mode .mi{grid-area:i;width:28px;height:28px;fill:none;stroke:var(--ac,var(--amber));stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.card.mode b{grid-area:b;font-size:15.5px}
-.card.mode small{grid-area:s;margin-top:2px}
-.card.mode.on{border-color:var(--ac,var(--amber));background:color-mix(in srgb,var(--ac,#ffb21a) 16%,transparent);box-shadow:0 0 0 1px var(--ac,var(--amber)) inset,0 10px 26px -14px var(--ac,var(--amber))}
-.card.mode.on::before{opacity:1;width:5px}
-.card.mode:last-child:nth-child(odd){grid-column:1/-1}
-.lvlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px;margin:0 0 10px}
-.lv{display:grid;gap:3px;padding:9px 10px 8px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.04);text-align:left;cursor:pointer;min-width:0}
-.lv small{font:700 9.5px/1 system-ui,sans-serif;letter-spacing:.16em;color:#9b96a8}
-.lv b{font:italic 700 13px/1.15 var(--hud);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.lv i{font-style:normal;font-size:11px;letter-spacing:.1em;color:var(--amber)}
-.lv i.e{color:rgba(255,255,255,.25)}
-.lv.on{border-color:#3ddcff;background:rgba(61,220,255,.14);box-shadow:0 0 0 1px #3ddcff inset}
-.lv.lock{opacity:.42;cursor:not-allowed}
-.lv.sugga small{color:#7be05a}
-.lvtabs{display:flex;gap:6px;position:sticky;top:44px;z-index:2;background:#15141c;padding:6px 0 4px;margin-top:-4px}
-.lvtabs button{flex:1;min-height:40px;padding:6px 6px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.04);color:#cfcbd8;font:700 11.5px/1 system-ui,sans-serif;letter-spacing:.1em;cursor:pointer}
-.lvtabs button.on{border-color:#3ddcff;background:rgba(61,220,255,.14);color:#fff}
-.lv.mis{grid-column:1/-1}
-.lvh{grid-column:1/-1;margin:10px 0 0;font:700 11px/1 system-ui,sans-serif;letter-spacing:.16em;color:var(--muted);display:flex;align-items:center;gap:8px}
-.lvh:first-child{margin-top:2px}.lvh::after{content:"";flex:1;height:1px;background:var(--line)}
-.steps{display:flex;gap:6px;margin:0 0 2px;position:sticky;top:-6px;z-index:3;background:#15141c;padding:6px 0 4px}
-.steps button{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:6px 8px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.04);color:#cfcbd8;font:700 12px/1 system-ui,sans-serif;letter-spacing:.14em;cursor:pointer}
-.steps button b{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.12);font:700 11px/1 system-ui,sans-serif;letter-spacing:0}
-.steps button.on{border-color:var(--amber);color:#fff;background:rgba(255,178,26,.12)}
-.steps button.on b{background:var(--amber);color:#111}
-.steps button.done b{background:#39e075;color:#111}
-.steps button[hidden]{display:none}
-.wz{display:grid;gap:12px;align-content:start}
-.wz[hidden]{display:none}
-.wnext{width:100%;margin-top:4px}
 #jMap.lot{width:148px;height:110px}
 @media (max-width:760px),(max-height:430px){#jMap.lot{width:104px;height:77px}}
 .jlevel{position:absolute;left:50%;top:calc(7px + env(safe-area-inset-top,0px));transform:translateX(-50%);font:700 9.5px/1 system-ui,sans-serif;letter-spacing:.2em;color:#3ddcff;text-shadow:0 1px 4px rgba(0,0,0,.7);white-space:nowrap}
 .jlevel:not([hidden])~.jtop{top:calc(24px + env(safe-area-inset-top,0px))}
-@media (max-aspect-ratio:1/1){.jlevel{top:calc(58px + env(safe-area-inset-top,0px))}.jlevel:not([hidden])~.jtop{top:calc(72px + env(safe-area-inset-top,0px))}.jdmg,#jMap{top:calc(128px + env(safe-area-inset-top,0px))}body.touch .jreset{top:calc(180px + env(safe-area-inset-top,0px))}}
 .hint{padding:10px 12px;border-left:3px solid var(--amber);background:rgba(255,255,255,.04);border-radius:0 8px 8px 0;color:#d4d0da}
 .go{position:relative;overflow:hidden;justify-content:space-between;padding:0 18px}
 .go::after{content:"";position:absolute;top:0;bottom:0;width:60px;left:-80px;background:linear-gradient(100deg,rgba(255,255,255,0),rgba(255,255,255,.55),rgba(255,255,255,0));transform:skewX(-18deg);animation:shine 3.4s ease-in-out infinite}
@@ -398,34 +269,112 @@ body.mplay .pp svg.i-play{display:none}
 .go-t{display:grid;gap:4px;text-align:left}
 .go-t em{font:700 10.5px/1 system-ui,sans-serif;font-style:normal;letter-spacing:.16em;opacity:.7}
 .go svg{width:26px;height:26px}
-.m-plate{position:absolute;display:flex;align-items:center;gap:14px;right:max(24px,calc(env(safe-area-inset-right,0px) + 14px));bottom:calc(52px + env(safe-area-inset-bottom,0px));padding:10px 12px;border:1px solid var(--line);border-radius:6px 18px 6px 18px;background:rgba(10,9,16,.66);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);pointer-events:auto}
-.pl-t{display:grid;gap:3px;min-width:150px;text-align:center}
-.pl-t small{font:700 9.5px/1 system-ui,sans-serif;letter-spacing:.22em;color:var(--amber)}
-.pl-t b{font:700 italic 30px/1 var(--hud);letter-spacing:.03em}
-.pl-t span{color:var(--muted);font:500 12px/1.2 system-ui,sans-serif}
-.pl-a{appearance:none;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.08);color:var(--ink);display:grid;place-items:center;cursor:pointer;padding:0;transition:background .15s,transform .12s}
-.pl-a:hover{background:var(--amber);color:#1b1200}
-.pl-a:active{transform:scale(.92)}
-.pl-a svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
-.m-hint{bottom:calc(20px + env(safe-area-inset-bottom,0px));right:0;left:auto;width:min(100%,calc(100% - 24px));text-align:right}
-@media (max-aspect-ratio:1/1){
-  .m-plate{right:50%;transform:translateX(50%);bottom:auto;top:calc(88px + env(safe-area-inset-top,0px));padding:6px 8px;gap:8px}
-  .pl-t{min-width:120px}.pl-t b{font-size:22px}.pl-t span{display:none}
-  .pl-a{width:36px;height:36px}
-  .card.car .ci{height:70px}
-  .go{min-height:54px}
-  .card.mode{padding:8px 10px}
-}
-@media (max-height:460px) and (min-aspect-ratio:1/1){
-  .m-plate{bottom:calc(30px + env(safe-area-inset-bottom,0px));padding:6px 8px;gap:8px}.pl-t b{font-size:22px}.pl-t span{display:none}.pl-t{min-width:110px}
-  .pl-a{width:32px;height:32px}
-  .card.car .ci{height:58px}
-  .card.mode{padding:6px 9px}
-  .go-t em{display:none}
-}
 @media (prefers-reduced-motion:reduce){.go::after{animation:none;display:none}}
+
+/* ===== menu v3: landscape only, one step at a time, pictures instead of the 3D showroom ===== */
+.menu{position:fixed;inset:0;z-index:10;display:block;overflow:hidden;--beat:0;
+  background:radial-gradient(110% 90% at 80% 115%,rgba(232,50,60,calc(.2 + var(--beat)*.14)),rgba(0,0,0,0) 62%),radial-gradient(70% 60% at 8% 0,rgba(255,178,26,.09),rgba(0,0,0,0) 60%),linear-gradient(160deg,#17141f,#09080d)}
+.menu.pm{background:rgba(6,6,9,.7)}
+.m-stage{display:none}
+.mw{position:absolute;inset:0;display:flex;flex-direction:column;gap:10px;padding:calc(10px + env(safe-area-inset-top,0px)) max(14px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(14px,env(safe-area-inset-left,0px))}
+.mbar{flex:none;display:flex;align-items:center;gap:14px;min-height:44px}
+.mbar .logo{font-size:clamp(20px,3.4vw,30px);line-height:1;white-space:nowrap}
+.steps{flex:1;display:flex;justify-content:center;gap:6px;min-width:0}
+.menu:not([data-tab="play"]) .steps{visibility:hidden}
+.steps button{display:flex;align-items:center;justify-content:center;gap:7px;min-height:38px;padding:4px 14px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.04);color:#cfcbd8;font:700 12px/1 var(--hud);letter-spacing:.1em;cursor:pointer}
+.steps button b{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.12);font:700 11px/1 system-ui,sans-serif;letter-spacing:0}
+.steps button.on{border-color:var(--amber);color:#fff;background:rgba(255,178,26,.14)}
+.steps button.on b{background:var(--amber);color:#111}
+.steps button.done b{background:#39e075;color:#111}
+.steps button[hidden]{display:none}
+.m-nav{display:flex;gap:6px;flex:none}
+.nv{appearance:none;display:grid;place-items:center;width:42px;height:42px;padding:0;border:1px solid var(--line);border-radius:5px 14px 5px 14px;background:rgba(14,12,20,.74);color:var(--ink);cursor:pointer}
+.nv svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.nv:hover{border-color:rgba(255,255,255,.32)}
+.nv.on{background:var(--amber);color:#1b1200;border-color:var(--amber);box-shadow:0 0 0 3px rgba(255,178,26,calc(.1 + var(--beat)*.2))}
+.m-panel{flex:1;min-height:0;display:flex;flex-direction:column;position:relative;overflow:hidden;border:1px solid var(--line);border-radius:8px 24px 8px 24px;
+  background:linear-gradient(160deg,rgba(24,20,34,.86),rgba(10,9,16,.88));box-shadow:0 24px 60px -24px rgba(0,0,0,.8)}
+.m-panel::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(115deg,rgba(255,255,255,.022) 0 2px,rgba(0,0,0,0) 2px 14px);border-radius:inherit}
+.tb.play{overflow:hidden;padding:12px 16px 4px;display:block}
+.wz{height:100%;min-height:0;display:grid;gap:10px;align-content:stretch}
+.wz[hidden]{display:none}
+.wz[data-step="1"]{grid-template-rows:minmax(0,1fr) auto}
+.wz[data-step="2"]{grid-template-rows:minmax(0,1fr) auto}
+.wz[data-step="3"]{grid-template-rows:minmax(0,1fr)}
+.wf{flex:none;display:flex;align-items:center;gap:12px;padding:8px 16px 12px;position:relative;z-index:1}
+.wf .go{min-height:48px;font-size:20px;padding:0 18px;flex:none}
+.wf .go.alt{font-size:15px;min-height:44px}
+.wf [hidden]{display:none}
+.wsum{flex:1;min-width:0;display:grid;gap:3px;text-align:center}
+.wsum #goSum{font:700 italic 15px/1.1 var(--hud);letter-spacing:.05em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wsum #mLoad{font:700 11px/1 system-ui,sans-serif;letter-spacing:.16em;color:var(--amber)}
+.wsum #mLoad::before{content:"";display:inline-block;width:10px;height:10px;margin-right:7px;border-radius:50%;border:2px solid var(--amber);border-right-color:transparent;vertical-align:-1px;animation:spin .8s linear infinite}
+#startBtn.wait{opacity:.5;filter:saturate(.4)}
+/* step 1: the two cars */
+.cards.cars{grid-template-columns:1fr 1fr;gap:12px;min-height:0}
+.card.car{position:relative;display:flex;flex-direction:column;gap:4px;padding:10px 12px;overflow:hidden;min-height:0}
+.card.car .ci{flex:1;min-height:0;width:100%;object-fit:contain;object-position:center;filter:drop-shadow(0 8px 9px rgba(0,0,0,.6)) brightness(1.18) contrast(1.05);opacity:.8;transition:transform .3s,opacity .2s;pointer-events:none}
+.card.car.on .ci{opacity:1;transform:scale(1.04)}
+.card.car .ct b{font-size:clamp(16px,2.4vw,22px)}
+.card.car .ct small{margin-top:2px}
+.card .chip{position:absolute;top:8px;right:8px;font:700 9.5px/1 var(--hud);letter-spacing:.14em;font-style:normal;padding:4px 6px;border-radius:4px;background:rgba(255,255,255,.1);color:var(--muted)}
+.card .chip.off{background:rgba(123,224,90,.16);color:#9cf07f}
+.card.car.on .chip{background:var(--amber);color:#1b1200}
+.card.car.on .chip.off{background:#7be05a}
+.detail{border:1px solid var(--line);border-radius:5px 14px 5px 14px;padding:8px 12px;background:rgba(0,0,0,.28);display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:6px 18px;align-items:center}
+.detail p{margin:0;font:500 12px/1.4 system-ui,sans-serif;color:#d9d6df}
+#carStats{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px}
+#carStats .st{grid-template-columns:62px 1fr}
+#carStats .st span{font-size:9.5px;letter-spacing:.08em}
+/* step 2: the modes */
+.cards.modes{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;min-height:0}
+.card.mode{position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:6px;padding:12px;overflow:hidden}
+.card.mode::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ac,var(--amber));opacity:.55;transition:opacity .15s,width .15s}
+.card.mode .mi{width:34px;height:34px;fill:none;stroke:var(--ac,var(--amber));stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.card.mode b{font-size:clamp(15px,2.2vw,20px)}
+.card.mode small{margin-top:0}
+.card.mode.on{border-color:var(--ac,var(--amber));background:color-mix(in srgb,var(--ac,#ffb21a) 16%,transparent);box-shadow:0 0 0 1px var(--ac,var(--amber)) inset,0 10px 26px -14px var(--ac,var(--amber))}
+.card.mode.on::before{opacity:1;width:5px}
+.wz .hint{padding:8px 12px;font-size:12px;line-height:1.35}
+/* step 3: the tracks, a grid that always fits */
+.lvwrap{display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:8px;min-height:0;height:100%}
+.lvtop{display:flex;align-items:center;gap:10px;min-width:0}
+.lvtabs{display:flex;gap:6px;flex:none}
+.lvtabs button{min-height:34px;padding:4px 14px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.04);color:#cfcbd8;font:700 11.5px/1 system-ui,sans-serif;letter-spacing:.1em;cursor:pointer}
+.lvtabs button.on{border-color:#3ddcff;background:rgba(61,220,255,.14);color:#fff}
+.lvtop #lvSect{flex:1;min-width:0;margin:0;padding:0;border:0;background:none;font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right}
+.lvlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));grid-auto-rows:minmax(0,1fr);gap:6px;min-height:0;align-content:stretch;margin:0}
+.lv{display:flex;flex-direction:column;justify-content:space-between;gap:2px;padding:6px 8px 5px;border:1px solid var(--line);border-radius:9px;background:rgba(255,255,255,.04);text-align:left;cursor:pointer;min-width:0;min-height:0;max-height:76px;overflow:hidden}
+.lv small{font:700 8.5px/1 system-ui,sans-serif;letter-spacing:.14em;color:#9b96a8}
+.lv b{font:italic 700 11.5px/1.12 var(--hud);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.lv i{font-style:normal;font-size:10.5px;letter-spacing:.08em;color:var(--amber)}
+.lv i.e{color:rgba(255,255,255,.25)}
+.lv.on{border-color:#3ddcff;background:rgba(61,220,255,.16);box-shadow:0 0 0 1px #3ddcff inset}
+.lv.mis{border-color:rgba(255,178,26,.55);background:rgba(255,178,26,.08)}
+.lv.mis small{color:var(--amber)}
+.lv.mis.on{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber) inset;background:rgba(255,178,26,.18)}
+.lvwrap #lvDesc{margin:0;padding:6px 10px;font-size:12px;line-height:1.35}
+/* the other tabs may scroll a little, they are not steps */
+.th{padding:12px 16px 2px}
+.th h2{font-size:22px}
+.th p{display:none}
+.tb{padding:6px 16px 14px}
+.tiles{grid-template-columns:repeat(4,1fr)}
+.badges{grid-template-columns:repeat(3,1fr)}
+.cards.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+/* portrait is not supported: a full-screen note asks for the phone to be turned */
+.turn{position:fixed;inset:0;z-index:200;display:none;place-items:center;align-content:center;gap:18px;padding:24px;text-align:center;background:#0b0a10;color:var(--ink)}
+.turn svg{width:92px;height:92px;fill:none;stroke:var(--amber);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;animation:turnphone 2.6s ease-in-out infinite}
+.turn b{font:700 italic 26px/1.1 var(--hud);letter-spacing:.04em}
+.turn small{font:500 14px/1.4 system-ui,sans-serif;color:var(--muted);max-width:280px}
+@keyframes turnphone{0%,15%{transform:rotate(0)}50%,75%{transform:rotate(-90deg)}100%{transform:rotate(0)}}
+@media (max-aspect-ratio:1/1){.turn{display:grid}}
+@media (max-height:400px){
+  .mw{gap:6px}.mbar{min-height:38px}.nv{width:36px;height:36px}.steps button{min-height:32px;padding:3px 11px}
+  .tb.play{padding:8px 12px 2px}.wf{padding:6px 12px 8px}.wf .go{min-height:42px;font-size:18px}.wf .go.alt{min-height:38px}
+  .detail{padding:6px 10px}.detail p{font-size:11px;line-height:1.3}.card.mode{padding:8px 10px;gap:4px}.card.mode .mi{width:28px;height:28px}
+}
 @media (prefers-reduced-motion:reduce){.pop{animation-duration:.01s}.cover.spin{animation:none}.tab.on{animation:none}}
-#carStats{display:grid;gap:8px}
 #fallFade{position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;z-index:60;transition:opacity .28s linear}
 
 /* gear dial (round knob + P R N D plate) and the latching throttle lever */
@@ -458,18 +407,8 @@ body.touch.playing .jtop{top:calc(72px + env(safe-area-inset-top,0px))}
 body.touch.playing .jlevel:not([hidden])~.jtop{top:calc(86px + env(safe-area-inset-top,0px))}
 body.touch.playing .combo{top:calc(72px + env(safe-area-inset-top,0px))}
 @media (max-height:430px){.lever{height:150px}.gknob{width:48px;height:48px}.gplate b{height:28px}}
-@media (max-aspect-ratio:1/1){
-  .lever{height:150px}
-  body.touch.playing .gear{top:calc(58px + env(safe-area-inset-top,0px))}
-  body.touch.playing .jlevel{top:calc(124px + env(safe-area-inset-top,0px))}
-  body.touch.playing .jtop{top:calc(128px + env(safe-area-inset-top,0px))}
-  body.touch.playing .jlevel:not([hidden])~.jtop{top:calc(138px + env(safe-area-inset-top,0px))}
-  body.touch.playing .timer{top:calc(124px + env(safe-area-inset-top,0px))}
-  body.touch.playing .combo{top:calc(160px + env(safe-area-inset-top,0px))}
-  body.touch.playing .jdmg,body.touch.playing #jMap{top:calc(196px + env(safe-area-inset-top,0px))}
-  body.touch.playing .jreset{top:calc(248px + env(safe-area-inset-top,0px))}
-}
-</style></head><body>
+</style>
+</head><body>
 
 <canvas id="gl" aria-label="Drift hra"></canvas>
 
@@ -495,7 +434,7 @@ body.touch.playing .combo{top:calc(72px + env(safe-area-inset-top,0px))}
   <canvas id="jMap" width="110" height="148" aria-hidden="true"></canvas>
   <button class="jreset" id="jReset" type="button">↺ SPÄŤ NA STANICU</button>
 </div>
-<div class="rot">Otoč telefón na šírku, jazdí sa lepšie</div>
+<div class="turn" id="turn"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.4"/><path d="M11 18.8h2"/></svg><b>OTOČ TELEFÓN NA ŠÍRKU</b><small>Event Car Game sa hrá len na šírku.</small></div>
 
 <div class="gear" id="gear" aria-label="Radenie">
   <div class="gknob" id="gKnob"><i id="gKnobI"></i></div>
@@ -510,56 +449,35 @@ body.touch.playing .combo{top:calc(72px + env(safe-area-inset-top,0px))}
   <div class="lever" id="lever"><div class="lticks" id="lTicks"></div><div class="lk" id="lk"><b id="lkv">0</b><small>PLYN</small></div></div>
 </div>
 
-<div class="menu" id="menu">
-  <div class="m-stage" id="stage"></div>
-  <div class="m-scrim"></div>
-  <div class="m-grid">
-    <div class="m-left">
-      <header class="m-head">
-        <h1 class="logo">EVENT CAR <span>GAME</span></h1>
-      </header>
-      <nav class="m-nav" id="nav" aria-label="Hlavné menu">
-        <button class="nv on" type="button" data-tab="play"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2"/><path d="M3.5 10h6M14.5 10h6M12 14.2V21"/></svg><span>HRAJ</span></button>
-        <button class="nv" type="button" data-tab="music"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg><span>HUDBA</span></button>
-        <button class="nv" type="button" data-tab="controls"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="7" width="19" height="11" rx="5"/><path d="M7 10.5v4M5 12.5h4"/><circle cx="16" cy="11.5" r=".9"/><circle cx="18.5" cy="14" r=".9"/></svg><span>OVLÁDANIE</span></button>
-        <button class="nv" type="button" data-tab="settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg><span>NASTAVENIA</span></button>
-        <button class="nv" type="button" data-tab="records"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 01-8 0V4zM8 6H4v1a3 3 0 003 3M16 6h4v1a3 3 0 01-3 3M12 13v4M8 20h8"/></svg><span>REKORDY</span></button>
+<div class="menu" id="menu" data-tab="play">
+  <div class="m-stage" id="stage" hidden></div>
+  <div class="mw">
+    <header class="mbar">
+      <h1 class="logo">EVENT CAR <span>GAME</span></h1>
+      <nav class="steps" id="steps" aria-label="Kroky">
+        <button type="button" data-step="1" class="on"><b>1</b><span>AUTO</span></button>
+        <button type="button" data-step="2"><b>2</b><span>REŽIM</span></button>
+        <button type="button" data-step="3" hidden><b>3</b><span>LEVEL</span></button>
       </nav>
-      <div class="m-sp"></div>
-      <button class="go" id="startBtn" type="button"><span class="go-t"><span>ŠTART</span><em id="goSum"></em></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l7 7-7 7zM13 5l7 7-7 7z"/></svg></button>
-      <div class="np">
-        <button class="cover cv spin cur np-cover" type="button" aria-label="Otvoriť hudbu" data-music></button>
-        <div class="np-txt"><b class="np-title">Drift Song</b><small class="np-sub">Ťukni kdekoľvek, hudba sa spustí</small></div>
-        <div class="np-btns">
-          <button class="ib2 prev np-prev" type="button" aria-label="Predošlá skladba" data-music><svg viewBox="0 0 24 24"><path d="M6 5h2.5v14H6zM20 5v14L9.5 12z"/></svg></button>
-          <button class="ib2 main pp np-play" type="button" aria-label="Prehrať alebo pozastaviť" data-music><svg class="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z"/></svg><svg class="i-pause" viewBox="0 0 24 24"><path d="M6 4h4.5v16H6zM13.5 4H18v16h-4.5z"/></svg></button>
-          <button class="ib2 next np-next" type="button" aria-label="Ďalšia skladba" data-music><svg viewBox="0 0 24 24"><path d="M15.5 5H18v14h-2.5zM4 5v14l10.5-7z"/></svg></button>
-          <span class="eq"><i></i><i></i><i></i><i></i><i></i></span>
-        </div>
-      </div>
-    </div>
-
+      <nav class="m-nav" id="nav" aria-label="Hlavné menu">
+        <button class="nv on" type="button" data-tab="play" aria-label="Hraj" title="Hraj"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2"/><path d="M3.5 10h6M14.5 10h6M12 14.2V21"/></svg></button>
+        <button class="nv" type="button" data-tab="music" aria-label="Hudba" title="Hudba"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg></button>
+        <button class="nv" type="button" data-tab="controls" aria-label="Ovládanie" title="Ovládanie"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="7" width="19" height="11" rx="5"/><path d="M7 10.5v4M5 12.5h4"/><circle cx="16" cy="11.5" r=".9"/><circle cx="18.5" cy="14" r=".9"/></svg></button>
+        <button class="nv" type="button" data-tab="settings" aria-label="Nastavenia" title="Nastavenia"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></button>
+        <button class="nv" type="button" data-tab="records" aria-label="Rekordy" title="Rekordy"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 01-8 0V4zM8 6H4v1a3 3 0 003 3M16 6h4v1a3 3 0 01-3 3M12 13v4M8 20h8"/></svg></button>
+      </nav>
+    </header>
     <main class="m-panel" id="panel">
       <section class="tab on" data-tab="play">
-        <header class="th"><h2>HRAJ</h2><p>Vyber auto a režim, potom ŠTART.</p></header>
-        <div class="tb">
-          <nav class="steps" id="steps" aria-label="Kroky">
-            <button type="button" data-step="1" class="on"><b>1</b><span>AUTO</span></button>
-            <button type="button" data-step="2"><b>2</b><span>REŽIM</span></button>
-            <button type="button" data-step="3" hidden><b>3</b><span>LEVEL</span></button>
-          </nav>
+        <div class="tb play">
           <div class="wz" data-step="1">
-            <p class="lab2">VYBER AUTO</p>
             <div class="cards cars" id="carCards">
               <button class="card car on" type="button" data-car="zubor"><img class="ci" src="img/car-zubor.webp" alt="Zubor" draggable="false"><span class="ct"><b>ZUBOR</b><small>Dodávka · asfalt</small></span><i class="chip">ASFALT</i></button>
               <button class="card car" type="button" data-car="sugga"><img class="ci" src="img/car-sugga.webp" alt="Sugga" draggable="false"><span class="ct"><b>SUGGA</b><small>Vintage 4×4 · divočina</small></span><i class="chip off">OFFROAD</i></button>
             </div>
             <div class="detail"><p id="carDesc"></p><div id="carStats"></div></div>
-            <p class="hint" id="carNote" hidden>V tréningu auto určuje level, preto ho vyberieš až v treťom kroku.</p>
-            <button class="go alt wnext" type="button" data-go="2"><span class="go-t"><span>DALEJ</span><em>VYBER REŽIM</em></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l7 7-7 7zM13 5l7 7-7 7z"/></svg></button>
           </div>
           <div class="wz" data-step="2" hidden>
-            <p class="lab2">VYBER REŽIM</p>
             <div class="cards modes" id="modeCards">
             <button class="card mode on" type="button" data-mode="free" style="--ac:#ffb21a"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 12c0-2.5 2-4.5 4.5-4.5 4 0 5 9 9 9M4 16.5c4 0 5-9 9-9"/><circle cx="12" cy="12" r="0" /></svg><b>VOĽNÝ</b><small>Bez času</small></button>
             <button class="card mode" type="button" data-mode="t60" style="--ac:#ff6a3d"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 9v5l3 2M9.5 3h5M12 3v3"/></svg><b>60 S</b><small>Na skóre</small></button>
@@ -567,12 +485,17 @@ body.touch.playing .combo{top:calc(72px + env(safe-area-inset-top,0px))}
             <button class="card mode" type="button" data-mode="tokyo" style="--ac:#c58bff" disabled><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg><b>TOKYO DRIFT</b><small>Už čoskoro</small></button>
             </div>
             <p class="hint" id="modeDesc"></p>
-            <button class="go alt wnext" id="toLevel" type="button" data-go="3" hidden><span class="go-t"><span>DALEJ</span><em>VYBER LEVEL</em></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l7 7-7 7zM13 5l7 7-7 7z"/></svg></button>
           </div>
           <div class="wz" data-step="3" hidden>
-            <div id="lvWrap"><p class="lab2">VYBER LEVEL</p><div class="lvtabs" id="lvTabs"></div><p class="hint" id="lvSect"></p><div class="lvlist" id="lvList"></div><p class="hint" id="lvDesc"></p></div>
+            <div class="lvwrap" id="lvWrap"><div class="lvtop"><div class="lvtabs" id="lvTabs"></div><p class="hint" id="lvSect"></p></div><div class="lvlist" id="lvList"></div><p class="hint" id="lvDesc"></p></div>
           </div>
         </div>
+        <footer class="wf" id="wf">
+          <button class="go alt" id="wBack" type="button" hidden><svg viewBox="0 0 24 24" aria-hidden="true" style="transform:scaleX(-1)"><path d="M5 5l7 7-7 7zM13 5l7 7-7 7z"/></svg><span>SPÄŤ</span></button>
+          <div class="wsum"><span id="goSum"></span><span id="mLoad" hidden>NAČÍTAVAM AUTO</span></div>
+          <button class="go alt" id="wNext" type="button"><span>DALEJ</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l7 7-7 7zM13 5l7 7-7 7z"/></svg></button>
+          <button class="go" id="startBtn" type="button" hidden><span>ŠTART</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l7 7-7 7zM13 5l7 7-7 7z"/></svg></button>
+        </footer>
       </section>
 
       <section class="tab" data-tab="music">
@@ -665,8 +588,6 @@ body.touch.playing .combo{top:calc(72px + env(safe-area-inset-top,0px))}
       </section>
     </main>
   </div>
-  <div class="m-plate" id="plate"><button class="pl-a" id="carPrev" type="button" aria-label="Predošlé auto"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><div class="pl-t"><small id="plTag">AUTO</small><b id="plName">ZUBOR</b><span id="plSub"></span></div><button class="pl-a" id="carNext" type="button" aria-label="Ďalšie auto"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button></div>
-  <p class="m-hint">Potiahni myšou alebo prstom, auto sa otočí.</p>
 </div>
 
 <div class="menu pm" id="pauseMenu" hidden>
@@ -3691,17 +3612,7 @@ function setShift(sx, sy) {
   camera.setViewOffset(w, h, -sx, sy, w, h);
 }
 // work out where the free part of the screen is (beside the panel, or above it on phones) so the car sits in it
-function layoutStage() {
-  const menuEl = $('#menu'); if (!menuEl || menuEl.hidden) return;
-  const w = window.innerWidth, h = window.innerHeight, asp = w / h;
-  const pr = $('#panel').getBoundingClientRect(), hd = $('.m-head').getBoundingClientRect();
-  const tv = Math.tan(camera.fov * Math.PI / 360);
-  let fracW = 1, fracH = 1, sx = 0, sy = 0;
-  if (asp >= 1) { const fw = Math.max(120, w - pr.right - 16); fracW = fw / w; sx = pr.right / 2; }
-  else { const fh = Math.max(80, pr.top - hd.bottom - 8); fracH = fh / h; sy = h / 2 - (hd.bottom + pr.top) / 2; }
-  stage.r = clamp(Math.max(3.9 / (tv * asp * fracW), 2.6 / (tv * fracH)), 7.5, 24);
-  stage.sx = sx; stage.sy = sy;
-}
+function layoutStage() {}   // the menu is a plain screen now, nothing to fit around a 3D car
 window.addEventListener('resize', layoutStage);
 
 // reversing switches to the top-down view (roofs and mushroom caps hidden) until the van drives forward again above ~5 km/h
@@ -3710,7 +3621,7 @@ function updateCamera(dt, snap) {
   if (window.__freeCam) return;
   const menu = game.view === 'menu';
   // chase state is always kept up to date so the fly-in from the menu starts from the right place
-  const portrait = camera.aspect < 1, cp = CAMS[settings.cam] || CAMS.chase;
+  const cp = CAMS[settings.cam] || CAMS.chase;
   const vF = S.vx * Math.sin(S.th) + S.vz * Math.cos(S.th);
   if (menu || !game.running) revCam = false; else if (vF < -.5) revCam = true; else if (vF > 1.4) revCam = false;
   const topCam = settings.cam === 'top' || revCam;
@@ -3721,10 +3632,10 @@ function updateCamera(dt, snap) {
   if (offCam && vF > -.6) { const ti = oTI(S.x, S.z), gp = oTrailAt(ti.s + 16), ga = Math.atan2(gp.x - S.x, gp.z - S.z); yawT = S.th + clamp(angDiff(S.th, ga) * .55, -.9, .9); }   // the wilderness camera looks along the route
   const hard = snap || menu;
   cam.yaw = hard ? yawT : lerpAng(cam.yaw, yawT, 1 - Math.exp(-dt * 3.6));
-  let dT = ((portrait ? 10.5 : 8.6) + S.speed * .1) * cp.d, hT = ((portrait ? 4.4 : 3.3) + S.speed * .035) * cp.h;
-  if (jobW) { dT = ((portrait ? 11 : 8.6) + S.speed * .15) * cp.d; hT = ((portrait ? 8.6 : 6.3) + S.speed * .08) * cp.h; }
-  if (offCam) { dT = ((portrait ? 13.5 : 9) + S.speed * .2) * cp.d; hT = ((portrait ? 11.5 : 6.8) + S.speed * .1) * cp.h; }
-  if (topCam) { dT = 2.4; hT = ((job.on ? 17 : 16) + (revCam ? 3 : 0)) * (portrait ? 1.3 : 1) + S.speed * .12; }
+  let dT = (8.6 + S.speed * .1) * cp.d, hT = (3.3 + S.speed * .035) * cp.h;
+  if (jobW) { dT = (8.6 + S.speed * .15) * cp.d; hT = (6.3 + S.speed * .08) * cp.h; }
+  if (offCam) { dT = (9 + S.speed * .2) * cp.d; hT = (6.8 + S.speed * .1) * cp.h; }
+  if (topCam) { dT = 2.4; hT = (job.on ? 17 : 16) + (revCam ? 3 : 0) + S.speed * .12; }
   const kk = hard ? 1 : 1 - Math.exp(-dt * 2.5);
   cam.dist = lerp(cam.dist, dT, kk); cam.h = lerp(cam.h, hT, kk);
   let sx = 0, sy = 0;
@@ -3733,12 +3644,11 @@ function updateCamera(dt, snap) {
     if (!stage.drag) { stage.idle += dt; if (stage.idle > 2) stage.a += dt * .17; }
     const r = stage.r, el = stage.elev + Math.sin(performance.now() / 2400) * .012;
     T = { a: stage.a, r, h: .9 + r * el, lx: S.x, ly: .9, lz: S.z, sx: stage.sx, sy: stage.sy };
-    if (menuShake > 0) { sx = (Math.random() - .5) * menuShake * .7; sy = (Math.random() - .5) * menuShake * .45; menuShake = Math.max(0, menuShake - dt * 2.2); }
   } else {
     if (shake > 0) { sx = (Math.random() - .5) * shake * .9; sy = (Math.random() - .5) * shake * .5; shake = Math.max(0, shake - dt * 2.5); }
     const bx = Math.sin(cam.yaw), bz = Math.cos(cam.yaw);
-    camLook = jobW ? lerp(camLook, S.vF < -.6 ? -2.6 : (offCam ? (portrait ? 8 : 4.5) + S.speed * .6 : 2.6), hard ? 1 : 1 - Math.exp(-dt * 3)) : (job.on && S.vF < -.6 ? lerp(camLook, -2.6, hard ? 1 : 1 - Math.exp(-dt * 3)) : lerp(camLook, 2.5, hard ? 1 : 1 - Math.exp(-dt * 3)));
-    const cl = revCam ? (portrait ? -3.8 : -2.6) : settings.cam === 'top' ? (jobW ? camLook * 1.5 : 3) : camLook;
+    camLook = jobW ? lerp(camLook, S.vF < -.6 ? -2.6 : (offCam ? 4.5 + S.speed * .6 : 2.6), hard ? 1 : 1 - Math.exp(-dt * 3)) : (job.on && S.vF < -.6 ? lerp(camLook, -2.6, hard ? 1 : 1 - Math.exp(-dt * 3)) : lerp(camLook, 2.5, hard ? 1 : 1 - Math.exp(-dt * 3)));
+    const cl = revCam ? -2.6 : settings.cam === 'top' ? (jobW ? camLook * 1.5 : 3) : camLook;
     T = { a: cam.yaw + Math.PI, r: cam.dist - (revCam ? cl : 0), h: cam.h, lx: S.x + bx * cl, ly: 1.1 + (job.on ? S.gy : 0), lz: S.z + bz * cl, sx: 0, sy: 0 };
   }
   const mode = menu ? 'menu' : 'game';
@@ -3788,158 +3698,31 @@ function updateCarVisual(dt) {
   model.body.rotation.z = S.tilt; model.body.rotation.x = S.pitch;
   const vF = S.vx * Math.sin(S.th) + S.vz * Math.cos(S.th);
   let spinRate = vF / .5 + (gasIn() && S.drifting ? 12 : 0);
-  if (sg.fx) {   // showroom animation: fall, landing squash, drive-away
-    const c = model.car; c.rotation.order = 'YXZ';
-    c.position.x += sg.px; c.position.z += sg.pz; c.position.y += sg.dy; c.rotation.y = S.th + sg.yaw; c.rotation.x = sg.rx; c.scale.y = c.scale.x * sg.sy;
-    if (sg.state === 'leaving') { spinRate = sg.v / .45; model.body.rotation.x = -clamp(sg.v / 40, 0, .05); }
-  }
   model.wheels.forEach(w => {
-    if (w.front) w.pivot.rotation.y = sg.fx && sg.state === 'leaving' ? sg.steerF : S.steer * .5 + (S.drifting ? -S.slip * .6 : 0);
+    if (w.front) w.pivot.rotation.y = S.steer * .5 + (S.drifting ? -S.slip * .6 : 0);
     w.spin.rotation.x += spinRate * dt;
   });
 }
 
-/* ================= showroom stage: loading emblem, car drop-in, drive-away swap ================= */
-// The car in the menu is never shown half-built. While its 3D model loads, a spinning bison emblem hovers on the pad.
-// When ready the car falls from the sky, lands with a boom and its track starts on the drop.
-// Choosing the other car: the current one starts its engine and drives off (engine and music fade with distance), then the next one drops in.
-const sg = { state: 'loading', t: 0, target: null, shown: null, dy: 0, vy: 0, yaw: 0, rx: 0, sy: 1, px: 0, pz: 0, v: 0, d: 0, dirx: 0, dirz: 1, fx: false, crank: false, puffT: 0, wave: 0, steerF: 0, minLoad: 1.5 };
-let menuShake = 0, loaderObj = null;
+/* ================= the car model: the menu shows pictures, the 3D car is only built when a run starts =================
+   Both models load in the background from the first second. START waits (with a small spinner) only if the chosen car is not ready yet. */
+const sg = { target: null, shown: null };
 const PLACEHOLDER = () => ({ car: new THREE.Group(), body: new THREE.Group(), wheels: [], rearZ: -1.5, track: .98, len: 5, wid: 2.2 });
-const stageBusy = () => sg.state !== 'idle';
 const modelReady = k => !!(CARS[k] && (CARS[k].ready || CARS[k].failed));
-
-function drawEmblem(g, W, H) {
-  const X = z => (z + 2.7) / 2.8 * W * .88 + W * .06, Y = y => (2.1 - y) / 1.5 * H * .88 + H * .06;
-  const Z = pts => pts.map(([z, y]) => [X(z), Y(y)]);
-  const bison = [
-    Z([[-.55, 1.6], [-.95, 2.02], [-1.5, 2.0], [-1.95, 1.86], [-2.35, 1.8], [-2.42, 1.45], [-2.2, 1.2], [-1.7, 1.1], [-1.2, 1.14], [-.8, 1.2], [-.5, 1.3]]),
-    Z([[-.55, 1.6], [-.28, 1.52], [-.02, 1.26], [-.08, 1.04], [-.32, .92], [-.46, .82], [-.62, 1.02], [-.72, 1.3]]),
-    Z([[-.34, 1.56], [-.18, 1.76], [-.1, 1.62], [-.26, 1.5]]),
-    Z([[-.75, 1.25], [-.45, .95], [-.18, .72], [-.34, .64], [-.66, .9], [-.96, 1.15]]),
-    Z([[-1.0, 1.2], [-1.06, .75], [-.9, .68], [-.8, 1.15]]),
-    Z([[-2.0, 1.25], [-2.35, .9], [-2.52, .7], [-2.36, .64], [-2.1, .84], [-1.75, 1.15]]),
-    Z([[-1.75, 1.2], [-1.86, .75], [-1.7, .68], [-1.55, 1.15]]),
-    Z([[-2.35, 1.76], [-2.6, 1.56], [-2.63, 1.3], [-2.5, 1.34], [-2.45, 1.6]])
-  ];
-  const path = pl => { g.beginPath(); pl.forEach((p, i) => i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1])); g.closePath(); };
-  g.lineJoin = 'round'; g.strokeStyle = '#f3f0e9'; g.lineWidth = W * .028; bison.forEach(pl => { path(pl); g.stroke(); });
-  g.fillStyle = '#d8232e'; bison.forEach(pl => { path(pl); g.fill(); });
-  [[[-.95, 2.02], [-1.5, 2.0], [-1.25, 1.55]], [[-1.95, 1.86], [-2.35, 1.8], [-2.1, 1.45]], [[-.8, 1.2], [-1.2, 1.14], [-1.0, 1.5]], [[-.28, 1.52], [-.55, 1.6], [-.45, 1.25]]].forEach(t => { path(Z(t)); g.fillStyle = '#e8434b'; g.fill(); });
-  [[[-1.5, 2.0], [-1.95, 1.86], [-1.6, 1.5]], [[-2.2, 1.2], [-1.7, 1.1], [-1.9, 1.45]], [[-.02, 1.26], [-.08, 1.04], [-.3, 1.2]]].forEach(t => { path(Z(t)); g.fillStyle = '#b81b24'; g.fill(); });
-  g.fillStyle = '#f3f0e9'; g.beginPath(); g.arc(X(-.36), Y(1.38), W * .011, 0, 7); g.fill();
-}
-function makeLoader() {
-  const tex = c => { const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t; };
-  const mk = (map, w, h, order) => { const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map, transparent: true, depthTest: false, depthWrite: false, fog: false })); sp.scale.set(w, h, 1); sp.renderOrder = order; sp.visible = false; scene.add(sp); return sp; };
-  const ce = document.createElement('canvas'); ce.width = 512; ce.height = 360; drawEmblem(ce.getContext('2d'), 512, 360);
-  const cr = document.createElement('canvas'); cr.width = cr.height = 512; { const g = cr.getContext('2d'); g.lineCap = 'round';
-    g.strokeStyle = 'rgba(255,255,255,.16)'; g.lineWidth = 14; g.beginPath(); g.arc(256, 256, 236, 0, 7); g.stroke();
-    g.strokeStyle = '#ffb21a'; g.lineWidth = 18; g.beginPath(); g.arc(256, 256, 236, 0, Math.PI * 1.15); g.stroke();
-    g.strokeStyle = 'rgba(255,178,26,.35)'; g.lineWidth = 10; g.beginPath(); g.arc(256, 256, 236, Math.PI * 1.15, Math.PI * 1.45); g.stroke(); }
-  const cl = document.createElement('canvas'); cl.width = 512; cl.height = 96; { const g = cl.getContext('2d'); g.font = '800 40px system-ui, sans-serif'; g.textAlign = 'center'; g.fillStyle = 'rgba(255,255,255,.85)';
-    if ('letterSpacing' in g) g.letterSpacing = '10px'; g.fillText('NAČÍTAVAM', 256, 58); }
-  return { emb: mk(tex(ce), 3.1, 2.18, 7), ring: mk(tex(cr), 5.2, 5.2, 6), lab: mk(tex(cl), 4.2, .79, 7), a: 0 };
-}
-const swave = new THREE.Mesh(new THREE.RingGeometry(1, 1.22, 64), new THREE.MeshBasicMaterial({ color: 0xffd28a, transparent: true, opacity: 0, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending, fog: false }));
-swave.rotation.x = -Math.PI / 2; swave.renderOrder = 4; swave.visible = false; scene.add(swave);
-
-function loaderShow(on, dt) {
-  if (!loaderObj) { if (!on) return; loaderObj = makeLoader(); }
-  const L = loaderObj; L.a = clamp(L.a + (on ? dt * 4 : -dt * 6), 0, 1);
-  const vis = L.a > .01; L.emb.visible = L.ring.visible = L.lab.visible = vis; if (!vis) return;
-  const t = performance.now() / 1000, y = 2.5 + Math.sin(t * 2) * .12;
-  L.emb.position.set(S.x, y, S.z); L.ring.position.set(S.x, y, S.z); L.lab.position.set(S.x, y - 2.2, S.z);
-  const c = Math.cos(t * 2.4), sc = (Math.abs(c) < .07 ? .07 * Math.sign(c || 1) : c);
-  L.emb.scale.set(3.1 * sc * (.9 + .1 * L.a), 2.18 * (.9 + .1 * L.a), 1);
-  L.ring.material.rotation = -t * 2.2; L.ring.scale.setScalar(5.2 * (.85 + .15 * L.a));
-  L.emb.material.opacity = L.ring.material.opacity = L.lab.material.opacity = L.a;
-}
-function stageFree() { // leaves nothing animated on the car
-  sg.fx = false; sg.dy = 0; sg.yaw = 0; sg.rx = 0; sg.sy = 1; sg.px = sg.pz = 0; sg.v = 0; sg.d = 0;
-  if (model && model.car) { model.car.scale.setScalar(1); model.car.rotation.x = 0; }
-}
+const stageBusy = () => !modelReady(sg.target);
 function stageBuild() {
   if (model && model.car.parent) scene.remove(model.car);
   P = CARS[carKey]; model = P.build(); scene.add(model.car); carIn = 1; sg.shown = carKey;
 }
-function stageDropStart() {
-  stageBuild(); sg.state = 'dropping'; sg.t = 0; sg.fx = true; sg.dy = 26; sg.vy = 0; sg.rx = .35; sg.yaw = 1.4; sg.sy = 1; sound.riser(1.05);
+function stageUpdate() {
+  const ok = modelReady(sg.target);
+  $('#startBtn').classList.toggle('wait', !ok); $('#mLoad').hidden = ok || game.view !== 'menu';
 }
-function stageLand() {
-  sg.dy = 0; sg.state = 'landed'; sg.t = 0; sg.wave = .001; menuShake = 1; sound.boom();
-  for (let i = 0; i < 30; i++) { const a = i / 30 * Math.PI * 2, r = 2.2; puff(S.x + Math.sin(a) * r, S.z + Math.cos(a) * r, Math.sin(a) * 6.5, Math.cos(a) * 6.5, 1.6); }
-  swave.position.set(S.x, .09, S.z); swave.visible = true;
-}
-function stageLeaveStart() {
-  const cx = S.x - camera.position.x, cz = S.z - camera.position.z, l = Math.hypot(cx, cz) || 1;
-  sg.dirx = cx / l; sg.dirz = cz / l; sg.state = 'leaving'; sg.t = 0; sg.fx = true; sg.v = 0; sg.d = 0; sg.px = sg.pz = 0; sg.yaw = 0; sg.crank = false; sg.puffT = 0; sg.steerF = 0;
-  sg.clip = CARS[sg.shown].engine === 'v8' && sound.startClip(); if (!sg.clip) sound.starter(.5);
-}
-function stageLeaveEnd() {
-  scene.remove(model.car); model = PLACEHOLDER(); scene.add(model.car); sg.shown = null; stageFree();
-  sound.quiet(); sound.setBus(1); music.silence(); music.setDuck(1);
-  if (modelReady(sg.target)) { sg.state = 'pause'; sg.t = 0; } else { sg.state = 'loading'; sg.t = 0; sg.minLoad = .6; }
-}
-function stageUpdate(dt) {
-  if (sg.state === 'idle') {
-    if (sg.target && sg.target !== sg.shown && game.view === 'menu') { if (sg.shown) stageLeaveStart(); else { sg.state = 'loading'; sg.t = 0; sg.minLoad = .6; } }
-    else return;
-  }
-  sg.t += dt;
-  const startBtn = $('#startBtn');
-  switch (sg.state) {
-    case 'loading': {
-      loaderShow(true, dt);
-      if (sg.t >= sg.minLoad && modelReady(sg.target)) { carKey = sg.target; stageDropStart(); }
-      break;
-    }
-    case 'pause': { if (sg.t > .3) { carKey = sg.target; stageDropStart(); } break; }
-    case 'dropping': {
-      loaderShow(false, dt);
-      sg.vy += 44 * dt; sg.dy -= sg.vy * dt; const pr = clamp(1 - sg.dy / 26, 0, 1);
-      sg.rx = .35 * Math.pow(1 - pr, 1.5); sg.yaw = 1.4 * Math.pow(1 - pr, 2);
-      if (sg.dy <= 0) stageLand();
-      break;
-    }
-    case 'landed': {
-      const t = sg.t; sg.rx = 0; sg.yaw = 0; sg.sy = 1 - .16 * Math.exp(-t * 7) * Math.cos(t * 22);
-      if (sg.wave > 0) { sg.wave += dt; const k = sg.wave / .55; swave.scale.setScalar(1 + k * 9); swave.material.opacity = Math.max(0, .75 * (1 - k)); if (k >= 1) { swave.visible = false; sg.wave = 0; } }
-      if (t > .75) { stageFree(); sg.state = 'idle'; if (sg.target !== sg.shown) {/* picked another car while landing: handled next update */} }
-      break;
-    }
-    case 'leaving': {
-      const t = sg.t, E = CARS[sg.shown].engine;
-      sound.setEngine(E);
-      const T1 = sg.clip ? 1.0 : .5, T2 = sg.clip ? 1.5 : 1.1;
-      if (t < T1) { sg.crank = true; model.body.rotation.z = Math.sin(t * 70) * .006; }                        // starter motor cranks
-      else if (t < T2) { const k = (t - T1) / (T2 - T1); sound.setBus(1); sound.update(.3 + k * .4, .5 + k * .3, 0); model.body.rotation.z = Math.sin(t * 90) * .008 * (1 - k); }   // engine catches and revs
-      else {
-        const lt = t - T2; sg.v += (lt < 1.4 ? 13 : 24) * dt;                                                 // gentle launch, then full throttle
-        const ty = angDiff(S.th, Math.atan2(sg.dirx, sg.dirz)); sg.yaw = ty * easeIO(clamp(lt / .9, 0, 1));
-        const wy = S.th + sg.yaw; sg.px += Math.sin(wy) * sg.v * dt; sg.pz += Math.cos(wy) * sg.v * dt; sg.d = Math.hypot(sg.px, sg.pz);
-        const g1 = 12, g2 = 28, g3 = 52, v = sg.v, gr = v < g1 ? v / g1 : v < g2 ? (v - g1) / (g2 - g1) : (v - g2) / (g3 - g2);
-        sound.update(.3 + .7 * clamp(gr, 0, 1), 1, 0);
-        const vol = Math.pow(clamp(1 - sg.d / 85, 0, 1), 2); sound.setBus(vol); music.setDuck(vol);
-        sg.steerF = ty * .35 * (1 - clamp(lt / 1.1, 0, 1));
-        sg.puffT -= dt; if (sg.puffT <= 0 && sg.d < 40) { sg.puffT = .045; puff(S.x + sg.px - Math.sin(wy) * 2.6, S.z + sg.pz - Math.cos(wy) * 2.6, -Math.sin(wy) * 3 + (Math.random() - .5) * 2, -Math.cos(wy) * 3 + (Math.random() - .5) * 2, 1.2); }
-        if (sg.d > 95) stageLeaveEnd();
-      }
-      break;
-    }
-  }
-  startBtn.classList.toggle('wait', stageBusy());
-}
-function stageShow(key) {
-  key = CARS[key] ? key : 'zubor'; carKey = key; P = CARS[key]; sg.target = key;
-}
-function stageInit() {
-  model = PLACEHOLDER(); scene.add(model.car); sg.shown = null; sg.state = 'loading'; sg.t = 0; sg.minLoad = 1.5; sg.target = carKey; stageFree();
-}
-function stageSnap() {          // finish any animation at once (used by tests and when a run starts)
+function stageShow(key) { key = CARS[key] ? key : 'zubor'; carKey = key; P = CARS[key]; sg.target = key; }
+function stageInit() { model = PLACEHOLDER(); scene.add(model.car); sg.shown = null; sg.target = carKey; }
+function stageSnap() {          // build the chosen car at once (used when a run starts and by the tests)
   if (!modelReady(sg.target)) return false;
-  if (sg.state !== 'idle') { swave.visible = false; sg.wave = 0; loaderShow(false, 1); sound.quiet(); sound.setBus(1); music.setDuck(1); stageFree(); carKey = sg.target; stageBuild(); sg.state = 'idle'; }
-  else if (sg.shown !== sg.target) { carKey = sg.target; stageBuild(); }
+  if (sg.shown !== sg.target) { carKey = sg.target; stageBuild(); }
   $('#startBtn').classList.remove('wait'); return true;
 }
 
@@ -3988,7 +3771,8 @@ function frame(dt) {
     if (game.mode === 'job') { jobPhysics(dt); squealK = 0; } else { physics(dt / 2); physics(dt / 2); updateCones(dt); squealK = wheelFX(dt); }
     sound.quiet();
   } else if (game.view === 'menu') {
-    sound.quiet();
+    sound.quiet(); music.tick(dt); uiTick();
+    return;                                   // the menu is a flat screen, no 3D to draw
   }
   updateSmoke(dt);
   updateCarVisual(dt);
@@ -4032,7 +3816,7 @@ const INFO = {
 const MODE_TXT = {
   free: 'Bez času a bez tlaku. Jazdi, driftuj a zbieraj combo.',
   t60: () => 'Minúta na čo najvyššie skóre.' + (game.best ? ' Tvoj rekord: ' + fmt(game.best) + '.' : ''),
-  train: () => 'Parkovisko, staré mesto a divočina: ' + LEVELS.filter(L => !L.mission).length + ' levelov a dve celé misie (DOVOZ a DIVOČINA). Jedna hviezda odomkne ďalší level, tri sú za rýchly a čistý prejazd.',
+  train: () => 'Levely krok za krokom, všetky otvorené. Tri hviezdy sú za rýchly a čistý prejazd. Zubor jazdí po parkovisku a v meste, Sugga v divočine.',
   tokyo: 'Už čoskoro.'
 };
 const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>';
@@ -4079,13 +3863,12 @@ function renderCar() {
   const I = INFO[carKey], box = $('#carStats');
   $$('#carCards .card').forEach(c => c.classList.toggle('on', c.dataset.car === carKey));
   $('#carDesc').textContent = I.desc;
-  $('#plName').textContent = carKey.toUpperCase(); $('#plSub').textContent = carKey === 'sugga' ? 'Vintage 4×4 · diesel · offroad' : 'Dodávka · V8 HEMI · asfalt'; $('#plTag').textContent = carKey === 'sugga' ? 'OFFROAD' : 'ASFALT';
   renderSum();
   if (!box.children.length) STAT_DEFS.forEach(([lab]) => box.insertAdjacentHTML('beforeend', '<div class="st"><span>' + lab + '</span><i></i></div>'));
   STAT_DEFS.forEach(([, key], n) => box.children[n].querySelector('i').style.setProperty('--v', I[key] + '%'));
 }
 const MODE_NAME = { free: 'VOĽNÝ', t60: '60 S', train: 'TRÉNING', tokyo: 'TOKYO DRIFT' };
-function renderSum() { const e = $('#goSum'); if (!e) return; const L = isLv(pendingMode) ? curLevel() : null; e.textContent = L ? lvTag(L) + ' · ' + L.name : carKey.toUpperCase() + ' · ' + (MODE_NAME[pendingMode] || ''); }
+function renderSum() { const e = $('#goSum'); if (!e) return; const L = isLv(pendingMode) ? curLevel() : null; e.textContent = (wiz.step < 3 || !L) ? carKey.toUpperCase() + ' · ' + (MODE_NAME[pendingMode] || '') : carKey.toUpperCase() + ' · ' + lvTag(L) + ' · ' + L.name; }
 const lvList = () => LEVELS;
 function curLevel() {
   let L = LEVELS.find(x => x.id === LV.sel);
@@ -4100,41 +3883,40 @@ const LV_SECT_INFO = { lot: 'Zubor · rozjazd, brzda, slalomy, cúvanie', dovoz:
 function renderLevels() {
   const L = curLevel(); const el = $('#lvList'); el.textContent = '';
   const tabs = $('#lvTabs'); tabs.textContent = '';
-  Object.keys(LV_SECT).forEach(w => { const b = document.createElement('button'); b.type = 'button'; b.dataset.sect = w; b.className = w === L.world ? 'on' : ''; b.textContent = LV_SECT[w]; tabs.appendChild(b); });
+  const sects = Object.keys(LV_SECT).filter(w => LEVELS.some(x => x.world === w && x.car === L.car));   // each car has its own tracks
+  sects.forEach(w => { const b = document.createElement('button'); b.type = 'button'; b.dataset.sect = w; b.className = w === L.world ? 'on' : ''; b.textContent = LV_SECT[w]; tabs.appendChild(b); });
+  tabs.hidden = sects.length < 2;
   $('#lvSect').textContent = LV_SECT_INFO[L.world];
   const list = LEVELS.filter(M => M.world === L.world), ordered = list.filter(M => M.mission).concat(list.filter(M => !M.mission));   // the whole mission first
-  ordered.forEach(M => { const i = lvIndex(M.id);
-    if (M === ordered[0] && M.mission) { const h = document.createElement('div'); h.className = 'lvh'; h.textContent = 'CELÁ MISIA'; el.appendChild(h); }
-    if (M === ordered.find(x => !x.mission)) { const h = document.createElement('div'); h.className = 'lvh'; h.textContent = 'LEVELY PO KROKOCH'; el.appendChild(h); }
-    const b = document.createElement('button'); b.type = 'button'; const un = lvUnlocked(i), st = lvStars(M.id);
-    b.className = 'lv' + (M.mission ? ' mis' : '') + (M.id === L.id ? ' on' : '') + (un ? '' : ' lock') + (M.car === 'sugga' ? ' sugga' : ''); b.dataset.lv = M.id;
-    b.innerHTML = '<small>' + (M.mission ? 'MISIA' : 'LEVEL ' + M.n) + '</small><b>' + M.name + '</b><i' + (st ? '' : ' class="e"') + '>' + (un ? '★'.repeat(st) + '☆'.repeat(3 - st) : '🔒') + '</i>';
+  ordered.forEach(M => {
+    const b = document.createElement('button'); b.type = 'button'; const st = lvStars(M.id);
+    b.className = 'lv' + (M.mission ? ' mis' : '') + (M.id === L.id ? ' on' : ''); b.dataset.lv = M.id;
+    b.innerHTML = '<small>' + (M.mission ? 'CELÁ MISIA' : 'LEVEL ' + M.n) + '</small><b>' + M.name.replace(/^MISIA: /, '') + '</b><i' + (st ? '' : ' class="e"') + '>' + '★'.repeat(st) + '☆'.repeat(3 - st) + '</i>';
     el.appendChild(b);
   });
   $('#lvDesc').textContent = L.lesson + (LV.prog[L.id] && LV.prog[L.id].t ? '  ·  Najlepší čas ' + jobFmtT(LV.prog[L.id].t) : '');
   if (isLv(pendingMode) && carKey !== L.car && !stageBusy()) { stageShow(L.car); store.set('car', L.car); renderCar(); }
-  const on = $('#lvList .lv.on'), tb = $('#lvList').closest('.tb');
-  if (on && tb && wiz.step === 3) { const r = on.getBoundingClientRect(), tr = tb.getBoundingClientRect(); if (r.top < tr.top + 40 || r.bottom > tr.bottom - 10) tb.scrollTop += (r.top - tr.top) - (tr.height - r.height) / 2; }   // keep the chosen level in view inside the panel only
 }
-/* the HRAJ screen is a wizard: 1 car, 2 mode, 3 level (only for the training) */
+/* the HRAJ screen is a wizard, one step at a time: 1 car, 2 mode, 3 level (only for the training) */
 const wiz = { step: 1 };
+const lastStep = () => isLv(pendingMode) ? 3 : 2;
 function setStep(n) {
   if (n === 3 && !isLv(pendingMode)) n = 2;
-  wiz.step = n;
-  $$('.wz').forEach(w => { w.hidden = +w.dataset.step !== n; });
-  $$('#steps button').forEach(b => { const k = +b.dataset.step; b.classList.toggle('on', k === n); b.classList.toggle('done', k < n); });
-  const tb = $('#steps').closest('.tb'); if (tb) tb.scrollTop = 0;
-  if (n === 3) renderLevels();
+  wiz.step = clamp(n, 1, 3);
+  $$('.wz').forEach(w => { w.hidden = +w.dataset.step !== wiz.step; });
+  $$('#steps button').forEach(b => { const k = +b.dataset.step; b.classList.toggle('on', k === wiz.step); b.classList.toggle('done', k < wiz.step); });
+  const fin = wiz.step === lastStep();
+  $('#wBack').hidden = wiz.step === 1; $('#wNext').hidden = fin; $('#startBtn').hidden = !fin;
+  if (wiz.step === 3) renderLevels();
+  renderSum();
 }
 function renderMode() {
-  renderSum();
-  $$('#modeCards .card').forEach(c => c.classList.toggle('on', c.dataset.mode === pendingMode));
+  const tr = isLv(pendingMode), sg2 = carKey === 'sugga';
+  $$('#modeCards .card').forEach(c => { c.classList.toggle('on', c.dataset.mode === pendingMode); if (c.dataset.mode === 'free' || c.dataset.mode === 't60') c.disabled = sg2; });   // Sugga drives only the wilderness levels
   const d = MODE_TXT[pendingMode]; $('#modeDesc').textContent = typeof d === 'function' ? d() : d;
-  const tr = isLv(pendingMode);
-  $('#steps [data-step="3"]').hidden = !tr; $('#toLevel').hidden = !tr; $('#carNote').hidden = !tr;
-  $$('#carCards .card').forEach(c => { c.disabled = tr; });
-  if (wiz.step === 3 && !tr) setStep(2);
-  renderLevels();
+  $('#steps [data-step="3"]').hidden = !tr;
+  if (wiz.step === 3 && !tr) setStep(2); else setStep(wiz.step);
+  renderLevels(); renderSum();
 }
 const renderCam = () => $$('#camCards .card').forEach(c => c.classList.toggle('on', c.dataset.cam === settings.cam));
 const renderQ = () => $$('#qCards .card').forEach(c => c.classList.toggle('on', +c.dataset.q === settings.q));
@@ -4202,7 +3984,7 @@ function renderMusicUI(light) {
 function setTab(t) {
   tab = t;
   $$('.nv').forEach(b => { const on = b.dataset.tab === t; b.classList.toggle('on', on); b.setAttribute('aria-current', on ? 'page' : 'false'); });
-  $$('.tab').forEach(s => s.classList.toggle('on', s.dataset.tab === t));
+  $$('.tab').forEach(s => s.classList.toggle('on', s.dataset.tab === t)); menuEl.dataset.tab = t;
   if (t === 'records') renderRecords();
   if (t === 'music') { renderTracks(); updProgress(); }
 }
@@ -4210,10 +3992,10 @@ const TAB_ORDER = ['play', 'music', 'controls', 'settings', 'records'];
 function menuKey(e) {
   const onBtn = e.target.closest && e.target.closest('button,input');
   if (game.view === 'menu') {
-    const i = TAB_ORDER.indexOf(tab);
-    if (e.key === 'ArrowDown') setTab(TAB_ORDER[(i + 1) % TAB_ORDER.length]);
-    else if (e.key === 'ArrowUp') setTab(TAB_ORDER[(i + TAB_ORDER.length - 1) % TAB_ORDER.length]);
-    else if (e.key === 'Enter' && !onBtn) startRun();
+    if (tab !== 'play') { if (e.key === 'Escape') setTab('play'); return; }
+    if (e.key === 'ArrowRight') setStep(wiz.step + 1);
+    else if (e.key === 'ArrowLeft') setStep(wiz.step - 1);
+    else if (e.key === 'Enter' && !onBtn) { if (wiz.step < lastStep()) setStep(wiz.step + 1); else startRun(); }
   } else if (game.view === 'end' && e.key === 'Enter' && !onBtn) startRun();
 }
 
@@ -4247,7 +4029,7 @@ function startRun() {
     $('#scoreLab').textContent = game.mode === 'job' ? 'ČAS' : game.mode === 't60' ? 'SKÓRE · REKORD ' + fmt(game.best) : 'SKÓRE';
     $('#score').textContent = game.mode === 'job' ? '0:00' : '0'; elSpd.textContent = '0';
     document.body.classList.add('playing'); elCombo.classList.remove('on');
-    if (!fromMenu || game.mode === 'job') updateCamera(0, true);
+    updateCamera(0, true);
     last = performance.now(); saveStats(); music.announce(true);
   };
   if (fromMenu && !isLv(pendingMode)) go(); else fadeThen(go);
@@ -4308,19 +4090,20 @@ async function share() {
 }
 
 /* ---------- wiring ---------- */
-const otherCar = () => { const c = $('#carCards .card:not(.on)'); if (c) c.click(); };
-$('#carPrev').addEventListener('click', otherCar); $('#carNext').addEventListener('click', otherCar);
 $('#nav').addEventListener('click', e => { const b = e.target.closest('.nv'); if (b) setTab(b.dataset.tab); });
 $('#carCards').addEventListener('click', e => {
   const c = e.target.closest('.card'); if (!c) return;
-  if (isLv(pendingMode)) return;
-  stageShow(c.dataset.car); store.set('car', carKey); renderCar(); renderMode();
+  stageShow(c.dataset.car); store.set('car', carKey);
+  if (carKey === 'sugga' && !isLv(pendingMode)) { pendingMode = 'train'; store.set('mode', pendingMode); }       // Sugga has only the wilderness levels
+  if (isLv(pendingMode)) { const cur = LEVELS.find(x => x.id === LV.sel); if (!cur || cur.car !== carKey) { const w = carKey === 'sugga' ? 'off' : 'lot', n = LEVELS.find(x => x.world === w && !x.mission); LV.sel = n.id; store.set('lvSel', LV.sel); } }
+  renderCar(); renderMode();
 });
-$('#modeCards').addEventListener('click', e => { const c = e.target.closest('.card'); if (!c || c.disabled) return; pendingMode = c.dataset.mode; store.set('mode', pendingMode); if (!isLv(pendingMode) && carKey !== 'zubor' && !stageBusy()) { stageShow('zubor'); store.set('car', 'zubor'); renderCar(); } renderMode(); if (isLv(pendingMode)) setStep(3); });
+$('#modeCards').addEventListener('click', e => { const c = e.target.closest('.card'); if (!c || c.disabled) return; pendingMode = c.dataset.mode; store.set('mode', pendingMode); renderMode(); });
 $('#steps').addEventListener('click', e => { const b = e.target.closest('button'); if (b && !b.hidden) setStep(+b.dataset.step); });
-$$('.wnext').forEach(b => b.addEventListener('click', () => setStep(+b.dataset.go)));
-$('#lvTabs').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; const w = b.dataset.sect, g = LEVELS.filter(x => x.world === w && !x.mission); const n = g.find(x => lvUnlocked(lvIndex(x.id)) && !lvStars(x.id)) || g[g.length - 1]; LV.sel = n.id; store.set('lvSel', LV.sel); renderMode(); });
-$('#lvList').addEventListener('click', e => { const b = e.target.closest('.lv'); if (!b) return; const i = lvIndex(b.dataset.lv); if (i < 0 || !lvUnlocked(i)) { toast('Najprv dokonči predchádzajúci level'); return; } LV.sel = b.dataset.lv; store.set('lvSel', LV.sel); renderMode(); });
+$('#wBack').addEventListener('click', () => setStep(wiz.step - 1));
+$('#wNext').addEventListener('click', () => setStep(wiz.step + 1));
+$('#lvTabs').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; const w = b.dataset.sect, g = LEVELS.filter(x => x.world === w && !x.mission); const n = g.find(x => !lvStars(x.id)) || g[g.length - 1]; LV.sel = n.id; store.set('lvSel', LV.sel); renderMode(); });
+$('#lvList').addEventListener('click', e => { const b = e.target.closest('.lv'); if (!b) return; const i = lvIndex(b.dataset.lv); if (i < 0) return; LV.sel = b.dataset.lv; store.set('lvSel', LV.sel); renderMode(); });
 $('#nextBtn').addEventListener('click', () => { const n = lvNext(LEVELS[Math.max(0, lvIndex(LV.sel))]); if (n) { LV.sel = n.id; store.set('lvSel', LV.sel); } startRun(); });
 $('#camCards').addEventListener('click', e => { const c = e.target.closest('.card'); if (!c) return; settings.cam = c.dataset.cam; store.set('cam', settings.cam); renderCam(); });
 $('#qCards').addEventListener('click', e => { const c = e.target.closest('.card'); if (!c) return; settings.q = +c.dataset.q; store.set('q', settings.q); renderQ(); applyQuality(); });
@@ -4361,14 +4144,6 @@ $('#fileIn').addEventListener('change', e => { const ok = music.addFiles(e.targe
   sk.addEventListener('pointermove', e => { if (drag) at(e); });
   ['pointerup', 'pointercancel'].forEach(t => sk.addEventListener(t, () => { drag = false; }));
 })();
-// drag the showroom to turn the car
-stageEl.addEventListener('pointerdown', e => { stage.drag = true; stage.lx = e.clientX; stage.ly = e.clientY; try { stageEl.setPointerCapture(e.pointerId); } catch (x) {} stageEl.classList.add('drag'); });
-stageEl.addEventListener('pointermove', e => {
-  if (!stage.drag) return;
-  stage.a -= (e.clientX - stage.lx) * .008; stage.elev = clamp(stage.elev + (e.clientY - stage.ly) * .0016, .05, .55);
-  stage.lx = e.clientX; stage.ly = e.clientY; stage.idle = 0;
-});
-['pointerup', 'pointercancel'].forEach(t => stageEl.addEventListener(t, () => { stage.drag = false; stage.idle = 0; stageEl.classList.remove('drag'); }));
 $('#startBtn').addEventListener('click', startRun);
 $('#pauseBtn').addEventListener('click', togglePause);
 function cycleCam() {
@@ -4390,7 +4165,11 @@ window.addEventListener('pagehide', saveStats);
 /* ================= boot ================= */
 stageInit(); jobInitHud();
 applyQuality(); buildSteer();
-{ const want0 = pendingMode === 'off' ? 'sugga' : 'zubor'; if (carKey !== want0) { carKey = want0; P = CARS[want0]; } }
+// portrait: the game is landscape only, so a running game pauses behind the rotate notice
+const portraitNow = () => window.innerWidth <= window.innerHeight;
+function guardPortrait() { if (portraitNow() && game.running && !game.paused && game.view === 'play') togglePause(); }
+window.addEventListener('resize', guardPortrait); window.addEventListener('orientationchange', () => setTimeout(guardPortrait, 200));
+{ const L0 = isLv(pendingMode) ? curLevel() : null, want0 = L0 ? L0.car : (store.get('car', 'zubor') === 'sugga' ? 'sugga' : 'zubor'); if (carKey !== want0) { carKey = want0; P = CARS[want0]; } if (pendingMode !== 'train' && carKey === 'sugga') pendingMode = 'train'; }
 syncVol(); renderCar(); renderMode(); renderCam(); renderQ(); setTab('play');
 renderTracks(); collectEq(); music.on(renderMusicUI); renderMusicUI();
 toMenu(true); clearMarks();
@@ -4400,4 +4179,4 @@ requestAnimationFrame(loop);
 window.__drift = { get CUROBS() { return OBS; }, setGear, get gear() { return gear; }, setPedal, touch, readInput, keys, solids, cones, physics, updateCones, setCar, CARS, LEVELS, LV, store, renderMode, curLevel, lvCones, endJob, steerMaxAt: v => P.steerMax / (1 + Math.pow(Math.max(0, Math.abs(v) - 4) / P.steerFall, 1.3)), get P() { return P; }, rp, ORT, offUpdate, dvUpdate, HOLES: () => HOLES, holeAt, sg, stageSnap, stageReady: () => modelReady(sg.target), sound, get JP() { return JP; }, placeMarker, jobPhysics, jobDamage, jobTasks, jobFX, carShape, job, get TASKS() { return TASKS; }, TRAIL, WALK, OBS, carHits, jobRespawn, jobStart, jobSetWorld, buildJobWorld, terrainH, trailAt, surfAt, endJob, jobScore, S, input, game, camera, stage, music, settings, stats, get model() { return model; }, scene, setTab, startRun, toMenu, endRun, togglePause };
 })();
 </script>
-</body></html>
+</html>

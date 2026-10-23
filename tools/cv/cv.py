@@ -137,7 +137,7 @@ ul.exp li::before { content: "→"; position: absolute; left: 0; color: #1FAF6F;
 .foot { position: absolute; left: 14mm; right: 14mm; bottom: 7mm; display: flex; justify-content: space-between; font: 500 7pt "JetBrains Mono", monospace; color: #8A8A82; }
 .ascii { position: absolute; right: -6mm; top: 2mm; font: 500 5.2pt/5.6pt "JetBrains Mono", monospace; color: rgba(31,175,111,.55); white-space: pre; z-index: 1; }
 '''
-WEB='offthewallhack.github.io/rd2026'
+WEB='durica.si'
 def html(L):
     t=T[L]; en=L=='en'
     jobs=''.join(f'<div class="job"><div class="t"><b class="n">{n}</b><span class="w">{w}</span></div><div class="r">{r}</div><ul>'+''.join(f'<li>{x}</li>' for x in li)+'</ul></div>' for n,r,w,li in t['jobs'])

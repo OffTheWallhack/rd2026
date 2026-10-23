@@ -16,7 +16,7 @@ and refreshes the blog entries in sitemap.xml. Run from the repo root:
 import glob, html, json, os, re, datetime
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-BASE = "https://offthewallhack.github.io/rd2026/"
+BASE = "https://durica.si/"
 MONTHS = ["januára", "februára", "marca", "apríla", "mája", "júna", "júla", "augusta", "septembra", "októbra", "novembra", "decembra"]
 
 MONTHS_EN = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]

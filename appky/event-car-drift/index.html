@@ -311,7 +311,7 @@ body.mplay .pp svg.i-play{display:none}
 .wsum #mLoad::before{content:"";display:inline-block;width:10px;height:10px;margin-right:7px;border-radius:50%;border:2px solid var(--amber);border-right-color:transparent;vertical-align:-1px;animation:spin .8s linear infinite}
 #startBtn.wait{opacity:.5;filter:saturate(.4)}
 /* step 1: the two cars */
-.cards.cars{grid-template-columns:1fr 1fr;gap:12px;min-height:0}
+.cards.cars{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:1fr;gap:12px;min-height:0}
 .card.car{position:relative;display:flex;flex-direction:column;gap:4px;padding:10px 12px;overflow:hidden;min-height:0}
 .card.car .ci{flex:1;min-height:0;width:100%;object-fit:contain;object-position:center;filter:drop-shadow(0 8px 9px rgba(0,0,0,.6)) brightness(1.18) contrast(1.05);opacity:.8;transition:transform .3s,opacity .2s;pointer-events:none}
 .card.car.on .ci{opacity:1;transform:scale(1.04)}
@@ -429,6 +429,16 @@ body.touch.playing .gear{display:block}
 .pad.hb{width:72px;height:72px}
 @media (max-width:780px){.hwctl{bottom:calc(90px + env(safe-area-inset-bottom,0px))}}
 @media (max-height:430px){.gear{zoom:.88}.pad.gas{height:102px;width:96px}.padcol{gap:10px}}
+
+.hwrace{position:fixed;z-index:8;left:50%;transform:translateX(-50%);top:calc(52px + env(safe-area-inset-top,0px));padding:5px 14px;border-radius:999px;background:rgba(10,12,18,.75);border:1px solid var(--amber);color:var(--amber);font:700 12px var(--hud);letter-spacing:.08em;white-space:nowrap;animation:hwk2 .9s steps(2) infinite;pointer-events:none}
+@keyframes hwk2{50%{background:rgba(255,178,26,.22)}}
+body:not(.hwy) .hwrace{display:none}
+.unlock{position:fixed;z-index:50;left:50%;top:50%;transform:translate(-50%,-50%);padding:14px 26px 16px;border-radius:22px;background:rgba(8,10,16,.93);border:2px solid var(--amber);text-align:center;pointer-events:none;animation:ulk .5s cubic-bezier(.2,1.4,.4,1);box-shadow:0 12px 50px rgba(0,0,0,.6)}
+.unlock img{display:block;width:170px;max-width:38vw;margin:0 auto 2px;filter:drop-shadow(0 6px 8px rgba(0,0,0,.6))}
+.unlock small{display:block;font:700 11px var(--hud);letter-spacing:.2em;color:var(--amber)}
+.unlock b{display:block;font:700 italic 26px/1.15 var(--hud);color:#fff}
+.unlock i{display:block;font-style:normal;font-size:12px;opacity:.75;margin-top:2px}
+@keyframes ulk{from{transform:translate(-50%,-50%) scale(.55);opacity:0}}
 </style>
 
 <canvas id="gl" aria-label="Drift hra"></canvas>
@@ -468,6 +478,8 @@ body.touch.playing .gear{display:block}
   <canvas id="jMap" width="110" height="148" aria-hidden="true"></canvas>
   <button class="jreset" id="jReset" type="button">↺ SPÄŤ NA STANICU</button>
 </div>
+<div class="hwrace" id="hwRace" hidden></div>
+<div class="unlock" id="unlockT" hidden></div>
 <div class="turn" id="turn"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.4"/><path d="M11 18.8h2"/></svg><b>OTOČ TELEFÓN NA ŠÍRKU</b><small>Event Car Game sa hrá len na šírku.</small></div>
 
 <div class="ctl left" id="ctlLeft"></div>
@@ -508,8 +520,9 @@ body.touch.playing .gear{display:block}
         <div class="tb play">
           <div class="wz" data-step="1">
             <div class="cards cars" id="carCards">
-              <button class="card car on" type="button" data-car="zubor"><img class="ci" src="img/car-zubor.webp" alt="Zubor" draggable="false"><span class="ct"><b>ZUBOR</b><small>Dodávka · asfalt</small></span><i class="chip">ASFALT</i></button>
-              <button class="card car" type="button" data-car="sugga"><img class="ci" src="img/car-sugga.webp" alt="Sugga" draggable="false"><span class="ct"><b>SUGGA</b><small>Vintage 4×4 · divočina</small></span><i class="chip off">OFFROAD</i></button>
+              <button class="card car on" type="button" data-car="zubor"><img class="ci" src="img/car-zubor.webp" alt="Zubor" draggable="false"><span class="ct"><b>ZUBOR</b><small>Dodávka · parkovisko a mesto</small></span><i class="chip">ASFALT</i></button>
+                            <button class="card car" type="button" data-car="sugga"><img class="ci" src="img/car-sugga.webp" alt="Sugga" draggable="false"><span class="ct"><b>SUGGA</b><small>Vintage 4×4 · všade</small></span><i class="chip off">OFFROAD</i></button>
+              <button class="card car" type="button" data-car="mini" hidden><img class="ci" src="img/car-mini.webp" alt="Red Bull Mini" draggable="false"><span class="ct"><b>MINI</b><small>Red Bull Mini · všade</small></span><i class="chip off">ODOMKNUTÉ</i></button>
             </div>
             <div class="detail"><p id="carDesc"></p><div id="carStats"></div></div>
           </div>
@@ -1190,6 +1203,43 @@ function buildSugga() {
   return { car, body, wheels, rearZ: -1.5, track: .98, len: 5.0, wid: 2.2 };
 }
 
+
+/* Red Bull Mini: a small blue hatch with a giant can on the back. Unlocked by winning a secret race on the motorway. */
+function buildMini() {
+  const car = new THREE.Group(), body = new THREE.Group(); car.add(body);
+  const blue = new THREE.MeshStandardMaterial({ color: 0x2b55d6, roughness: .3, metalness: .5 }), silver = new THREE.MeshStandardMaterial({ color: 0xc3c9d3, roughness: .3, metalness: .7 }), dark = M.matte();
+  const add = (geo, mat, x, y, z) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.castShadow = true; body.add(m); return m; };
+  // lower body and hood
+  add(new THREE.BoxGeometry(1.72, .5, 3.8), blue, 0, .52, 0);
+  add(new THREE.BoxGeometry(1.62, .1, 1.05), blue, 0, .82, 1.32);
+  add(new THREE.BoxGeometry(.34, .012, 1.0), silver, 0, .875, 1.32);
+  // greenhouse: dark glass all round, body-coloured pillars, silver roof
+  const glassM = new THREE.MeshStandardMaterial({ color: 0x27374f, roughness: .18, metalness: .25 });
+  const cab = extrudeSide([[-1.16, .76], [-1.18, 1.14], [-1.0, 1.38], [.3, 1.4], [.78, .98], [.9, .76]], 1.5, glassM, blue, [-1.2, .9, .76, 1.4]); body.add(cab);
+  add(new THREE.BoxGeometry(1.56, .06, 1.34), silver, 0, 1.43, -.38);
+  [[-.78, -.2], [.78, -.2], [-.78, -1.1], [.78, -1.1]].forEach(([x, z]) => add(new THREE.BoxGeometry(.07, .6, .1), blue, x, 1.1, z));
+  // arches, bumpers, lamps
+  const fgeo = new THREE.CylinderGeometry(.37, .37, .26, 16, 1, false, 0, Math.PI); fgeo.rotateZ(Math.PI / 2);
+  [[.86, 1.2], [-.86, 1.2], [.86, -1.15], [-.86, -1.15]].forEach(([x, z]) => add(fgeo, blue, x, .36, z));
+  add(new THREE.BoxGeometry(1.74, .2, .16), dark, 0, .36, 1.9); add(new THREE.BoxGeometry(1.74, .2, .16), dark, 0, .36, -1.9);
+  add(new THREE.BoxGeometry(.78, .26, .06), dark, 0, .6, 1.92); add(new THREE.BoxGeometry(.84, .03, .07), silver, 0, .74, 1.92);
+  [-.58, .58].forEach(x => { const l = add(new THREE.CylinderGeometry(.16, .16, .1, 18), M.light(0xf6f3e6), x, .72, 1.88); l.rotation.x = Math.PI / 2; l.castShadow = false;
+    add(new THREE.BoxGeometry(.2, .1, .05), M.light(0xff8a1a), x * 1.3, .5, 1.92).castShadow = false; });
+  [-.7, .7].forEach(x => add(new THREE.BoxGeometry(.22, .2, .05), M.light(0xff2a2a), x, .78, -1.92).castShadow = false);
+  // the can: lies along the car on the rear deck and sticks out behind
+  const canSide = livery(256, 128, (g, w, h) => { g.fillStyle = '#c9cfd8'; g.fillRect(0, 0, w, h); g.fillStyle = '#0d2e8a'; g.fillRect(0, h * .5, w, h * .5);
+    g.fillStyle = '#c9cfd8'; g.fillRect(0, 0, w, h * .1); g.fillRect(0, h * .9, w, h * .1); g.fillStyle = '#0d2e8a'; g.fillRect(0, h * .1, w, h * .02);
+    [w * .25, w * .75].forEach(cx => { g.fillStyle = '#d7262f'; g.beginPath(); g.arc(cx, h * .5, h * .27, 0, Math.PI * 2); g.fill(); g.fillStyle = '#f2c21b'; g.beginPath(); g.arc(cx, h * .5, h * .19, 0, Math.PI * 2); g.fill(); }); });
+  const capT = livery(64, 64, (g, w, h) => { g.fillStyle = '#c9cfd8'; g.fillRect(0, 0, w, h); g.fillStyle = '#9aa1ac'; g.beginPath(); g.arc(32, 32, 24, 0, Math.PI * 2); g.fill(); g.fillStyle = '#c9cfd8'; g.beginPath(); g.arc(32, 32, 17, 0, Math.PI * 2); g.fill(); });
+  const canMat = [new THREE.MeshStandardMaterial({ map: canSide, roughness: .35, metalness: .45 }), new THREE.MeshStandardMaterial({ map: capT, roughness: .3, metalness: .7 }), new THREE.MeshStandardMaterial({ map: capT, roughness: .3, metalness: .7 })];
+  const cg = new THREE.CylinderGeometry(.43, .43, 1.75, 24); cg.rotateX(Math.PI / 2); cg.rotateZ(-Math.PI / 2);   // axis along the car, silver half up
+  const can = new THREE.Mesh(cg, canMat);
+  can.position.set(0, 1.28, -1.5); can.castShadow = true; body.add(can);
+  [-.55, .3].forEach(dz => add(new THREE.BoxGeometry(.5, .5, .08), dark, 0, .98, -1.5 + dz));
+  const wheels = wheelSet(car, .32, .21, .74, -1.15, 1.2, true);
+  return { car, body, wheels, rearZ: -1.15, track: .74, len: 4.2, wid: 1.8 };
+}
+
 /* Car handling parameters. Units are metres and seconds; accelerations in m/s² (9.8 = 1 g).
    Zubor is a 3.5 t armoured van with 400 hp and a high centre of gravity: it builds speed slowly, needs a long way to stop,
    leans hard in corners (roll is an underdamped spring, so rocking it left-right adds up), lifts the inner wheels past `tip`
@@ -1204,7 +1254,12 @@ const CARS = {
     L: 2.9, pw: 52, aMax: 2.7, top: 22, rev: 4, raMax: 2, brake: 8.4, brakeRamp: 7, coast: .9,
     steerMax: .62, steerFall: 8, steerLag: 8, yawLag: 5, ayMax: 7.4, grip: 7, drift: 2.1, hbGrip: .8, kick: .7,
     rollGain: .15, rollW: 6.9, rollZ: .45, tip: .24, over: .38, pitGain: .09, pitW: 7.5, pitZ: .5,
-    power: 0, hitK: 1, bounce: 1.4 }
+    power: 0, hitK: 1, bounce: 1.4 },
+  mini: { engine: 'i4', build: buildMini, name: 'MINI',
+    L: 2.5, pw: 72, aMax: 4.2, top: 30, rev: 4.5, raMax: 2.4, brake: 10.4, brakeRamp: 9, coast: .8,
+    steerMax: .72, steerFall: 11, steerLag: 9, yawLag: 4.6, ayMax: 8.2, grip: 7.6, drift: 2.4, hbGrip: .85, kick: .7,
+    rollGain: .1, rollW: 7.5, rollZ: .3, tip: .3, over: .46, pitGain: .08, pitW: 7, pitZ: .4,
+    power: 0, hitK: 1.1, bounce: 1.25, ready: true }
 };
 let model = null, P = CARS.zubor, carKey = store.get('car', 'zubor'), carIn = 1;
 function setCar(key) {
@@ -2768,6 +2823,8 @@ Object.defineProperty(JP_ZUBOR, 'L', { get: () => CARS.zubor.L }); Object.define
 Object.defineProperty(JP_SUGGA, 'L', { get: () => CARS.sugga.L }); Object.defineProperty(JP_SUGGA, 'steer', { get: () => CARS.sugga.steerMax });
 const JENV = { grip: 1, acc: 1, drag: 0, slF: 0, slR: 0, G: 7.6, spd: .4, climb: 1, holdCap: 99, rollK: .55 };   // town and wilderness: slow speeds, the van only leans, it does not tip easily
 const GA = 15;                                                    // gravity while flying off a ramp
+const JP_MINI = { spd: .4, climb: 1.7, tr: .25 };
+Object.defineProperty(JP_MINI, 'L', { get: () => CARS.mini.L }); Object.defineProperty(JP_MINI, 'steer', { get: () => CARS.mini.steerMax });
 let JP = JP_ZUBOR, SURFX = SURF;
 const fadeEl = document.createElement('div'); fadeEl.id = 'fallFade'; document.body.appendChild(fadeEl);
 function startFall(h) {
@@ -2973,7 +3030,7 @@ function jobStart() {
   if (off) buildOffWorld(); else if (!lot) { setWorld('dovoz'); buildJobWorld(); }
   if (!lot) setWorld(off ? 'off' : 'dovoz');
   TASKS = L ? L.tasks : (off ? TASKS_OFF : TASKS_DOVOZ); NT = TASKS.length;
-  JP = carKey === 'sugga' ? JP_SUGGA : JP_ZUBOR; JENV.spd = JP.spd; SURFX = JP.tr ? SURF.map(q => { const k = q.ice ? JP.tr * .22 : JP.tr; return { name: q.name, grip: q.grip + (1 - q.grip) * k, acc: q.acc + (1 - q.acc) * k * .7, drag: q.drag * (1 - k * .5) }; }) : SURF;
+  JP = carKey === 'sugga' ? JP_SUGGA : carKey === 'mini' ? JP_MINI : JP_ZUBOR; JENV.spd = JP.spd; SURFX = JP.tr ? SURF.map(q => { const k = q.ice ? JP.tr * .22 : JP.tr; return { name: q.name, grip: q.grip + (1 - q.grip) * k, acc: q.acc + (1 - q.acc) * k * .7, drag: q.drag * (1 - k * .5) }; }) : SURF;
   Object.assign(job, { i: 0, dmg: 0, t: 0, hold: 0, over: false, resets: 0, rolls: 0, cone: 0, pop: 0, beepT: 0, slowPop: 0, best: store.get(pre + 'Best', 0), bestT: store.get(pre + 'BestT', 0) });
   Object.assign(S, CAR_RESET, { x: st[0], z: st[1], th: st[2], gy: lot ? 0 : terrainH(st[0], st[1]), tp: 0, tr: 0, vy: 0, air: false });
   job.fall = 0; fadeEl.style.opacity = 0; clearMarks(); clearCargo();
@@ -3180,6 +3237,7 @@ const sound = (() => {
      the 4-stroke cycle frequency (rpm/120) with a hand-made harmonic recipe, then saturated, filtered and mixed with noise layers. */
   const ENG = {
     v8:     { idle: 650, red: 5900, wave: 'v8',     gain: .2,  drive: 2.4, cut0: 260, cutR: 1500, cutL: 1100, roar: .1,  rasp: .1,  clat: 0,   turbo: 0,    flaps: true,  pops: true,  lope: true },
+    i4:     { idle: 850, red: 6900, wave: 'diesel', gain: .15, drive: 1.9, cut0: 640, cutR: 1700, cutL: 800,  roar: .08, rasp: .06, clat: .03, turbo: .03,  flaps: false, pops: false, lope: false },
     diesel: { idle: 720, red: 4300, wave: 'diesel', gain: .15, drive: 1.5, cut0: 520, cutR: 1500, cutL: 700,  roar: .05, rasp: 0,   clat: .13, turbo: .018, flaps: false, pops: false, lope: false }
   };
   let type = 'v8', rpmS = 650, lastT = 0, prevLoad = 0, flap = 0, popT = 0;
@@ -3851,14 +3909,15 @@ const mmss = s => { s = Math.max(0, Math.round(s)); return Math.floor(s / 60) + 
 const STAT_DEFS = [['RÝCHLOSŤ', 'speed'], ['ZRÝCHLENIE', 'accel'], ['ŠMYK', 'slide'], ['OBRATNOSŤ', 'agil']];
 const INFO = {
   zubor: { desc: 'Pancierová dodávka. 5,7 V8 HEMI, 400 koní, 3,4 t a takmer 6 m. Ťažké zatáčanie, dlhšie brzdenie, ale ladné šmyky.', speed: 86, accel: 54, slide: 90, agil: 44 },
-  sugga: { desc: 'Vintage 4x4 len na offroad. Starší diesel okolo 200 koní, ľahké auto, výborná trakcia na svahu a v snehu.', speed: 48, accel: 52, slide: 55, agil: 92 }
+  sugga: { desc: 'Vintage 4x4. Starší diesel okolo 200 koní, ľahké auto, výborná trakcia na svahu a v snehu. Zvládne všetko, aj asfalt.', speed: 48, accel: 52, slide: 55, agil: 92 },
+  mini: { desc: 'Red Bull Mini s obrovskou plechovkou na zadku. Malé, rýchle a ostré na volant. Odomknuté na diaľnici, jazdí všade.', speed: 78, accel: 80, slide: 70, agil: 96 }
 };
 const MODE_TXT = {
   free: 'Bez času a bez tlaku. Jazdi, driftuj a zbieraj combo.',
   t60: () => 'Minúta na čo najvyššie skóre.' + (game.best ? ' Tvoj rekord: ' + fmt(game.best) + '.' : ''),
-  train: () => 'Levely krok za krokom, všetky otvorené. Tri hviezdy sú za rýchly a čistý prejazd. Sugga zvládne parkovisko, mesto aj divočinu, Zubor len parkovisko a mesto.',
+  train: () => 'Levely krok za krokom, všetky otvorené. Tri hviezdy sú za rýchly a čistý prejazd. Sugga a odomknuté autá zvládnu parkovisko, mesto aj divočinu, Zubor len parkovisko a mesto.',
   tokyo: () => 'Noc, neón a svetelné zóny. Prejdi cez každú v drifte, zóny idú po kruhu. 90 sekúnd.' + (store.get('bestTk', 0) ? ' Tvoj rekord: ' + fmt(store.get('bestTk', 0)) + '.' : ''),
-  hwy: () => 'Prvá osoba, 8 km diaľnice. Drž pruh, radiď 1–6, dávaj smerovky, predbiehaj zľava, pozor na radary. Klávesy: Q/E smerovky, Z/X radenie, T automat.' + (store.get('hwyBest', 0) ? ' Rekord: ' + fmt(store.get('hwyBest', 0)) + '.' : '')
+  hwy: () => 'Prvá osoba, 8 km diaľnice. Drž pruh, radiď 1–6, dávaj smerovky, predbiehaj zľava, pozor na radary. Do áut sa dá búrať. Občas ťa vyzve tajné auto: predbehni ho alebo ho vybúraj a odomkne sa ti. Klávesy: Q/E smerovky, Z/X radenie, T automat.' + (store.get('hwyBest', 0) ? ' Rekord: ' + fmt(store.get('hwyBest', 0)) + '.' : '')
 };
 const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>';
 const BADGES = [
@@ -3901,6 +3960,7 @@ function countUp(el, to, ms) {
 
 /* ---------- renderers ---------- */
 function renderCar() {
+  $$('#carCards .card').forEach(c => { c.hidden = !hwUnlocked(c.dataset.car); });
   const I = INFO[carKey], box = $('#carStats');
   $$('#carCards .card').forEach(c => c.classList.toggle('on', c.dataset.car === carKey));
   $('#carDesc').textContent = I.desc;
@@ -3922,14 +3982,15 @@ function curLevel() {
 const LV_SECT = { lot: 'PARKOVISKO', dovoz: 'MESTO', off: 'DIVOČINA' };
 const LV_SECT_INFO = { lot: 'rozjazd, brzda, slalomy, cúvanie', dovoz: 'staré mesto, cúvanie a vykladanie, na konci celá misia DOVOZ', off: 'lúka, bažina, ľad a vrchol, na konci celá misia' };
 // the wilderness is built for the Sugga; every other level can be driven by either car
-const needCar = L => L.world === 'off' ? 'sugga' : carKey;
+const needCar = L => L.world === 'off' && carKey === 'zubor' ? 'sugga' : carKey;
+const carNm = k => CARS[k].name.charAt(0) + CARS[k].name.slice(1).toLowerCase();
 function renderLevels() {
   const L = curLevel(); const el = $('#lvList'); el.textContent = '';
   const tabs = $('#lvTabs'); tabs.textContent = '';
-  const sects = Object.keys(LV_SECT).filter(w => w !== 'off' || carKey === 'sugga');   // the Zubor stays out of the wilderness
+  const sects = Object.keys(LV_SECT).filter(w => w !== 'off' || carKey !== 'zubor');   // the Zubor stays out of the wilderness
   sects.forEach(w => { const b = document.createElement('button'); b.type = 'button'; b.dataset.sect = w; b.className = w === L.world ? 'on' : ''; b.textContent = LV_SECT[w]; tabs.appendChild(b); });
   tabs.hidden = sects.length < 2;
-  $('#lvSect').textContent = (L.world === 'off' ? 'Sugga' : carKey === 'sugga' ? 'Sugga' : 'Zubor') + ' · ' + LV_SECT_INFO[L.world];
+  $('#lvSect').textContent = carNm(needCar(L)) + ' · ' + LV_SECT_INFO[L.world];
   const list = LEVELS.filter(M => M.world === L.world), ordered = list.filter(M => M.mission).concat(list.filter(M => !M.mission));   // the whole mission first
   ordered.forEach(M => {
     const b = document.createElement('button'); b.type = 'button'; const st = lvStars(M.id);
@@ -3937,7 +3998,7 @@ function renderLevels() {
     b.innerHTML = '<small>' + (M.mission ? 'CELÁ MISIA' : 'LEVEL ' + M.n) + '</small><b>' + M.name.replace(/^MISIA: /, '') + '</b><i' + (st ? '' : ' class="e"') + '>' + '★'.repeat(st) + '☆'.repeat(3 - st) + '</i>';
     el.appendChild(b);
   });
-  $('#lvDesc').textContent = (carKey === 'sugga' && L.world !== 'off' ? 'Hráš so Suggou: je ľahšia a menšia než Zubor, čísla v texte platia len približne. ' : '') + L.lesson + (LV.prog[L.id] && LV.prog[L.id].t ? '  ·  Najlepší čas ' + jobFmtT(LV.prog[L.id].t) : '');
+  $('#lvDesc').textContent = (carKey !== 'zubor' && L.world !== 'off' ? 'Hráš s autom ' + carNm(carKey) + ', je menšie a ľahšie než Zubor, čísla v texte platia len približne. ' : '') + L.lesson + (LV.prog[L.id] && LV.prog[L.id].t ? '  ·  Najlepší čas ' + jobFmtT(LV.prog[L.id].t) : '');
   if (isLv(pendingMode) && carKey !== needCar(L) && !stageBusy()) { stageShow(needCar(L)); store.set('car', carKey); renderCar(); }
 }
 /* the HRAJ screen is a wizard, one step at a time: 1 car, 2 mode, 3 level (only for the training) */
@@ -4137,6 +4198,16 @@ async function share() {
 const HW = { on: false, built: false, g: null, saved: [], p: null, cars: [], t: 0, over: false, hud: 0, cl: 0, shake: 0 };
 const HLEN = 8000, HLANE = [3.6, 0, -3.6];            // lane 0 = right, 1 = middle, 2 = left (d grows to the right)
 const HWP = { len: 5, w: 2 };
+const HW_SPECIALS = [{ id: 'mini', name: 'RED BULL MINI', img: 'img/car-mini.webp' }];
+function hwUnlocked(id) { return id === 'zubor' || id === 'sugga' || store.get('unl', []).indexOf(id) >= 0; }
+function hwUnlock(id) {
+  if (hwUnlocked(id)) return; const u = store.get('unl', []); u.push(id); store.set('unl', u);
+  const sp = HW_SPECIALS.find(s => s.id === id) || { name: id.toUpperCase(), img: '' }, t = $('#unlockT');
+  t.innerHTML = (sp.img ? '<img src="' + sp.img + '" alt="">' : '') + '<small>ODOMKNUTÉ AUTO</small><b>' + sp.name + '</b><i>Nájdeš ho vo výbere auta, jazdí vo všetkých svetoch.</i>';
+  t.hidden = false; t.style.animation = 'none'; void t.offsetWidth; t.style.animation = ''; clearTimeout(hwUnlock.t); hwUnlock.t = setTimeout(() => { t.hidden = true; }, 4200);
+  if (navigator.vibrate && settings.vib) { try { navigator.vibrate([30, 40, 60]); } catch (e) {} }
+  renderCar();
+}
 const HGV = [0, 48, 82, 118, 155, 195, 240];            // top speed (km/h) of every gear
 const HRADAR = [1500, 3100, 4800, 6600], HLIMIT = 130;
 const hX = s => { const k = clamp(s / 350, 0, 1); return k * k * (3 - 2 * k) * (70 * Math.sin(s / 600) + 35 * Math.sin(s / 260 + 1.3) + 12 * Math.sin(s / 130 + .4)); };
@@ -4244,7 +4315,7 @@ let hwCarMat = null, hwHeadMat = null;
 function hwMkCar(kind) {
   if (!hwCarMat) { hwCarMat = new THREE.MeshLambertMaterial({ vertexColors: true }); hwHeadMat = new THREE.MeshBasicMaterial({ color: 0xfff2c8 }); }
   const body = HW_BODY[Math.floor(Math.random() * HW_BODY.length)], bc = hCol(body), glass = hCol(0x1d2530), dark = hCol(0x0b0b0d);
-  const L = kind === 'truck' ? 12 : kind === 'van' ? 5.4 : 4.4, w = kind === 'truck' ? 2.5 : kind === 'van' ? 2 : 1.84;
+  const L = kind === 'truck' ? 12 : kind === 'van' ? 5.4 : kind === 'rb' ? 3.9 : 4.4, w = kind === 'truck' ? 2.5 : kind === 'van' ? 2 : kind === 'rb' ? 1.76 : 1.84;
   const parts = [], box = (bw, bh, bd, x, y, z, c) => { const gg = new THREE.BoxGeometry(bw, bh, bd); gg.translate(x, y, z); parts.push({ g: gg, c }); };
   if (kind === 'truck') {
     const trl = hCol([0xe9e9e4, 0x2b5aa6, 0xd9792b, 0xc8c8c8][Math.floor(Math.random() * 4)]);
@@ -4253,6 +4324,11 @@ function hwMkCar(kind) {
     [L / 2 - 1.4, -L / 2 + 1.6, -L / 2 + 3].forEach(z => [-1, 1].forEach(k => box(.3, 1, 1, k * 1.15, .5, z, dark)));
   } else if (kind === 'van') {
     box(w, 1.9, L, 0, 1.25, 0, bc); box(w - .1, .6, 1.2, 0, 1.75, L / 2 - .9, glass); [-1, 1].forEach(k => [-1, 1].forEach(j => box(.26, .66, .66, k * (w / 2 - .02), .33, j * L * .3, dark)));
+  } else if (kind === 'rb') {
+    const bl = hCol(0x1f3a9e), sv = hCol(0xc3c9d3), rd = hCol(0xd7262f), yl = hCol(0xf2c21b);
+    box(w, .6, L, 0, .6, 0, bl); box(w - .24, .5, 1.5, 0, 1.15, .1, glass); box(w - .2, .06, 1.4, 0, 1.43, .1, sv);
+    box(.86, .86, 1.8, 0, 1.28, -L / 2 + .7, sv); box(.88, .3, 1.82, 0, 1.0, -L / 2 + .7, bl); box(.9, .08, 1.82, 0, .88, -L / 2 + .7, rd); box(.9, .06, 1.82, 0, 1.46, -L / 2 + .7, yl);
+    [-1, 1].forEach(k => [-1, 1].forEach(j => box(.24, .6, .6, k * (w / 2 - .02), .3, j * L * .3, dark)));
   } else {
     box(w, .62, L, 0, .62, 0, bc); box(w - .22, .5, L * .52, 0, 1.17, -.25, glass); box(w - .26, .06, L * .44, 0, 1.44, -.25, bc);
     [-1, 1].forEach(k => [-1, 1].forEach(j => box(.26, .62, .66, k * (w / 2 - .02), .31, j * L * .31, dark)));
@@ -4267,7 +4343,7 @@ function hwMkCar(kind) {
 function hwLaneFree(lane, s, v, self) {
   const dC = HLANE[lane], P = HW.p;
   const chk = (os, ov, od, olen, to) => { if (Math.abs(od - dC) > 2.7 && to !== lane) return true; const ahead = os - s; const behindNeed = 11 + Math.max(0, ov - v) * 2.2 + olen / 2, aheadNeed = 14 + Math.max(0, v - ov) * 1.3 + olen / 2; return !(ahead < aheadNeed && ahead > -behindNeed); };
-  for (const o of HW.cars) { if (o === self) continue; if (!chk(o.s, o.v, o.d, o.len, o.to)) return false; }
+  for (const o of HW.cars) { if (o === self || o.ko > 0) continue; if (!chk(o.s, o.v, o.d, o.len, o.to)) return false; }
   if (!chk(P.s, P.v, P.d, HWP.len, -1)) return false;
   return true;
 }
@@ -4280,7 +4356,7 @@ function hwSpawn(c, first) {
     const s = behind ? P.s - 110 - Math.random() * 90 : P.s + (first ? 70 : 330) + Math.random() * (first ? 420 : 160);
     if (!hwLaneFree(lane, s, vd, c) || HW.cars.some(o => o !== c && Math.abs(o.d - HLANE[lane]) < 2.7 && Math.abs(o.s - s) < 50)) continue;
     if (!c.g || c.kind !== kind) { if (c.g) HW.g.remove(c.g); Object.assign(c, hwMkCar(kind)); HW.g.add(c.g); }
-    Object.assign(c, { s, d: HLANE[lane], lane, to: lane, chg: 0, tc: 0, ck: 1 + Math.random() * 2, v: vd, vd, brk: 0, vb: 0, bl: 0, side: Math.sign(s - P.s), cool: 0, dPrev: HLANE[lane], brakeOn: false, mark: 0 });
+    Object.assign(c, { s, d: HLANE[lane], lane, to: lane, chg: 0, tc: 0, ck: 1 + Math.random() * 2, v: vd, vd, brk: 0, vb: 0, bl: 0, side: Math.sign(s - P.s), cool: 0, dPrev: HLANE[lane], brakeOn: false, mark: 0, sp: 0, ko: 0, koYaw: 0 });
     return true;
   }
   if (c.g) c.g.visible = false; c.s = -1e6; return false;
@@ -4294,8 +4370,9 @@ function hwTraffic(dt) {
   const P = HW.p, T = HW.cars, gap0 = 1e9;
   for (const c of T) {
     if (c.s < -1e5) { if (Math.random() < dt * 2) hwSpawn(c, false); continue; }
+    if (c.ko > 0) { hwKoStep(c, dt); continue; }
     let gap = gap0, lv = 0;
-    for (const o of T) { if (o === c || o.s <= c.s || o.s < -1e5) continue; if (Math.abs(o.d - c.d) < 2.7 || (c.chg && Math.abs(o.d - HLANE[c.to]) < 2.7)) { const gp = o.s - c.s - (o.len + c.len) / 2; if (gp < gap) { gap = gp; lv = o.v; } } }
+    for (const o of T) { if (o === c || o.s <= c.s || o.s < -1e5 || o.ko > 0) continue; if (Math.abs(o.d - c.d) < 2.7 || (c.chg && Math.abs(o.d - HLANE[c.to]) < 2.7)) { const gp = o.s - c.s - (o.len + c.len) / 2; if (gp < gap) { gap = gp; lv = o.v; } } }
     if (Math.abs(P.d - c.d) < 2.5 && P.s > c.s) { const gp = P.s - c.s - (HWP.len + c.len) / 2; if (gp < gap) { gap = gp; lv = P.v; } }
     const dgap = 7 + c.v * .9; let a;
     if (c.brk > 0) { c.brk -= dt; a = c.v > c.vb ? -6.5 : 0; }
@@ -4305,20 +4382,20 @@ function hwTraffic(dt) {
     if (c.chg) {
       c.tc -= dt;
       if (c.tc <= 0) { const tgt = HLANE[c.to], dir = Math.sign(tgt - c.d); c.d += dir * Math.min(Math.abs(tgt - c.d), 1.7 * dt); if (Math.abs(tgt - c.d) < .01) { c.lane = c.to; c.chg = 0; c.bl = 0; } }
-    } else { c.ck -= dt; if (c.ck <= 0) { c.ck = 1.2 + Math.random() * 1.6; if (gap < dgap * 1.5 && lv < c.vd - 2.5) hwTryChange(c, false); } }
+    } else { c.ck -= dt; if (c.ck <= 0) { c.ck = c.sp ? .5 + Math.random() * .5 : 1.2 + Math.random() * 1.6; if (gap < dgap * 1.5 && lv < c.vd - 2.5) hwTryChange(c, false); } }
     c.cool -= dt;
     // overtaking bookkeeping
     const sg = Math.sign(c.s - P.s);
     if (c.side > 0 && sg < 0 && Math.abs(c.s - P.s) < 12) hwOvertake(c);
     c.side = sg;
     // recycle
-    if (c.s < P.s - 260 || c.s > P.s + 620) hwSpawn(c, false);
+    if (!c.sp && (c.s < P.s - 260 || c.s > P.s + 620)) hwSpawn(c, false);
   }
   // pressure events: somebody cuts in front of you, or slams the brakes
   HW.ev -= dt;
   if (HW.ev <= 0 && HW.t > 12) {
     HW.ev = 8 + Math.random() * 9;
-    const near = T.filter(c => c.s > P.s + 22 && c.s < P.s + 110 && !c.chg && c.brk <= 0);
+    const near = T.filter(c => !c.sp && !(c.ko > 0) && c.s > P.s + 22 && c.s < P.s + 110 && !c.chg && c.brk <= 0);
     if (Math.random() < .5) {
       const b = near.filter(c => Math.abs(c.d - P.d) < 2.4)[0];
       if (b && b.v > 6) { b.brk = 2.6; b.vb = b.v * .42; popText('POZOR, BRZDÍ!', true); }
@@ -4402,20 +4479,20 @@ function hwyLeave() {
   HW.saved.forEach(o => { o.visible = true; }); HW.saved = [];
   scene.fog.near = HW.fog.near; scene.fog.far = HW.fog.far; scene.fog.color.setHex(HW.fog.col); sun.castShadow = HW.sun;
   if (HW.dome && HW.dome0) HW.dome.position.copy(HW.dome0);
-  document.body.classList.remove('hwy'); $('#hwHud').hidden = true; $('#hwCtl').hidden = true;
+  document.body.classList.remove('hwy'); $('#hwHud').hidden = true; $('#hwCtl').hidden = true; hwRaceUi(false);
 }
 function hwyStart() {
   hwyEnter();
   for (const c of HW.cars) if (c.g) HW.g.remove(c.g); HW.cars = [];
-  HW.t = 0; HW.over = false; HW.ev = 14; HW.hud = 0; HW.shake = 0; HW.radarDone = 0;
-  const p = HW.p = { s: 0, d: HLANE[0], psi: 0, st: 0, v: 22, g: 3, auto: store.get('hwAuto', false), rpm: 3000, cut: 0, bl: 0, blT: 0, lane: 0, prevLane: 0, laneT: 0, blOff: -9, score: 0, over: 0, fines: 0, dmg: 0, lastOv: -9, dist: 0, wind: 0, strad: 0, tail: 0, cool: 0, shiftT: 0, bogT: 0, lastBl: 0, wheel: 0, ok: 0 };
+  HW.t = 0; HW.over = false; HW.race = null; HW.rcT = 28 + Math.random() * 20; hwRaceUi(false); HW.ev = 14; HW.hud = 0; HW.shake = 0; HW.radarDone = 0;
+  const p = HW.p = { s: 0, d: HLANE[0], psi: 0, st: 0, v: 22, g: 3, auto: store.get('hwAuto', false), rpm: 3000, cut: 0, bl: 0, blT: 0, lane: 0, prevLane: 0, laneT: 0, blOff: -9, score: 0, kos: 0, races: 0, over: 0, fines: 0, dmg: 0, lastOv: -9, dist: 0, wind: 0, strad: 0, tail: 0, cool: 0, shiftT: 0, bogT: 0, lastBl: 0, wheel: 0, ok: 0 };
   const n = settings.q === 0 ? 14 : 20; for (let i = 0; i < n; i++) { const c = { g: null }; HW.cars.push(c); hwSpawn(c, true); }
   gear = 'D'; gearShow();
   $('#hwHud').hidden = false; $('#hwCtl').hidden = false; hwUi(true);
   popText('POĎ! DRŽ SA V PRUHU');
 }
 function hwyEnd(ok) {
-  if (HW.over) return; HW.over = true; const P = HW.p;
+  if (HW.over) return; HW.over = true; const P = HW.p; HW.race = null; hwRaceUi(false);
   game.running = false; game.view = 'end'; sound.quiet();
   let fin = P.score + P.over * 0; if (ok) fin += Math.max(0, 300 - HW.t) * 6 + Math.round((100 - P.dmg) * 12);
   fin = Math.max(0, Math.round(fin)); P.final = fin;
@@ -4425,7 +4502,7 @@ function hwyEnd(ok) {
   $('#endScoreLab').textContent = ok ? 'SKÓRE' : 'SKÓRE (BEZ CIEĽA)'; $('#endL1').textContent = 'REKORD'; $('#endL2').textContent = 'PREDBEHNUTÍ'; $('#endL3').textContent = 'POKUTY';
   $('#endBest').textContent = fmt(Math.max(best, nb ? fin : 0)); $('#endCombo').textContent = P.over; $('#endCones').textContent = P.fines;
   $('#endBadge').hidden = !nb;
-  $('#endNote').textContent = ok ? 'Čas ' + Math.floor(HW.t / 60) + ':' + String(Math.floor(HW.t % 60)).padStart(2, '0') + ', škoda ' + Math.round(P.dmg) + ' %. Smerovky, odstup a pruh sa počítajú.' : 'Nabúral si na ' + (P.s / 1000).toFixed(1).replace('.', ',') + ' km. Drž odstup a sleduj premávku.';
+  $('#endNote').textContent = ok ? 'Čas ' + Math.floor(HW.t / 60) + ':' + String(Math.floor(HW.t % 60)).padStart(2, '0') + ', škoda ' + Math.round(P.dmg) + ' %. Smerovky, odstup a pruh sa počítajú. Vybúraných áut: ' + P.kos + '.' : 'Auto sa rozpadlo na ' + (P.s / 1000).toFixed(1).replace('.', ',') + ' km. Drž odstup a sleduj premávku.';
   shareTxt = ok ? 'Prešiel som diaľnicu v Event Car Game: ' + fmt(fin) + ' bodov, ' + P.over + ' predbehnutých, ' + P.fines + ' pokút. Dokážeš to lepšie?' : null;
   endEl.hidden = false; $('#hud').hidden = true; document.body.classList.remove('playing'); $('#hwHud').hidden = true; $('#hwCtl').hidden = true;
   countUp($('#endScore'), fin, 900); checkBadges();
@@ -4449,16 +4526,56 @@ function hwUi(force) {
   $('#hwBL').classList.toggle('on', p.bl < 0); $('#hwBR').classList.toggle('on', p.bl > 0);
 }
 function hwFine(txt, pts) { const p = HW.p; p.fines++; p.score -= pts; popText(txt + ' −' + pts, true); sound.tick(); }
+// arcade crashes: the other car is flung off the road and you only lose a little speed and paint
+function hwKnock(c, sg) {
+  c.ko = 1.8; c.koT = 0; c.koLat = sg * (8 + Math.random() * 6); c.koSpin = sg * (3 + Math.random() * 4); c.koYaw = 0; c.chg = 0; c.bl = 0; c.brk = 0;
+}
+function hwKoStep(c, dt) {
+  c.koT += dt; c.ko -= dt; c.v = Math.max(0, c.v - 12 * dt); c.s += c.v * dt; c.d += c.koLat * dt; c.koYaw += c.koSpin * dt; c.dPrev = c.d;
+  if (c.ko <= 0) { c.koYaw = 0; hwSpawn(c, false); }
+}
 function hwHit(c, pd, ps, ds) {
-  const p = HW.p; if (c.cool > 0) return; c.cool = .8;
-  const rel = p.v - c.v; let dm;
-  if (ps < pd * 2.2 + .3) {
-    if (ds > 0) { p.s -= ps + .05; dm = clamp(Math.max(0, rel) * 2.4 + 2, 2, 70); p.v = Math.min(p.v, c.v * .92); c.v += Math.max(0, rel) * .3; }
-    else { c.s = p.s - (HWP.len + c.len) / 2 - .1; dm = clamp(Math.max(0, c.v - p.v) * 1.0 + 2, 2, 30); c.v = Math.min(c.v, p.v * 1.05); p.v += Math.max(0, c.v - p.v) * .15; }
-  } else { const sg = Math.sign(p.d - c.d) || 1; p.d += sg * (pd + .03); p.psi += -sg * .1; dm = 5 + Math.abs(p.v - c.v) * .5; if (c.chg) { c.chg = 0; c.to = c.lane; c.bl = 0; c.d = HLANE[c.lane]; } }
-  p.dmg += dm; HW.shake = 1; sound.thud(clamp(dm / 25, .3, 1)); if (navigator.vibrate && settings.vib) { try { navigator.vibrate(Math.min(120, 30 + dm * 2)); } catch (e) {} }
-  popText('NÁRAZ −' + Math.round(dm) + ' %', true); p.score -= Math.round(dm * 6);
+  const p = HW.p; if (c.cool > 0 || c.ko > 0) return; c.cool = .8;
+  const rel = p.v - c.v, sg = Math.sign(c.d - p.d) || (Math.random() < .5 ? -1 : 1); let dm;
+  if (ps < pd * 2.2 + .3) { dm = clamp(Math.abs(rel) * .4 + 1, 1, 10); if (ds > 0) p.v = Math.max(p.v * .88, Math.min(p.v, c.v + 5)); }
+  else { dm = 1.5 + Math.abs(p.v - c.v) * .12; p.psi += -sg * .04; }
+  hwKnock(c, sg); p.dmg += dm; p.kos++; p.score += 60; c.v = Math.max(c.v, p.v * .8);
+  HW.shake = 1; sound.thud(clamp(dm / 12, .35, 1)); if (navigator.vibrate && settings.vib) { try { navigator.vibrate(Math.min(90, 25 + dm * 4)); } catch (e) {} }
+  popText('VYBÚRANÉ +60', true);
+  if (c.sp && HW.race && HW.race.c === c) hwRaceWin('ko');
   if (p.dmg >= 100) { p.dmg = 100; hwyEnd(false); }
+}
+/* ---------- secret races: a special car dares you, pass it or knock it off and it is yours ---------- */
+function hwRaceUi(on, txt) { const e = $('#hwRace'); e.hidden = !on; if (txt !== undefined) e.textContent = txt; }
+function hwRaceStart() {
+  const P = HW.p, pool = HW_SPECIALS.filter(s => !hwUnlocked(s.id)), list = pool.length ? pool : HW_SPECIALS, sp = list[Math.floor(Math.random() * list.length)];
+  let c = HW.cars.find(o => o.s < -1e5 && !o.sp) || HW.cars.filter(o => !o.sp && !(o.ko > 0)).sort((a, b) => Math.abs(b.s - P.s) - Math.abs(a.s - P.s))[0];
+  if (!c) { HW.rcT = 3; return; }
+  for (let tries = 0; tries < 10; tries++) {
+    const lane = Math.floor(Math.random() * 3), s = P.s + 190 + Math.random() * 60;
+    if (!hwLaneFree(lane, s, 44, c) || HW.cars.some(o => o !== c && o.s > -1e5 && Math.abs(o.d - HLANE[lane]) < 2.7 && Math.abs(o.s - s) < 45)) continue;
+    if (c.g) HW.g.remove(c.g); Object.assign(c, hwMkCar('rb')); HW.g.add(c.g);
+    Object.assign(c, { s, d: HLANE[lane], lane, to: lane, chg: 0, tc: 0, ck: .6, v: Math.max(40, P.v), vd: 44 + Math.random() * 2, brk: 0, vb: 0, bl: 0, side: 1, cool: 0, dPrev: HLANE[lane], brakeOn: false, mark: 0, sp: sp.id, ko: 0, koYaw: 0 });
+    HW.race = { c, id: sp.id, name: sp.name, t: 0, hud: 0 };
+    popText('TAJNÝ PRETEK! ' + sp.name, true); sound.tick(); hwRaceUi(true, sp.name); return;
+  }
+  HW.rcT = 2;
+}
+function hwRaceEnd() { HW.race = null; HW.rcT = 38 + Math.random() * 30; hwRaceUi(false); }
+function hwRaceWin(how) {
+  const R = HW.race; if (!R) return; const P = HW.p, was = hwUnlocked(R.id); R.c.sp = 0; hwRaceEnd();
+  P.score += was ? 300 : 800; P.races = (P.races || 0) + 1;
+  popText(how === 'ko' ? 'VYBÚRANÝ! PRETEK VYHRATÝ' : 'PREDBEHNUTÝ! PRETEK VYHRATÝ', true);
+  if (!was) hwUnlock(R.id);
+}
+function hwRaceStep(dt) {
+  const P = HW.p, R = HW.race;
+  if (!R) { HW.rcT -= dt; if (HW.rcT <= 0 && HW.t > 18 && P.v > 22 && P.s < HLEN - 1800) { HW.rcT = 0; hwRaceStart(); } return; }
+  R.t += dt; const c = R.c, gap = c.s - P.s;
+  if (c.sp !== R.id) { hwRaceEnd(); return; }
+  if (gap < -22) { hwRaceWin('pass'); return; }
+  if (gap > 460 || R.t > 110 || P.s > HLEN - 250) { popText(R.name + ' TI UŠIEL', true); c.sp = 0; hwRaceEnd(); return; }
+  R.hud -= dt; if (R.hud <= 0) { R.hud = .15; hwRaceUi(true, R.name + (gap > 0 ? '  ·  PRED TEBOU ' : '  ·  ZA TEBOU ') + Math.abs(Math.round(gap)) + ' m'); }
 }
 function hwyStep(dt) {
   const P = HW.p; HW.t += dt;
@@ -4491,7 +4608,7 @@ function hwyStep(dt) {
   const kap = hKap(P.s), dd = P.v * Math.sin(P.psi) + kap * P.v * 22 + P.wind * (.25 + P.v / 70) * Math.min(1, P.v / 6);
   P.s += P.v * Math.cos(P.psi) * dt; P.d += dd * dt; P.lat = dd;
   // ---- barriers
-  if (Math.abs(P.d) > 8.5) { const sg = Math.sign(P.d); P.d = sg * 8.5; if (P.cool <= 0) { P.cool = .7; const dm = 5 + Math.abs(P.lat) * 2.5 + P.v * .1; P.dmg += dm; P.v *= .72; P.psi = -sg * .12; HW.shake = 1; sound.thud(.8); popText('BARIÉRA −' + Math.round(dm) + ' %', true); P.score -= Math.round(dm * 6); if (P.dmg >= 100) { P.dmg = 100; hwyEnd(false); return; } } }
+  if (Math.abs(P.d) > 8.5) { const sg = Math.sign(P.d); P.d = sg * 8.5; if (P.cool <= 0) { P.cool = .7; const dm = 2.5 + Math.abs(P.lat) * 1.2 + P.v * .05; P.dmg += dm; P.v *= .8; P.psi = -sg * .12; HW.shake = 1; sound.thud(.7); popText('BARIÉRA −' + Math.round(dm) + ' %', true); if (P.dmg >= 100) { P.dmg = 100; hwyEnd(false); return; } } }
   P.cool -= dt;
   // ---- lane bookkeeping, signals, fines
   let ln = 0, bd = 1e9; for (let i = 0; i < 3; i++) { const q = Math.abs(P.d - HLANE[i]); if (q < bd) { bd = q; ln = i; } }
@@ -4510,10 +4627,10 @@ function hwyStep(dt) {
     HW.radarDone = i + 1; const f = HW.radarFlash && HW.radarFlash[i]; if (kmh > HLIMIT + 8) { if (f) { f.visible = true; setTimeout(() => { f.visible = false; }, 220); } hwFine('RADAR ' + Math.round(kmh) + ' km/h', 300); } else { P.score += 60; popText('RADAR OK +60'); }
   }
   // ---- traffic, collisions
-  hwTraffic(dt);
+  hwTraffic(dt); hwRaceStep(dt);
   let gapAhead = 1e9;
   for (const c of HW.cars) {
-    if (c.s < -1e5) continue;
+    if (c.s < -1e5 || c.ko > 0) continue;
     const ds = c.s - P.s, ad = Math.abs(c.d - P.d);
     if (ds > 0 && ad < 2.4) gapAhead = Math.min(gapAhead, ds - (c.len + HWP.len) / 2);
     const hl = (c.len + HWP.len) / 2, hw = (c.w + HWP.w) / 2 - .04;
@@ -4544,7 +4661,7 @@ function hwyRender(dt) {
   for (const c of HW.cars) {
     if (c.s < -1e5 || !c.g) { if (c.g) c.g.visible = false; continue; }
     const q = hWp(c.s, c.d), lat = (c.d - c.dPrev) / Math.max(dt, .008); c.dPrev = c.d;
-    c.g.visible = true; c.g.position.set(q.x, 0, q.z); c.g.rotation.y = q.p - Math.atan2(lat, Math.max(c.v, 4));
+    c.g.visible = true; const ko = c.ko > 0; c.g.position.set(q.x, ko ? Math.max(0, Math.sin(c.koT * 4.5) * 1.3) : 0, q.z); c.g.rotation.y = q.p - Math.atan2(ko ? 0 : lat, Math.max(c.v, 4)) + (ko ? c.koYaw : 0); c.g.rotation.z = ko ? Math.sin(c.koT * 7) * .4 : 0;
     c.tail.material.color.setHex(c.brakeOn || c.brk > 0 ? 0xff2418 : 0x5a0c0c);
     const on = Math.floor(HW.t / .36) % 2 === 0; c.bm[1].visible = on && c.bl === -1; c.bm[0].visible = on && c.bl === 1;   // local +x is the car's left
   }
@@ -4637,7 +4754,7 @@ $('#nav').addEventListener('click', e => { const b = e.target.closest('.nv'); if
 $('#carCards').addEventListener('click', e => {
   const c = e.target.closest('.card'); if (!c) return;
   stageShow(c.dataset.car); store.set('car', carKey);
-  if (isLv(pendingMode)) { const cur = LEVELS.find(x => x.id === LV.sel); if (!cur || (cur.world === 'off' && carKey !== 'sugga')) { const n = LEVELS.find(x => x.world === 'lot' && !x.mission); LV.sel = n.id; store.set('lvSel', LV.sel); } }
+  if (isLv(pendingMode)) { const cur = LEVELS.find(x => x.id === LV.sel); if (!cur || (cur.world === 'off' && carKey === 'zubor')) { const n = LEVELS.find(x => x.world === 'lot' && !x.mission); LV.sel = n.id; store.set('lvSel', LV.sel); } }
   renderCar(); renderMode();
 });
 $('#modeCards').addEventListener('click', e => { const c = e.target.closest('.card'); if (!c || c.disabled) return; pendingMode = c.dataset.mode; store.set('mode', pendingMode); renderMode(); });
@@ -4712,14 +4829,14 @@ applyQuality(); buildSteer();
 const portraitNow = () => window.innerWidth <= window.innerHeight;
 function guardPortrait() { if (portraitNow() && game.running && !game.paused && game.view === 'play') togglePause(); }
 window.addEventListener('resize', guardPortrait); window.addEventListener('orientationchange', () => setTimeout(guardPortrait, 200));
-{ const L0 = isLv(pendingMode) ? curLevel() : null, want0 = L0 && L0.world === 'off' ? 'sugga' : (store.get('car', 'zubor') === 'sugga' ? 'sugga' : 'zubor'); if (carKey !== want0) { carKey = want0; P = CARS[want0]; } }
+{ const L0 = isLv(pendingMode) ? curLevel() : null, want0 = (() => { const sc = store.get('car', 'zubor'), ok = CARS[sc] && hwUnlocked(sc) ? sc : 'zubor'; return L0 && L0.world === 'off' && ok === 'zubor' ? 'sugga' : ok; })(); if (carKey !== want0) { carKey = want0; P = CARS[want0]; } }
 syncVol(); renderCar(); renderMode(); renderCam(); renderQ(); setTab('play');
 renderTracks(); collectEq(); music.on(renderMusicUI); renderMusicUI();
 toMenu(true); clearMarks();
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { layoutStage(); });
 requestAnimationFrame(() => { layoutStage(); updateCamera(0, true); });
 requestAnimationFrame(loop);
-window.__drift = { renderer, HW, TK, hwBlink, hwShift, hwAuto, hwyStep, hwyRender, hwyEnd, pickMode: m => { pendingMode = m; renderMode(); }, get CUROBS() { return OBS; }, setGear, get gear() { return gear; }, setPedal, touch, readInput, keys, solids, cones, physics, updateCones, setCar, CARS, LEVELS, LV, store, renderMode, curLevel, lvCones, endJob, steerMaxAt: v => P.steerMax / (1 + Math.pow(Math.max(0, Math.abs(v) - 4) / P.steerFall, 1.3)), get P() { return P; }, rp, ORT, offUpdate, dvUpdate, HOLES: () => HOLES, holeAt, sg, stageSnap, stageReady: () => modelReady(sg.target), sound, get JP() { return JP; }, placeMarker, jobPhysics, jobDamage, jobTasks, jobFX, carShape, job, get TASKS() { return TASKS; }, TRAIL, WALK, OBS, carHits, jobRespawn, jobStart, jobSetWorld, buildJobWorld, terrainH, trailAt, surfAt, endJob, jobScore, S, input, game, camera, stage, music, settings, stats, get model() { return model; }, scene, setTab, startRun, toMenu, endRun, togglePause };
+window.__drift = { hwUnlock, hwUnlocked, hwRaceStart, renderer, HW, TK, hwBlink, hwShift, hwAuto, hwyStep, hwyRender, hwyEnd, pickMode: m => { pendingMode = m; renderMode(); }, get CUROBS() { return OBS; }, setGear, get gear() { return gear; }, setPedal, touch, readInput, keys, solids, cones, physics, updateCones, setCar, CARS, LEVELS, LV, store, renderMode, curLevel, lvCones, endJob, steerMaxAt: v => P.steerMax / (1 + Math.pow(Math.max(0, Math.abs(v) - 4) / P.steerFall, 1.3)), get P() { return P; }, rp, ORT, offUpdate, dvUpdate, HOLES: () => HOLES, holeAt, sg, stageSnap, stageReady: () => modelReady(sg.target), sound, get JP() { return JP; }, placeMarker, jobPhysics, jobDamage, jobTasks, jobFX, carShape, job, get TASKS() { return TASKS; }, TRAIL, WALK, OBS, carHits, jobRespawn, jobStart, jobSetWorld, buildJobWorld, terrainH, trailAt, surfAt, endJob, jobScore, S, input, game, camera, stage, music, settings, stats, get model() { return model; }, scene, setTab, startRun, toMenu, endRun, togglePause };
 })();
 </script>
 </html>

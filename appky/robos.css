@@ -47,7 +47,6 @@
 .ro-launch img { width: 40px; height: 40px; border-radius: 11px; object-fit: cover; object-position: 50% 20%; background: #2a1d3a; }
 .tabbar.ro-tabs { grid-template-columns: repeat(5, 1fr) !important; }
 .tabbar .ro-tab { cursor: pointer; }
-.tabbar .ro-tab img { width: 22px; height: 22px; border-radius: 6px; object-fit: cover; object-position: 50% 15%; background: #2a1d3a; }
 
 /* page mode (/appky/): the phone is the page */
 html.ro-page, html.ro-page body { height: 100%; margin: 0; background: #0d0a12; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }

@@ -19,7 +19,7 @@
   --r: 6px;
 }
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: calc(4.5rem + env(safe-area-inset-top, 0px)); }
+html { font-size: 87.5%; -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: calc(4.5rem + env(safe-area-inset-top, 0px)); }
 body {
   margin: 0; background: var(--bg); color: var(--ink);
   font-family: var(--f); font-size: 1.0625rem; line-height: 1.6;
@@ -256,7 +256,7 @@ html.si .cust-pop .aisi .on { color: var(--pulse-ink); }
 .dl-all:hover { border-style: solid; background: #EAF7EF; }
 
 /* header brand: my monogram instead of the green dot */
-.brand .dot { width: 2.15rem; height: 2.15rem; border-radius: .6rem; background: #161616 url("../img/icons/mark.webp") center / cover no-repeat; box-shadow: 0 0 0 1px rgba(0,0,0,.12), 0 3px 8px rgba(0,0,0,.18); }
+.brand .dot { width: 2.15rem; height: 2.15rem; border-radius: .6rem; background: #161616 url("../img/icons/mark.webp?v=2") center / cover no-repeat; box-shadow: 0 0 0 1px rgba(0,0,0,.12), 0 3px 8px rgba(0,0,0,.18); }
 .brand .dot::after { display: none; }
 .brand { gap: .65rem; }
 @media (max-width: 26rem) { .brand .dot { width: 1.85rem; height: 1.85rem; } }
@@ -265,3 +265,12 @@ html.si .cust-pop .aisi .on { color: var(--pulse-ink); }
 .latest-post .lp-txt { order: 0; } .latest-post .lp-img { order: 1; }
 .latest-post:nth-child(3n+2) { background: #161616; color: #F5F5F2; } .latest-post:nth-child(3n+2) b { color: #fff; } .latest-post:nth-child(3n+2) .lp-lead { color: #B9B9B0; } .latest-post:nth-child(3n+2) .label { color: #3BE08F; }
 .latest-post:nth-child(3n+3) { background: linear-gradient(135deg, #22C27B, #1FAF6F); } .latest-post:nth-child(3n+3) b, .latest-post:nth-child(3n+3) .lp-lead, .latest-post:nth-child(3n+3) .label { color: #0B1A12; }
+
+/* language: two flags in the header. The active language is faded, the other one lights up. */
+.lang.flags { display: flex; align-items: center; gap: .45rem; border: 0; padding: 0; height: auto; background: none; }
+.lang.flags button { position: relative; display: block; width: 30px; height: 20px; padding: 0; border: 1px solid rgba(0,0,0,.18); border-radius: 4px; overflow: hidden; background: none; cursor: pointer; opacity: 1; transition: opacity .2s ease, filter .2s ease; }
+.lang.flags button::after { content: ""; position: absolute; inset: -10px -4px; }
+.lang.flags button svg { display: block; width: 100%; height: 100%; }
+.lang.flags button.on { opacity: .4; filter: saturate(.55); cursor: default; }
+.lang.flags button:not(.on):hover { transform: translateY(-1px); }
+@media (max-width: 26rem) { .lang.flags { gap: .35rem; } }

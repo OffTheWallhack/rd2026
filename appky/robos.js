@@ -300,7 +300,7 @@
     var tabs = document.querySelector('.tabbar');
     if (!tabs || tabs.querySelector('.ro-tab')) return;
     var a = document.createElement('a'); a.className = 'ro-tab'; a.href = BASE; a.setAttribute('role', 'button');
-    a.innerHTML = '<img src="' + CFG.icon + '" alt=""><span>Appky</span>';
+    a.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="19" rx="2.4"/><path d="M10.5 5.6h3"/><circle cx="12" cy="18.4" r=".5" fill="currentColor"/></svg><span>Appky</span>';
     a.querySelector('span').setAttribute('data-en', 'Apps');
     a.addEventListener('click', function (e) { e.preventDefault(); openPhone(); });
     tabs.appendChild(a); tabs.classList.add('ro-tabs');

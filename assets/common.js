@@ -60,17 +60,14 @@
     barIn.insertBefore(nav, barR);
     document.body.appendChild(tabs);
     html.classList.add("has-tabbar");
-    var cust = document.createElement("div"); cust.className = "cust";
-    cust.innerHTML = "<button class='cust-btn' type='button' aria-expanded='false' aria-haspopup='true' aria-label='Prispôsobiť' data-nosi>" +
-      "<svg viewBox='0 0 20 20' aria-hidden='true'><path d='M3 5h8M15 5h2M3 10h2M9 10h8M3 15h10M17 15h0' stroke='currentColor' stroke-width='1.8' stroke-linecap='round'/><circle cx='13' cy='5' r='2' fill='none' stroke='currentColor' stroke-width='1.8'/><circle cx='7' cy='10' r='2' fill='none' stroke='currentColor' stroke-width='1.8'/><circle cx='15' cy='15' r='2' fill='none' stroke='currentColor' stroke-width='1.8'/></svg></button>" +
-      "<div class='cust-pop' role='group' hidden><p class='cust-row cust-lang'><span class='label' data-en='Language'>Jazyk</span></p><p class='cust-row cust-si'><span class='label' data-en='Mode'>Režim</span></p></div>";
-    barR.insertBefore(cust, barR.firstChild);
-    var lang = barR.querySelector(".lang"); if (lang) cust.querySelector(".cust-lang").appendChild(lang);
-    var btn = cust.querySelector(".cust-btn"), pop = cust.querySelector(".cust-pop");
-    function open(v) { pop.hidden = !v; btn.setAttribute("aria-expanded", v ? "true" : "false"); }
-    btn.addEventListener("click", function (e) { e.stopPropagation(); open(pop.hidden); });
-    document.addEventListener("click", function (e) { if (!cust.contains(e.target)) open(false); });
-    document.addEventListener("keydown", function (e) { if (e.key === "Escape") open(false); });
+    // language: two flags straight in the header (the active one is faded, the other one lights up)
+    var lang = barR.querySelector(".lang");
+    if (lang) {
+      var fl = document.createElement("div"); fl.className = "lang flags"; fl.setAttribute("role", "group"); fl.setAttribute("aria-label", "Jazyk / Language");
+      fl.innerHTML = "<button type='button' data-l='sk' aria-label='Slovensky' title='Slovensky'><svg viewBox='0 0 36 24' aria-hidden='true'><rect width='36' height='24' fill='#fff'/><rect y='8' width='36' height='8' fill='#0B4EA2'/><rect y='16' width='36' height='8' fill='#EE1C25'/><path d='M7.5 5.2h8v7.1c0 3.1-2.4 4.6-4 5.4-1.6-.8-4-2.3-4-5.4z' fill='#EE1C25' stroke='#fff' stroke-width='1.1'/><path d='M11.5 7v8M9.1 9.2h4.8M9.6 11.3h3.8' stroke='#fff' stroke-width='1.1' fill='none'/><path d='M8.9 13.6c.8-1 1.7-1.5 2.6-1.5s1.8.5 2.6 1.5c-.5 1.3-1.5 2.2-2.6 2.8-1.1-.6-2.1-1.5-2.6-2.8z' fill='#0B4EA2'/></svg></button>" +
+        "<button type='button' data-l='en' aria-label='English' title='English'><svg viewBox='0 0 36 24' aria-hidden='true'><rect width='36' height='24' fill='#012169'/><path d='M0 0l36 24M36 0L0 24' stroke='#fff' stroke-width='4.2'/><path d='M0 0l36 24M36 0L0 24' stroke='#C8102E' stroke-width='1.6'/><path d='M18 0v24M0 12h36' stroke='#fff' stroke-width='7'/><path d='M18 0v24M0 12h36' stroke='#C8102E' stroke-width='4'/></svg></button>";
+      lang.replaceWith(fl);
+    }
   })();
 
   // Slovak typography: a one-letter word (a, i, k, o, s, u, v, z) never stays alone at the end of a line
@@ -101,7 +98,7 @@
     trAlt.forEach(function (el) { el.setAttribute("alt", l === "en" ? el.dataset.enAlt : el.dataset.skAlt); });
     html.lang = l;
     document.title = TITLE[l];
-    document.querySelectorAll(".lang [data-l]").forEach(function (s) { s.classList.toggle("on", s.dataset.l === l); });
+    document.querySelectorAll(".lang [data-l]").forEach(function (s) { s.classList.toggle("on", s.dataset.l === l); s.setAttribute("aria-pressed", s.dataset.l === l ? "true" : "false"); });
     document.querySelectorAll("a.wa").forEach(function (a) { a.href = RD.waHref(a.getAttribute("data-wa-" + l) || ""); a.target = "_blank"; a.rel = "noopener"; });
     listeners.forEach(function (fn) { fn(l); });
     try { localStorage.setItem("lang", l); } catch (e) {}
@@ -114,13 +111,13 @@
     else if (!/^(sk|cs)/i.test(navigator.language || "")) start = "en";
   } catch (e) {}
   setLang(start);
-  var langBtn = document.querySelector(".lang");
-  if (langBtn) langBtn.addEventListener("click", function () { setLang(RD.lang === "sk" ? "en" : "sk"); });
+  document.querySelectorAll(".lang [data-l]").forEach(function (b) { b.addEventListener("click", function () { setLang(b.dataset.l); }); });
 
   // AI / SI switch: the US government now says "super intelligence" (SI) instead of AI, so the
   // whole site can too. Text is rewritten in place and put back when switched off.
   (function () {
     var bar = document.querySelector(".bar-r"); if (!bar) return;
+    if (!document.querySelector(".cust-si")) { try { localStorage.removeItem("aisi"); } catch (e) {} return; } // switch removed from the header
     var on = false, touched = [], mo = null;
     var RULES = [
       [/\bAI\b/g, "SI"],

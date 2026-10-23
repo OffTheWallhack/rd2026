@@ -1,1 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="15" fill="#161616"/><path fill="#F5F5F2" fill-rule="evenodd" d="M15 14H37.5C46.5 14 51 18 51 24.6S46.5 35.2 38 35.2L48.4 46.8H54V50H41.4L30.6 36.4H28.6V47H33V50H15V47H20V17.2H15ZM28.6 17.2V32.4H36.6C41.2 32.4 44 29.9 44 24.8S41.2 17.2 36.6 17.2Z"/><circle cx="39.5" cy="25" r="2.6" fill="#1FBF62"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <clipPath id="band"><rect x="0" y="262" width="512" height="22"/></clipPath>
+    <clipPath id="band2"><rect x="0" y="150" width="512" height="12"/></clipPath>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="#121312"/>
+  <g id="r" fill="none" stroke="#1FAF6F" stroke-width="58" stroke-linejoin="miter">
+    <path d="M170 398V114H290a88 88 0 0 1 0 176H170"/>
+    <path d="M282 294L362 398" stroke-linecap="butt"/>
+  </g>
+  <g clip-path="url(#band)" transform="translate(22 0)"><use href="#r" style="stroke:#7DF3B2"/></g>
+  <g clip-path="url(#band2)" transform="translate(-16 0)"><use href="#r" style="stroke:#7DF3B2"/></g>
+</svg>

@@ -2629,6 +2629,23 @@ const dvFrom = id => { const f = dv(id).from; return typeof f === 'function' ? f
 const ofs = (a, b) => TASKS_OFF.slice(a - 1, b);
 // a slalom along +z at x: cones every `sp` metres, gates between them alternating left / right of the cone line
 const slalom = (x, z0, sp, n, side, r) => { const cones = [], tasks = []; for (let i = 0; i < n; i++) cones.push([x, z0 + i * sp]); for (let i = 0; i < n; i++) { const dir = (i % 2 === 0 ? 1 : -1) * (side || 1); tasks.push(gate(x + dir * 2.6, z0 + i * sp + sp / 2, r || 2.2, dir > 0 ? 'VĽAVO' : 'VPRAVO')); } return { cones, tasks }; };
+
+// a lane of cones along a polyline: two rows, `w` metres apart, a cone every `sp` metres (ends included)
+const laneCones = (pts, w, sp) => {
+  const out = [];
+  for (let i = 0; i < pts.length - 1; i++) {
+    const a = pts[i], b = pts[i + 1], dx = b[0] - a[0], dz = b[1] - a[1], len = Math.hypot(dx, dz), n = Math.max(1, Math.round(len / sp)), nx = -dz / len, nz = dx / len;
+    for (let k = (i ? 1 : 0); k <= n; k++) { const x = a[0] + dx * k / n, z = a[1] + dz * k / n; [-1, 1].forEach(sd => out.push([+(x + nx * sd * w / 2).toFixed(2), +(z + nz * sd * w / 2).toFixed(2)])); }
+  }
+  return out;
+};
+// a gate in the wilderness by waypoint number u and sideways offset, the start pose points at the first gate
+const ofGate = (u, off, name, hint, r, sign) => { const q = rp(u, off); return Object.assign({ id: 'og' + u + '_' + (off || 0), name, hint: hint || '', type: 'gate', x: +q.x.toFixed(1), z: +q.z.toFixed(1), r: r || 4, u, off: off || 0 }, sign ? { sign } : {}); };
+const ofChain = (list, u0, o0, rev) => {
+  const a = rp(u0, o0 || 0); let prev = [a.x, a.z];
+  list.forEach(T => { T.from = [prev[0], prev[1], Math.atan2(T.x - prev[0], T.z - prev[1])]; prev = [T.x, T.z]; });
+  const f = list[0].from; return { start: [f[0], f[1], f[2]], tasks: list };
+};
 const LEVELS = [
   // --- parking lot, Zubor ---
   { id: 'l1', name: 'ROZJAZD A BRZDA', car: 'zubor', world: 'lot', start: [-54, -16, E], lesson: 'Zubor má 3,5 tony. Brzdiť začni oveľa skôr, než si myslíš.',
@@ -2650,6 +2667,23 @@ const LEVELS = [
   { id: 'l7', name: 'RUČNÁ OTOČKA', car: 'zubor', world: 'lot', start: [-54, 0, E], lesson: 'Rozbehni sa, strhni volant a potiahni ručnú. Otoč sa a vráť sa späť.',
     tasks: [Object.assign(gate(-6, 0, 3.4, 'ROZJAZD', 'Choď až k značke'), { sign: 'ROZJAZD' }), Object.assign({ id: 'uturn', name: 'OTOČ SA', hint: 'Vráť sa späť nosom na západ', type: 'gate', x: -32, z: 8, r: 3.6, th: W, tol: .8 }, { sign: 'OTOČ SA' })],
     par: 17 },
+  // --- parking lot, new: tight lanes, reversing, the whole lot ---
+  (() => { const xs = [-34, -14, 6, 26], ws = [4.8, 4.2, 3.6, 3.2], cones = [], tasks = [];
+    xs.forEach((x, i) => { laneCones([[x - 3, 0], [x + 3, 0]].map(([a, b]) => [a, b]), ws[i], 2).forEach(c => cones.push([c[0], c[1]])); });
+    xs.forEach((x, i) => tasks.push(Object.assign(gate(x, 0, 1.9, 'PRIESMYK ' + (i + 1), 'Prejdi stredom, šírka ' + ws[i].toFixed(1).replace('.', ',') + ' m'), { sign: 'ÚZKO ' + ws[i].toFixed(1).replace('.', ',') + ' m' })));
+    tasks.push(Object.assign(gate(54, 0, 3.4, 'CIEĽ'), { sign: 'CIEĽ' }));
+    return { id: 'l8', name: 'TESNÝ PRIESMYK', car: 'zubor', world: 'lot', start: [-58, 0, E], lesson: 'Zubor má dva metre na šírku. Priesmyky sa zužujú, posledný má len 3,2 metra. Pomaly a stredom, nezrýchľuj.', tasks, cones, par: 30 }; })(),
+  (() => { const P = [[-50, -8], [-34, -8], [-22, 4], [-8, 4], [4, -8], [20, -8], [32, 4], [48, 4]], cones = laneCones(P, 4.6, 2.4), tasks = [], sg = ['VPRAVO ▶', '◀ VĽAVO', '◀ VĽAVO', 'VPRAVO ▶', 'VPRAVO ▶', '◀ VĽAVO'];
+    P.slice(1, 7).forEach(([x, z], i) => tasks.push(Object.assign(gate(x, z, 2.4, 'ZÁKRUTA ' + (i + 1)), { sign: sg[i] })));
+    tasks.push(Object.assign(gate(56, 4, 3.4, 'CIEĽ'), { sign: 'CIEĽ' }));
+    return { id: 'l9', name: 'KĽUKATÁ ULIČKA', car: 'zubor', world: 'lot', start: [-58, -8, E], lesson: 'Úzka ulička z kužeľov sa vlní sem a tam. Zubor sa pri zmene smeru nakláňa, preto plynulo a bez trhania volantom.', tasks, cones, par: 36 }; })(),
+  (() => { const cones = [], tasks = [];
+    for (let i = 0; i < 6; i++) { const x = -34 + i * 14; cones.push([x, 0]); tasks.push(Object.assign(gate(x + 7, (i % 2 ? -1 : 1) * 3.2, 2, 'CÚVAJ'), { rev: true, sign: 'CÚVAJ' })); }
+    tasks.push(Object.assign(gate(56, 0, 3.4, 'CIEĽ'), { rev: true, sign: 'CIEĽ' }));
+    return { id: 'l10', name: 'CÚVACÍ SLALOM', car: 'zubor', world: 'lot', start: [-52, 0, W], lesson: 'Cúvaj dlhým slalomom medzi kužeľmi. Kamera ide zhora, pozeraj na kužele a nezrýchľuj. Brzda len brzdí, cúvať treba v R.', tasks, cones, par: 60 }; })(),
+  (() => { const g = (x, z, n) => Object.assign(gate(x, z, 3.6, n), { sign: n }),
+    tasks = [g(-14, -38, 'ROVNO'), g(30, -38, 'ZÁKRUTA'), g(55, -32, 'VÝCHOD'), g(56, -8, 'ROVNO'), g(52, 22, 'ZÁKRUTA'), g(30, 32, 'ROVNO'), g(-14, 30, 'ZÁPAD'), g(-34, 14, 'ZÁKRUTA'), g(-52, -6, 'JUH'), Object.assign(stopBox(-52, -30, SS, 'ZASTAV V BOXE', 'Zastav v boxe pri štarte, nosom na juh'), { sign: 'STOP' })];
+    return { id: 'l11', name: 'OKRUH PARKOVISKOM', car: 'zubor', world: 'lot', start: [-54, -38, E], lesson: 'Celé parkovisko dokola. Brzdi pred zákrutou, nie v nej. Na konci zastav v boxe.', tasks, cones: boxCones(-52, -30, SS, 2.6, 4.2), par: 75 }; })(),
   // --- town, Zubor ---
   { id: 'd1', name: 'NAKLADACIA RAMPA', car: 'zubor', world: 'dovoz', start: JOB_START, lesson: 'Zacúvaj medzi kontajnery, vylož aparatúru a vyjdi von. Pri cúvaní sa kamera sama prepne zhora.',
     tasks: [dv('bay'), { id: 'unl', name: 'VYLOŽ', hint: 'Stoj v ráme a počkaj, kým sa vyloží aparatúra', type: 'unload', x: -12, z: -78.5, r: 2.4, secs: 3, from: [-12, -70, 0], sign: 'VYKLADÁM' }, { id: 'ext', name: 'VYJDI Z RAMPY', hint: 'Vyjdi dopredu na ulicu', type: 'gate', x: -10, z: -60, r: 3.6, from: [-12, -70, 0] }], par: 55 },
@@ -2662,6 +2696,10 @@ const LEVELS = [
   { id: 'd6', name: 'PARKOVISKO', car: 'zubor', world: 'dovoz', start: dvFrom('park'), lesson: 'Zacúvaj medzi dve zaparkované autá.', tasks: [dv('park')], par: 60 },
   { id: 'd7', name: 'SKATE PARK', car: 'zubor', world: 'dovoz', start: dvFrom('skate'), lesson: 'Rampy a bazény hádžu autom. Nedovoľ mu rozkývať sa.', tasks: [dv('skate'), dv('skate2')], par: 70 },
   { id: 'd8', name: 'KOPEC', car: 'zubor', world: 'dovoz', start: dvFrom('tr40'), lesson: 'Hlina, sneh a serpentíny až k pódiu. Na snehu zabúda zatáčať aj brzdiť.', tasks: [dv('tr40'), dv('tr100'), dv('tr150'), dv('top')], par: 150 },
+  { id: 'd9', name: 'TESNÉ CÚVANIE', car: 'zubor', world: 'dovoz', start: [0, -27, SS], lesson: 'Vycúvaj celou uličkou a popod oblúk na námestie. Je to o pár centimetrov, pozeraj zhora na steny.',
+    tasks: [{ id: 'tc1', name: 'CÚVAJ', hint: 'Cúvaj stredom uličky', type: 'gate', x: 0, z: -17, r: 2.4, rev: true, from: [0, -27, SS], sign: 'CÚVAJ ▲' }, { id: 'tc2', name: 'POD OBLÚK', hint: 'Cúvaj pod oblúkom, je len o málo širší než auto', type: 'gate', x: 0, z: -6, r: 2.2, rev: true, from: [0, -17, SS], sign: 'OBLÚK' }, { id: 'tc3', name: 'VYCÚVAJ NA NÁMESTIE', hint: 'Cúvaj ešte kúsok, až kým si von', type: 'gate', x: 0, z: 3, r: 3.4, rev: true, from: [0, -6, SS], sign: 'VON' }], par: 40 },
+  { id: 'd10', name: 'PRIEJAZD MESTOM', car: 'zubor', world: 'dovoz', start: dvFrom('alley'), lesson: 'Celé mesto jedným ťahom: ulička, oblúk, námestie a cúvanie na parkovisko. Nezabúdaj, že Zubor je široký.',
+    tasks: [dv('alley'), dv('arch'), dv('square'), dv('park')], par: 110 },
   // --- wilderness, Sugga ---
   { id: 'o1', name: 'LÚKA', car: 'sugga', world: 'off', start: OFF_START, lesson: 'Sugga je ľahšia a nižšia. Slalom medzi kmeňmi na rozcvičku.', tasks: ofs(1, 2), par: 45 },
   { id: 'o2', name: 'HRBOLY A SKOK', car: 'sugga', world: 'off', start: null, lesson: 'Hrbole ťa hádžu. Na rampu nabehni rovno a dopadni rovno.', tasks: ofs(3, 4), par: 40 },
@@ -2672,6 +2710,15 @@ const LEVELS = [
   { id: 'o7', name: 'ĽAD', car: 'sugga', world: 'off', start: null, lesson: 'Na ľade nemáš takmer žiadnu priľnavosť. Jemne s plynom aj volantom.', tasks: ofs(16, 19), par: 80 },
   { id: 'o8', name: 'SNEŽNÝ SVAH', car: 'sugga', world: 'off', start: null, lesson: 'Hlboký sneh vedľa stopy ťa zastaví. Drž stopu.', tasks: ofs(20, 21), par: 60 },
   { id: 'o9', name: 'VRCHOL', car: 'sugga', world: 'off', start: null, lesson: 'Skaly, balvany a posledná rampa.', tasks: ofs(22, 25), par: 75 },
+  (() => { const L = [ofGate(23.0, 0, 'SVAH NAHOR', 'Po svahu hore, drž sa stopy', 4.5, 'DRŽ SMER'), ofGate(23.6, 2, 'SVAH', '', 4.5, '▶'), ofGate(24.2, -2, 'SVAH', '', 4.5, '◀'), ofGate(24.8, 2, 'SVAH', '', 4.5, '▶'), ofGate(25.4, 0, 'HREBEŇ', 'Si na hrebeni', 5)], c = ofChain(L, 22.5, 0);
+    return { id: 'o10', name: 'SVAH NAHOR', car: 'sugga', world: 'off', start: c.start, lesson: 'Hore svahom po stupňoch, raz vľavo, raz vpravo. Sugga je ľahká a sneh drží, ale hlboký sneh vedľa stopy ťa zastaví.', tasks: c.tasks, par: 40 }; })(),
+  (() => { const cx = 63, cz = 104, A = 9, B = 11, pt = k => { const t = k * Math.PI / 4; return [+(cx + A * Math.cos(t)).toFixed(1), +(cz + B * Math.sin(t) * Math.cos(t)).toFixed(1)]; };
+    const tasks = []; let prev = pt(0);
+    for (let k = 1; k <= 9; k++) { const q = pt(k); const T = Object.assign(gate(q[0], q[1], 3.4, k === 9 ? 'VÝJAZD' : 'OSMIČKA ' + k), { from: [prev[0], prev[1], Math.atan2(q[0] - prev[0], q[1] - prev[1])] }); if (k === 9) T.hint = 'Dokonči osmičku'; tasks.push(T); prev = q; }
+    const f = tasks[0].from;
+    return { id: 'o11', name: 'ĽADOVÁ OSMIČKA', car: 'sugga', world: 'off', start: [f[0], f[1], f[2]], lesson: 'Osmička na ľadovom jazere. Na ľade skoro nebrzdíš, preto pusti plyn skôr a drž volant jemne.', tasks, par: 70 }; })(),
+  (() => { const L = [ofGate(25.4, 0, 'ZJAZD 1', 'Dolu hrebeňom, brzdi včas', 4.5), ofGate(24.8, -2, 'ZJAZD 2', '', 4.5), ofGate(24.2, 2, 'ZJAZD 3', '', 4.5), ofGate(23.6, -2, 'ZJAZD 4', '', 4.5), ofGate(23.0, 0, 'DOLE', 'Dolu na terase zastav', 5)], c = ofChain(L, 25.9, 0);
+    return { id: 'o12', name: 'STRMÝ ZJAZD', car: 'sugga', world: 'off', start: c.start, lesson: 'Zo hrebeňa dole svahom. Sugga je ľahká, preto brzdi pred stupňami a drž smer, bokom ťa to schytí.', tasks: c.tasks, par: 40 }; })(),
   // --- the full missions ---
   { id: 'm1', name: 'MISIA: DOVOZ', car: 'zubor', world: 'dovoz', start: JOB_START, lesson: 'Celá cesta mestom až na vrchol. Vrátane neónovej zóny.', tasks: TASKS_DOVOZ, par: 480, mission: 'job' },
   { id: 'm2', name: 'MISIA: DIVOČINA', car: 'sugga', world: 'off', start: OFF_START, lesson: 'Celá divočina od lúky po vrchol.', tasks: TASKS_OFF, par: 420, mission: 'off' }
@@ -2681,7 +2728,8 @@ const lvTag = L => L.mission ? 'MISIA' : 'LEVEL ' + L.n;
 LEVELS.forEach(L => { if (!L.start) { const f = L.tasks[0].from; L.start = typeof f === 'function' ? f() : f; } });
 const LV = { prog: store.get('lv2', {}), sel: store.get('lvSel', 'l1'), cur: null, cones: [] };
 const lvStars = id => (LV.prog[id] && LV.prog[id].s) || 0;
-const lvUnlocked = i => { if (store.get('lvAll', 0)) return true; const L = LEVELS[i]; if (L.mission) return true; let j = i - 1; while (j >= 0 && (LEVELS[j].world !== L.world || LEVELS[j].mission)) j--; return j < 0 || lvStars(LEVELS[j].id) > 0; };   // the full missions are always open; inside a section a star on the previous level opens the next
+const lvUnlocked = i => { return true;   // every level is open from the start; the stars are just the goal (the old chain of locks hid the later levels)
+  if (store.get('lvAll', 0)) return true; const L = LEVELS[i]; if (L.mission) return true; let j = i - 1; while (j >= 0 && (LEVELS[j].world !== L.world || LEVELS[j].mission)) j--; return j < 0 || lvStars(LEVELS[j].id) > 0; };   // the full missions are always open; inside a section a star on the previous level opens the next
 const lvIndex = id => LEVELS.findIndex(L => L.id === id);
 const lvNext = L => { const n = LEVELS[lvIndex(L.id) + 1]; return n && !L.mission && n.world === L.world && !n.mission ? n : null; };
 function lvRate(L) {   // 3 stars: fast and clean; 2: finished with little damage; 1: finished
@@ -4349,7 +4397,7 @@ toMenu(true); clearMarks();
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { layoutStage(); });
 requestAnimationFrame(() => { layoutStage(); updateCamera(0, true); });
 requestAnimationFrame(loop);
-window.__drift = { setGear, get gear() { return gear; }, setPedal, touch, readInput, keys, solids, cones, physics, updateCones, setCar, CARS, LEVELS, LV, store, renderMode, curLevel, lvCones, endJob, steerMaxAt: v => P.steerMax / (1 + Math.pow(Math.max(0, Math.abs(v) - 4) / P.steerFall, 1.3)), get P() { return P; }, rp, ORT, offUpdate, dvUpdate, HOLES: () => HOLES, holeAt, sg, stageSnap, stageReady: () => modelReady(sg.target), sound, get JP() { return JP; }, placeMarker, jobPhysics, jobDamage, jobTasks, jobFX, carShape, job, get TASKS() { return TASKS; }, TRAIL, WALK, OBS, carHits, jobRespawn, jobStart, jobSetWorld, buildJobWorld, terrainH, trailAt, surfAt, endJob, jobScore, S, input, game, camera, stage, music, settings, stats, get model() { return model; }, scene, setTab, startRun, toMenu, endRun, togglePause };
+window.__drift = { get CUROBS() { return OBS; }, setGear, get gear() { return gear; }, setPedal, touch, readInput, keys, solids, cones, physics, updateCones, setCar, CARS, LEVELS, LV, store, renderMode, curLevel, lvCones, endJob, steerMaxAt: v => P.steerMax / (1 + Math.pow(Math.max(0, Math.abs(v) - 4) / P.steerFall, 1.3)), get P() { return P; }, rp, ORT, offUpdate, dvUpdate, HOLES: () => HOLES, holeAt, sg, stageSnap, stageReady: () => modelReady(sg.target), sound, get JP() { return JP; }, placeMarker, jobPhysics, jobDamage, jobTasks, jobFX, carShape, job, get TASKS() { return TASKS; }, TRAIL, WALK, OBS, carHits, jobRespawn, jobStart, jobSetWorld, buildJobWorld, terrainH, trailAt, surfAt, endJob, jobScore, S, input, game, camera, stage, music, settings, stats, get model() { return model; }, scene, setTab, startRun, toMenu, endRun, togglePause };
 })();
 </script>
 </body></html>

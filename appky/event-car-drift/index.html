@@ -311,7 +311,12 @@ body.mplay .pp svg.i-play{display:none}
 .wsum #mLoad::before{content:"";display:inline-block;width:10px;height:10px;margin-right:7px;border-radius:50%;border:2px solid var(--amber);border-right-color:transparent;vertical-align:-1px;animation:spin .8s linear infinite}
 #startBtn.wait{opacity:.5;filter:saturate(.4)}
 /* step 1: the two cars */
-.cards.cars{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:1fr;gap:12px;min-height:0}
+.cards.cars{display:flex;overflow-x:auto;overflow-y:hidden;gap:12px;min-height:0;scroll-snap-type:x proximity;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.25) transparent;overscroll-behavior-x:contain}
+.cards.cars .card.car{flex:0 0 clamp(150px,24vw,215px);scroll-snap-align:start}
+.card.car.lock[disabled]{opacity:.8;cursor:default}
+.card.car.lock .ci{filter:brightness(0) opacity(.5)}
+.card.car.lock .chip{background:rgba(255,255,255,.08);color:var(--muted)}
+.card.car.lock .ct b::before{content:"? ";color:var(--amber)}
 .card.car{position:relative;display:flex;flex-direction:column;gap:4px;padding:10px 12px;overflow:hidden;min-height:0}
 .card.car .ci{flex:1;min-height:0;width:100%;object-fit:contain;object-position:center;filter:drop-shadow(0 8px 9px rgba(0,0,0,.6)) brightness(1.18) contrast(1.05);opacity:.8;transition:transform .3s,opacity .2s;pointer-events:none}
 .card.car.on .ci{opacity:1;transform:scale(1.04)}
@@ -522,7 +527,12 @@ body:not(.hwy) .hwrace{display:none}
             <div class="cards cars" id="carCards">
               <button class="card car on" type="button" data-car="zubor"><img class="ci" src="img/car-zubor.webp" alt="Zubor" draggable="false"><span class="ct"><b>ZUBOR</b><small>Dodávka · parkovisko a mesto</small></span><i class="chip">ASFALT</i></button>
                             <button class="card car" type="button" data-car="sugga"><img class="ci" src="img/car-sugga.webp" alt="Sugga" draggable="false"><span class="ct"><b>SUGGA</b><small>Vintage 4×4 · všade</small></span><i class="chip off">OFFROAD</i></button>
-              <button class="card car" type="button" data-car="mini" hidden><img class="ci" src="img/car-mini.webp" alt="Red Bull Mini" draggable="false"><span class="ct"><b>MINI</b><small>Red Bull Mini · všade</small></span><i class="chip off">ODOMKNUTÉ</i></button>
+              <button class="card car" type="button" data-car="mini"><img class="ci" src="img/car-mini.webp" alt="Red Bull Mini" draggable="false"><span class="ct"><b>MINI</b><small>Red Bull Mini · všade</small></span><i class="chip off">ODOMKNUTÉ</i></button>
+              <button class="card car" type="button" data-car="jeep"><img class="ci" src="img/car-jeep.webp" alt="DJ Jeep" draggable="false"><span class="ct"><b>DJ JEEP</b><small>Wrangler s bedňami · všade</small></span><i class="chip off">ODOMKNUTÉ</i></button>
+              <button class="card car" type="button" data-car="buggy"><img class="ci" src="img/car-buggy.webp" alt="Bugina" draggable="false"><span class="ct"><b>BUGINA</b><small>Side-by-side · všade</small></span><i class="chip off">ODOMKNUTÉ</i></button>
+              <button class="card car" type="button" data-car="truck"><img class="ci" src="img/car-truck.webp" alt="Truck" draggable="false"><span class="ct"><b>TRUCK</b><small>Rozvozová skriňa · všade</small></span><i class="chip off">ODOMKNUTÉ</i></button>
+              <button class="card car" type="button" data-car="unimog"><img class="ci" src="img/car-unimog.webp" alt="Unimog" draggable="false"><span class="ct"><b>UNIMOG</b><small>Expedičný kolos · všade</small></span><i class="chip off">ODOMKNUTÉ</i></button>
+              <button class="card car" type="button" data-car="xbow"><img class="ci" src="img/car-xbow.webp" alt="KTM X-Bow" draggable="false"><span class="ct"><b>X-BOW</b><small>Pretekár z Ringu · všade</small></span><i class="chip off">ODOMKNUTÉ</i></button>
             </div>
             <div class="detail"><p id="carDesc"></p><div id="carStats"></div></div>
           </div>
@@ -1240,6 +1250,142 @@ function buildMini() {
   return { car, body, wheels, rearZ: -1.15, track: .74, len: 4.2, wid: 1.8 };
 }
 
+/* ================= the secret cars: five more Red Bull event vehicles, all built from boxes ================= */
+const RB = { blue: 0x1d3f9c, silver: 0xc3c9d3, red: 0xd7262f, yellow: 0xf2c21b, orange: 0xf28a1a, black: 0x141416 };
+const CHARGE = [[-1, .47], [-.44, .9], [.06, .4], [.56, 1], [.94, .07], [.67, -.6], [.28, -.27], [-.06, -1], [-.5, -.53], [-.89, -.87]];
+// a side livery: base colour, optional top band, a yellow sun and the red angular charge; `mirror` flips it for the other side
+function rbSide(w, h, o, mirror) {
+  return livery(w, h, (g, W, H) => {
+    if (mirror) { g.translate(W, 0); g.scale(-1, 1); }
+    g.fillStyle = o.base; g.fillRect(0, 0, W, H);
+    if (o.top) { g.fillStyle = o.top; g.fillRect(0, 0, W, H * o.split); }
+    if (o.front) { g.fillStyle = o.front; g.beginPath(); g.moveTo(0, 0); g.lineTo(W * o.frontW, 0); g.lineTo(W * (o.frontW - .12), H); g.lineTo(0, H); g.closePath(); g.fill(); }
+    if (o.stripe) { g.fillStyle = o.stripe[2]; g.fillRect(0, H * o.stripe[0], W, H * o.stripe[1]); }
+    if (o.sun) { g.fillStyle = '#f2c21b'; g.beginPath(); g.arc(W * o.sun[0], H * o.sun[1], H * o.sun[2], 0, Math.PI * 2); g.fill(); }
+    if (o.charge) { const [cx, cy, s] = o.charge; g.lineJoin = 'round'; g.strokeStyle = '#f3f0e9'; g.lineWidth = Math.max(2, s * .09); g.fillStyle = '#d7262f';
+      g.beginPath(); CHARGE.forEach(([x, y], i) => { const px = W * cx + x * s, py = H * cy - y * s * .42; i ? g.lineTo(px, py) : g.moveTo(px, py); }); g.closePath(); g.stroke(); g.fill(); }
+    if (o.win) { g.fillStyle = '#0a0d13'; o.win.forEach(([x, y, w2, h2]) => g.fillRect(W * x, H * y, W * w2, H * h2)); }
+    if (o.draw) o.draw(g, W, H);
+  });
+}
+const rbMat = (tex, r) => new THREE.MeshStandardMaterial({ map: tex, roughness: r === undefined ? .6 : r, metalness: .15 });
+const rbCol = (c, r, m) => new THREE.MeshStandardMaterial({ color: c, roughness: r === undefined ? .6 : r, metalness: m || .2 });
+// box with a different livery on each side (u = 0 is the front of the car on both sides)
+function rbBox(body, w, h, d, x, y, z, sideOpts, other) {
+  const mats = [rbMat(rbSide(512, Math.round(512 * h / d), sideOpts, false)), rbMat(rbSide(512, Math.round(512 * h / d), sideOpts, true)), other.top || other.m, other.bottom || other.m, other.front || other.m, other.back || other.m];
+  const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mats); m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true; body.add(m); return m;
+}
+function kit(body) {
+  const add = (geo, mat, x, y, z, ry) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); if (ry) m.rotation.y = ry; m.castShadow = true; body.add(m); return m; };
+  return {
+    add,
+    box: (w, h, d, x, y, z, mat) => add(new THREE.BoxGeometry(w, h, d), mat, x, y, z),
+    cylZ: (r, l, x, y, z, mat, n) => { const m = add(new THREE.CylinderGeometry(r, r, l, n || 14), mat, x, y, z); m.rotation.x = Math.PI / 2; return m; },
+    cylX: (r, l, x, y, z, mat, n) => { const m = add(new THREE.CylinderGeometry(r, r, l, n || 14), mat, x, y, z); m.rotation.z = Math.PI / 2; return m; },
+    cylY: (r, l, x, y, z, mat, n) => add(new THREE.CylinderGeometry(r, r, l, n || 10), mat, x, y, z),
+    lamp: (w, h, x, y, z, c, back) => { const m = add(new THREE.BoxGeometry(w, h, .06), M.light(c), x, y, z); m.castShadow = false; return m; }
+  };
+}
+
+/* delivery truck: blue cab, silver and blue box with the big charge on the side */
+function buildTruck() {
+  const car = new THREE.Group(), body = new THREE.Group(); car.add(body); const K = kit(body);
+  const blue = rbCol(RB.blue, .45, .35), silver = rbCol(RB.silver, .35, .6), dark = M.matte();
+  // cab
+  const cabFront = livery(256, 256, (g, w, h) => { g.fillStyle = '#1d3f9c'; g.fillRect(0, 0, w, h); g.fillStyle = '#0a0d13'; g.fillRect(w * .06, h * .1, w * .88, h * .42); g.fillStyle = '#c3c9d3'; g.fillRect(0, h * .78, w, h * .22); g.fillStyle = '#0b0b0d'; g.fillRect(w * .2, h * .82, w * .6, h * .12); });
+  rbBox(body, 2.2, 2.2, 1.9, 0, 1.65, 2.55, { base: '#1d3f9c', win: [[.08, .1, .55, .38]], stripe: [.78, .22, '#c3c9d3'] }, { m: blue, top: blue, front: rbMat(cabFront, .4), back: blue });
+  K.box(2.3, .3, .25, 0, .5, 3.55, dark); [-.8, .8].forEach(x => K.lamp(.36, .2, x, .78, 3.55, 0xfff2c8));
+  [-1.22, 1.22].forEach(x => K.box(.08, .3, .22, x, 2.0, 3.2, dark));
+  // box body
+  rbBox(body, 2.3, 2.6, 5.0, 0, 1.85, -1.0, { base: '#1d3f9c', top: '#c3c9d3', split: .58, sun: [.6, .5, .3], charge: [.6, .5, 150] }, { m: blue, top: silver, bottom: dark, back: rbMat(rbSide(256, 290, { base: '#1d3f9c', top: '#c3c9d3', split: .58, win: [[.1, .62, .8, .3]] }), .45) });
+  K.box(2.2, .4, .2, 0, .5, -3.55, silver); [-.95, .95].forEach(x => K.lamp(.2, .3, x, .95, -3.52, 0xff2a2a));
+  [-.9, .9].forEach(x => K.box(.5, .05, .5, x, .35, -2.9, dark));
+  const wheels = wheelSet(car, .5, .32, .92, -2.2, 2.6, false);
+  [-.6, .6].forEach(x => { const t = K.cylX(.5, .3, x, .5, -2.2, M.tyre(), 18); t.parent.remove(t); car.add(t); });   // inner rear duals, fixed
+  return { car, body, wheels, rearZ: -2.2, track: .92, len: 7.1, wid: 2.3 };
+}
+
+/* Unimog: black cab with an orange door, snorkel, giant tyres and a black box behind */
+function buildUnimog() {
+  const car = new THREE.Group(), body = new THREE.Group(); car.add(body); const K = kit(body);
+  const black = rbCol(0x111113, .7, .15), dark = M.matte(), orange = rbCol(RB.orange, .5);
+  K.box(1.6, .5, 5.6, 0, .95, 0, dark);
+  const cabFront = livery(256, 256, (g, w, h) => { g.fillStyle = '#111113'; g.fillRect(0, 0, w, h); g.fillStyle = '#0a0d13'; g.fillRect(w * .05, h * .08, w * .9, h * .4); g.fillStyle = '#2b2b2f'; for (let i = 0; i < 5; i++) g.fillRect(w * .1, h * (.6 + i * .07), w * .8, h * .035); g.fillStyle = '#e8e8ea'; g.beginPath(); g.arc(w * .5, h * .74, h * .13, 0, Math.PI * 2); g.fill(); g.fillStyle = '#111113'; g.beginPath(); g.arc(w * .5, h * .74, h * .09, 0, Math.PI * 2); g.fill(); });
+  rbBox(body, 2.3, 2.0, 2.1, 0, 2.5, 1.9, { base: '#111113', front: '#f28a1a', frontW: .0, win: [[.08, .08, .84, .4]], draw: (g, w, h) => { g.fillStyle = '#f28a1a'; g.fillRect(w * .45, 0, w * .55, h); g.fillStyle = '#0a0d13'; g.fillRect(w * .5, h * .08, w * .4, h * .4); g.fillStyle = '#d7262f'; g.beginPath(); CHARGE.forEach(([x, y], i) => { const px = w * .66 + x * 60, py = h * .72 - y * 25; i ? g.lineTo(px, py) : g.moveTo(px, py); }); g.closePath(); g.fill(); } }, { m: black, top: black, front: rbMat(cabFront, .5), back: black });
+  K.box(2.3, 1.0, 1.0, 0, 1.9, 3.35, black);                                  // nose
+  K.box(2.5, .6, .35, 0, 1.25, 3.75, dark); [-.9, .9].forEach(x => { K.lamp(.3, .25, x, 1.3, 3.93, 0xfff2c8); K.lamp(.3, .25, x * 1.2, .95, 3.93, 0xfff2c8); });
+  K.cylY(.09, 1.9, -1.08, 3.0, 2.9, dark); K.box(.3, .22, .22, -1.08, 3.95, 2.95, dark);   // snorkel
+  [-1.3, 1.3].forEach(x => K.box(.1, .4, .25, x, 2.6, 2.7, dark));
+  K.box(1.4, .15, .3, 0, 3.6, 2.9, dark); [-.45, -.15, .15, .45].forEach(x => K.lamp(.2, .12, x, 3.6, 3.07, 0xfff2c8));
+  rbBox(body, 2.4, 2.2, 2.8, 0, 2.5, -1.7, { base: '#111113', stripe: [.42, .05, '#c3c9d3'], charge: [.5, .55, 110] }, { m: black, top: black, back: black });
+  [-.9, .9].forEach(x => K.lamp(.22, .3, x, 1.5, -3.12, 0xff2a2a));
+  const wheels = wheelSet(car, .78, .52, 1.05, -1.9, 1.9, true);
+  return { car, body, wheels, rearZ: -1.9, track: 1.05, len: 6.2, wid: 2.5 };
+}
+
+/* DJ Jeep: blue and yellow Wrangler with speakers, screens and a light bar on the roof */
+function buildJeep() {
+  const car = new THREE.Group(), body = new THREE.Group(); car.add(body); const K = kit(body);
+  const blue = rbCol(RB.blue, .45, .35), yellow = rbCol(RB.yellow, .5), dark = M.matte(), silver = rbCol(RB.silver, .35, .6), glass = M.glass();
+  rbBox(body, 1.8, .72, 4.2, 0, .98, 0, { base: '#1d3f9c', front: '#f2c21b', frontW: .36, charge: [.5, .5, 95] }, { m: blue, front: yellow, back: blue });
+  K.box(1.72, .14, 1.3, 0, 1.4, 1.45, yellow);                                        // hood
+  K.box(1.7, .78, 2.5, 0, 1.73, -.45, glass);                                         // greenhouse
+  [[-.84, .55], [.84, .55], [-.84, -.5], [.84, -.5], [-.84, -1.6], [.84, -1.6]].forEach(([x, z]) => K.box(.08, .78, .1, x, 1.73, z, blue));
+  K.box(1.76, .08, 2.6, 0, 2.15, -.45, dark);                                         // hardtop
+  [[1.0, 1.45], [-1.0, 1.45], [1.0, -1.45], [-1.0, -1.45]].forEach(([x, z]) => K.box(.34, .3, 1.15, x, 1.08, z, dark));
+  K.box(1.4, .55, .12, 0, 1.08, 2.1, dark); for (let i = -3; i <= 3; i++) K.box(.1, .45, .04, i * .19, 1.08, 2.17, silver);
+  [-.62, .62].forEach(x => { const l = K.add(new THREE.CylinderGeometry(.16, .16, .1, 18), M.light(0xf6f3e6), x, 1.1, 2.14); l.rotation.x = Math.PI / 2; l.castShadow = false; });
+  K.box(1.95, .3, .3, 0, .55, 2.2, dark); K.box(1.95, .28, .25, 0, .55, -2.2, dark);
+  [-.7, .7].forEach(x => K.lamp(.2, .3, x, 1.05, -2.12, 0xff2a2a));
+  const sp = K.cylZ(.46, .3, 0, 1.25, -2.35, M.tyre(), 18); sp.castShadow = true;    // spare
+  // roof rig
+  [[-1.0, -1.1], [1.0, -1.1]].forEach(([x, z]) => { K.box(.5, .82, .5, x, 2.62, z, dark); const c = K.cylX(.17, .04, x + Math.sign(x) * .26, 2.72, z, rbCol(0x3a3a40, .9), 16); c.castShadow = false; K.cylX(.08, .04, x + Math.sign(x) * .26, 2.42, z, rbCol(0x3a3a40, .9), 12); });
+  [[-1.3, .35], [1.3, .35]].forEach(([x, z]) => { K.box(.06, .62, 1.0, x, 2.65, z, dark); K.lamp(.01, .5, x + Math.sign(x) * .035, 2.65, z, 0x2a7fff).scale.set(1, 1, 14); });
+  K.box(1.1, .45, .9, 0, 2.45, -.1, dark); K.box(1.0, .04, .8, 0, 2.68, -.1, rbCol(0x2a2a30, .4, .5));
+  K.box(1.7, .14, .14, 0, 2.95, .9, dark); [-.6, -.2, .2, .6].forEach((x, i) => K.lamp(.2, .12, x, 2.95, .98, i % 2 ? 0xffd0d0 : 0xd0e4ff));
+  const wheels = wheelSet(car, .47, .32, .92, -1.45, 1.45, true);
+  return { car, body, wheels, rearZ: -1.45, track: .92, len: 4.7, wid: 2.2 };
+}
+
+/* KTM X-Bow: a low open track car, black with the red charge on the nose and a big rear wing */
+function buildXbow() {
+  const car = new THREE.Group(), body = new THREE.Group(); car.add(body); const K = kit(body);
+  const black = rbCol(0x121214, .5, .3), dark = M.matte(), yellow = rbCol(RB.yellow, .5), red = rbCol(RB.red, .5);
+  const sideTex = rbSide(512, 160, { base: '#121214', stripe: [.3, .12, '#f2c21b'], charge: [.3, .55, 60] });
+  const tub = extrudeSide([[-1.9, .25], [-1.9, .78], [-1.1, .86], [-.3, 1.02], [.25, 1.0], [.95, .62], [1.95, .48], [1.95, .25]], 1.1, rbMat(sideTex, .5), black, [-1.95, 1.95, .25, 1.02]);
+  body.add(tub);
+  K.box(1.6, .18, .7, 0, .38, 2.05, black); K.box(1.9, .04, .45, 0, .27, 2.2, dark);   // nose and splitter
+  const noseTex = livery(256, 128, (g, w, h) => { g.fillStyle = '#121214'; g.fillRect(0, 0, w, h); g.fillStyle = '#f2c21b'; g.beginPath(); g.arc(w * .5, h * .5, h * .4, 0, Math.PI * 2); g.fill(); g.fillStyle = '#d7262f'; g.beginPath(); CHARGE.forEach(([x, y], i) => { const px = w * .5 + x * 50, py = h * .5 - y * 20; i ? g.lineTo(px, py) : g.moveTo(px, py); }); g.closePath(); g.fill(); });
+  const nose = K.add(new THREE.PlaneGeometry(1.0, .5), rbMat(noseTex, .5), 0, .66, 1.62); nose.rotation.x = -.5; nose.castShadow = false;
+  [[-.75, -.1], [.75, -.1]].forEach(([x, z]) => { K.box(.42, .38, 1.5, x, .5, z, black); K.box(.42, .03, 1.5, x, .7, z, yellow); });   // sidepods
+  K.box(.8, .25, 1.0, 0, .9, -.2, M.glass());                                                                                          // cockpit
+  [-.32, .32].forEach(x => K.cylY(.04, .7, x, 1.3, -.75, dark, 8)); K.box(.74, .08, .08, 0, 1.66, -.75, dark);                           // roll hoop
+  K.box(1.7, .05, .42, 0, 1.3, -1.9, black); K.box(1.7, .015, .42, 0, 1.33, -1.9, yellow); [-.5, .5].forEach(x => K.box(.05, .55, .25, x, 1.02, -1.85, dark));   // wing
+  [[-.65, 1.3], [.65, 1.3], [-.65, -1.3], [.65, -1.3]].forEach(([x, z]) => { K.box(.5, .035, .035, x, .42, z + .14, dark); K.box(.5, .035, .035, x, .42, z - .14, dark); K.box(.5, .035, .035, x, .26, z, dark); });   // arms
+  [-.55, .55].forEach(x => K.lamp(.25, .08, x, .52, 2.4, 0xffffff)); [-.5, .5].forEach(x => K.lamp(.2, .1, x, .55, -1.95, 0xff2a2a));
+  const wheels = wheelSet(car, .33, .28, .82, -1.3, 1.3, false);
+  return { car, body, wheels, rearZ: -1.3, track: .82, len: 4.0, wid: 1.9 };
+}
+
+/* side-by-side buggy: tube cage, red shocks, knobby tyres and the charge on the door panel */
+function buildBuggy() {
+  const car = new THREE.Group(), body = new THREE.Group(); car.add(body); const K = kit(body);
+  const black = rbCol(0x131315, .6, .2), dark = M.matte(), red = rbCol(RB.red, .5, .3), tube = rbCol(0x1f1f23, .5, .4);
+  K.box(1.3, .25, 2.6, 0, .55, 0, dark);
+  K.box(1.3, .42, .95, 0, .88, 1.3, black); K.box(1.1, .06, .5, 0, 1.1, 1.3, dark);
+  rbBox(body, 1.42, .62, 1.3, 0, .98, -.15, { base: '#131315', sun: [.45, .5, .34], charge: [.5, .5, 55] }, { m: black, front: black, back: black });
+  K.box(1.3, .5, .6, 0, .9, -1.1, black); [-.5, .5].forEach(x => K.lamp(.18, .18, x, 1.0, -1.42, 0xff2a2a));
+  [-.3, .3].forEach(x => { K.box(.44, .25, .45, x, 1.05, -.3, dark); K.box(.44, .55, .12, x, 1.45, -.52, dark); });                      // seats
+  [[-.66, .95], [.66, .95], [-.66, -.9], [.66, -.9]].forEach(([x, z]) => K.cylY(.04, 1.1, x, 1.6, z, tube, 8));                           // uprights
+  [-.66, .66].forEach(x => K.box(.08, .08, 1.95, x, 2.14, .02, tube)); [-.9, .95].forEach(z => K.box(1.4, .08, .08, 0, 2.14, z, tube));
+  [-.66, .66].forEach(x => { const d = K.box(.07, .07, 1.3, x, 1.6, 1.5, tube); d.rotation.x = -.55; });                                   // front braces
+  K.box(1.5, .06, 2.0, 0, 2.2, 0, black);                                                                                                  // roof
+  [[-.72, 1.05], [.72, 1.05], [-.72, -1.0], [.72, -1.0]].forEach(([x, z]) => { const s = K.cylY(.035, .6, x, 1.0, z, red, 8); s.rotation.z = Math.sign(x) * .35; K.cylY(.06, .25, x, 1.2, z, dark, 8); });   // shocks
+  [-.42, .42].forEach(x => K.lamp(.2, .12, x, 1.0, 1.78, 0xfff2c8)); K.box(1.3, .08, .08, 0, .72, 1.8, tube);
+  const wheels = wheelSet(car, .47, .36, .88, -1.1, 1.1, true);
+  return { car, body, wheels, rearZ: -1.1, track: .88, len: 3.4, wid: 2.1 };
+}
+
 /* Car handling parameters. Units are metres and seconds; accelerations in m/s² (9.8 = 1 g).
    Zubor is a 3.5 t armoured van with 400 hp and a high centre of gravity: it builds speed slowly, needs a long way to stop,
    leans hard in corners (roll is an underdamped spring, so rocking it left-right adds up), lifts the inner wheels past `tip`
@@ -1259,7 +1405,32 @@ const CARS = {
     L: 2.5, pw: 72, aMax: 4.2, top: 30, rev: 4.5, raMax: 2.4, brake: 10.4, brakeRamp: 9, coast: .8,
     steerMax: .72, steerFall: 11, steerLag: 9, yawLag: 4.6, ayMax: 8.2, grip: 7.6, drift: 2.4, hbGrip: .85, kick: .7,
     rollGain: .1, rollW: 7.5, rollZ: .3, tip: .3, over: .46, pitGain: .08, pitW: 7, pitZ: .4,
-    power: 0, hitK: 1.1, bounce: 1.25, ready: true }
+    power: 0, hitK: 1.1, bounce: 1.25, ready: true },
+  truck: { engine: 'diesel', build: buildTruck, name: 'TRUCK', ready: true,
+    L: 4.4, pw: 95, aMax: 2.5, top: 24, rev: 3.5, raMax: 1.8, brake: 7.8, brakeRamp: 7, coast: .9,
+    steerMax: .55, steerFall: 7, steerLag: 5, yawLag: 3.0, ayMax: 5.8, grip: 5.4, drift: 1.7, hbGrip: .65, kick: .5,
+    rollGain: .2, rollW: 3.4, rollZ: .24, tip: .2, over: .25, pitGain: .14, pitW: 5.5, pitZ: .5,
+    power: 0, hitK: 1.8, bounce: 1.0 },
+  unimog: { engine: 'diesel', build: buildUnimog, name: 'UNIMOG', ready: true,
+    L: 3.8, pw: 70, aMax: 2.3, top: 20, rev: 3.5, raMax: 1.8, brake: 8.0, brakeRamp: 7, coast: 1.0,
+    steerMax: .6, steerFall: 7, steerLag: 6, yawLag: 3.6, ayMax: 6.5, grip: 7.8, drift: 1.8, hbGrip: .75, kick: .5,
+    rollGain: .17, rollW: 4.2, rollZ: .3, tip: .25, over: .38, pitGain: .11, pitW: 6, pitZ: .5,
+    power: 0, hitK: 1.7, bounce: 1.1 },
+  jeep: { engine: 'v8', build: buildJeep, name: 'DJ JEEP', ready: true,
+    L: 2.9, pw: 80, aMax: 3.3, top: 25, rev: 4.2, raMax: 2.1, brake: 9.0, brakeRamp: 8, coast: .85,
+    steerMax: .64, steerFall: 9, steerLag: 7.5, yawLag: 4.4, ayMax: 7.2, grip: 6.9, drift: 2.0, hbGrip: .75, kick: .6,
+    rollGain: .17, rollW: 4.6, rollZ: .3, tip: .23, over: .34, pitGain: .1, pitW: 6.5, pitZ: .5,
+    power: 1, hitK: 1.3, bounce: 1.2 },
+  xbow: { engine: 'i4', build: buildXbow, name: 'X-BOW', ready: true,
+    L: 2.6, pw: 130, aMax: 5.6, top: 38, rev: 4.5, raMax: 2.4, brake: 12.5, brakeRamp: 11, coast: .7,
+    steerMax: .6, steerFall: 15, steerLag: 13, yawLag: 6.5, ayMax: 11.5, grip: 10.5, drift: 3.4, hbGrip: .9, kick: .8,
+    rollGain: .04, rollW: 11, rollZ: .5, tip: .5, over: .7, pitGain: .05, pitW: 9, pitZ: .5,
+    power: 1, hitK: .9, bounce: 1.1 },
+  buggy: { engine: 'i4', build: buildBuggy, name: 'BUGINA', ready: true,
+    L: 2.2, pw: 60, aMax: 3.9, top: 24, rev: 4.5, raMax: 2.4, brake: 9.0, brakeRamp: 8, coast: .9,
+    steerMax: .74, steerFall: 9, steerLag: 9, yawLag: 5.5, ayMax: 7.8, grip: 6.8, drift: 2.4, hbGrip: .85, kick: .75,
+    rollGain: .14, rollW: 6.2, rollZ: .4, tip: .3, over: .46, pitGain: .09, pitW: 7, pitZ: .45,
+    power: 0, hitK: 1.0, bounce: 1.6 }
 };
 let model = null, P = CARS.zubor, carKey = store.get('car', 'zubor'), carIn = 1;
 function setCar(key) {
@@ -2824,6 +2995,8 @@ Object.defineProperty(JP_SUGGA, 'L', { get: () => CARS.sugga.L }); Object.define
 const JENV = { grip: 1, acc: 1, drag: 0, slF: 0, slR: 0, G: 7.6, spd: .4, climb: 1, holdCap: 99, rollK: .55 };   // town and wilderness: slow speeds, the van only leans, it does not tip easily
 const GA = 15;                                                    // gravity while flying off a ramp
 const JP_MINI = { spd: .4, climb: 1.7, tr: .25 };
+const mkJP = (key, spd, climb, tr) => { const o = { spd, climb, tr }; Object.defineProperty(o, 'L', { get: () => CARS[key].L }); Object.defineProperty(o, 'steer', { get: () => CARS[key].steerMax }); return o; };
+const JP_FOR = { truck: mkJP('truck', .4, 1.6, .15), unimog: mkJP('unimog', .4, 3.2, .6), jeep: mkJP('jeep', .4, 2.4, .4), xbow: mkJP('xbow', .42, 1.2, 0), buggy: mkJP('buggy', .4, 2.6, .5) };
 Object.defineProperty(JP_MINI, 'L', { get: () => CARS.mini.L }); Object.defineProperty(JP_MINI, 'steer', { get: () => CARS.mini.steerMax });
 let JP = JP_ZUBOR, SURFX = SURF;
 const fadeEl = document.createElement('div'); fadeEl.id = 'fallFade'; document.body.appendChild(fadeEl);
@@ -3030,7 +3203,7 @@ function jobStart() {
   if (off) buildOffWorld(); else if (!lot) { setWorld('dovoz'); buildJobWorld(); }
   if (!lot) setWorld(off ? 'off' : 'dovoz');
   TASKS = L ? L.tasks : (off ? TASKS_OFF : TASKS_DOVOZ); NT = TASKS.length;
-  JP = carKey === 'sugga' ? JP_SUGGA : carKey === 'mini' ? JP_MINI : JP_ZUBOR; JENV.spd = JP.spd; SURFX = JP.tr ? SURF.map(q => { const k = q.ice ? JP.tr * .22 : JP.tr; return { name: q.name, grip: q.grip + (1 - q.grip) * k, acc: q.acc + (1 - q.acc) * k * .7, drag: q.drag * (1 - k * .5) }; }) : SURF;
+  JP = carKey === 'sugga' ? JP_SUGGA : carKey === 'mini' ? JP_MINI : JP_FOR[carKey] || JP_ZUBOR; JENV.spd = JP.spd; SURFX = JP.tr ? SURF.map(q => { const k = q.ice ? JP.tr * .22 : JP.tr; return { name: q.name, grip: q.grip + (1 - q.grip) * k, acc: q.acc + (1 - q.acc) * k * .7, drag: q.drag * (1 - k * .5) }; }) : SURF;
   Object.assign(job, { i: 0, dmg: 0, t: 0, hold: 0, over: false, resets: 0, rolls: 0, cone: 0, pop: 0, beepT: 0, slowPop: 0, best: store.get(pre + 'Best', 0), bestT: store.get(pre + 'BestT', 0) });
   Object.assign(S, CAR_RESET, { x: st[0], z: st[1], th: st[2], gy: lot ? 0 : terrainH(st[0], st[1]), tp: 0, tr: 0, vy: 0, air: false });
   job.fall = 0; fadeEl.style.opacity = 0; clearMarks(); clearCargo();
@@ -3731,6 +3904,7 @@ function updateCamera(dt, snap) {
   let dT = (8.6 + S.speed * .1) * cp.d, hT = (3.3 + S.speed * .035) * cp.h;
   if (jobW) { dT = (8.6 + S.speed * .15) * cp.d; hT = (6.3 + S.speed * .08) * cp.h; }
   if (offCam) { dT = (9 + S.speed * .2) * cp.d; hT = (6.8 + S.speed * .1) * cp.h; }
+  { const ck = model ? clamp(model.len / 5.6, .9, 1.3) : 1; dT *= ck; hT *= ck; }   // longer cars sit a little farther from the camera
   if (topCam) { dT = 2.4; hT = (job.on ? 17 : 16) + (revCam ? 3 : 0) + S.speed * .12; }
   const kk = hard ? 1 : 1 - Math.exp(-dt * 2.5);
   cam.dist = lerp(cam.dist, dT, kk); cam.h = lerp(cam.h, hT, kk);
@@ -3910,14 +4084,19 @@ const STAT_DEFS = [['RÝCHLOSŤ', 'speed'], ['ZRÝCHLENIE', 'accel'], ['ŠMYK', 
 const INFO = {
   zubor: { desc: 'Pancierová dodávka. 5,7 V8 HEMI, 400 koní, 3,4 t a takmer 6 m. Ťažké zatáčanie, dlhšie brzdenie, ale ladné šmyky.', speed: 86, accel: 54, slide: 90, agil: 44 },
   sugga: { desc: 'Vintage 4x4. Starší diesel okolo 200 koní, ľahké auto, výborná trakcia na svahu a v snehu. Zvládne všetko, aj asfalt.', speed: 48, accel: 52, slide: 55, agil: 92 },
-  mini: { desc: 'Red Bull Mini s obrovskou plechovkou na zadku. Malé, rýchle a ostré na volant. Odomknuté na diaľnici, jazdí všade.', speed: 78, accel: 80, slide: 70, agil: 96 }
+  mini: { desc: 'Red Bull Mini s obrovskou plechovkou na zadku. Malé, rýchle a ostré na volant. Odomknuté na diaľnici, jazdí všade.', speed: 78, accel: 80, slide: 70, agil: 96 },
+  truck: { desc: 'Rozvozový truck. Sedem metrov, vysoká skriňa a diesel. Dlhé brzdenie, veľký polomer otáčania, ale keď raz ide, ide.', speed: 52, accel: 36, slide: 40, agil: 30 },
+  unimog: { desc: 'Unimog. Obrie kolesá, šnorchel a čierna skriňa. Pomalý, ale vylezie všade a nič ho neprevráti.', speed: 40, accel: 34, slide: 35, agil: 48 },
+  jeep: { desc: 'DJ Jeep. Bedne, obrazovky a svetlá na streche, V8 pod kapotou. Pohodový na asfalt aj do terénu, v rýchlej zákrute sa nakláňa.', speed: 62, accel: 62, slide: 66, agil: 70 },
+  xbow: { desc: 'KTM X-Bow z Red Bull Ringu. Otvorený pretekár, 300 koní na 800 kíl. Najrýchlejšie auto v hre, drží ako prilepené. V teréne trpí.', speed: 100, accel: 100, slide: 60, agil: 100 },
+  buggy: { desc: 'Bugina side-by-side. Ľahká, skáče a hádže sa. Na hrbole a do blata ideálna, na asfalte trochu nervózna.', speed: 56, accel: 74, slide: 72, agil: 90 }
 };
 const MODE_TXT = {
   free: 'Bez času a bez tlaku. Jazdi, driftuj a zbieraj combo.',
   t60: () => 'Minúta na čo najvyššie skóre.' + (game.best ? ' Tvoj rekord: ' + fmt(game.best) + '.' : ''),
   train: () => 'Levely krok za krokom, všetky otvorené. Tri hviezdy sú za rýchly a čistý prejazd. Sugga a odomknuté autá zvládnu parkovisko, mesto aj divočinu, Zubor len parkovisko a mesto.',
   tokyo: () => 'Noc, neón a svetelné zóny. Prejdi cez každú v drifte, zóny idú po kruhu. 90 sekúnd.' + (store.get('bestTk', 0) ? ' Tvoj rekord: ' + fmt(store.get('bestTk', 0)) + '.' : ''),
-  hwy: () => 'Prvá osoba, 8 km diaľnice. Drž pruh, radiď 1–6, dávaj smerovky, predbiehaj zľava, pozor na radary. Do áut sa dá búrať. Občas ťa vyzve tajné auto: predbehni ho alebo ho vybúraj a odomkne sa ti. Klávesy: Q/E smerovky, Z/X radenie, T automat.' + (store.get('hwyBest', 0) ? ' Rekord: ' + fmt(store.get('hwyBest', 0)) + '.' : '')
+  hwy: () => 'Prvá osoba, 8 km diaľnice. Drž pruh, radiď 1–6, dávaj smerovky, predbiehaj zľava, pozor na radary. Do áut sa dá búrať. Občas ťa vyzve tajné Red Bull auto: predbehni ho alebo ho vybúraj a odomkne sa ti. Je ich šesť. Klávesy: Q/E smerovky, Z/X radenie, T automat.' + (store.get('hwyBest', 0) ? ' Rekord: ' + fmt(store.get('hwyBest', 0)) + '.' : '')
 };
 const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>';
 const BADGES = [
@@ -3960,7 +4139,8 @@ function countUp(el, to, ms) {
 
 /* ---------- renderers ---------- */
 function renderCar() {
-  $$('#carCards .card').forEach(c => { c.hidden = !hwUnlocked(c.dataset.car); });
+  $$('#carCards .card').forEach(c => { const ok = hwUnlocked(c.dataset.car); c.classList.toggle('lock', !ok); c.disabled = !ok; if (!ok) { c.querySelector('.chip').textContent = 'ZAMKNUTÉ'; c.querySelector('small').textContent = 'Tajný pretek na diaľnici'; } });
+  { const on = $('#carCards .card[data-car="' + carKey + '"]'); if (on && on.scrollIntoView) try { on.scrollIntoView({ block: 'nearest', inline: 'nearest' }); } catch (e) {} }
   const I = INFO[carKey], box = $('#carStats');
   $$('#carCards .card').forEach(c => c.classList.toggle('on', c.dataset.car === carKey));
   $('#carDesc').textContent = I.desc;
@@ -4198,7 +4378,20 @@ async function share() {
 const HW = { on: false, built: false, g: null, saved: [], p: null, cars: [], t: 0, over: false, hud: 0, cl: 0, shake: 0 };
 const HLEN = 8000, HLANE = [3.6, 0, -3.6];            // lane 0 = right, 1 = middle, 2 = left (d grows to the right)
 const HWP = { len: 5, w: 2 };
-const HW_SPECIALS = [{ id: 'mini', name: 'RED BULL MINI', img: 'img/car-mini.webp' }];
+const HW_SPECIALS = [
+  { id: 'mini', name: 'RED BULL MINI', img: 'img/car-mini.webp', hv: 44 },
+  { id: 'jeep', name: 'DJ JEEP', img: 'img/car-jeep.webp', hv: 41 },
+  { id: 'buggy', name: 'BUGINA', img: 'img/car-buggy.webp', hv: 39 },
+  { id: 'truck', name: 'RED BULL TRUCK', img: 'img/car-truck.webp', hv: 37 },
+  { id: 'unimog', name: 'UNIMOG', img: 'img/car-unimog.webp', hv: 35 },
+  { id: 'xbow', name: 'KTM X-BOW', img: 'img/car-xbow.webp', hv: 52 }
+];
+// the race opponent is the real car model, so you see what you are about to win
+function hwMkSpecial(id) {
+  const m = CARS[id].build(); m.car.traverse(o => { if (o.isMesh) { o.castShadow = false; o.receiveShadow = false; } });
+  const dummy = { material: { color: { setHex() {} } } };
+  return { g: m.car, m, tail: dummy, bm: [{ visible: false }, { visible: false }], len: m.len, w: m.wid, kind: 'sp' };
+}
 function hwUnlocked(id) { return id === 'zubor' || id === 'sugga' || store.get('unl', []).indexOf(id) >= 0; }
 function hwUnlock(id) {
   if (hwUnlocked(id)) return; const u = store.get('unl', []); u.push(id); store.set('unl', u);
@@ -4355,7 +4548,7 @@ function hwSpawn(c, first) {
     const behind = !first && lane === 2 && Math.random() < .35 && P.v < 40;
     const s = behind ? P.s - 110 - Math.random() * 90 : P.s + (first ? 70 : 330) + Math.random() * (first ? 420 : 160);
     if (!hwLaneFree(lane, s, vd, c) || HW.cars.some(o => o !== c && Math.abs(o.d - HLANE[lane]) < 2.7 && Math.abs(o.s - s) < 50)) continue;
-    if (!c.g || c.kind !== kind) { if (c.g) HW.g.remove(c.g); Object.assign(c, hwMkCar(kind)); HW.g.add(c.g); }
+    if (!c.g || c.kind !== kind) { if (c.g) HW.g.remove(c.g); c.m = null; Object.assign(c, hwMkCar(kind)); HW.g.add(c.g); }
     Object.assign(c, { s, d: HLANE[lane], lane, to: lane, chg: 0, tc: 0, ck: 1 + Math.random() * 2, v: vd, vd, brk: 0, vb: 0, bl: 0, side: Math.sign(s - P.s), cool: 0, dPrev: HLANE[lane], brakeOn: false, mark: 0, sp: 0, ko: 0, koYaw: 0 });
     return true;
   }
@@ -4554,10 +4747,10 @@ function hwRaceStart() {
   for (let tries = 0; tries < 10; tries++) {
     const lane = Math.floor(Math.random() * 3), s = P.s + 190 + Math.random() * 60;
     if (!hwLaneFree(lane, s, 44, c) || HW.cars.some(o => o !== c && o.s > -1e5 && Math.abs(o.d - HLANE[lane]) < 2.7 && Math.abs(o.s - s) < 45)) continue;
-    if (c.g) HW.g.remove(c.g); Object.assign(c, hwMkCar('rb')); HW.g.add(c.g);
-    Object.assign(c, { s, d: HLANE[lane], lane, to: lane, chg: 0, tc: 0, ck: .6, v: Math.max(40, P.v), vd: 44 + Math.random() * 2, brk: 0, vb: 0, bl: 0, side: 1, cool: 0, dPrev: HLANE[lane], brakeOn: false, mark: 0, sp: sp.id, ko: 0, koYaw: 0 });
+    if (c.g) HW.g.remove(c.g); c.m = null; Object.assign(c, hwMkSpecial(sp.id)); HW.g.add(c.g);
+    Object.assign(c, { s, d: HLANE[lane], lane, to: lane, chg: 0, tc: 0, ck: .6, v: Math.max(Math.min(40, sp.hv - 4), P.v), vd: sp.hv + Math.random() * 2, brk: 0, vb: 0, bl: 0, side: 1, cool: 0, dPrev: HLANE[lane], brakeOn: false, mark: 0, sp: sp.id, ko: 0, koYaw: 0 });
     HW.race = { c, id: sp.id, name: sp.name, t: 0, hud: 0 };
-    popText('TAJNÝ PRETEK! ' + sp.name, true); sound.tick(); hwRaceUi(true, sp.name); return;
+    popText('TAJNÝ PRETEK! ' + sp.name, true); sound.tick(); hwRaceUi(true, sp.name); if (navigator.vibrate && settings.vib) { try { navigator.vibrate([40, 60, 40]); } catch (e) {} } return;
   }
   HW.rcT = 2;
 }
@@ -4662,6 +4855,7 @@ function hwyRender(dt) {
     if (c.s < -1e5 || !c.g) { if (c.g) c.g.visible = false; continue; }
     const q = hWp(c.s, c.d), lat = (c.d - c.dPrev) / Math.max(dt, .008); c.dPrev = c.d;
     c.g.visible = true; const ko = c.ko > 0; c.g.position.set(q.x, ko ? Math.max(0, Math.sin(c.koT * 4.5) * 1.3) : 0, q.z); c.g.rotation.y = q.p - Math.atan2(ko ? 0 : lat, Math.max(c.v, 4)) + (ko ? c.koYaw : 0); c.g.rotation.z = ko ? Math.sin(c.koT * 7) * .4 : 0;
+    if (c.m) for (const w of c.m.wheels) w.spin.rotation.x += c.v * dt / Math.max(.2, w.pivot.position.y);
     c.tail.material.color.setHex(c.brakeOn || c.brk > 0 ? 0xff2418 : 0x5a0c0c);
     const on = Math.floor(HW.t / .36) % 2 === 0; c.bm[1].visible = on && c.bl === -1; c.bm[0].visible = on && c.bl === 1;   // local +x is the car's left
   }
@@ -4752,7 +4946,7 @@ function tkUpdate(dt) {
 /* ---------- wiring ---------- */
 $('#nav').addEventListener('click', e => { const b = e.target.closest('.nv'); if (b) setTab(b.dataset.tab); });
 $('#carCards').addEventListener('click', e => {
-  const c = e.target.closest('.card'); if (!c) return;
+  const c = e.target.closest('.card'); if (!c || c.disabled) return;
   stageShow(c.dataset.car); store.set('car', carKey);
   if (isLv(pendingMode)) { const cur = LEVELS.find(x => x.id === LV.sel); if (!cur || (cur.world === 'off' && carKey === 'zubor')) { const n = LEVELS.find(x => x.world === 'lot' && !x.mission); LV.sel = n.id; store.set('lvSel', LV.sel); } }
   renderCar(); renderMode();
@@ -4836,7 +5030,7 @@ toMenu(true); clearMarks();
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { layoutStage(); });
 requestAnimationFrame(() => { layoutStage(); updateCamera(0, true); });
 requestAnimationFrame(loop);
-window.__drift = { hwUnlock, hwUnlocked, hwRaceStart, renderer, HW, TK, hwBlink, hwShift, hwAuto, hwyStep, hwyRender, hwyEnd, pickMode: m => { pendingMode = m; renderMode(); }, get CUROBS() { return OBS; }, setGear, get gear() { return gear; }, setPedal, touch, readInput, keys, solids, cones, physics, updateCones, setCar, CARS, LEVELS, LV, store, renderMode, curLevel, lvCones, endJob, steerMaxAt: v => P.steerMax / (1 + Math.pow(Math.max(0, Math.abs(v) - 4) / P.steerFall, 1.3)), get P() { return P; }, rp, ORT, offUpdate, dvUpdate, HOLES: () => HOLES, holeAt, sg, stageSnap, stageReady: () => modelReady(sg.target), sound, get JP() { return JP; }, placeMarker, jobPhysics, jobDamage, jobTasks, jobFX, carShape, job, get TASKS() { return TASKS; }, TRAIL, WALK, OBS, carHits, jobRespawn, jobStart, jobSetWorld, buildJobWorld, terrainH, trailAt, surfAt, endJob, jobScore, S, input, game, camera, stage, music, settings, stats, get model() { return model; }, scene, setTab, startRun, toMenu, endRun, togglePause };
+window.__drift = { HW_SPECIALS, hwUnlock, hwUnlocked, hwRaceStart, renderer, HW, TK, hwBlink, hwShift, hwAuto, hwyStep, hwyRender, hwyEnd, pickMode: m => { pendingMode = m; renderMode(); }, get CUROBS() { return OBS; }, setGear, get gear() { return gear; }, setPedal, touch, readInput, keys, solids, cones, physics, updateCones, setCar, CARS, LEVELS, LV, store, renderMode, curLevel, lvCones, endJob, steerMaxAt: v => P.steerMax / (1 + Math.pow(Math.max(0, Math.abs(v) - 4) / P.steerFall, 1.3)), get P() { return P; }, rp, ORT, offUpdate, dvUpdate, HOLES: () => HOLES, holeAt, sg, stageSnap, stageReady: () => modelReady(sg.target), sound, get JP() { return JP; }, placeMarker, jobPhysics, jobDamage, jobTasks, jobFX, carShape, job, get TASKS() { return TASKS; }, TRAIL, WALK, OBS, carHits, jobRespawn, jobStart, jobSetWorld, buildJobWorld, terrainH, trailAt, surfAt, endJob, jobScore, S, input, game, camera, stage, music, settings, stats, get model() { return model; }, scene, setTab, startRun, toMenu, endRun, togglePause };
 })();
 </script>
 </html>

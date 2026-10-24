@@ -409,21 +409,12 @@ body:not(.hwy) .hwhud,body:not(.hwy) .hwctl{display:none}
 
 /* gear dial: round knob with P R N D on a little half-circle above it and an arrow that shows the gear; sits above the gas button */
 .gascol{display:flex;flex-direction:column;align-items:center;gap:6px}
-.gear{position:relative;width:132px;height:92px;flex:none;display:none;touch-action:none}
-body.touch.playing .gear{display:block}
-.gear::before{content:"";position:absolute;left:50%;top:66px;width:124px;height:124px;margin:-62px 0 0 -62px;border-radius:50%;background:var(--glass);border:1px solid var(--line);clip-path:inset(0 0 50% 0)}
-.garc b{position:absolute;left:50%;top:66px;width:26px;height:26px;margin:-13px 0 0 -13px;display:grid;place-items:center;font:700 15px/1 var(--hud);color:#7d8491;border-radius:50%;pointer-events:auto;
-  transform:rotate(var(--t)) translateY(-47px) rotate(calc(var(--t) * -1));transition:background .12s,color .12s}
-.garc b.on{color:#14100a;background:var(--amber);box-shadow:0 0 10px rgba(255,178,26,.55)}
-.garc b.on[data-g="P"]{background:#ff6b6b;box-shadow:0 0 10px rgba(255,107,107,.55)}
-.garc b.on[data-g="D"]{background:#5be08a;box-shadow:0 0 10px rgba(91,224,138,.5)}
-.gknob{position:absolute;left:50%;top:40px;width:52px;height:52px;margin-left:-26px;border-radius:50%;padding:4px;touch-action:none;cursor:grab;background:radial-gradient(circle at 34% 26%,#fff 0,#d6dae1 10%,#868b94 42%,#23262c 100%);box-shadow:0 3px 10px rgba(0,0,0,.65),inset 0 0 0 1px rgba(255,255,255,.4)}
-.gknob i{display:block;width:100%;height:100%;border-radius:50%;--a:0deg;background:repeating-conic-gradient(from var(--a),#20232a 0 6deg,#363a43 6deg 12deg);box-shadow:inset 0 3px 6px rgba(255,255,255,.2),inset 0 -4px 8px rgba(0,0,0,.65)}
-.gknob u{position:absolute;inset:0;transform:rotate(var(--r,-60deg));pointer-events:none;transition:transform .08s}
-.gknob u::before{content:"";position:absolute;left:50%;top:-9px;margin-left:-5px;border:5px solid transparent;border-top:0;border-bottom:8px solid var(--amber);filter:drop-shadow(0 0 3px rgba(255,178,26,.8))}
-.gknob u::after{content:"";position:absolute;left:50%;top:6px;width:3px;height:12px;margin-left:-1.5px;border-radius:2px;background:var(--amber);box-shadow:0 0 5px rgba(255,178,26,.9)}
-.gknob.drag{cursor:grabbing}
-.gknob.drag u{transition:none}
+.gear{position:relative;width:62px;flex:none;display:none;flex-direction:column;gap:3px;padding:4px;border-radius:15px;background:var(--glass);border:1px solid var(--line);touch-action:none;-webkit-user-select:none;user-select:none}
+body.touch.playing .gear{display:flex}
+.gear b{height:31px;border-radius:10px;display:grid;place-items:center;font:700 19px/1 var(--hud);color:#7d8491;background:rgba(255,255,255,.05);transition:background .12s,color .12s;pointer-events:none}
+.gear b.on{color:#14100a;background:var(--amber);box-shadow:0 0 10px rgba(255,178,26,.55)}
+.gear b.on[data-g="P"]{background:#ff6b6b;box-shadow:0 0 10px rgba(255,107,107,.55)}
+.gear b.on[data-g="D"]{background:#5be08a;box-shadow:0 0 10px rgba(91,224,138,.5)}
 .gear.bad{animation:gshake .28s}
 @keyframes gshake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 .padcol{display:flex;flex-direction:column;gap:12px;align-items:center}
@@ -433,18 +424,17 @@ body.touch.playing .gear{display:block}
 .pad.gas svg{width:34px;height:34px}
 .pad.br{width:84px;height:72px}
 .pad.hb{width:72px;height:72px}
-@media (max-width:780px){body.hwy .slider{width:160px}.hwctl{gap:4px;left:calc(50% - 14px)}.hwctl button{width:38px;height:38px;border-radius:11px}.hwctl button svg{width:19px;height:19px}.hwctl .gn{width:34px}.hwctl .gn b{font-size:24px}.hwctl .au{width:40px;height:28px;margin-left:2px}}
-@media (max-height:430px){.gear{zoom:.88}.pad.gas{height:102px;width:96px}.padcol{gap:10px}}
+@media (max-height:430px){.gear b{height:27px;font-size:17px}.pad.gas{height:96px;width:96px}.padcol{gap:10px}}
 
 .hwrace{position:fixed;z-index:8;left:50%;transform:translateX(-50%);top:calc(52px + env(safe-area-inset-top,0px));padding:5px 14px;border-radius:999px;background:rgba(10,12,18,.75);border:1px solid var(--amber);color:var(--amber);font:700 12px var(--hud);letter-spacing:.08em;white-space:nowrap;animation:hwk2 .9s steps(2) infinite;pointer-events:none}
 @keyframes hwk2{50%{background:rgba(255,178,26,.22)}}
 body:not(.hwy) .hwrace{display:none}
-.unlock{position:fixed;z-index:50;left:50%;top:50%;transform:translate(-50%,-50%);padding:14px 26px 16px;border-radius:22px;background:rgba(8,10,16,.93);border:2px solid var(--amber);text-align:center;pointer-events:none;animation:ulk .5s cubic-bezier(.2,1.4,.4,1);box-shadow:0 12px 50px rgba(0,0,0,.6)}
-.unlock img{display:block;width:170px;max-width:38vw;margin:0 auto 2px;filter:drop-shadow(0 6px 8px rgba(0,0,0,.6))}
-.unlock small{display:block;font:700 11px var(--hud);letter-spacing:.2em;color:var(--amber)}
-.unlock b{display:block;font:700 italic 26px/1.15 var(--hud);color:#fff}
-.unlock i{display:block;font-style:normal;font-size:12px;opacity:.75;margin-top:2px}
-@keyframes ulk{from{transform:translate(-50%,-50%) scale(.55);opacity:0}}
+.unlock{position:fixed;z-index:50;left:50%;top:calc(50px + env(safe-area-inset-top,0px));transform:translateX(-50%);padding:7px 16px;border-radius:999px;background:rgba(8,10,16,.9);border:1px solid var(--amber);display:flex;align-items:center;gap:10px;white-space:nowrap;pointer-events:none;animation:ulk .4s cubic-bezier(.2,1.3,.4,1);box-shadow:0 8px 30px rgba(0,0,0,.5)}
+.unlock img{width:54px;height:auto;filter:drop-shadow(0 3px 4px rgba(0,0,0,.6))}
+.unlock small{display:block;font:700 9px var(--hud);letter-spacing:.2em;color:var(--amber)}
+.unlock b{display:block;font:700 italic 16px/1.1 var(--hud);color:#fff}
+.unlock i{display:none}
+@keyframes ulk{from{transform:translateX(-50%) translateY(-14px);opacity:0}}
 </style>
 
 <canvas id="gl" aria-label="Drift hra"></canvas>
@@ -468,14 +458,7 @@ body:not(.hwy) .hwrace{display:none}
   <div class="hwdmg"><small>ŠKODA</small><b id="hwDmg">0 %</b><div class="jbar"><i id="hwDmgBar"></i></div></div>
   <div class="hwlim" id="hwSpd"><b>130</b></div>
 </div>
-<div class="hwctl" id="hwCtl" hidden>
-  <button type="button" class="bk" id="hwBL" aria-label="Ľavá smerovka"><svg viewBox="0 0 24 24"><path d="M15 5l-8 7 8 7z" fill="currentColor"/></svg></button>
-  <button type="button" class="gs" id="hwGd" aria-label="Podradiť"><svg viewBox="0 0 24 24"><path d="M5 9l7 8 7-8z" fill="currentColor"/></svg></button>
-  <div class="gn"><b id="hwG">3</b><small>STUPEŇ</small></div>
-  <button type="button" class="gs" id="hwGu" aria-label="Preradiť"><svg viewBox="0 0 24 24"><path d="M5 15l7-8 7 8z" fill="currentColor"/></svg></button>
-  <button type="button" class="bk" id="hwBR" aria-label="Pravá smerovka"><svg viewBox="0 0 24 24"><path d="M9 5l8 7-8 7z" fill="currentColor"/></svg></button>
-  <button type="button" class="au" id="hwAuto">MAN</button>
-</div>
+<div class="hwctl" id="hwCtl" hidden></div>
 <div class="job" id="jobHud" hidden>
   <div class="jlevel" id="jLevel" hidden></div>
   <div class="jtop"><svg class="jarrow" id="jArrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l8 19-8-5-8 5z" fill="currentColor"/></svg>
@@ -495,10 +478,7 @@ body:not(.hwy) .hwrace{display:none}
     <div class="pad br" id="padBr"><span class="lab">BRZDA</span></div>
   </div>
   <div class="gascol">
-    <div class="gear" id="gear" aria-label="Radenie">
-      <div class="garc"><b data-g="P" style="--t:-60deg">P</b><b data-g="R" style="--t:-20deg">R</b><b data-g="N" style="--t:20deg">N</b><b data-g="D" style="--t:60deg">D</b></div>
-      <div class="gknob" id="gKnob"><i id="gKnobI"></i><u></u></div>
-    </div>
+    <div class="gear" id="gear" aria-label="Radenie"><b data-g="P">P</b><b data-g="R">R</b><b data-g="N">N</b><b data-g="D">D</b></div>
     <div class="pad gas" id="padGas"><i class="gf" id="gasF"></i><span class="lab"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3.5h7.5l2 14a2 2 0 0 1-2 2.3H9.6a2 2 0 0 1-2-2.3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9.5 8h5M9.8 11.5h4.8M10 15h4.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>PLYN</span></div>
   </div>
 </div>
@@ -3776,7 +3756,7 @@ function readInput(dt) {
 }
 /* ---- gear dial: P R N D, rotate the round knob ---- */
 const GEARS = ['P', 'R', 'N', 'D']; let gear = 'P', gearBad = 0;
-const gearEl = $('#gear'), gKnob = $('#gKnob'), gKnobI = $('#gKnobI'), gasF = $('#gasF');
+const gearEl = $('#gear'), gasF = $('#gasF');
 function gearAllowed(g) {
   const v = S.vF || 0;
   if (g === 'P') return Math.abs(v) < 1.2;
@@ -3784,11 +3764,8 @@ function gearAllowed(g) {
   if (g === 'D') return v > -1.5;
   return true;
 }
-function gearShow(angle) {
-  const i = GEARS.indexOf(gear);
-  gKnobI.style.setProperty('--a', (angle === undefined ? i * 40 : angle) + 'deg');
-  gKnob.style.setProperty('--r', ((angle === undefined ? i * 40 : angle) - 60) + 'deg');
-  gearEl.querySelectorAll('.garc b').forEach(b => b.classList.toggle('on', b.dataset.g === gear));
+function gearShow() {
+  gearEl.querySelectorAll('b').forEach(b => b.classList.toggle('on', b.dataset.g === gear));
   gasFv = -1;
 }
 function setPedal() {}   // the 0 to 100 lever is gone: one gas button now
@@ -3811,20 +3788,14 @@ function setGear(g, force) {
   gearShow();
   return !refused;
 }
-(function gearDial() {
-  let id = null, a0 = 0, i0 = 0;
-  const ang = e => { const r = gKnob.getBoundingClientRect(); return Math.atan2(e.clientY - (r.top + r.height / 2), e.clientX - (r.left + r.width / 2)) * 180 / Math.PI; };
-  gKnob.addEventListener('pointerdown', e => { e.preventDefault(); try { gKnob.setPointerCapture(e.pointerId); } catch (x) {} id = e.pointerId; a0 = ang(e); i0 = GEARS.indexOf(gear); gKnob.classList.add('drag'); sound.init(); });
-  gKnob.addEventListener('pointermove', e => {
-    if (e.pointerId !== id) return;
-    let d = ang(e) - a0; d = ((d + 540) % 360) - 180;
-    const t = clamp(Math.round(i0 + d / 40), 0, 3);
-    if (GEARS[t] !== gear) setGear(GEARS[t]);
-    gearShow(clamp(i0 * 40 + d, 0, 120));
-  });
-  const end = e => { if (e.pointerId !== id) return; id = null; gKnob.classList.remove('drag'); gearShow(); };
-  gKnob.addEventListener('pointerup', end); gKnob.addEventListener('pointercancel', end);
-  gearEl.querySelectorAll('.garc b').forEach(b => b.addEventListener('pointerdown', e => { e.preventDefault(); setGear(b.dataset.g); }));
+(function gearStack() {
+  // tap a letter, or put a finger down and slide it over the stack like a lever; the letters run P R N D top to bottom
+  let id = null;
+  const pick = e => { const r = gearEl.getBoundingClientRect(), i = clamp(Math.floor((e.clientY - r.top) / (r.height / 4)), 0, 3); if (GEARS[i] !== gear) setGear(GEARS[i]); };
+  gearEl.addEventListener('pointerdown', e => { e.preventDefault(); try { gearEl.setPointerCapture(e.pointerId); } catch (x) {} id = e.pointerId; sound.init(); pick(e); });
+  gearEl.addEventListener('pointermove', e => { if (e.pointerId === id) pick(e); });
+  const end = e => { if (e.pointerId === id) id = null; };
+  gearEl.addEventListener('pointerup', end); gearEl.addEventListener('pointercancel', end);
 })();
 function hold(el, key) {
   const on = e => { e.preventDefault(); try { el.setPointerCapture(e.pointerId); } catch (x) {} touch[key] = 1; el.classList.add('on'); sound.init(); };
@@ -4106,7 +4077,7 @@ const MODE_TXT = {
   off: () => 'Celá divočina: lúka, hrbole, bažina, jazero, ľad a vrchol. Zubor sa tu prepne na Suggu.' + (store.get('offBest', 0) ? ' Rekord: ' + fmt(store.get('offBest', 0)) + ' bodov.' : ''),
   train: () => 'Levely krok za krokom, všetky otvorené. Tri hviezdy sú za rýchly a čistý prejazd. Sugga a odomknuté autá zvládnu parkovisko, mesto aj divočinu, Zubor len parkovisko a mesto.',
   tokyo: () => 'Noc, neón a svetelné zóny. Prejdi cez každú v drifte, zóny idú po kruhu. 90 sekúnd.' + (store.get('bestTk', 0) ? ' Tvoj rekord: ' + fmt(store.get('bestTk', 0)) + '.' : ''),
-  hwy: () => 'Prvá osoba, 8 km diaľnice. Drž pruh, radiď 1–6, dávaj smerovky, predbiehaj zľava, pozor na radary. Do áut sa dá búrať. Občas ťa vyzve tajné Red Bull auto: predbehni ho alebo ho vybúraj a odomkne sa ti. Je ich šesť. Klávesy: Q/E smerovky, Z/X radenie, T automat.' + (store.get('hwyBest', 0) ? ' Rekord: ' + fmt(store.get('hwyBest', 0)) + '.' : '')
+  hwy: () => 'Prvá osoba, 8 km diaľnice, automat. Predbiehaj, drž sa cesty a nenabúraj, každý náraz je −40. Občas ťa vyzve tajné Red Bull auto: predbehni ho alebo ho vybúraj a odomkne sa ti. Je ich šesť.' + (store.get('hwyBest', 0) ? ' Rekord: ' + fmt(store.get('hwyBest', 0)) + '.' : '')
 };
 const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>';
 const BADGES = [
@@ -4318,7 +4289,7 @@ function startRun() {
     game.mode = L ? 'job' : pendingMode; job.kind = L ? L.world : 'dovoz'; game.running = true; game.paused = false; game.view = 'play'; game.score = 0; game.combo = 0; game.mult = 1; game.comboT = 0; game.time = game.mode === 'tokyo' ? 90 : 60;
     coneHits = 0; runMaxSpd = 0; runBestCombo = 0; stats.runs++;
     sound.pause(false);
-    gear = 'P'; gearShow(); if (isTouch) setTimeout(() => { if (game.running && gear === 'P') popText('OTOČ VOLIČ NA D'); }, 700);
+    gear = 'P'; gearShow(); if (isTouch) setTimeout(() => { if (game.running && gear === 'P') popText('PREPNI NA D'); }, 700);
     if (game.mode === 'job') { jobSetWorld(true); jobStart(); } else { jobSetWorld(false); lvCones(null); setAmbient(true); resetCar(); if (game.mode === 'tokyo') tkNight(true); }
     $('#jobHud').hidden = game.mode !== 'job'; $('#resetBtn').hidden = game.mode === 'job';
     menuEl.hidden = true; endEl.hidden = true; pauseEl.hidden = true; $('#hud').hidden = false;
@@ -4408,8 +4379,8 @@ function hwUnlocked(id) { return id === 'zubor' || id === 'sugga' || store.get('
 function hwUnlock(id) {
   if (hwUnlocked(id)) return; const u = store.get('unl', []); u.push(id); store.set('unl', u);
   const sp = HW_SPECIALS.find(s => s.id === id) || { name: id.toUpperCase(), img: '' }, t = $('#unlockT');
-  t.innerHTML = (sp.img ? '<img src="' + sp.img + '" alt="">' : '') + '<small>ODOMKNUTÉ AUTO</small><b>' + sp.name + '</b><i>Nájdeš ho vo výbere auta, jazdí vo všetkých svetoch.</i>';
-  t.hidden = false; t.style.animation = 'none'; void t.offsetWidth; t.style.animation = ''; clearTimeout(hwUnlock.t); hwUnlock.t = setTimeout(() => { t.hidden = true; }, 4200);
+  t.innerHTML = (sp.img ? '<img src="' + sp.img + '" alt="">' : '') + '<span><small>ODOMKNUTÉ AUTO</small><b>' + sp.name + '</b></span>'; HW.newCar = sp.name;
+  t.hidden = false; t.style.animation = 'none'; void t.offsetWidth; t.style.animation = ''; clearTimeout(hwUnlock.t); hwUnlock.t = setTimeout(() => { t.hidden = true; }, 3200);
   if (navigator.vibrate && settings.vib) { try { navigator.vibrate([30, 40, 60]); } catch (e) {} }
   renderCar();
 }
@@ -4611,8 +4582,7 @@ function hwTraffic(dt) {
   }
 }
 function hwOvertake(c) {
-  const P = HW.p; if (P.lane < c.lane && Math.abs(c.d - P.d) < 8) { P.fines++; P.score -= 100; popText('PREDBIEHANIE SPRAVA −100', true); sound.tick(); return; }
-  P.over++; P.score += 100; if (HW.t - P.lastOv < 4) { P.score += 40; } P.lastOv = HW.t; popText('PREDBEHNUTÉ +100');
+  const P = HW.p; P.over++; P.score += 100; if (HW.t - P.lastOv < 4) { P.score += 40; } P.lastOv = HW.t; popText('PREDBEHNUTÉ +100');
 }
 
 /* ---------- the cockpit ---------- */
@@ -4681,7 +4651,7 @@ function hwScreen() {
   g.fillText(next ? 'RADAR o ' + (next - P.s > 999 ? ((next - P.s) / 1000).toFixed(1).replace('.', ',') + ' km' : Math.round((next - P.s) / 10) * 10 + ' m') : 'ŽIADNY RADAR', 16, 96);
   g.fillStyle = '#9fb3c8'; g.font = '700 14px Arial'; g.fillText('LIMIT ' + HLIMIT + ' km/h', 16, 122);
   if (HW.race) { const gap = HW.race.c.s - P.s; g.fillStyle = '#ffb21a'; g.font = '700 15px Arial'; g.fillText(HW.race.name + (gap > 0 ? ' pred tebou ' : ' za tebou ') + Math.abs(Math.round(gap)) + ' m', 16, 146); }
-  else { g.fillStyle = '#5f6f80'; g.font = '700 13px Arial'; g.fillText('Vybúrané: ' + (P.kos || 0) + '   Predbehnuté: ' + P.over, 16, 146); }
+  else { g.fillStyle = '#5f6f80'; g.font = '700 13px Arial'; g.fillText('Nárazy: ' + (P.kos || 0) + '   Predbehnuté: ' + P.over, 16, 146); }
   HW.st.needsUpdate = true;
 }
 function hwCluster(kmh, rpm, g, blinkOn) {
@@ -4693,9 +4663,7 @@ function hwCluster(kmh, rpm, g, blinkOn) {
   };
   dial(104, 102, 92, kmh, 260, 20, v => v % 40 === 0 ? v : '', 0); dial(408, 102, 92, rpm / 1000, 7, 1, v => v, 6.2);
   x.fillStyle = '#fff'; x.font = '700 italic 62px Arial'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(Math.round(kmh), 256, 76); x.fillStyle = '#9a9aa6'; x.font = '700 16px Arial'; x.fillText('km/h', 256, 108);
-  x.fillStyle = HW.p && HW.p.auto ? '#3ddc84' : '#ffb21a'; x.font = '700 28px Arial'; x.fillText((HW.p && HW.p.auto ? 'A' : 'M') + g, 256, 138);
-  x.fillStyle = blinkOn && HW.p.bl < 0 ? '#3ddc84' : '#17261d'; x.beginPath(); x.moveTo(190, 28); x.lineTo(222, 14); x.lineTo(222, 42); x.fill();
-  x.fillStyle = blinkOn && HW.p.bl > 0 ? '#3ddc84' : '#17261d'; x.beginPath(); x.moveTo(322, 28); x.lineTo(290, 14); x.lineTo(290, 42); x.fill();
+  x.fillStyle = HW.p && HW.p.auto ? '#3ddc84' : '#ffb21a'; x.font = '700 28px Arial'; x.fillText('D' + g, 256, 138);
   HW.ct.needsUpdate = true;
 }
 
@@ -4721,8 +4689,8 @@ function hwyLeave() {
 function hwyStart() {
   hwyEnter();
   for (const c of HW.cars) if (c.g) HW.g.remove(c.g); HW.cars = [];
-  HW.t = 0; HW.over = false; HW.race = null; HW.rcT = 28 + Math.random() * 20; hwRaceUi(false); HW.ev = 14; HW.hud = 0; HW.shake = 0; HW.radarDone = 0;
-  const p = HW.p = { s: 0, d: HLANE[0], psi: 0, st: 0, v: 22, g: 3, auto: store.get('hwAuto', false), rpm: 3000, cut: 0, bl: 0, blT: 0, lane: 0, prevLane: 0, laneT: 0, blOff: -9, score: 0, kos: 0, races: 0, over: 0, fines: 0, dmg: 0, lastOv: -9, dist: 0, wind: 0, strad: 0, tail: 0, cool: 0, shiftT: 0, bogT: 0, lastBl: 0, wheel: 0, ok: 0 };
+  HW.t = 0; HW.over = false; HW.newCar = ''; HW.race = null; HW.rcT = 28 + Math.random() * 20; hwRaceUi(false); HW.ev = 14; HW.hud = 0; HW.shake = 0; HW.radarDone = 0;
+  const p = HW.p = { s: 0, d: HLANE[0], psi: 0, st: 0, v: 22, g: 3, auto: true, rpm: 3000, cut: 0, bl: 0, blT: 0, lane: 0, prevLane: 0, laneT: 0, blOff: -9, score: 0, kos: 0, races: 0, over: 0, fines: 0, dmg: 0, lastOv: -9, dist: 0, wind: 0, strad: 0, tail: 0, cool: 0, shiftT: 0, bogT: 0, lastBl: 0, wheel: 0, ok: 0 };
   const n = settings.q === 0 ? 14 : 20; for (let i = 0; i < n; i++) { const c = { g: null }; HW.cars.push(c); hwSpawn(c, true); }
   gear = 'D'; gearShow();
   $('#hwHud').hidden = false; $('#hwCtl').hidden = false; hwUi(true);
@@ -4736,32 +4704,19 @@ function hwyEnd(ok) {
   const best = store.get('hwyBest', 0), nb = ok && fin > best; if (nb) store.set('hwyBest', fin);
   if (ok) { stats.hwy = (stats.hwy || 0) + 1; } saveStats();
   $('#nextBtn').hidden = true; $('#endTitle').innerHTML = ok ? 'DIAĽNICA <span>HOTOVO</span>' : 'AUTO <span>ZNIČENÉ</span>';
-  $('#endScoreLab').textContent = ok ? 'SKÓRE' : 'SKÓRE (BEZ CIEĽA)'; $('#endL1').textContent = 'REKORD'; $('#endL2').textContent = 'PREDBEHNUTÍ'; $('#endL3').textContent = 'POKUTY';
+  $('#endScoreLab').textContent = ok ? 'SKÓRE' : 'SKÓRE (BEZ CIEĽA)'; $('#endL1').textContent = 'REKORD'; $('#endL2').textContent = 'PREDBEHNUTÍ'; $('#endL3').textContent = 'NÁRAZY';
   $('#endBest').textContent = fmt(Math.max(best, nb ? fin : 0)); $('#endCombo').textContent = P.over; $('#endCones').textContent = P.fines;
   $('#endBadge').hidden = !nb;
-  $('#endNote').textContent = ok ? 'Čas ' + Math.floor(HW.t / 60) + ':' + String(Math.floor(HW.t % 60)).padStart(2, '0') + ', škoda ' + Math.round(P.dmg) + ' %. Smerovky, odstup a pruh sa počítajú. Vybúraných áut: ' + P.kos + '.' : 'Auto sa rozpadlo na ' + (P.s / 1000).toFixed(1).replace('.', ',') + ' km. Drž odstup a sleduj premávku.';
+  $('#endNote').textContent = ok ? 'Čas ' + Math.floor(HW.t / 60) + ':' + String(Math.floor(HW.t % 60)).padStart(2, '0') + ', škoda ' + Math.round(P.dmg) + ' %. Predbiehanie dáva body, nárazy berú.' + (HW.newCar ? ' Nové auto: ' + HW.newCar + '.' : '') : 'Auto sa rozpadlo na ' + (P.s / 1000).toFixed(1).replace('.', ',') + ' km. Drž odstup a sleduj premávku.';
   shareTxt = ok ? 'Prešiel som diaľnicu v Event Car Game: ' + fmt(fin) + ' bodov, ' + P.over + ' predbehnutých, ' + P.fines + ' pokút. Dokážeš to lepšie?' : null;
   endEl.hidden = false; $('#hud').hidden = true; document.body.classList.remove('playing'); $('#hwHud').hidden = true; $('#hwCtl').hidden = true;
   countUp($('#endScore'), fin, 900); checkBadges();
 }
-function hwBlink(dir) { const p = HW.p; if (!p || HW.over || !game.running || game.paused) return; p.bl = p.bl === dir ? 0 : dir; p.blT = 0; p.blPhase = 0; sound.tick(); hwUi(); }
-function hwShift(dn) {
-  const p = HW.p; if (!p || HW.over || !game.running || game.paused) return;
-  if (dn > 0) { if (p.g >= 6) return; p.g++; p.cut = .26; }
-  else { if (p.g <= 1) return; const rn = 900 + clamp(p.v * 3.6 / HGV[p.g - 1], 0, 2) * 5700; if (rn > 6400) { popText('PRÍLIŠ VYSOKÉ OTÁČKY', true); sound.tick(); return; } p.g--; p.cut = .2; }
-  sound.tick(); if (navigator.vibrate && settings.vib) { try { navigator.vibrate(12); } catch (e) {} } hwUi();
-}
-function hwAuto() { const p = HW.p; if (!p) return; p.auto = !p.auto; store.set('hwAuto', p.auto); popText(p.auto ? 'AUTOMAT' : 'MANUÁL'); hwUi(); }
-function hwyKey(k) {
-  if (!HW.on || !game.running) return false;
-  if (k === 'q') hwBlink(-1); else if (k === 'e') hwBlink(1); else if (k === 'x') hwShift(1); else if (k === 'z') hwShift(-1); else if (k === 't') hwAuto(); else return false;
-  return true;
-}
-function hwUi(force) {
-  const p = HW.p; if (!p) return;
-  $('#hwG').textContent = p.g; $('#hwAuto').textContent = p.auto ? 'AUTO' : 'MAN'; $('#hwAuto').classList.toggle('on', p.auto);
-  $('#hwBL').classList.toggle('on', p.bl < 0); $('#hwBR').classList.toggle('on', p.bl > 0);
-}
+function hwBlink() {}   // blinkers are gone: the motorway is arcade now
+function hwShift() {}
+function hwAuto() {}
+function hwyKey() { return false; }
+function hwUi() {}
 function hwFine(txt, pts) { const p = HW.p; p.fines++; p.score -= pts; popText(txt + ' −' + pts, true); sound.tick(); }
 // arcade crashes: the other car is flung off the road and you only lose a little speed and paint
 function hwKnock(c, sg) {
@@ -4776,9 +4731,9 @@ function hwHit(c, pd, ps, ds) {
   const rel = p.v - c.v, sg = Math.sign(c.d - p.d) || (Math.random() < .5 ? -1 : 1); let dm;
   if (ps < pd * 2.2 + .3) { dm = clamp(Math.abs(rel) * .4 + 1, 1, 10); if (ds > 0) p.v = Math.max(p.v * .88, Math.min(p.v, c.v + 5)); }
   else { dm = 1.5 + Math.abs(p.v - c.v) * .12; p.psi += -sg * .04; }
-  hwKnock(c, sg); p.dmg += dm; p.kos++; p.score += 60; c.v = Math.max(c.v, p.v * .8);
+  hwKnock(c, sg); p.dmg += dm; p.kos++; p.fines++; p.score -= 40; c.v = Math.max(c.v, p.v * .8);
   HW.shake = 1; sound.thud(clamp(dm / 12, .35, 1)); if (navigator.vibrate && settings.vib) { try { navigator.vibrate(Math.min(90, 25 + dm * 4)); } catch (e) {} }
-  popText('VYBÚRANÉ +60', true);
+  popText('NÁRAZ −40', true);
   if (c.sp && HW.race && HW.race.c === c) hwRaceWin('ko');
   if (p.dmg >= 100) { p.dmg = 100; hwyEnd(false); }
 }
@@ -4845,23 +4800,19 @@ function hwyStep(dt) {
   const kap = hKap(P.s), dd = P.v * Math.sin(P.psi) + kap * P.v * 22 + P.wind * (.25 + P.v / 70) * Math.min(1, P.v / 6);
   P.s += P.v * Math.cos(P.psi) * dt; P.d += dd * dt; P.lat = dd;
   // ---- barriers
-  if (Math.abs(P.d) > 8.5) { const sg = Math.sign(P.d); P.d = sg * 8.5; if (P.cool <= 0) { P.cool = .7; const dm = 2.5 + Math.abs(P.lat) * 1.2 + P.v * .05; P.dmg += dm; P.v *= .8; P.psi = -sg * .12; HW.shake = 1; sound.thud(.7); popText('BARIÉRA −' + Math.round(dm) + ' %', true); if (P.dmg >= 100) { P.dmg = 100; hwyEnd(false); return; } } }
+  if (Math.abs(P.d) > 8.5) { const sg = Math.sign(P.d); P.d = sg * 8.5; if (P.cool <= 0) { P.cool = .7; const dm = 2.5 + Math.abs(P.lat) * 1.2 + P.v * .05; P.dmg += dm; P.v *= .8; P.psi = -sg * .12; HW.shake = 1; sound.thud(.7); popText('BARIÉRA −40', true); P.score -= 40; P.fines++; if (P.dmg >= 100) { P.dmg = 100; hwyEnd(false); return; } } }
   P.cool -= dt;
   // ---- lane bookkeeping, signals, fines
   let ln = 0, bd = 1e9; for (let i = 0; i < 3; i++) { const q = Math.abs(P.d - HLANE[i]); if (q < bd) { bd = q; ln = i; } }
   if (ln !== P.lane) {
     const need = ln > P.lane ? -1 : 1;
-    if (P.bl === need || HW.t - P.blOff < 1.4) { P.score += 30; P.ok++; popText('SMEROVKA OK +30'); } else if (P.v > 6) hwFine('BEZ SMEROVKY', 150);
     P.prevLane = P.lane; P.lane = ln; P.laneT = 0;
   }
   P.laneT += dt;
-  if (P.bl && P.laneT > 1.2 && P.lane !== undefined && bd < .55 && ((P.bl < 0 && P.lane > P.prevLane) || (P.bl > 0 && P.lane < P.prevLane) || P.laneT > 8)) { P.bl = 0; P.blOff = HW.t; hwUi(); }
-  if (P.bl) { P.blT += dt; const ph = Math.floor(P.blT / .36) % 2; if (ph !== P.blPhase) { P.blPhase = ph; if (ph) sound.tick(); } }
-  if (bd > 1.05 && P.v > 8) { P.strad += dt; if (P.strad > .9) { P.strad = -1.6; hwFine('MIMO PRUHU', 60); } } else P.strad = Math.max(0, P.strad - dt * 2);
   P.score += P.v * dt * .04;
   // ---- radar: speeding fines
   for (let i = 0; i < HRADAR.length; i++) if (P.s >= HRADAR[i] && HW.radarDone <= i) {
-    HW.radarDone = i + 1; const f = HW.radarFlash && HW.radarFlash[i]; if (kmh > HLIMIT + 8) { if (f) { f.visible = true; setTimeout(() => { f.visible = false; }, 220); } hwFine('RADAR ' + Math.round(kmh) + ' km/h', 300); } else { P.score += 60; popText('RADAR OK +60'); }
+    HW.radarDone = i + 1; const f = HW.radarFlash && HW.radarFlash[i]; if (kmh > HLIMIT + 8) { if (f) { f.visible = true; setTimeout(() => { f.visible = false; }, 220); } popText('RADAR! ' + Math.round(kmh) + ' km/h', true); } else { P.score += 60; popText('RADAR OK +60'); }
   }
   // ---- traffic, collisions
   hwTraffic(dt); hwRaceStep(dt);
@@ -4873,7 +4824,6 @@ function hwyStep(dt) {
     const hl = (c.len + HWP.len) / 2, hw = (c.w + HWP.w) / 2 - .04;
     if (Math.abs(ds) < hl && ad < hw) { hwHit(c, hw - ad, hl - Math.abs(ds), ds); if (HW.over) return; }
   }
-  if (gapAhead < 12 && P.v > 17) { P.tail += dt; if (P.tail > 2.4) { P.tail = 0; hwFine('PRÍLIŠ BLÍZKO', 60); } } else P.tail = Math.max(0, P.tail - dt);
   P.gap = gapAhead;
   if (P.s >= HLEN) { hwyEnd(true); return; }
   sound.setEngine(P.engine || 'v8'); sound.update(clamp(.22 + .78 * (P.rpm - 900) / 5700, 0, 1), gas, 0);
@@ -5041,7 +4991,7 @@ $('#fileIn').addEventListener('change', e => { const ok = music.addFiles(e.targe
   sk.addEventListener('pointermove', e => { if (drag) at(e); });
   ['pointerup', 'pointercancel'].forEach(t => sk.addEventListener(t, () => { drag = false; }));
 })();
-[['#hwBL', () => hwBlink(-1)], ['#hwBR', () => hwBlink(1)], ['#hwGu', () => hwShift(1)], ['#hwGd', () => hwShift(-1)], ['#hwAuto', hwAuto]].forEach(([id, fn]) => $(id).addEventListener('pointerdown', e => { e.preventDefault(); sound.init(); fn(); }));
+[].forEach(([id, fn]) => $(id).addEventListener('pointerdown', e => { e.preventDefault(); sound.init(); fn(); }));
 $('#startBtn').addEventListener('click', startRun);
 $('#pauseBtn').addEventListener('click', togglePause);
 function cycleCam() {

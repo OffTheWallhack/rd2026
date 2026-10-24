@@ -446,6 +446,82 @@ body:not(.hwy) .hwrace{display:none}
 .unlock b{display:block;font:700 italic 16px/1.1 var(--hud);color:#fff}
 .unlock i{display:none}
 @keyframes ulk{from{transform:translateX(-50%) translateY(-14px);opacity:0}}
+
+/* ===== menu v4: a home screen first, then mode, then car; every screen fits without scrolling ===== */
+.nv.bk{flex:none}
+.nv.bk[hidden]{display:none}
+.m-nav{display:none}
+.th{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px 2px}
+.th p{display:none}
+.seg{display:flex;gap:4px;padding:3px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.04)}
+.seg button{appearance:none;border:0;border-radius:999px;padding:7px 14px;background:none;color:#cfcbd8;font:700 11.5px/1 var(--hud);letter-spacing:.1em;cursor:pointer}
+.seg button.on{background:var(--amber);color:#1b1200}
+/* home */
+.home{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr) minmax(0,1fr);gap:12px;padding:14px 16px}
+.hb{appearance:none;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;gap:5px;min-width:0;min-height:0;padding:clamp(10px,2.4vh,18px) clamp(12px,2vw,20px);border:1px solid var(--line);border-radius:6px 22px 6px 22px;background:rgba(255,255,255,.05);color:var(--ink);text-align:left;cursor:pointer;transition:background .15s,border-color .15s,transform .1s}
+.hb:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3)}
+.hb:active{transform:scale(.985)}
+.hb svg{width:clamp(26px,6.5vh,46px);height:clamp(26px,6.5vh,46px);fill:none;stroke:var(--amber);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-bottom:auto}
+.hb b{font:700 italic clamp(15px,3.4vh,24px)/1 var(--hud);letter-spacing:.05em}
+.hb small{font:500 clamp(10.5px,1.8vh,13px)/1.3 system-ui,sans-serif;color:var(--muted)}
+.hb.play{grid-row:1/3;background:linear-gradient(150deg,#ffbd2e,#ff8a1a);border-color:#ffbd2e;color:#1b1200;box-shadow:0 18px 40px -22px rgba(255,150,30,.9)}
+.hb.play:hover{filter:brightness(1.06)}
+.hb.play svg{stroke:#1b1200;width:clamp(40px,14vh,84px);height:clamp(40px,14vh,84px)}
+.hb.play b{font-size:clamp(30px,9vh,60px)}
+.hb.play small{color:rgba(27,18,0,.78);font-size:clamp(11px,2.2vh,15px);font-weight:700;letter-spacing:.06em}
+/* a screen that must never scroll */
+.tb.fit{overflow:hidden;padding:8px 16px 14px;align-content:start}
+.tb.two{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px 18px}
+.col{display:grid;gap:10px;align-content:start;min-width:0}
+.col.wide{grid-column:1/-1}
+.tb.fit .lab2{margin:2px 0 -2px}
+.tb.fit .cards.five{grid-template-columns:repeat(3,minmax(0,1fr))}
+.tb.fit .cards.five .card{padding:9px 10px}
+.tb.fit .cards.three .card,.tb.fit .cards.four .card{padding:9px 10px}
+.tb.fit .cards .card b{font-size:clamp(12px,2.3vh,15px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb.rec .best small{letter-spacing:.1em}
+@media (pointer:coarse){.col.kb{display:none}}
+@media (pointer:fine){.col.touch{display:none}}
+.tb.rec{grid-template-columns:minmax(0,.8fr) minmax(0,3.2fr);gap:12px;align-content:stretch;grid-template-rows:minmax(0,1fr)}
+.tb.rec[hidden]{display:none}
+.tb.rec .best{display:flex;flex-direction:column;justify-content:center;gap:4px}
+.tb.rec .best b{font-size:clamp(34px,9vh,54px)}
+.tb.rec .tiles{grid-template-columns:repeat(5,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:8px;min-height:0}
+.tb.rec .tile{padding:8px 10px;display:flex;flex-direction:column;justify-content:space-between;min-height:0;overflow:hidden}
+.tb.rec .tile b{font-size:clamp(15px,3.2vh,22px)}
+.tb.rec .tile small{font-size:clamp(8.5px,1.6vh,10.5px);letter-spacing:.1em;line-height:1.2}
+#recBdg{grid-template-columns:1fr}
+#recBdg .badges{grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:8px;min-height:0}
+#recBdg .bdg{grid-template-columns:24px minmax(0,1fr);gap:8px;padding:6px 9px;min-height:0;overflow:hidden}
+#recBdg .bdg svg{width:22px;height:22px}
+#recBdg .bdg b{font-size:clamp(11px,2.1vh,13px)}
+#recBdg .bdg small{font-size:clamp(9px,1.7vh,11px);line-height:1.25;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+/* step 2 (car): all cars in a grid on the left, the picked car's details on the right */
+.wz[data-step="2"]{grid-template-columns:minmax(0,1.9fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
+.cards.cars{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:8px;overflow:visible}
+.cards.cars .card.car{flex:none;padding:8px 8px 7px;gap:2px}
+.cards.cars .card.car .ct b{font-size:clamp(12px,2.1vw,17px)}
+.cards.cars .card.car .ct small{font-size:10px;line-height:1.2;margin-top:1px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cards.cars .card .chip{top:5px;right:5px;font-size:8px;padding:3px 5px}
+.wz[data-step="2"] .detail{grid-template-columns:1fr;align-content:center;gap:12px;padding:12px 14px}
+.wz[data-step="2"] .detail p{font-size:12.5px}
+#carStats{grid-template-columns:1fr;gap:8px}
+#carStats .st{grid-template-columns:84px 1fr}
+@media (min-height:620px){
+  .tb.fit{padding:16px 26px 20px}.tb.fit .col{gap:16px}.tb.two{gap:16px 28px}
+  .tb.fit .cards .card{padding:14px 16px}.tb.fit .cards .card b{font-size:18px}.tb.fit .card small{font-size:12.5px}
+  .tips{font-size:15px}.kl div{font-size:15px}.th h2{font-size:30px}.th{padding:18px 26px 4px}.sl label,.row b{font-size:15px}.row small{font-size:13px}
+  .tb.fit .lab2{font-size:12px;margin-top:6px}
+}
+@media (max-height:480px){
+  .cards.cars .card.car .ct small,.cards.cars .card .chip{display:none}
+  .tb.fit .card small,.tb.fit .row small{display:none}
+  .tb.fit{padding:6px 14px 10px}.col{gap:8px}
+  .wz[data-step="2"] .detail{padding:8px 11px;gap:8px}.wz[data-step="2"] .detail p{font-size:11.5px;line-height:1.35}
+  #carStats .st span{font-size:9px}
+  .home{gap:10px;padding:10px 14px}
+  .tips{font-size:11.5px;line-height:1.4;padding-left:16px}.kl{gap:6px}.kl div{font-size:12px}
+}
 </style>
 
 <canvas id="gl" aria-label="Drift hra"></canvas>
@@ -498,10 +574,11 @@ body:not(.hwy) .hwrace{display:none}
   <div class="m-stage" id="stage" hidden></div>
   <div class="mw">
     <header class="mbar">
+      <button class="nv bk" id="tabBack" type="button" aria-label="Späť do menu" title="Späť do menu" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
       <h1 class="logo">EVENT CAR <span>GAME</span></h1>
       <nav class="steps" id="steps" aria-label="Kroky">
-        <button type="button" data-step="1" class="on"><b>1</b><span>AUTO</span></button>
-        <button type="button" data-step="2"><b>2</b><span>REŽIM</span></button>
+        <button type="button" data-step="1" class="on"><b>1</b><span>REŽIM</span></button>
+        <button type="button" data-step="2"><b>2</b><span>AUTO</span></button>
         <button type="button" data-step="3" hidden><b>3</b><span>LEVEL</span></button>
       </nav>
       <nav class="m-nav" id="nav" aria-label="Hlavné menu">
@@ -513,22 +590,19 @@ body:not(.hwy) .hwrace{display:none}
       </nav>
     </header>
     <main class="m-panel" id="panel">
-      <section class="tab on" data-tab="play">
+      <section class="tab on" data-tab="home">
+        <div class="home">
+          <button class="hb play" type="button" data-go="play"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2"/><path d="M3.5 10h6M14.5 10h6M12 14.2V21"/></svg><b>HRAŤ</b><small id="homeSum">Režim · auto · štart</small></button>
+          <button class="hb" type="button" data-go="settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg><b>NASTAVENIA</b><small>Zvuk, grafika, počasie</small></button>
+          <button class="hb" type="button" data-go="music"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg><b>HUDBA</b><small>Skladby a hlasitosť</small></button>
+          <button class="hb" type="button" data-go="controls"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="7" width="19" height="11" rx="5"/><path d="M7 10.5v4M5 12.5h4"/><circle cx="16" cy="11.5" r=".9"/><circle cx="18.5" cy="14" r=".9"/></svg><b>OVLÁDANIE</b><small>Kamera a klávesy</small></button>
+          <button class="hb" type="button" data-go="records"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 01-8 0V4zM8 6H4v1a3 3 0 003 3M16 6h4v1a3 3 0 01-3 3M12 13v4M8 20h8"/></svg><b>REKORDY</b><small>Čísla a odznaky</small></button>
+        </div>
+      </section>
+
+      <section class="tab" data-tab="play">
         <div class="tb play">
           <div class="wz" data-step="1">
-            <div class="cards cars" id="carCards">
-              <button class="card car on" type="button" data-car="zubor"><img class="ci" src="img/car-zubor.webp" alt="Zubor" draggable="false"><span class="ct"><b>ZUBOR</b><small>Dodávka · parkovisko a mesto</small></span><i class="chip">ASFALT</i></button>
-                            <button class="card car" type="button" data-car="sugga"><img class="ci" src="img/car-sugga.webp" alt="Sugga" draggable="false"><span class="ct"><b>SUGGA</b><small>Vintage 4×4 · všade</small></span><i class="chip off">OFFROAD</i></button>
-              <button class="card car" type="button" data-car="mini"><img class="ci" src="img/car-mini.webp" alt="Red Bull Mini" draggable="false"><span class="ct"><b>MINI</b><small>Red Bull Mini · všade</small></span><i class="chip off">ODOMKNUTÉ</i></button>
-              <button class="card car" type="button" data-car="jeep"><img class="ci" src="img/car-jeep.webp" alt="DJ Jeep" draggable="false"><span class="ct"><b>DJ JEEP</b><small>Wrangler s bedňami · všade</small></span><i class="chip off">ODOMKNUTÉ</i></button>
-              <button class="card car" type="button" data-car="buggy"><img class="ci" src="img/car-buggy.webp" alt="Bugina" draggable="false"><span class="ct"><b>BUGINA</b><small>Side-by-side · všade</small></span><i class="chip off">ODOMKNUTÉ</i></button>
-              <button class="card car" type="button" data-car="truck"><img class="ci" src="img/car-truck.webp" alt="Truck" draggable="false"><span class="ct"><b>TRUCK</b><small>Rozvozová skriňa · všade</small></span><i class="chip off">ODOMKNUTÉ</i></button>
-              <button class="card car" type="button" data-car="unimog"><img class="ci" src="img/car-unimog.webp" alt="Unimog" draggable="false"><span class="ct"><b>UNIMOG</b><small>Expedičný kolos · všade</small></span><i class="chip off">ODOMKNUTÉ</i></button>
-              <button class="card car" type="button" data-car="xbow"><img class="ci" src="img/car-xbow.webp" alt="KTM X-Bow" draggable="false"><span class="ct"><b>X-BOW</b><small>Pretekár z Ringu · všade</small></span><i class="chip off">ODOMKNUTÉ</i></button>
-            </div>
-            <div class="detail"><p id="carDesc"></p><div id="carStats"></div></div>
-          </div>
-          <div class="wz" data-step="2" hidden>
             <div class="cards modes" id="modeCards">
             <button class="card mode on" type="button" data-mode="free" style="--ac:#ffb21a"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 12c0-2.5 2-4.5 4.5-4.5 4 0 5 9 9 9M4 16.5c4 0 5-9 9-9"/><circle cx="12" cy="12" r="0" /></svg><b>VOĽNÝ</b><small>Bez času</small></button>
             <button class="card mode" type="button" data-mode="t60" style="--ac:#ff6a3d"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 9v5l3 2M9.5 3h5M12 3v3"/></svg><b>60 S</b><small>Na skóre</small></button>
@@ -540,6 +614,19 @@ body:not(.hwy) .hwrace{display:none}
             <button class="card mode" type="button" data-mode="hwy" style="--ac:#4dd68c"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21L10 3M16 21L14 3M12 6v3M12 12v3M12 18v2"/></svg><b>DIAĽNICA</b><small>Z pohľadu vodiča</small></button>
             </div>
             <p class="hint" id="modeDesc"></p>
+          </div>
+          <div class="wz" data-step="2" hidden>
+            <div class="cards cars" id="carCards">
+              <button class="card car on" type="button" data-car="zubor"><img class="ci" src="img/car-zubor.webp" alt="Zubor" draggable="false"><span class="ct"><b>ZUBOR</b><small>Dodávka · parkovisko a mesto</small></span><i class="chip">ASFALT</i></button>
+                            <button class="card car" type="button" data-car="sugga"><img class="ci" src="img/car-sugga.webp" alt="Sugga" draggable="false"><span class="ct"><b>SUGGA</b><small>Vintage 4×4 · všade</small></span><i class="chip off">OFFROAD</i></button>
+              <button class="card car" type="button" data-car="mini"><img class="ci" src="img/car-mini.webp" alt="Red Bull Mini" draggable="false"><span class="ct"><b>MINI</b><small>Red Bull Mini · všade</small></span><i class="chip off">ODOMKNUTÉ</i></button>
+              <button class="card car" type="button" data-car="jeep"><img class="ci" src="img/car-jeep.webp" alt="DJ Jeep" draggable="false"><span class="ct"><b>DJ JEEP</b><small>Wrangler s bedňami · všade</small></span><i class="chip off">ODOMKNUTÉ</i></button>
+              <button class="card car" type="button" data-car="buggy"><img class="ci" src="img/car-buggy.webp" alt="Bugina" draggable="false"><span class="ct"><b>BUGINA</b><small>Side-by-side · všade</small></span><i class="chip off">ODOMKNUTÉ</i></button>
+              <button class="card car" type="button" data-car="truck"><img class="ci" src="img/car-truck.webp" alt="Truck" draggable="false"><span class="ct"><b>TRUCK</b><small>Rozvozová skriňa · všade</small></span><i class="chip off">ODOMKNUTÉ</i></button>
+              <button class="card car" type="button" data-car="unimog"><img class="ci" src="img/car-unimog.webp" alt="Unimog" draggable="false"><span class="ct"><b>UNIMOG</b><small>Expedičný kolos · všade</small></span><i class="chip off">ODOMKNUTÉ</i></button>
+              <button class="card car" type="button" data-car="xbow"><img class="ci" src="img/car-xbow.webp" alt="KTM X-Bow" draggable="false"><span class="ct"><b>X-BOW</b><small>Pretekár z Ringu · všade</small></span><i class="chip off">ODOMKNUTÉ</i></button>
+            </div>
+            <div class="detail"><p id="carDesc"></p><div id="carStats"></div></div>
           </div>
           <div class="wz" data-step="3" hidden>
             <div class="lvwrap" id="lvWrap"><div class="lvtop"><div class="lvtabs" id="lvTabs"></div><p class="hint" id="lvSect"></p></div><div class="lvlist" id="lvList"></div><p class="hint" id="lvDesc"></p></div>
@@ -580,59 +667,70 @@ body:not(.hwy) .hwrace{display:none}
       </section>
 
       <section class="tab" data-tab="controls">
-        <header class="th"><h2>OVLÁDANIE</h2><p>Ako riadiť a odkiaľ sa pozerať.</p></header>
-        <div class="tb">
-          <p class="lab2">KAMERA</p>
-          <div class="cards four" id="camCards">
-            <button class="card" type="button" data-cam="near"><b>BLÍZKO</b><small>Tesne za autom.</small></button>
-            <button class="card on" type="button" data-cam="chase"><b>ZA AUTOM</b><small>Klasika.</small></button>
-            <button class="card" type="button" data-cam="high"><b>VYSOKO</b><small>Viac prehľadu.</small></button>
-            <button class="card" type="button" data-cam="top"><b>ZHORA</b><small>Z vtáčej, auto hore.</small></button>
+        <header class="th"><h2>OVLÁDANIE</h2></header>
+        <div class="tb fit two">
+          <div class="col wide">
+            <p class="lab2">KAMERA</p>
+            <div class="cards four" id="camCards">
+              <button class="card" type="button" data-cam="near"><b>BLÍZKO</b><small>Tesne za autom.</small></button>
+              <button class="card on" type="button" data-cam="chase"><b>ZA AUTOM</b><small>Klasika.</small></button>
+              <button class="card" type="button" data-cam="high"><b>VYSOKO</b><small>Viac prehľadu.</small></button>
+              <button class="card" type="button" data-cam="top"><b>ZHORA</b><small>Z vtáčej, auto hore.</small></button>
+            </div>
           </div>
-          <p class="lab2">KLÁVESNICA</p>
-          <div class="kl">
-            <div><span>Plyn</span><span><kbd>↑</kbd><kbd>W</kbd></span></div>
-            <div><span>Brzda a cúvanie</span><span><kbd>↓</kbd><kbd>S</kbd></span></div>
-            <div><span>Riadenie</span><span><kbd>←</kbd><kbd>→</kbd><kbd>A</kbd><kbd>D</kbd></span></div>
-            <div><span>Ručná brzda</span><span><kbd>MEDZERNÍK</kbd></span></div>
-            <div><span>Pauza</span><span><kbd>Esc</kbd></span></div>
-            <div><span>Hudba, pauza</span><span><kbd>M</kbd></span></div>
+          <div class="col kb">
+            <p class="lab2">KLÁVESNICA</p>
+            <div class="kl">
+              <div><span>Plyn</span><span><kbd>↑</kbd><kbd>W</kbd></span></div>
+              <div><span>Brzda a cúvanie</span><span><kbd>↓</kbd><kbd>S</kbd></span></div>
+              <div><span>Riadenie</span><span><kbd>←</kbd><kbd>→</kbd><kbd>A</kbd><kbd>D</kbd></span></div>
+              <div><span>Ručná brzda</span><span><kbd>MEDZERNÍK</kbd></span></div>
+              <div><span>Pauza</span><span><kbd>Esc</kbd></span></div>
+              <div><span>Hudba, pauza</span><span><kbd>M</kbd></span></div>
+            </div>
           </div>
-          <p class="lab2">DOTYK</p>
-          <ul class="tips"><li>Hore uprostred je volič P R N D. Otáčaš ním okrúhly gombík. Hra začína v P, otoč na D.</li><li>Plyn je páčka vpravo. Potiahni ju nadol, zostane kde ju necháš. Hore ubereš, dole pridáš.</li><li>Cúvaš v R. Brzda len brzdí a vľavo od páčky je ručná.</li><li>P a R sa zaradia, až keď auto skoro stojí.</li></ul>
-          <p class="lab2">AKO DRIFTOVAŤ</p>
-          <ul class="tips"><li>Rozbehni sa a v zákrute stlač ručnú brzdu.</li><li>Potom drž plyn a riaď proti šmyku.</li><li>Čím dlhší šmyk, tým rastie násobič (až ×5). Náraz combo zruší.</li></ul>
+          <div class="col touch">
+            <p class="lab2">DOTYK</p>
+            <ul class="tips"><li>Hore uprostred je volič P R N D. Otáčaš ním okrúhly gombík. Hra začína v P, otoč na D.</li><li>Plyn je veľké tlačidlo vpravo, brzda a ručná sú vedľa neho.</li><li>Cúvaš v R. P a R sa zaradia, až keď auto skoro stojí.</li></ul>
+          </div>
+          <div class="col">
+            <p class="lab2">AKO DRIFTOVAŤ</p>
+            <ul class="tips"><li>Rozbehni sa a v zákrute stlač ručnú brzdu.</li><li>Potom drž plyn a riaď proti šmyku.</li><li>Čím dlhší šmyk, tým rastie násobič (až ×5). Náraz combo zruší.</li></ul>
+          </div>
         </div>
       </section>
 
       <section class="tab" data-tab="settings">
-        <header class="th"><h2>NASTAVENIA</h2><p>Zvuk, grafika a ďalšie.</p></header>
-        <div class="tb">
-          <div class="sl"><label for="vSfx">ZVUKY (MOTOR, ŠMYK)</label><output id="vSfxO">100</output><input type="range" id="vSfx" min="0" max="100" step="1"></div>
-          <p class="lab2">POČASIE A DENNÁ DOBA</p>
-          <div class="cards five" id="wxCards">
-            <button class="card" type="button" data-wx="auto"><b>NÁHODNE</b><small>Každá jazda iná.</small></button>
-            <button class="card" type="button" data-wx="day"><b>DEŇ</b><small>Slnko, sucho.</small></button>
-            <button class="card" type="button" data-wx="night"><b>NOC</b><small>Svetlá auta.</small></button>
-            <button class="card" type="button" data-wx="rain"><b>DÁŽĎ</b><small>Šmýka sa.</small></button>
-            <button class="card" type="button" data-wx="fog"><b>HMLA</b><small>Nevidíš ďaleko.</small></button>
+        <header class="th"><h2>NASTAVENIA</h2></header>
+        <div class="tb fit two">
+          <div class="col">
+            <div class="sl"><label for="vSfx">ZVUKY (MOTOR, ŠMYK)</label><output id="vSfxO">100</output><input type="range" id="vSfx" min="0" max="100" step="1"></div>
+            <div class="row" id="vibRow"><div><b>VIBRÁCIE</b><small>Pri náraze, ak to telefón vie.</small></div><button class="sw" id="swVib" type="button" role="switch" aria-checked="true" aria-label="Vibrácie"></button></div>
+            <div class="row"><div><b>UKAZOVATEĽ FPS</b><small>Pre ladenie výkonu.</small></div><button class="sw" id="swFps" type="button" role="switch" aria-checked="false" aria-label="Ukazovateľ FPS"></button></div>
+            <button class="go alt danger" id="resetBtn" type="button">Vymazať rekordy a nastavenia</button>
           </div>
-          <p class="lab2">GRAFIKA</p>
-          <div class="cards three" id="qCards">
-            <button class="card" type="button" data-q="0"><b>NÍZKA</b><small>Šetrí batériu.</small></button>
-            <button class="card" type="button" data-q="1"><b>STREDNÁ</b><small>Kompromis.</small></button>
-            <button class="card" type="button" data-q="2"><b>VYSOKÁ</b><small>Ostré tiene.</small></button>
+          <div class="col">
+            <p class="lab2">POČASIE A DENNÁ DOBA</p>
+            <div class="cards five" id="wxCards">
+              <button class="card" type="button" data-wx="auto"><b>NÁHODNE</b><small>Každá jazda iná.</small></button>
+              <button class="card" type="button" data-wx="day"><b>DEŇ</b><small>Slnko, sucho.</small></button>
+              <button class="card" type="button" data-wx="night"><b>NOC</b><small>Svetlá auta.</small></button>
+              <button class="card" type="button" data-wx="rain"><b>DÁŽĎ</b><small>Šmýka sa.</small></button>
+              <button class="card" type="button" data-wx="fog"><b>HMLA</b><small>Nevidíš ďaleko.</small></button>
+            </div>
+            <p class="lab2">GRAFIKA</p>
+            <div class="cards three" id="qCards">
+              <button class="card" type="button" data-q="0"><b>NÍZKA</b><small>Šetrí batériu.</small></button>
+              <button class="card" type="button" data-q="1"><b>STREDNÁ</b><small>Kompromis.</small></button>
+              <button class="card" type="button" data-q="2"><b>VYSOKÁ</b><small>Ostré tiene.</small></button>
+            </div>
           </div>
-          <div class="row" id="vibRow"><div><b>VIBRÁCIE</b><small>Pri náraze, ak to telefón vie.</small></div><button class="sw" id="swVib" type="button" role="switch" aria-checked="true" aria-label="Vibrácie"></button></div>
-          <div class="row"><div><b>UKAZOVATEĽ FPS</b><small>Pre ladenie výkonu.</small></div><button class="sw" id="swFps" type="button" role="switch" aria-checked="false" aria-label="Ukazovateľ FPS"></button></div>
-          <button class="go alt danger" id="resetBtn" type="button">Vymazať rekordy a nastavenia</button>
-          <p class="hint">Event Car Game · vyrobené v Bratislave</p>
         </div>
       </section>
 
       <section class="tab" data-tab="records">
-        <header class="th"><h2>REKORDY</h2><p>Tvoje čísla a odznaky.</p></header>
-        <div class="tb">
+        <header class="th"><h2>REKORDY</h2><div class="seg" id="recSeg"><button type="button" class="on" data-rp="n">ČÍSLA</button><button type="button" data-rp="b">ODZNAKY</button></div></header>
+        <div class="tb fit rec" id="recNum">
           <div class="best"><small>NAJLEPŠIE SKÓRE · 60 S</small><b id="recBest">0</b></div>
           <div class="tiles">
             <div class="tile"><small>NAJ. COMBO</small><b id="recCombo">0</b></div>
@@ -650,9 +748,8 @@ body:not(.hwy) .hwrace{display:none}
             <div class="tile"><small>DIAĽNICA · REKORD</small><b id="recHwy">–</b></div>
             <div class="tile"><small>NAHÁŇAČKA · REKORD</small><b id="recChase">–</b></div>
           </div>
-          <p class="lab2">ODZNAKY</p>
-          <div class="badges" id="badgeList"></div>
-        </div>
+          </div>
+        <div class="tb fit rec" id="recBdg" hidden><div class="badges" id="badgeList"></div></div>
       </section>
     </main>
   </div>
@@ -4233,7 +4330,7 @@ function renderCar() {
 const MODE_NAME = { free: 'VOĽNÝ', t60: '60 S', train: 'TRÉNING', tokyo: 'TOKYO DRIFT', hwy: 'DIAĽNICA', chase: 'NAHÁŇAČKA', job: 'MISIA DOVOZ', off: 'MISIA DIVOČINA' };
 const MODE_LV = { job: 'm1', off: 'm2' };
 const runLevel = () => isLv(pendingMode) ? curLevel() : MODE_LV[pendingMode] ? LEVELS.find(x => x.id === MODE_LV[pendingMode]) : null;
-function renderSum() { const e = $('#goSum'); if (!e) return; const L = isLv(pendingMode) ? curLevel() : null; e.textContent = (wiz.step < 3 || !L) ? carKey.toUpperCase() + ' · ' + (MODE_NAME[pendingMode] || '') : carKey.toUpperCase() + ' · ' + lvTag(L) + ' · ' + L.name; }
+function renderSum() { const hs = $('#homeSum'); if (hs) hs.textContent = carKey.toUpperCase() + ' · ' + (MODE_NAME[pendingMode] || ''); const e = $('#goSum'); if (!e) return; const L = isLv(pendingMode) ? curLevel() : null; e.textContent = (wiz.step < 3 || !L) ? carKey.toUpperCase() + ' · ' + (MODE_NAME[pendingMode] || '') : carKey.toUpperCase() + ' · ' + lvTag(L) + ' · ' + L.name; }
 const lvList = () => LEVELS;
 function curLevel() {
   let L = LEVELS.find(x => x.id === LV.sel);
@@ -4265,7 +4362,7 @@ function renderLevels() {
   $('#lvDesc').textContent = (carKey !== 'zubor' && L.world !== 'off' ? 'Hráš s autom ' + carNm(carKey) + ', je menšie a ľahšie než Zubor, čísla v texte platia len približne. ' : '') + L.lesson + (LV.prog[L.id] && LV.prog[L.id].t ? '  ·  Najlepší čas ' + jobFmtT(LV.prog[L.id].t) : '');
   if (isLv(pendingMode) && carKey !== needCar(L) && !stageBusy()) { stageShow(needCar(L)); store.set('car', carKey); renderCar(); }
 }
-/* the HRAJ screen is a wizard, one step at a time: 1 car, 2 mode, 3 level (only for the training) */
+/* the HRAŤ screen is a wizard, one step at a time: 1 mode, 2 car, 3 level (only for the training) */
 const wiz = { step: 1 };
 const lastStep = () => isLv(pendingMode) ? 3 : 2;
 function setStep(n) {
@@ -4274,7 +4371,7 @@ function setStep(n) {
   $$('.wz').forEach(w => { w.hidden = +w.dataset.step !== wiz.step; });
   $$('#steps button').forEach(b => { const k = +b.dataset.step; b.classList.toggle('on', k === wiz.step); b.classList.toggle('done', k < wiz.step); });
   const fin = wiz.step === lastStep();
-  $('#wBack').hidden = wiz.step === 1; $('#wNext').hidden = fin; $('#startBtn').hidden = !fin; $('#tuneBtn').hidden = wiz.step !== 1; renderTuneBtn();
+  $('#wBack').hidden = false; $('#wNext').hidden = fin; $('#startBtn').hidden = !fin; $('#tuneBtn').hidden = wiz.step !== 2; renderTuneBtn();
   if (wiz.step === 3) renderLevels();
   renderSum();
 }
@@ -4351,19 +4448,24 @@ function renderMusicUI(light) {
 
 /* ---------- tabs ---------- */
 function setTab(t) {
-  tab = t;
+  tab = t; $('#tabBack').hidden = t === 'home';
   $$('.nv').forEach(b => { const on = b.dataset.tab === t; b.classList.toggle('on', on); b.setAttribute('aria-current', on ? 'page' : 'false'); });
   $$('.tab').forEach(s => s.classList.toggle('on', s.dataset.tab === t)); menuEl.dataset.tab = t;
-  if (t === 'records') renderRecords();
+  if (t === 'records') { recPage('n'); renderRecords(); }
+  if (t === 'home') renderSum();
   if (t === 'music') { renderTracks(); updProgress(); }
 }
 const TAB_ORDER = ['play', 'music', 'controls', 'settings', 'records'];
+function recPage(p) { $('#recNum').hidden = p !== 'n'; $('#recBdg').hidden = p !== 'b'; $$('#recSeg button').forEach(b => b.classList.toggle('on', b.dataset.rp === p)); }
+function goPlay() { setTab('play'); setStep(1); }
+function menuBack() { if (tab === 'play' && wiz.step > 1) setStep(wiz.step - 1); else setTab('home'); }
 function menuKey(e) {
   const onBtn = e.target.closest && e.target.closest('button,input');
   if (game.view === 'menu') {
-    if (tab !== 'play') { if (e.key === 'Escape') setTab('play'); return; }
+    if (tab === 'home') { if (e.key === 'Enter' && !onBtn) goPlay(); return; }
+    if (tab !== 'play') { if (e.key === 'Escape') setTab('home'); return; }
     if (e.key === 'ArrowRight') setStep(wiz.step + 1);
-    else if (e.key === 'ArrowLeft') setStep(wiz.step - 1);
+    else if (e.key === 'ArrowLeft' || e.key === 'Escape') menuBack();
     else if (e.key === 'Enter' && !onBtn) { if (wiz.step < lastStep()) setStep(wiz.step + 1); else startRun(); }
   } else if (game.view === 'end' && e.key === 'Enter' && !onBtn) startRun();
 }
@@ -4419,7 +4521,7 @@ function toMenu(instant) {
     pauseEl.hidden = true; endEl.hidden = true; menuEl.hidden = false; $('#hud').hidden = true; elTimer.hidden = true;
     document.body.classList.remove('playing'); elCombo.classList.remove('on');
     hwyLeave(); tkNight(false); wxClear(); jobSetWorld(false); jEl.jobHud.hidden = true; MK.visible = false; job.over = true;
-    resetCar(); renderMode(); if (tab === 'records') renderRecords();
+    resetCar(); renderMode(); setTab('home'); setStep(1);
     layoutStage(); updateCamera(0, true);
   };
   if (instant) go(); else fadeThen(go);
@@ -5149,7 +5251,10 @@ $('#carCards').addEventListener('click', e => {
 });
 $('#modeCards').addEventListener('click', e => { const c = e.target.closest('.card'); if (!c || c.disabled) return; pendingMode = c.dataset.mode; store.set('mode', pendingMode); renderMode(); });
 $('#steps').addEventListener('click', e => { const b = e.target.closest('button'); if (b && !b.hidden) setStep(+b.dataset.step); });
-$('#wBack').addEventListener('click', () => setStep(wiz.step - 1));
+$('#wBack').addEventListener('click', menuBack);
+$('#tabBack').addEventListener('click', () => setTab('home'));
+$('#menu').addEventListener('click', e => { const g = e.target.closest('[data-go]'); if (!g) return; if (g.dataset.go === 'play') goPlay(); else setTab(g.dataset.go); });
+$('#recSeg').addEventListener('click', e => { const b = e.target.closest('button'); if (b) recPage(b.dataset.rp); });
 $('#wNext').addEventListener('click', () => setStep(wiz.step + 1));
 $('#lvTabs').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; const w = b.dataset.sect, g = LEVELS.filter(x => x.world === w && !x.mission); const n = g.find(x => !lvStars(x.id)) || g[g.length - 1]; LV.sel = n.id; store.set('lvSel', LV.sel); renderMode(); });
 $('#lvList').addEventListener('click', e => { const b = e.target.closest('.lv'); if (!b) return; const i = lvIndex(b.dataset.lv); if (i < 0) return; LV.sel = b.dataset.lv; store.set('lvSel', LV.sel); renderMode(); });
@@ -5221,7 +5326,7 @@ const portraitNow = () => window.innerWidth <= window.innerHeight;
 function guardPortrait() { if (portraitNow() && game.running && !game.paused && game.view === 'play') togglePause(); }
 window.addEventListener('resize', guardPortrait); window.addEventListener('orientationchange', () => setTimeout(guardPortrait, 200));
 { const L0 = isLv(pendingMode) ? curLevel() : null, want0 = (() => { const sc = store.get('car', 'zubor'), ok = CARS[sc] && hwUnlocked(sc) ? sc : 'zubor'; return L0 && L0.world === 'off' && ok === 'zubor' ? 'sugga' : ok; })(); if (carKey !== want0) { carKey = want0; P = CARS[want0]; } }
-syncVol(); renderCar(); renderMode(); renderCam(); renderQ(); renderWx(); setTab('play');
+syncVol(); renderCar(); renderMode(); renderCam(); renderQ(); renderWx(); setTab('home');
 renderTracks(); collectEq(); music.on(renderMusicUI); renderMusicUI();
 toMenu(true); clearMarks();
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { layoutStage(); });

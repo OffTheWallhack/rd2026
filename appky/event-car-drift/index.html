@@ -436,6 +436,7 @@ body.touch.playing .gear{display:flex}
 .pad.hb{width:72px;height:72px}
 @media (max-height:430px){.gear b{height:27px;font-size:17px}.pad.gas{height:96px;width:96px}.padcol{gap:10px}}
 
+.hwrace.hot{border-color:#ff3b30;color:#ff6b6b;animation-duration:.35s}
 .hwrace{position:fixed;z-index:8;left:50%;transform:translateX(-50%);top:calc(52px + env(safe-area-inset-top,0px));padding:5px 14px;border-radius:999px;background:rgba(10,12,18,.75);border:1px solid var(--amber);color:var(--amber);font:700 12px var(--hud);letter-spacing:.08em;white-space:nowrap;animation:hwk2 .9s steps(2) infinite;pointer-events:none}
 @keyframes hwk2{50%{background:rgba(255,178,26,.22)}}
 body:not(.hwy) .hwrace{display:none}
@@ -535,6 +536,7 @@ body:not(.hwy) .hwrace{display:none}
             <button class="card mode" type="button" data-mode="off" style="--ac:#7be05a"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20l6-10 4 6 2-3 6 7zM14 6l2-3 2 3M16 3v6"/></svg><b>MISIA DIVOČINA</b><small>Lúka, ľad, vrchol</small></button>
             <button class="card mode" type="button" data-mode="train" style="--ac:#3ddcff"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16M6 19V9l6-4 6 4v10M10 19v-5h4v5"/></svg><b>TRÉNING</b><small>Levely · krok za krokom</small></button>
             <button class="card mode" type="button" data-mode="tokyo" style="--ac:#c58bff"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18c4-1 5-6 8-6s4 5 8 6M12 3v5M9 5l3-2 3 2"/></svg><b>TOKYO DRIFT</b><small>Noc · neón</small></button>
+            <button class="card mode" type="button" data-mode="chase" style="--ac:#4d8dff"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 16h18M5 16l1.5-5h11L19 16M7 16a2 2 0 1 0 4 0a2 2 0 1 0-4 0M13 16a2 2 0 1 0 4 0a2 2 0 1 0-4 0M9 8h6M12 4v4M9 4h6"/></svg><b>NAHÁŇAČKA</b><small>Noc · polícia za tebou</small></button>
             <button class="card mode" type="button" data-mode="hwy" style="--ac:#4dd68c"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21L10 3M16 21L14 3M12 6v3M12 12v3M12 18v2"/></svg><b>DIAĽNICA</b><small>Z pohľadu vodiča</small></button>
             </div>
             <p class="hint" id="modeDesc"></p>
@@ -646,6 +648,7 @@ body:not(.hwy) .hwrace{display:none}
             <div class="tile"><small>OFFROAD · REKORD</small><b id="recOff">–</b></div>
             <div class="tile"><small>TOKYO DRIFT · REKORD</small><b id="recTk">–</b></div>
             <div class="tile"><small>DIAĽNICA · REKORD</small><b id="recHwy">–</b></div>
+            <div class="tile"><small>NAHÁŇAČKA · REKORD</small><b id="recChase">–</b></div>
           </div>
           <p class="lab2">ODZNAKY</p>
           <div class="badges" id="badgeList"></div>
@@ -4133,7 +4136,7 @@ const $$ = s => [...document.querySelectorAll(s)];
 const menuEl = $('#menu'), pauseEl = $('#pauseMenu'), endEl = $('#endMenu'), curtain = $('#curtain'), stageEl = $('#stage'), muteBtn = $('#muteBtn');
 let pendingMode = store.get('mode', 'free'), tab = 'play', wiped = false;
 if (pendingMode === 'dovoz') pendingMode = 'job';
-if (!['free', 't60', 'train', 'tokyo', 'hwy', 'job', 'off'].includes(pendingMode)) pendingMode = 'free';
+if (!['free', 't60', 'train', 'tokyo', 'hwy', 'chase', 'job', 'off'].includes(pendingMode)) pendingMode = 'free';
 const isLv = m => m === 'train';
 const mmss = s => { s = Math.max(0, Math.round(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
 
@@ -4155,6 +4158,7 @@ const MODE_TXT = {
   off: () => 'Celá divočina: lúka, hrbole, bažina, jazero, ľad a vrchol. Zubor sa tu prepne na Suggu.' + (store.get('offBest', 0) ? ' Rekord: ' + fmt(store.get('offBest', 0)) + ' bodov.' : ''),
   train: () => 'Levely krok za krokom, všetky otvorené. Tri hviezdy sú za rýchly a čistý prejazd. Sugga a odomknuté autá zvládnu parkovisko, mesto aj divočinu, Zubor len parkovisko a mesto.',
   tokyo: () => 'Noc, neón a svetelné zóny. Prejdi cez každú v drifte, zóny idú po kruhu. 90 sekúnd.' + (store.get('bestTk', 0) ? ' Tvoj rekord: ' + fmt(store.get('bestTk', 0)) + '.' : ''),
+  chase: () => 'Nočná diaľnica a polícia za tebou. Policajti ťa doháňajú a vytláčajú, keď sa pri tebe udržia, zadržia ťa. Ujdi 8 km, policajtov môžeš aj vybúrať.' + (store.get('chaseBest', 0) ? ' Rekord: ' + fmt(store.get('chaseBest', 0)) + '.' : ''),
   hwy: () => 'Prvá osoba, 8 km diaľnice, automat. Predbiehaj, drž sa cesty a nenabúraj, každý náraz je −40. Občas ťa vyzve tajné Red Bull auto: predbehni ho alebo ho vybúraj a odomkne sa ti. Je ich šesť.' + (store.get('hwyBest', 0) ? ' Rekord: ' + fmt(store.get('hwyBest', 0)) + '.' : '')
 };
 const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>';
@@ -4226,7 +4230,7 @@ function renderCar() {
   { const t = tuneOf(carKey), bonus = { speed: t.engine * 4, accel: t.engine * 4, slide: t.tyre * 3, agil: t.tyre * 3 }; STAT_DEFS.forEach(([, key], n) => box.children[n].querySelector('i').style.setProperty('--v', Math.min(100, I[key] + (bonus[key] || 0)) + '%')); }
   renderTuneBtn();
 }
-const MODE_NAME = { free: 'VOĽNÝ', t60: '60 S', train: 'TRÉNING', tokyo: 'TOKYO DRIFT', hwy: 'DIAĽNICA', job: 'MISIA DOVOZ', off: 'MISIA DIVOČINA' };
+const MODE_NAME = { free: 'VOĽNÝ', t60: '60 S', train: 'TRÉNING', tokyo: 'TOKYO DRIFT', hwy: 'DIAĽNICA', chase: 'NAHÁŇAČKA', job: 'MISIA DOVOZ', off: 'MISIA DIVOČINA' };
 const MODE_LV = { job: 'm1', off: 'm2' };
 const runLevel = () => isLv(pendingMode) ? curLevel() : MODE_LV[pendingMode] ? LEVELS.find(x => x.id === MODE_LV[pendingMode]) : null;
 function renderSum() { const e = $('#goSum'); if (!e) return; const L = isLv(pendingMode) ? curLevel() : null; e.textContent = (wiz.step < 3 || !L) ? carKey.toUpperCase() + ' · ' + (MODE_NAME[pendingMode] || '') : carKey.toUpperCase() + ' · ' + lvTag(L) + ' · ' + L.name; }
@@ -4286,7 +4290,7 @@ const renderCam = () => $$('#camCards .card').forEach(c => c.classList.toggle('o
 const renderQ = () => $$('#qCards .card').forEach(c => c.classList.toggle('on', +c.dataset.q === settings.q));
 const renderWx = () => $$('#wxCards .card').forEach(c => c.classList.toggle('on', c.dataset.wx === settings.wx));
 function renderRecords() {
-  $('#recBest').textContent = fmt(game.best); $('#recTk').textContent = game.bestTk ? fmt(game.bestTk) : '–'; $('#recHwy').textContent = store.get('hwyBest', 0) ? fmt(store.get('hwyBest', 0)) : '–';
+  $('#recBest').textContent = fmt(game.best); $('#recTk').textContent = game.bestTk ? fmt(game.bestTk) : '–'; $('#recHwy').textContent = store.get('hwyBest', 0) ? fmt(store.get('hwyBest', 0)) : '–'; $('#recChase').textContent = store.get('chaseBest', 0) ? fmt(store.get('chaseBest', 0)) : '–';
   { const jb = store.get('jobBest', 0), ob = store.get('offBest', 0); $('#recJob').textContent = jb ? fmt(jb) + ' · ' + jobFmtT(store.get('jobBestT', 0)) : '–'; $('#recOff').textContent = ob ? fmt(ob) + ' · ' + jobFmtT(store.get('offBestT', 0)) : '–'; }
   $('#recLv').textContent = LEVELS.filter(L => lvStars(L.id) > 0).length + ' / ' + LEVELS.length; $('#recStars').textContent = LEVELS.reduce((a, L) => a + lvStars(L.id), 0) + ' / ' + LEVELS.length * 3;
   $('#recCombo').textContent = fmt(stats.bestCombo);
@@ -4379,26 +4383,26 @@ function applyQuality() {
 function startRun() {
   if (game.view === 'menu') { const sel = $('#carCards .card.on'); const want = sel && CARS[sel.dataset.car] && hwUnlocked(sel.dataset.car) ? sel.dataset.car : carKey; if (want !== carKey || sg.target !== want) stageShow(want); store.set('car', carKey); }   // the highlighted card is the truth
   if (game.view === 'menu' && runLevel()) { const L = runLevel(), nc = needCar(L); if (carKey !== nc || sg.target !== nc) { stageShow(nc); store.set('car', nc); renderCar(); } }
-  if (game.view === 'menu' && pendingMode !== 'hwy' && (stageBusy() || sg.shown !== sg.target) && !stageSnap()) { $('#startBtn').classList.add('wait'); return; }
+  if (game.view === 'menu' && pendingMode !== 'hwy' && pendingMode !== 'chase' && (stageBusy() || sg.shown !== sg.target) && !stageSnap()) { $('#startBtn').classList.add('wait'); return; }
   sound.init();
   const fromMenu = game.view === 'menu';
   const go = () => {
     hwyLeave(); tkNight(false); wxClear();
-    if (pendingMode !== 'hwy' && (sg.shown !== carKey || !model || model.len === 5 && !CARS[carKey].failed && sg.shown === null)) { sg.target = carKey; stageSnap(); }   // never start with a model left over from the last run
+    if (pendingMode !== 'hwy' && pendingMode !== 'chase' && (sg.shown !== carKey || !model || model.len === 5 && !CARS[carKey].failed && sg.shown === null)) { sg.target = carKey; stageSnap(); }   // never start with a model left over from the last run
     const L = runLevel(); job.level = L;
     game.mode = L ? 'job' : pendingMode; job.kind = L ? L.world : 'dovoz'; game.running = true; game.paused = false; game.view = 'play'; game.score = 0; game.combo = 0; game.mult = 1; game.comboT = 0; game.time = game.mode === 'tokyo' ? 90 : 60;
     coneHits = 0; runMaxSpd = 0; runBestCombo = 0; stats.runs++;
     sound.pause(false);
     gear = 'P'; gearShow(); if (isTouch) setTimeout(() => { if (game.running && gear === 'P') popText('PREPNI NA D'); }, 700);
     if (game.mode === 'job') { jobSetWorld(true); jobStart(); } else { jobSetWorld(false); lvCones(null); setAmbient(true); resetCar(); if (game.mode === 'tokyo') tkNight(true); }
-    if (game.mode !== 'tokyo' && game.mode !== 'hwy') { const wk = wxPick(); wxApply(wk); if (wk !== 'day') setTimeout(() => { if (game.running) popText(WX_NAME[wk]); }, 300); }
+    if (game.mode !== 'tokyo' && game.mode !== 'hwy' && game.mode !== 'chase') { const wk = wxPick(); wxApply(wk); if (wk !== 'day') setTimeout(() => { if (game.running) popText(WX_NAME[wk]); }, 300); }
     $('#jobHud').hidden = game.mode !== 'job'; $('#resetBtn').hidden = game.mode === 'job';
     menuEl.hidden = true; endEl.hidden = true; pauseEl.hidden = true; $('#hud').hidden = false;
     elTimer.hidden = game.mode !== 't60' && game.mode !== 'tokyo'; elTimer.textContent = String(game.time); elTimer.classList.remove('low');
     $('#scoreLab').textContent = game.mode === 'job' ? 'ČAS' : (game.mode === 't60' || game.mode === 'tokyo') ? 'SKÓRE · REKORD ' + fmt(game.mode === 'tokyo' ? game.bestTk : game.best) : 'SKÓRE';
     $('#score').textContent = game.mode === 'job' ? '0:00' : '0'; elSpd.textContent = '0';
     document.body.classList.add('playing'); elCombo.classList.remove('on');
-    if (game.mode === 'hwy') { hwyStart(); $('#resetBtn').hidden = true; } else updateCamera(0, true);
+    if (game.mode === 'hwy' || game.mode === 'chase') { HW.chase = game.mode === 'chase'; hwyStart(); $('#resetBtn').hidden = true; } else updateCamera(0, true);
     last = performance.now(); saveStats(); music.announce(true);
   };
   if (fromMenu && !runLevel()) go(); else fadeThen(go);
@@ -4471,6 +4475,40 @@ const HW_SPECIALS = [
   { id: 'xbow', name: 'KTM X-BOW', img: 'img/car-xbow.webp', hv: 52 }
 ];
 // the race opponent is the real car model, so you see what you are about to win
+function hwMkCop() {
+  const c = hwMkCar('car', 0xf4f4f8); const bar = new THREE.Group();
+  const red = new THREE.Mesh(new THREE.BoxGeometry(.5, .14, .24), new THREE.MeshBasicMaterial({ color: 0xff2020 })), blue = new THREE.Mesh(new THREE.BoxGeometry(.5, .14, .24), new THREE.MeshBasicMaterial({ color: 0x2060ff }));
+  red.position.set(-.36, 1.55, -.2); blue.position.set(.36, 1.55, -.2); bar.add(red, blue); c.g.add(bar);
+  c.cop = true; c.bar = bar; c.red = red; c.blue = blue; return c;
+}
+function hwCopSpawn(c, back) {
+  const P = HW.p, lane = Math.floor(Math.random() * 3);
+  if (c.g) HW.g.remove(c.g); c.m = null; Object.assign(c, hwMkCop()); HW.g.add(c.g);
+  Object.assign(c, { s: P.s - (back || 70) - Math.random() * 30, d: HLANE[lane], lane, to: lane, chg: 0, tc: 0, ck: 0, v: Math.max(P.v, 20), vd: 40, brk: 0, vb: 0, bl: 0, side: -1, cool: 0, dPrev: HLANE[lane], brakeOn: false, mark: 0, sp: 0, ko: 0, koYaw: 0, cop: true, ram: 0, vcap: 0 });
+}
+function hwCopStep(c, dt) {
+  // a police car: chases you, lines up behind you and rams, pushes from the side when next to you
+  const P = HW.p, gap = P.s - c.s, side = P.d - c.d;
+  const cap = c.vcap || (c.vcap = 41 + Math.random() * 3);   // each cop has its own top speed (148-158 km/h): a fast driver can leave them behind
+  const vt = c.ram > 0 ? Math.max(10, P.v - 5) : gap > 60 ? Math.min(cap + 1.5, P.v + 10) : gap > 8 ? Math.min(cap, P.v + 4) : gap > -4 ? Math.min(cap, P.v + 2) : P.v - 2;
+  c.v += clamp((vt - c.v) * 1.2, -8, 3.8) * dt; c.v = Math.max(8, c.v); c.s += c.v * dt;
+  const tgt = Math.abs(gap) < 14 ? P.d : clamp(P.d, HLANE[2], HLANE[0]);
+  c.d += clamp(tgt - c.d, -2.2 * dt, 2.2 * dt); c.lane = 1;
+  if (c.ram > 0) c.ram -= dt;
+  c.red.visible = Math.floor(HW.t * 6) % 2 === 0; c.blue.visible = !c.red.visible;
+  if (c.s < P.s - 240) { hwCopSpawn(c, 140); return; }      // lost it: it comes back from behind a little later
+  // the bust meter fills while a cop keeps close to you
+  if (Math.abs(gap) < 9 && Math.abs(side) < 4.2) P.bustT = HW.t;
+}
+function hwBustStep(dt) {
+  const P = HW.p; if (!HW.chase || HW.over) return;
+  const near = HW.cars.some(c => c.cop && !(c.ko > 0) && Math.abs(P.s - c.s) < 9 && Math.abs(P.d - c.d) < 4.2);
+  P.bust = clamp(P.bust + (near ? 7 : -16) * dt, 0, 100);
+  if (near && !P.nearPop) { P.nearPop = true; popText('POLÍCIA PRI TEBE!', true); } if (!near) P.nearPop = false;
+  if (P.bust >= 100) { hwyEnd(false); return; }
+  HW.bustHud -= dt; if (HW.bustHud <= 0) { HW.bustHud = .15; hwRaceUi(true, 'POLÍCIA · ZADRŽANIE ' + Math.round(P.bust) + ' %'); $('#hwRace').classList.toggle('hot', P.bust > 60); }
+  HW.copT -= dt; if (HW.copT <= 0 && HW.cars.filter(c => c.cop).length < 4) { HW.copT = 35 + Math.random() * 25; const c = { g: null }; HW.cars.push(c); hwCopSpawn(c, 160); popText('ĎALŠIE POLICAJNÉ AUTO', true); }
+}
 function hwMkSpecial(id) {
   const m = CARS[id].build(); m.car.traverse(o => { if (o.isMesh) { o.castShadow = false; o.receiveShadow = false; } });
   const dummy = { material: { color: { setHex() {} } } };
@@ -4589,9 +4627,9 @@ function hwBuild() {
 /* ---------- traffic cars: one merged mesh per car ---------- */
 const HW_BODY = [0xc23b3b, 0x2e5fa8, 0xdcdcd8, 0x1c1c20, 0x8c8f94, 0xdfb23a, 0x3b7a52, 0x6a3fa0, 0xe9e9e9, 0x9a3b1e];
 let hwCarMat = null, hwHeadMat = null;
-function hwMkCar(kind) {
+function hwMkCar(kind, bodyHex) {
   if (!hwCarMat) { hwCarMat = new THREE.MeshLambertMaterial({ vertexColors: true }); hwHeadMat = new THREE.MeshBasicMaterial({ color: 0xfff2c8 }); }
-  const body = HW_BODY[Math.floor(Math.random() * HW_BODY.length)], bc = hCol(body), glass = hCol(0x1d2530), dark = hCol(0x0b0b0d);
+  const body = bodyHex || HW_BODY[Math.floor(Math.random() * HW_BODY.length)], bc = hCol(body), glass = hCol(0x1d2530), dark = hCol(0x0b0b0d);
   const L = kind === 'truck' ? 12 : kind === 'van' ? 5.4 : kind === 'rb' ? 3.9 : 4.4, w = kind === 'truck' ? 2.5 : kind === 'van' ? 2 : kind === 'rb' ? 1.76 : 1.84;
   const parts = [], box = (bw, bh, bd, x, y, z, c) => { const gg = new THREE.BoxGeometry(bw, bh, bd); gg.translate(x, y, z); parts.push({ g: gg, c }); };
   if (kind === 'truck') {
@@ -4620,7 +4658,7 @@ function hwMkCar(kind) {
 function hwLaneFree(lane, s, v, self) {
   const dC = HLANE[lane], P = HW.p;
   const chk = (os, ov, od, olen, to) => { if (Math.abs(od - dC) > 2.7 && to !== lane) return true; const ahead = os - s; const behindNeed = 11 + Math.max(0, ov - v) * 2.2 + olen / 2, aheadNeed = 14 + Math.max(0, v - ov) * 1.3 + olen / 2; return !(ahead < aheadNeed && ahead > -behindNeed); };
-  for (const o of HW.cars) { if (o === self || o.ko > 0) continue; if (!chk(o.s, o.v, o.d, o.len, o.to)) return false; }
+  for (const o of HW.cars) { if (o === self || o.ko > 0 || o.cop) continue; if (!chk(o.s, o.v, o.d, o.len, o.to)) return false; }
   if (!chk(P.s, P.v, P.d, HWP.len, -1)) return false;
   return true;
 }
@@ -4646,8 +4684,9 @@ function hwTryChange(c, quick) {
 function hwTraffic(dt) {
   const P = HW.p, T = HW.cars, gap0 = 1e9;
   for (const c of T) {
-    if (c.s < -1e5) { if (Math.random() < dt * 2) hwSpawn(c, false); continue; }
+    if (c.s < -1e5) { if (Math.random() < dt * 2) { if (c.cop) hwCopSpawn(c, 100); else hwSpawn(c, false); } continue; }
     if (c.ko > 0) { hwKoStep(c, dt); continue; }
+    if (c.cop) { hwCopStep(c, dt); continue; }
     let gap = gap0, lv = 0;
     for (const o of T) { if (o === c || o.s <= c.s || o.s < -1e5 || o.ko > 0) continue; if (Math.abs(o.d - c.d) < 2.7 || (c.chg && Math.abs(o.d - HLANE[c.to]) < 2.7)) { const gp = o.s - c.s - (o.len + c.len) / 2; if (gp < gap) { gap = gp; lv = o.v; } } }
     if (Math.abs(P.d - c.d) < 2.5 && P.s > c.s) { const gp = P.s - c.s - (HWP.len + c.len) / 2; if (gp < gap) { gap = gp; lv = P.v; } }
@@ -4663,7 +4702,7 @@ function hwTraffic(dt) {
     c.cool -= dt;
     // overtaking bookkeeping
     const sg = Math.sign(c.s - P.s);
-    if (c.side > 0 && sg < 0 && Math.abs(c.s - P.s) < 12) hwOvertake(c);
+    if (c.side > 0 && sg < 0 && Math.abs(c.s - P.s) < 12 && !c.cop) hwOvertake(c);
     c.side = sg;
     // recycle
     if (!c.sp && (c.s < P.s - 260 || c.s > P.s + 620)) hwSpawn(c, false);
@@ -4672,7 +4711,7 @@ function hwTraffic(dt) {
   HW.ev -= dt;
   if (HW.ev <= 0 && HW.t > 12) {
     HW.ev = 8 + Math.random() * 9;
-    const near = T.filter(c => !c.sp && !(c.ko > 0) && c.s > P.s + 22 && c.s < P.s + 110 && !c.chg && c.brk <= 0);
+    const near = T.filter(c => !c.sp && !c.cop && !(c.ko > 0) && c.s > P.s + 22 && c.s < P.s + 110 && !c.chg && c.brk <= 0);
     if (Math.random() < .5) {
       const b = near.filter(c => Math.abs(c.d - P.d) < 2.4)[0];
       if (b && b.v > 6) { b.brk = 2.6; b.vb = b.v * .42; popText('POZOR, BRZDÍ!', true); }
@@ -4775,41 +4814,59 @@ function hwyEnter() {
   HW.saved = scene.children.filter(o => !o.isLight && o !== HW.g && o !== HW.dome && o !== HW.cam && o.visible);
   HW.saved.forEach(o => { o.visible = false; });
   HW.fog = { near: scene.fog.near, far: scene.fog.far, col: scene.fog.color.getHex() }; scene.fog.near = 160; scene.fog.far = 400; scene.fog.color.setHex(0xcdd9e3);
+  hwNight(!!HW.chase);
   HW.sun = sun.castShadow; sun.castShadow = false;
   HW.dome0 = HW.dome ? HW.dome.position.clone() : null;
   HW.g.visible = true; scene.add(HW.cam); HW.on = true; document.body.classList.add('hwy');
 }
 function hwyLeave() {
-  if (!HW.on) return;
+  if (!HW.on) return; hwNight(false);
   HW.on = false; HW.g.visible = false; scene.remove(HW.cam);
   HW.saved.forEach(o => { o.visible = true; }); HW.saved = [];
   scene.fog.near = HW.fog.near; scene.fog.far = HW.fog.far; scene.fog.color.setHex(HW.fog.col); sun.castShadow = HW.sun;
   if (HW.dome && HW.dome0) HW.dome.position.copy(HW.dome0);
   document.body.classList.remove('hwy'); $('#hwHud').hidden = true; $('#hwCtl').hidden = true; hwRaceUi(false);
 }
+function hwNight(on) {
+  const dome = HW.dome, hemi = scene.children.find(o => o.isHemisphereLight); if (!dome) return;
+  if (on && !HW.nightSaved) {
+    HW.nightSaved = { top: dome.material.uniforms.top.value.getHex(), bot: dome.material.uniforms.bot.value.getHex(), hi: hemi.intensity, hc: hemi.color.getHex(), hg: hemi.groundColor.getHex(), si: sun.intensity, sc: sun.color.getHex(), ex: renderer.toneMappingExposure };
+    dome.material.uniforms.top.value.setHex(0x02040c); dome.material.uniforms.bot.value.setHex(0x101a33); scene.fog.color.setHex(0x0a1020); scene.fog.near = 60; scene.fog.far = 260;
+    hemi.intensity = .55; hemi.color.setHex(0x8fa0ff); hemi.groundColor.setHex(0x0f1420); sun.intensity = .5; sun.color.setHex(0x9fb0ff); renderer.toneMappingExposure = 1.25;
+    if (!HW.lamp) { HW.lamp = new THREE.SpotLight(0xfff2c8, 120, 70, .7, .5, 1.3); HW.lamp.target = new THREE.Object3D(); scene.add(HW.lamp, HW.lamp.target); }
+    HW.lamp.visible = true;
+  } else if (!on && HW.nightSaved) {
+    const k = HW.nightSaved; dome.material.uniforms.top.value.setHex(k.top); dome.material.uniforms.bot.value.setHex(k.bot); hemi.intensity = k.hi; hemi.color.setHex(k.hc); hemi.groundColor.setHex(k.hg); sun.intensity = k.si; sun.color.setHex(k.sc); renderer.toneMappingExposure = k.ex; HW.nightSaved = null;
+    if (HW.lamp) HW.lamp.visible = false;
+  }
+}
 function hwyStart() {
   hwyEnter();
   for (const c of HW.cars) if (c.g) HW.g.remove(c.g); HW.cars = [];
   HW.t = 0; HW.over = false; HW.newCar = ''; HW.race = null; HW.rcT = 28 + Math.random() * 20; hwRaceUi(false); HW.ev = 14; HW.hud = 0; HW.shake = 0; HW.radarDone = 0;
   const p = HW.p = { s: 0, d: HLANE[0], psi: 0, st: 0, v: 22, g: 3, auto: true, rpm: 3000, cut: 0, bl: 0, blT: 0, lane: 0, prevLane: 0, laneT: 0, blOff: -9, score: 0, kos: 0, races: 0, over: 0, fines: 0, dmg: 0, lastOv: -9, dist: 0, wind: 0, strad: 0, tail: 0, cool: 0, shiftT: 0, bogT: 0, lastBl: 0, wheel: 0, ok: 0 };
-  const n = settings.q === 0 ? 14 : 20; for (let i = 0; i < n; i++) { const c = { g: null }; HW.cars.push(c); hwSpawn(c, true); }
+  const n = HW.chase ? 12 : settings.q === 0 ? 14 : 20; for (let i = 0; i < n; i++) { const c = { g: null }; HW.cars.push(c); hwSpawn(c, true); }
+  p.bust = 0; p.cops = 0; HW.bustHud = 0; $('#hwRace').classList.remove('hot'); HW.copT = HW.chase ? 28 : 1e9; HW.rcT = HW.chase ? 1e9 : HW.rcT;
+  if (HW.chase) for (let i = 0; i < 2; i++) { const c = { g: null }; HW.cars.push(c); hwCopSpawn(c, 200 + i * 80); }
   gear = 'D'; gearShow();
   $('#hwHud').hidden = false; $('#hwCtl').hidden = false; hwUi(true);
-  popText('POĎ! DRŽ SA V PRUHU');
+  popText(HW.chase ? 'POLÍCIA ZA TEBOU! UJDI 8 KM' : 'POĎ! DRŽ SA V PRUHU');
 }
 function hwyEnd(ok) {
   if (HW.over) return; HW.over = true; const P = HW.p; HW.race = null; hwRaceUi(false);
   game.running = false; game.view = 'end'; sound.quiet();
   let fin = P.score + P.over * 0; if (ok) fin += Math.max(0, 300 - HW.t) * 6 + Math.round((100 - P.dmg) * 12);
   fin = Math.max(0, Math.round(fin)); P.final = fin;
-  const best = store.get('hwyBest', 0), nb = ok && fin > best; if (nb) store.set('hwyBest', fin);
+  const bk = HW.chase ? 'chaseBest' : 'hwyBest'; if (HW.chase) fin = Math.max(0, Math.round(P.score + P.cops * 0 + (ok ? 1500 + Math.round((100 - P.dmg) * 8) : Math.round(P.s / 10))));
+  const best = store.get(bk, 0), nb = ok && fin > best; if (nb) store.set(bk, fin);
   if (ok) { stats.hwy = (stats.hwy || 0) + 1; } saveStats();
-  $('#nextBtn').hidden = true; $('#endTitle').innerHTML = ok ? 'DIAĽNICA <span>HOTOVO</span>' : 'AUTO <span>ZNIČENÉ</span>';
-  $('#endScoreLab').textContent = ok ? 'SKÓRE' : 'SKÓRE (BEZ CIEĽA)'; $('#endL1').textContent = 'REKORD'; $('#endL2').textContent = 'PREDBEHNUTÍ'; $('#endL3').textContent = 'NÁRAZY';
-  $('#endBest').textContent = fmt(Math.max(best, nb ? fin : 0)); $('#endCombo').textContent = P.over; $('#endCones').textContent = P.fines;
+  $('#nextBtn').hidden = true; $('#endTitle').innerHTML = HW.chase ? (ok ? 'UŠIEL <span>SI</span>' : P.bust >= 100 ? 'ZADRŽANÝ <span>POLÍCIOU</span>' : 'AUTO <span>ZNIČENÉ</span>') : ok ? 'DIAĽNICA <span>HOTOVO</span>' : 'AUTO <span>ZNIČENÉ</span>';
+  $('#endScoreLab').textContent = ok ? 'SKÓRE' : 'SKÓRE (BEZ CIEĽA)'; $('#endL1').textContent = 'REKORD'; $('#endL2').textContent = HW.chase ? 'POLICAJTI' : 'PREDBEHNUTÍ'; $('#endL3').textContent = 'NÁRAZY';
+  $('#endBest').textContent = fmt(Math.max(best, nb ? fin : 0)); $('#endCombo').textContent = HW.chase ? P.cops : P.over; $('#endCones').textContent = P.fines;
   $('#endBadge').hidden = !nb;
   $('#endNote').textContent = ok ? 'Čas ' + Math.floor(HW.t / 60) + ':' + String(Math.floor(HW.t % 60)).padStart(2, '0') + ', škoda ' + Math.round(P.dmg) + ' %. Predbiehanie dáva body, nárazy berú.' + (HW.newCar ? ' Nové auto: ' + HW.newCar + '.' : '') : 'Auto sa rozpadlo na ' + (P.s / 1000).toFixed(1).replace('.', ',') + ' km. Drž odstup a sleduj premávku.';
-  shareTxt = ok ? 'Prešiel som diaľnicu v Event Car Game: ' + fmt(fin) + ' bodov, ' + P.over + ' predbehnutých, ' + P.fines + ' pokút. Dokážeš to lepšie?' : null;
+  if (HW.chase) $('#endNote').textContent = ok ? 'Ušiel si polícii po ' + Math.floor(HW.t / 60) + ':' + String(Math.floor(HW.t % 60)).padStart(2, '0') + ', vybúraných policajtov: ' + P.cops + ', škoda ' + Math.round(P.dmg) + ' %.' : P.bust >= 100 ? 'Dostali ťa na ' + (P.s / 1000).toFixed(1).replace('.', ',') + ' km. Nenechaj ich pri sebe, uhýbaj a vybúraj ich.' : 'Auto sa rozpadlo na ' + (P.s / 1000).toFixed(1).replace('.', ',') + ' km. Drž odstup od premávky aj od polící.';
+  shareTxt = HW.chase ? (ok ? 'Ušiel som polícii v Event Car Game: ' + fmt(fin) + ' bodov. Dokážeš to?' : null) : ok ? 'Prešiel som diaľnicu v Event Car Game: ' + fmt(fin) + ' bodov, ' + P.over + ' predbehnutých, ' + P.fines + ' pokút. Dokážeš to lepšie?' : null;
   endEl.hidden = false; $('#hud').hidden = true; document.body.classList.remove('playing'); $('#hwHud').hidden = true; $('#hwCtl').hidden = true;
   countUp($('#endScore'), fin, 900); checkBadges();
 }
@@ -4825,13 +4882,14 @@ function hwKnock(c, sg) {
 }
 function hwKoStep(c, dt) {
   c.koT += dt; c.ko -= dt; c.v = Math.max(0, c.v - 12 * dt); c.s += c.v * dt; c.d += c.koLat * dt; c.koYaw += c.koSpin * dt; c.dPrev = c.d;
-  if (c.ko <= 0) { c.koYaw = 0; hwSpawn(c, false); }
+  if (c.ko <= 0) { c.koYaw = 0; if (c.cop) hwCopSpawn(c, 120); else hwSpawn(c, false); }
 }
 function hwHit(c, pd, ps, ds) {
   const p = HW.p; if (c.cool > 0 || c.ko > 0) return; c.cool = .8;
   const rel = p.v - c.v, sg = Math.sign(c.d - p.d) || (Math.random() < .5 ? -1 : 1); let dm;
   if (ps < pd * 2.2 + .3) { dm = clamp(Math.abs(rel) * .4 + 1, 1, 10); if (ds > 0) p.v = Math.max(p.v * .88, Math.min(p.v, c.v + 5)); }
   else { dm = 1.5 + Math.abs(p.v - c.v) * .12; p.psi += -sg * .04; }
+  if (c.cop) { if (ds > -1.5 || Math.abs(ds) < (c.len + HWP.len) / 2 - .4 && rel > 3) { /* beside or ahead of you = you swat it away; from behind it only rams you */ hwKnock(c, sg); p.cops++; p.score += 150; popText('POLICAJT VYBÚRANÝ +150'); } else { dm = Math.min(dm, 3) + 3; c.ram = 2.6; c.v = Math.max(8, p.v - 6); p.v = Math.max(p.v * .93, 8); p.psi += (Math.random() - .5) * .14; popText('NARAZIL DO TEBA!', true); } p.dmg += dm; HW.shake = 1; sound.thud(.8); buzz(50); if (p.dmg >= 100) { p.dmg = 100; hwyEnd(false); } return; }
   hwKnock(c, sg); p.dmg += dm; p.kos++; p.fines++; p.score -= 40; c.v = Math.max(c.v, p.v * .8);
   HW.shake = 1; sound.thud(clamp(dm / 12, .35, 1)); if (navigator.vibrate && settings.vib) { try { navigator.vibrate(Math.min(90, 25 + dm * 4)); } catch (e) {} }
   popText('NÁRAZ −40', true);
@@ -4916,7 +4974,7 @@ function hwyStep(dt) {
     HW.radarDone = i + 1; const f = HW.radarFlash && HW.radarFlash[i]; if (kmh > HLIMIT + 8) { if (f) { f.visible = true; setTimeout(() => { f.visible = false; }, 220); } popText('RADAR! ' + Math.round(kmh) + ' km/h', true); } else { P.score += 60; popText('RADAR OK +60'); }
   }
   // ---- traffic, collisions
-  hwTraffic(dt); hwRaceStep(dt);
+  hwTraffic(dt); hwRaceStep(dt); hwBustStep(dt);
   let gapAhead = 1e9;
   for (const c of HW.cars) {
     if (c.s < -1e5 || c.ko > 0) continue;
@@ -4944,6 +5002,7 @@ function hwyRender(dt) {
   cam.rotation.set(-(P.ax || 0) * .0022 + (Math.random() - .5) * .012 * HW.shake, th + Math.PI, P.st * .012 + (Math.random() - .5) * .02 * HW.shake);
   HW.wheel.rotation.z = P.wheel;
   if (HW.dome) HW.dome.position.set(cam.position.x, 0, cam.position.z); HW.ground.position.x = eye.x; HW.ground.position.z = eye.z;
+  if (HW.lamp && HW.lamp.visible) { const a = hWp(P.s + 2, P.d), b2 = hWp(P.s + 40, P.d); HW.lamp.position.set(a.x, 1.0, a.z); HW.lamp.target.position.set(b2.x, 0, b2.z); }
   // traffic meshes
   const blinkOn = P.bl && Math.floor(P.blT / .36) % 2 === 0;
   for (const c of HW.cars) {
@@ -4951,6 +5010,7 @@ function hwyRender(dt) {
     const q = hWp(c.s, c.d), lat = (c.d - c.dPrev) / Math.max(dt, .008); c.dPrev = c.d;
     c.g.visible = true; const ko = c.ko > 0; c.g.position.set(q.x, ko ? Math.max(0, Math.sin(c.koT * 4.5) * 1.3) : 0, q.z); c.g.rotation.y = q.p - Math.atan2(ko ? 0 : lat, Math.max(c.v, 4)) + (ko ? c.koYaw : 0); c.g.rotation.z = ko ? Math.sin(c.koT * 7) * .4 : 0;
     if (c.m) for (const w of c.m.wheels) w.spin.rotation.x += c.v * dt / Math.max(.2, w.pivot.position.y);
+    if (c.cop) { c.tail.material.color.setHex(0xff2418); }
     c.tail.material.color.setHex(c.brakeOn || c.brk > 0 ? 0xff2418 : 0x5a0c0c);
     const on = Math.floor(HW.t / .36) % 2 === 0; c.bm[1].visible = on && c.bl === -1; c.bm[0].visible = on && c.bl === 1;   // local +x is the car's left
   }
@@ -5167,7 +5227,7 @@ toMenu(true); clearMarks();
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { layoutStage(); });
 requestAnimationFrame(() => { layoutStage(); updateCamera(0, true); });
 requestAnimationFrame(loop);
-window.__drift = { WX, wxApply, wxClear, stunt, stuntTick, JENV, HW_SPECIALS, hwUnlock, hwUnlocked, hwRaceStart, renderer, HW, TK, hwBlink, hwShift, hwAuto, hwyStep, hwyRender, hwyEnd, pickMode: m => { pendingMode = m; renderMode(); }, get CUROBS() { return OBS; }, setGear, get gear() { return gear; }, setPedal, touch, readInput, keys, solids, cones, physics, updateCones, setCar, CARS, LEVELS, LV, store, renderMode, curLevel, lvCones, endJob, steerMaxAt: v => P.steerMax / (1 + Math.pow(Math.max(0, Math.abs(v) - 4) / P.steerFall, 1.3)), get P() { return P; }, rp, ORT, offUpdate, dvUpdate, HOLES: () => HOLES, holeAt, sg, stageSnap, stageReady: () => modelReady(sg.target), sound, get JP() { return JP; }, placeMarker, jobPhysics, jobDamage, jobTasks, jobFX, carShape, job, get TASKS() { return TASKS; }, TRAIL, WALK, OBS, carHits, jobRespawn, jobStart, jobSetWorld, buildJobWorld, terrainH, trailAt, surfAt, endJob, jobScore, S, input, game, camera, stage, music, settings, stats, get model() { return model; }, scene, setTab, startRun, toMenu, endRun, togglePause };
+window.__drift = { hwCopSpawn, WX, wxApply, wxClear, stunt, stuntTick, JENV, HW_SPECIALS, hwUnlock, hwUnlocked, hwRaceStart, renderer, HW, TK, hwBlink, hwShift, hwAuto, hwyStep, hwyRender, hwyEnd, pickMode: m => { pendingMode = m; renderMode(); }, get CUROBS() { return OBS; }, setGear, get gear() { return gear; }, setPedal, touch, readInput, keys, solids, cones, physics, updateCones, setCar, CARS, LEVELS, LV, store, renderMode, curLevel, lvCones, endJob, steerMaxAt: v => P.steerMax / (1 + Math.pow(Math.max(0, Math.abs(v) - 4) / P.steerFall, 1.3)), get P() { return P; }, rp, ORT, offUpdate, dvUpdate, HOLES: () => HOLES, holeAt, sg, stageSnap, stageReady: () => modelReady(sg.target), sound, get JP() { return JP; }, placeMarker, jobPhysics, jobDamage, jobTasks, jobFX, carShape, job, get TASKS() { return TASKS; }, TRAIL, WALK, OBS, carHits, jobRespawn, jobStart, jobSetWorld, buildJobWorld, terrainH, trailAt, surfAt, endJob, jobScore, S, input, game, camera, stage, music, settings, stats, get model() { return model; }, scene, setTab, startRun, toMenu, endRun, togglePause };
 })();
 </script>
 </html>

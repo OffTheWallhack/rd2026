@@ -332,7 +332,8 @@ body.mplay .pp svg.i-play{display:none}
 #carStats .st{grid-template-columns:62px 1fr}
 #carStats .st span{font-size:9.5px;letter-spacing:.08em}
 /* step 2: the modes */
-.cards.modes{grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;min-height:0}
+.cards.modes{grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:8px;min-height:0}
+@media (max-height:430px){.card.mode{padding:6px 10px;gap:2px}.card.mode .mi{width:24px;height:24px}.card.mode b{font-size:clamp(13px,2vw,17px)}.card.mode small{font-size:10.5px}}
 .card.mode{position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:6px;padding:12px;overflow:hidden}
 .card.mode::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ac,var(--amber));opacity:.55;transition:opacity .15s,width .15s}
 .card.mode .mi{width:34px;height:34px;fill:none;stroke:var(--ac,var(--amber));stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
@@ -540,6 +541,8 @@ body:not(.hwy) .hwrace{display:none}
             <div class="cards modes" id="modeCards">
             <button class="card mode on" type="button" data-mode="free" style="--ac:#ffb21a"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 12c0-2.5 2-4.5 4.5-4.5 4 0 5 9 9 9M4 16.5c4 0 5-9 9-9"/><circle cx="12" cy="12" r="0" /></svg><b>VOĽNÝ</b><small>Bez času</small></button>
             <button class="card mode" type="button" data-mode="t60" style="--ac:#ff6a3d"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 9v5l3 2M9.5 3h5M12 3v3"/></svg><b>60 S</b><small>Na skóre</small></button>
+            <button class="card mode" type="button" data-mode="job" style="--ac:#ff4d6d"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17h2l1-6h9l3 3h3v3h-2M7 17a2 2 0 1 0 4 0a2 2 0 1 0-4 0M15 17a2 2 0 1 0 4 0a2 2 0 1 0-4 0M6 11V7h8v4"/></svg><b>MISIA DOVOZ</b><small>Mesto až na vrchol</small></button>
+            <button class="card mode" type="button" data-mode="off" style="--ac:#7be05a"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20l6-10 4 6 2-3 6 7zM14 6l2-3 2 3M16 3v6"/></svg><b>MISIA DIVOČINA</b><small>Lúka, ľad, vrchol</small></button>
             <button class="card mode" type="button" data-mode="train" style="--ac:#3ddcff"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16M6 19V9l6-4 6 4v10M10 19v-5h4v5"/></svg><b>TRÉNING</b><small>Levely · krok za krokom</small></button>
             <button class="card mode" type="button" data-mode="tokyo" style="--ac:#c58bff"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18c4-1 5-6 8-6s4 5 8 6M12 3v5M9 5l3-2 3 2"/></svg><b>TOKYO DRIFT</b><small>Noc · neón</small></button>
             <button class="card mode" type="button" data-mode="hwy" style="--ac:#4dd68c"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21L10 3M16 21L14 3M12 6v3M12 12v3M12 18v2"/></svg><b>DIAĽNICA</b><small>Z pohľadu vodiča</small></button>
@@ -1965,9 +1968,10 @@ function collideJob(dt) {
   S.w = clamp(S.w, -2.4, 2.4);
 }
 // camera: how far along a line from the car towards the camera is free of tall buildings (checked in 3D)
+let camOver = 0;
 function camClear(x0, y0, z0, x1, y1, z1) {
   const dx = x1 - x0, dz = z1 - z0, dy = y1 - y0;
-  let tmin = 1;
+  let tmin = 1; camOver = 0;
   for (const o of obsNear(Math.min(x0, x1) - 2, Math.max(x0, x1) + 2, Math.min(z0, z1) - 2, Math.max(z0, z1) + 2)) {
     if (o.k || o.h < 2.6) continue;
     const ax = x0 - o.x, az = z0 - o.z, lx0 = ax * o.c + az * o.s, lz0 = -ax * o.s + az * o.c, ldx = dx * o.c + dz * o.s, ldz = -dx * o.s + dz * o.c;
@@ -1976,6 +1980,7 @@ function camClear(x0, y0, z0, x1, y1, z1) {
       if (Math.abs(d) < 1e-9) { if (Math.abs(p) > h) { ok = false; break; } }
       else { let a = (-h - p) / d, b = (h - p) / d; if (a > b) { const tt = a; a = b; b = tt; } t0 = Math.max(t0, a); t1 = Math.min(t1, b); if (t0 > t1) { ok = false; break; } }
     }
+    if (ok && (o.y0 || 0) > 1) { if (y1 > o.y0 - .5) camOver = camOver ? Math.min(camOver, o.y0) : o.y0; continue; }   // something overhead (the arch): the camera ducks under it instead of being pulled in
     if (ok && t0 < tmin && y0 + dy * t0 < o.h && y0 + dy * t0 > (o.y0 || 0) - .3) tmin = t0;
   }
   return tmin;
@@ -2931,8 +2936,8 @@ let TASKS = TASKS_DOVOZ, NT = TASKS.length;
 const MK = new THREE.Group(); MK.visible = false; scene.add(MK);
 const mkMat = c => new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: .9, depthWrite: false, side: THREE.DoubleSide });
 const mkRing = new THREE.Mesh(new THREE.RingGeometry(.9, 1, 56), mkMat(0xffb21a)); mkRing.rotation.x = -Math.PI / 2; MK.add(mkRing);
-const mkBeam = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 18, 28, 1, true), new THREE.MeshBasicMaterial({ color: 0xffb21a, transparent: true, opacity: .2, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending, fog: false }));
-mkBeam.position.y = 9; MK.add(mkBeam);
+const mkBeam = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 70, 28, 1, true), new THREE.MeshBasicMaterial({ color: 0xffb21a, transparent: true, opacity: .3, depthWrite: false, depthTest: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending, fog: false }));
+mkBeam.position.y = 35; mkBeam.renderOrder = 8; MK.add(mkBeam);   // tall and drawn over everything, so you always see where to go
 const mkPark = new THREE.Group(); MK.add(mkPark);
 (function () {
   const m = mkMat(0xffb21a), L = 5.9, W = 2.4, t = .14;
@@ -2944,7 +2949,7 @@ const mkPark = new THREE.Group(); MK.add(mkPark);
 /* a floating sign over the current target and a dim ring + guide line to the one after it */
 const mkSignCv = document.createElement('canvas'); mkSignCv.width = 512; mkSignCv.height = 128;
 const mkSignTex = new THREE.CanvasTexture(mkSignCv);
-const mkSign = new THREE.Sprite(new THREE.SpriteMaterial({ map: mkSignTex, transparent: true, depthWrite: false, fog: false }));
+const mkSign = new THREE.Sprite(new THREE.SpriteMaterial({ map: mkSignTex, transparent: true, depthWrite: false, depthTest: false, fog: false })); mkSign.renderOrder = 9;
 mkSign.scale.set(6.4, 1.6, 1); mkSign.position.y = 5.2; MK.add(mkSign);
 function drawSign(txt) {
   const g = mkSignCv.getContext('2d'); g.clearRect(0, 0, 512, 128);
@@ -2979,6 +2984,7 @@ function updMarker(dt, okNow) {
   const k = 1 + .05 * Math.sin(performance.now() / 260);
   const T = MK.userData.T; if (!T) return;
   mkSign.visible = !(revCam || settings.cam === 'top');   // seen from straight above the sign would just cover the van
+  { const d = camera.position.distanceTo(MK.position), s = clamp(d / 28, .6, 1.4); mkSign.scale.set(6.4 * s, 1.6 * s, 1); mkSign.material.opacity = clamp((d - 7) / 7, 0, 1); }   // far away it is big and always on top, close up it fades so it never covers the way
   mkRing.scale.set(T.r * k, 1, T.r * k);
   const c = okNow ? 0x39e075 : 0xffb21a;
   mkRing.material.color.setHex(c); mkPark.userData.m.color.setHex(c); mkBeam.material.color.setHex(c);
@@ -2987,7 +2993,7 @@ function updMarker(dt, okNow) {
 
 /* physics */
 // per-world tuning: the town and the wilderness are compact, so the cars run at a fraction of their open-road speed there
-const JP_ZUBOR = { spd: .42, tr: 0 };
+const JP_ZUBOR = { spd: .42, climb: 1.5, tr: .12 };   // climb: an extra push uphill so the van gets up the snow slope; tr: a little traction help on snow
 // Sugga: lighter and shorter, 200 hp diesel, 4x4 (tr = how much it keeps traction on grass and snow)
 const JP_SUGGA = { spd: .38, climb: 2.6, tr: .45 };
 Object.defineProperty(JP_ZUBOR, 'L', { get: () => CARS.zubor.L }); Object.defineProperty(JP_ZUBOR, 'steer', { get: () => CARS.zubor.steerMax });
@@ -3867,7 +3873,7 @@ const easeIO = t => (t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 const CAMS = { near: { d: .82, h: .85 }, chase: { d: 1, h: 1 }, high: { d: 1.22, h: 1.7 }, top: { d: 1, h: 1 } };
 const CAM_ORDER = ['chase', 'near', 'high', 'top'], CAM_NAME = { near: 'BLÍZKO', chase: 'ZA AUTOM', high: 'VYSOKO', top: 'ZHORA' };
 const stage = { a: .75, elev: .19, r: 12, idle: 9, drag: false, lx: 0, ly: 0, sx: 0, sy: 0 };
-let camNow = null, camTrans = null, camMode = 'menu', camLook = 2.5, camPull = 1;
+let camNow = null, camTrans = null, camMode = 'menu', camLook = 2.5, camPull = 1, camDuck = 99;
 
 // showroom decal under the car (only in the menu)
 const ring = new THREE.Mesh(new THREE.RingGeometry(3.7, 3.85, 72), new THREE.MeshBasicMaterial({ color: 0xffb21a, transparent: true, opacity: .5, depthWrite: false, side: THREE.DoubleSide }));
@@ -3938,7 +3944,9 @@ function updateCamera(dt, snap) {
     const tc = camClear(cam.look.x, cam.look.y, cam.look.z, camera.position.x, camera.position.y, camera.position.z);
     camPull = snap ? tc : lerp(camPull, tc, 1 - Math.exp(-dt * (tc < camPull ? 16 : 2.5)));
     if (camPull < .999) { const k = Math.max(.32, camPull * .9); camera.position.x = cam.look.x + (camera.position.x - cam.look.x) * k; camera.position.z = cam.look.z + (camera.position.z - cam.look.z) * k; camera.position.y += (1 - k) * 5; }
-  } else camPull = 1;
+    const duckT = camOver ? camOver - .7 : 99; camDuck = snap ? duckT : lerp(camDuck, duckT, 1 - Math.exp(-dt * (duckT < camDuck ? 9 : 2.5)));
+    if (camDuck < 90) camera.position.y = Math.min(camera.position.y, gyc + camDuck);
+  } else { camPull = 1; camDuck = 99; }
   camera.lookAt(cam.look);
   setShift(C.sx, C.sy);
   sun.position.set(S.x - 18, 40 + (job.on ? S.gy : 0), S.z - 10); sun.target.position.set(S.x, job.on ? S.gy : 0, S.z);
@@ -4094,6 +4102,8 @@ const INFO = {
 const MODE_TXT = {
   free: 'Bez času a bez tlaku. Jazdi, driftuj a zbieraj combo.',
   t60: () => 'Minúta na čo najvyššie skóre.' + (game.best ? ' Tvoj rekord: ' + fmt(game.best) + '.' : ''),
+  job: () => 'Celá misia: nalož aparatúru, prejdi starým mestom, cez neónovú zónu a po snehu až na vrchol. Hodnotí sa čas aj škoda.' + (store.get('jobBest', 0) ? ' Rekord: ' + fmt(store.get('jobBest', 0)) + ' bodov.' : '') + (carKey === 'zubor' ? ' Na snehu drž plyn, Zubor má pomoc do kopca.' : ''),
+  off: () => 'Celá divočina: lúka, hrbole, bažina, jazero, ľad a vrchol. Zubor sa tu prepne na Suggu.' + (store.get('offBest', 0) ? ' Rekord: ' + fmt(store.get('offBest', 0)) + ' bodov.' : ''),
   train: () => 'Levely krok za krokom, všetky otvorené. Tri hviezdy sú za rýchly a čistý prejazd. Sugga a odomknuté autá zvládnu parkovisko, mesto aj divočinu, Zubor len parkovisko a mesto.',
   tokyo: () => 'Noc, neón a svetelné zóny. Prejdi cez každú v drifte, zóny idú po kruhu. 90 sekúnd.' + (store.get('bestTk', 0) ? ' Tvoj rekord: ' + fmt(store.get('bestTk', 0)) + '.' : ''),
   hwy: () => 'Prvá osoba, 8 km diaľnice. Drž pruh, radiď 1–6, dávaj smerovky, predbiehaj zľava, pozor na radary. Do áut sa dá búrať. Občas ťa vyzve tajné Red Bull auto: predbehni ho alebo ho vybúraj a odomkne sa ti. Je ich šesť. Klávesy: Q/E smerovky, Z/X radenie, T automat.' + (store.get('hwyBest', 0) ? ' Rekord: ' + fmt(store.get('hwyBest', 0)) + '.' : '')
@@ -4148,19 +4158,21 @@ function renderCar() {
   if (!box.children.length) STAT_DEFS.forEach(([lab]) => box.insertAdjacentHTML('beforeend', '<div class="st"><span>' + lab + '</span><i></i></div>'));
   STAT_DEFS.forEach(([, key], n) => box.children[n].querySelector('i').style.setProperty('--v', I[key] + '%'));
 }
-const MODE_NAME = { free: 'VOĽNÝ', t60: '60 S', train: 'TRÉNING', tokyo: 'TOKYO DRIFT', hwy: 'DIAĽNICA' };
+const MODE_NAME = { free: 'VOĽNÝ', t60: '60 S', train: 'TRÉNING', tokyo: 'TOKYO DRIFT', hwy: 'DIAĽNICA', job: 'MISIA DOVOZ', off: 'MISIA DIVOČINA' };
+const MODE_LV = { job: 'm1', off: 'm2' };
+const runLevel = () => isLv(pendingMode) ? curLevel() : MODE_LV[pendingMode] ? LEVELS.find(x => x.id === MODE_LV[pendingMode]) : null;
 function renderSum() { const e = $('#goSum'); if (!e) return; const L = isLv(pendingMode) ? curLevel() : null; e.textContent = (wiz.step < 3 || !L) ? carKey.toUpperCase() + ' · ' + (MODE_NAME[pendingMode] || '') : carKey.toUpperCase() + ' · ' + lvTag(L) + ' · ' + L.name; }
 const lvList = () => LEVELS;
 function curLevel() {
   let L = LEVELS.find(x => x.id === LV.sel);
-  if (!L || !lvUnlocked(lvIndex(L.id))) {
+  if (!L || L.mission || !lvUnlocked(lvIndex(L.id))) {
     const w = L ? L.world : 'lot', g = LEVELS.filter(x => x.world === w && !x.mission);
     L = g.find(x => lvUnlocked(lvIndex(x.id)) && !lvStars(x.id)) || g[g.length - 1]; LV.sel = L.id;
   }
   return L;
 }
 const LV_SECT = { lot: 'PARKOVISKO', dovoz: 'MESTO', off: 'DIVOČINA' };
-const LV_SECT_INFO = { lot: 'rozjazd, brzda, slalomy, cúvanie', dovoz: 'staré mesto, cúvanie a vykladanie, na konci celá misia DOVOZ', off: 'lúka, bažina, ľad a vrchol, na konci celá misia' };
+const LV_SECT_INFO = { lot: 'rozjazd, brzda, slalomy, cúvanie', dovoz: 'staré mesto, cúvanie a vykladanie, kopec', off: 'lúka, bažina, ľad a vrchol' };
 // the wilderness is built for the Sugga; every other level can be driven by either car
 const needCar = L => L.world === 'off' && carKey === 'zubor' ? 'sugga' : carKey;
 const carNm = k => CARS[k].name.charAt(0) + CARS[k].name.slice(1).toLowerCase();
@@ -4171,7 +4183,7 @@ function renderLevels() {
   sects.forEach(w => { const b = document.createElement('button'); b.type = 'button'; b.dataset.sect = w; b.className = w === L.world ? 'on' : ''; b.textContent = LV_SECT[w]; tabs.appendChild(b); });
   tabs.hidden = sects.length < 2;
   $('#lvSect').textContent = carNm(needCar(L)) + ' · ' + LV_SECT_INFO[L.world];
-  const list = LEVELS.filter(M => M.world === L.world), ordered = list.filter(M => M.mission).concat(list.filter(M => !M.mission));   // the whole mission first
+  const ordered = LEVELS.filter(M => M.world === L.world && !M.mission);   // the full missions are modes of their own now
   ordered.forEach(M => {
     const b = document.createElement('button'); b.type = 'button'; const st = lvStars(M.id);
     b.className = 'lv' + (M.mission ? ' mis' : '') + (M.id === L.id ? ' on' : ''); b.dataset.lv = M.id;
@@ -4296,13 +4308,13 @@ function applyQuality() {
 
 /* ---------- run lifecycle ---------- */
 function startRun() {
-  if (game.view === 'menu' && isLv(pendingMode)) { const L = curLevel(), nc = needCar(L); if (carKey !== nc || sg.target !== nc) { stageShow(nc); store.set('car', nc); renderCar(); } }
+  if (game.view === 'menu' && runLevel()) { const L = runLevel(), nc = needCar(L); if (carKey !== nc || sg.target !== nc) { stageShow(nc); store.set('car', nc); renderCar(); } }
   if (game.view === 'menu' && pendingMode !== 'hwy' && (stageBusy() || sg.shown !== sg.target) && !stageSnap()) { $('#startBtn').classList.add('wait'); return; }
   sound.init();
   const fromMenu = game.view === 'menu';
   const go = () => {
     hwyLeave(); tkNight(false);
-    const L = isLv(pendingMode) ? curLevel() : null; job.level = L;
+    const L = runLevel(); job.level = L;
     game.mode = L ? 'job' : pendingMode; job.kind = L ? L.world : 'dovoz'; game.running = true; game.paused = false; game.view = 'play'; game.score = 0; game.combo = 0; game.mult = 1; game.comboT = 0; game.time = game.mode === 'tokyo' ? 90 : 60;
     coneHits = 0; runMaxSpd = 0; runBestCombo = 0; stats.runs++;
     sound.pause(false);
@@ -4317,7 +4329,7 @@ function startRun() {
     if (game.mode === 'hwy') { hwyStart(); $('#resetBtn').hidden = true; } else updateCamera(0, true);
     last = performance.now(); saveStats(); music.announce(true);
   };
-  if (fromMenu && !isLv(pendingMode)) go(); else fadeThen(go);
+  if (fromMenu && !runLevel()) go(); else fadeThen(go);
 }
 function togglePause() {
   if (!game.running) return;
@@ -5062,7 +5074,7 @@ toMenu(true); clearMarks();
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { layoutStage(); });
 requestAnimationFrame(() => { layoutStage(); updateCamera(0, true); });
 requestAnimationFrame(loop);
-window.__drift = { HW_SPECIALS, hwUnlock, hwUnlocked, hwRaceStart, renderer, HW, TK, hwBlink, hwShift, hwAuto, hwyStep, hwyRender, hwyEnd, pickMode: m => { pendingMode = m; renderMode(); }, get CUROBS() { return OBS; }, setGear, get gear() { return gear; }, setPedal, touch, readInput, keys, solids, cones, physics, updateCones, setCar, CARS, LEVELS, LV, store, renderMode, curLevel, lvCones, endJob, steerMaxAt: v => P.steerMax / (1 + Math.pow(Math.max(0, Math.abs(v) - 4) / P.steerFall, 1.3)), get P() { return P; }, rp, ORT, offUpdate, dvUpdate, HOLES: () => HOLES, holeAt, sg, stageSnap, stageReady: () => modelReady(sg.target), sound, get JP() { return JP; }, placeMarker, jobPhysics, jobDamage, jobTasks, jobFX, carShape, job, get TASKS() { return TASKS; }, TRAIL, WALK, OBS, carHits, jobRespawn, jobStart, jobSetWorld, buildJobWorld, terrainH, trailAt, surfAt, endJob, jobScore, S, input, game, camera, stage, music, settings, stats, get model() { return model; }, scene, setTab, startRun, toMenu, endRun, togglePause };
+window.__drift = { JENV, HW_SPECIALS, hwUnlock, hwUnlocked, hwRaceStart, renderer, HW, TK, hwBlink, hwShift, hwAuto, hwyStep, hwyRender, hwyEnd, pickMode: m => { pendingMode = m; renderMode(); }, get CUROBS() { return OBS; }, setGear, get gear() { return gear; }, setPedal, touch, readInput, keys, solids, cones, physics, updateCones, setCar, CARS, LEVELS, LV, store, renderMode, curLevel, lvCones, endJob, steerMaxAt: v => P.steerMax / (1 + Math.pow(Math.max(0, Math.abs(v) - 4) / P.steerFall, 1.3)), get P() { return P; }, rp, ORT, offUpdate, dvUpdate, HOLES: () => HOLES, holeAt, sg, stageSnap, stageReady: () => modelReady(sg.target), sound, get JP() { return JP; }, placeMarker, jobPhysics, jobDamage, jobTasks, jobFX, carShape, job, get TASKS() { return TASKS; }, TRAIL, WALK, OBS, carHits, jobRespawn, jobStart, jobSetWorld, buildJobWorld, terrainH, trailAt, surfAt, endJob, jobScore, S, input, game, camera, stage, music, settings, stats, get model() { return model; }, scene, setTab, startRun, toMenu, endRun, togglePause };
 })();
 </script>
 </html>

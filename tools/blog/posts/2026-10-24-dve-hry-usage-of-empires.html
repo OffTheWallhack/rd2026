@@ -1,0 +1,130 @@
+<!--meta {
+  "title": "Staviam dve hry s AI. Takto vznikli a ako fungujú.",
+  "date": "2026-10-24",
+  "time": "11:00",
+  "slug": "dve-hry-usage-of-empires",
+  "lead": "Usage of Empires dostal za pár dní vyše 30 nových verzií a popri ňom vznikla druhá hra, Usage of Empires II. Obe sú o dedine, ktorá žije, ale hrajú sa úplne inak. Tu je, ako ich staviam, ako fungujú a čo je nové.",
+  "tags": ["AI", "hry", "vibecoding", "Usage of Empires"],
+  "cover_alt": "Dve hry vedľa seba: izometrická pixel-art dedina Usage of Empires a jesenná dedina z Usage of Empires II pri jazere"
+} -->
+<p>Pred pár dňami som písal, že hra <a href="../usage-of-empires-hraj/">Usage of Empires je hrateľná</a>. Odvtedy sa stalo dosť vecí. Prvá hra dostala vyše 30 nových verzií. A popri nej vznikla druhá, <b>Usage of Empires II</b>. Je to tiež stratégia o dedine, ale s iným hraním.</p>
+<p>V tomto článku nájdeš tri veci: ako obe hry vznikajú, ako fungujú a čo je v nich nové.</p>
+<p>
+  <a class="btn btn-green" href="https://offthewallhack.github.io/usage-of-empires/" target="_blank" rel="noopener">Hrať Usage of Empires →</a>
+  <a class="btn" href="https://offthewallhack.github.io/uoe2/" target="_blank" rel="noopener">Pozrieť Usage of Empires II →</a>
+</p>
+
+<h2>Dve hry, dva spôsoby hrania</h2>
+<p>Pomáha mi predstava, že obe hry sú o tom istom, ale ty v nich stojíš na inom mieste.</p>
+<ul>
+  <li><b>Usage of Empires (prvá hra)</b> je hra, v ktorej si aktívny. Staviaš budovy, zadávaš osadníkom prácu, ovládaš hrdinu a chodíš s ním do dungeonov. Je to Age of Empires v pokojnejšej verzii, bez PvP a bez nájazdov, ktoré ti zničia dedinu.</li>
+  <li><b>Usage of Empires II</b> je skôr digitálne akvárko. Dedina žije v reálnom čase a osadníci si väčšinu vecí vymýšľajú sami. Ty si starosta, ktorého nikto nevidí: vyberieš pole, objednáš budovu, zvolaš ľudí. Zvyšok robia oni. Hra chce, aby si sa na ňu večer pozrel a vrátil sa o deň neskôr.</li>
+</ul>
+<p>Meno Usage of Empires beriem ako značku pre všetky moje strategické hry o dedinách. Druhá hra nie je pokračovanie prvej. Má nový kód, nový svet a inú myšlienku.</p>
+
+<div class="post-shots wide two">
+<figure><img src="../../img/blog/dve-hry-uoe-dedina.webp" width="1400" height="788" loading="lazy" alt="Usage of Empires: pixel-art dedina z výšky s hlavnou budovou, domami, poľami, mlynom a riekou"><figcaption>Usage of Empires<small>tmavší, detailnejší svet, v ktorom hráš ty</small></figcaption></figure><figure><img src="../../img/blog/dve-hry-uoe2-dedina.webp" width="1400" height="788" loading="lazy" alt="Usage of Empires II: svetlá pixel-art dedina so slamenými strechami, poľami, kostolom a mlynom"><figcaption>Usage of Empires II<small>svetlejšia dedina, ktorá žije aj bez teba</small></figcaption></figure>
+</div>
+
+<h2>Ako vzniká prvá hra: malé kroky a pamäť</h2>
+<p>Úplne na začiatku som urobil chybu, o ktorej som písal v prvom článku: dal som AI jeden obrovský prompt a dostal som hru, ktorú sa nedalo upravovať. Dnes robím opak. <b>Každá zmena je jeden malý krok</b> a každý krok má číslo. Teraz sme pri kroku 109.</p>
+<p>Ako vyzerá taký krok:</p>
+<ol>
+  <li>Poviem, čo chcem, často len pár vetami z telefónu. Aj s preklepmi, Claude si ich vie vyložiť.</li>
+  <li>Claude zmenu napíše a sám ju vyskúša v prehliadači. Kontroluje rôzne veľkosti telefónov na výšku aj na šírku, lebo hrám hlavne na iPhone.</li>
+  <li>Do súboru s poznámkami o hre sa zapíše, čo sa zmenilo a prečo. Tento súbor má dnes vyše tisíc riadkov. Z neho AI vie, čo sme sa dohodli, aj keď začíname nový rozhovor.</li>
+  <li>Hra sa vydá na GitHub a ja ju hneď otvorím v telefóne.</li>
+</ol>
+<p>Technicky je prvá hra jeden súbor. Beží v prehliadači na engine Phaser, svet sa ukladá v telefóne a z plochy ide aj bez internetu. Od kroku 86 má aj angličtinu: všetky texty sa prekladajú za behu, takže slovenský kód sa nemusel prepisovať.</p>
+<p>Moju úlohu som si ujasnil: <b>technické veci rozhoduje Claude, o hre rozhodujem ja.</b> Keď mi prišla hra s jaskyňou, kde príšery stáli v stenách, nepísal som kód. Poslal som screenshot a napísal som, čo je zle.</p>
+
+<h2>Čo je nové v Usage of Empires</h2>
+<p>Od posledného článku pribudlo toho veľa. Tu je výber toho, čo hráč naozaj pocíti.</p>
+
+<h3>Dedina sa rozrastá sama</h3>
+<ul>
+  <li><b>Hlavná cesta.</b> Ciele sú teraz v 5 kapitolách: Prvá iskra, Dedina ožíva, Cez rozbitý most, Kov a hradby, Plameň predkov. Za každú kapitolu dostaneš odmenu. Okrem nich sú voľné ciele, ktoré ťa nikam nenútia.</li>
+  <li><b>Nové osady.</b> Keď má dedina dosť ľudí, jeden z nich sa vyberie ďaleko a nájde dobré miesto. Ty rozhodneš, či tam osadu založíš. Potom každých 10 hodín reálneho času pribudne budova, aj keď nehráš. Cesty medzi osadami sa vychodia samy a keď po nich ľudia prejdú dosť krát, <b>vydláždia ich kameňom</b>.</li>
+  <li><b>Pracovné zóny.</b> Drevorubač, zberač aj kameník teraz robia okolo svojej chaty. Pri chate sa postupne sadia nové stromy, kvietky a bobule. Okolie chaty sa tak mení pred očami a vidno, čo ktorý človek robí.</li>
+</ul>
+
+<h3>Ekonomika a veľká mapa</h3>
+<ul>
+  <li><b>Nové reťazce výroby.</b> Pílnica zo dreva robí dosky. Kováčska dielňa z dosiek a železa robí náradie. Tkáčovňa robí látku. Pivovar mení jedlo na zlato. Výroba sa sama zastaví, keď tovaru je dosť.</li>
+  <li><b>Medzisklad a nosiči.</b> Suroviny sa odkladajú bližšie k lesu a lomu a nosiči ich rozvážajú tam, kde chýbajú.</li>
+  <li><b>Banka a rozšírenie mapy.</b> Zlato sa ukladá v Banke bez limitu. Za zlato v nej kúpiš nové regióny sveta (100, 250 a 500 zlata). Každý má vlastnú krajinu, suroviny a po kúpe v ňom vznikne nová osada. Tvoj svet teda rastie podľa toho, ako sa ti darí.</li>
+</ul>
+
+<div class="post-shots wide one">
+<figure><img src="../../img/blog/dve-hry-uoe-menu.webp" width="600" height="1304" loading="lazy" alt="Menu Stavať v Usage of Empires: budovy rozdelené do kategórií, prvá kategória Suroviny"><figcaption>Menu Stavať<small>budovy sú rozdelené do kategórií</small></figcaption></figure>
+</div>
+
+<h3>Dungeony</h3>
+<ul>
+  <li><b>Zóny po piatich poschodiach.</b> Slizové jaskyne, Kostnica, Žeravé hlbiny, Ľadová priepasť a Prázdnota. Každá má iné farby a iné príšery. Po bossovi sa odomkne <b>Skratka</b>, takže nezačínaš vždy od začiatku.</li>
+  <li><b>Krypta predkov.</b> Tajný dungeon pod Divom sveta. Dnes je to Ohnivé ruiny s lávou a bossom Večný ohnivý golem.</li>
+  <li><b>Smrť nič nestojí.</b> Keď padneš, skúsiš to znova na tom istom poschodí. Hra ťa netrestá.</li>
+  <li>Najhlbšie sa dá ísť na 50. poschodie (v krypte na 15.). Ďalších bossov a poschodia budeme pridávať postupne.</li>
+</ul>
+
+<div class="post-shots" style="grid-template-columns:1fr">
+<figure><img style="aspect-ratio:auto;object-fit:contain;height:auto" src="../../img/blog/dve-hry-uoe-ruiny.webp" width="1400" height="643" loading="lazy" alt="Ohnivé ruiny v Usage of Empires: hrdina s palicou, lávové mláky a ohniví škriatkovia na tmavej podlahe"><figcaption>Ohnivé ruiny<small>7. poschodie krypty. Lávovým mlákam sa treba vyhnúť</small></figcaption></figure>
+</div>
+
+<h3>Drobnosti, ktoré robia hru hrou</h3>
+<ul>
+  <li><b>Duch dediny.</b> Raz za hru príde duch a osadníci sa s ním rozlúčia. Scénka sa strihá do hudby. Nebudem ti prezrádzať koniec, len že hrdina je v ňom trochu neslušný.</li>
+  <li><b>Štyria hrdinovia</b> na výber a <b>angličtina</b> v menu.</li>
+  <li><b>Upratané menu stavieb.</b> Stavby sú v kategóriách a na telefóne ich je vidno naraz. Tutoriál už neprekrýva tlačidlá a správy z hry sú na telefóne vpravo hore.</li>
+</ul>
+
+<h2>Usage of Empires II: ako vznikla</h2>
+<p>Kód druhej hry vznikol za posledné dva dni a od prvej sa líši už spôsobom, akým vznikla. Prvá rástla po krokoch z prázdnej lúky. Pri druhej som <b>najprv napísal plán</b>: o čom hra je, čo v nej nebude a ako bude vyzerať svet. Až potom prišiel kód. Za tie dva dni sme spravili 26 verzií.</p>
+<p>Nápad je jednoduchý. Svet sa náhodne vygeneruje a odkrýva sa postupne, ako v Minecrafte. Osadníci vyrazia na výpravy a objavujú jazerá, púšte, močiare aj ľadové pláne. Mapa má biómy: brezový háj, horská lúka, močiar, tundra, zlatý háj. Hra beží v jednom období, v ranom stredoveku.</p>
+
+<div class="post-shots" style="grid-template-columns:1fr">
+<figure><img style="aspect-ratio:auto;object-fit:contain;height:auto" src="../../img/blog/dve-hry-uoe2-mapa.webp" width="1400" height="788" loading="lazy" alt="Mapa sveta v Usage of Empires II: dlhý pás zeme s osadou Rybnik, dedinou Horka Oak, Veľkými vodopádmi a Starým majákom"><figcaption>Mapa sveta<small>odkrytá krajina, osady a nájdené divy sveta (hviezdičky)</small></figcaption></figure>
+</div>
+
+<h2>Ako Usage of Empires II funguje</h2>
+<ul>
+  <li><b>Reálny čas.</b> Deň a noc, ročné obdobia aj počasie idú podľa hodín v Bratislave. Počasie berie hra z verejnej služby Open-Meteo. Ak sneží v Bratislave, sneží aj v hre.</li>
+  <li><b>Osadníci sa rozhodujú sami.</b> Zbierajú, pestujú, stavajú, chodia na výpravy a vychodia cesty. Starosta (hráč) ich len usmerní. Dedina nikdy nestojí. Keď nie je čo robiť, upratujú okolo domov alebo sadia stromy.</li>
+  <li><b>Divy sveta.</b> Každý biom má svoj div: Zlatý strom, Ľadové veže, Chatrč na koloch, Pyramída, Ostrovný chrám a ďalšie. Je ich spolu 18 a ukryté sú vo veľkých kusoch svojho biómu. Nájdeš ich, až keď tam osadníci prídu pešo alebo loďou. Všetky nájdené sú v <b>Knihe</b>, albume divov. Koľko ich je, ti hra ukáže až vtedy, keď osadníci nájdu všetky tri kúsky starého zvitku.</li>
+  <li><b>Každý div dá bonus.</b> Napríklad viac dreva, kameňa, jedla alebo nových obyvateľov. Osady sa zakladajú najmä pri divoch (dostanú o 30 % väčší dar) a v bohatých krajoch.</li>
+  <li><b>Ekonomika.</b> Každá osada má vlastný sklad a pokladnicu. Čo sa nezmestí do skladu, sa predá za mince. Ceny sa menia podľa ponuky a dopytu a osadníci vozia tovar z dedín, ktoré ho majú dosť, do dedín, kde chýba.</li>
+  <li><b>Príroda sa vracia.</b> Z pňov vyrastajú nové stromy, skaly dorastú a kríky sa obnovia. Nič, čo osadníci používajú, nemôže navždy dôjsť.</li>
+</ul>
+
+<div class="post-shots" style="grid-template-columns:1fr">
+<figure><img style="aspect-ratio:auto;object-fit:contain;height:auto" src="../../img/blog/dve-hry-uoe2-kniha.webp" width="1400" height="788" loading="lazy" alt="Kniha v Usage of Empires II: album divov sveta, vybraný Starý maják, ktorý dáva dedine +6 % jedla z každého nákladu"><figcaption>Kniha divov sveta<small>Starý maják: +6 % jedla z každého nákladu. Našiel ho Milan, jeden z osadníkov</small></figcaption></figure>
+</div>
+
+<h3>Čo je pod kapotou</h3>
+<p>Celý svet beží v jednom súbore s názvom <b>sim.js</b>. Je to čistá simulácia bez grafiky. Rovnaký súbor beží v prehliadači a môže bežať aj na serveri. Je to dôležité: svet je <b>deterministický</b>, čiže z rovnakého stavu a rovnakého počtu krokov vyjde vždy to isté. Prehliadač tak môže svet simulovať aj medzi uloženiami a nerozíde sa so serverom.</p>
+<p>Server je pripravený: každú minútu nechá svet „dožiť“ do súčasnosti a uloží ho. Zatiaľ ho nemám zapnutý, takže hra beží ako test svet, ktorý žije len v tvojom prehliadači. Má rýchle pretáčanie (až 240×, deň za 6 minút), prepínač ročných období a počasia a nový svet jedným tlačidlom. Keď server zapnem, ktokoľvek sa bude môcť pozrieť na živý svet a len ja, ako starosta, ho budem môcť ovplyvňovať.</p>
+
+<h2>Chyby, ktoré boli vidieť</h2>
+<p>Pri novom svete som raz videl stromy, domy a ľudí stáť na vode. Hra si po stlačení „Nový svet“ ponechala obrázok zeme zo starého sveta a nakreslila na neho nový. Oprava je v jednom pravidle: obrázok zeme sa zachová, len keď ide o ten istý svet.</p>
+<p>Súvisí s tým druhá vec, na ktorej stojí celá hra. Svet sa objavuje po kúskoch a každý kúsok musí vyjsť rovnako bez ohľadu na to, v akom poradí ho objavíš, a rovnako aj po načítaní uloženej hry. Preto sa kúsok mapy generuje <b>len zo zeme, nikdy z toho, čo ľudia postavili</b>. Na toto máme testy, ktoré to kontrolujú.</p>
+<p>Takéto pravidlá si zapisujeme. Druhá hra má v README zoznam „pravidiel pre každý update“. Napríklad: <i>každý nový biom musí dostať vlastný div sveta</i>. Hra sa dokonca odmietne spustiť, ak nejaký biom nemá div alebo naopak. Je to ten istý trik ako pri prvej hre: AI nezabudne, na čom sme sa dohodli.</p>
+
+<h2>Čo som sa naučil z dvoch hier naraz</h2>
+<ul>
+  <li><b>Malé kroky vyhrávajú.</b> Prvá hra má 109 krokov a každý viem vrátiť.</li>
+  <li><b>Pamäť v súbore je lepšia ako pamäť v hlave.</b> Pravidlá a rozhodnutia patria do poznámok, nie do chatu.</li>
+  <li><b>Najprv plán, potom kód.</b> Druhá hra vznikla rýchlejšie, lebo som vedel, čo chcem.</li>
+  <li><b>Testy nie sú pre programátorov.</b> Sú to poistky, aby AI nepokazila to, čo už funguje.</li>
+  <li><b>Telefón je pravda.</b> Hra, ktorá vyzerá dobre na počítači, nemusí fungovať na iPhone. Preto skúšam všetko tam.</li>
+</ul>
+
+<h2>Čo ďalej</h2>
+<ul>
+  <li><b>Usage of Empires:</b> ďalšie poschodia a bossovia, ďalšie regióny mapy a nová grafika pre prístav a loďky. Hra sa stále ukladá len v tvojom prehliadači, tak si rob zálohu sveta.</li>
+  <li><b>Usage of Empires II:</b> zapnúť server, aby dedina žila aj keď nikto nesedí pri počítači, a pridať ďalšie biómy s novými divmi sveta.</li>
+</ul>
+<p>Obe hry sú beta. Ak ich vyskúšaš, napíš mi, čo ťa nudilo, čo si nepochopil a čo sa pokazilo. Presne to potrebujem vedieť.</p>
+<p>
+  <a class="btn btn-green" href="https://offthewallhack.github.io/usage-of-empires/" target="_blank" rel="noopener">Hrať Usage of Empires →</a>
+  <a class="btn" href="https://offthewallhack.github.io/uoe2/" target="_blank" rel="noopener">Pozrieť Usage of Empires II →</a>
+</p>

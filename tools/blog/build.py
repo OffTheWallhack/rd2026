@@ -116,8 +116,9 @@ def esc(s): return html.escape(s, quote=True)
 
 def cover(p):
     """Returns the cover file names relative to img/blog/, or None."""
-    if os.path.exists(os.path.join(ROOT, "img", "blog", p["slug"] + ".webp")):
-        return {"big": p["slug"] + ".webp", "sm": p["slug"] + "-sm.webp", "og": p["slug"] + "-og.jpg"}
+    base = p.get("cover", p["slug"])   # optional "cover" in the meta: image base name when it differs from the slug
+    if os.path.exists(os.path.join(ROOT, "img", "blog", base + ".webp")):
+        return {"big": base + ".webp", "sm": base + "-sm.webp", "og": base + "-og.jpg"}
 
 def tags_html(p):
     return "".join(f'<span class="chip">{esc(t)}</span>' for t in p.get("tags", []))
@@ -125,7 +126,7 @@ def tags_html(p):
 def build_post(p, newer, older, posts=()):
     url = f"{BASE}blog/{p['slug']}/"
     ld = {"@context": "https://schema.org", "@type": "BlogPosting", "headline": p["title"], "description": p["lead"],
-          "datePublished": p["date"], "dateModified": p["date"], "inLanguage": "sk", "url": url,
+          "datePublished": p["date"], "dateModified": p.get("modified", p["date"]), "inLanguage": "sk", "url": url,
           "author": {"@type": "Person", "name": "Robert Ďurica", "url": BASE + "kto-som/"},
           "publisher": {"@type": "Person", "name": "Robert Ďurica"}, "image": BASE + "img/og.jpg"}
     cv = cover(p)
@@ -213,7 +214,7 @@ def build_sitemap(posts):
     p = os.path.join(ROOT, "sitemap.xml"); s = open(p, encoding="utf-8").read()
     s = re.sub(r"\s*<url><loc>[^<]*/blog/[^<]*</loc>.*?</url>", "", s)
     add = f"\n  <url><loc>{BASE}blog/</loc><lastmod>{posts[0]['date'] if posts else ''}</lastmod><priority>0.7</priority></url>"
-    add += "".join(f"\n  <url><loc>{BASE}blog/{q['slug']}/</loc><lastmod>{q['date']}</lastmod><priority>0.6</priority></url>" for q in posts)
+    add += "".join(f"\n  <url><loc>{BASE}blog/{q['slug']}/</loc><lastmod>{q.get('modified', q['date'])}</lastmod><priority>0.6</priority></url>" for q in posts)
     s = s.replace("\n</urlset>", add + "\n</urlset>")
     open(p, "w", encoding="utf-8").write(s)
 

@@ -1,0 +1,150 @@
+<!--meta {
+  "title": "Postavil som si drift hru cez AI. Takto vznikala.",
+  "date": "2026-10-20",
+  "modified": "2026-10-24",
+  "time": "19:30",
+  "slug": "event-car-drift-hra-s-ai",
+  "cover": "event-car-drift",
+  "lead": "Event Car Game (pôvodne Event Car Drift) je 3D hra, ktorú som si s AI postavil v prehliadači: parkovisko, tréning, dovoz, offroad až na vrchol hory, diaľnica z kokpitu, tajné preteky o Red Bull autá a nočná naháňačka s políciou. Tu je, ako presne vznikala, na čo sme prišli a čo som z nej vyhodil. Hrať sa dá priamo v mojom robOS.",
+  "tags": [
+    "AI",
+    "hry",
+    "vibecoding",
+    "robOS"
+  ],
+  "cover_alt": "Screenshot hry Event Car Drift: čierna dodávka v drifte na parkovisku, za ňou dym a stopy po gumách"
+} -->
+<p>Hru si môžeš zahrať hneď. Otvor môj <a href="../../appky/">robOS</a>, ťukni na appku <b>Car Game</b> a jazdi. Funguje na mobile aj na počítači a nič neinštaluješ. Mobil drž na šírku. Ak ju chceš na celú obrazovku, je aj <a href="../../appky/event-car-drift/">samostatná</a>.</p>
+<p>Programátor nie som. Celú hru postavila AI a ja som jej hovoril, čo chcem, čo sa mi páči a čo nie. Tento článok je presný denník toho, ako sme to robili.</p>
+
+<h2>Začalo sa parkoviskom</h2>
+<p>Najprv len veľké parkovisko a jedno auto. Cieľ bol jediný: aby sa auto <b>dobre driftovalo</b>. Fyzika je „arkádová“, nie simulátor. Auto sa dá ľahko rozhýbať, šmyk je ľúbivý a dym a stopy po gumách ti hneď ukážu, čo robíš.</p>
+<p>Celé to beží v prehliadači v jednom súbore. Používa knižnicu three.js na 3D, takže sa dá pustiť odkiaľkoľvek, bez inštalácie.</p>
+
+<div class="post-shots wide" style="grid-template-columns:1fr">
+<figure><img src="../../img/blog/event-car-drift-drift.webp" width="1400" height="788" loading="lazy" alt="Drift na parkovisku v hre Event Car Drift: dym spoza kolies, stopy po pneumatikách a v pozadí zaparkované druhé auto"><figcaption>Drift na parkovisku<small>dym, stopy a zaparkovaná Sugga v pozadí</small></figcaption></figure>
+</div>
+
+<h2>Dve autá, dva charaktery</h2>
+<p>Autá som nechcel kreslené z kociek. Chcel som, aby vyzerali ako tie skutočné, s ktorými jazdím v práci. Modely som nechal vygenerovať AI z fotiek a Claude ich potom vložil do hry. Každé auto má vlastné správanie:</p>
+<ul class="stats s3">
+  <li class="dark"><b>Zubor</b><span>obrnená dodávka, V8 400 koní, 3,4 t. Pomalší rozjazd, ale dlhé a ladné šmyky.</span></li>
+  <li class="green"><b>Sugga</b><span>vintage 4×4 diesel. Ľahšia, obratná a stvorená na offroad.</span></li>
+  <li><b>Zvuk</b><span>V8 má vlastný zvuk motora a štart. Pre Suggu ešte hľadám diesel.</span></li>
+</ul>
+<p>Na Sugge sme ladili najviac. Sugge sme napríklad pridali 7 % výkonu. Pri takýchto veciach AI nevie, aký má byť „správny pocit“ z jazdy. To musím odjazdiť ja a povedať jej to.</p>
+
+<div class="post-shots wide" style="grid-template-columns:1fr">
+<figure><img src="../../img/blog/event-car-drift-model.webp" width="1000" height="541" loading="lazy" alt="Model dodávky Zubor vyrenderovaný z hry na bielom pozadí"><figcaption>Zubor<small>model vyrenderovaný priamo z hry</small></figcaption></figure>
+</div>
+
+<h2>Menu, ktoré vyzerá ako garáž</h2>
+<p>Prvé menu bolo len zoznam tlačidiel. Napísal som, že chcem niečo lepšie, a AI navrhla nový vzhľad: karty s autami a siluetami, karty s režimami, tabuľku s menom auta a veľké tlačidlo <b>ŠTART</b>, ktoré ti hneď hovorí, čo spustíš. Auto vidíš živé za menu a prepínaš ho šípkami.</p>
+
+<div class="post-shots wide two">
+<figure><img src="../../img/blog/event-car-drift-menu-zubor.webp" width="1100" height="620" loading="lazy" alt="Menu hry Event Car Drift s vybraným autom Zubor"><figcaption>Menu s Zuborom<small>výber auta aj režimu na jednom mieste</small></figcaption></figure><figure><img src="../../img/blog/event-car-drift-menu-sugga.webp" width="1100" height="620" loading="lazy" alt="Menu hry Event Car Drift s vybranou Suggou a režimom Offroad"><figcaption>Menu so Suggou<small>offroad režim zvýrazní zelenou</small></figcaption></figure>
+</div>
+
+<h2>Parkovisko plné srandy</h2>
+<p>Keď bol drift dobrý, parkovisko mi pripadalo prázdne. Povedal som, že tam chcem veci, ktoré si človek užije. Pribudlo:</p>
+<ul>
+  <li><b>pyramída zo sudov,</b> ktorú sa oplatí rozbiť,</li>
+  <li><b>veľké plážové lopty,</b> ktoré môžeš tlačiť autom,</li>
+  <li><b>radar,</b> ktorý ti zmeria rýchlosť a zapamätá si najlepší výsledok,</li>
+  <li><b>zaparkované druhé auto.</b> Keď jazdíš na Zuborovi, na parkovisku stojí Sugga. A naopak: na offroade na štarte stojí Zubor.</li>
+</ul>
+
+<div class="post-shots wide two">
+<figure><img src="../../img/blog/event-car-drift-lot-sugga.webp" width="900" height="520" loading="lazy" alt="Zubor a zaparkovaná Sugga na parkovisku, vľavo plážová lopta"><figcaption>Sugga čaká na parkovisku<small></small></figcaption></figure><figure><img src="../../img/blog/event-car-drift-lot-radar.webp" width="900" height="520" loading="lazy" alt="Radar na parkovisku a kužele okolo auta"><figcaption>Radar<small>meria rýchlosť a drží rekord</small></figcaption></figure><figure><img src="../../img/blog/event-car-drift-lot-barrel.webp" width="900" height="520" loading="lazy" alt="Auto pri modrom kontajneri a pyramíde zo sudov"><figcaption>Kontajner a sudy<small></small></figcaption></figure><figure><img src="../../img/blog/event-car-drift-lot-ball.webp" width="900" height="520" loading="lazy" alt="Plážová lopta, pneumatiky a bránka na parkovisku"><figcaption>Lopty a pneumatiky<small></small></figcaption></figure>
+</div>
+
+<h2>Dym, ktorého bolo moc</h2>
+<p>Prvý dym vyzeral dobre na obrázku, ale v hre ho bolo príliš. Napísal som jej presne to: že je tam podľa mňa veľa dymu. AI ho zmenšila a zredukovala. Aktuálny dym sú mäkké gule, ktoré sa vždy otáčajú ku kamere a vznikajú <b>za pneumatikami a mimo nich</b>, nie na nich. Takto vyzerá ako skutočný šmyk, nie ako hmla okolo auta.</p>
+
+<h2>DOVOZ: úlohy v neónovom meste</h2>
+<p>Voľná jazda ťa po čase omrzí. Tak vznikol režim <b>DOVOZ</b>: s dodávkou prechádzaš bránami s úlohami (slalom, kyvadlá, kruhy) a hľadáš presnosť. Svet je neónový a farebný. Na jednom mieste tu pôvodne stáli obrovské huby. Vyzerali zaujímavo, ale pri jazde mi zakrývali celý výhľad. Povedal som, aby šli preč, a nahradili ich ružové stĺpiky na neónový slalom.</p>
+
+<div class="post-shots wide two">
+<figure><img src="../../img/blog/event-car-drift-dovoz-1.webp" width="1000" height="562" loading="lazy" alt="Neónový svet režimu DOVOZ: fialová dráha s ružovými múrmi"><figcaption>Neónová dráha<small></small></figcaption></figure><figure><img src="../../img/blog/event-car-drift-dovoz-2.webp" width="1000" height="562" loading="lazy" alt="Dodávka prechádza cez neónový kruh v režime DOVOZ"><figcaption>Brána s kruhom<small></small></figcaption></figure>
+</div>
+
+<h2>OFFROAD: z lúky až na vrchol</h2>
+<p>Najväčšia časť hry je offroad so Suggou. Je to jedna dlhá trasa s 25 bránami a šiestimi svetmi za sebou. Začína sa na lúke, ide cez močiar, kaňon a zamrznuté jazero, potom hore zasneženým svahom až na vrchol. V každej zóne sa mení povrch, takže sa auto správa inak na bahne, ľade a v hlbokom snehu.</p>
+
+<div class="post-shots wide two">
+<figure><img src="../../img/blog/event-car-drift-off-louka.webp" width="1100" height="619" loading="lazy" alt="Offroad: Sugga na lúke medzi stromami a drevenými prekážkami"><figcaption>A: lúka<small></small></figcaption></figure><figure><img src="../../img/blog/event-car-drift-off-blato.webp" width="1100" height="619" loading="lazy" alt="Offroad: Sugga v blate pri jazierku"><figcaption>B: močiar<small></small></figcaption></figure><figure><img src="../../img/blog/event-car-drift-off-kanon.webp" width="1100" height="619" loading="lazy" alt="Offroad: Sugga v kaňone pod tmavou skalnou stenou"><figcaption>C: kaňon<small></small></figcaption></figure><figure><img src="../../img/blog/event-car-drift-off-ladove-jazero.webp" width="1100" height="619" loading="lazy" alt="Offroad: Sugga na ľade pri zamrznutom jazere"><figcaption>D: ľadové jazero<small></small></figcaption></figure>
+</div>
+
+<h2>Vrchol, ktorý som dal prerobiť celý</h2>
+<p>Najviac som sa naučil na poslednej zóne. Pôvodne to bol „uletený svet“ s plávajúcimi ostrovmi, UFO a neónmi. Keď som tam prvýkrát došiel so Suggou, auto sa zasekávalo, vtlačilo ma do steny a nebolo nič vidieť. Napísal som, že toto nemôžeme nechať takto a že to musí byť stále realistické.</p>
+<p>AI to celé zmazala a postavila nanovo ako reálny horský vrchol: štrková cesta, skaly, sneh, slalom medzi balvanmi, horská chata, kríž a kamenná mohyla, vysielač a veterná turbína. Na konci je cieľový oblúk s vlajkou. Potom prešiel celú trasu skriptovaný virtuálny šofér a kontroloval, že sa dá prejsť bez nárazu až do cieľa.</p>
+
+<div class="post-shots wide two">
+<figure><img src="../../img/blog/event-car-drift-off-hrebene.webp" width="1100" height="619" loading="lazy" alt="Zasnežený hrebeň s cieľovým oblúkom v diaľke"><figcaption>Hrebeň<small></small></figcaption></figure><figure><img src="../../img/blog/event-car-drift-off-vrchol.webp" width="1100" height="619" loading="lazy" alt="Cieľový oblúk na vrchole s drevenou plošinou a vlajkou"><figcaption>Vrchol<small>cieľ s vlajkou</small></figcaption></figure>
+</div>
+
+<h2>Ako sme sa rozhodovali</h2>
+<p>Rovnako ako pri iných mojich projektoch: <b>technické veci rozhoduje Claude, pri hernom a kreatívnom rozhodujem ja.</b> Ja som hru jazdil, hovoril, čo mi vadí, a on to opravil. Moje správy boli typu „veľa dymu“, „nič tam nevidím“ alebo „toto treba prerobiť úplne“. Nikdy som nehovoril, ako to naprogramovať.</p>
+<ul>
+  <li><b>Hra má už 46 verzií.</b> Po každej som si ju zahral a povedal, čo sa mi páči a čo nie.</li>
+  <li><b>Vyhadzovať je rovnako dôležité ako pridávať.</b> Huby, plávajúce ostrovy aj UFO šli preč, keď prekážali.</li>
+  <li><b>Najprv jedna vec, potom ďalšia.</b> Parkovisko, auto, menu, módy, offroad. Nikdy nie všetko naraz.</li>
+</ul>
+
+<h2>Z hry do robOS</h2>
+<p>Hra pôvodne žila ako jedna stránka. Keď som ju vyhlásil za hotovú, spravili sme z nej appku v mojom robOS, malom telefóne priamo na tomto webe. Pribudla do neho ikona v rovnakom štýle ako Event Hub a hra sa otvorí vnútri telefónu.</p>
+
+<div class="post-shots wide">
+<figure><img src="../../img/blog/event-car-drift-robos.webp" width="420" height="820" loading="lazy" alt="robOS: domovská obrazovka telefónu s novou appkou Car Game"><figcaption>Nová appka<small>Car Game v robOS</small></figcaption></figure><figure><img src="../../img/blog/event-car-drift-robos-hra.webp" width="420" height="820" loading="lazy" alt="Hra Event Car Drift otvorená vnútri telefónu v robOS"><figcaption>Hra vnútri telefónu<small>menu hneď po otvorení</small></figcaption></figure><figure><img src="../../img/blog/event-car-drift-ikona.webp" width="512" height="512" loading="lazy" alt="Ikona appky Car Game v štýle Event Hub: nápis Event Car Game a čierne auto"><figcaption>Ikona<small>v štýle Event Hub v2</small></figcaption></figure>
+</div>
+
+<h2>Aktualizácia: z driftu je tréning</h2>
+<p>Deň po zverejnení som hru otočil. Drift na parkovisku ostal, ale jadrom je teraz <b>TRÉNING</b>: 27 levelov od rozjazdu a brzdenia cez slalomy, cúvanie a osmičku až po mesto a divočinu. Jedna hviezda odomkne ďalší level, tri sú za rýchly a čistý prejazd.</p>
+<p>Prerobil som aj fyziku. Zubor má 3,5 tony a vysoké ťažisko, tak sa teraz podľa toho aj správa: dlho brzdí a pri brzdení ide nosom dole, v zákrute sa celá karoséria nakloní a keď ho pri rýchlosti rozkývaš vľavo-vpravo, zdvihne kolesá a prevráti sa na bok. Kto brzdí v zákrute, tomu ide zadok von. Presne to, čo s ním zažívam v práci, len v arkádovej verzii.</p>
+
+<h2>Aktualizácia 24. októbra: diaľnica, tajné autá a polícia</h2>
+<p>Za pár dní sa hra rozrástla na celú zbierku režimov. Tu je to hlavné, v poradí, ako to vznikalo.</p>
+
+<p><b>Diaľnica z pohľadu vodiča.</b> Nový režim, v ktorom sedíš v kokpite Zubora. AI som ukázal fotky interiéru skutočného auta, takže je tam prístrojovka s tachometrom a otáčkomerom, spätné zrkadlá a volant. Jazdíš po trojpruhovej diaľnici s premávkou a máš prejsť 8 km. Prvá verzia mala smerovky, ručné radenie a pokuty za predbiehanie zblízka. Povedal som, že to chcem arkádovejšie, tak šlo všetko preč a pokuta ostala len za náraz. Do áut sa dá búrať, len ti ubúda karoséria.</p>
+
+<div class="post-shots wide" style="grid-template-columns:1fr">
+<figure><img src="../../img/blog/event-car-drift-v2-dialnica.webp" width="1100" height="620" loading="lazy" alt="Diaľnica z kokpitu Zubora: prístrojovka, zrkadlá a pred nami modré Red Bull Mini"><figcaption>Diaľnica z kokpitu<small>hore pruh ukazuje, že pred nami je Red Bull Mini</small></figcaption></figure>
+</div>
+
+<p><b>Tajné preteky o autá.</b> Na diaľnici sa občas zjaví špeciálne Red Bull auto a začnú sa preteky. Keď ho predbehneš alebo vybúraš, dostaneš ho ako darček a odomkne sa ti vo všetkých svetoch, nielen na diaľnici. Je ich šesť: Red Bull Mini s veľkou plechovkou na zadku, DJ Jeep s bedňami, bugina, rozvozový truck, Unimog a KTM X-Bow. Ukázal som AI fotky všetkých a ona ich postavila z jednoduchých kociek, takže sú to len približné verzie. Kým ich nezískaš, vidíš v menu iba siluetu s otáznikom.</p>
+
+<div class="post-shots wide" style="grid-template-columns:1fr">
+<figure><img src="../../img/blog/event-car-drift-v2-auta.webp" width="1100" height="620" loading="lazy" alt="Výber auta v hre: Zubor, Sugga, Red Bull Mini, DJ Jeep, bugina, truck, Unimog a KTM X-Bow"><figcaption>Osem áut v jednom pohľade<small>odomknuté autá sú na výber vo všetkých režimoch</small></figcaption></figure>
+</div>
+
+<p><b>Nočná naháňačka s políciou.</b> Nový režim na diaľnici v noci. Policajti ťa dobiehajú zozadu a keď sa ti držia pri aute, plní sa ukazovateľ zadržania. Keď sa naplní, koniec. Ujdeš tak, že pôjdeš rýchlejšie ako oni, alebo ich odstrčíš do boku. Do bežnej diaľnice ich nechcem, tak majú vlastný režim. Vyváženie som skúšal virtuálnymi šoférmi, ale či sa to dá reálne vyhrať, to musím ešte odjazdiť sám.</p>
+
+<div class="post-shots wide" style="grid-template-columns:1fr">
+<figure><img src="../../img/blog/event-car-drift-v2-policia.webp" width="1100" height="620" loading="lazy" alt="Nočná diaľnica: v spätnom zrkadle policajné auto a hore ukazovateľ zadržania"><figcaption>Policajti v zrkadle<small>ukazovateľ hore ukazuje, ako blízko ťa už majú</small></figcaption></figure>
+</div>
+
+<p><b>Misie ako samostatné režimy.</b> DOVOZ a DIVOČINA už nie sú medzi tréningovými levelmi, ale sú to celé hry samy osebe. Sugga je odomknutá všade. Na DOVOZe nevozíš žiadny náklad, všetko máš v aute. Pred štartom preletí kamera nad trasou, aby si videl, kam ideš, a brány sú vyššie a lepšie viditeľné. Posledný ľadový kopec, na ktorý som so Zuborom nevyšiel, dostal pomoc.</p>
+
+<p>A ešte drobnosti, ktoré robia hru živšou:</p>
+<ul>
+  <li><b>Kaskadérske body</b> za jazdu na dvoch kolesách, otočku o 360° a tesné obiehanie.</li>
+  <li><b>Tuning</b> za hviezdy z levelov: brzdy, pneumatiky a motor, každé v troch stupňoch.</li>
+  <li><b>Počasie a noc</b> pre každú mapu: deň, noc, dážď, hmla alebo náhodne.</li>
+  <li><b>Vibrácie</b> v mobile podľa povrchu a pri náraze.</li>
+  <li><b>Ovládanie na mobile:</b> posuvník riadenia sa sám vracia do stredu podľa rýchlosti, jedno tlačidlo plynu, brzda, ručná a volič P R N D.</li>
+</ul>
+<p>Jedna chyba bola aj vtipná. Vybral som si Zubora, ale hra mi pustila veľký Red Bull truck. Zapamätala si totiž niečo z predchádzajúcej jazdy. Povedal som to AI, ona chybu našla a teraz sa vždy spustí auto, ktoré máš vybrané.</p>
+
+<p><b>Menu bez posúvania.</b> Veľa ráz som v menu musel scrollovať, tak ho AI prerobila. Najprv je hlavná obrazovka (Hrať, Nastavenia, Hudba, Ovládanie, Rekordy), potom vyberieš režim a potom auto. Všetko sa zmestí na šírku mobilu aj na počítač, takže nič nehľadáš.</p>
+
+<div class="post-shots wide two">
+<figure><img src="../../img/blog/event-car-drift-v2-home.webp" width="1100" height="620" loading="lazy" alt="Hlavná obrazovka hry: veľké tlačidlo Hrať a vedľa neho Nastavenia, Hudba, Ovládanie a Rekordy"><figcaption>Hlavná obrazovka<small>všetko na jednom mieste</small></figcaption></figure><figure><img src="../../img/blog/event-car-drift-v2-rezimy.webp" width="1100" height="620" loading="lazy" alt="Výber režimu: voľný, 60 s, dovoz, divočina, tréning, Tokyo Drift, naháňačka a diaľnica"><figcaption>Osem režimov<small>potom ešte auto a štart</small></figcaption></figure>
+</div>
+
+<h2>Čo ešte príde</h2>
+<ul>
+  <li>zvuk dieselu pre Suggu</li>
+  <li>Red Bull formula a ďalšie vtipné autá</li>
+  <li>ďalšie trasy a levely, aj pre naháňačku</li>
+</ul>
+<p>Autá v hre vyzerajú ako tie, s ktorými jazdím v práci. Je to moja vlastná zábava a nič na nej nezarábam. Odomykateľné Red Bull autá sú moje jednoduché verzie podľa fotiek. Ak by to niekomu prekážalo, autá z hry vyberiem.</p>

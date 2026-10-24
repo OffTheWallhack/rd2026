@@ -1,0 +1,23 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#0B0C0B}canvas{display:block}</style></head><body>
+<canvas id="c" width="1600" height="900"></canvas><script>
+const c=document.getElementById('c'),x=c.getContext('2d'),W=1600,H=900;
+function load(s){return new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.src=s;});}
+Promise.all([load('../../../img/blog/dve-hry-uoe-dedina.webp'),load('../../../img/blog/dve-hry-uoe2-dedina.webp'),document.fonts.load('800 100px "Inter"')]).then(([a,b])=>{
+  x.fillStyle='#0B0C0B';x.fillRect(0,0,W,H);
+  const cut=70; // diagonal offset
+  // left: UoE (skip its HUD: crop to the village)
+  x.save();x.beginPath();x.moveTo(0,0);x.lineTo(800+cut,0);x.lineTo(800-cut,H);x.lineTo(0,H);x.closePath();x.clip();
+  x.imageSmoothingEnabled=false;x.drawImage(a,420,90,600,600,0,0,900,900);x.restore();
+  // right: UoE2
+  x.save();x.beginPath();x.moveTo(800+cut+14,0);x.lineTo(W,0);x.lineTo(W,H);x.lineTo(800-cut+14,H);x.closePath();x.clip();
+  x.imageSmoothingEnabled=false;x.drawImage(b,20,52,532,548,730,0,870,900);x.restore();
+  // divider
+  x.strokeStyle='#39FF88';x.lineWidth=8;x.beginPath();x.moveTo(800+cut+7,0);x.lineTo(800-cut+7,H);x.stroke();
+  // bottom shade + labels
+  let g=x.createLinearGradient(0,H-300,0,H);g.addColorStop(0,'rgba(11,12,11,0)');g.addColorStop(1,'rgba(11,12,11,.92)');x.fillStyle=g;x.fillRect(0,H-300,W,300);
+  x.textBaseline='alphabetic';x.shadowColor='rgba(0,0,0,.7)';x.shadowBlur=24;
+  x.fillStyle='#FFFFFF';x.font='800 60px "Inter", sans-serif';x.fillText('Usage of Empires',50,H-96);
+  x.fillText('Usage of Empires II',860,H-96);
+  x.fillStyle='#39FF88';x.font='700 36px "Inter", sans-serif';x.fillText('hráš aktívne',54,H-38);x.fillText('dedina žije sama',864,H-38);
+});
+</script></body></html>

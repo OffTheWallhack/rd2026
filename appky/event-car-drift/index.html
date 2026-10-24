@@ -619,6 +619,7 @@ body:not(.hwy) .hwrace{display:none}
             <div class="tile"><small>ZA VOLANTOM</small><b id="recTime">0 min</b></div>
             <div class="tile"><small>JAZDY</small><b id="recRuns">0</b></div>
             <div class="tile"><small>ZRAZENÉ KUŽELE</small><b id="recCones">0</b></div>
+            <div class="tile"><small>KASKADÉRSKE KÚSKY</small><b id="recStunts">0</b></div>
             <div class="tile"><small>ODZNAKY</small><b id="recBadges">0</b></div>
             <div class="tile"><small>TRÉNING · LEVELY</small><b id="recLv">0 / 0</b></div>
             <div class="tile"><small>TRÉNING · HVIEZDY</small><b id="recStars">0</b></div>
@@ -688,6 +689,7 @@ const stats = Object.assign({ dist: 0, time: 0, runs: 0, cones: 0, bestCombo: 0,
 
 /* ================= renderer / scene ================= */
 const canvas = $('#gl');
+canvas.addEventListener('pointerdown', () => { if (job.on && job.intro > 0) job.intro = .001; });   // a tap skips the intro
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 renderer.shadowMap.enabled = true;
@@ -1659,8 +1661,9 @@ function physics(dt) {
 }
 
 let shake = 0;
+let lastHitAt = -9;
 function hit(power) {
-  if (power < 2.5) return;
+  if (power < 2.5) return; lastHitAt = performance.now() / 1000;
   if (job.on && job.kind === 'lot' && !job.over) { const d = Math.min(30, (power - 1.5) * 2); jobDamage(d); if (lotHitT <= 0) { popText('NÁRAZ  −' + Math.round(d) + ' %', true); lotHitT = .8; } }
   shake = Math.min(1, shake + power / 14);
   sound.thud(Math.min(1, power / 14));
@@ -2978,7 +2981,13 @@ const JP_ZUBOR = { spd: .42, climb: 1.5, tr: .12 };   // climb: an extra push up
 const JP_SUGGA = { spd: .38, climb: 2.6, tr: .45 };
 Object.defineProperty(JP_ZUBOR, 'L', { get: () => CARS.zubor.L }); Object.defineProperty(JP_ZUBOR, 'steer', { get: () => CARS.zubor.steerMax });
 Object.defineProperty(JP_SUGGA, 'L', { get: () => CARS.sugga.L }); Object.defineProperty(JP_SUGGA, 'steer', { get: () => CARS.sugga.steerMax });
-const JENV = { grip: 1, acc: 1, drag: 0, slF: 0, slR: 0, G: 7.6, spd: .4, climb: 1, holdCap: 99, rollK: .55 };   // town and wilderness: slow speeds, the van only leans, it does not tip easily
+const JENV = { grip: 1, acc: 1, drag: 0, slF: 0, slR: 0, G: 7.6, spd: .4, climb: 1, holdCap: 99, rollK: .55 };
+let hapT = 0;
+function buzz(ms) { if (navigator.vibrate && settings.vib) { try { navigator.vibrate(ms); } catch (e) {} } }
+function hapticSurface(dt, sid) {   // a soft rumble on gravel, mud and deep snow, nothing on tarmac
+  if (!isTouch || S.speed < 2.5) return; const k = [0, .25, .35, .6, 0, .5, 1][sid] || 0; if (!k) return;
+  hapT -= dt; if (hapT <= 0) { hapT = .16 + (1 - k) * .2; buzz(Math.round(4 + k * 8)); }
+}   // town and wilderness: slow speeds, the van only leans, it does not tip easily
 const GA = 15;                                                    // gravity while flying off a ramp
 const JP_MINI = { spd: .4, climb: 1.7, tr: .25 };
 const mkJP = (key, spd, climb, tr) => { const o = { spd, climb, tr }; Object.defineProperty(o, 'L', { get: () => CARS[key].L }); Object.defineProperty(o, 'steer', { get: () => CARS[key].steerMax }); return o; };
@@ -3015,8 +3024,8 @@ function airStep(dt) {
   const gh = terrainH(S.x, S.z);
   if (S.gy <= gh) {                                              // landing
     const imp = -S.vy; S.gy = gh; S.vy = 0; S.air = false;
-    if (imp > 5.5) { jobFX.dmg += (imp - 5.5) * 1.2; jobFX.big = Math.max(jobFX.big, imp * 1.2); hit(imp * 1.2); }
-    else if (imp > 1.5) sound.thud(.35);
+    if (imp > 5.5) { jobFX.dmg += (imp - 5.5) * 1.2; jobFX.big = Math.max(jobFX.big, imp * 1.2); hit(imp * 1.2); buzz(Math.min(120, 40 + imp * 8)); }
+    else if (imp > 1.5) { sound.thud(.35); buzz(Math.round(10 + imp * 6)); }
     if (!reduced) for (let i = 0; i < 6; i++) puff(S.x + (Math.random() - .5) * 3, S.z + (Math.random() - .5) * 3, S.vx * .2, S.vz * .2, .8);
     const h = holeAt(S.x, S.z); if (h) startFall(h);
   }
@@ -3041,7 +3050,7 @@ function jobPhysics(dt) {
   carCore(dt, JENV);
   S.x = clamp(S.x, WORLD.x0, WORLD.x1); S.z = clamp(S.z, WORLD.z0, WORLD.z1);
   collideJob(dt);
-  S.sid = sid;
+  S.sid = sid; hapticSurface(dt, sid);
   if (job.kind === 'off') groundTrack(dt);
   else if (HOLES.length) { const h = holeAt(S.x, S.z); if (h) startFall(h); }
 }
@@ -3139,6 +3148,7 @@ function jobHudTick(dt) {
   }
 }
 function jobFrame(dt) {
+  if (job.intro > 0) { job.intro -= dt; input.gas = input.rev = input.steer = input.brake = 0; input.hb = 1; input.gm = 1; if (job.kind === 'lot') { physics(dt); } else jobPhysics(dt); elSpd.textContent = '0'; sound.update(.18, 0, 0); if (job.intro <= 0) { job.intro = 0; popText(job.level ? 'ŠTART' : 'POĎ'); updateCamera(0, true); } return; }
   readInput(dt);
   job.t += dt;
   if (job.kind === 'lot') return lotFrame(dt);
@@ -3199,6 +3209,17 @@ function jobStart() {
   placeMarker(); jobStepHud(); mapT = 1;
   { const cm = jEl.jMap; cm.hidden = false; cm.classList.toggle('lot', lot); cm.width = lot ? 148 : 110; cm.height = lot ? 110 : 148; jEl.ctx = cm.getContext('2d'); }
   const lab = $('#jLevel'); if (lab) { lab.hidden = !L; if (L) lab.textContent = lvTag(L) + ' · ' + L.name; }
+  introStart();
+}
+function introStart() {
+  // the camera starts high over the first gates of the route and swoops down behind the car
+  const n = Math.min(TASKS.length, 4), pts = [];
+  for (let i = 0; i < n; i++) { const T = TASKS[i]; pts.push([T.x, (job.kind === 'lot' ? 0 : terrainH(T.x, T.z)), T.z]); }
+  if (!pts.length) { job.intro = 0; return; }
+  const far = pts[pts.length - 1], first = pts[0];
+  job.intro = settings.intro === false ? 0 : 3.2; job.introDur = 3.2;
+  job.introFrom = [far[0] + (far[0] - S.x) * .15, far[1] + 26 + Math.hypot(far[0] - S.x, far[2] - S.z) * .25, far[2] + (far[2] - S.z) * .15];
+  job.introLook = [first[0], first[1] + 1, first[2]];
 }
 // cones that exist only for one level
 function lvCones(list) {
@@ -3365,6 +3386,23 @@ const fmt = n => Math.round(n).toLocaleString('sk-SK');
 function breakCombo() {
   if (game.combo > 50) popText('BUM! −' + fmt(game.combo), true);
   game.combo = 0; game.mult = 1; game.comboT = 0; game.idle = 0; elCombo.classList.remove('on');
+}
+const stunt = { two: 0, spin: 0, spinN: 0, spinT: 0 };
+function stuntAward(txt, pts) { game.score += pts; stats.stunts = (stats.stunts || 0) + 1; popText(txt + ' +' + pts); sound.bank(); }
+function stuntTick(dt) {
+  const now = performance.now() / 1000;
+  if (S.two && S.speed > 5) stunt.two += dt; else if (stunt.two > 0) { if (stunt.two > .6) stuntAward('NA DVOCH KOLESÁCH', Math.round(stunt.two * 25) * 10); stunt.two = 0; }
+  const side = (S.drifting || Math.abs(S.slip) > .45) && S.speed > 3;                                                    // spinning: the nose keeps turning while the car slides sideways
+  if (side) { stunt.spin += Math.abs(S.w) * dt; stunt.spinT = 0; if (stunt.spin > Math.PI * 2 * (stunt.spinN + 1)) { stunt.spinN++; stuntAward('OTOČKA ' + stunt.spinN * 360, 300 * stunt.spinN); } }
+  else { stunt.spinT += dt; if (stunt.spinT > .7) { stunt.spin = 0; stunt.spinN = 0; } }
+  if (S.speed > 9 && now - lastHitAt > .8) {                                                               // a near miss: a hand's width from a solid thing at speed, no touch
+    const cc = carCircles();
+    for (const o of solids) {
+      if (o.nearT && now - o.nearT < 4) continue; let dmin = 9;
+      for (const [px, pz] of cc) { const cx = clamp(px, o.x - o.hx, o.x + o.hx), cz = clamp(pz, o.z - o.hz, o.z + o.hz); dmin = Math.min(dmin, Math.hypot(px - cx, pz - cz) - CAR_CR); }
+      if (dmin < .5 && dmin > .02) { o.nearT = now; stuntAward('TESNE!', 150); }
+    }
+  }
 }
 function scoring(dt) {
   const a = Math.abs(S.slip);
@@ -3918,6 +3956,11 @@ function updateCamera(dt, snap) {
     const duckT = camOver ? camOver - .7 : 99; camDuck = snap ? duckT : lerp(camDuck, duckT, 1 - Math.exp(-dt * (duckT < camDuck ? 9 : 2.5)));
     if (camDuck < 90) camera.position.y = Math.min(camera.position.y, gyc + camDuck);
   } else { camPull = 1; camDuck = 99; }
+  if (job.on && job.intro > 0 && !menu) {
+    const k = easeIO(1 - job.intro / job.introDur), f = job.introFrom, l = job.introLook;
+    camera.position.set(lerp(f[0], camera.position.x, k), lerp(f[1], camera.position.y, k), lerp(f[2], camera.position.z, k));
+    cam.look.set(lerp(l[0], cam.look.x, k), lerp(l[1], cam.look.y, k), lerp(l[2], cam.look.z, k));
+  }
   camera.lookAt(cam.look);
   setShift(C.sx, C.sy);
   sun.position.set(S.x - 18, 40 + (job.on ? S.gy : 0), S.z - 10); sun.target.position.set(S.x, job.on ? S.gy : 0, S.z);
@@ -4006,7 +4049,7 @@ function frame(dt) {
     const sub = 4; for (let i = 0; i < sub; i++) physics(dt / sub);
     updateCones(dt);
     squealK = wheelFX(dt);
-    scoring(dt);
+    scoring(dt); stuntTick(dt);
     stats.dist += S.speed * dt; stats.time += dt; if (S.speed > runMaxSpd) runMaxSpd = S.speed;
     elSpd.textContent = Math.round(S.speed * 3.6);
     sound.setEngine(P.engine); sound.update(rpmOf(), gasIn(), squealK);
@@ -4054,8 +4097,8 @@ const gov = { n: 0, t: 0, c: 0 };
 const $$ = s => [...document.querySelectorAll(s)];
 const menuEl = $('#menu'), pauseEl = $('#pauseMenu'), endEl = $('#endMenu'), curtain = $('#curtain'), stageEl = $('#stage'), muteBtn = $('#muteBtn');
 let pendingMode = store.get('mode', 'free'), tab = 'play', wiped = false;
-if (['job', 'dovoz', 'off'].includes(pendingMode)) pendingMode = 'train';
-if (!['free', 't60', 'train', 'tokyo', 'hwy'].includes(pendingMode)) pendingMode = 'free';
+if (pendingMode === 'dovoz') pendingMode = 'job';
+if (!['free', 't60', 'train', 'tokyo', 'hwy', 'job', 'off'].includes(pendingMode)) pendingMode = 'free';
 const isLv = m => m === 'train';
 const mmss = s => { s = Math.max(0, Math.round(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
 
@@ -4071,7 +4114,7 @@ const INFO = {
   buggy: { desc: 'Bugina side-by-side. Ľahká, skáče a hádže sa. Na hrbole a do blata ideálna, na asfalte trochu nervózna.', speed: 56, accel: 74, slide: 72, agil: 90 }
 };
 const MODE_TXT = {
-  free: 'Bez času a bez tlaku. Jazdi, driftuj a zbieraj combo.',
+  free: 'Bez času a bez tlaku. Jazdi, driftuj a zbieraj combo. Body dávajú aj kúsky: dve kolesá, otočka 360 a tesné obiehanie.',
   t60: () => 'Minúta na čo najvyššie skóre.' + (game.best ? ' Tvoj rekord: ' + fmt(game.best) + '.' : ''),
   job: () => 'Celá misia: nalož aparatúru, prejdi starým mestom, cez neónovú zónu a po snehu až na vrchol. Hodnotí sa čas aj škoda.' + (store.get('jobBest', 0) ? ' Rekord: ' + fmt(store.get('jobBest', 0)) + ' bodov.' : '') + (carKey === 'zubor' ? ' Na snehu drž plyn, Zubor má pomoc do kopca.' : ''),
   off: () => 'Celá divočina: lúka, hrbole, bažina, jazero, ľad a vrchol. Zubor sa tu prepne na Suggu.' + (store.get('offBest', 0) ? ' Rekord: ' + fmt(store.get('offBest', 0)) + ' bodov.' : ''),
@@ -4195,7 +4238,7 @@ function renderRecords() {
   $('#recKm').textContent = (stats.dist / 1000).toFixed(1).replace('.', ',') + ' km';
   $('#recTime').textContent = Math.round(stats.time / 60) + ' min';
   $('#recRuns').textContent = fmt(stats.runs);
-  $('#recCones').textContent = fmt(stats.cones);
+  $('#recCones').textContent = fmt(stats.cones); $('#recStunts').textContent = fmt(stats.stunts || 0);
   const got = BADGES.filter(b => stats.badges[b.id]).length;
   $('#recBadges').textContent = got + ' / ' + BADGES.length;
   const box = $('#badgeList'); box.textContent = '';
@@ -4279,12 +4322,14 @@ function applyQuality() {
 
 /* ---------- run lifecycle ---------- */
 function startRun() {
+  if (game.view === 'menu') { const sel = $('#carCards .card.on'); const want = sel && CARS[sel.dataset.car] && hwUnlocked(sel.dataset.car) ? sel.dataset.car : carKey; if (want !== carKey || sg.target !== want) stageShow(want); store.set('car', carKey); }   // the highlighted card is the truth
   if (game.view === 'menu' && runLevel()) { const L = runLevel(), nc = needCar(L); if (carKey !== nc || sg.target !== nc) { stageShow(nc); store.set('car', nc); renderCar(); } }
   if (game.view === 'menu' && pendingMode !== 'hwy' && (stageBusy() || sg.shown !== sg.target) && !stageSnap()) { $('#startBtn').classList.add('wait'); return; }
   sound.init();
   const fromMenu = game.view === 'menu';
   const go = () => {
     hwyLeave(); tkNight(false);
+    if (pendingMode !== 'hwy' && (sg.shown !== carKey || !model || model.len === 5 && !CARS[carKey].failed && sg.shown === null)) { sg.target = carKey; stageSnap(); }   // never start with a model left over from the last run
     const L = runLevel(); job.level = L;
     game.mode = L ? 'job' : pendingMode; job.kind = L ? L.world : 'dovoz'; game.running = true; game.paused = false; game.view = 'play'; game.score = 0; game.combo = 0; game.mult = 1; game.comboT = 0; game.time = game.mode === 'tokyo' ? 90 : 60;
     coneHits = 0; runMaxSpd = 0; runBestCombo = 0; stats.runs++;
@@ -5024,7 +5069,7 @@ toMenu(true); clearMarks();
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { layoutStage(); });
 requestAnimationFrame(() => { layoutStage(); updateCamera(0, true); });
 requestAnimationFrame(loop);
-window.__drift = { JENV, HW_SPECIALS, hwUnlock, hwUnlocked, hwRaceStart, renderer, HW, TK, hwBlink, hwShift, hwAuto, hwyStep, hwyRender, hwyEnd, pickMode: m => { pendingMode = m; renderMode(); }, get CUROBS() { return OBS; }, setGear, get gear() { return gear; }, setPedal, touch, readInput, keys, solids, cones, physics, updateCones, setCar, CARS, LEVELS, LV, store, renderMode, curLevel, lvCones, endJob, steerMaxAt: v => P.steerMax / (1 + Math.pow(Math.max(0, Math.abs(v) - 4) / P.steerFall, 1.3)), get P() { return P; }, rp, ORT, offUpdate, dvUpdate, HOLES: () => HOLES, holeAt, sg, stageSnap, stageReady: () => modelReady(sg.target), sound, get JP() { return JP; }, placeMarker, jobPhysics, jobDamage, jobTasks, jobFX, carShape, job, get TASKS() { return TASKS; }, TRAIL, WALK, OBS, carHits, jobRespawn, jobStart, jobSetWorld, buildJobWorld, terrainH, trailAt, surfAt, endJob, jobScore, S, input, game, camera, stage, music, settings, stats, get model() { return model; }, scene, setTab, startRun, toMenu, endRun, togglePause };
+window.__drift = { stunt, stuntTick, JENV, HW_SPECIALS, hwUnlock, hwUnlocked, hwRaceStart, renderer, HW, TK, hwBlink, hwShift, hwAuto, hwyStep, hwyRender, hwyEnd, pickMode: m => { pendingMode = m; renderMode(); }, get CUROBS() { return OBS; }, setGear, get gear() { return gear; }, setPedal, touch, readInput, keys, solids, cones, physics, updateCones, setCar, CARS, LEVELS, LV, store, renderMode, curLevel, lvCones, endJob, steerMaxAt: v => P.steerMax / (1 + Math.pow(Math.max(0, Math.abs(v) - 4) / P.steerFall, 1.3)), get P() { return P; }, rp, ORT, offUpdate, dvUpdate, HOLES: () => HOLES, holeAt, sg, stageSnap, stageReady: () => modelReady(sg.target), sound, get JP() { return JP; }, placeMarker, jobPhysics, jobDamage, jobTasks, jobFX, carShape, job, get TASKS() { return TASKS; }, TRAIL, WALK, OBS, carHits, jobRespawn, jobStart, jobSetWorld, buildJobWorld, terrainH, trailAt, surfAt, endJob, jobScore, S, input, game, camera, stage, music, settings, stats, get model() { return model; }, scene, setTab, startRun, toMenu, endRun, togglePause };
 })();
 </script>
 </html>

@@ -10,6 +10,11 @@
   var RD = window.RD = {
     lang: "sk",
     still: still,
+    // the current skin's accent (set by the <head> script via data-skin, read from CSS so canvases follow the theme)
+    accent: function (fallback) {
+      var v = getComputedStyle(document.documentElement).getPropertyValue("--pulse").trim();
+      return v || fallback || "#FF5A1F";
+    },
     waHref: function (extra, base) {
       var txt = base ? base[RD.lang] : WA_TEXT[RD.lang];
       return "https://wa.me/" + WA + "?text=" + encodeURIComponent(txt + (extra || ""));

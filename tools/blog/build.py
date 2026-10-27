@@ -54,7 +54,7 @@ HEAD = """<!doctype html>
 <html lang="sk">
 <head>
 <meta charset="utf-8">
-<script>document.documentElement.classList.add("js")</script>
+<script>document.documentElement.classList.add("js");document.documentElement.dataset.skin=["solar","ultra","neon","cherry","infra"][Math.random()*5|0]</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{title}</title>
 <meta name="description" content="{desc}">

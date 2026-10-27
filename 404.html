@@ -2,7 +2,7 @@
 <html lang="sk" data-title-en="404 – Robert Ďurica">
 <head>
 <meta charset="utf-8">
-<script>document.documentElement.classList.add("js")</script>
+<script>document.documentElement.classList.add("js");document.documentElement.dataset.skin=["solar","ultra","neon","cherry","infra"][Math.random()*5|0]</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>404 – Robert Ďurica</title>
 <meta name="robots" content="noindex">
@@ -27,7 +27,7 @@ body { background: #111211; color: #EDEDE8; }
 .cust-btn, .lang, .aisi { border-color: #2C2D2A; color: #A3A39B; }
 .lang .on, .aisi .on { color: #fff; }
 .bar .btn-dark { background: #fff; color: #111211; border-color: #fff; }
-.bar .btn-dark:hover { background: var(--pulse); border-color: var(--pulse); color: #0B1A12; }
+.bar .btn-dark:hover { background: var(--pulse); border-color: var(--pulse); color: var(--pulse-text); }
 .btn { border-color: #EDEDE8; color: #EDEDE8; }
 .btn:hover { background: #EDEDE8; color: #111211; }
 .foot { border-top-color: #2C2D2A; color: #A3A39B; }
@@ -123,6 +123,7 @@ body { background: #111211; color: #EDEDE8; }
     if (state !== "run") { reset(); state = "run"; return; }
     if (y <= 0.01) vy = 15.5;
   }
+  var ACC = RD.accent();
   function px(c, r, s, color) { ctx.fillStyle = color; ctx.fillText(s, c * cw + cw / 2, r * ch + ch / 2); }
   function text(r, s, color) { var c0 = Math.floor((cols - s.length) / 2); for (var i = 0; i < s.length; i++) px(c0 + i, r, s[i], color); }
 
@@ -134,7 +135,7 @@ body { background: #111211; color: #EDEDE8; }
     deco.forEach(function (d) { px(Math.floor(d.x), d.r, d.c, "rgba(237,237,232,.18)"); });
     // ground
     var off = Math.floor(dist) % 4;
-    for (var c = 0; c < cols; c++) { px(c, ground + 1, "=", "rgba(237,237,232,.35)"); if ((c + off) % 4 === 0) px(c, ground + 1, "_", "rgba(31,175,111,.5)"); }
+    for (var c = 0; c < cols; c++) { px(c, ground + 1, "=", "rgba(237,237,232,.35)"); if ((c + off) % 4 === 0) px(c, ground + 1, "_", ACC); }
     // obstacles
     (obs || []).forEach(function (o) {
       var h = o.rows.length;
@@ -142,7 +143,7 @@ body { background: #111211; color: #EDEDE8; }
     });
     // skater
     var sp = y > 0.3 ? AIR : ROLL, top = ground - sp.length + 1 - Math.round(y);
-    sp.forEach(function (line, i) { for (var k = 0; k < line.length; k++) if (line[k] !== " ") px(PX + k, top + i, line[k], i === 3 ? "#E9F06A" : "#1FAF6F"); });
+    sp.forEach(function (line, i) { for (var k = 0; k < line.length; k++) if (line[k] !== " ") px(PX + k, top + i, line[k], i === 3 ? "#E9F06A" : ACC); });
     var m = MSG[RD.lang];
     if (state === "ready") text(Math.max(1, Math.floor(ground / 2) - 1), m.start, "#EDEDE8");
     if (state === "over") {

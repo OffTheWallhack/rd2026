@@ -13,7 +13,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<style>html{-webkit-text-size-adjust:100%}body{margin:0;padding-top:env(safe-area-inset-top,0px);font-size:14px}img{max-width:100%}</style>
+<style>html{-webkit-text-size-adjust:100%}:root{padding-top:env(safe-area-inset-top,0px)}body{margin:0;font-size:14px}img{max-width:100%}</style>
 <title>Rob Lounge</title>
 </head>
 <body>
@@ -326,7 +326,8 @@ main{padding-bottom:140px}
 .dock.dock{display:block;overflow:visible;gap:0}
 .tabs a{border:0!important}
 .dock{position:fixed;left:0;right:0;bottom:0;z-index:12;background:color-mix(in srgb,var(--panel) 92%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
-.dtop{display:flex;align-items:center;gap:8px;padding-block:7px 3px}
+.dtop{display:flex;align-items:center;gap:8px;padding-block:7px}
+.dock .tabs{padding-top:2px}
 .me{display:flex;align-items:center;gap:8px;border:0;background:none;padding:0;margin-right:auto;min-width:0;flex:1 1 0;font-weight:600;font-size:14px}
 .dtop>.bal,.dtop>.btn{flex:none}
 .me #mename{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px}
@@ -453,11 +454,63 @@ main{padding-bottom:calc(var(--dockh,112px) + 28px)!important}
 .task{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
 .task.done{opacity:.6}.task .btn{min-width:84px}
 .btn.dot{position:relative}.btn.dot::after{content:"";position:absolute;right:-3px;top:-3px;width:9px;height:9px;border-radius:50%;background:var(--win);box-shadow:0 0 0 2px var(--panel)}
+body{background:radial-gradient(900px 520px at 8% -8%,#e3a53c16,transparent 60%),radial-gradient(800px 600px at 108% 18%,#5b8def14,transparent 60%),radial-gradient(700px 500px at 50% 115%,#d32ce60f,transparent 60%),var(--bg);background-attachment:fixed}
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:12;background:color-mix(in srgb,var(--panel) 90%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.topbar .dtop{padding-block:7px}
+.bal{position:relative;transition:box-shadow .3s}
+.bal.up{animation:balup .9s ease-out}.bal.down{animation:baldown .6s ease-out}
+@keyframes balup{0%{box-shadow:0 0 0 0 #59d38a00;border-color:var(--line)}25%{box-shadow:0 0 0 4px #59d38a55,0 0 22px #59d38a88;border-color:var(--win)}100%{box-shadow:none}}
+@keyframes baldown{30%{border-color:var(--lose);transform:translateX(-2px)}60%{transform:translateX(2px)}}
+.bal.pop{animation:balpop .35s cubic-bezier(.2,1.8,.4,1)}@keyframes balpop{50%{transform:scale(1.12)}}
+.fdelta{position:fixed;z-index:40;transform:translateX(-50%);font:800 16px var(--mono);pointer-events:none;animation:fdel 1.3s ease-out forwards;text-shadow:0 2px 6px #000}
+.fdelta.up{color:var(--win)}.fdelta.down{color:var(--lose)}
+@keyframes fdel{0%{opacity:0;transform:translate(-50%,-4px) scale(.8)}15%{opacity:1;transform:translate(-50%,0) scale(1.1)}100%{opacity:0;transform:translate(-50%,26px)}}
+.coin{position:fixed;left:0;top:0;z-index:41;width:14px;height:14px;border-radius:50%;pointer-events:none;background:radial-gradient(circle at 35% 30%,#fff3c4,#e3a53c 55%,#8a5d12);box-shadow:0 0 8px #e3a53c99}
+.flash{position:fixed;inset:0;z-index:39;pointer-events:none;background:radial-gradient(circle at 50% 45%,transparent 30%,color-mix(in srgb,var(--fc) 45%,transparent));animation:flashA 1s ease-out forwards}
+@keyframes flashA{0%{opacity:0}15%{opacity:1}100%{opacity:0}}
+.btn,.ob,.chip,.rchip,.case,.tabs a,.seg button,.rtable button,.task .btn{transition:transform .09s ease,filter .15s}
+.btn:active:not(:disabled),.ob:active:not(:disabled),.chip:active,.case:active,.tabs a:active,.rtable button:active{transform:scale(.95)}
+.btn.gold:not(:disabled):hover{filter:brightness(1.08)}
+.case:hover .cart{transform:translateY(-3px) rotate(-1deg)}.cart{transition:transform .25s}
+main>section.enter{animation:secIn .32s cubic-bezier(.2,.8,.3,1)}
+@keyframes secIn{from{opacity:0;transform:translateY(10px)}}
+.tabs a{position:relative}
+.tabs a.on::before{content:"";position:absolute;inset:3px 10%;border-radius:10px;background:color-mix(in srgb,var(--gold) 13%,transparent);z-index:-1}
+.tabs a.on svg{animation:tabpop .35s cubic-bezier(.2,1.8,.4,1)}@keyframes tabpop{50%{transform:translateY(-3px) scale(1.15)}}
+.toast{animation:toastIn .35s cubic-bezier(.2,1.5,.4,1);font-weight:600}
+@keyframes toastIn{from{opacity:0;transform:translate(-50%,14px) scale(.95)}}
+.feed{max-height:400px;overflow-y:auto;overscroll-behavior:contain;scroll-behavior:smooth}
+.fe.enter{animation:feIn .4s cubic-bezier(.2,.9,.3,1)}
+@keyframes feIn{from{opacity:0;transform:translateY(-10px);max-height:0}to{max-height:120px}}
+.fe.chat{font-size:12px;opacity:.85}.fe.chat .av.sm{width:20px;height:20px}
+.fe.snipe{animation:feIn .4s cubic-bezier(.2,.9,.3,1),snipeG 1.2s ease-out}
+@keyframes snipeG{0%,40%{box-shadow:0 0 0 2px var(--lose),0 0 22px var(--lose)}}
+.pl{transition:background .3s}
+.tkt2{position:relative;background:var(--panel);border-radius:12px;margin-bottom:10px;overflow:hidden;border:1px solid var(--line);-webkit-mask:radial-gradient(circle 9px at 0 62px,#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 9px at 100% 62px,#0000 98%,#000) right/51% 100% no-repeat;mask:radial-gradient(circle 9px at 0 62px,#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 9px at 100% 62px,#0000 98%,#000) right/51% 100% no-repeat}
+.tkt2 .th{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 14px;height:62px;background:linear-gradient(90deg,color-mix(in srgb,var(--sc) 22%,var(--panel)),var(--panel));border-bottom:2px dashed var(--line)}
+.tkt2 .th b{font:800 16px var(--display);text-transform:uppercase;letter-spacing:.04em}
+.tkt2 .th .big{font:800 22px/1 var(--display);color:var(--sc);text-align:right}.tkt2 .th .big small{display:block;font:600 10px var(--mono);color:var(--dim);letter-spacing:.06em;text-transform:uppercase}
+.tkt2 .tb{padding:8px 14px 12px;display:grid;gap:6px}
+.tkt2 .lgr{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;align-items:center;font-size:13px}
+.tkt2 .lgr .t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--dim)}.tkt2 .lgr .t b{color:var(--fg);font-weight:600}
+.tkt2 .dotr{width:10px;height:10px;border-radius:50%;background:var(--line)}.tkt2 .dotr.won{background:var(--win)}.tkt2 .dotr.lost{background:var(--lose)}
+.tkt2 .foot{display:flex;justify-content:space-between;font:600 12px var(--mono);color:var(--dim);border-top:1px solid var(--line);padding-top:6px}
+.stamp{position:absolute;right:12px;bottom:12px;font:900 20px var(--display);letter-spacing:.12em;color:var(--sc);border:3px solid var(--sc);border-radius:6px;padding:2px 8px;transform:rotate(-12deg);opacity:.85;pointer-events:none}
+.tkt2.open{--sc:var(--gold)}.tkt2.won{--sc:var(--win)}.tkt2.lost{--sc:var(--lose)}.tkt2.void{--sc:var(--dim)}
+.sbuy{font-size:13px}
 @media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important}}
 </style>
 
 
 
+<header class="topbar">
+  <div class="wrap dtop">
+    <button class="me" id="mebtn" aria-label="Upraviť profil"><span id="meav" class="avimg"></span><span id="mename">Rob</span></button>
+    <div class="bal" title="Kredity – hracie peniaze bez reálnej hodnoty"><span id="bal">0,00</span> CR</div>
+    <button class="btn sm gold" id="daily">Kredity</button>
+    <button class="btn sm ghost icon" id="mute" aria-label="Zvuk"></button>
+  </div>
+</header>
 <main class="wrap">
   <section id="v-cases">
     <div class="brand">Rob<i>Lounge</i><small>PLAY CR · BEZ PEŇAZÍ</small></div>
@@ -506,7 +559,7 @@ main{padding-bottom:calc(var(--dockh,112px) + 28px)!important}
       <div class="sctl">
         <div class="stepper"><button class="btn sm" id="sbm" aria-label="Menšia stávka">−</button><div><span class="lab">Stávka</span><b id="sbet">1,00</b></div><button class="btn sm" id="sbp" aria-label="Väčšia stávka">+</button></div>
         <button class="btn gold spinbtn" id="spin">Točiť</button>
-        <div class="betrow"><button class="btn sm" id="sauto">Auto 10</button><button class="btn sm" id="sturbo">Turbo: vyp.</button></div>
+        <div class="betrow"><button class="btn sm sbuy" id="sbuy">Kúpiť free spiny · 28×</button><button class="btn sm" id="sauto">Auto 10</button><button class="btn sm" id="sturbo">Turbo: vyp.</button></div>
       </div>
       <p id="smsg" class="sub" style="text-align:center;margin:10px auto 0;min-height:1.5em"></p>
       <details style="margin-top:10px"><summary class="lab" style="cursor:pointer">Výplatná tabuľka (násobky stávky na líniu = stávka / 20)</summary><div class="pay" id="paytable"></div></details>
@@ -550,12 +603,6 @@ main{padding-bottom:calc(var(--dockh,112px) + 28px)!important}
 <div id="slip" class="slipwrap"></div>
 <div id="modal"></div>
 <nav class="dock" id="dock" aria-label="Hlavné menu">
-  <div class="wrap dtop">
-    <button class="me" id="mebtn" aria-label="Upraviť profil"><span id="meav" class="avimg"></span><span id="mename">Rob</span></button>
-    <div class="bal" title="Kredity – hracie peniaze bez reálnej hodnoty"><span id="bal">0,00</span> CR</div>
-    <button class="btn sm gold" id="daily">Kredity</button>
-    <button class="btn sm ghost icon" id="mute" aria-label="Zvuk"></button>
-  </div>
   <div class="wrap tabs" id="tabs">
     <a href="#cases" data-t="cases"><svg viewBox="0 0 24 24"><path d="M3 8l9-4 9 4v9l-9 4-9-4z"/><path d="M3 8l9 4 9-4M12 12v9"/></svg><span>Cases</span></a>
     <a href="#inv" data-t="inv"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>Inventár</span></a>
@@ -635,11 +682,29 @@ try{const l=JSON.parse(localStorage.getItem('caselounge')||'null'); if(l&&l.inv)
 let DB=null,USER=null,REF=null,CAN_EDIT=false,saveT=null,MATCHES=[],dbState='wait';
 function save(){S.ts=Date.now(); try{localStorage.setItem('caselounge',JSON.stringify(S))}catch(e){}
   clearTimeout(saveT); saveT=setTimeout(()=>{ if(REF) REF.set(JSON.parse(JSON.stringify(S))).catch(()=>{}) },1200);
-  $('#bal').textContent=fmt(S.bal); dailyBtn();}
+  animBal(); dailyBtn();}
 function addBal(x){S.bal=Math.round((S.bal+x)*100)/100}
 function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(t._t);t._t=setTimeout(()=>t.hidden=true,2600)}
 function dailyBtn(){const b=$('#daily'); const ok=S.daily!==today(); b.disabled=!ok; b.disabled=false;b.textContent='Kredity';b.classList.toggle('gold',ok);b.classList.toggle('dot',ok||earnT().done.length<TASKS.length);b.title='Denný bonus a kredity za zdravé veci'}
 $('#daily').onclick=()=>openCredits();
+
+/* ---------- juice: feel every win ---------- */
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let shownBal=null;
+function animBal(){const el=$('#bal');if(!el)return;const to=S.bal;if(shownBal===null){shownBal=to;el.textContent=fmt(to);return}
+  const from=shownBal;if(Math.abs(to-from)<0.005)return;shownBal=to;const d=to-from;const box=el.closest('.bal');
+  box.classList.remove('up','down');void box.offsetWidth;box.classList.add(d>0?'up':'down');floatDelta(box,d);
+  const t0=performance.now(),ms=Math.min(1100,350+Math.abs(d)*3);(function f(t){const k=Math.min(1,(t-t0)/ms);el.textContent=fmt(from+d*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(f);else el.textContent=fmt(to)})(t0);
+  if(d>=5)coinBurst(box,Math.min(26,5+Math.round(Math.log2(d+1)*3)));}
+function floatDelta(box,d){const r=box.getBoundingClientRect();const e=document.createElement('div');e.className='fdelta '+(d>0?'up':'down');e.textContent=(d>0?'+':'−')+fmt(Math.abs(d));e.style.left=(r.left+r.width/2)+'px';e.style.top=(r.bottom+6)+'px';document.body.appendChild(e);setTimeout(()=>e.remove(),1300)}
+function coinBurst(target,n,src){if(reduced||!target)return;const tr=target.getBoundingClientRect();const sr=src?src.getBoundingClientRect():{left:innerWidth/2-30,top:innerHeight*.45,width:60,height:60};
+  for(let i=0;i<n;i++){const c=document.createElement('i');c.className='coin';document.body.appendChild(c);
+    const sx=sr.left+sr.width/2+(Math.random()-.5)*70,sy=sr.top+sr.height/2+(Math.random()-.5)*40,tx=tr.left+tr.width/2-7,ty=tr.top+tr.height/2-7;
+    c.animate([{transform:`translate(${sx}px,${sy}px) scale(.4)`,opacity:0},{transform:`translate(${sx+(Math.random()-.5)*110}px,${sy-50-Math.random()*70}px) scale(1.1)`,opacity:1,offset:.35},{transform:`translate(${tx}px,${ty}px) scale(.5)`,opacity:.95}],{duration:650+Math.random()*350,delay:i*28,easing:'cubic-bezier(.3,.6,.35,1)',fill:'both'}).onfinish=()=>{c.remove();if(i%4===0)beep(1700+Math.random()*500,.03,.02,'triangle')}}
+  setTimeout(()=>{target.classList.remove('pop');void target.offsetWidth;target.classList.add('pop')},750)}
+function flash(color){if(reduced)return;const f=document.createElement('div');f.className='flash';f.style.setProperty('--fc',color);document.body.appendChild(f);setTimeout(()=>f.remove(),1000)}
+function buzz(p){try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}}
+const RCOL=['#4b69ff','#8847ff','#d32ce6','#eb4b4b','#e4ae39'];
 
 /* ---------- sound ---------- */
 let AC=null, muted=false; try{muted=localStorage.getItem('cl_mute')==='1'}catch(e){}
@@ -763,7 +828,7 @@ function showWon(ws,cost){
      ${van?'<span class="lab">Bez opotrebenia</span>':`<span class="lab">${WEAR[wearIdx(w.f)][0]} · ${w.f.toFixed(6)}</span>${fbarHTML(w.f)}`}
      <div class="prow"><span class="rprice" id="rvp">0,00 CR</span>${prof?`<span class="pbadge">PROFIT +${fmt(pr-cost)}</span>`:`<span class="lose">${fmt(pr-cost)}</span>`}</div>
      ${w.sold?'<span class="lab">automaticky predané</span>':`<div class="betrow"><button class="btn sm" id="sellwon">Predať ${fmt(pr)}</button><a class="btn sm ghost" href="#inv">Inventár</a></div>`}</div></div>`;
-    countUp($('#rvp'),pr,auto?450:850);if(r===4)confetti($('#rv'),'#e4ae39');else if(r===3)confetti($('#rv'),'#eb4b4b');else if(prof&&pr>cost*3)confetti($('#rv'),'#59d38a')}
+    countUp($('#rvp'),pr,auto?450:850);if(r>=3){flash(RCOL[r]);buzz([40,60,90])}else if(prof){buzz(30)}if(r===4)confetti($('#rv'),'#e4ae39');else if(r===3)confetti($('#rv'),'#eb4b4b');else if(prof&&pr>cost*3)confetti($('#rv'),'#59d38a')}
   const sb=$('#sellwon');if(sb)sb.onclick=()=>{const ids=new Set(lastWon.filter(w=>!w.sold).map(w=>w.id));let s=0;S.inv=S.inv.filter(x=>ids.has(x.id)?(s+=price(x),false):true);addBal(s);save();box.innerHTML='<div class="wonph lab">Predané za '+fmt(s)+' CR</div>';renderButtons()};
   renderToday();
 }
@@ -921,6 +986,7 @@ $('#sbm').onclick=()=>{if(sBetI>0)sBetI--;sBetShow()};$('#sbp').onclick=()=>{if(
 $('#sturbo').onclick=()=>{sTurbo=!sTurbo;$('#sturbo').textContent='Turbo: '+(sTurbo?'zap.':'vyp.')};
 $('#sauto').onclick=()=>{if(sAuto){sAuto=0;$('#sauto').textContent='Auto 10';return}sAuto=10;$('#sauto').textContent='Stop auto';if(!sBusy)doSpin()};
 $('#spin').onclick=()=>doSpin();
+$('#sbuy').onclick=()=>{if(sBusy||fsLeft>0)return;const bet=BETS[sBetI],cost=Math.round(bet*28*100)/100;if(cost>S.bal){toast('Nemáš dosť kreditov');return}addBal(-cost);S.st.sw-=cost;save();fsLeft=10;fsWin=0;fsBadge();flash('#e3a53c');chime(4);toast('10 free spinov ×3!');setTimeout(doSpin,700)};
 function animateReels(grid,done){
   const cell=parseFloat(getComputedStyle($('#sgrid')).getPropertyValue('--cell'));let left=5;const base=sTurbo?350:900,step=sTurbo?120:260;
   const tick=setInterval(sfx.tick,sTurbo?60:90);
@@ -949,7 +1015,7 @@ function doSpin(){
     showLines(res);
     let msg=win?`<span class="win">+${fmt(win)} CR</span>${res.wins.length?` · ${res.wins.length} ${res.wins.length===1?'línia':res.wins.length<5?'línie':'línií'}`:''}`:(free?'Free spin bez výhry':'');
     $('#swin').textContent=fmt(free?fsWin:win)+' CR';
-    if(win>=bet*15)bigWin(win,bet);else if(win>=bet*5)sfx.win();
+    if(win>=bet*10)bigWin(win,bet);else if(win>=bet*4)sfx.win();
     if(res.fs){fsLeft+=res.fs;msg+=` <b class="money">· ${res.fs} free spinov ×${SL.FSMULT}!</b>`;sfx.win();if(!free)fsWin=win}
     save();$('#smsg').innerHTML=msg;fsBadge();
     const next=()=>{sBusy=false;$('#spin').disabled=false;
@@ -959,7 +1025,7 @@ function doSpin(){
     if(res.bonus){startBonus(bet*(free?SL.FSMULT:1),next)}else setTimeout(next,win?(sTurbo?400:900):150);
   });
 }
-function bigWin(win,bet){const x=win/bet;const el=$('#sbig');el.hidden=false;el.innerHTML=`<b>${x>=150?'EPIC WIN':x>=50?'MEGA WIN':'BIG WIN'}</b><span id="sbigv">0,00 CR</span>`;countUp($('#sbigv'),win,1600);chime(x>=50?4:3);setTimeout(()=>chime(4),700);const close=()=>{el.hidden=true};el.onclick=close;setTimeout(close,3200)}
+function bigWin(win,bet){const x=win/bet;const el=$('#sbig');el.hidden=false;el.innerHTML=`<b>${x>=100?'EPIC WIN':x>=30?'MEGA WIN':'BIG WIN'}</b><span id="sbigv">0,00 CR</span>`;countUp($('#sbigv'),win,1600);flash('#e3a53c');buzz([60,40,120]);chime(x>=50?4:3);setTimeout(()=>chime(4),700);const close=()=>{el.hidden=true};el.onclick=close;setTimeout(close,3200)}
 function fsBadge(){const b=$('#sfs');b.hidden=fsLeft<=0;b.textContent=`Free spiny: ${fsLeft} · ×${SL.FSMULT}`;$('#spin').textContent=fsLeft>0?'Free spin':'Točiť'}
 function startBonus(bet,done){
   const box=$('#bonus');const vals=Array.from({length:12},()=>SL.PICKS[Math.floor(Math.random()*SL.PICKS.length)]);const opened=[];let total=0;
@@ -998,7 +1064,7 @@ function botItems2(total){const out=[];let s=0;const n=Math.max(1,Math.min(8,Mat
   return out}
 const jpPot=()=>JP.players.reduce((a,p)=>a+p.v,0);
 const myStake=()=>{const p=JP.players.find(p=>p.n==='Ty');return p?p.v:0};
-function feed(e){JP.feed.unshift(e);JP.feed.length=Math.min(JP.feed.length,40);JP.dirty=true}
+function feed(e){e.id=e.id||uid();JP.feed.unshift(e);JP.feed.length=Math.min(JP.feed.length,40);JP.dirty=true}
 async function newRound(){
   const R=ROOMS[JP.room];JP.round++;JP.phase='wait';JP.players=[];JP.col={};JP.deps=[];JP.items=0;JP.ends=0;JP.winner=null;
   JP.secret=[...crypto.getRandomValues(new Uint8Array(16))].map(x=>x.toString(16).padStart(2,'0')).join('');JP.hash='…';
@@ -1017,7 +1083,8 @@ function deposit(n,items,kind){
   if(kind!=='me')beep(kind==='snipe'?220:640,.06,.03,'triangle');
 }
 function botDeposit(type){
-  const R=ROOMS[JP.room];const pool=BOTDEF.filter(b=>b[1]===type);const b=pool[Math.floor(Math.random()*pool.length)];
+  const R=ROOMS[JP.room];const pool=BOTDEF.filter(b=>b[1]===type);let b=pool[Math.floor(Math.random()*pool.length)];
+  const bots=JP.players.filter(p=>p.n!=='Ty');if(bots.length>=9&&!bots.some(p=>p.n===b[0])){b=[bots[Math.floor(Math.random()*bots.length)].n,type]}
   let v;const pot=jpPot();
   if(type==='scrub')v=R.s*(.3+Math.random()*2.5);
   else if(type==='reg')v=R.s*Math.exp(Math.log(8)+(Math.random()-.5)*2.2);
@@ -1064,7 +1131,7 @@ function finishJp(){
   const W=JP.winner,pot=jpPot();const all=JP.players.flatMap(p=>p.items).sort((a,b)=>price(b)-price(a));
   let feeLeft=pot*FEE;const fee=[];const keep=[];for(const it of all){const p=price(it);if(p<=feeLeft&&fee.length<6){fee.push(it);feeLeft-=p}else keep.push(it)}
   const won=sum(keep);const mine=myStake();
-  if(W.n==='Ty'){S.inv.unshift(...keep.map(it=>({...it,id:uid(),t:Date.now()})));S.st.jw+=won-mine;sfx.win()}else if(mine){S.st.jw-=mine;sfx.lose()}
+  if(W.n==='Ty'){S.inv.unshift(...keep.map(it=>({...it,id:uid(),t:Date.now()})));S.st.jw+=won-mine;sfx.win();flash('#e3a53c');buzz([60,40,120]);chime(4);coinBurst($('.bal'),24,$('#jpwheelbox'))}else if(mine){S.st.jw-=mine;sfx.lose()}
   if(mine){S.jpPending=null;save()}
   JP.hist.unshift({r:JP.round,n:W.n,v:pot,c:W.chance});JP.hist.length=Math.min(JP.hist.length,10);
   $('#jpresult').innerHTML=`<div class="wincard">${av(W.n,'')}<div><b>${W.n==='Ty'?'Vyhral si!':esc(dn(W.n))+' vyhral'}</b> <span class="money">${fmt(won)} CR</span><div class="lab">šanca ${(W.chance*100).toFixed(2).replace('.',',')} % · tiket ${W.ticket.toLocaleString('sk-SK')} / ${W.tot.toLocaleString('sk-SK')} · poplatok ${fmt(sum(fee))} CR</div>
@@ -1088,6 +1155,13 @@ function renderJp(){
 }
 $('#jprooms').onclick=e=>{const b=e.target.closest('[data-room]');if(!b||b.dataset.room===JP.room)return;if(myStake()>0||JP.phase==='roll'){toast('Najprv dohraj toto kolo');return}
   JP.room=b.dataset.room;JP.feed=[];newRound();renderJp()};
+function feHTML(e){return e.sys?`<div class="fe sys" data-fid="${e.id}">${esc(e.sys)}</div>`:e.chat?`<div class="fe chat" data-fid="${e.id}">${av(e.n)}<div class="t"><b>${esc(dn(e.n))}:</b> ${esc(e.chat)}</div></div>`
+    :`<div class="fe${e.snipe?' snipe':''}" data-fid="${e.id}">${av(e.n)}<div class="t"><b>${esc(dn(e.n))}</b> ${e.snipe?'<b class="lose">SNIPE</b> ':''}vložil ${e.cnt} ${e.cnt===1?'skin':e.cnt<5?'skiny':'skinov'} · <span class="money">${fmt(e.v)} CR</span><div class="thumbs">${e.items.map(it=>`<i class="r${ITEMS[it.i][2]}" style="${spriteStyle(it.i)}" title="${esc(ITEMS[it.i][0]+' | '+ITEMS[it.i][1])}"></i>`).join('')}</div></div></div>`}
+function syncFeed(){const box=$('#jpfeed');const have=new Set([...box.children].map(c=>c.dataset.fid));const ids=new Set(JP.feed.map(e=>e.id));
+  [...box.children].forEach(c=>{if(!ids.has(c.dataset.fid))c.remove()});
+  const fresh=JP.feed.filter(e=>!have.has(e.id)).reverse();const atTop=box.scrollTop<8;
+  fresh.forEach(e=>{const t=document.createElement('template');t.innerHTML=feHTML(e).trim();const el=t.content.firstChild;if(box.children.length)el.classList.add('enter');box.prepend(el)});
+  if(!atTop&&fresh.length){box.scrollTop+=fresh.length*44}}
 function renderJpLive(){
   const pot=jpPot(),now=Date.now();
   $('#jpround').textContent=`Kolo #${JP.round} · ${ROOMS[JP.room].n}`;
@@ -1101,8 +1175,7 @@ function renderJpLive(){
   const ps=[...JP.players].sort((a,b)=>b.v-a.v);
   $('#jpshare').innerHTML=pot?JP.players.map(p=>`<i style="width:${p.v/pot*100}%;background:${pcol(p.n)}" title="${esc(dn(p.n))}"></i>`).join(''):'';
   $('#jpplayers').innerHTML=ps.length?ps.map(p=>`<div class="pl${p.n==='Ty'?' me':''}">${av(p.n)}<span class="n">${esc(dn(p.n))} <span class="lab">${p.items.length} ks</span></span><span class="c">${fmt(p.v)} CR</span><span class="c ch">${(p.v/pot*100).toFixed(1).replace('.',',')} %</span></div>`).join(''):'<div class="empty">Zatiaľ nikto nevložil. Buď prvý.</div>';
-  $('#jpfeed').innerHTML=JP.feed.map(e=>e.sys?`<div class="fe sys">${esc(e.sys)}</div>`:e.chat?`<div class="fe chat">${av(e.n)}<div class="t"><b>${esc(dn(e.n))}:</b> ${esc(e.chat)}</div></div>`
-    :`<div class="fe${e.snipe?' snipe':''}">${av(e.n)}<div class="t"><b>${esc(dn(e.n))}</b> ${e.snipe?'<b class="lose">SNIPE</b> ':''}vložil ${e.cnt} ${e.cnt===1?'skin':e.cnt<5?'skiny':'skinov'} · <span class="money">${fmt(e.v)} CR</span><div class="thumbs">${e.items.map(it=>`<i class="r${ITEMS[it.i][2]}" style="${spriteStyle(it.i)}" title="${esc(ITEMS[it.i][0]+' | '+ITEMS[it.i][1])}"></i>`).join('')}</div></div></div>`).join('');
+  syncFeed();
   $('#jphist').innerHTML=JP.hist.length?JP.hist.map(h=>`<div class="hr">${av(h.n)}<span><b>${esc(dn(h.n))}</b> · #${h.r}</span><span class="c">${fmt(h.v)} CR · ${(h.c*100).toFixed(1).replace('.',',')} %</span></div>`).join(''):'<span class="lab">zatiaľ žiadne</span>';
   $('#jphash').textContent=`Hash kola (provably fair): ${JP.hash}`;
 }
@@ -1208,14 +1281,14 @@ const tfmt=m=>m.tbc?'čas ?':new Date(m.start).toLocaleTimeString('sk-SK',{hour:
 const dfmt=d=>d.toLocaleDateString('sk-SK',{weekday:'long',day:'numeric',month:'numeric'});
 function migrateBets(){S.bets=(S.bets||[]).map(b=>b.legs?b:{...b,legs:[{m:b.m,p:b.p,pn:b.pn,o:b.o}]})}
 function settle(){
-  migrateBets();let changed=false;
+  migrateBets();let changed=false;const wonT=[];
   for(const b of S.bets){if(b.st!=='open')continue;let lost=false,pending=false,odds=1;
     for(const l of b.legs){const m=MATCHES.find(x=>x.id===l.m);if(!m){if(dbState==='ok')l.r='void';else pending=true;continue}if(!m.result){pending=true;continue}
       if(m.result==='void'){l.r='void';continue} if(l.r==='void')continue; if(m.result===l.p){l.r='won';odds*=l.o}else{l.r='lost';lost=true}}
     const sv=b.cr+sum(b.items);
     if(lost){b.st='lost';S.st.lw-=sv;changed=true}
-    else if(!pending){const gain=b.cr*odds+sum(b.items)*(odds-1);addBal(gain);S.inv.unshift(...b.items.map(x=>({...x,id:uid()})));b.st=odds===1&&b.legs.every(l=>l.r==='void')?'void':'won';b.pay=gain+sum(b.items);S.st.lw+=b.pay-sv;changed=true}}
-  if(changed){save();toast('Tikety vyhodnotené')}
+    else if(!pending){const gain=b.cr*odds+sum(b.items)*(odds-1);addBal(gain);S.inv.unshift(...b.items.map(x=>({...x,id:uid()})));b.st=odds===1&&b.legs.every(l=>l.r==='void')?'void':'won';b.pay=gain+sum(b.items);S.st.lw+=b.pay-sv;changed=true;if(b.st==='won')wonT.push(b)}}
+  if(changed){save();if(wonT.length){toast(`Vyhral si ${wonT.length===1?'tiket':wonT.length+' tikety'}! +${fmt(wonT.reduce((a,b)=>a+b.pay,0))} CR`);flash('#59d38a');chime(4);buzz([60,40,120])}else toast('Tikety vyhodnotené')}
 }
 function obtn(m,p,big){const s=mStatus(m);const on=SLIP.some(x=>x.m===m.id&&x.p===p);const lab=m.options?esc(pickName(m,p).split(' ').slice(-1)[0]):p==='home'?'1':p==='draw'?'X':'2';
   return `<button class="ob${on?' on':''}${m.result===p?' win':''}" data-m="${m.id}" data-p="${p}" ${s!=='open'||!hasOdds(m)?'disabled':''}><small>${big&&!m.options?(p==='draw'?'Remíza':esc(teamC(pickName(m,p))[3])):lab}</small><b>${hasOdds(m)?getO(m,p).toFixed(2):'—'}</b></button>`}
@@ -1265,10 +1338,12 @@ function rowHTML(m){if(m.options)return f1Row(m);const s=mStatus(m);
 function renderTickets(){
   const L=S.bets.slice(0,60);const won=S.bets.filter(b=>b.st==='won').length,lost=S.bets.filter(b=>b.st==='lost').length;
   $('#lbody').innerHTML=`<div class="stats"><div class="stat"><span class="lab">Otvorené</span><b>${S.bets.filter(b=>b.st==='open').length}</b></div><div class="stat"><span class="lab">Výhry / prehry</span><b>${won} / ${lost}</b></div><div class="stat"><span class="lab">Bilancia Lounge</span><b class="${S.st.lw>=0?'win':'lose'}">${fmt(S.st.lw)} CR</b></div></div>`+
-   (L.length?L.map(b=>{const tot=b.legs.reduce((a,l)=>a*l.o,1);const sv=b.cr+sum(b.items);
-     return `<div class="tkt"><div class="row"><b>${b.legs.length>1?`AKO tiket · ${b.legs.length} zápasy`:'Jednoduchý tiket'}</b><span class="st-${b.st}">${b.st==='open'?'čaká':b.st==='won'?'výhra '+fmt(b.pay)+' CR':b.st==='void'?'zrušené':'prehra'}</span></div>
-     <div class="row"><span>Vklad ${fmt(sv)} CR${b.items.length?` (${b.items.length} skinov)`:''}</span><span>kurz <b class="money">${tot.toFixed(2)}</b> · možná výhra ${fmt(sv*tot)} CR</span></div>
-     ${b.legs.map(l=>{const m=MATCHES.find(x=>x.id===l.m);return `<div class="lg2"><span>${m?esc(mTitle(m)):'Zápas'}${m&&m.score?' · '+esc(m.score):''}</span><span><b>${esc(l.pn)}</b> @ ${l.o.toFixed(2)} ${l.r==='won'?'<span class="st-won">✓</span>':l.r==='lost'?'<span class="st-lost">✗</span>':''}</span></div>`}).join('')}</div>`}).join(''):'<div class="empty">Zatiaľ žiadne tikety. Klikni na kurz pri zápase.</div>');
+   (L.length?L.map(b=>{const tot=b.legs.reduce((a,l)=>a*l.o,1);const sv=b.cr+sum(b.items);const st=b.st;
+     return `<div class="tkt2 ${st}"><div class="th"><div><b>${b.legs.length>1?`AKO · ${b.legs.length} zápasy`:'Tiket'}</b><div class="lab">vklad ${fmt(sv)} CR${b.items.length?` + ${b.items.length} skinov`:''} · kurz ${tot.toFixed(2)}</div></div>
+       <div class="big">${st==='won'?'+'+fmt(b.pay):st==='lost'?'−'+fmt(sv):st==='void'?fmt(sv):fmt(sv*tot)}<small>${st==='won'?'vyplatené':st==='lost'?'prehra':st==='void'?'vrátené':'možná výhra'}</small></div></div>
+       <div class="tb">${b.legs.map(l=>{const m=MATCHES.find(x=>x.id===l.m);return `<div class="lgr"><i class="dotr ${l.r||''}"></i><span class="t">${m?esc(mTitle(m)):'Zápas'}${m&&m.score?' · '+esc(m.score):''} · <b>${esc(l.pn)}</b></span><span class="money">${l.o.toFixed(2)}</span></div>`}).join('')}
+       <div class="foot"><span>${new Date(b.t).toLocaleString('sk-SK',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'})}</span><span>${st==='open'?'čaká na výsledky':''}</span></div></div>
+       ${st!=='open'?`<span class="stamp">${st==='won'?'VÝHRA':st==='lost'?'PREHRA':'ZRUŠENÉ'}</span>`:''}</div>`}).join(''):'<div class="empty">Zatiaľ žiadne tikety. Klikni na kurz pri zápase.</div>');
   renderSlip();
 }
 function renderSlip(){
@@ -1324,7 +1399,7 @@ function renderAdmin(){
 
 /* ---------- tabs ---------- */
 const TABS=['cases','inv','roulette','slots','jackpot','lounge'];
-function route(){const t=TABS.includes(location.hash.slice(1))?location.hash.slice(1):'cases';
+function route(){const t=TABS.includes(location.hash.slice(1))?location.hash.slice(1):'cases';const sec=$('#v-'+t);if(sec&&sec.hidden){sec.classList.remove('enter');void sec.offsetWidth;sec.classList.add('enter')}
   TABS.forEach(x=>$('#v-'+x).hidden=x!==t);if(t!=='lounge')$('#slip').innerHTML='';document.querySelectorAll('#tabs a').forEach(a=>a.classList.toggle('on',a.dataset.t===t));
   if(t==='cases')renderOpener();if(t==='inv')renderInv();if(t==='roulette')renderR();if(t==='slots')renderSlots();if(t==='jackpot')renderJp();if(t==='lounge')renderLounge()}
 addEventListener('hashchange',route);
@@ -1346,7 +1421,7 @@ async function boot(){
     [DB,USER]=await Promise.all([claude.use('db'),claude.use('user')]);
     if(!DB){dbState='none';renderLounge();return}
     if(USER){CAN_EDIT=await USER.canEdit().catch(()=>false);const id=await USER.id();if(id){REF=DB.collection('data/users/'+id).doc('state');
-      const snap=await REF.get();const d=snap.exists&&snap.data();if(d&&d.inv&&(d.ts||0)>(S.ts||0)){S=d;S.st=Object.assign({open:0,spent:0,won:0,best:null,rw:0,sw:0,jw:0,lw:0},S.st);refundJp();renderMe();$('#bal').textContent=fmt(S.bal);dailyBtn();route()}else save()}}
+      const snap=await REF.get();const d=snap.exists&&snap.data();if(d&&d.inv&&(d.ts||0)>(S.ts||0)){S=d;S.st=Object.assign({open:0,spent:0,won:0,best:null,rw:0,sw:0,jw:0,lw:0},S.st);refundJp();renderMe();shownBal=null;animBal();dailyBtn();route()}else save()}}
     DB.collection('matches').onSnapshot(qs=>{dbState='ok';MATCHES=qs.docs.map(d=>({id:d.id,...d.data()})).filter(m=>m.home&&m.start);settle();if(!$('#v-lounge').hidden)renderLounge()},()=>{dbState='none';renderLounge()});
   }catch(e){dbState='none';renderLounge()}
 }

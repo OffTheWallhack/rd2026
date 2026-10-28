@@ -1,0 +1,15 @@
+{
+  "name": "Rob Lounge",
+  "short_name": "Rob Lounge",
+  "description": "Súkromná CS hra na falošné kredity.",
+  "lang": "sk",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#12161c",
+  "theme_color": "#12161c",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

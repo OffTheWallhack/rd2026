@@ -1,0 +1,815 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Počítadlo</title>
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#121a28">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Počítadlo">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="icon" href="icon.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Press+Start+2P&family=VT323&family=Silkscreen:wght@400;700&family=Bebas+Neue&family=Orbitron:wght@600;800&family=Rubik+Mono+One&family=Major+Mono+Display&family=Bungee&display=swap">
+<style>
+/* Layout: jeden stĺpec ako appka v telefóne; dni a level hore, potom peniaze, rastlina s questami, vlna, odznaky, nastavenia */
+:root{
+  --bg:#121a28; --panel:#1b2334; --line:#2c3549;
+  --fg:#e7eaf0; --muted:#8d98ab; --dawn:#f3b48c; --mint:#9fd3b8; --leaf:#6fbf8e; --pot:#b9775a;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --num:var(--display); --numScale:1;
+  color-scheme:dark;
+}
+[hidden]{display:none!important}
+html,body{background:var(--bg);color:var(--fg)}
+body{font-family:var(--display);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 104px}
+.wrap{max-width:460px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+.eyebrow{font:500 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.hero{background:linear-gradient(160deg,#121a28,#252e42);border:1px solid var(--line);border-radius:28px;padding:24px;display:flex;flex-direction:column;gap:8px}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.lvl{font:500 12px/1 var(--mono);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:7px 11px;white-space:nowrap}
+.lvl b{color:var(--dawn)}
+.days{font-family:var(--num);font-synthesis:none;font-weight:800;font-size:calc(clamp(84px,30vw,128px) * var(--numScale));line-height:.9;color:var(--dawn);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.clock{font:500 calc(22px * var(--numScale))/1.2 var(--num);font-synthesis:none;font-variant-numeric:tabular-nums}
+.clock span{color:var(--muted);font-size:13px;margin:0 6px 0 2px}
+.xpline{display:flex;justify-content:space-between;font:12px var(--mono);color:var(--muted);margin-top:6px}
+.bar{height:6px;border-radius:6px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--dawn);width:0;transition:width .6s}
+.bar.mint i{background:var(--mint)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.tile{background:var(--panel);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.big{font:800 calc(30px * var(--numScale))/1 var(--num);font-synthesis:none;font-variant-numeric:tabular-nums}
+.money{color:var(--mint)}
+.small{font-size:13px;color:var(--muted);line-height:1.4}
+canvas{display:block;width:100%;height:auto;aspect-ratio:1;max-width:100%;image-rendering:pixelated;background:var(--bg);border-radius:20px}
+.fonts{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-top:12px}
+.fopt{background:var(--bg);color:var(--fg);border:2px solid var(--line);border-radius:14px;padding:12px 10px;display:flex;flex-direction:column;gap:6px;align-items:flex-start;text-align:left;font-synthesis:none}
+.fopt.on{border-color:var(--dawn)}
+.fopt .fd{line-height:1;color:var(--dawn)}
+.fopt .fc{line-height:1}
+.fopt .fn{font:500 11px var(--mono);color:var(--muted);letter-spacing:.06em}
+.quests{display:flex;flex-direction:column;gap:6px}
+.q{display:flex;flex-direction:row;align-items:center;gap:10px;font-size:15px;color:var(--fg);cursor:pointer;padding:6px 0}
+.q input{appearance:none;width:22px;height:22px;border:2px solid var(--line);border-radius:7px;flex:none;margin:0;display:grid;place-items:center;cursor:pointer}
+.q input:checked{background:var(--mint);border-color:var(--mint)}
+.q input:checked::after{content:"";width:6px;height:11px;border:solid var(--bg);border-width:0 3px 3px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.q.done span{color:var(--muted);text-decoration:line-through}
+.wave{background:var(--panel);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.waveTime{font:500 calc(34px * var(--numScale))/1 var(--num);font-synthesis:none;font-variant-numeric:tabular-nums}
+button{font:500 15px var(--display);border:0;border-radius:12px;padding:12px 16px;cursor:pointer;background:var(--dawn);color:#1a1310}
+button.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid var(--dawn);outline-offset:2px}
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px}
+.badge{border:1px solid var(--line);border-radius:14px;padding:10px 8px;text-align:center;display:flex;flex-direction:column;gap:5px;align-items:center}
+.badge .face{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font:500 13px var(--mono);border:2px dashed var(--line);color:var(--muted)}
+.badge .name{font-size:12px;line-height:1.25;color:var(--muted)}
+.badge.on .face{border:2px solid var(--dawn);background:#2e2a2c;color:var(--dawn)}
+.badge.on .name{color:var(--fg)}
+details{background:var(--panel);border-radius:18px;padding:14px 16px}
+summary{cursor:pointer;font-weight:500}
+label{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--muted);margin-top:12px}
+input[type=text],input[type=number],input[type=datetime-local],select{font:15px var(--mono);background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:10px;width:100%;box-sizing:border-box}
+textarea{width:100%;box-sizing:border-box;height:140px;font:11px/1.45 var(--mono);background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:10px;margin-top:10px}
+.steps{margin:10px 0 0;padding-left:18px;font-size:13px;line-height:1.55;color:var(--muted)}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.egg.on .face{border-color:var(--mint);color:var(--mint);background:#1f3530}
+.modal{position:fixed;inset:0;background:rgba(8,12,20,.78);display:grid;place-items:center;z-index:30;padding:24px max(16px,env(safe-area-inset-right,0px)) 24px max(16px,env(safe-area-inset-left,0px))}
+.card{background:var(--panel);border:2px solid var(--mint);border-radius:24px;padding:24px;max-width:340px;width:100%;display:flex;flex-direction:column;gap:12px;text-align:center}
+.card .eyebrow{color:var(--mint)}
+.card h2{margin:0;font:800 30px/1.05 var(--display);text-wrap:balance}
+.card p{margin:0;color:var(--muted);font-size:15px;line-height:1.45}
+.breathWrap{display:grid;place-items:center;height:150px;position:relative}
+.breath{width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,rgba(159,211,184,.5),rgba(159,211,184,.06));border:2px solid var(--mint);transform:scale(.55)}
+.breathLbl{position:absolute;font:500 15px var(--mono);color:var(--fg)}
+.reason{font:800 21px/1.2 var(--display);color:var(--dawn);text-align:center;text-wrap:balance;padding:6px 4px;min-height:52px;display:grid;place-items:center}
+#hoursBox{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.hours{display:flex;align-items:flex-end;gap:2px;height:44px}
+.hours i{flex:1;background:var(--line);border-radius:2px;min-height:3px}
+.hours i.top{background:var(--dawn)}
+#reasonsIn{height:112px;font:14px/1.45 var(--display)}
+.fab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:15;box-shadow:0 6px 20px rgba(0,0,0,.45);border-radius:999px;padding:14px 20px;font-weight:800}
+.tabs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;background:var(--panel);color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:10px 18px}
+.tab.on{color:var(--fg);border-color:var(--dawn)}
+.tab.add{color:var(--dawn);padding:10px 16px}
+.card.form{text-align:left;gap:10px;max-height:100%;overflow:auto}
+.card.form label{margin-top:0}
+select{max-width:100%}
+button:disabled{opacity:.4;cursor:default}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,140%);background:var(--fg);color:var(--bg);font-weight:500;padding:12px 18px;border-radius:14px;transition:transform .35s;max-width:calc(100% - 40px);text-align:center;z-index:20}
+.toast.show{transform:translate(-50%,0)}
+.doNow{font:500 15px/1.35 var(--display);color:var(--mint);text-align:center;text-wrap:balance;padding:10px 12px;border:1px dashed var(--line);border-radius:12px}
+.calHead{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.calNav{padding:4px 14px;font-size:20px;line-height:1.2}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal i{font:500 12px/1 var(--mono);font-style:normal;text-align:center;padding:10px 0;border-radius:9px;color:var(--muted);position:relative}
+.cal i.dow{font-size:10px;padding:2px 0;letter-spacing:.06em}
+.cal i.ok{background:#1f3530;color:var(--mint)}
+.cal i.fut{opacity:.35}
+.cal i.today{box-shadow:inset 0 0 0 2px var(--dawn);color:var(--fg)}
+.cal i.slip{box-shadow:inset 0 0 0 2px #c9785a}
+.cal i.full::after{content:"";position:absolute;left:50%;bottom:3px;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:var(--mint)}
+#calTitle{white-space:nowrap}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="tabs" id="tabs"></div>
+  <div class="hero">
+    <div class="top">
+      <div class="eyebrow" id="heroEye">Deň</div>
+      <div class="lvl">LV <b id="lvl">1</b> · <span id="lvlName">Štart</span></div>
+    </div>
+    <div class="days" id="days">0</div>
+    <div class="clock" id="clock">00<span>h</span>00<span>m</span>00<span>s</span></div>
+    <div class="xpline"><span id="xp">0 XP</span><span id="xpNext"></span></div>
+    <div class="bar"><i id="xpbar"></i></div>
+    <div class="small" id="since"></div>
+  </div>
+
+  <div class="tile">
+    <div class="eyebrow">Rastlina</div>
+    <canvas id="plant" width="160" height="160" aria-label="Rastlina, ktorá rastie s každým čistým dňom"></canvas>
+    <div class="small" id="plantNote"></div>
+    <div class="eyebrow" style="margin-top:8px">Dnešné questy · +5 XP každý</div>
+    <div class="quests" id="quests"></div>
+  </div>
+
+  <div class="tile" id="startCard" hidden>
+    <div class="eyebrow">Štart · prvých 7 dní · +5 XP každý</div>
+    <div class="quests" id="startList"></div>
+    <div class="small" id="startNote"></div>
+  </div>
+
+  <div class="grid">
+    <div class="tile">
+      <div class="eyebrow">Ušetrené</div>
+      <div class="big money" id="money">0 €</div>
+      <div class="small"><span id="goalName">Cieľ</span>: <span id="goalPct">0</span> %</div>
+      <div class="bar mint"><i id="goalbar"></i></div>
+    </div>
+    <div class="tile">
+      <div class="eyebrow">Ďalší míľnik</div>
+      <div class="big" id="next">1 deň</div>
+      <div class="bar"><i id="mbar"></i></div>
+      <div class="small" id="nextnote"></div>
+    </div>
+  </div>
+
+
+  <div class="wave" id="waveCard">
+    <div class="eyebrow">Vlna · +25 XP</div>
+    <div class="waveTime" id="waveTime">20:00</div>
+    <div class="breathWrap" id="breathWrap" hidden><div class="breath" id="breath"></div><div class="breathLbl" id="breathLbl">Nádych</div></div>
+    <div class="reason" id="reason" hidden></div>
+    <div class="doNow" id="doNow" hidden></div>
+    <div class="small" id="waveText">Keď to príde, spusti. Vlna trvá 20 až 30 minút a potom klesne.</div>
+    <div class="btns"><button id="waveBtn" type="button">Spustiť 20 minút</button></div>
+    <div class="small" id="waveCount"></div>
+    <div id="hoursBox" hidden><div class="eyebrow">Kedy ťa chytá chuť</div><div class="hours" id="hours"></div><div class="small" id="hoursText"></div></div>
+  </div>
+
+  <div class="tile" id="calCard">
+    <div class="calHead"><button class="ghost calNav" id="calPrev" type="button" aria-label="Predošlý mesiac">‹</button><div class="eyebrow" id="calTitle"></div><button class="ghost calNav" id="calNext" type="button" aria-label="Nasledujúci mesiac">›</button></div>
+    <div class="cal" id="cal"></div>
+    <div class="small" id="calNote"></div>
+  </div>
+
+  <div class="tile">
+    <div class="eyebrow">Odznaky · <span id="badgeCount">0</span></div>
+    <div class="badges" id="badges"></div>
+  </div>
+
+  <div class="tile">
+    <div class="eyebrow">Tajné · <span id="eggCount">0</span></div>
+    <div class="badges" id="eggs"></div>
+    <div class="small" id="eggNote">Niečo je tu schované. Uvidíš, keď to príde.</div>
+  </div>
+
+  <details>
+    <summary>Písmo čísiel</summary>
+    <div class="fonts" id="fonts"></div>
+  </details>
+
+  <details>
+    <summary>Widget na iPhone</summary>
+    <ol class="steps">
+      <li>Stiahni appku Scriptable z App Store.</li>
+      <li>Skopíruj skript nižšie.</li>
+      <li>V Scriptable daj + a vlož ho. Skript patrí k počítadlu, ktoré máš hore práve vybraté. Každé počítadlo má vlastný. Widget kreslí aj tvoju rastlinku.</li>
+      <li>Na ploche podrž prst, +, Scriptable, malý widget. Podrž ho, Upraviť widget, vyber skript.</li>
+      <li>Raz ťukni na skript priamo v Scriptable a povoľ notifikácie. Tým sa naplánujú prekvapenia. Po zmene času ho spusti znova.</li>
+    </ol>
+    <textarea id="code" readonly></textarea>
+    <div class="btns"><button id="copy" type="button">Kopírovať skript</button></div>
+    <div class="small" id="copyMsg"></div>
+  </details>
+
+  <details id="bakBox">
+    <summary>Záloha dát</summary>
+    <div class="small" style="margin-top:10px">Dáta sú uložené len v tomto prehliadači. Ak sa vymažú dáta stránky, stratíš všetko. Skopíruj zálohu a ulož si ju do Poznámok alebo pošli e-mailom sebe.</div>
+    <textarea id="bak" readonly aria-label="Záloha"></textarea>
+    <div class="btns"><button id="bakCopy" type="button">Kopírovať zálohu</button></div>
+    <div class="small" id="bakMsg"></div>
+    <label for="bakIn">Obnoviť zo zálohy<textarea id="bakIn" placeholder="Sem vlož zálohu"></textarea></label>
+    <div class="btns"><button class="ghost" id="bakRestore" type="button">Obnoviť</button></div>
+    <div class="small" id="restoreMsg">Prepíše všetko, čo je teraz v appke.</div>
+  </details>
+
+  <details>
+    <summary>Nastavenia</summary>
+    <label for="nameIn">Názov počítadla
+      <input id="nameIn" type="text">
+    </label>
+    <label for="start">Odkedy (na sekundu)
+      <input id="start" type="datetime-local" step="1">
+    </label>
+    <label for="perDay">Eur denne
+      <input id="perDay" type="number" min="0" step="1" inputmode="numeric">
+    </label>
+    <label for="goalNameIn">Na čo šetríš
+      <input id="goalNameIn" type="text">
+    </label>
+    <label for="goalIn">Koľko to stojí (€)
+      <input id="goalIn" type="number" min="1" step="1" inputmode="numeric">
+    </label>
+    <label for="plantMode">Rastlina
+      <select id="plantMode"></select>
+    </label>
+    <label for="reasonsIn">Moje dôvody (každý na nový riadok). Ukážu sa ti počas vlny.
+      <textarea id="reasonsIn"></textarea>
+    </label>
+    <div class="btns"><button id="save" type="button">Uložiť</button></div>
+    <div class="small" id="saveMsg"></div>
+    <div class="btns"><button class="ghost" id="slip" type="button">Pošmykol som sa</button></div>
+    <div class="small" id="slipMsg">Séria začne znova, ale level, odznaky a všetky čisté dni ostanú.</div>
+    <div class="btns"><button class="ghost" id="resetGame" type="button">Reštartovať hru</button></div>
+    <div class="small" id="resetMsg">Vymaže vlny, odznaky a celkové čisté dni tohto počítadla. Čas štartu, suma, cieľ a questy ostanú.</div>
+    <div class="btns"><button class="ghost" id="delCounter" type="button">Odstrániť toto počítadlo</button></div>
+  </details>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<button class="fab" id="fab" type="button">Mám chuť</button>
+<div class="modal" id="addModal" hidden><div class="card form" role="dialog" aria-modal="true" aria-labelledby="addTitle">
+  <div class="eyebrow">Nové počítadlo</div><h2 id="addTitle" style="font-size:24px">Čo budeš pestovať?</h2>
+  <label for="addName">Názov<input id="addName" type="text"></label>
+  <label for="addPlant">Rastlina<select id="addPlant"></select></label>
+  <label for="addStart">Odkedy<input id="addStart" type="datetime-local" step="1"></label>
+  <label for="addPer">Eur denne<input id="addPer" type="number" min="0" step="1" inputmode="numeric"></label>
+  <div class="btns"><button id="addOk" type="button">Pridať</button><button class="ghost" id="addCancel" type="button">Zrušiť</button></div>
+</div></div>
+<div class="modal" id="modal" hidden><div class="card" role="dialog" aria-modal="true" aria-labelledby="mTitle"><div class="eyebrow" id="mEye">Tajný odznak</div><h2 id="mTitle"></h2><p id="mBody"></p><button id="mOk" type="button">Pokračovať</button></div></div>
+
+<script type="text/plain" id="widgetTpl">// ===== NASTAVENIE =====
+// Presný čas, odkedy počítame (rok-mesiac-deň T hodina:minúta:sekunda)
+const ID = "__ID__";
+const LABEL = "DEŇ";
+const START = new Date("__START__");
+// Koľko eur denne ušetríš
+const PER_DAY = __PER__;
+// =======================
+
+const now = new Date();
+const ms = Math.max(0, now - START);
+const DAY = 86400000, HOUR = 3600000;
+const days = Math.floor(ms / DAY);
+const saved = (ms / DAY) * PER_DAY;
+
+// Prekvapenia: naplánuje notifikácie na presné časy
+const EGGS = [{"id": "h1", "k": "h", "v": 1, "t": "GL HF", "b": "Prvá hodina za tebou. Ide sa."}, {"id": "h13", "k": "h", "v": 13, "t": "Trinástka", "b": "13 hodín. Pech? Dnes nie."}, {"id": "h42", "k": "h", "v": 42, "t": "42", "b": "42 hodín. Odpoveď na život, vesmír a všetko."}, {"id": "h69", "k": "h", "v": 69, "t": "Nice", "b": "69 hodín. Nice."}, {"id": "h100", "k": "h", "v": 100, "t": "Triple digits", "b": "100 hodín. Trojciferné číslo."}, {"id": "h111", "k": "h", "v": 111, "t": "1-1-1", "b": "111 hodín. Samé jednotky."}, {"id": "h128", "k": "h", "v": 128, "t": "Tickrate 128", "b": "128 hodín. Pro server, žiadny lag."}, {"id": "h144", "k": "h", "v": 144, "t": "144 Hz", "b": "144 hodín. Hladký obraz."}, {"id": "h222", "k": "h", "v": 222, "t": "2-2-2", "b": "222 hodín. Vraj anjelské číslo."}, {"id": "h240", "k": "h", "v": 240, "t": "240 Hz", "b": "240 hodín. Ešte hladší obraz."}, {"id": "h300", "k": "h", "v": 300, "t": "THIS IS SPARTA", "b": "300 hodín."}, {"id": "h404", "k": "h", "v": 404, "t": "404", "b": "404 hodín. Chuť not found."}, {"id": "h420", "k": "h", "v": 420, "t": "Ironické", "b": "420 hodín. Ironické, čo?"}, {"id": "h500", "k": "h", "v": 500, "t": "500", "b": "500 hodín. Žiadny server error, všetko beží."}, {"id": "h666", "k": "h", "v": 666, "t": "666", "b": "666 hodín. Diabolsky dobrý výkon."}, {"id": "h777", "k": "h", "v": 777, "t": "Jackpot", "b": "777 hodín. Tri sedmičky."}, {"id": "h1000", "k": "h", "v": 1000, "t": "Kilohodina", "b": "1000 hodín."}, {"id": "h1337", "k": "h", "v": 1337, "t": "1337 h", "b": "1337 hodín. Elite."}, {"id": "h2048", "k": "h", "v": 2048, "t": "2048", "b": "2048 hodín. Spojil si všetky kocky."}, {"id": "d2", "k": "d", "v": 2, "t": "Double kill", "b": "Dva dni."}, {"id": "d5", "k": "d", "v": 5, "t": "ACE", "b": "5 dní. Celý tím dole."}, {"id": "d10", "k": "d", "v": 10, "t": "Desiatka", "b": "10 dní v kuse."}, {"id": "d13", "k": "d", "v": 13, "t": "MR12", "b": "13 dní. V CS2 by si práve vyhral zápas."}, {"id": "d16", "k": "d", "v": 16, "t": "MR15", "b": "16 dní. Aj v starom CS by si vyhral."}, {"id": "d21", "k": "d", "v": 21, "t": "Blackjack", "b": "21 dní. Porazil si dealera."}, {"id": "d42", "k": "d", "v": 42, "t": "Zase 42", "b": "42 dní. Vesmír ti niečo hovorí."}, {"id": "d50", "k": "d", "v": 50, "t": "Polstovka", "b": "50 dní."}, {"id": "d64", "k": "d", "v": 64, "t": "N64", "b": "64 dní. Nintendo 64 era."}, {"id": "d67", "k": "d", "v": 67, "t": "Sixseeeveeen", "b": "67 dní. Six seveeeeen."}, {"id": "d69", "k": "d", "v": 69, "t": "Nice nice", "b": "69 dní. Nice, ale v dňoch."}, {"id": "d77", "k": "d", "v": 77, "t": "Dve sedmičky", "b": "77 dní."}, {"id": "d99", "k": "d", "v": 99, "t": "Skoro", "b": "99 dní. Jeden do stovky."}, {"id": "d100", "k": "d", "v": 100, "t": "Stovka", "b": "100 dní."}, {"id": "d111", "k": "d", "v": 111, "t": "Jednotky", "b": "111 dní."}, {"id": "d128", "k": "d", "v": 128, "t": "128 dní", "b": "Tickrate, ale v dňoch."}, {"id": "d200", "k": "d", "v": 200, "t": "Dvesto", "b": "200 dní."}, {"id": "d256", "k": "d", "v": 256, "t": "Bajt", "b": "256 dní. Plný bajt."}, {"id": "d300", "k": "d", "v": 300, "t": "Spartan", "b": "300 dní."}, {"id": "d360", "k": "d", "v": 360, "t": "No-scope 360", "b": "360 dní. Celé kolo dookola."}, {"id": "d404", "k": "d", "v": 404, "t": "Not found", "b": "404 dní. Chuť sa stále nenašla."}, {"id": "d500", "k": "d", "v": 500, "t": "Päťsto", "b": "500 dní."}, {"id": "d1000", "k": "d", "v": 1000, "t": "Tisíc dní", "b": "1000 dní. Legenda."}, {"id": "m12", "k": "m", "v": 12, "t": "Prvých 12", "b": "12 € ostalo v peňaženke."}, {"id": "m69", "k": "m", "v": 69, "t": "Nice €", "b": "69 € ušetrených. Nice."}, {"id": "m200", "k": "m", "v": 200, "t": "Eco round", "b": "200 €. Konečne žiadny eco round."}, {"id": "m420", "k": "m", "v": 420, "t": "Stále ironické", "b": "420 € ušetrených."}, {"id": "m666", "k": "m", "v": 666, "t": "666 €", "b": "Diabolsky dobrá úspora."}, {"id": "m777", "k": "m", "v": 777, "t": "Jackpot €", "b": "777 €. Automat by ti toľko nedal."}, {"id": "m1337", "k": "m", "v": 1337, "t": "Leet", "b": "1337 € ušetrených. Elite."}, {"id": "m2000", "k": "m", "v": 2000, "t": "2k", "b": "2000 € ušetrených."}, {"id": "m4750", "k": "m", "v": 4750, "t": "AWP", "b": "4750 €. Presne na AWP."}, {"id": "m5000", "k": "m", "v": 5000, "t": "Päť tisíc", "b": "5000 €."}, {"id": "m9001", "k": "m", "v": 9001, "t": "Over 9000", "b": "It's over 9000!"}, {"id": "ms1", "k": "d", "v": 1, "t": "Deň 1", "b": "Prvý deň za tebou."}, {"id": "ms3", "k": "d", "v": 3, "t": "Deň 3", "b": "Najťažšie dni sú za tebou."}, {"id": "ms7", "k": "d", "v": 7, "t": "Týždeň", "b": "Celý týždeň."}, {"id": "ms14", "k": "d", "v": 14, "t": "Dva týždne", "b": "Dva týždne v kuse."}, {"id": "ms30", "k": "d", "v": 30, "t": "Mesiac", "b": "Celý mesiac. Rastlina dozrela."}];
+const ids = EGGS.map(e => "ts-" + ID + "-" + e.id);
+await Notification.removePending(ids);
+const upcoming = EGGS.map(e => {
+  const off = e.k === "h" ? e.v * HOUR : e.k === "d" ? e.v * DAY : (PER_DAY > 0 ? e.v / PER_DAY * DAY : Infinity);
+  return { e, at: new Date(START.getTime() + off) };
+}).filter(x => isFinite(x.at.getTime()) && x.at > now).sort((a, b) => a.at - b.at).slice(0, 50);
+for (const x of upcoming) {
+  const n = new Notification();
+  n.identifier = "ts-" + ID + "-" + x.e.id;
+  n.threadIdentifier = "tichy-streak";
+  n.title = x.e.t;
+  n.body = x.e.b;
+  n.setTriggerDate(x.at);
+  await n.schedule();
+}
+
+// ===== Rastlinka: kreslí sa pixel po pixeli priamo vo widgete =====
+const S = { plantMode: "__PLANT__" };
+const STAGES = [0, 0.5, 1, 2, 3, 5, 7, 14, 21, 30];
+const stageOf = d => STAGES.filter(x => d >= x).length - 1;
+__DRAW__
+
+const dayF = ms / DAY;
+const FAM = config.widgetFamily || "small";
+const CFG = { small: [230, 230, 1, 4], medium: [400, 190, 1, 26], large: [400, 420, 2, 26] }[FAM] || [230, 230, 1, 4];
+const W = CFG[0], H = CFG[1], K = CFG[2], MR = CFG[3];
+let bg = null;
+try {
+  const GRID = Array.from({ length: 160 }, () => Array(160).fill(null));
+  const fakeCanvas = { getContext: () => ({
+    fillStyle: "#000000",
+    clearRect() { GRID.forEach(r => r.fill(null)); },
+    fillRect(x, y, w, h) {
+      for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) {
+        const X = x + i, Y = y + j;
+        if (X >= 0 && Y >= 0 && X < 160 && Y < 160) GRID[Y][X] = this.fillStyle;
+      }
+    }
+  }) };
+  drawPlantTo(fakeCanvas, dayF, 0);
+
+  const dc = new DrawContext();
+  dc.size = new Size(W, H);
+  dc.opaque = true;
+  dc.respectScreenScale = true;
+  const CC = {};
+  const col = (h, a) => { const k = h + "|" + (a == null ? 1 : a); CC[k] = CC[k] || new Color(h, a == null ? 1 : a); return CC[k]; };
+  const rect = (x, y, w, h, c, a) => { dc.setFillColor(col(c, a)); dc.fillRect(new Rect(x, y, w, h)); };
+
+  // nočná obloha
+  const SKY = [[11, 17, 32], [28, 36, 64], [59, 51, 80]];
+  const hx = n => ("0" + Math.round(n).toString(16)).slice(-2);
+  for (let i = 0; i < 48; i++) {
+    const t = i / 47;
+    const lo = t < 0.6 ? SKY[0] : SKY[1], hi = t < 0.6 ? SKY[1] : SKY[2];
+    const u = t < 0.6 ? t / 0.6 : (t - 0.6) / 0.4;
+    rect(0, Math.floor(H * i / 48), W, Math.ceil(H / 48) + 1, "#" + [0, 1, 2].map(j => hx(lo[j] + (hi[j] - lo[j]) * u)).join(""));
+  }
+  for (let i = 0; i < 24; i++) {
+    const big = i % 3 === 2 ? 2 : 1;
+    rect((i * 53 + 17) % W, (i * 37 + 5) % Math.floor(H * 0.55), big, big, "#e7eaf0", 0.3 + 0.35 * (i % 3) / 2);
+  }
+  for (let x = 0; x < W; x += 2) {
+    const y1 = Math.round(H - 48 * K + 7 * Math.sin(x * 0.045 + 1) + 4 * Math.sin(x * 0.11));
+    rect(x, y1, 2, H - y1, "#161d33");
+    const y2 = Math.round(H - 32 * K + 5 * Math.sin(x * 0.07 + 3));
+    rect(x, y2, 2, H - y2, "#10162a");
+  }
+  rect(0, H - 10 * K, W, 10 * K, "#4a3328");
+  rect(0, H - 10 * K, W, 1, "#6b4a38");
+
+  // rastlinka (spodok obrázka = spodok widgetu)
+  const CX0 = 16, CX1 = 144;
+  const ox = W - (CX1 - CX0) * K - MR;
+  for (let y = 0; y < 160; y++) {
+    let x = CX0;
+    while (x < CX1) {
+      const c = GRID[y][x];
+      if (!c) { x++; continue; }
+      let e = x + 1;
+      while (e < CX1 && GRID[y][e] === c) e++;
+      rect(ox + (x - CX0) * K, H - (160 - y) * K, (e - x) * K, K, c);
+      x = e;
+    }
+  }
+  // svetlušky: pribúdajú s dňami
+  const nF = Math.min(14, 2 + Math.floor(dayF / 2));
+  for (let i = 0; i < nF; i++) {
+    const r1 = ((i * 7919) % 100) / 100, r2 = ((i * 104729) % 100) / 100;
+    const fx = Math.round(ox + (0.1 + 0.85 * r1) * (CX1 - CX0) * K), fy = Math.round(H - (30 + 100 * r2) * K);
+    rect(fx - 1, fy, 3, 1, "#fff0aa", 0.3);
+    rect(fx, fy - 1, 1, 3, "#fff0aa", 0.3);
+    rect(fx, fy, 1, 1, "#fff0aa", 0.95);
+  }
+  bg = dc.getImage();
+} catch (e) { bg = null; }
+
+const w = new ListWidget();
+if (bg) {
+  w.backgroundImage = bg;
+} else {
+  const g = new LinearGradient();
+  g.colors = [new Color("#121a28"), new Color("#232b3d")];
+  g.locations = [0, 1];
+  w.backgroundGradient = g;
+}
+w.setPadding(14, 14, 14, 14);
+
+const lbl = w.addText(LABEL);
+lbl.font = Font.mediumSystemFont(11);
+lbl.textColor = new Color("#8d98ab");
+
+const d = w.addText(String(days));
+d.font = Font.boldRoundedSystemFont(46);
+d.textColor = new Color("#f3b48c");
+d.minimumScaleFactor = 0.5;
+
+// Živé hodiny: hodiny:minúty:sekundy v aktuálnom dni
+const dayStart = new Date(START.getTime() + days * DAY);
+const t = w.addDate(now < START ? START : dayStart);
+t.applyTimerStyle();
+t.font = Font.mediumMonospacedSystemFont(13);
+t.textColor = new Color("#e7eaf0");
+
+w.addSpacer();
+
+const m = w.addText(saved.toFixed(0) + " €");
+m.font = Font.boldRoundedSystemFont(18);
+m.textColor = new Color("#9fd3b8");
+
+const ml = w.addText("ušetrené");
+ml.font = Font.systemFont(10);
+ml.textColor = new Color("#8d98ab");
+
+if (FAM !== "small") {
+  const left = Math.ceil(30 - dayF);
+  const pl = w.addText(left > 0 ? "Rastlina dozrie o " + left + " " + (left === 1 ? "deň" : left < 5 ? "dni" : "dní") : "Rastlina je zrelá");
+  pl.font = Font.systemFont(11);
+  pl.textColor = new Color("#9fd3b8");
+}
+
+w.refreshAfterDate = new Date(Date.now() + 15 * 60 * 1000);
+
+if (config.runsInWidget) {
+  Script.setWidget(w);
+} else {
+  const a = new Alert();
+  a.title = "Hotovo";
+  a.message = "Naplánovaných prekvapení: " + upcoming.length + ". Čo v nich je, uvidíš, keď prídu.";
+  a.addAction("OK");
+  await a.present();
+  await w.presentSmall();
+}
+Script.complete();
+</script>
+<script>
+const DAY=864e5, HOUR=36e5;
+const QUESTS=[["voda","Vypiť vodu"],["jedlo","Teplé jedlo"],["von","10 minút vonku"],["pohyb","Cvičenie alebo strečing"]];
+const NAMES=["Štart","Iskra","Rozbeh","Pevná pôda","Stabilný","Jasná hlava","Silný","Pokojný","Majster","Legenda"];
+const MILES=[[0.5,"Prvá noc"],[1,"Prvý deň za tebou."],[3,"Dni 2 až 4 bývajú najťažšie. Potom sa to láme."],[7,"Spánok sa začína vracať."],[14,"Chuť chodí menej často."],[30,"Mozog sa už výrazne upravil."],[60,"Dva mesiace."],[90,"Tri mesiace. Nový normál."],[180,"Pol roka."],[365,"Rok."]];
+const BADGES=[
+ ["12h","Prvá noc",s=>s.curMs>=12*HOUR],
+ ["1d","Prvý deň",s=>s.curDays>=1],
+ ["3d","Tri dni",s=>s.curDays>=3],
+ ["7d","Týždeň",s=>s.curDays>=7],
+ ["14d","Dva týždne",s=>s.curDays>=14],
+ ["30d","Mesiac",s=>s.curDays>=30],
+ ["×1","Prvá vlna",s=>S.waves>=1],
+ ["×5","Surfér",s=>S.waves>=5],
+ ["×20","Majster vĺn",s=>S.waves>=20],
+ ["4/4","Plný deň",s=>s.fullDays>=1],
+ ["3×","Návyk",s=>s.fullDays>=3],
+ ["50€","50 €",s=>s.money>=50],
+ ["100€","100 €",s=>s.money>=100],
+ ["250€","250 €",s=>s.money>=250],
+ ["500€","500 €",s=>s.money>=500],
+ ["1k","Tisícka",s=>s.money>=1000]
+];
+const EGGS=[{"id": "h1", "k": "h", "v": 1, "t": "GL HF", "b": "Prvá hodina za tebou. Ide sa."}, {"id": "h13", "k": "h", "v": 13, "t": "Trinástka", "b": "13 hodín. Pech? Dnes nie."}, {"id": "h42", "k": "h", "v": 42, "t": "42", "b": "42 hodín. Odpoveď na život, vesmír a všetko."}, {"id": "h69", "k": "h", "v": 69, "t": "Nice", "b": "69 hodín. Nice."}, {"id": "h100", "k": "h", "v": 100, "t": "Triple digits", "b": "100 hodín. Trojciferné číslo."}, {"id": "h111", "k": "h", "v": 111, "t": "1-1-1", "b": "111 hodín. Samé jednotky."}, {"id": "h128", "k": "h", "v": 128, "t": "Tickrate 128", "b": "128 hodín. Pro server, žiadny lag."}, {"id": "h144", "k": "h", "v": 144, "t": "144 Hz", "b": "144 hodín. Hladký obraz."}, {"id": "h222", "k": "h", "v": 222, "t": "2-2-2", "b": "222 hodín. Vraj anjelské číslo."}, {"id": "h240", "k": "h", "v": 240, "t": "240 Hz", "b": "240 hodín. Ešte hladší obraz."}, {"id": "h300", "k": "h", "v": 300, "t": "THIS IS SPARTA", "b": "300 hodín."}, {"id": "h404", "k": "h", "v": 404, "t": "404", "b": "404 hodín. Chuť not found."}, {"id": "h420", "k": "h", "v": 420, "t": "Ironické", "b": "420 hodín. Ironické, čo?"}, {"id": "h500", "k": "h", "v": 500, "t": "500", "b": "500 hodín. Žiadny server error, všetko beží."}, {"id": "h666", "k": "h", "v": 666, "t": "666", "b": "666 hodín. Diabolsky dobrý výkon."}, {"id": "h777", "k": "h", "v": 777, "t": "Jackpot", "b": "777 hodín. Tri sedmičky."}, {"id": "h1000", "k": "h", "v": 1000, "t": "Kilohodina", "b": "1000 hodín."}, {"id": "h1337", "k": "h", "v": 1337, "t": "1337 h", "b": "1337 hodín. Elite."}, {"id": "h2048", "k": "h", "v": 2048, "t": "2048", "b": "2048 hodín. Spojil si všetky kocky."}, {"id": "d2", "k": "d", "v": 2, "t": "Double kill", "b": "Dva dni."}, {"id": "d5", "k": "d", "v": 5, "t": "ACE", "b": "5 dní. Celý tím dole."}, {"id": "d10", "k": "d", "v": 10, "t": "Desiatka", "b": "10 dní v kuse."}, {"id": "d13", "k": "d", "v": 13, "t": "MR12", "b": "13 dní. V CS2 by si práve vyhral zápas."}, {"id": "d16", "k": "d", "v": 16, "t": "MR15", "b": "16 dní. Aj v starom CS by si vyhral."}, {"id": "d21", "k": "d", "v": 21, "t": "Blackjack", "b": "21 dní. Porazil si dealera."}, {"id": "d42", "k": "d", "v": 42, "t": "Zase 42", "b": "42 dní. Vesmír ti niečo hovorí."}, {"id": "d50", "k": "d", "v": 50, "t": "Polstovka", "b": "50 dní."}, {"id": "d64", "k": "d", "v": 64, "t": "N64", "b": "64 dní. Nintendo 64 era."}, {"id": "d67", "k": "d", "v": 67, "t": "Sixseeeveeen", "b": "67 dní. Six seveeeeen."}, {"id": "d69", "k": "d", "v": 69, "t": "Nice nice", "b": "69 dní. Nice, ale v dňoch."}, {"id": "d77", "k": "d", "v": 77, "t": "Dve sedmičky", "b": "77 dní."}, {"id": "d99", "k": "d", "v": 99, "t": "Skoro", "b": "99 dní. Jeden do stovky."}, {"id": "d100", "k": "d", "v": 100, "t": "Stovka", "b": "100 dní."}, {"id": "d111", "k": "d", "v": 111, "t": "Jednotky", "b": "111 dní."}, {"id": "d128", "k": "d", "v": 128, "t": "128 dní", "b": "Tickrate, ale v dňoch."}, {"id": "d200", "k": "d", "v": 200, "t": "Dvesto", "b": "200 dní."}, {"id": "d256", "k": "d", "v": 256, "t": "Bajt", "b": "256 dní. Plný bajt."}, {"id": "d300", "k": "d", "v": 300, "t": "Spartan", "b": "300 dní."}, {"id": "d360", "k": "d", "v": 360, "t": "No-scope 360", "b": "360 dní. Celé kolo dookola."}, {"id": "d404", "k": "d", "v": 404, "t": "Not found", "b": "404 dní. Chuť sa stále nenašla."}, {"id": "d500", "k": "d", "v": 500, "t": "Päťsto", "b": "500 dní."}, {"id": "d1000", "k": "d", "v": 1000, "t": "Tisíc dní", "b": "1000 dní. Legenda."}, {"id": "m12", "k": "m", "v": 12, "t": "Prvých 12", "b": "12 € ostalo v peňaženke."}, {"id": "m69", "k": "m", "v": 69, "t": "Nice €", "b": "69 € ušetrených. Nice."}, {"id": "m200", "k": "m", "v": 200, "t": "Eco round", "b": "200 €. Konečne žiadny eco round."}, {"id": "m420", "k": "m", "v": 420, "t": "Stále ironické", "b": "420 € ušetrených."}, {"id": "m666", "k": "m", "v": 666, "t": "666 €", "b": "Diabolsky dobrá úspora."}, {"id": "m777", "k": "m", "v": 777, "t": "Jackpot €", "b": "777 €. Automat by ti toľko nedal."}, {"id": "m1337", "k": "m", "v": 1337, "t": "Leet", "b": "1337 € ušetrených. Elite."}, {"id": "m2000", "k": "m", "v": 2000, "t": "2k", "b": "2000 € ušetrených."}, {"id": "m4750", "k": "m", "v": 4750, "t": "AWP", "b": "4750 €. Presne na AWP."}, {"id": "m5000", "k": "m", "v": 5000, "t": "Päť tisíc", "b": "5000 €."}, {"id": "m9001", "k": "m", "v": 9001, "t": "Over 9000", "b": "It's over 9000!"}, {"id": "w3", "k": "w", "v": 3, "t": "Hattrick", "b": "Tri vlny prečkané."}, {"id": "w10", "k": "w", "v": 10, "t": "Surf pro", "b": "10 vĺn prečkaných."}, {"id": "w50", "k": "w", "v": 50, "t": "Pán oceánu", "b": "50 vĺn. Už ťa nič neprevalí."}, {"id": "f7", "k": "f", "v": 7, "t": "Disciplína", "b": "7 dní so všetkými questami."}, {"id": "f30", "k": "f", "v": 30, "t": "Mašina", "b": "30 dní so všetkými questami."}, {"id": "night", "k": "n", "v": 0, "t": "Nočná sova", "b": "Appka otvorená medzi 2:00 a 5:00. Aj tak si to dal."}];
+const $=id=>document.getElementById(id), pad=n=>String(n).padStart(2,"0");
+function clean(o){const r={};for(const k in o)if(o[k]!==undefined)r[k]=o[k];return r}
+function newCounter(o){return Object.assign({id:"c"+Date.now().toString(36)+Math.random().toString(36).slice(2,5),name:"Deň",start:nowLocal(),per:24,prevMs:0,resets:0,waves:0,waveEnd:0,waveLog:[],goalName:"Cieľ",goal:1000,seen:null,eggSeen:[],plantMode:"cannabis",born:todayKey(),slips:[],series:[],s72:[]},clean(o||{}))}
+function load(){let raw=null;try{raw=JSON.parse(localStorage.getItem("ts"))}catch(e){}
+ let R;
+ if(raw&&Array.isArray(raw.counters)&&raw.counters.length){R={active:raw.active,font:raw.font,reasons:raw.reasons,log:raw.log||{},counters:raw.counters.map(c=>newCounter(c))}}
+ else{const old=raw||{};let os,op;
+  const c=newCounter({id:"c1",start:old.start||os,per:old.per!=null?Number(old.per):(op?Number(op):undefined),prevMs:old.prevMs,resets:old.resets,waves:old.waves,waveEnd:old.waveEnd,waveLog:old.waveLog,goalName:old.goalName,goal:old.goal,seen:old.seen,eggSeen:old.eggSeen,plantMode:old.plantMode});
+  R={active:"c1",font:old.font,reasons:old.reasons,log:old.log||{},counters:[c]}}
+ if(!R.counters.some(c=>c.id===R.active))R.active=R.counters[0].id;
+ R.counters.forEach(c=>{c.log=R.log});return R}
+const ROOT=load();let S=ROOT.counters.find(c=>c.id===ROOT.active);
+function exportObj(){return{v:2,active:ROOT.active,font:ROOT.font,reasons:ROOT.reasons,log:ROOT.log,counters:ROOT.counters.map(c=>{const r=Object.assign({},c);delete r.log;return r})}}
+function save(){try{localStorage.setItem("ts",JSON.stringify(exportObj()));return true}catch(e){return false}}
+function todayKey(){const d=new Date();return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}
+function stats(){
+ const now=Date.now(),start=new Date(S.start).getTime(),curMs=Math.max(0,now-start),totalMs=S.prevMs+curMs;
+ let questsDone=0,fullDays=0;const sk=S.start.slice(0,10),from=S.born&&S.born<sk?S.born:sk;for(const k in S.log){if(k<from)continue;const n=S.log[k].filter(Boolean).length;questsDone+=n;if(n===QUESTS.length)fullDays++}
+ const xp=Math.floor(totalMs/HOUR)+S.waves*25+questsDone*5+(S.s72||[]).filter(Boolean).length*5;
+ const lvl=Math.floor(Math.sqrt(xp/10))+1;
+ return{now,start,curMs,totalMs,curDays:curMs/DAY,totalDays:totalMs/DAY,money:totalMs/DAY*S.per,questsDone,fullDays,xp,lvl,lvlFrom:10*(lvl-1)**2,lvlTo:10*lvl**2};
+}
+function dayWord(n){return n===1?"deň":n<5?"dni":"dní"}
+let toastQ=[],toastBusy=false;
+function toast(t){toastQ.push(t);if(!toastBusy)nextToast()}
+function nextToast(){const t=toastQ.shift();if(!t){toastBusy=false;return}toastBusy=true;const el=$("toast");el.textContent=t;el.classList.add("show");setTimeout(()=>{el.classList.remove("show");setTimeout(nextToast,400)},2600)}
+function renderBadges(s){
+ const box=$("badges");let on=0,key=S.id+"|";const firstRun=S.seen===null;if(firstRun)S.seen=[];
+ BADGES.forEach(([face,name,test])=>{const ok=test(s);if(ok)on++;key+=ok?1:0;
+  if(ok&&!S.seen.includes(name)){S.seen.push(name);if(!firstRun)toast("Nový odznak: "+name);save()}});
+ if(box.dataset.k!==key){box.dataset.k=key;box.innerHTML="";
+  BADGES.forEach(([face,name,test])=>{const b=document.createElement("div");b.className="badge"+(test(s)?" on":"");b.innerHTML='<div class="face">'+face+'</div><div class="name">'+name+'</div>';box.appendChild(b)})}
+ $("badgeCount").textContent=on+" z "+BADGES.length;
+ renderEggs(s);
+}
+let eggQ=[];
+function eggOk(e,s){if(e.k==="h")return s.curMs>=e.v*HOUR;if(e.k==="d")return s.curDays>=e.v;if(e.k==="m")return s.money>=e.v;if(e.k==="w")return S.waves>=e.v;if(e.k==="f")return s.fullDays>=e.v;
+ if(e.k==="n"){const h=new Date().getHours();return (S.eggSeen||[]).includes("night")||(h>=2&&h<5)}return false}
+function renderEggs(s){if(!Array.isArray(S.eggSeen))S.eggSeen=[];let changed=false;
+ EGGS.forEach(e=>{if(eggOk(e,s)&&!S.eggSeen.includes(e.id)){S.eggSeen.push(e.id);eggQ.push(e);changed=true}});
+ if(changed){save();showEgg()}
+ const box=$("eggs");if(box.childElementCount!==S.eggSeen.length){box.innerHTML="";
+  EGGS.filter(e=>S.eggSeen.includes(e.id)).forEach(e=>{const b=document.createElement("div");b.className="badge egg on";const face=e.k==="m"?e.v+"€":e.k==="h"?e.v+"h":e.k==="d"?e.v+"d":e.k==="w"?"×"+e.v:e.k==="f"?e.v+"×":"2am";
+   b.innerHTML='<div class="face">'+face+'</div><div class="name">'+e.t+'</div>';box.appendChild(b)})}
+ $("eggCount").textContent=S.eggSeen.length+" z "+EGGS.length;
+ $("eggNote").hidden=S.eggSeen.length>0;
+}
+function showEgg(){if(!$("modal").hidden)return;const e=eggQ.shift();if(!e)return;$("mTitle").textContent=e.t;$("mBody").textContent=e.b;$("mEye").textContent="Tajný odznak"+(eggQ.length?" · ďalšie: "+eggQ.length:"");$("modal").hidden=false;$("mOk").focus()}
+$("mOk").addEventListener("click",()=>{$("modal").hidden=true;showEgg()});
+function renderQuests(){
+ const k=todayKey(),done=S.log[k]||QUESTS.map(()=>false),box=$("quests");box.innerHTML="";
+ QUESTS.forEach(([id,label],i)=>{const l=document.createElement("label");l.className="q"+(done[i]?" done":"");l.htmlFor="q-"+id;l.style.marginTop="0";
+  l.innerHTML='<input type="checkbox" id="q-'+id+'"'+(done[i]?" checked":"")+'><span>'+label+'</span>';
+  l.querySelector("input").addEventListener("change",e=>{const arr=S.log[k]||QUESTS.map(()=>false);arr[i]=e.target.checked;S.log[k]=arr;save();
+   if(e.target.checked)toast("+5 XP");if(arr.every(Boolean))toast("Plný deň. Rastlina je poliata.");renderQuests();tick()});
+  box.appendChild(l)});
+ const n=done.filter(Boolean).length;$("plantNote").textContent=n===QUESTS.length?"Dnes poliata. Na 30. deň dozrie.":"Rastie s každým čistým dňom. Questy ju polievajú ("+n+"/"+QUESTS.length+").";
+ renderCal();
+}
+/*SCENE*/
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function drawPlantTo(cv,days,watered){
+ const x=cv.getContext("2d");x.clearRect(0,0,160,160);
+ const stage=stageOf(days),mode=S.plantMode||"cannabis",U=2,CX=40,SOIL=64;
+ const P=(cx,cy,col)=>{cx=Math.round(cx);cy=Math.round(cy);if(cx<0||cy<0||cx>79||cy>79)return;x.fillStyle=col;x.fillRect(cx*U,cy*U,U,U)};
+ const hash=(a,b)=>{const n=Math.sin(a*127.1+b*311.7)*43758.5453;return n-Math.floor(n)};
+ const L=[-.6,-.8];
+ const ell=(cx,cy,rx,ry,fn)=>{const ax=Math.ceil(rx),ay=Math.ceil(ry);for(let yy=-ay;yy<=ay;yy++)for(let xx=-ax;xx<=ax;xx++){const d=(xx*xx)/(rx*rx)+(yy*yy)/(ry*ry);if(d<=1.02)P(cx+xx,cy+yy,fn(xx,yy,d))}};
+ const star=(sx,sy,col)=>{P(sx,sy,col);P(sx-1,sy,col);P(sx+1,sy,col);P(sx,sy-1,col);P(sx,sy+1,col)};
+ const seed=()=>{P(CX-1,SOIL-1,"#8a6a4a");P(CX,SOIL-1,"#a1805a");P(CX,SOIL-2,"#6fbf8e")};
+ /* kvetnak */
+ const pc={hi:"#dc9a6e",mid:"#b9775a",lo:"#8f5a42",rim:"#e8ae80"};
+ for(let xx=30;xx<=49;xx++)P(xx,SOIL,watered?"#2e211b":"#3b2a21");
+ for(let xx=28;xx<=51;xx++)P(xx,SOIL+1,watered?"#3a2a22":"#4a3328");
+ for(let yy=SOIL+2;yy<=SOIL+3;yy++)for(let xx=27;xx<=52;xx++)P(xx,yy,yy===SOIL+2?pc.rim:(xx<32?pc.hi:xx>47?pc.lo:pc.mid));
+ for(let yy=SOIL+4;yy<=79;yy++){const k=Math.floor((yy-SOIL-4)/4),l=29+k,r=50-k;for(let xx=l;xx<=r;xx++)P(xx,yy,xx<l+3?pc.hi:xx>r-3?pc.lo:pc.mid)}
+
+ /* ---------- cannabis ---------- */
+ const cannabis=()=>{
+  const C={d:"#2a5c3d",m:"#3f8a55",l:"#6fbf8e",hl:"#b5e8c0",st:"#3b7a4d",sl:"#62b07a"};
+  const H=[0,6,12,20,28,36,44,50,54,56][stage],yT=SOIL-1-H;
+  if(stage===0){seed();return}
+  const leaflet=(x0,y0,a,len,w)=>{const nx=-Math.sin(a),ny=Math.cos(a);
+   for(let t=0;t<=len;t+=.5){const cx=x0+Math.cos(a)*t,cy=y0+Math.sin(a)*t,ww=w*Math.sin(Math.PI*Math.pow(t/len,.7));
+    for(let s=-ww;s<=ww+.01;s+=.5){const edge=Math.abs(s)>ww-.55;if(ww>1.2&&edge&&Math.floor(t*2)%3===0)continue;
+     const col=Math.abs(s)<.3?C.hl:edge?C.d:((nx*L[0]+ny*L[1])*Math.sign(s)>0?C.l:C.m);P(cx+nx*s,cy+ny*s,col)}}};
+  const fan=(x0,y0,ang,len,n)=>{
+   const offs=n===3?[-.65,0,.65]:n===5?[-1.15,-.58,0,.58,1.15]:[-1.55,-1.05,-.52,0,.52,1.05,1.55];
+   const f=n===3?[.62,1,.62]:n===5?[.55,.85,1,.85,.55]:[.38,.62,.86,1,.86,.62,.38];
+   const bx=x0+Math.cos(ang)*3,by=y0+Math.sin(ang)*3;for(let t=0;t<=3;t+=.5)P(x0+Math.cos(ang)*t,y0+Math.sin(ang)*t,C.sl);
+   offs.map((o,i)=>i).sort((a,b)=>Math.abs(offs[b])-Math.abs(offs[a])).forEach(i=>leaflet(bx,by,ang+offs[i],len*f[i],Math.max(1.2,len*f[i]*.17)))};
+  for(let y=yT;y<SOIL;y++){const wd=y>SOIL-14?3:2;for(let i=0;i<wd;i++)P(CX-1+i,y,i===0?C.sl:C.st)}
+  if(stage===1){ell(CX-4,yT+1,3.4,1.7,(xx,yy)=>yy<0?"#b9e29a":"#8cc56e");ell(CX+4,yT+1,3.4,1.7,(xx,yy)=>yy<0?"#b9e29a":"#8cc56e");P(CX,yT-1,"#bfe9a0");return}
+  if(stage===2){ell(CX-4,SOIL-9,3.6,1.8,(xx,yy)=>yy<0?"#b9e29a":"#8cc56e");ell(CX+4,SOIL-9,3.6,1.8,(xx,yy)=>yy<0?"#b9e29a":"#8cc56e")}
+  const cfg=[null,null,{N:1,len:8,n:3},{N:2,len:11,n:3},{N:3,len:14,n:5},{N:3,len:17,n:5},{N:4,len:20,n:5},{N:4,len:22,n:7},{N:4,len:23,n:7},{N:4,len:23,n:7}][stage];
+  const Nm=Math.max(1,cfg.N-1),topY=Math.min(SOIL-10,yT+(stage>=8?14:3)),sp=cfg.N>1?(SOIL-10-topY)/Nm:0,nodes=[];
+  for(let k=0;k<cfg.N;k++)nodes.push(topY+k*sp);
+  for(let k=cfg.N-1;k>=0;k--){const y=nodes[k],fr=cfg.N>1?k/Nm:1,len=cfg.len*(.7+.3*fr)*(.93+.14*hash(k,1)),n=k<cfg.N-1&&cfg.n>5?5:cfg.n,d=-.7+1.45*fr;
+   fan(CX-1,y,Math.PI-d,len,n);fan(CX+1,y+2,d,len*(.94+.1*hash(k,2)),n)}
+  if(stage<=7){fan(CX,yT+2,-1.2,cfg.len*.42,3);fan(CX,yT+2,-1.95,cfg.len*.42,3);P(CX,yT-1,"#c4eaa4");P(CX,yT,"#b9e29a")}
+  if(stage===7){ell(CX,yT,1.6,2,(xx,yy)=>yy<0?"#d6efb0":"#9ccc74");P(CX-1,yT-2,"#f2f2e6");P(CX+1,yT-2,"#f2f2e6");P(CX,yT-3,"#f2f2e6")}
+  if(stage>=8){
+   fan(CX-2,yT+10,Math.PI+.25,5,3);fan(CX+2,yT+15,-.25,5,3);fan(CX-2,yT+20,Math.PI-.1,5,3);fan(CX+2,yT+7,-.55,4,3);
+   const B={l:"#bfe08f",m:"#93c56d",d:"#5f9a55"};
+   const bud=(cx,cy,r,sd)=>{for(let yy=-Math.ceil(r);yy<=Math.ceil(r);yy++)for(let xx=-Math.ceil(r);xx<=Math.ceil(r);xx++){if(Math.hypot(xx*.92,yy)<=r+.1){const lit=(xx*L[0]+yy*L[1])/r;let col=lit>.2?B.l:lit<-.4?B.d:B.m;if(hash(cx+xx,cy+yy+sd)>.8)col=B.d;P(cx+xx,cy+yy,col)}}
+    const np=Math.max(2,Math.round(r*1.3));for(let i=0;i<np;i++){P(cx+Math.round((hash(i,sd)-.5)*2*(r-.5)),cy+Math.round((hash(sd+3,i)-.5)*2*(r-.5)),stage>=9?"#ea9a52":"#f2f2e6")}
+    if(stage>=9){P(cx-Math.round(r*.45),cy-Math.round(r*.55),"#f8fcec");P(cx+Math.round(r*.3),cy+Math.round(r*.2),"#f8fcec")}};
+   for(let k=1;k<cfg.N;k++){bud(CX-3,nodes[k]+1,stage>=9?2.8:1.8,k);bud(CX+3,nodes[k]-1,stage>=9?2.8:1.8,k+7)}
+   const rs=stage>=9?[3.2,5,6,6.6,6,4.8]:[2.6,3.8,4.4];let acc=yT+1;
+   rs.forEach((r,i)=>{const cy=acc+r*.9;bud(CX+Math.round((hash(i,9)-.5)*4),cy,r,i*3);acc+=r*.95});
+   if(stage>=9){star(CX+8,yT+4,"#fff6c9");star(CX-8,yT+13,"#fff6c9")}
+  }
+ };
+
+ /* ---------- kvetina ---------- */
+ const flower=()=>{
+  const G={d:"#2f6b45",m:"#4a9a5e",l:"#7ccf95"};
+  const hh=[0,5,10,16,22,28,34,38,40,42][stage],yT=SOIL-1-hh;
+  if(stage===0){seed();return}
+  for(let y=yT;y<SOIL;y++){P(CX,y,G.m);P(CX+1,y,G.d)}
+  const nl=Math.min(stage,6),gap=Math.max(4,Math.round((hh-8)/Math.max(1,nl)));
+  for(let k=0;k<nl;k++){const y=SOIL-6-k*gap,side=k%2?1:-1,s=1-k*.07;
+   ell(CX+side*5+(side>0?1:0),y-1,4.4*s,1.8*s,(xx,yy)=>yy<0?G.l:G.m);
+   if(k%2===0)ell(CX-side*4+(side<0?1:0),y-4,3.2*s,1.4*s,(xx,yy)=>yy<0?G.l:G.m)}
+  const fy=yT-1;
+  if(stage===7)ell(CX,fy,2,3,(xx,yy)=>yy<0?"#f4a6c2":"#6fbf8e");
+  else if(stage>=8){const R=stage>=9?5:4,r=stage>=9?2.8:2.3,n=8;
+   for(let i=0;i<n;i++){const a=i*Math.PI*2/n;ell(CX+Math.cos(a)*R,fy+Math.sin(a)*R,r,r,(xx,yy)=>(xx*L[0]+yy*L[1])>0?"#fbc7da":"#ee86ae")}
+   ell(CX,fy,2.4,2.4,(xx,yy)=>yy<0?"#fbe38a":"#f0c04a")}
+ };
+
+ /* ---------- slnecnica ---------- */
+ const sun=()=>{
+  const G={d:"#2f6b45",m:"#4a9a5e",l:"#7ccf95"};
+  const hh=[0,6,12,18,24,30,35,38,40,42][stage],yT=SOIL-1-hh;
+  if(stage===0){seed();return}
+  for(let y=yT;y<SOIL;y++){P(CX,y,"#4a9a5e");P(CX+1,y,"#2f6b45")}
+  const nl=Math.min(stage,5),gap=Math.max(5,Math.round((hh-6)/Math.max(1,nl)));
+  for(let k=0;k<nl;k++){const y=SOIL-7-k*gap,side=k%2?1:-1,s=1-k*.06;
+   ell(CX+side*6+(side>0?1:0),y-1,6.4*s,2.6*s,(xx,yy)=>yy===0?"#a6e0b4":yy<0?G.l:G.m)}
+  const cy=yT-2;
+  if(stage===7){ell(CX,cy,3.2,3.2,(xx,yy)=>yy<0?"#6fbf8e":"#3f8a55");for(let i=0;i<8;i++){const a=i*Math.PI/4;P(CX+Math.cos(a)*4.4,cy+Math.sin(a)*4.4,"#3f8a55")}}
+  else if(stage>=8){const R=stage>=9?9:7,n=16;
+   for(let ring=0;ring<2;ring++)for(let i=0;i<n;i++){const a=i*Math.PI*2/n+ring*.2,rr=R-ring*2.6;ell(CX+Math.cos(a)*rr,cy+Math.sin(a)*rr,2.2,2.2,(xx,yy)=>(xx*L[0]+yy*L[1])>0?"#fbd45a":"#e9a92b")}
+   const dr=stage>=9?5.2:4.2;ell(CX,cy,dr,dr,(xx,yy,d)=>hash(xx+9,yy+4)>.7?"#3d2414":(xx*L[0]+yy*L[1])>.2?"#7a4a2a":"#5a3520")}
+ };
+
+ /* ---------- kaktus ---------- */
+ const cactus=()=>{
+  const hh=[0,5,9,14,19,24,28,32,34,36][stage],hw=[0,2,3,4,4,5,5,6,6,6][stage],yT=SOIL-1-hh;
+  if(stage===0){seed();return}
+  const body=(cx0,y0,y1,w)=>{for(let y=y0;y<=y1;y++){let h=w;const dt=y-y0;if(dt<1)h=Math.max(1,w-2);else if(dt<2)h=Math.max(1,w-1);
+    for(let xx=-h;xx<=h;xx++){let col=xx<-h*.4?"#7bc08a":xx>h*.4?"#357a48":"#4f9a5e";if(w>=3&&Math.abs(xx)%3===0&&Math.abs(xx)>0)col="#3f8a55";P(cx0+xx,y,col)}
+    if(w>=3&&y%4===0){P(cx0-Math.round(w*.5),y,"#f3efc9");P(cx0+Math.round(w*.5),y+2,"#f3efc9")}}};
+  body(CX,yT,SOIL-1,hw);
+  if(stage>=6){const ay=SOIL-14,ln=stage>=7?7:5;for(let i=0;i<=ln;i++)for(let r=0;r<3;r++)P(CX-hw-i,ay+r,r===0?"#7bc08a":r===2?"#357a48":"#4f9a5e");
+   body(CX-hw-ln,ay-(stage>=7?9:6),ay+2,1)}
+  if(stage>=7){const ay=SOIL-19,ln=5;for(let i=0;i<=ln;i++)for(let r=0;r<3;r++)P(CX+hw+i,ay+r,r===0?"#7bc08a":r===2?"#357a48":"#4f9a5e");
+   body(CX+hw+ln,ay-5,ay+2,1)}
+  if(stage>=8){ell(CX,yT-1,2.8,2.2,(xx,yy)=>yy<0?"#f9a3c0":"#ee6f9c");P(CX,yT-1,"#f6d365");
+   if(stage>=9){ell(CX-hw-(stage>=7?7:5),SOIL-14-(stage>=7?9:6)-1,2.2,1.8,(xx,yy)=>yy<0?"#f9a3c0":"#ee6f9c");ell(CX+hw+5,SOIL-19-5-1,2,1.6,(xx,yy)=>yy<0?"#fcd0a0":"#f4a65f")}}
+ };
+ if(mode==="kvet")flower();else if(mode==="slnecnica")sun();else if(mode==="kaktus")cactus();else cannabis();
+}
+
+const STAGES=[0,.5,1,2,3,5,7,14,21,30];
+const STAGE_NAMES=["Semienko","Klíček","Prvé lístky","Mladá rastlina","Rastie","Hustne","Silná rastlina","Mohutná","Kvitne","Zrelá"];
+function stageOf(d){return STAGES.filter(x=>d>=x).length-1}
+const REDUCED=!!(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches);
+const SCENES=[];
+function makeScene(canvas){const o={canvas,ctx:canvas.getContext("2d"),plant:document.createElement("canvas"),key:"",days:0,watered:0,stage:0,rainUntil:0};o.plant.width=160;o.plant.height=160;SCENES.push(o);return o}
+function setScene(o,days,watered){o.days=days;o.watered=watered?1:0;o.stage=stageOf(days);const key=o.stage+"|"+o.watered+"|"+(S.plantMode||"cannabis");
+ if(key!==o.key){o.key=key;drawPlantTo(o.plant,days,o.watered)}if(REDUCED)paintScene(o,0)}
+function rain(o,sec){if(!REDUCED)o.rainUntil=performance.now()/1000+sec}
+const STARS=Array.from({length:26},(_,i)=>[(i*53+17)%158,(i*37+5)%84,i%3]);
+function paintScene(o,t){
+ if(!o.canvas.isConnected||o.canvas.offsetWidth===0)return;
+ const c=o.ctx;
+ const g=c.createLinearGradient(0,0,0,160);g.addColorStop(0,"#0b1120");g.addColorStop(.6,"#1c2440");g.addColorStop(1,"#3b3350");
+ c.fillStyle=g;c.fillRect(0,0,160,160);
+ STARS.forEach(([x,y,k])=>{const a=.35+.35*Math.sin(t*(.6+k*.3)+x);c.fillStyle="rgba(231,234,240,"+a.toFixed(2)+")";c.fillRect(x,y,k===2?2:1,k===2?2:1)});
+ for(let dy=-7;dy<=7;dy++)for(let dx=-7;dx<=7;dx++){if(dx*dx+dy*dy<=49&&(dx+3)*(dx+3)+(dy-1)*(dy-1)>46){c.fillStyle="#f1e7cf";c.fillRect(128+dx,22+dy,1,1)}}
+ for(let x=0;x<160;x++){const y1=Math.round(112+7*Math.sin(x*.045+1)+4*Math.sin(x*.11));c.fillStyle="#161d33";c.fillRect(x,y1,1,160-y1);
+  const y2=Math.round(128+5*Math.sin(x*.07+3));c.fillStyle="#10162a";c.fillRect(x,y2,1,160-y2)}
+ c.fillStyle="#4a3328";c.fillRect(0,150,160,10);c.fillStyle="#6b4a38";c.fillRect(0,150,160,1);
+ const lamp=c.createRadialGradient(22,70,2,22,70,95);lamp.addColorStop(0,"rgba(243,180,140,.16)");lamp.addColorStop(1,"rgba(243,180,140,0)");c.fillStyle=lamp;c.fillRect(0,0,160,160);
+ const gl=(o.watered?.1:0)+(typeof breathGlow==="function"?breathGlow(t):0);
+ if(gl>.005){const h=c.createRadialGradient(80,96,4,80,96,72);h.addColorStop(0,"rgba(159,211,184,"+gl.toFixed(3)+")");h.addColorStop(1,"rgba(159,211,184,0)");c.fillStyle=h;c.fillRect(0,0,160,160)}
+ const amp=o.stage>=3?1.7:o.stage>=1?.8:0;
+ if(!REDUCED&&amp){for(let y=0;y<160;y+=4){const f=Math.max(0,(134-y)/110);const sh=Math.round(amp*f*Math.sin(t*1.1+y*.035));c.drawImage(o.plant,0,y,160,4,sh,y,160,4)}}
+ else c.drawImage(o.plant,0,0);
+ if(o.stage>=9){for(let i=0;i<9;i++){const p=((t*.1+i*.113)%1);const x=80+(i-4)*5+4*Math.sin(t*.8+i*2),y=74-p*52;
+  c.fillStyle="rgba(243,200,150,"+(Math.sin(p*Math.PI)*.85).toFixed(2)+")";c.fillRect(Math.round(x),Math.round(y),1,1)}}
+ const n=Math.min(14,2+Math.floor(o.days/2));
+ for(let i=0;i<n;i++){const r1=((i*7919)%100)/100,r2=((i*104729)%100)/100;
+  const x=Math.round(80+66*Math.sin(t*(.12+r1*.12)+i*2.3)),y=Math.round(76+44*Math.sin(t*(.1+r2*.12)+i*1.7+1));
+  const a=.25+.75*Math.max(0,Math.sin(t*(1.1+r2)+i*1.9));
+  c.fillStyle="rgba(255,235,150,"+(a*.3).toFixed(2)+")";c.fillRect(x-1,y,3,1);c.fillRect(x,y-1,1,3);
+  c.fillStyle="rgba(255,240,170,"+a.toFixed(2)+")";c.fillRect(x,y,1,1)}
+ const now=performance.now()/1000;
+ if(now<o.rainUntil){c.fillStyle="rgba(127,179,230,.75)";for(let i=0;i<22;i++){const x=(i*37)%160,y=((now*90+i*29)%170)-10;c.fillRect(x,Math.round(y),1,3)}}
+}
+let _last=0;
+function sceneLoop(ts){requestAnimationFrame(sceneLoop);if(ts-_last<45)return;_last=ts;const t=ts/1000;SCENES.forEach(o=>paintScene(o,t));if(typeof onFrame==="function")onFrame(t)}
+function startScenes(){if(REDUCED){SCENES.forEach(o=>paintScene(o,0));return}requestAnimationFrame(sceneLoop)}
+/*END*/
+const mainScene=makeScene($("plant"));
+let prevWatered=null;
+function tick(){
+ const s=stats();
+ $("days").textContent=Math.floor(s.curDays);
+ const r=s.curMs-Math.floor(s.curDays)*DAY;
+ $("clock").innerHTML=pad(Math.floor(r/HOUR))+"<span>h</span>"+pad(Math.floor(r/6e4)%60)+"<span>m</span>"+pad(Math.floor(r/1e3)%60)+"<span>s</span>";
+ $("heroEye").textContent="Deň · "+S.name;
+ $("lvl").textContent=s.lvl;$("lvlName").textContent=NAMES[Math.min(s.lvl-1,NAMES.length-1)];
+ $("xp").textContent=s.xp+" XP";$("xpNext").textContent="LV "+(s.lvl+1)+" pri "+s.lvlTo;
+ $("xpbar").style.width=((s.xp-s.lvlFrom)/(s.lvlTo-s.lvlFrom)*100)+"%";
+ const st=new Date(S.start);
+ $("since").textContent=s.now<s.start?"Odpočet začne "+st.toLocaleString("sk-SK"):"od "+st.toLocaleString("sk-SK")+(S.resets?" · celkovo čistých "+s.totalDays.toFixed(1).replace(".",",")+" "+dayWord(Math.floor(s.totalDays)):"");
+ $("money").textContent=s.money.toFixed(2).replace(".",",")+" €";
+ $("goalName").textContent=S.goalName;const gp=Math.min(100,s.money/S.goal*100);$("goalPct").textContent=gp.toFixed(gp<10?1:0).replace(".",",");$("goalbar").style.width=gp+"%";
+ const m=MILES.find(x=>x[0]>s.curDays)||MILES[MILES.length-1],prev=[...MILES].reverse().find(x=>x[0]<=s.curDays),base=prev?prev[0]:0;
+ $("next").textContent=m[0]<1?"12 hodín":m[0]+" "+dayWord(m[0]);
+ $("mbar").style.width=Math.min(100,(s.curDays-base)/(m[0]-base)*100)+"%";
+ $("nextnote").textContent=prev?(prev[0]<1?"Prvá noc zvládnutá.":prev[1]):"Prvá noc je najbližší cieľ.";
+ $("waveCount").textContent=S.waves?"Porazených vĺn: "+S.waves:"";
+ const k=todayKey(),wv=(S.log[k]||[]).length&&(S.log[k]||[]).every(Boolean)?1:0;if(prevWatered===0&&wv===1)rain(mainScene,4);prevWatered=wv;setScene(mainScene,s.curDays,wv);
+ renderBadges(s);renderStart(s);
+}
+const DEF_REASONS="Spať v noci a mať energiu\nPeniaze na moje projekty\nSlobodná hlava";
+function reasonsList(){return (ROOT.reasons!=null?ROOT.reasons:DEF_REASONS).split("\n").map(x=>x.trim()).filter(Boolean)}
+function waveOn(){return S.waveEnd>Date.now()}
+function breathPhase(){if(!waveOn())return null;const el=(Date.now()-(S.waveEnd-20*6e4))%10000;return el<4000?{label:"Nádych",p:el/4000}:{label:"Výdych",p:1-(el-4000)/6000}}
+function breathGlow(){const b=breathPhase();return b?.05+.13*b.p:0}
+function onFrame(){const b=breathPhase();if(!b)return;$("breath").style.transform="scale("+(.55+.45*b.p).toFixed(3)+")";if($("breathLbl").textContent!==b.label)$("breathLbl").textContent=b.label}
+const DONOW=["20 drepov alebo 10 klikov. Hneď teraz.","Vypi veľký pohár vody.","Vyjdi von na 5 minút. Zmeň prostredie.","Zjedz niečo: banán, orechy, jogurt.","Umy riady alebo upratuj jeden kút.","2 minúty strečingu.","Napíš jednu vetu o tom, čo práve cítiš.","Daj si teplú sprchu."];
+function waveUI(){const on=waveOn();$("breathWrap").hidden=!on;$("reason").hidden=!on;$("doNow").hidden=!on;if(!on)$("waveTime").textContent="20:00";
+ $("waveText").textContent=on?"Napi sa vody. Zjedz niečo. Rob niečo rukami. Len dýchaj a čakaj.":"Keď to príde, spusti. Vlna trvá 20 až 30 minút a potom klesne.";
+ $("waveBtn").textContent=on?"Znova od 20 minút":"Spustiť 20 minút";$("fab").textContent=on?"Vlna beží":"Mám chuť";
+ if(on&&REDUCED){$("breath").style.transform="scale(.8)";$("breathLbl").textContent="Nádych 4 s · výdych 6 s"}}
+function renderHours(){const L=S.waveLog||[],box=$("hoursBox");if(L.length<3){box.hidden=true;return}box.hidden=false;
+ const c=Array(24).fill(0);L.forEach(t=>c[new Date(t).getHours()]++);const mx=Math.max(...c),top=c.indexOf(mx);
+ $("hours").innerHTML=c.map((v,h)=>'<i class="'+(h===top?"top":"")+'" style="height:'+Math.max(3,Math.round(v/mx*44))+'px" title="'+h+':00"></i>').join("");
+ $("hoursText").textContent="Najčastejšie ťa to chytá okolo "+top+":00. Na ten čas si naplánuj niečo iné."}
+function waveTick(){if(!S.waveEnd)return;const r=Math.max(0,S.waveEnd-Date.now());$("waveTime").textContent=pad(Math.floor(r/6e4))+":"+pad(Math.floor(r/1e3)%60);
+ if(r>0){const L=reasonsList();if(L.length){const i=Math.floor((20*6e4-r)/8000)%L.length;if($("reason").dataset.i!==String(i)){$("reason").dataset.i=i;$("reason").textContent=L[i]}}
+  const j=Math.floor((20*6e4-r)/30000)%DONOW.length;if($("doNow").dataset.i!==String(j)){$("doNow").dataset.i=j;$("doNow").textContent=DONOW[j]}}
+ if(r===0){S.waveEnd=0;S.waves++;save();waveUI();$("waveTime").textContent="20:00";$("waveText").textContent="Prešlo to. Vlna je dole.";toast("Vlna porazená. +25 XP");rain(mainScene,4);tick()}}
+function startWave(){if(!waveOn()){S.waveLog=(S.waveLog||[]).concat(Date.now()).slice(-300)}S.waveEnd=Date.now()+20*6e4;save();$("reason").dataset.i="";$("doNow").dataset.i="";waveUI();waveTick();renderHours()}
+$("waveBtn").addEventListener("click",startWave);
+$("fab").addEventListener("click",()=>{if(!waveOn())startWave();$("waveCard").scrollIntoView({block:"center",behavior:REDUCED?"auto":"smooth"})});
+function fill(){$("start").value=S.start;$("perDay").value=S.per;$("goalNameIn").value=S.goalName;$("goalIn").value=S.goal;$("plantMode").value=S.plantMode||"cannabis";$("reasonsIn").value=ROOT.reasons!=null?ROOT.reasons:DEF_REASONS;$("nameIn").value=S.name;$("delCounter").disabled=ROOT.counters.length<2;$("code").value=widgetSrc();refreshBak()}
+$("save").addEventListener("click",()=>{const v=$("start").value;if(!v){$("saveMsg").textContent="Zadaj dátum a čas.";return}
+ S.start=v;S.per=Number($("perDay").value)||0;S.goalName=$("goalNameIn").value.trim()||"Cieľ";S.goal=Math.max(1,Number($("goalIn").value)||1);S.plantMode=$("plantMode").value;ROOT.reasons=$("reasonsIn").value;S.name=$("nameIn").value.trim()||S.name;
+ $("saveMsg").textContent=save()?"Uložené v tomto telefóne.":"Uložené len do zatvorenia stránky.";renderTabs();$("code").value=widgetSrc();tick()});
+let slipArmed=false;
+$("slip").addEventListener("click",()=>{if(!slipArmed){slipArmed=true;$("slip").textContent="Áno, začať novú sériu";$("slipMsg").textContent="Ťukni ešte raz na potvrdenie.";return}
+ const s=stats();S.prevMs+=s.curMs;S.resets++;(S.series=S.series||[]).push({a:S.start,b:nowLocal()});(S.slips=S.slips||[]).push(todayKey());const d=new Date();d.setMilliseconds(0);
+ S.start=d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())+"T"+pad(d.getHours())+":"+pad(d.getMinutes())+":"+pad(d.getSeconds());
+ save();fill();slipArmed=false;$("slip").textContent="Pošmykol som sa";$("slipMsg").textContent="Nová séria beží. Nič z toho, čo si zvládol, sa nezmazalo.";renderCal();tick()});
+let resetArmed=false;
+$("resetGame").addEventListener("click",()=>{if(!resetArmed){resetArmed=true;$("resetGame").textContent="Áno, vymazať";$("resetMsg").textContent="Ťukni ešte raz na potvrdenie.";return}
+ S.seen=null;S.eggSeen=[];eggQ=[];S.waves=0;S.waveEnd=0;S.waveLog=[];S.prevMs=0;S.resets=0;S.born=todayKey();S.series=[];S.slips=[];S.s72=[];$("startList").dataset.k="";$("badges").dataset.k="";save();$("eggs").innerHTML="";resetArmed=false;$("resetGame").textContent="Reštartovať hru";$("resetMsg").textContent="Hra je od nuly.";
+ $("waveTime").textContent="20:00";waveUI();renderHours();mainScene.key="";renderQuests();tick()});
+$("copy").addEventListener("click",()=>{const t=$("code");navigator.clipboard.writeText(t.value).then(()=>{$("copyMsg").textContent="Skopírované."}).catch(()=>{t.focus();t.select();$("copyMsg").textContent="Označil som text, skopíruj ho podržaním."})});
+const PLANTS=[["cannabis","Cannabis"],["kvet","Kvetina"],["slnecnica","Slnečnica"],["kaktus","Kaktus"]];
+function fillPlantSelect(sel){sel.innerHTML=PLANTS.map(p=>'<option value="'+p[0]+'">'+p[1]+'</option>').join("")}
+function widgetSrc(){return $("widgetTpl").textContent.replace("__START__",()=>S.start).replace("__PER__",()=>String(Number(S.per)||0)).replace("__ID__",()=>S.id).replace("__PLANT__",()=>S.plantMode||"cannabis").replace("__DRAW__",()=>drawPlantTo.toString())}
+function renderTabs(){const box=$("tabs");box.innerHTML="";
+ ROOT.counters.forEach(c=>{const b=document.createElement("button");b.type="button";b.className="tab"+(c.id===ROOT.active?" on":"");b.textContent=c.name;b.addEventListener("click",()=>{if(c.id!==ROOT.active)switchTo(c.id)});box.appendChild(b)});
+ const a=document.createElement("button");a.type="button";a.className="tab add";a.textContent="+";a.setAttribute("aria-label","Pridať počítadlo");a.addEventListener("click",openAdd);box.appendChild(a)}
+function switchTo(id){const c=ROOT.counters.find(x=>x.id===id);if(!c)return;ROOT.active=id;S=c;save();
+ $("eggs").innerHTML="";eggQ=[];prevWatered=null;mainScene.key="";$("reason").dataset.i="";$("doNow").dataset.i="";$("startList").dataset.k="";$("badges").dataset.k="";calY=null;
+ renderTabs();fill();renderQuests();waveUI();waveTick();renderHours();tick();window.scrollTo(0,0)}
+function nowLocal(){const d=new Date();return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())+"T"+pad(d.getHours())+":"+pad(d.getMinutes())+":"+pad(d.getSeconds())}
+function openAdd(){$("addName").value="Alkohol";$("addPlant").value="kvet";$("addStart").value=nowLocal();$("addPer").value=0;$("addModal").hidden=false;$("addName").focus()}
+$("addCancel").addEventListener("click",()=>{$("addModal").hidden=true});
+$("addOk").addEventListener("click",()=>{const name=$("addName").value.trim();if(!name){$("addName").focus();return}
+ const c=newCounter({name,plantMode:$("addPlant").value,start:$("addStart").value||nowLocal(),per:Number($("addPer").value)||0,goalName:"Cieľ",goal:1000});
+ c.log=ROOT.log;ROOT.counters.push(c);
+ const prev=S;S=c;const st=stats();EGGS.forEach(e=>{if(e.k!=="n"&&eggOk(e,st))c.eggSeen.push(e.id)});S=prev;
+ $("addModal").hidden=true;switchTo(c.id);toast("Pridané: "+name)});
+let delArmed=false;
+$("delCounter").addEventListener("click",()=>{if(ROOT.counters.length<2)return;
+ if(!delArmed){delArmed=true;$("delCounter").textContent="Áno, odstrániť "+S.name;setTimeout(()=>{delArmed=false;$("delCounter").textContent="Odstrániť toto počítadlo"},4000);return}
+ const id=S.id;ROOT.counters=ROOT.counters.filter(c=>c.id!==id);delArmed=false;$("delCounter").textContent="Odstrániť toto počítadlo";switchTo(ROOT.counters[0].id)});
+
+/* ---------- kalendár ---------- */
+let calY=null,calM=0;
+function cleanRanges(){const r=(S.series||[]).map(x=>[x.a.slice(0,10),x.b.slice(0,10)]);r.push([S.start.slice(0,10),todayKey()]);return r}
+function renderCal(){
+ const now=new Date();if(calY===null){calY=now.getFullYear();calM=now.getMonth()}
+ const first=new Date(calY,calM,1),off=(first.getDay()+6)%7,dim=new Date(calY,calM+1,0).getDate(),tk=todayKey(),rg=cleanRanges(),slips=S.slips||[];
+ let h=["Po","Ut","St","Št","Pi","So","Ne"].map(d=>'<i class="dow">'+d+'</i>').join(""),clean=0,full=0;
+ for(let i=0;i<off;i++)h+="<i></i>";
+ for(let d=1;d<=dim;d++){const k=calY+"-"+pad(calM+1)+"-"+pad(d),fut=k>tk,ok=!fut&&rg.some(([a,b])=>k>=a&&k<=b),lg=S.log[k],fl=ok&&lg&&lg.length&&lg.every(Boolean);
+  if(ok)clean++;if(fl)full++;
+  h+='<i class="'+(ok?"ok ":"")+(fl?"full ":"")+(k===tk?"today ":"")+(slips.includes(k)?"slip ":"")+(fut?"fut":"")+'" title="'+k+'">'+d+"</i>"}
+ $("cal").innerHTML=h;
+ $("calTitle").textContent=first.toLocaleDateString("sk-SK",{month:"long",year:"numeric"});
+ $("calNext").disabled=calY===now.getFullYear()&&calM===now.getMonth();
+ $("calNote").textContent="Čistých dní v mesiaci: "+clean+" · plných questových dní: "+full+(slips.length?" · oranžový rám je pošmyknutie, séria po ňom pokračuje":"")}
+$("calPrev").addEventListener("click",()=>{calM--;if(calM<0){calM=11;calY--}renderCal()});
+$("calNext").addEventListener("click",()=>{calM++;if(calM>11){calM=0;calY++}renderCal()});
+
+/* ---------- štartovací checklist ---------- */
+const START72=[p=>"Zjedz poriadne jedlo a maj doma zásoby aspoň na 2 dni",p=>"Vyhoď zvyšky a všetko, čo k tomu patrí",p=>p.per>0?"Preveď dnešných "+p.per+" € bokom, na iný účet":"Daj peniaze bokom, na iný účet",p=>"Zníž si denný limit na karte",p=>"Naplánuj si dnešný večer: film, hra, cvičenie. Večer býva najťažší"];
+function renderStart(s){s=s||stats();const box=$("startList"),dn=S.s72||[];
+ const key=S.id+"|"+START72.map((_,i)=>dn[i]?1:0).join("")+"|"+S.per;
+ if(box.dataset.k!==key){box.dataset.k=key;box.innerHTML="";
+  START72.forEach((f,i)=>{const l=document.createElement("label");l.className="q"+(dn[i]?" done":"");l.style.marginTop="0";
+   l.innerHTML='<input type="checkbox"'+(dn[i]?" checked":"")+"><span></span>";l.querySelector("span").textContent=f(S);
+   l.querySelector("input").addEventListener("change",e=>{const a=(S.s72=S.s72||[]);a[i]=e.target.checked;save();if(e.target.checked)toast("+5 XP");tick()});
+   box.appendChild(l)})}
+ $("startCard").hidden=!(s.curDays<7);
+ $("startNote").textContent=START72.every((_,i)=>dn[i])?"Hotovo. Toto je dobrý základ.":""}
+
+/* ---------- záloha ---------- */
+function refreshBak(){$("bak").value=JSON.stringify(exportObj())}
+$("bakBox").addEventListener("toggle",refreshBak);
+$("bakCopy").addEventListener("click",()=>{refreshBak();const t=$("bak");navigator.clipboard.writeText(t.value).then(()=>{$("bakMsg").textContent="Skopírované. Ulož si to."}).catch(()=>{t.focus();t.select();$("bakMsg").textContent="Označil som text, skopíruj ho podržaním."})});
+let bakArmed=false;
+$("bakIn").addEventListener("input",()=>{bakArmed=false;$("bakRestore").textContent="Obnoviť"});
+$("bakRestore").addEventListener("click",()=>{const txt=$("bakIn").value.trim();let o=null;try{o=JSON.parse(txt)}catch(e){}
+ if(!o||!Array.isArray(o.counters)||!o.counters.length||!o.counters.every(c=>c&&typeof c.start==="string")){$("restoreMsg").textContent="Toto nevyzerá ako záloha.";return}
+ if(!bakArmed){bakArmed=true;$("bakRestore").textContent="Áno, prepísať";$("restoreMsg").textContent="Ťukni ešte raz. Terajšie dáta sa prepíšu.";return}
+ try{localStorage.setItem("ts",txt)}catch(e){$("restoreMsg").textContent="Nepodarilo sa uložiť.";return}
+ const R=load();ROOT.counters=R.counters;ROOT.active=R.active;ROOT.font=R.font;ROOT.reasons=R.reasons;ROOT.log=R.log;S=ROOT.counters.find(c=>c.id===ROOT.active);
+ applyFont(ROOT.font||"bricolage");bakArmed=false;$("bakRestore").textContent="Obnoviť";$("bakIn").value="";switchTo(ROOT.active);$("restoreMsg").textContent="Obnovené.";toast("Záloha obnovená")});
+const FONTS=[
+ ["bricolage","Bricolage",'"Bricolage Grotesque",system-ui,sans-serif',1],
+ ["press","Press Start",'"Press Start 2P",ui-monospace,monospace',.55],
+ ["vt323","VT323",'"VT323",ui-monospace,monospace',1.35],
+ ["silk","Silkscreen",'"Silkscreen",ui-monospace,monospace',.8],
+ ["bebas","Bebas Neue",'"Bebas Neue",Impact,sans-serif',1.3],
+ ["orbitron","Orbitron",'"Orbitron",system-ui,sans-serif',.8],
+ ["rubik","Rubik Mono",'"Rubik Mono One",system-ui,sans-serif',.7],
+ ["major","Major Mono",'"Major Mono Display",ui-monospace,monospace',.75],
+ ["bungee","Bungee",'"Bungee",Impact,sans-serif',.75],
+ ["plex","Plex Mono",'"IBM Plex Mono",ui-monospace,monospace',.9]];
+function applyFont(id){const f=FONTS.find(x=>x[0]===id)||FONTS[0];const r=document.documentElement.style;r.setProperty("--num",f[2]);r.setProperty("--numScale",f[3]);
+ document.querySelectorAll(".fopt").forEach(b=>b.classList.toggle("on",b.dataset.id===f[0]))}
+const fbox=$("fonts");
+FONTS.forEach(([id,name,fam,sc])=>{const b=document.createElement("button");b.type="button";b.className="fopt";b.dataset.id=id;b.style.fontFamily=fam;b.setAttribute("aria-label","Písmo "+name);
+ b.innerHTML='<span class="fd" style="font-size:'+Math.round(46*sc)+'px;font-weight:800">128</span><span class="fc" style="font-size:'+Math.round(15*sc)+'px">07:19:33</span><span class="fn">'+name+'</span>';
+ b.addEventListener("click",()=>{ROOT.font=id;save();applyFont(id)});fbox.appendChild(b)});
+applyFont(ROOT.font||"bricolage");
+fillPlantSelect($("plantMode"));fillPlantSelect($("addPlant"));renderTabs();fill();renderQuests();tick();waveUI();waveTick();renderHours();startScenes();
+let lastDay=todayKey();
+setInterval(()=>{waveTick();if(todayKey()!==lastDay){lastDay=todayKey();renderQuests()}tick()},1000);
+</script>
+</body>
+</html>

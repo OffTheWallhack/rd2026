@@ -445,6 +445,14 @@ main{padding-bottom:calc(var(--dockh,112px) + 28px)!important}
 .f1more summary{cursor:pointer;margin:2px 0 6px}
 .f1flag{width:22px;height:16px;flex:none;border-radius:2px;background:repeating-conic-gradient(#fff 0 25%,#111 0 50%) 0 0/8px 8px}
 .hcard.f1 .f1h{display:grid;gap:4px}.hcard.f1 .f1h b{font:800 22px/1.05 var(--display);text-transform:uppercase}.hcard.f1 .f1h span{font:600 12px var(--mono);color:var(--dim)}
+.credits{display:grid;gap:12px}
+.dailyc{display:flex;justify-content:space-between;align-items:center;gap:10px;background:color-mix(in srgb,var(--gold) 12%,var(--bg));border:1px solid var(--gold);border-radius:10px;padding:12px}
+.dailyc div{display:grid;gap:2px}.dailyc.done{border-color:var(--line);background:var(--bg)}
+.okc{color:var(--win);font-weight:700}
+.tasks{display:grid;gap:6px}
+.task{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.task.done{opacity:.6}.task .btn{min-width:84px}
+.btn.dot{position:relative}.btn.dot::after{content:"";position:absolute;right:-3px;top:-3px;width:9px;height:9px;border-radius:50%;background:var(--win);box-shadow:0 0 0 2px var(--panel)}
 @media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important}}
 </style>
 
@@ -532,7 +540,7 @@ main{padding-bottom:calc(var(--dockh,112px) + 28px)!important}
   </section>
 
   <section id="v-lounge" hidden>
-    <div class="lhead"><div><h2>Lounge</h2><p class="sub" style="margin:0">Tvoje tímy, Liga majstrov a repre. Tipuj jeden zápas alebo poskladaj tiket z viacerých. Kurzy sú odhad.</p></div>
+    <div class="lhead"><div><h2>Lounge</h2><p class="sub" style="margin:0">Každý deň 3 vybrané zápasy: tvoje tímy, Liga majstrov, repre a F1. Tipuj jeden alebo poskladaj tiket. Kurzy sú odhad, výsledky sa dopĺňajú každé ráno.</p></div>
       <div class="seg" id="lseg"><button data-ls="matches" class="on">Zápasy</button><button data-ls="bets">Moje tikety</button><button data-ls="results">Výsledky</button></div></div>
     <div id="lfav" class="favrow"></div>
     <div id="lbody"></div>
@@ -545,8 +553,7 @@ main{padding-bottom:calc(var(--dockh,112px) + 28px)!important}
   <div class="wrap dtop">
     <button class="me" id="mebtn" aria-label="Upraviť profil"><span id="meav" class="avimg"></span><span id="mename">Rob</span></button>
     <div class="bal" title="Kredity – hracie peniaze bez reálnej hodnoty"><span id="bal">0,00</span> CR</div>
-    <button class="btn sm gold" id="daily">Denné</button>
-    <button class="btn sm" id="free100">+100</button>
+    <button class="btn sm gold" id="daily">Kredity</button>
     <button class="btn sm ghost icon" id="mute" aria-label="Zvuk"></button>
   </div>
   <div class="wrap tabs" id="tabs">
@@ -631,9 +638,8 @@ function save(){S.ts=Date.now(); try{localStorage.setItem('caselounge',JSON.stri
   $('#bal').textContent=fmt(S.bal); dailyBtn();}
 function addBal(x){S.bal=Math.round((S.bal+x)*100)/100}
 function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(t._t);t._t=setTimeout(()=>t.hidden=true,2600)}
-function dailyBtn(){const b=$('#daily'); const ok=S.daily!==today(); b.disabled=!ok; b.textContent=ok?'Denné':'✓';b.title=ok?'Denný bonus +100 CR':'Denný bonus vybraný'}
-$('#free100').onclick=()=>{addBal(100);save();toast('+100 CR pridaných');beep(880,.08,.04,'triangle')};
-$('#daily').onclick=()=>{if(S.daily===today())return; S.daily=today(); addBal(DAILY); save(); toast('+100 CR pripísaných'); sfx.win()};
+function dailyBtn(){const b=$('#daily'); const ok=S.daily!==today(); b.disabled=!ok; b.disabled=false;b.textContent='Kredity';b.classList.toggle('gold',ok);b.classList.toggle('dot',ok||earnT().done.length<TASKS.length);b.title='Denný bonus a kredity za zdravé veci'}
+$('#daily').onclick=()=>openCredits();
 
 /* ---------- sound ---------- */
 let AC=null, muted=false; try{muted=localStorage.getItem('cl_mute')==='1'}catch(e){}
@@ -1144,6 +1150,28 @@ $('#mebtn').onclick=()=>{
    $('#psave').onclick=()=>{P.name=($('#pname').value||'Rob').trim().slice(0,18);P.av=pick;save();renderMe();$('#modal').innerHTML='';toast('Profil uložený');JP.dirty=true}};
   draw();
 };
+
+/* ---------- credits: daily bonus + healthy tasks ---------- */
+const TASKS=[['squat','20 drepov',20,0],['push','15 klikov (aj z kolien)',20,0],['plank','Plank 1 minúta',20,60],['walk','Prechádzka vonku aspoň 20 minút',25,0],['water','Veľký pohár vody',5,0],['read','10 minút čítania',15,0],['tidy','10 minút upratovania',15,0],['breath','Pokojné dýchanie 3 minúty',15,180],['stretch','Strečing 5 minút',15,300]];
+const TASKMAX=TASKS.reduce((a,t)=>a+t[2],0);
+function earnT(){const d=today();if(!S.earn||S.earn.d!==d)S.earn={d,done:[],cr:0};return S.earn}
+let taskTimer=null;
+function openCredits(){
+  const E=earnT();const claimed=S.daily===today();
+  $('#modal').innerHTML=`<div class="modal"><div class="credits"><div class="mhead"><h2 style="font-size:24px">Kredity na dnes</h2><button class="btn sm ghost" id="cx">Zavrieť</button></div>
+   <div class="dailyc${claimed?' done':''}"><div><b>Denný bonus</b><span class="lab">každý deň 100 CR</span></div>${claimed?'<span class="okc">✓ vybraný</span>':'<button class="btn gold" id="cdaily">Vybrať +100 CR</button>'}</div>
+   <div><b>Sprav niečo dobré pre seba</b><p class="sub" style="margin:2px 0 0">Každá vec raz za deň. Dnes zarobené <b class="money">${fmt(E.cr)} / ${TASKMAX} CR</b></p></div>
+   <div class="tasks">${TASKS.map(([id,n,cr,sec])=>{const done=E.done.includes(id);return `<div class="task${done?' done':''}"><span>${esc(n)}</span><span class="money">+${cr}</span>${done?'<span class="okc">✓</span>':`<button class="btn sm" data-task="${id}">${sec?'Spustiť '+Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0'):'Hotovo'}</button>`}</div>`}).join('')}</div>
+   <p class="lab" style="margin:0">Keď minieš kredity, môžeš predať skiny v Inventári alebo počkať na zajtrajší bonus.</p></div></div>`;
+  $('#cx').onclick=()=>{clearInterval(taskTimer);taskTimer=null;$('#modal').innerHTML=''};
+  const cd=$('#cdaily');if(cd)cd.onclick=()=>{S.daily=today();addBal(DAILY);save();chime(2);toast('+100 CR');openCredits()};
+  document.querySelectorAll('[data-task]').forEach(b=>b.onclick=()=>{
+    const t=TASKS.find(x=>x[0]===b.dataset.task);const award=()=>{const E2=earnT();if(E2.done.includes(t[0]))return;E2.done.push(t[0]);E2.cr+=t[2];addBal(t[2]);save();chime(3);toast(`+${t[2]} CR · ${t[1]}`);openCredits()};
+    if(!t[3]){award();return}
+    if(taskTimer)return;let left=t[3];b.disabled=true;b.classList.add('on');
+    taskTimer=setInterval(()=>{left--;b.textContent=Math.floor(left/60)+':'+String(left%60).padStart(2,'0');if(left<=3&&left>0)beep(900,.05,.04);if(left<=0){clearInterval(taskTimer);taskTimer=null;award()}},1000);
+  });
+}
 
 /* ---------- item picker modal ---------- */
 function pickItems(title,cb,max=20,pre){

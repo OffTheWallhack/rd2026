@@ -21,17 +21,15 @@
 <link rel="stylesheet" href="/assets/common.css">
 <link rel="stylesheet" href="/appky/robos.css">
 <style>
-:root { --pulse: #F5F5F2; --pulse-ink: #F5F5F2; --pulse-text: #161616; --c2: #F5F5F2; }
 body { background: #111211; color: #EDEDE8; }
 .label { color: #A3A39B; }
 .bar { background: color-mix(in srgb, #111211 86%, transparent); border-bottom-color: #2C2D2A; }
 .cust-btn, .lang, .aisi { border-color: #2C2D2A; color: #A3A39B; }
 .lang .on, .aisi .on { color: #fff; }
 .bar .btn-dark { background: #fff; color: #111211; border-color: #fff; }
-.bar .btn-dark:hover { background: var(--pulse); border-color: var(--pulse); color: var(--pulse-text); }
+.bar .btn-dark:hover { background: var(--pulse); border-color: var(--pulse); color: #0B1A12; }
 .btn { border-color: #EDEDE8; color: #EDEDE8; }
 .btn:hover { background: #EDEDE8; color: #111211; }
-.btn-green { color: #111211; }
 .foot { border-top-color: #2C2D2A; color: #A3A39B; }
 
 .lost { padding-top: clamp(2rem, 6vw, 3.5rem); padding-bottom: clamp(3rem, 8vw, 5rem); }
@@ -69,7 +67,7 @@ body { background: #111211; color: #EDEDE8; }
   <div class="hud"><span><span data-en="Score">Skóre</span> <b id="sc">0</b></span><span><span data-en="Best">Najlepšie</span> <b id="hi">0</b></span></div>
 
   <div class="actions">
-    <a class="btn btn-green plain" href="/" data-en="Back to services">Späť na služby</a>
+    <a class="btn btn-green" href="/" data-en="Back to services">Späť na služby</a>
     <a class="btn" href="/kto-som/" data-en="Who I am">Kto som</a>
     <a class="btn" href="/#hovor" data-en="Free 15-min call">15 min hovor zadarmo</a>
   </div>
@@ -125,7 +123,6 @@ body { background: #111211; color: #EDEDE8; }
     if (state !== "run") { reset(); state = "run"; return; }
     if (y <= 0.01) vy = 15.5;
   }
-  var ACC = RD.accent();
   function px(c, r, s, color) { ctx.fillStyle = color; ctx.fillText(s, c * cw + cw / 2, r * ch + ch / 2); }
   function text(r, s, color) { var c0 = Math.floor((cols - s.length) / 2); for (var i = 0; i < s.length; i++) px(c0 + i, r, s[i], color); }
 
@@ -137,7 +134,7 @@ body { background: #111211; color: #EDEDE8; }
     deco.forEach(function (d) { px(Math.floor(d.x), d.r, d.c, "rgba(237,237,232,.18)"); });
     // ground
     var off = Math.floor(dist) % 4;
-    for (var c = 0; c < cols; c++) { px(c, ground + 1, "=", "rgba(237,237,232,.35)"); if ((c + off) % 4 === 0) px(c, ground + 1, "_", ACC); }
+    for (var c = 0; c < cols; c++) { px(c, ground + 1, "=", "rgba(237,237,232,.35)"); if ((c + off) % 4 === 0) px(c, ground + 1, "_", "rgba(31,175,111,.5)"); }
     // obstacles
     (obs || []).forEach(function (o) {
       var h = o.rows.length;
@@ -145,7 +142,7 @@ body { background: #111211; color: #EDEDE8; }
     });
     // skater
     var sp = y > 0.3 ? AIR : ROLL, top = ground - sp.length + 1 - Math.round(y);
-    sp.forEach(function (line, i) { for (var k = 0; k < line.length; k++) if (line[k] !== " ") px(PX + k, top + i, line[k], i === 3 ? "#E9F06A" : ACC); });
+    sp.forEach(function (line, i) { for (var k = 0; k < line.length; k++) if (line[k] !== " ") px(PX + k, top + i, line[k], i === 3 ? "#E9F06A" : "#1FAF6F"); });
     var m = MSG[RD.lang];
     if (state === "ready") text(Math.max(1, Math.floor(ground / 2) - 1), m.start, "#EDEDE8");
     if (state === "over") {

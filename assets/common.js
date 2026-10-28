@@ -10,11 +10,6 @@
   var RD = window.RD = {
     lang: "sk",
     still: still,
-    // the accent as the page's CSS defines it (black on light pages, light on dark ones), so canvases match the page
-    accent: function (fallback) {
-      var v = getComputedStyle(document.documentElement).getPropertyValue("--pulse").trim();
-      return v || fallback || "#161616";
-    },
     waHref: function (extra, base) {
       var txt = base ? base[RD.lang] : WA_TEXT[RD.lang];
       return "https://wa.me/" + WA + "?text=" + encodeURIComponent(txt + (extra || ""));

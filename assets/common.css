@@ -5,15 +5,8 @@
   --ink: #161616;
   --muted: #5C5C55;
   --line: #DCDCD4;
-  /* accent: black and white. The only colour on the site is green, and only for "online" and WhatsApp. */
-  --pulse: #161616;
-  --pulse-ink: #161616;
-  --pulse-text: #F5F5F2;
-  --c1: #161616; --c2: #5C5C55; --c3: #161616; --c4: #ECECE7;
-  --green: #25D366;
-  --green-ink: #128C7E;
-  --wa: var(--green);
-  --wa-ink: var(--green-ink);
+  --pulse: #1FAF6F;
+  --pulse-ink: #0F7A4A;
   --night: #121312;
   --night-2: #1C1D1B;
   --night-text: #EDEDE8;
@@ -24,12 +17,6 @@
   --wrap: 72rem;
   --pad: clamp(1.25rem, 5vw, 3rem);
   --r: 6px;
-}
-
-/* on dark surfaces the accent flips to light, so the same tokens work everywhere */
-.steps-dark, .door, .card-b, .qw-card, .eyebar, .latest-post:nth-child(3n+2), .post-list li:nth-child(3n+2), .mp:nth-child(3n+2),
-.prose .stats li.dark, .prose .feat .ic, .prose .flow li, .prose .tl li.go, .prose .src .chip.hub, .prose .ba-col.after, .prose .cmp thead th, .ub-1, .ub-3, .dl-nl, .dwin-bar {
-  --pulse: #F5F5F2; --pulse-ink: #F5F5F2; --pulse-text: #161616; --c1: #F5F5F2; --c2: #F5F5F2; --c3: #F5F5F2; --c4: #2C2D2A;
 }
 *, *::before, *::after { box-sizing: border-box; }
 html { font-size: 87.5%; -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: calc(4.5rem + env(safe-area-inset-top, 0px)); }
@@ -49,7 +36,6 @@ a { color: inherit; text-underline-offset: .2em; }
 /* pulse dot */
 .dot { position: relative; display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--pulse); flex: none; }
 .dot::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: var(--pulse); opacity: .5; }
-.status .dot, .status .dot::after { background: var(--green); }
 @media (prefers-reduced-motion: no-preference) {
   .dot::after { animation: ping 2.4s ease-out infinite; }
   .status .dot { animation: blink 1.6s ease-in-out infinite; }
@@ -100,15 +86,12 @@ a { color: inherit; text-underline-offset: .2em; }
 .btn-dark { background: var(--ink); color: var(--bg); }
 .btn-dark:hover { background: var(--pulse-ink); border-color: var(--pulse-ink); color: #fff; }
 .btn-sm { white-space: nowrap; min-height: 40px; padding: 0 .9rem; font-size: .9rem; }
-.btn-green { background: var(--pulse); border-color: var(--pulse); color: var(--pulse-text); font-weight: 600; }
-.btn-green:hover { background: #fff; border-color: var(--ink); color: var(--ink); }
-/* anything that opens WhatsApp stays WhatsApp green, whatever the skin */
-.btn-green.wa:not(.plain), .btn-green.btn-wa, .btn-wa, #callWa { background: var(--wa); border-color: var(--wa); color: #0B1A12; }
-.btn-green.wa:not(.plain):hover, .btn-green.btn-wa:hover, .btn-wa:hover, #callWa:hover { background: var(--wa-ink); border-color: var(--wa-ink); color: #fff; }
+.btn-green { background: var(--pulse); border-color: var(--pulse); color: #0B1A12; font-weight: 600; }
+.btn-green:hover { background: #fff; border-color: #fff; color: #0B1A12; }
 .actions { display: flex; flex-wrap: wrap; gap: .75rem; }
 .chip { font: 500 .78rem var(--mono); border: 1px solid var(--line); border-radius: 999px; padding: .25rem .65rem; background: #fff; }
-.yt { display: inline-block; font: 600 .78rem var(--mono); color: var(--pulse-ink); text-decoration: none; border: 1px solid color-mix(in srgb, var(--pulse) 55%, transparent); border-radius: 999px; padding: .1rem .6rem; margin-left: .35rem; white-space: nowrap; }
-.yt:hover { background: var(--pulse); color: var(--pulse-text); }
+.yt { display: inline-block; font: 600 .78rem var(--mono); color: var(--pulse-ink); text-decoration: none; border: 1px solid rgba(31,175,111,.55); border-radius: 999px; padding: .1rem .6rem; margin-left: .35rem; white-space: nowrap; }
+.yt:hover { background: var(--pulse); color: #0B1A12; }
 
 /* scroll progress */
 .progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 40; background: var(--pulse); transform-origin: 0 50%; transform: scaleX(0); pointer-events: none; }
@@ -243,7 +226,7 @@ html.si .cust-pop .aisi .on { color: var(--pulse-ink); }
 .dd::before { content: ""; position: absolute; left: 0; right: 0; top: -.6rem; height: .6rem; }
 .nav-dd:hover .dd, .nav-dd:focus-within .dd { opacity: 1; visibility: visible; }
 .dd a { display: grid; padding: .55rem .7rem; border-radius: 8px; text-decoration: none; }
-.dd a:hover, .dd a:focus-visible { background: #EFEFEA; }
+.dd a:hover, .dd a:focus-visible { background: #EAF7EF; }
 .dd b { font-size: .95rem; }
 .dd span { font: .74rem var(--mono); color: var(--muted); }
 /* phones: links move to an app-style bar pinned to the bottom of the screen */
@@ -254,7 +237,7 @@ html.si .cust-pop .aisi .on { color: var(--pulse-ink); }
   .tabbar { position: fixed; z-index: 50; left: .6rem; right: .6rem; bottom: calc(.6rem + env(safe-area-inset-bottom, 0px)); display: grid; grid-template-columns: repeat(4, 1fr); padding: .3rem; border-radius: 18px; background: rgba(22,22,22,.94); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: 0 0 0 1px rgba(255,255,255,.08) inset, 0 14px 34px rgba(0,0,0,.3); }
   .tabbar a { display: grid; justify-items: center; gap: .15rem; padding: .45rem .2rem .4rem; border-radius: 13px; color: #B9B9B0; text-decoration: none; font: 500 .68rem var(--f); }
   .tabbar svg { width: 22px; height: 22px; }
-  .tabbar a[aria-current="page"] { color: var(--ink); background: var(--bg); }
+  .tabbar a[aria-current="page"] { color: #0B1A12; background: var(--pulse); }
   html.has-tabbar body { padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px)); }
   .aisi-toast { bottom: calc(5.4rem + env(safe-area-inset-bottom, 0px)); }
 }
@@ -270,20 +253,18 @@ html.si .cust-pop .aisi .on { color: var(--pulse-ink); }
 .dl-soon { min-height: 5rem; border: 1.5px dashed var(--line); border-radius: 14px; display: flex; align-items: center; justify-content: center; gap: .6rem; font: 500 .8rem var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
 @media (min-width: 48rem) { .dl-card { grid-template-columns: 9.5rem 1fr; } .dl-soon { align-self: stretch; } }
 .dl-all { text-decoration: none; color: var(--ink); border-color: var(--ink); }
-.dl-all:hover { border-style: solid; background: #EFEFEA; }
+.dl-all:hover { border-style: solid; background: #EAF7EF; }
 
 /* header brand: my monogram instead of the green dot */
-.brand .dot { width: 2.15rem; height: 2.15rem; border-radius: .6rem; background: #161616; box-shadow: 0 0 0 1px rgba(0,0,0,.12), 0 3px 8px rgba(0,0,0,.18); overflow: hidden; }
+.brand .dot { width: 2.15rem; height: 2.15rem; border-radius: .6rem; background: #161616 url("../img/icons/mark.webp?v=2") center / cover no-repeat; box-shadow: 0 0 0 1px rgba(0,0,0,.12), 0 3px 8px rgba(0,0,0,.18); }
 .brand .dot::after { display: none; }
-/* the R is a mask: light on dark */
-.brand .dot::before { content: ""; position: absolute; inset: 0; background: var(--bg); -webkit-mask: url("../img/icons/mark-mask.svg") center / 100% 100% no-repeat; mask: url("../img/icons/mark-mask.svg") center / 100% 100% no-repeat; }
 .brand { gap: .65rem; }
 @media (max-width: 26rem) { .brand .dot { width: 1.85rem; height: 1.85rem; } }
 /* cards on the home page: text first, picture under it, alternating white / black / green */
 .latest-post { grid-template-columns: 1fr !important; align-content: space-between; }
 .latest-post .lp-txt { order: 0; } .latest-post .lp-img { order: 1; }
-.latest-post:nth-child(3n+2) { background: #161616; color: #F5F5F2; } .latest-post:nth-child(3n+2) b { color: #fff; } .latest-post:nth-child(3n+2) .lp-lead { color: #B9B9B0; } .latest-post:nth-child(3n+2) .label { color: var(--c2); }
-.latest-post:nth-child(3n+3) { background: var(--bg-2); }
+.latest-post:nth-child(3n+2) { background: #161616; color: #F5F5F2; } .latest-post:nth-child(3n+2) b { color: #fff; } .latest-post:nth-child(3n+2) .lp-lead { color: #B9B9B0; } .latest-post:nth-child(3n+2) .label { color: #3BE08F; }
+.latest-post:nth-child(3n+3) { background: linear-gradient(135deg, #22C27B, #1FAF6F); } .latest-post:nth-child(3n+3) b, .latest-post:nth-child(3n+3) .lp-lead, .latest-post:nth-child(3n+3) .label { color: #0B1A12; }
 
 /* language: two flags in the header. The active language is faded, the other one lights up. */
 .lang.flags { display: flex; align-items: center; gap: .45rem; border: 0; padding: 0; height: auto; background: none; }

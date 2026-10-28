@@ -43,7 +43,7 @@
 .dl-act { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .9rem; }
 .dl-art { font: 500 .9rem var(--mono); color: var(--pulse-ink); }
 .dls-note { max-width: 44rem; color: var(--muted); font-size: .95rem; padding-bottom: 1rem; }
-.dls-cta { margin: 1.5rem 0 clamp(3rem, 8vw, 5rem); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.4rem 1.5rem; border-radius: 16px; background: linear-gradient(135deg, var(--c2), var(--pulse) 55%, var(--pulse-ink)); color: var(--pulse-text); box-shadow: 5px 5px 0 var(--ink); }
+.dls-cta { margin: 1.5rem 0 clamp(3rem, 8vw, 5rem); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.4rem 1.5rem; border-radius: 16px; background: linear-gradient(135deg, #22C27B, #1FAF6F 55%, #179A5F); color: #0B1A12; box-shadow: 5px 5px 0 var(--ink); }
 .dls-cta b { font-size: 1.25rem; display: block; }
 .dls-cta p { margin: .2rem 0 0; }
 @media (max-width: 30rem) { .dl { grid-template-columns: 5.6rem 1fr; gap: .8rem; padding: .9rem; } .dl-act .btn { padding-left: .9rem; padding-right: .9rem; } }
@@ -52,18 +52,18 @@
 html.js .desk { display: grid; grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr)); gap: 1.4rem .8rem; padding: clamp(1.4rem, 4vw, 2.4rem); margin: 2rem 0 1rem; border: 1.5px solid var(--ink); border-radius: 18px; box-shadow: 6px 6px 0 var(--pulse); background: radial-gradient(rgba(22,22,22,.1) 1px, transparent 1.3px) 0 0 / 14px 14px, #FBFBF8; }
 html.js .dls { display: none; }
 .dicon { display: grid; justify-items: center; gap: .55rem; padding: .6rem .3rem; background: none; border: 0; border-radius: 12px; cursor: pointer; color: var(--ink); font: 500 .88rem/1.25 var(--f); text-align: center; }
-.dicon:hover, .dicon:focus-visible { background: color-mix(in srgb, var(--pulse) 14%, transparent); outline: 0; }
+.dicon:hover, .dicon:focus-visible { background: rgba(31,175,111,.14); outline: 0; }
 .dicon:focus-visible { box-shadow: 0 0 0 2px var(--pulse); }
 .dicon .doc { position: relative; width: 4.6rem; height: 5.9rem; border-radius: 6px 20px 6px 6px; background: #fff; border: 1.5px solid var(--ink); box-shadow: 3px 3px 0 rgba(22,22,22,.18); overflow: hidden; transition: transform .25s cubic-bezier(.2,.8,.2,1); }
 .dicon:hover .doc { transform: translateY(-5px) rotate(-2deg); }
 .dicon .doc::before { content: ""; position: absolute; right: -1.5px; top: -1.5px; width: 1.4rem; height: 1.4rem; background: linear-gradient(225deg, #FBFBF8 50%, var(--ink) 50%); border-bottom-left-radius: 6px; }
 .dicon .doc img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; opacity: .96; }
-.dicon .doc em { position: absolute; left: 0; right: 0; bottom: 0; padding: .2rem 0; font: 700 .62rem var(--mono); font-style: normal; letter-spacing: .12em; background: var(--ink); color: var(--c2); }
+.dicon .doc em { position: absolute; left: 0; right: 0; bottom: 0; padding: .2rem 0; font: 700 .62rem var(--mono); font-style: normal; letter-spacing: .12em; background: var(--ink); color: #3BE08F; }
 .dicon small { display: block; font: .7rem var(--mono); color: var(--muted); }
 .dwin { width: min(34rem, calc(100% - 1.5rem)); padding: 0; border: 1.5px solid var(--ink); border-radius: 14px; background: #fff; color: var(--ink); box-shadow: 6px 6px 0 var(--pulse); overflow: hidden; }
 .dwin::backdrop { background: rgba(10,12,10,.5); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
 .dwin-bar { display: flex; align-items: center; gap: .45rem; padding: .6rem .8rem; background: #161616; color: #B9B9B0; font: .74rem var(--mono); }
-.dwin-bar i { width: 11px; height: 11px; border-radius: 50%; background: #4A4B47; } .dwin-bar i:nth-child(1) { background: #E5534B; cursor: pointer; } .dwin-bar i:nth-child(2) { background: #E2B33D; } .dwin-bar i:nth-child(3) { background: var(--pulse); }
+.dwin-bar i { width: 11px; height: 11px; border-radius: 50%; background: #4A4B47; } .dwin-bar i:nth-child(1) { background: #E5534B; cursor: pointer; } .dwin-bar i:nth-child(2) { background: #E2B33D; } .dwin-bar i:nth-child(3) { background: #1FAF6F; }
 .dwin-bar span { margin-left: .4rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .dwin-in { display: grid; grid-template-columns: 8rem 1fr; gap: 1.1rem; padding: 1.2rem; align-items: start; }
 @media (max-width: 30rem) { .dwin-in { grid-template-columns: 1fr; } .dwin-in .dwin-paper { max-width: 9rem; } }

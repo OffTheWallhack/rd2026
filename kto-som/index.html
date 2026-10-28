@@ -2,7 +2,7 @@
 <html lang="sk" data-title-en="Robert Ďurica – who I am">
 <head>
 <meta charset="utf-8">
-<script>document.documentElement.classList.add("js");document.documentElement.dataset.skin=["solar","ultra","neon","cherry","infra"][Math.random()*5|0]</script>
+<script>document.documentElement.classList.add("js")</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Robert Ďurica – kto som | eventy, live grafika, DJ a AI</title>
 <meta name="description" content="Živé CV Roberta Ďuricu z Bratislavy: Red Bull event car driver, CG operátor (ESL IEM Cologne, Drone Champions League, REPUBLEAGUE), dizajn od 2011, DJ a appky s AI. Príbeh s fotkami a CV na stiahnutie.">
@@ -34,7 +34,7 @@
 <link rel="stylesheet" href="../appky/robos.css">
 <style>
 /* "who I am": the live CV. Darker, wilder, more personal than the services page */
-:root { --k-bg: #111211; --k-2: #1A1B19; --k-line: #2C2D2A; --paper: #F3EFE4; --pen: #1d2a6b; --marker: #E9F06A; }
+:root { --pulse: #F5F5F2; --pulse-ink: #F5F5F2; --pulse-text: #161616; --c1: #F5F5F2; --c2: #F5F5F2; --c3: #F5F5F2; --c4: #2C2D2A; --k-bg: #111211; --k-2: #1A1B19; --k-line: #2C2D2A; --paper: #F3EFE4; --pen: #1d2a6b; --marker: #E9F06A; }
 body { background: var(--k-bg); color: var(--night-text); }
 main { overflow-x: clip; }
 body::before { content: ""; position: fixed; inset: 0; z-index: 50; pointer-events: none; opacity: .07; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
@@ -42,7 +42,7 @@ body::before { content: ""; position: fixed; inset: 0; z-index: 50; pointer-even
 h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.4rem); line-height: 1.04; letter-spacing: -.03em; margin: .6rem 0 .8rem; color: #fff; }
 .hand { font-family: var(--hand); font-weight: 700; }
 .nw { white-space: nowrap; }
-.mk { background: linear-gradient(transparent 55%, color-mix(in srgb, var(--pulse) 55%, transparent) 55%); padding: 0 .08em; }
+.mk { background: linear-gradient(transparent 55%, rgba(245,245,242,.22) 55%); padding: 0 .08em; }
 
 /* dark top bar */
 .bar { background: color-mix(in srgb, var(--k-bg) 86%, transparent); border-bottom-color: var(--k-line); }
@@ -337,8 +337,8 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.4rem); line-height: 1.04;
 
 /* same treatment as on the home page: eye band pinned to my face, dust around the sneakers, parallax layers */
 .k-eye { position: absolute; left: 27%; top: 4.9%; width: 41%; height: 2.5%; rotate: -4deg; display: flex; gap: 3%; z-index: 2; }
-.k-eye i { flex: 1; background: #0B0C0B; border-radius: 2px; position: relative; overflow: hidden; box-shadow: 0 0 0 1px rgba(31,191,98,.55); }
-.k-eye i::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, #1FBF62 0 2px, transparent 2px 5px); opacity: .75; animation: kEye 1.4s steps(6) infinite; }
+.k-eye i { flex: 1; background: #0B0C0B; border-radius: 2px; position: relative; overflow: hidden; box-shadow: 0 0 0 1px rgba(245,245,242,.45); }
+.k-eye i::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, #F5F5F2 0 2px, transparent 2px 5px); opacity: .75; animation: kEye 1.4s steps(6) infinite; }
 @keyframes kEye { to { transform: translateX(5px); } }
 .k-dirt { position: absolute; left: 6%; right: 6%; bottom: 0; height: 9%; pointer-events: none; }
 .k-dirt i { position: absolute; bottom: 4%; width: .5rem; height: .5rem; border-radius: 50%; background: rgba(168,150,124,.75); opacity: 0; animation: kDust 3.4s ease-out infinite; }
@@ -626,7 +626,7 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.4rem); line-height: 1.04;
       <p class="label">07 · DJing</p>
       <h2 id="dj-title">Drum &amp; bass, jungle, <span class="soft">hip hop, rap, techno.</span></h2>
       <p data-en="I DJ now and then, mostly on mobile stages in event cars. And I host, for example GOSko.">Občas hrám DJ sety, najčastejšie na mobilných stageoch v event autách. A moderujem, napríklad GOSko.</p>
-      <div class="actions"><a class="btn btn-green wa" href="#kontakt" data-wa-sk="DJ booking" data-wa-en="DJ booking" data-en="DJ booking on WhatsApp">DJ booking na WhatsApp</a><a class="btn" href="https://soundcloud.com/duriica" target="_blank" rel="noopener">SoundCloud →</a></div>
+      <div class="actions"><a class="btn btn-green wa plain" href="#kontakt" data-wa-sk="DJ booking" data-wa-en="DJ booking" data-en="DJ booking on WhatsApp">DJ booking na WhatsApp</a><a class="btn" href="https://soundcloud.com/duriica" target="_blank" rel="noopener">SoundCloud →</a></div>
       <div class="sc"><iframe title="SoundCloud: duriica" loading="lazy" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/duriica&amp;color=%231faf6f&amp;auto_play=false&amp;hide_related=true&amp;show_comments=false&amp;show_user=true&amp;show_reposts=false&amp;show_teaser=false"></iframe></div>
     </div>
     <div class="pols rv"><figure class="pol wide tape"><span class="ph"><img src="../img/dj-booth.webp" width="1100" height="733" loading="lazy" alt="Robert s kamarátom za DJ pultom v event aute" data-en-alt="Robert and a friend behind the DJ decks in an event car"></span><figcaption data-en="Behind the decks with Piry">Za pultom s Pirym</figcaption></figure><figure class="pol"><span class="ph"><img src="../img/dj-session.webp" width="675" height="900" loading="lazy" alt="Dvaja ľudia za DJ pultom v Red Bull priestore" data-en-alt="Two people behind the decks in a Red Bull space"></span><figcaption>DJ session</figcaption></figure></div>
@@ -642,7 +642,7 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.4rem); line-height: 1.04;
         <h2 id="w-title" data-en="I’m looking for people, not a job.">Nehľadám prácu. Hľadám ľudí.</h2>
         <p data-en="People and teams to make good things with, and to show what AI can do today. Events, small businesses, creatives, students. If you have an idea, write.">Ľudí a tímy, s ktorými budem robiť dobré veci a ukazovať im, čo dnes dokáže AI. Eventy, malé firmy, kreatívci, študenti. Ak máš nápad, napíš.</p>
         <div class="actions">
-          <a class="btn btn-green wa" href="#kontakt" data-wa-sk="spoluprácou" data-wa-en="working together" data-en="Message me">Napíš mi</a>
+          <a class="btn btn-green wa plain" href="#kontakt" data-wa-sk="spoluprácou" data-wa-en="working together" data-en="Message me">Napíš mi</a>
           <a class="btn" href="https://www.linkedin.com/in/durica" target="_blank" rel="noopener">LinkedIn →</a>
         </div>
       </div>

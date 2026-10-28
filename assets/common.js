@@ -10,10 +10,10 @@
   var RD = window.RD = {
     lang: "sk",
     still: still,
-    // the current skin's accent (set by the <head> script via data-skin, read from CSS so canvases follow the theme)
+    // the accent as the page's CSS defines it (black on light pages, light on dark ones), so canvases match the page
     accent: function (fallback) {
       var v = getComputedStyle(document.documentElement).getPropertyValue("--pulse").trim();
-      return v || fallback || "#FF5A1F";
+      return v || fallback || "#161616";
     },
     waHref: function (extra, base) {
       var txt = base ? base[RD.lang] : WA_TEXT[RD.lang];

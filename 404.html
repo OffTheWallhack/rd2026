@@ -2,7 +2,7 @@
 <html lang="sk" data-title-en="404 – Robert Ďurica">
 <head>
 <meta charset="utf-8">
-<script>document.documentElement.classList.add("js");document.documentElement.dataset.skin=["solar","ultra","neon","cherry","infra"][Math.random()*5|0]</script>
+<script>document.documentElement.classList.add("js")</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>404 – Robert Ďurica</title>
 <meta name="robots" content="noindex">
@@ -21,6 +21,7 @@
 <link rel="stylesheet" href="/assets/common.css">
 <link rel="stylesheet" href="/appky/robos.css">
 <style>
+:root { --pulse: #F5F5F2; --pulse-ink: #F5F5F2; --pulse-text: #161616; --c2: #F5F5F2; }
 body { background: #111211; color: #EDEDE8; }
 .label { color: #A3A39B; }
 .bar { background: color-mix(in srgb, #111211 86%, transparent); border-bottom-color: #2C2D2A; }
@@ -30,6 +31,7 @@ body { background: #111211; color: #EDEDE8; }
 .bar .btn-dark:hover { background: var(--pulse); border-color: var(--pulse); color: var(--pulse-text); }
 .btn { border-color: #EDEDE8; color: #EDEDE8; }
 .btn:hover { background: #EDEDE8; color: #111211; }
+.btn-green { color: #111211; }
 .foot { border-top-color: #2C2D2A; color: #A3A39B; }
 
 .lost { padding-top: clamp(2rem, 6vw, 3.5rem); padding-bottom: clamp(3rem, 8vw, 5rem); }
@@ -67,7 +69,7 @@ body { background: #111211; color: #EDEDE8; }
   <div class="hud"><span><span data-en="Score">Skóre</span> <b id="sc">0</b></span><span><span data-en="Best">Najlepšie</span> <b id="hi">0</b></span></div>
 
   <div class="actions">
-    <a class="btn btn-green" href="/" data-en="Back to services">Späť na služby</a>
+    <a class="btn btn-green plain" href="/" data-en="Back to services">Späť na služby</a>
     <a class="btn" href="/kto-som/" data-en="Who I am">Kto som</a>
     <a class="btn" href="/#hovor" data-en="Free 15-min call">15 min hovor zadarmo</a>
   </div>

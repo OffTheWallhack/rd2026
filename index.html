@@ -2,7 +2,7 @@
 <html lang="sk" data-title-en="Robert Ďurica – I’ll help you with AI">
 <head>
 <meta charset="utf-8">
-<script>document.documentElement.classList.add("js");document.documentElement.dataset.skin=["solar","ultra","neon","cherry","infra"][Math.random()*5|0]</script>
+<script>document.documentElement.classList.add("js")</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Robert Ďurica – pomoc s AI, automatizácia a kurz AI | Bratislava</title>
 <meta name="description" content="Bojíš sa umelej inteligencie? Chill, ja ti to vysvetlím. Pomoc s AI pre malé firmy, študentov a každého, kto sa v AI stratil: automatizácia, appky, chatboty a 3-hodinová session na tvojich dátach. Bratislava, 15 min hovor zadarmo.">
@@ -216,11 +216,11 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.2rem); line-height: 1.05;
 
 
 /* bonus */
-.care.bonus { position: relative; background: #F1FAF4; border: 1.5px dashed var(--pulse); margin-top: 1.5rem; }
+.care.bonus { position: relative; background: #F4F4F0; border: 1.5px dashed var(--pulse); margin-top: 1.5rem; }
 .bonus-tag { position: absolute; top: -.85rem; left: 1.25rem; background: var(--pulse); color: var(--pulse-text); font: 700 .75rem var(--mono); letter-spacing: .08em; padding: .3rem .65rem; border-radius: 999px; }
 .care.bonus .price-big { color: var(--pulse-ink); }
 
-.hl { background: linear-gradient(transparent 58%, color-mix(in srgb, var(--pulse) 45%, transparent) 58%); padding: 0 .1em; }
+.hl { background: linear-gradient(transparent 58%, var(--line) 58%); padding: 0 .1em; }
 
 /* skills accordion */
 .pn { font-weight: 700; }
@@ -259,26 +259,26 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.2rem); line-height: 1.05;
 .k-hand { background: #FFF8DF repeating-linear-gradient(180deg, transparent 0 15px, rgba(70,110,200,.28) 15px 16px); }
 .k-hand::after { content: ""; position: absolute; left: .75rem; top: 0; bottom: 0; width: 1.5px; background: rgba(220,80,80,.5); }
 .k-web { background-color: #fff; background-image: linear-gradient(#161616, #161616), radial-gradient(circle at .75rem 7px, #D62B3A 0 2px, transparent 2.5px), radial-gradient(circle at 1.4rem 7px, #E2B33D 0 2px, transparent 2.5px), radial-gradient(circle at 2.05rem 7px, var(--pulse) 0 2px, transparent 2.5px); background-size: 100% 14px, auto, auto, auto; background-repeat: no-repeat; padding-top: 1.1rem; }
-.k-sheet { background-color: #fff; background-image: linear-gradient(#1F7A45, #1F7A45), repeating-linear-gradient(90deg, transparent 0 46px, rgba(31,122,69,.22) 46px 47px), repeating-linear-gradient(180deg, transparent 0 15px, rgba(31,122,69,.18) 15px 16px); background-size: 100% 5px, auto, auto; background-repeat: no-repeat, repeat, repeat; }
+.k-sheet { background-color: #fff; background-image: linear-gradient(#3A3A36, #3A3A36), repeating-linear-gradient(90deg, transparent 0 46px, rgba(31,122,69,.22) 46px 47px), repeating-linear-gradient(180deg, transparent 0 15px, rgba(31,122,69,.18) 15px 16px); background-size: 100% 5px, auto, auto; background-repeat: no-repeat, repeat, repeat; }
 .k-subs { background-color: #ECECE6; background-image: repeating-linear-gradient(90deg, #2A2C29 0 10px, transparent 10px 18px), repeating-linear-gradient(90deg, #2A2C29 0 10px, transparent 10px 18px); background-size: 100% 6px; background-position: 0 3px, 0 calc(100% - 3px); background-repeat: no-repeat; }
-.k-subs .t { text-decoration: underline; text-decoration-color: #F2C230; text-decoration-thickness: .28em; text-underline-offset: -.05em; text-decoration-skip-ink: none; }
-.k-chat { background-color: #E3F0FF; }
+.k-subs .t { text-decoration: underline; text-decoration-color: #F5F5F2; text-decoration-thickness: .28em; text-underline-offset: -.05em; text-decoration-skip-ink: none; }
+.k-chat { background-color: #ECECE7; }
 .k-word { background-color: #fff; background-image: linear-gradient(#2B579A, #2B579A), repeating-linear-gradient(180deg, transparent 0 11px, rgba(43,87,154,.14) 11px 12px); background-size: 100% 5px, auto; background-repeat: no-repeat, repeat; }
 .prob .t { text-align: left; }
 .prob .deco { position: relative; z-index: 1; flex: none; margin-left: auto; font: 600 .74rem/1 var(--mono); padding: .32rem .5rem; border-radius: 6px; background: rgba(22,22,22,.07); color: #33332F; white-space: nowrap; }
 .k-web .deco { background: #161616; color: var(--c2); }
 .k-hand .deco { background: transparent; font-size: 1.3rem; padding: 0; color: #1d2a6b; }
-.k-subs .deco { background: #161616; color: #F2C230; letter-spacing: .02em; }
+.k-subs .deco { background: #161616; color: #F5F5F2; letter-spacing: .02em; }
 .k-chat .deco { background: #fff; color: var(--pulse-ink); padding-left: 1.05rem; position: relative; }
 .k-chat .deco::before { content: ""; position: absolute; left: .45rem; top: 50%; width: 6px; height: 6px; margin-top: -3px; border-radius: 50%; background: var(--pulse); box-shadow: 0 0 0 3px color-mix(in srgb, var(--pulse) 25%, transparent); animation: online 1.6s ease-in-out infinite; }
 @keyframes online { 50% { opacity: .35; } }
-.k-sheet .deco { background: #fff; color: #1F7A45; border: 2px solid #1F7A45; }
+.k-sheet .deco { background: #fff; color: #161616; border: 2px solid #161616; }
 .k-word .deco { background: #E8EEF9; color: #2B579A; }
 .picker, .probs, .probs li, .prob { min-width: 0; } .picker { grid-template-columns: minmax(0, 1fr); } @media (min-width: 56rem) { .picker { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
 @media (max-width: 24rem) { .prob .deco { font-size: .62rem; padding: .22rem .3rem; } .prob { gap: .55rem; padding-left: .8rem; } .k-hand .deco, .k-word .deco { display: none; } }
 .k-other { background: #F3F3EE radial-gradient(rgba(22,22,22,.18) 1.2px, transparent 1.5px) 0 0 / 10px 10px; }
 /* answer: on a phone it opens right under the tile, joined to it */
-.answer { background: #EAF7EF; border: 1.5px solid var(--pulse); border-radius: 12px; padding: clamp(1.25rem, 3.5vw, 2rem); }
+.answer { background: #EFEFEA; border: 1.5px solid var(--pulse); border-radius: 12px; padding: clamp(1.25rem, 3.5vw, 2rem); }
 .answer .label { display: flex; align-items: center; gap: .5rem; color: var(--pulse-ink); }
 .answer h3 { font-size: 1.5rem; line-height: 1.15; letter-spacing: -.02em; margin: .65rem 0; }
 .answer p { margin: 0 0 1.25rem; color: #33332F; }
@@ -321,7 +321,7 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.2rem); line-height: 1.05;
 .more summary i::before, .more summary i::after { content: ""; position: absolute; left: 50%; top: 50%; width: 10px; height: 2px; background: #fff; translate: -50% -50%; transition: rotate .25s; }
 .more summary i::after { rotate: 90deg; }
 .more[open] summary i::after { rotate: 0deg; }
-.card-a .more summary { color: var(--pulse-ink); } .card-b .more summary { color: #4A56D6; }
+.card-a .more summary { color: var(--pulse-ink); } .card-b .more summary { color: var(--pulse-ink); }
 .more-in { padding-top: .75rem; display: grid; gap: .75rem; }
 .more-in > ul { margin: 0; }
 .svc > .card { min-width: 0; }
@@ -349,13 +349,13 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.2rem); line-height: 1.05;
 .card-a::before { background: var(--pulse); }
 .card-a .label { color: var(--pulse-ink); }
 .card-a .price-big { color: var(--pulse-ink); }
-.card-b { background: #F1F2FF; border-color: rgba(110,123,255,.55); }
-.card-b::before { background: #6E7BFF; }
-.card-b .label { color: #4A56D6; }
-.card-b .price-big { color: #4A56D6; }
-.card-b li::before { background: #6E7BFF; }
-.btn-indigo { background: #6E7BFF; border-color: #6E7BFF; color: #fff; font-weight: 600; }
-.btn-indigo:hover { background: #fff; border-color: #6E7BFF; color: #4A56D6; }
+.card-b { background: #F4F4F0; border-color: var(--line); }
+.card-b::before { background: var(--pulse); }
+.card-b .label { color: var(--pulse-ink); }
+.card-b .price-big { color: var(--pulse-ink); }
+.card-b li::before { background: var(--pulse); }
+.btn-indigo { background: var(--pulse); border-color: var(--pulse); color: #fff; font-weight: 600; }
+.btn-indigo:hover { background: #fff; border-color: var(--pulse); color: var(--pulse-ink); }
 @media (max-width: 47.99rem) { .svc { gap: 1.5rem; } }
 
 /* three steps: dark connected panel */
@@ -390,7 +390,7 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.2rem); line-height: 1.05;
 .steps.flow { --p: 0; background: none; border: 0; border-radius: 0; overflow: visible; display: grid; gap: 1rem; position: relative; padding-left: 3.1rem; }
 .steps.flow::before, .steps.flow::after { content: ""; position: absolute; left: 1.05rem; top: 1.4rem; bottom: 1.4rem; width: 3px; border-radius: 3px; background: var(--line); }
 .steps.flow::after { background: var(--pulse); transform-origin: top; transform: scaleY(var(--p)); }
-.flow li { position: relative; background: linear-gradient(135deg, #fff 0%, #F1FAF4 100%); border: 1px solid var(--line); border-radius: 12px; padding: 1.25rem 1.25rem 1.3rem; box-shadow: 0 10px 30px rgba(0,0,0,.04); transition: opacity .6s ease, transform .7s cubic-bezier(.2,.8,.2,1), border-color .4s, box-shadow .4s; }
+.flow li { position: relative; background: linear-gradient(135deg, #fff 0%, #F4F4F0 100%); border: 1px solid var(--line); border-radius: 12px; padding: 1.25rem 1.25rem 1.3rem; box-shadow: 0 10px 30px rgba(0,0,0,.04); transition: opacity .6s ease, transform .7s cubic-bezier(.2,.8,.2,1), border-color .4s, box-shadow .4s; }
 .flow .n { position: absolute; left: -3.1rem; top: .95rem; width: 2.15rem; height: 2.15rem; border-radius: 50%; background: var(--bg); border: 2px solid var(--line); display: flex; align-items: center; justify-content: center; font: 700 .78rem var(--mono); color: var(--muted); transition: background .4s, border-color .4s, color .4s, transform .4s; z-index: 1; }
 .flow li.lit { border-color: color-mix(in srgb, var(--pulse) 55%, transparent); box-shadow: 0 14px 34px color-mix(in srgb, var(--pulse) 12%, transparent); }
 .flow li.lit .n { background: var(--pulse); border-color: var(--pulse); color: var(--pulse-text); transform: scale(1.08); }
@@ -497,9 +497,9 @@ h2 { font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.2rem); line-height: 1.05;
 .call-topic input { width: 100%; min-height: 48px; padding: 0 .9rem; font: 1rem var(--f); border: 1px solid var(--line); border-radius: var(--r); background: var(--bg); color: var(--ink); }
 .call-topic input:focus { outline: 3px solid var(--pulse); outline-offset: 1px; }
 /* the call block is the one green thing on the page, so it stands out */
-.call { position: relative; overflow: hidden; border: 0; border-radius: 18px; color: var(--pulse-text); box-shadow: 6px 6px 0 var(--ink);
-  background: radial-gradient(rgba(11,26,18,.13) 1px, transparent 1.3px) 0 0 / 14px 14px, linear-gradient(135deg, var(--c2), var(--pulse) 55%, var(--pulse-ink)); }
-.call h2 { color: var(--pulse-text); }
+.call { position: relative; overflow: hidden; border: 1.5px solid var(--ink); border-radius: 18px; color: var(--ink); box-shadow: 6px 6px 0 var(--ink);
+  background: radial-gradient(rgba(22,22,22,.12) 1px, transparent 1.3px) 0 0 / 14px 14px, #fff; }
+.call h2 { color: var(--ink); }
 .call h2 .big15 { display: inline-block; background: #0B1A12; color: var(--c2); border-radius: 10px; padding: 0 .2em; margin-right: .1em; }
 .call-txt .label { color: var(--pulse-text); }
 .call-txt .label .dot { background: #0B1A12; box-shadow: 0 0 0 4px rgba(11,26,18,.15); }
@@ -583,24 +583,24 @@ html.vt-in .hero-cut img { animation: none !important; }
 .k-web::after { height: 10px !important; background-size: auto !important; }
 .prob { padding-top: .75rem !important; padding-bottom: .75rem !important; align-items: center; }
 /* chalkboard */
-.k-hand { background: radial-gradient(120% 140% at 15% 20%, rgba(255,255,255,.1), transparent 55%), radial-gradient(90% 90% at 85% 90%, rgba(255,255,255,.05), transparent 60%), #26332D !important; border-color: #6B4A2B !important; border-width: 3px; }
+.k-hand { background: radial-gradient(120% 140% at 15% 20%, rgba(255,255,255,.1), transparent 55%), radial-gradient(90% 90% at 85% 90%, rgba(255,255,255,.05), transparent 60%), #262724 !important; border-color: #4A4B47 !important; border-width: 3px; }
 .k-hand .t { color: #F4F1E6; text-shadow: 0 0 1px rgba(255,255,255,.6); letter-spacing: .01em; }
 .k-hand::before { display: block !important; content: ""; position: absolute; left: 1.15rem; right: 1.15rem; bottom: .5rem; height: 2px; background: repeating-linear-gradient(90deg, rgba(244,241,230,.35) 0 9px, transparent 9px 14px); opacity: .6; border-radius: 2px; pointer-events: none; inset: auto 1.15rem .5rem; }
 .k-hand .deco { color: #F4F1E6; opacity: .85; }
 /* black spreadsheet */
-.k-sheet { background-color: #0E100E !important; background-image: linear-gradient(#1F7A45, #1F7A45), repeating-linear-gradient(90deg, transparent 0 46px, rgba(59,224,143,.22) 46px 47px), repeating-linear-gradient(180deg, transparent 0 15px, rgba(59,224,143,.16) 15px 16px) !important; background-size: 100% 5px, auto, auto !important; background-repeat: no-repeat, repeat, repeat !important; }
-.k-sheet .t { color: #E8FFF0; font-family: var(--mono); font-size: .92rem; background: #0E100E; padding: .05rem .3rem; margin-left: -.3rem; }
-.k-sheet .deco { background: #0E100E; color: var(--c2); border: 2px solid #3BE08F; }
+.k-sheet { background-color: #0E100E !important; background-image: linear-gradient(#3A3A36, #3A3A36), repeating-linear-gradient(90deg, transparent 0 46px, rgba(245,245,242,.18) 46px 47px), repeating-linear-gradient(180deg, transparent 0 15px, rgba(245,245,242,.12) 15px 16px) !important; background-size: 100% 5px, auto, auto !important; background-repeat: no-repeat, repeat, repeat !important; }
+.k-sheet .t { color: #F5F5F2; font-family: var(--mono); font-size: .92rem; background: #0E100E; padding: .05rem .3rem; margin-left: -.3rem; }
+.k-sheet .deco { background: #0E100E; color: var(--c2); border: 2px solid #F5F5F2; }
 /* film strip, subtitle yellow */
 .k-subs { background-color: #1B1B1B !important; background-image: repeating-linear-gradient(90deg, #3A3B38 0 10px, transparent 10px 18px), repeating-linear-gradient(90deg, #3A3B38 0 10px, transparent 10px 18px) !important; background-size: 100% 6px !important; background-position: 0 3px, 0 calc(100% - 3px) !important; background-repeat: no-repeat !important; }
-.k-subs .t { color: #FFE46B; text-decoration: none; text-shadow: 0 0 2px #000, 1px 1px 0 #000, -1px -1px 0 #000; }
-.k-subs .deco { background: #000; color: #FFE46B; }
+.k-subs .t { color: #F5F5F2; text-decoration: none; text-shadow: 0 0 2px #000, 1px 1px 0 #000, -1px -1px 0 #000; }
+.k-subs .deco { background: #000; color: #F5F5F2; }
 /* dark chat */
-.k-chat { background: #0F1B33 !important; }
+.k-chat { background: #1E1F1D !important; }
 .k-chat .t { color: #fff; }
-.k-chat .deco { background: #1D3560; color: #7FE3B1; }
+.k-chat .deco { background: #3A3A36; color: #F5F5F2; }
 /* dark document */
-.k-word { background-color: #1C2433 !important; background-image: linear-gradient(#2B79E6, #2B79E6), repeating-linear-gradient(180deg, transparent 0 11px, rgba(255,255,255,.07) 11px 12px) !important; background-size: 100% 5px, auto !important; background-repeat: no-repeat, repeat !important; }
+.k-word { background-color: #1E1F1D !important; background-image: linear-gradient(#5E615C, #5E615C), repeating-linear-gradient(180deg, transparent 0 11px, rgba(255,255,255,.07) 11px 12px) !important; background-size: 100% 5px, auto !important; background-repeat: no-repeat, repeat !important; }
 .k-word .t { color: #F2F2E8; }
 .k-word .deco { background: #2B3A55; color: #9CC0FF; }
 .k-other { background: #2A2B29 radial-gradient(rgba(255,255,255,.12) 1.2px, transparent 1.5px) 0 0 / 10px 10px !important; }
@@ -611,7 +611,7 @@ html.vt-in .hero-cut img { animation: none !important; }
 .door-tags li small { display: none; }
 .door-tags li:nth-child(1) { left: 1%; top: 6%; right: auto; } .door-tags li:nth-child(3) { left: 1%; top: 27%; right: auto; } .door-tags li:nth-child(5) { left: 1%; top: 48%; right: auto; } .door-tags li:nth-child(7) { left: 1%; top: 69%; right: auto; }
 .door-tags li:nth-child(2) { right: 1%; left: auto; top: 16%; } .door-tags li:nth-child(4) { right: 1%; left: auto; top: 37%; } .door-tags li:nth-child(6) { right: 1%; left: auto; top: 58%; } .door-tags li:nth-child(8) { right: 1%; left: auto; top: 79%; }
-.door-tags::before, .door-tags::after { content: ""; position: absolute; top: 4%; bottom: 4%; width: 1px; background: repeating-linear-gradient(180deg, rgba(59,224,143,.5) 0 3px, transparent 3px 9px); }
+.door-tags::before, .door-tags::after { content: ""; position: absolute; top: 4%; bottom: 4%; width: 1px; background: repeating-linear-gradient(180deg, rgba(245,245,242,.5) 0 3px, transparent 3px 9px); }
 .door-tags::before { left: 36%; } .door-tags::after { right: 36%; }
 @media (max-width: 55.99rem) {
   .door-tags li { font-size: .56rem !important; padding: .22rem .4rem !important; gap: .25rem !important; max-width: 38%; }
@@ -643,7 +643,7 @@ html.vt-in .hero-cut img { animation: none !important; }
 .dl-x { position: absolute; top: .7rem; right: .7rem; width: 2.2rem; height: 2.2rem; border-radius: 50%; border: 1px solid var(--line); background: #fff; cursor: pointer; }
 .dl-list { list-style: none; margin: 0 0 1rem; padding: 0; display: grid; gap: .45rem; }
 .dl-list a { display: grid; grid-template-columns: 1fr auto; align-items: center; padding: .7rem .85rem; border: 1px solid var(--line); border-radius: 10px; text-decoration: none; }
-.dl-list a:hover { border-color: var(--pulse); background: #EAF7EF; }
+.dl-list a:hover { border-color: var(--pulse); background: #EFEFEA; }
 .dl-list span { grid-column: 1; font: .75rem var(--mono); color: var(--muted); }
 .dl-list i { grid-row: 1 / span 2; grid-column: 2; font-style: normal; width: 2rem; height: 2rem; border-radius: 50%; display: grid; place-items: center; background: var(--pulse); color: var(--pulse-text); font-weight: 700; }
 .dl-more { font: 500 .88rem var(--mono); color: var(--pulse-ink); }
@@ -666,13 +666,13 @@ html.vt-in .hero-cut img { animation: none !important; }
 .card-b .team-list .av { background: var(--pulse); color: var(--pulse-text); }
 /* WhatsApp band with the free call folded inside */
 .cta-band { padding: clamp(2.5rem, 6vw, 4rem) 0; }
-.cta-in { display: grid; gap: 1.25rem; align-items: center; padding: clamp(1.5rem, 4vw, 2.5rem); border-radius: 18px; color: var(--pulse-text); box-shadow: 6px 6px 0 var(--ink);
-  background: radial-gradient(rgba(11,26,18,.13) 1px, transparent 1.3px) 0 0 / 14px 14px, linear-gradient(135deg, var(--c2), var(--pulse) 55%, var(--pulse-ink)); }
+.cta-in { display: grid; gap: 1.25rem; align-items: center; padding: clamp(1.5rem, 4vw, 2.5rem); border-radius: 18px; border: 1.5px solid var(--ink); color: var(--ink); box-shadow: 6px 6px 0 var(--ink);
+  background: radial-gradient(rgba(22,22,22,.12) 1px, transparent 1.3px) 0 0 / 14px 14px, #fff; }
 @media (min-width: 56rem) { .cta-in { grid-template-columns: 1fr auto; gap: 2rem; } }
-.cta-txt .label { display: flex; align-items: center; gap: .5rem; color: var(--pulse-text); margin: 0; }
-.cta-txt .label .dot { background: #0B1A12; }
+.cta-txt .label { display: flex; align-items: center; gap: .5rem; color: var(--ink); margin: 0; }
+.cta-txt .label .dot { background: var(--ink); }
 .cta-txt h2 { margin: .4rem 0 .4rem; font-size: clamp(1.8rem, 4.5vw, 2.8rem); }
-.cta-txt p:not(.label) { margin: 0; color: #10301F; font-size: 1.05rem; max-width: 32em; }
+.cta-txt p:not(.label) { margin: 0; color: var(--muted); font-size: 1.05rem; max-width: 32em; }
 .btn-big { min-height: 58px; padding: 0 1.6rem; font-size: 1.08rem; }
 .call-more { margin-top: 1rem; border: 1.5px solid var(--line); border-radius: 14px; background: #fff; }
 .call-more summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 1.2rem; font-size: 1rem; }
@@ -783,8 +783,8 @@ html.js .bs-item.on { z-index: 1; opacity: 1; visibility: visible; transition: o
 /* "who is behind this": eye band pinned to my face, dust around the dirty sneakers, parallax layers, centred on phones */
 .door-cut { will-change: translate; }
 .door-eye { position: absolute; left: 27%; top: 4.9%; width: 41%; height: 2.5%; rotate: -4deg; display: flex; gap: 3%; z-index: 2; }
-.door-eye i { flex: 1; background: #0B0C0B; border-radius: 2px; position: relative; overflow: hidden; box-shadow: 0 0 0 1px rgba(31,191,98,.5); }
-.door-eye i::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, #1FBF62 0 2px, transparent 2px 5px); opacity: .7; animation: eyeScan 1.4s steps(6) infinite; }
+.door-eye i { flex: 1; background: #0B0C0B; border-radius: 2px; position: relative; overflow: hidden; box-shadow: 0 0 0 1px rgba(245,245,242,.45); }
+.door-eye i::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, #F5F5F2 0 2px, transparent 2px 5px); opacity: .7; animation: eyeScan 1.4s steps(6) infinite; }
 @keyframes eyeScan { to { transform: translateX(5px); } }
 .dirt { position: absolute; left: 6%; right: 6%; bottom: 0; height: 9%; pointer-events: none; }
 .dirt i { position: absolute; bottom: 4%; width: .55rem; height: .55rem; border-radius: 50%; background: rgba(168,150,124,.75); filter: blur(.4px); opacity: 0; animation: dust 3.4s ease-out infinite; }
@@ -831,8 +831,7 @@ html.js .bs-item.on { z-index: 1; opacity: 1; visibility: visible; transition: o
 <main id="main">
 
 <section class="hero" id="top" aria-labelledby="h1">
-  <div class="skin-mesh" aria-hidden="true"><i></i><i></i><b></b><u></u></div>
-  <canvas id="field" aria-hidden="true"></canvas>
+    <canvas id="field" aria-hidden="true"></canvas>
   <div class="wrap hero-in">
     <div class="hero-stage">
       <canvas class="hero-ring" aria-hidden="true"></canvas>
@@ -939,7 +938,7 @@ html.js .bs-item.on { z-index: 1; opacity: 1; visibility: visible; transition: o
             </div>
           </div>
         </details>
-        <div class="card-foot"><a class="btn btn-green wa" href="#kontakt" data-en="I want this">Chcem toto</a></div>
+        <div class="card-foot"><a class="btn btn-dark wa" href="#kontakt" data-en="I want this">Chcem toto</a></div>
       </article>
       <article class="card card-b rv">
         <h3 data-en="I teach you">Naučím ťa to</h3>
@@ -965,11 +964,11 @@ html.js .bs-item.on { z-index: 1; opacity: 1; visibility: visible; transition: o
                 <li><span class="av">RP</span><div><b>Radoslav „Piry“ Pirožek</b><span data-en="AI, finance, crypto, stablecoins, stocks, global news">AI, financie, crypto, stablecoiny, akcie, globálne správy</span></div></li>
                 <li><span class="av">AL</span><div><b>Amida Lamoot</b><span data-en="AI developer, gaming, crypto, stocks">AI developer, gaming, crypto, akcie</span></div></li>
               </ul>
-              <a class="btn btn-sm btn-green wa" href="#kontakt" data-wa-sk="väčším školením pre skupinu" data-wa-en="a bigger training for a group" data-en="Ask about a group training">Opýtať sa na skupinové školenie</a>
+              <a class="btn btn-sm btn-green wa plain" href="#kontakt" data-wa-sk="väčším školením pre skupinu" data-wa-en="a bigger training for a group" data-en="Ask about a group training">Opýtať sa na skupinové školenie</a>
             </div>
           </div>
         </details>
-        <div class="card-foot"><a class="btn btn-green wa" href="#kontakt" data-en="I want this">Chcem toto</a></div>
+        <div class="card-foot"><a class="btn btn-green wa plain" href="#kontakt" data-en="I want this">Chcem toto</a></div>
       </article>
     </div>
   </div>
@@ -1035,7 +1034,7 @@ html.js .bs-item.on { z-index: 1; opacity: 1; visibility: visible; transition: o
       <canvas class="door-ring"></canvas>
       <span class="door-cut"><img src="img/hero-cut.webp" width="373" height="1288" loading="lazy" alt=""><span class="door-eye" aria-hidden="true"><i></i><i></i></span><span class="dirt" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></span>
       <canvas class="door-ring-front"></canvas>
-      <ul class="door-tags" aria-label="Robert"><li class="ub ub-1"><svg viewBox="0 0 26 16" aria-hidden="true"><path fill="currentColor" d="M1 3.5C1 2.7 1.7 2 2.5 2H15l5.5 4.5H24c.6 0 1 .4 1 1V12h-2.2a2.6 2.6 0 0 0-5.1 0H9.3a2.6 2.6 0 0 0-5.1 0H1z"/><path fill="#111211" d="M15.5 3.6l3.7 3H15.5z"/><circle cx="6.8" cy="12.5" r="2" fill="currentColor"/><circle cx="20.2" cy="12.5" r="2" fill="currentColor"/></svg><b>event car driver</b><small>on tour</small></li><li class="ub ub-2"><span class="use" aria-hidden="true"><i></i></span><b>usage drainer</b><small>100% used</small></li><li class="ub ub-3"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7.3" fill="#111211"/><circle cx="8" cy="8" r="5.2" fill="none" stroke="#FFD400" stroke-width=".6" opacity=".55"/><circle cx="8" cy="8" r="3.6" fill="none" stroke="#FFD400" stroke-width=".5" opacity=".4"/><circle cx="8" cy="8" r="2.1" fill="#FFD400"/><circle cx="8" cy="8" r=".6" fill="#111211"/></svg><b>dj</b><span class="eq"><i></i><i></i><i></i><i></i></span><small>dnb · jungle</small></li><li class="ub ub-4"><svg viewBox="0 0 16 16" aria-hidden="true"><g stroke="#2B2350" stroke-width="1.4" stroke-linecap="round"><path d="M8 .9v1.8M8 13.3v1.8M.9 8h1.8M13.3 8h1.8M3 3l1.3 1.3M11.7 11.7 13 13M3 13l1.3-1.3M11.7 4.3 13 3"/></g><circle cx="8" cy="8" r="3.6" fill="#FFF3A8" stroke="#2B2350" stroke-width="1.2"/><path d="M6.5 8.6c.4.7 2.6.7 3 0" fill="none" stroke="#2B2350" stroke-width="1" stroke-linecap="round"/></svg><b>life enjoyer</b><small>good vibes only</small></li><li class="ub ub-5"><svg viewBox="0 0 12 18" aria-hidden="true"><rect x="1.5" y="1" width="9" height="16" rx="2" fill="#B8BFC9"/><rect x="1.5" y="5" width="9" height="8" fill="#1C2B6B"/><path d="M1.5 5h9v1.2h-9zM1.5 11.8h9V13h-9z" fill="#D7DCE4"/><circle cx="6" cy="9" r="1.6" fill="#E5222B"/><rect x="3.5" y="1.6" width="5" height="1" rx=".5" fill="#8A929C"/></svg><b>red bull addict</b><small>+1 can</small></li><li class="ub ub-6"><svg viewBox="0 0 18 14" aria-hidden="true"><path d="M5 2 1 7l4 5M13 2l4 5-4 5M10.5 1.5l-3 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><b>&gt; vibecoder</b><small>claude code<span class="cur"></span></small></li><li class="ub ub-7"><span class="holo"></span><b>collector</b><small>★ rare holo</small></li><li class="ub ub-8"><svg viewBox="0 0 22 14" aria-hidden="true"><path fill="currentColor" d="M5.5 1h11a4.5 4.5 0 0 1 4.3 5.8l-1.3 4.6a2 2 0 0 1-3.4.8L14 10H8l-2.1 2.2a2 2 0 0 1-3.4-.8L1.2 6.8A4.5 4.5 0 0 1 5.5 1z" opacity=".9"/><path d="M5 5v3M3.5 6.5h3" stroke="#5E615C" stroke-width="1.2" stroke-linecap="round"/><circle cx="15.5" cy="5.6" r=".9" fill="#5E615C"/><circle cx="17.3" cy="7.4" r=".9" fill="#5E615C"/></svg><b>ex-gamer</b><small><span class="off"></span>offline</small></li></ul>
+      <ul class="door-tags" aria-label="Robert"><li class="ub ub-1"><svg viewBox="0 0 26 16" aria-hidden="true"><path fill="currentColor" d="M1 3.5C1 2.7 1.7 2 2.5 2H15l5.5 4.5H24c.6 0 1 .4 1 1V12h-2.2a2.6 2.6 0 0 0-5.1 0H9.3a2.6 2.6 0 0 0-5.1 0H1z"/><path fill="#111211" d="M15.5 3.6l3.7 3H15.5z"/><circle cx="6.8" cy="12.5" r="2" fill="currentColor"/><circle cx="20.2" cy="12.5" r="2" fill="currentColor"/></svg><b>event car driver</b><small>on tour</small></li><li class="ub ub-2"><span class="use" aria-hidden="true"><i></i></span><b>usage drainer</b><small>100% used</small></li><li class="ub ub-3"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7.3" fill="#111211"/><circle cx="8" cy="8" r="5.2" fill="none" stroke="#F5F5F2" stroke-width=".6" opacity=".55"/><circle cx="8" cy="8" r="3.6" fill="none" stroke="#F5F5F2" stroke-width=".5" opacity=".4"/><circle cx="8" cy="8" r="2.1" fill="#F5F5F2"/><circle cx="8" cy="8" r=".6" fill="#111211"/></svg><b>dj</b><span class="eq"><i></i><i></i><i></i><i></i></span><small>dnb · jungle</small></li><li class="ub ub-4"><svg viewBox="0 0 16 16" aria-hidden="true"><g stroke="#2B2350" stroke-width="1.4" stroke-linecap="round"><path d="M8 .9v1.8M8 13.3v1.8M.9 8h1.8M13.3 8h1.8M3 3l1.3 1.3M11.7 11.7 13 13M3 13l1.3-1.3M11.7 4.3 13 3"/></g><circle cx="8" cy="8" r="3.6" fill="#FFF3A8" stroke="#2B2350" stroke-width="1.2"/><path d="M6.5 8.6c.4.7 2.6.7 3 0" fill="none" stroke="#2B2350" stroke-width="1" stroke-linecap="round"/></svg><b>life enjoyer</b><small>good vibes only</small></li><li class="ub ub-5"><svg viewBox="0 0 12 18" aria-hidden="true"><rect x="1.5" y="1" width="9" height="16" rx="2" fill="#B8BFC9"/><rect x="1.5" y="5" width="9" height="8" fill="#1C2B6B"/><path d="M1.5 5h9v1.2h-9zM1.5 11.8h9V13h-9z" fill="#D7DCE4"/><circle cx="6" cy="9" r="1.6" fill="#E5222B"/><rect x="3.5" y="1.6" width="5" height="1" rx=".5" fill="#8A929C"/></svg><b>red bull addict</b><small>+1 can</small></li><li class="ub ub-6"><svg viewBox="0 0 18 14" aria-hidden="true"><path d="M5 2 1 7l4 5M13 2l4 5-4 5M10.5 1.5l-3 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><b>&gt; vibecoder</b><small>claude code<span class="cur"></span></small></li><li class="ub ub-7"><span class="holo"></span><b>collector</b><small>★ rare holo</small></li><li class="ub ub-8"><svg viewBox="0 0 22 14" aria-hidden="true"><path fill="currentColor" d="M5.5 1h11a4.5 4.5 0 0 1 4.3 5.8l-1.3 4.6a2 2 0 0 1-3.4.8L14 10H8l-2.1 2.2a2 2 0 0 1-3.4-.8L1.2 6.8A4.5 4.5 0 0 1 5.5 1z" opacity=".9"/><path d="M5 5v3M3.5 6.5h3" stroke="#5E615C" stroke-width="1.2" stroke-linecap="round"/><circle cx="15.5" cy="5.6" r=".9" fill="#5E615C"/><circle cx="17.3" cy="7.4" r=".9" fill="#5E615C"/></svg><b>ex-gamer</b><small><span class="off"></span>offline</small></li></ul>
     </a>
   </div>
   <div class="wrap">
@@ -1281,9 +1280,9 @@ html.js .bs-item.on { z-index: 1; opacity: 1; visibility: visible; transition: o
     if (cut && "ResizeObserver" in window) new ResizeObserver(function () { fit(); fill(); }).observe(cut);
     if (!still) setInterval(fill, 140);
   })();
-  RD.field(document.querySelector(".field-door"), { ink: "rgba(237,237,232,", hot: RD.accent(), strength: .45 });
+  RD.field(document.querySelector(".field-door"), { ink: "rgba(237,237,232,", hot: "#FFFFFF", strength: .45 });
   // the stage ring under the figure's feet, back and front halves on separate canvases
-  RD.field(document.querySelector(".door-ring"), { ink: "rgba(237,237,232,", hot: RD.accent(), strength: 0,
+  RD.field(document.querySelector(".door-ring"), { ink: "rgba(237,237,232,", hot: "#FFFFFF", strength: 0,
     torus: { x: .5, y: .77, size: .62, mx: .5, my: .77, msize: .74, alpha: .75, ring: true }, front: document.querySelector(".door-ring-front") });
   RD.field(document.querySelector(".field-contact"), { ink: "rgba(22,22,22,", hot: RD.accent(), strength: .2,
     torus: { x: .78, y: .5, size: .9, mx: .9, my: .95, msize: .46, alpha: .28 } });

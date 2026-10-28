@@ -458,10 +458,10 @@ body{background:radial-gradient(900px 520px at 8% -8%,#e3a53c16,transparent 60%)
 .topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:12;background:color-mix(in srgb,var(--panel) 90%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
 .topbar .dtop{padding-block:7px}
 .bal{position:relative;transition:box-shadow .3s}
-.bal.up{animation:balup .9s ease-out}.bal.down{animation:baldown .6s ease-out}
+.bal.up,.wallet.up{animation:balup .9s ease-out}.bal.down,.wallet.down{animation:baldown .6s ease-out}
 @keyframes balup{0%{box-shadow:0 0 0 0 #59d38a00;border-color:var(--line)}25%{box-shadow:0 0 0 4px #59d38a55,0 0 22px #59d38a88;border-color:var(--win)}100%{box-shadow:none}}
 @keyframes baldown{30%{border-color:var(--lose);transform:translateX(-2px)}60%{transform:translateX(2px)}}
-.bal.pop{animation:balpop .35s cubic-bezier(.2,1.8,.4,1)}@keyframes balpop{50%{transform:scale(1.12)}}
+.bal.pop,.wallet.pop{animation:balpop .35s cubic-bezier(.2,1.8,.4,1)}@keyframes balpop{50%{transform:scale(1.12)}}
 .fdelta{position:fixed;z-index:40;transform:translateX(-50%);font:800 16px var(--mono);pointer-events:none;animation:fdel 1.3s ease-out forwards;text-shadow:0 2px 6px #000}
 .fdelta.up{color:var(--win)}.fdelta.down{color:var(--lose)}
 @keyframes fdel{0%{opacity:0;transform:translate(-50%,-4px) scale(.8)}15%{opacity:1;transform:translate(-50%,0) scale(1.1)}100%{opacity:0;transform:translate(-50%,26px)}}
@@ -499,6 +499,87 @@ main>section.enter{animation:secIn .32s cubic-bezier(.2,.8,.3,1)}
 .tkt2.open{--sc:var(--gold)}.tkt2.won{--sc:var(--win)}.tkt2.lost{--sc:var(--lose)}.tkt2.void{--sc:var(--dim)}
 .sbuy{font-size:13px}
 @media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important}}
+/* ===== polish pass: compact, clean bet-app look ===== */
+:root{--bg:#0d1117;--panel:#151a22;--raise:#1d232d;--line:#252c37;--fg:#e9edf2;--dim:#7c8796}
+body{font-size:14px}
+h2{font-size:19px;letter-spacing:.03em;margin:0}
+.shead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:4px 0 10px;flex-wrap:wrap}
+.shead .lab{font-size:10px}
+.lab{font-size:10px;letter-spacing:.08em}
+.sub{font-size:12.5px}
+main{padding-top:12px}
+.panel{padding:12px;border-radius:12px;margin-bottom:12px}
+.btn{padding:7px 12px;font-size:13px;border-radius:8px}
+.btn.sm{padding:5px 9px;font-size:12px}
+.chip{font-size:12px;padding:4px 11px}
+.money{font-size:13px}
+.toolbar{gap:6px;margin-bottom:10px}.toolbar input,.toolbar select{padding:6px 9px;font-size:13px}
+/* top bar */
+.topbar .dtop{padding-block:6px;gap:10px}
+.avimg{width:30px;height:30px}
+.me #mename{font-size:13px;font-weight:700}
+.wallet{display:flex;align-items:stretch;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.wallet .bal{border:0;border-radius:0;background:none;padding:5px 10px;font:700 15px var(--mono);display:flex;gap:4px;align-items:baseline}
+.wallet .bal i{font-style:normal;font-size:10px;color:var(--dim)}
+.wplus{position:relative;border:0;background:var(--gold);color:var(--gold-ink);font:800 20px/1 var(--display);width:36px;cursor:pointer}
+.wplus.dot::after{content:"";position:absolute;right:3px;top:3px;width:7px;height:7px;border-radius:50%;background:var(--win);box-shadow:0 0 0 2px var(--gold)}
+/* tabs */
+.tabs a{font-size:10px;padding:5px 0 6px}.tabs a svg{width:21px;height:21px}
+/* item cards */
+.grid{gap:8px;grid-template-columns:repeat(auto-fill,minmax(128px,1fr))}
+.it{padding:6px 7px 8px;border-radius:8px}
+.it .gun{height:54px;margin:0 0 4px}
+.it b{font-size:12.5px}.it .sk{font-size:12px}.it .mt{font-size:10px}.it .pr{font-size:12px}
+/* cases */
+.case{padding:8px;gap:6px;border-radius:10px}
+.case .nm{font-size:13px}
+.o2{padding:10px}
+.oinfo h3{font-size:18px}
+.cart.big{width:104px}
+.obtns2{margin-top:10px}.obtns2 .btn{font-size:15px;padding:10px 8px}
+.omore{font-size:11px;margin-top:6px}
+.cinfo summary,.today .lab{font-size:10px}
+.today{padding:8px 10px;margin-bottom:14px}
+.today .tstats b{font-size:14px}
+.drops2 .it{width:96px}.drops2 .it .gun{height:36px}
+.rv2 .rprice{font-size:22px}.rname{font-size:16px}
+/* inventory stats */
+.stats{grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:12px}
+.stat{padding:8px 10px}.stat b{font-size:15px}
+/* roulette */
+.wheelwrap{width:min(100%,280px)}
+.rtable button{min-height:27px;font-size:13px}
+.rchip{width:40px;height:40px;font-size:13px}
+.rctl{gap:8px}
+/* slots */
+.marquee span{font-size:24px}.marquee small{font-size:9px}
+.spinbtn#spin{width:74px;height:74px;font-size:16px}
+/* jackpot */
+.jppot{font-size:28px}.jptimer b{font-size:24px}
+.pl{padding:5px 8px;font-size:13px;grid-template-columns:22px minmax(0,1fr) auto auto}.pl .av.sm{width:22px;height:22px}
+.fe{font-size:12.5px}
+.hash{font-size:9px;opacity:.7}
+/* lounge: bet-app style */
+.lhead{margin-bottom:10px}
+.seg button{font-size:12px;padding:6px 10px}
+.favrow{gap:5px;margin-bottom:10px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.favrow::-webkit-scrollbar{display:none}
+.favrow .chip{white-space:nowrap;flex:none}
+.hero{grid-auto-columns:minmax(250px,1fr);margin-bottom:12px}
+.hcard{padding:12px;gap:10px;border-radius:14px}
+.crest.lg{--cs:44px}.hcard .tm{font-size:12px}.hcard .mid b{font-size:17px}
+.mrow{padding:8px 10px;gap:8px;border-radius:12px;margin-bottom:6px}
+.mrow .tl{font-size:13px}.mrow .when{font-size:12px}
+.dayh{font-size:11px;margin:12px 0 6px}
+.ob{min-width:52px;padding:5px 6px;border-radius:8px;background:var(--raise);border-color:transparent}
+.ob small{font-size:9.5px}.ob b{font-size:14px;color:var(--fg)}
+.ob:hover:not(:disabled){border-color:color-mix(in srgb,var(--gold) 50%,transparent)}
+.ob.on{background:var(--gold)}.ob.on b,.ob.on small{color:var(--gold-ink)}
+.ob.win b{color:var(--win)}
+.slipc{border-radius:16px}.sliph b{font-size:15px}
+.tkt2 .th{height:56px;padding:8px 12px}.tkt2 .th b{font-size:14px}.tkt2 .th .big{font-size:19px}
+.stamp{font-size:15px}
+@media (max-width:520px){.wheelwrap{width:min(100%,232px)}.rwheelp{padding:14px 10px 10px}}
+#rhist .lab{font-size:9px}
 </style>
 
 
@@ -506,25 +587,21 @@ main>section.enter{animation:secIn .32s cubic-bezier(.2,.8,.3,1)}
 <header class="topbar">
   <div class="wrap dtop">
     <button class="me" id="mebtn" aria-label="Upraviť profil"><span id="meav" class="avimg"></span><span id="mename">Rob</span></button>
-    <div class="bal" title="Kredity – hracie peniaze bez reálnej hodnoty"><span id="bal">0,00</span> CR</div>
-    <button class="btn sm gold" id="daily">Kredity</button>
+    <div class="wallet" title="Kredity – hracie peniaze bez reálnej hodnoty"><div class="bal"><span id="bal">0,00</span><i>CR</i></div><button class="wplus" id="daily" aria-label="Získať kredity">+</button></div>
     <button class="btn sm ghost icon" id="mute" aria-label="Zvuk"></button>
   </div>
 </header>
 <main class="wrap">
   <section id="v-cases">
-    <div class="brand">Rob<i>Lounge</i><small>PLAY CR · BEZ PEŇAZÍ</small></div>
     <div id="opener"></div>
     <div class="today" id="today"></div>
-    <h2>Všetky casy</h2>
-    <p class="sub">42 skutočných CS casov s reálnym obsahom a šancami. Otvorenie = cena casu + kľúč 2,35 CR. Ceny sú odhad.</p>
+    <div class="shead"><h2>Všetky casy</h2><span class="lab">42 casov · case + kľúč 2,35</span></div>
     <div class="toolbar"><input id="caseq" type="search" placeholder="Hľadať case…" aria-label="Hľadať case"><select id="casesort" aria-label="Zoradiť"><option value="new">Najnovšie</option><option value="old">Najstaršie</option><option value="cheap">Najlacnejšie</option><option value="exp">Najdrahšie</option></select></div>
     <div class="grid" id="caselist" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr))"></div>
   </section>
 
   <section id="v-inv" hidden>
-    <h2>Inventár</h2>
-    <p class="sub">Tvoje skiny s floatom a stavom. Predaj vráti odhadnutú cenu v CR.</p>
+    <div class="shead"><h2>Inventár</h2></div>
     <div class="stats" id="stats"></div>
     <div class="toolbar"><select id="invsort" aria-label="Zoradiť inventár"><option value="new">Najnovšie</option><option value="price">Najdrahšie</option><option value="rar">Vzácnosť</option><option value="float">Najnižší float</option></select>
       <button class="btn sm" id="sellsel" disabled>Predať označené</button><button class="btn sm ghost" id="selcheap">Označiť lacné (&lt; 1 CR)</button><span class="lab" id="invsum"></span></div>
@@ -532,8 +609,7 @@ main>section.enter{animation:secIn .32s cubic-bezier(.2,.8,.3,1)}
   </section>
 
   <section id="v-roulette" hidden>
-    <h2>Ruleta</h2>
-    <p class="sub">Európska ruleta s jednou nulou. Vyber žetón, klikni na pole na stole a roztoč koleso. Číslo platí 36×, tucty a stĺpce 3×, farby a párne/nepárne 2×.</p>
+    <div class="shead"><h2>Ruleta</h2><span class="lab">európska · číslo 36× · tucet 3× · farba 2×</span></div>
     <div class="rgrid2">
       <div class="panel rwheelp">
         <div class="wheelwrap" id="wheelwrap"><canvas id="rwheel" width="600" height="600" aria-label="Koleso rulety"></canvas><div class="ballring" id="ballring"><i class="ball" id="ball"></i></div><div class="wpin"></div><div class="wres" id="wres"></div></div>
@@ -551,9 +627,8 @@ main>section.enter{animation:secIn .32s cubic-bezier(.2,.8,.3,1)}
   </section>
 
   <section id="v-slots" hidden>
-    <h2>Sloty · Rush B</h2>
-    <p class="sub">5 valcov, 20 výherných liniek. Nôž je wild a nahradí každú zbraň. 3 casy kdekoľvek spustia free spiny s násobkom 3×. C4 na 1., 3. a 5. valci spustí bonus Defuse, kde vyberáš casy s násobkami. Návratnosť okolo 96 %.</p>
-    <div class="panel slotpanel"><div class="marquee"><span>RUSH B</span><small>5 valcov · 20 liniek · free spiny · bonus Defuse</small></div><div class="bigwin" id="sbig" hidden></div>
+    
+    <div class="panel slotpanel"><div class="marquee"><span>RUSH B</span><small>20 liniek · free spiny · bonus</small></div><div class="bigwin" id="sbig" hidden></div>
       <div class="sbar"><div><span class="lab">Výhra</span><div class="money" id="swin">0,00 CR</div></div><div id="sfs" class="fsbadge" hidden></div></div>
       <div class="sgrid" id="sgrid"></div>
       <div class="sctl">
@@ -568,8 +643,7 @@ main>section.enter{animation:secIn .32s cubic-bezier(.2,.8,.3,1)}
   </section>
 
   <section id="v-jackpot" hidden>
-    <h2>Jackpot</h2>
-    <p class="sub">Živé kolá ako za starých čias. Hráči priebežne prihadzujú skiny. Keď sú v kole dvaja, spustí sa odpočet 45 s. Šanca na výhru je podiel tvojej hodnoty v kotli. Dávaj si pozor na snajperov v posledných sekundách. Stránka si berie 5 % z kotla.</p>
+    <div class="shead"><h2>Jackpot</h2><span class="lab">odpočet 45 s · max 10 hráčov · poplatok 5 %</span></div>
     <div class="rooms" id="jprooms"></div>
     <div class="jpgrid">
       <div class="panel jpmain">
@@ -593,7 +667,7 @@ main>section.enter{animation:secIn .32s cubic-bezier(.2,.8,.3,1)}
   </section>
 
   <section id="v-lounge" hidden>
-    <div class="lhead"><div><h2>Lounge</h2><p class="sub" style="margin:0">Každý deň 3 vybrané zápasy: tvoje tímy, Liga majstrov, repre a F1. Tipuj jeden alebo poskladaj tiket. Kurzy sú odhad, výsledky sa dopĺňajú každé ráno.</p></div>
+    <div class="lhead"><h2>Lounge</h2>
       <div class="seg" id="lseg"><button data-ls="matches" class="on">Zápasy</button><button data-ls="bets">Moje tikety</button><button data-ls="results">Výsledky</button></div></div>
     <div id="lfav" class="favrow"></div>
     <div id="lbody"></div>
@@ -685,16 +759,16 @@ function save(){S.ts=Date.now(); try{localStorage.setItem('caselounge',JSON.stri
   animBal(); dailyBtn();}
 function addBal(x){S.bal=Math.round((S.bal+x)*100)/100}
 function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(t._t);t._t=setTimeout(()=>t.hidden=true,2600)}
-function dailyBtn(){const b=$('#daily'); const ok=S.daily!==today(); b.disabled=!ok; b.disabled=false;b.textContent='Kredity';b.classList.toggle('gold',ok);b.classList.toggle('dot',ok||earnT().done.length<TASKS.length);b.title='Denný bonus a kredity za zdravé veci'}
+function dailyBtn(){const b=$('#daily'); const ok=S.daily!==today(); b.disabled=!ok; b.disabled=false;b.classList.toggle('dot',ok||earnT().done.length<TASKS.length);b.title='Denný bonus a kredity za zdravé veci'}
 $('#daily').onclick=()=>openCredits();
 
 /* ---------- juice: feel every win ---------- */
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
-let shownBal=null;
+let shownBal=null,balTok=0;
 function animBal(){const el=$('#bal');if(!el)return;const to=S.bal;if(shownBal===null){shownBal=to;el.textContent=fmt(to);return}
-  const from=shownBal;if(Math.abs(to-from)<0.005)return;shownBal=to;const d=to-from;const box=el.closest('.bal');
+  const from=shownBal;if(Math.abs(to-from)<0.005)return;shownBal=to;const d=to-from;const box=el.closest('.wallet')||el.closest('.bal');
   box.classList.remove('up','down');void box.offsetWidth;box.classList.add(d>0?'up':'down');floatDelta(box,d);
-  const t0=performance.now(),ms=Math.min(1100,350+Math.abs(d)*3);(function f(t){const k=Math.min(1,(t-t0)/ms);el.textContent=fmt(from+d*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(f);else el.textContent=fmt(to)})(t0);
+  const tok=++balTok,start=parseFloat(String(el.textContent).replace(/\s/g,'').replace(',','.'))||from,dd=to-start;const t0=performance.now(),ms=Math.min(1100,350+Math.abs(d)*3);(function f(t){if(tok!==balTok)return;const k=Math.min(1,(t-t0)/ms);el.textContent=fmt(start+dd*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(f);else el.textContent=fmt(to)})(t0);
   if(d>=5)coinBurst(box,Math.min(26,5+Math.round(Math.log2(d+1)*3)));}
 function floatDelta(box,d){const r=box.getBoundingClientRect();const e=document.createElement('div');e.className='fdelta '+(d>0?'up':'down');e.textContent=(d>0?'+':'−')+fmt(Math.abs(d));e.style.left=(r.left+r.width/2)+'px';e.style.top=(r.bottom+6)+'px';document.body.appendChild(e);setTimeout(()=>e.remove(),1300)}
 function coinBurst(target,n,src){if(reduced||!target)return;const tr=target.getBoundingClientRect();const sr=src?src.getBoundingClientRect():{left:innerWidth/2-30,top:innerHeight*.45,width:60,height:60};
@@ -851,7 +925,7 @@ function renderInv(){
   $('#invlist').innerHTML=L.length?L.map(x=>card(x,{cls:'pick'+(selInv.has(x.id)?' sel':''),attr:` data-id="${x.id}"`})).join(''):'<div class="empty" style="grid-column:1/-1">Inventár je prázdny. Otvor prvý case v záložke Cases.</div>';
   $('#sellsel').disabled=!selInv.size; $('#sellsel').textContent=selInv.size?`Predať označené (${selInv.size}) · ${fmt(S.inv.filter(x=>selInv.has(x.id)).reduce((a,x)=>a+price(x),0))} CR`:'Predať označené';
   const st=S.st, net=st.won-st.spent;
-  $('#stats').innerHTML=[['Otvorené casy',st.open],['Minuté na casy',fmt(st.spent)+' CR'],['Hodnota dropov',fmt(st.won)+' CR'],['Bilancia casov',`<span class="${net>=0?'win':'lose'}">${fmt(net)} CR</span>`],['Najlepší drop',st.best?`${esc(ITEMS[st.best.i][0])} · ${fmt(st.best.p)}`:'—'],['Reálne peniaze','0,00 €']].map(([a,b])=>`<div class="stat"><span class="lab">${a}</span><b>${b}</b></div>`).join('');
+  $('#stats').innerHTML=[['Otvorené casy',st.open],['Minuté na casy',fmt(st.spent)+' CR'],['Hodnota dropov',fmt(st.won)+' CR'],['Bilancia casov',`<span class="${net>=0?'win':'lose'}">${fmt(net)} CR</span>`],['Najlepší drop',st.best?`${esc(ITEMS[st.best.i][0])} · ${fmt(st.best.p)}`:'—']].map(([a,b])=>`<div class="stat"><span class="lab">${a}</span><b>${b}</b></div>`).join('');
 }
 $('#invsort').onchange=renderInv;
 $('#invlist').onclick=e=>{const c=e.target.closest('[data-id]');if(!c)return;const id=c.dataset.id;selInv.has(id)?selInv.delete(id):selInv.add(id);renderInv()};
@@ -1131,7 +1205,7 @@ function finishJp(){
   const W=JP.winner,pot=jpPot();const all=JP.players.flatMap(p=>p.items).sort((a,b)=>price(b)-price(a));
   let feeLeft=pot*FEE;const fee=[];const keep=[];for(const it of all){const p=price(it);if(p<=feeLeft&&fee.length<6){fee.push(it);feeLeft-=p}else keep.push(it)}
   const won=sum(keep);const mine=myStake();
-  if(W.n==='Ty'){S.inv.unshift(...keep.map(it=>({...it,id:uid(),t:Date.now()})));S.st.jw+=won-mine;sfx.win();flash('#e3a53c');buzz([60,40,120]);chime(4);coinBurst($('.bal'),24,$('#jpwheelbox'))}else if(mine){S.st.jw-=mine;sfx.lose()}
+  if(W.n==='Ty'){S.inv.unshift(...keep.map(it=>({...it,id:uid(),t:Date.now()})));S.st.jw+=won-mine;sfx.win();flash('#e3a53c');buzz([60,40,120]);chime(4);coinBurst($('.wallet'),24,$('#jpwheelbox'))}else if(mine){S.st.jw-=mine;sfx.lose()}
   if(mine){S.jpPending=null;save()}
   JP.hist.unshift({r:JP.round,n:W.n,v:pot,c:W.chance});JP.hist.length=Math.min(JP.hist.length,10);
   $('#jpresult').innerHTML=`<div class="wincard">${av(W.n,'')}<div><b>${W.n==='Ty'?'Vyhral si!':esc(dn(W.n))+' vyhral'}</b> <span class="money">${fmt(won)} CR</span><div class="lab">šanca ${(W.chance*100).toFixed(2).replace('.',',')} % · tiket ${W.ticket.toLocaleString('sk-SK')} / ${W.tot.toLocaleString('sk-SK')} · poplatok ${fmt(sum(fee))} CR</div>

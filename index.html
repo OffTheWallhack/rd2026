@@ -811,6 +811,91 @@ html.js .bs-item.on { z-index: 1; opacity: 1; visibility: visible; transition: o
 .contact .lead { margin-left: auto; margin-right: auto; }
 .sec + .sec { border-top: 1px solid rgba(0,0,0,.05); }
 </style>
+
+<style>
+/* v3: services first, dark bands with glowing ASCII waves where there is room, everything about me on /kto-som/ */
+.hero { background: var(--night); color: var(--night-text); border-bottom: 0; --pulse: #F5F5F2; --pulse-ink: #F5F5F2; --pulse-text: #161616; }
+.hero-wave, .wave-blog, .wave-contact { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+#field { z-index: 1; opacity: .55; }
+.hero h1 { color: #fff; } .hero h1 .soft { color: var(--night-muted); }
+.hero-sub, .for-all { color: #C9C9C2; } .for-all b { color: #fff; }
+.hero .status { color: #C9C9C2; }
+.hero .btn:not(.btn-wa) { border-color: #EDEDE8; color: #EDEDE8; background: transparent; }
+.hero .btn:not(.btn-wa):hover { background: #EDEDE8; color: var(--night); }
+.hero-cut::after { background: radial-gradient(closest-side, rgba(0,0,0,.7), transparent); }
+.eyebar i { background: #F5F5F2; color: #161616; box-shadow: none; }
+.eyebar { color: #161616; }
+
+/* steps folded into the services section */
+.steps-mini { margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid var(--line); }
+.steps-mini > .label { margin: 0 0 1rem; }
+.steps-mini .steps.flow { padding-left: 0; gap: .75rem; }
+.steps-mini .steps.flow::before, .steps-mini .steps.flow::after { display: none; }
+@media (min-width: 48rem) { .steps-mini .steps.flow { grid-template-columns: repeat(3, 1fr); } }
+.steps-mini .flow li, .steps-mini .flow li.lit { padding: 1rem 1.1rem 1.1rem; box-shadow: none; background: #fff; border-color: var(--line); }
+.steps-mini .flow .n, .steps-mini .flow li.lit .n { position: static; width: auto; height: auto; border: 0; background: none; display: block; font: 500 .72rem var(--mono); color: var(--muted); letter-spacing: .08em; margin-bottom: .35rem; transform: none; }
+.steps-mini .flow h3 { font-size: 1.08rem; }
+.steps-mini .flow p { font-size: .95rem; }
+.steps-mini .promise { margin-top: 1rem; border-top: 0; }
+@media (min-width: 48rem) { .steps-mini .promise { grid-template-columns: 1fr 1fr 1.3fr; gap: .75rem; } .steps-mini .promise li { border-bottom: 0; padding: .6rem 0 .6rem 1.6rem; } }
+.steps-mini .promise li.key { padding-left: 2.2rem; }
+
+/* proof, on light */
+#dokaz .built { border-top: 0; padding: 0; }
+#dokaz .built .label { color: var(--pulse-ink); }
+#dokaz .built h3 { color: var(--ink); }
+#dokaz .bcard { background: #fff; border-color: var(--line); }
+#dokaz .bcard:hover { border-color: var(--ink); }
+#dokaz .bcard b { color: var(--ink); } #dokaz .bcard small { color: var(--muted); }
+#dokaz .built .sk-tools .label { color: var(--muted); }
+#dokaz .built .sk-tools .chip { background: #fff; border-color: var(--line); color: var(--ink); }
+
+/* blog band: dark, three cards, swipe on the phone */
+.blog-band { position: relative; overflow: hidden; background: var(--night); color: var(--night-text); border-bottom: 0; --pulse: #F5F5F2; --pulse-ink: #F5F5F2; --pulse-text: #161616; }
+.blog-band > .wrap { position: relative; z-index: 1; }
+.blog-band h2 { color: #fff; }
+.blog-band .sec-head p, .blog-band .label { color: var(--night-muted); }
+.blog-band .hl { background: linear-gradient(transparent 58%, rgba(245,245,242,.22) 58%); }
+#blog-home.blog-band .lp-grid { display: grid; grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 80%; gap: .9rem; overflow-x: auto; scroll-snap-type: x mandatory; padding: .25rem 0 .9rem; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.blog-band .lp-grid::-webkit-scrollbar { display: none; }
+.blog-band .lp-grid > * { scroll-snap-align: start; }
+.blog-band .latest-post, .blog-band .latest-post:nth-child(3n+2), .blog-band .latest-post:nth-child(3n+3) { grid-template-columns: 1fr !important; grid-row: auto; background: #fff; color: var(--ink); border-color: #fff; box-shadow: none; --pulse: #161616; --pulse-ink: #161616; --pulse-text: #F5F5F2; }
+.blog-band .latest-post:hover { box-shadow: 6px 6px 0 rgba(255,255,255,.35); }
+.blog-band .latest-post .lp-img { order: 0; } .blog-band .latest-post .lp-txt { order: 1; }
+.blog-band .latest-post b, .blog-band .latest-post.first b { color: var(--ink); font-size: 1.1rem; }
+.blog-band .latest-post .lp-lead, .blog-band .latest-post:not(.first) .lp-lead { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; color: #33332F; font-size: .92rem; }
+.blog-band .latest-post .label { color: var(--muted); }
+@media (min-width: 48rem) { #blog-home.blog-band .lp-grid { grid-auto-flow: row; grid-template-columns: repeat(3, 1fr); grid-auto-columns: auto; overflow: visible; padding: 0; } }
+.blog-band .lp-all .btn { border-color: #EDEDE8; color: #EDEDE8; background: transparent; }
+.blog-band .lp-all .btn:hover { background: #EDEDE8; color: var(--night); }
+.blog-band .nl { background: #1A1B19; border-color: #2C2D2A; box-shadow: none; }
+.blog-band .nl-txt b { color: #fff; } .blog-band .nl-txt > span { color: #B9B9B0; } .blog-band .nl-txt .label { color: var(--night-muted); }
+.blog-band .nl-f input { background: #111211; border-color: #2C2D2A; color: #fff; }
+.blog-band .nl-f .btn-green { background: #fff; border-color: #fff; color: var(--night); }
+.blog-band .nl-note { color: #A3A39B; }
+
+/* contact: dark, the free call folded inside, one line about who I am */
+.contact { background: var(--night); color: var(--night-text); --pulse: #F5F5F2; --pulse-ink: #F5F5F2; --pulse-text: #161616; }
+.contact > .wrap { z-index: 1; }
+.contact h2 { color: #fff; } .contact h2 .soft { color: var(--night-muted); }
+.contact p.lead, .contact .status { color: #C9C9C2; }
+.contact .btn:not(.wa):not(#callWa) { border-color: #EDEDE8; color: #EDEDE8; background: transparent; }
+.contact .btn:not(.wa):not(#callWa):hover { background: #EDEDE8; color: var(--night); }
+.contact .socials a { color: #EDEDE8; }
+.contact .call-more { text-align: left; margin: 1.5rem auto 0; max-width: 40rem; background: #1A1B19; border-color: #2C2D2A; color: #EDEDE8; }
+.contact .call-more summary i { background: #fff; } .contact .call-more summary i::before, .contact .call-more summary i::after { background: var(--night); }
+.contact .call-form { background: #111211; box-shadow: none; color: #EDEDE8; }
+.contact .call-form .label, .contact .call-form legend { color: var(--night-muted); }
+.contact .pick button { background: #1A1B19; border-color: #2C2D2A; color: #EDEDE8; }
+.contact .pick button small { color: #A3A39B; }
+.contact .pick button[aria-pressed="true"] { background: #fff; border-color: #fff; color: var(--night); }
+.contact .pick button[aria-pressed="true"] small { color: var(--night); }
+.contact .call-topic input { background: #1A1B19; border-color: #2C2D2A; color: #fff; }
+.contact #callWa { background: var(--wa); border-color: var(--wa); color: #0B1A12; }
+.contact #callMail { border-color: #EDEDE8; color: #EDEDE8; background: transparent; }
+.kto-line { margin: 2.5rem auto 0; color: #B9B9B0; max-width: 34em; font-size: .98rem; }
+.kto-line a { color: #fff; text-decoration-color: rgba(255,255,255,.4); }
+</style>
 </head>
 <body>
 <a class="skip" href="#main" data-en="Skip to content">Preskočiť na obsah</a>
@@ -831,7 +916,8 @@ html.js .bs-item.on { z-index: 1; opacity: 1; visibility: visible; transition: o
 <main id="main">
 
 <section class="hero" id="top" aria-labelledby="h1">
-    <canvas id="field" aria-hidden="true"></canvas>
+  <canvas class="hero-wave" aria-hidden="true"></canvas>
+  <canvas id="field" aria-hidden="true"></canvas>
   <div class="wrap hero-in">
     <div class="hero-stage">
       <canvas class="hero-ring" aria-hidden="true"></canvas>
@@ -853,44 +939,6 @@ html.js .bs-item.on { z-index: 1; opacity: 1; visibility: visible; transition: o
     </div>
   </div>
 </section>
-<!--blog-strip--><section class="bs" id="blog-strip" role="region" aria-roledescription="carousel" aria-label="Blog" data-en-aria="Blog"><div class="wrap"><div class="bs-in"><p class="label"><span class="dot" aria-hidden="true"></span><span>Blog</span></p><div class="bs-view" aria-live="off"><a class="bs-item on" href="blog/dve-hry-usage-of-empires/" style="--bg:url(img/blog/dve-hry-usage-of-empires-sm.webp)"><img src="img/blog/dve-hry-usage-of-empires-sm.webp" width="800" height="450" alt=""><span class="bs-t"><small class="bs-meta"><span class="dot" aria-hidden="true"></span><span class="bs-k">Blog –</span> <span>24. októbra 2026</span></small><b>Staviam dve hry s AI. Takto vznikli a ako fungujú.</b><span class="bs-lead">Usage of Empires dostal za pár dní vyše 30 nových verzií a popri ňom vznikla druhá hra, Usage of Empires II. Obe sú o dedine, ktorá žije, ale hrajú sa úplne inak. Tu je, ako ich staviam, ako fungujú a čo je nové.</span><span class="bs-more" data-en="Read the whole article →">Prečítaj si celý článok →</span></span></a><a class="bs-item" href="blog/event-car-drift-hra-s-ai/" style="--bg:url(img/blog/event-car-drift-sm.webp)"><img src="img/blog/event-car-drift-sm.webp" width="800" height="450" alt="" loading="lazy"><span class="bs-t"><small class="bs-meta"><span class="dot" aria-hidden="true"></span><span class="bs-k">Blog –</span> <span>20. októbra 2026</span></small><b>Postavil som si drift hru cez AI. Takto vznikala.</b><span class="bs-lead">Event Car Game (pôvodne Event Car Drift) je 3D hra, ktorú som si s AI postavil v prehliadači: parkovisko, tréning, dovoz, offroad až na vrchol hory, diaľnica z kokpitu, tajné preteky o Red Bull autá a nočná naháňačka s políciou. Tu je, ako presne vznikala, na čo sme prišli a čo som z nej vyhodil. Hrať sa dá priamo v mojom robOS.</span><span class="bs-more" data-en="Read the whole article →">Prečítaj si celý článok →</span></span></a><a class="bs-item" href="blog/usage-of-empires-hraj/" style="--bg:url(img/blog/usage-of-empires-hraj-sm.webp)"><img src="img/blog/usage-of-empires-hraj-sm.webp" width="800" height="450" alt="" loading="lazy"><span class="bs-t"><small class="bs-meta"><span class="dot" aria-hidden="true"></span><span class="bs-k">Blog –</span> <span>20. októbra 2026</span></small><b>Usage of Empires je hrateľná. Vyskúšaj ju a povedz mi, čo je zle.</b><span class="bs-lead">Hra, ktorú si stavám s AI, sa dá odteraz hrať. Stačí odkaz, nič sa neinštaluje. Je to beta, takže čakaj chyby. Práve preto ju dávam von: potrebujem, aby ju vyskúšal niekto iný ako ja, a povedal mi, čo sa pokazilo.</span><span class="bs-more" data-en="Read the whole article →">Prečítaj si celý článok →</span></span></a><a class="bs-item" href="blog/pariz-tri-ai/" style="--bg:url(img/blog/pariz-tri-ai-sm.webp)"><img src="img/blog/pariz-tri-ai-sm.webp" width="800" height="450" alt="" loading="lazy"><span class="bs-t"><small class="bs-meta"><span class="dot" aria-hidden="true"></span><span class="bs-k">Blog –</span> <span>19. októbra 2026</span></small><b>Protesty v Paríži: porovnal som Grok, Gemini a Claude</b><span class="bs-lead">Na X vidím horiace autá a radnicu, z ktorej padá veža. V správach skoro nič. Grokovi, Gemini aj Claudovi som dal rovnakú otázku a každé ich tvrdenie som overil. Jeden vedel najviac, jeden bol najpresnejší a dokonalý nebol ani jeden.</span><span class="bs-more" data-en="Read the whole article →">Prečítaj si celý článok →</span></span></a><a class="bs-item" href="blog/usage-of-empires/" style="--bg:url(img/blog/usage-of-empires-sm.webp)"><img src="img/blog/usage-of-empires-sm.webp" width="800" height="450" alt="" loading="lazy"><span class="bs-t"><small class="bs-meta"><span class="dot" aria-hidden="true"></span><span class="bs-k">Blog –</span> <span>15. októbra 2026</span></small><b>Nikdy som nebol programátor. Teraz si s AI staviam vlastnú hru.</b><span class="bs-lead">Vždy som chcel mať vlastnú hru a mal som na ňu milión nápadov. Konečne prišiel čas ich zužitkovať. Hra sa volá Usage of Empires a staviam ju len cez AI. Tu je, ako vznikla, čo v nej je a čo v nej nikdy nebude.</span><span class="bs-more" data-en="Read the whole article →">Prečítaj si celý článok →</span></span></a><a class="bs-item" href="blog/zabi-chaos-zachranis-usage/" style="--bg:url(img/blog/zabi-chaos-zachranis-usage-sm.webp)"><img src="img/blog/zabi-chaos-zachranis-usage-sm.webp" width="800" height="450" alt="" loading="lazy"><span class="bs-t"><small class="bs-meta"><span class="dot" aria-hidden="true"></span><span class="bs-k">Blog –</span> <span data-en="October 14, 2026">14. októbra 2026</span></small><b data-en="I built a system to save usage. It ate my usage.">Postavil som systém na šetrenie usage. Zožral mi usage.</b><span class="bs-lead" data-en="I wanted my projects and ideas in one place so Claude and Grok could both work with them. I did it in a way that ate my weekly limit in two and a half days. Here is what I learned, and how to save usage in plain words.">Chcel som mať projekty a nápady na jednom mieste, aby s nimi vedeli pracovať Claude aj Grok. Spravil som to tak, že mi to zjedlo týždenný limit za dva a pol dňa. Tu je, čo som sa naučil, a ako usage šetriť po ľudsky.</span><span class="bs-more" data-en="Read the whole article →">Prečítaj si celý článok →</span></span></a><a class="bs-item" href="blog/ex-gamer/" style="--bg:url(img/blog/ex-gamer-sm.webp)"><img src="img/blog/ex-gamer-sm.webp" width="800" height="450" alt="" loading="lazy"><span class="bs-t"><small class="bs-meta"><span class="dot" aria-hidden="true"></span><span class="bs-k">Blog –</span> <span>7. októbra 2026</span></small><b>Counter-Strike: kliatba alebo požehnanie?</b><span class="bs-lead">Od prvého počítača s Bombermanom cez CS 1.5 u kamošov, modovanie GTA San Andreas, dlhé večery pri FIFA a covidové noci pri Counter-Strike až po deň, keď vyšlo CS2. Z hier sa mi medzitým stala práca.</span><span class="bs-more" data-en="Read the whole article →">Prečítaj si celý článok →</span></span></a><a class="bs-item" href="blog/event-hub-appka-na-vlastnu-robotu/" style="--bg:url(img/blog/event-hub-appka-na-vlastnu-robotu-sm.webp)"><img src="img/blog/event-hub-appka-na-vlastnu-robotu-sm.webp" width="800" height="450" alt="" loading="lazy"><span class="bs-t"><small class="bs-meta"><span class="dot" aria-hidden="true"></span><span class="bs-k">Blog –</span> <span>7. októbra 2026</span></small><b>Postavil som si appku bez akéhokoľvek programovania.</b><span class="bs-lead">Celé dni som na cestách alebo na akciách a administratíva sa mi kopila v Exceli, poznámkach a správach. Tak som si s AI postavil Event Hub: jedno miesto, ktoré mi všetko zbiera, triedi a samo pripomína.</span><span class="bs-more" data-en="Read the whole article →">Prečítaj si celý článok →</span></span></a></div><div class="bs-ctl"><button class="bs-prev" type="button" aria-label="Predchádzajúci článok" data-en-aria="Previous article">‹</button><button class="bs-dot" type="button" aria-label="Článok 1" data-en-aria="Article 1" aria-current="true"></button><button class="bs-dot" type="button" aria-label="Článok 2" data-en-aria="Article 2" aria-current="false"></button><button class="bs-dot" type="button" aria-label="Článok 3" data-en-aria="Article 3" aria-current="false"></button><button class="bs-dot" type="button" aria-label="Článok 4" data-en-aria="Article 4" aria-current="false"></button><button class="bs-dot" type="button" aria-label="Článok 5" data-en-aria="Article 5" aria-current="false"></button><button class="bs-dot" type="button" aria-label="Článok 6" data-en-aria="Article 6" aria-current="false"></button><button class="bs-dot" type="button" aria-label="Článok 7" data-en-aria="Article 7" aria-current="false"></button><button class="bs-dot" type="button" aria-label="Článok 8" data-en-aria="Article 8" aria-current="false"></button><button class="bs-next" type="button" aria-label="Ďalší článok" data-en-aria="Next article">›</button></div><button class="bs-x" type="button" aria-label="Zavrieť" data-en-aria="Close">×</button></div></div></section><a class="bs-pill" id="blog-pill" href="blog/" hidden><span data-en="All articles are here">Všetky články nájdeš tu</span><b aria-hidden="true">→</b></a><!--/blog-strip-->
-<script>
-/* blog strip: auto-rotates every 6 s, stops on hover/focus/touch and for good once the visitor uses the controls; no auto-rotation with reduced motion */
-(function () {
-  var root = document.getElementById("blog-strip"); if (!root) return;
-  var items = [].slice.call(root.querySelectorAll(".bs-item")), dots = [].slice.call(root.querySelectorAll(".bs-dot"));
-  var ctl = root.querySelector(".bs-ctl");
-  var xb = root.querySelector(".bs-x");
-  var pill = document.getElementById("blog-pill");
-  function closeIt(save) { root.hidden = true; if (pill) pill.hidden = false; if (save) { try { sessionStorage.setItem("bs-x", "1"); } catch (e) {} } }
-  try { if (sessionStorage.getItem("bs-x")) closeIt(false); } catch (e) {}
-  if (xb) xb.addEventListener("click", function () { closeIt(true); });
-  if (items.length < 2) { if (ctl) ctl.hidden = true; return; }
-  var i = 0, held = false, stopped = window.matchMedia("(prefers-reduced-motion: reduce)").matches, seen = true, x0 = null;
-  function show(n) {
-    i = (n + items.length) % items.length;
-    items.forEach(function (el, k) { el.classList.toggle("on", k === i); });
-    dots.forEach(function (d, k) { d.setAttribute("aria-current", k === i ? "true" : "false"); });
-  }
-  function take(n) { stopped = true; show(n); }
-  setInterval(function () { if (!held && !stopped && seen && !document.hidden) show(i + 1); }, 6000);
-  root.addEventListener("mouseenter", function () { held = true; });
-  root.addEventListener("mouseleave", function () { held = false; });
-  root.addEventListener("focusin", function () { held = true; });
-  root.addEventListener("focusout", function () { held = false; });
-  root.addEventListener("touchstart", function (e) { held = true; x0 = e.touches[0].clientX; }, { passive: true });
-  root.addEventListener("touchend", function (e) {
-    held = false; if (x0 === null) return;
-    var dx = e.changedTouches[0].clientX - x0; x0 = null;
-    if (Math.abs(dx) > 50) take(i + (dx < 0 ? 1 : -1));
-  }, { passive: true });
-  root.querySelector(".bs-prev").addEventListener("click", function () { take(i - 1); });
-  root.querySelector(".bs-next").addEventListener("click", function () { take(i + 1); });
-  dots.forEach(function (d, k) { d.addEventListener("click", function () { take(k); }); });
-  if ("IntersectionObserver" in window) new IntersectionObserver(function (es) { seen = es[0].isIntersecting; }).observe(root);
-})();
-</script>
-
 <!-- PROBLEM PICKER -->
 <section class="sec" id="problem" aria-labelledby="p-title">
   <div class="wrap">
@@ -971,76 +1019,30 @@ html.js .bs-item.on { z-index: 1; opacity: 1; visibility: visible; transition: o
         <div class="card-foot"><a class="btn btn-green wa plain" href="#kontakt" data-en="I want this">Chcem toto</a></div>
       </article>
     </div>
-  </div>
-</section>
-
-<!-- WHATSAPP BAND, the free call folded inside -->
-<section class="cta-band" id="hovor" aria-labelledby="h-title">
-  <div class="wrap">
-    <div class="cta-in rv">
-      <div class="cta-txt">
-        <p class="label"><span class="dot" aria-hidden="true"></span><span data-en="One message is enough">Stačí jedna správa</span></p>
-        <h2 id="h-title" data-en="Tell me what’s bugging you.">Napíš mi, čo ťa trápi.</h2>
-        <p data-en="A few sentences on WhatsApp. I’ll reply whether I can do it, what it costs and by when.">Pár viet na WhatsApp. Odpíšem ti, či to viem spraviť, koľko to stojí a dokedy.</p>
-      </div>
-      <a class="btn btn-dark btn-wa btn-big wa" href="#kontakt"><svg class="wa-ic" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg><span data-en="Message me on WhatsApp">Napíš mi na WhatsApp</span></a>
-    </div>
-    <details class="call-more rv">
-      <summary><span data-en="Rather talk? <b>15-minute call, free</b>">Radšej si zavolať? <b>15 minút zadarmo</b></span><i aria-hidden="true"></i></summary>
-      <form class="call-form" id="callForm" novalidate>
-        <fieldset><legend class="label" data-en="Day">Deň</legend><div class="pick" id="callDays"></div></fieldset>
-        <fieldset><legend class="label" data-en="Time">Čas</legend><div class="pick" id="callTimes"></div></fieldset>
-        <label class="call-topic"><span class="label" data-en="What’s it about? (optional)">O čom to bude? (nepovinné)</span><input type="text" id="callTopic" maxlength="140" autocomplete="off" placeholder="napr. chcem chatbota na Instagram" data-en-ph="e.g. I want a chatbot for Instagram"></label>
-        <div class="actions">
-          <a class="btn btn-green" id="callWa" href="#" target="_blank" rel="noopener" data-en="Book on WhatsApp">Zarezervovať cez WhatsApp</a>
-          <a class="btn" id="callMail" href="#" data-en="or by e-mail">alebo e-mailom</a>
-        </div>
-      </form>
-    </details>
-  </div>
-</section>
-
-<!-- STEPS -->
-<section class="sec" id="postup" aria-labelledby="st-title">
-  <div class="wrap">
-    <div class="sec-head rv">
+    <div class="steps-mini rv">
       <p class="label" data-en="03 · How it goes">03 · Ako to ide</p>
-      <h2 id="st-title" data-en="<span class='hl'>3 simple</span> steps.">Jednoduché <span class="hl">3 kroky</span>.</h2>
-    </div>
-    <ol class="steps flow rv">
+      <ol class="steps flow rv">
       <li><span class="n">01</span><h3 data-en="You message me">Napíšeš mi</h3><p data-en="A few sentences on WhatsApp, or a free 15-minute call.">Pár viet na WhatsApp alebo 15 min hovor zadarmo.</p></li>
       <li><span class="n">02</span><h3 data-en="I suggest a fix">Navrhnem riešenie</h3><p data-en="You know the price and date upfront. Then I build it.">Cenu a termín vieš vopred. Potom to spravím.</p></li>
       <li><span class="n">03</span><h3 data-en="You use it">Ty to používaš</h3><p data-en="I hand it over and explain it in plain words. Then upkeep, if you want it.">Odovzdám a vysvetlím bez odborných slov. Potom údržba, ak chceš.</p></li>
     </ol>
-    <ul class="promise rv stg">
+      <ul class="promise rv stg">
       <li data-en="The tool is yours, with a guide">Nástroj je tvoj, aj s návodom</li>
       <li data-en="Plain Slovak or English, no jargon">Po slovensky alebo anglicky, bez odborných slov</li>
       <li class="key"><span data-en="If I can’t do it, I’ll say so straight.">Ak niečo neviem, poviem ti to na rovinu.</span> <em data-en="But we’ll probably sort it anyway ;)">Ale aj tak to asi vyriešime ;)</em></li>
     </ul>
+    </div>
   </div>
 </section>
 
-<!-- DOOR TO "WHO I AM" -->
-<section class="door" id="kto" aria-labelledby="d-title">
-  <canvas class="field-door" aria-hidden="true"></canvas>
-  <div class="wrap door-in">
-    <div class="door-txt rv">
-      <p class="label" data-en="Who I am">Kto som</p>
-      <h2 id="d-title" data-en="Who’s behind this?">Kto je za tým?</h2>
-      <p data-en="I make events for Red Bull, GOSko and others, and I started building AI tools for myself. My whole story lives on its own page.">Robím eventy pre Red Bull, GOSko a ďalších a AI nástroje som si začal stavať pre seba. Celý môj príbeh je na samostatnej stránke.</p>
-      <a class="btn btn-green" href="kto-som/" data-en="See who I am →">Pozri, kto som →</a>
-    </div>
-    <a class="door-fig" href="kto-som/" tabindex="-1" aria-hidden="true">
-      <canvas class="door-ring"></canvas>
-      <span class="door-cut"><img src="img/hero-cut.webp" width="373" height="1288" loading="lazy" alt=""><span class="door-eye" aria-hidden="true"><i></i><i></i></span><span class="dirt" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></span>
-      <canvas class="door-ring-front"></canvas>
-      <ul class="door-tags" aria-label="Robert"><li class="ub ub-1"><svg viewBox="0 0 26 16" aria-hidden="true"><path fill="currentColor" d="M1 3.5C1 2.7 1.7 2 2.5 2H15l5.5 4.5H24c.6 0 1 .4 1 1V12h-2.2a2.6 2.6 0 0 0-5.1 0H9.3a2.6 2.6 0 0 0-5.1 0H1z"/><path fill="#111211" d="M15.5 3.6l3.7 3H15.5z"/><circle cx="6.8" cy="12.5" r="2" fill="currentColor"/><circle cx="20.2" cy="12.5" r="2" fill="currentColor"/></svg><b>event car driver</b><small>on tour</small></li><li class="ub ub-2"><span class="use" aria-hidden="true"><i></i></span><b>usage drainer</b><small>100% used</small></li><li class="ub ub-3"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7.3" fill="#111211"/><circle cx="8" cy="8" r="5.2" fill="none" stroke="#F5F5F2" stroke-width=".6" opacity=".55"/><circle cx="8" cy="8" r="3.6" fill="none" stroke="#F5F5F2" stroke-width=".5" opacity=".4"/><circle cx="8" cy="8" r="2.1" fill="#F5F5F2"/><circle cx="8" cy="8" r=".6" fill="#111211"/></svg><b>dj</b><span class="eq"><i></i><i></i><i></i><i></i></span><small>dnb · jungle</small></li><li class="ub ub-4"><svg viewBox="0 0 16 16" aria-hidden="true"><g stroke="#2B2350" stroke-width="1.4" stroke-linecap="round"><path d="M8 .9v1.8M8 13.3v1.8M.9 8h1.8M13.3 8h1.8M3 3l1.3 1.3M11.7 11.7 13 13M3 13l1.3-1.3M11.7 4.3 13 3"/></g><circle cx="8" cy="8" r="3.6" fill="#FFF3A8" stroke="#2B2350" stroke-width="1.2"/><path d="M6.5 8.6c.4.7 2.6.7 3 0" fill="none" stroke="#2B2350" stroke-width="1" stroke-linecap="round"/></svg><b>life enjoyer</b><small>good vibes only</small></li><li class="ub ub-5"><svg viewBox="0 0 12 18" aria-hidden="true"><rect x="1.5" y="1" width="9" height="16" rx="2" fill="#B8BFC9"/><rect x="1.5" y="5" width="9" height="8" fill="#1C2B6B"/><path d="M1.5 5h9v1.2h-9zM1.5 11.8h9V13h-9z" fill="#D7DCE4"/><circle cx="6" cy="9" r="1.6" fill="#E5222B"/><rect x="3.5" y="1.6" width="5" height="1" rx=".5" fill="#8A929C"/></svg><b>red bull addict</b><small>+1 can</small></li><li class="ub ub-6"><svg viewBox="0 0 18 14" aria-hidden="true"><path d="M5 2 1 7l4 5M13 2l4 5-4 5M10.5 1.5l-3 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><b>&gt; vibecoder</b><small>claude code<span class="cur"></span></small></li><li class="ub ub-7"><span class="holo"></span><b>collector</b><small>★ rare holo</small></li><li class="ub ub-8"><svg viewBox="0 0 22 14" aria-hidden="true"><path fill="currentColor" d="M5.5 1h11a4.5 4.5 0 0 1 4.3 5.8l-1.3 4.6a2 2 0 0 1-3.4.8L14 10H8l-2.1 2.2a2 2 0 0 1-3.4-.8L1.2 6.8A4.5 4.5 0 0 1 5.5 1z" opacity=".9"/><path d="M5 5v3M3.5 6.5h3" stroke="#5E615C" stroke-width="1.2" stroke-linecap="round"/><circle cx="15.5" cy="5.6" r=".9" fill="#5E615C"/><circle cx="17.3" cy="7.4" r=".9" fill="#5E615C"/></svg><b>ex-gamer</b><small><span class="off"></span>offline</small></li></ul>
-    </a>
-  </div>
+
+
+<!-- PROOF -->
+<section class="sec" id="dokaz" aria-labelledby="bu-title">
   <div class="wrap">
     <div class="built rv">
       <p class="label"><span class="dot" aria-hidden="true"></span><span data-en="Not just talk">Nie sú to len reči</span></p>
-      <h3 data-en="I don’t teach theory. This runs for me every day.">Neučím z teórie. Toto mi reálne beží.</h3>
+      <h3 id="bu-title" data-en="I don’t teach theory. This runs for me every day.">Neučím z teórie. Toto mi reálne beží.</h3>
       <div class="built-row">
         <a class="bcard" href="blog/event-hub-appka-na-vlastnu-robotu/"><img src="img/eh-calendar.webp" width="700" height="972" loading="lazy" alt="Event Hub: kalendár akcií" data-en-alt="Event Hub: event calendar"><span><b>Event Hub</b><small data-en="My app that runs my whole job. Live.">Moja appka, v ktorej mám celú robotu. Live.</small></span></a>
         <a class="bcard" href="https://offthewallhack.github.io/questwave/" target="_blank" rel="noopener"><img src="img/questwave-poster.webp" width="360" height="678" loading="lazy" alt="Questwave"><span><b>Questwave</b><small data-en="One real-world quest a day for the whole world. Beta, try it.">Jedna úloha v reálnom svete denne pre celý svet. Beta, vyskúšaj.</small></span></a>
@@ -1051,8 +1053,10 @@ html.js .bs-item.on { z-index: 1; opacity: 1; visibility: visible; transition: o
   </div>
 </section>
 
+
 <!-- BLOG -->
-<section class="sec blog-sec" id="blog-home" aria-labelledby="bl-title">
+<section class="sec blog-band" id="blog-home" aria-labelledby="bl-title">
+  <canvas class="wave-blog" aria-hidden="true"></canvas>
   <div class="wrap">
     <div class="sec-head rv">
       <p class="label"><span class="dot" aria-hidden="true"></span> <span>Blog</span></p>
@@ -1092,15 +1096,28 @@ html.js .bs-item.on { z-index: 1; opacity: 1; visibility: visible; transition: o
 
 <!-- CONTACT -->
 <section class="contact" id="kontakt" aria-labelledby="c-title">
-  <canvas class="field-contact" aria-hidden="true"></canvas>
+  <canvas class="wave-contact" aria-hidden="true"></canvas>
   <div class="wrap rv">
     <p class="status label"><span class="dot" aria-hidden="true"></span><span data-en="Available now">Som k dispozícii</span></p>
     <h2 id="c-title"><span data-en="Message me,">Napíš mi,</span><br><span class="soft" data-en="we’ll sort it all out.">všetko vyriešime.</span></h2>
     <p class="lead" data-en="Tell me what’s bothering you. I’ll reply whether I can do it, how much it costs and by when.">Povedz mi, čo ťa trápi. Odpíšem ti, či to viem spraviť, koľko to stojí a dokedy.</p>
     <div class="actions">
-      <a class="btn btn-dark wa" href="#kontakt">WhatsApp</a>
+      <a class="btn btn-green btn-wa wa" href="#kontakt">WhatsApp</a>
       <a class="btn" href="mailto:rdurica1995@gmail.com">rdurica1995@gmail.com</a>
     </div>
+    <details class="call-more rv">
+      <summary><span data-en="Rather talk? <b>15-minute call, free</b>">Radšej si zavolať? <b>15 minút zadarmo</b></span><i aria-hidden="true"></i></summary>
+      <form class="call-form" id="callForm" novalidate>
+        <fieldset><legend class="label" data-en="Day">Deň</legend><div class="pick" id="callDays"></div></fieldset>
+        <fieldset><legend class="label" data-en="Time">Čas</legend><div class="pick" id="callTimes"></div></fieldset>
+        <label class="call-topic"><span class="label" data-en="What’s it about? (optional)">O čom to bude? (nepovinné)</span><input type="text" id="callTopic" maxlength="140" autocomplete="off" placeholder="napr. chcem chatbota na Instagram" data-en-ph="e.g. I want a chatbot for Instagram"></label>
+        <div class="actions">
+          <a class="btn btn-green" id="callWa" href="#" target="_blank" rel="noopener" data-en="Book on WhatsApp">Zarezervovať cez WhatsApp</a>
+          <a class="btn" id="callMail" href="#" data-en="or by e-mail">alebo e-mailom</a>
+        </div>
+      </form>
+    </details>
+    <p class="kto-line" data-en="Who’s behind this? Events for Red Bull and GOSko, AI tools I built for myself first. <a href='kto-som/'>See who I am →</a>">Kto je za tým? Eventy pre Red Bull a GOSko, AI nástroje, ktoré som si najprv postavil pre seba. <a href="kto-som/">Pozri, kto som →</a></p>
     <ul class="socials">
       <li><a href="https://www.linkedin.com/in/durica" target="_blank" rel="noopener">LinkedIn</a></li>
       <li><a href="https://www.instagram.com/robodurica" target="_blank" rel="noopener">Instagram</a></li>
@@ -1133,6 +1150,7 @@ html.js .bs-item.on { z-index: 1; opacity: 1; visibility: visible; transition: o
 </footer>
 
 <script src="assets/common.js"></script>
+<script src="assets/wave.js"></script>
 <script src="assets/infect.js" defer></script>
 <script>
 (function () {
@@ -1257,9 +1275,10 @@ html.js .bs-item.on { z-index: 1; opacity: 1; visibility: visible; transition: o
   })();
 
 
-  RD.field(document.getElementById("field"), { ink: "rgba(22,22,22,", hot: RD.accent(), strength: .3 });
+  RD.wave(document.querySelector(".hero-wave"), { colors: ["#7A2E0E", "#FF7A2A", "#FFE6C0"], y: .64, tilt: -.14, seed: 3, glow: .9 });
+  RD.field(document.getElementById("field"), { ink: "rgba(237,237,232,", hot: "#FFFFFF", strength: .16 });
   // the ring around me in the hero, back half behind the photo and front half over it
-  RD.field(document.querySelector(".hero-ring"), { ink: "rgba(22,22,22,", hot: RD.accent(), strength: 0,
+  RD.field(document.querySelector(".hero-ring"), { ink: "rgba(237,237,232,", hot: "#FFFFFF", strength: 0,
     torus: { x: .5, y: .62, size: .86, mx: .5, my: .62, msize: .86, alpha: .62, ring: true }, front: document.querySelector(".field-front") });
   // the band over my eyes keeps rewriting itself; when the infection reaches my head it turns red, angry, and starts naming things
   (function () {
@@ -1280,12 +1299,9 @@ html.js .bs-item.on { z-index: 1; opacity: 1; visibility: visible; transition: o
     if (cut && "ResizeObserver" in window) new ResizeObserver(function () { fit(); fill(); }).observe(cut);
     if (!still) setInterval(fill, 140);
   })();
-  RD.field(document.querySelector(".field-door"), { ink: "rgba(237,237,232,", hot: "#FFFFFF", strength: .45 });
   // the stage ring under the figure's feet, back and front halves on separate canvases
-  RD.field(document.querySelector(".door-ring"), { ink: "rgba(237,237,232,", hot: "#FFFFFF", strength: 0,
-    torus: { x: .5, y: .77, size: .62, mx: .5, my: .77, msize: .74, alpha: .75, ring: true }, front: document.querySelector(".door-ring-front") });
-  RD.field(document.querySelector(".field-contact"), { ink: "rgba(22,22,22,", hot: RD.accent(), strength: .2,
-    torus: { x: .78, y: .5, size: .9, mx: .9, my: .95, msize: .46, alpha: .28 } });
+  RD.wave(document.querySelector(".wave-blog"), { colors: ["#2A2070", "#6A4CFF", "#E4E8FF"], y: .66, tilt: .1, seed: 7, glow: .85, speed: .8 });
+  RD.wave(document.querySelector(".wave-contact"), { colors: ["#0C4A52", "#14B8C4", "#DFFCFF"], y: .72, tilt: -.08, seed: 11, amp: .8, glow: .75, speed: .7 });
 
 
   // parallax: hero layers, section heads

@@ -271,30 +271,37 @@ const LABEL = "DEŇ";
 const START = new Date("__START__");
 // Koľko eur denne ušetríš
 const PER_DAY = __PER__;
+// Cieľ, na ktorý šetríš, a čas z predošlých sérií (po pošmyknutí)
+const GOAL = __GOAL__;
+const GOAL_NAME = __GOALNAME__;
+const PREV_MS = __PREV__;
 // =======================
 
 const now = new Date();
 const ms = Math.max(0, now - START);
 const DAY = 86400000, HOUR = 3600000;
 const days = Math.floor(ms / DAY);
-const saved = (ms / DAY) * PER_DAY;
+const totalMs = PREV_MS + ms;
+const saved = (totalMs / DAY) * PER_DAY;
 
 // Prekvapenia: naplánuje notifikácie na presné časy
 const EGGS = [{"id": "h1", "k": "h", "v": 1, "t": "GL HF", "b": "Prvá hodina za tebou. Ide sa."}, {"id": "h13", "k": "h", "v": 13, "t": "Trinástka", "b": "13 hodín. Pech? Dnes nie."}, {"id": "h42", "k": "h", "v": 42, "t": "42", "b": "42 hodín. Odpoveď na život, vesmír a všetko."}, {"id": "h69", "k": "h", "v": 69, "t": "Nice", "b": "69 hodín. Nice."}, {"id": "h100", "k": "h", "v": 100, "t": "Triple digits", "b": "100 hodín. Trojciferné číslo."}, {"id": "h111", "k": "h", "v": 111, "t": "1-1-1", "b": "111 hodín. Samé jednotky."}, {"id": "h128", "k": "h", "v": 128, "t": "Tickrate 128", "b": "128 hodín. Pro server, žiadny lag."}, {"id": "h144", "k": "h", "v": 144, "t": "144 Hz", "b": "144 hodín. Hladký obraz."}, {"id": "h222", "k": "h", "v": 222, "t": "2-2-2", "b": "222 hodín. Vraj anjelské číslo."}, {"id": "h240", "k": "h", "v": 240, "t": "240 Hz", "b": "240 hodín. Ešte hladší obraz."}, {"id": "h300", "k": "h", "v": 300, "t": "THIS IS SPARTA", "b": "300 hodín."}, {"id": "h404", "k": "h", "v": 404, "t": "404", "b": "404 hodín. Chuť not found."}, {"id": "h420", "k": "h", "v": 420, "t": "Ironické", "b": "420 hodín. Ironické, čo?"}, {"id": "h500", "k": "h", "v": 500, "t": "500", "b": "500 hodín. Žiadny server error, všetko beží."}, {"id": "h666", "k": "h", "v": 666, "t": "666", "b": "666 hodín. Diabolsky dobrý výkon."}, {"id": "h777", "k": "h", "v": 777, "t": "Jackpot", "b": "777 hodín. Tri sedmičky."}, {"id": "h1000", "k": "h", "v": 1000, "t": "Kilohodina", "b": "1000 hodín."}, {"id": "h1337", "k": "h", "v": 1337, "t": "1337 h", "b": "1337 hodín. Elite."}, {"id": "h2048", "k": "h", "v": 2048, "t": "2048", "b": "2048 hodín. Spojil si všetky kocky."}, {"id": "d2", "k": "d", "v": 2, "t": "Double kill", "b": "Dva dni."}, {"id": "d5", "k": "d", "v": 5, "t": "ACE", "b": "5 dní. Celý tím dole."}, {"id": "d10", "k": "d", "v": 10, "t": "Desiatka", "b": "10 dní v kuse."}, {"id": "d13", "k": "d", "v": 13, "t": "MR12", "b": "13 dní. V CS2 by si práve vyhral zápas."}, {"id": "d16", "k": "d", "v": 16, "t": "MR15", "b": "16 dní. Aj v starom CS by si vyhral."}, {"id": "d21", "k": "d", "v": 21, "t": "Blackjack", "b": "21 dní. Porazil si dealera."}, {"id": "d42", "k": "d", "v": 42, "t": "Zase 42", "b": "42 dní. Vesmír ti niečo hovorí."}, {"id": "d50", "k": "d", "v": 50, "t": "Polstovka", "b": "50 dní."}, {"id": "d64", "k": "d", "v": 64, "t": "N64", "b": "64 dní. Nintendo 64 era."}, {"id": "d67", "k": "d", "v": 67, "t": "Sixseeeveeen", "b": "67 dní. Six seveeeeen."}, {"id": "d69", "k": "d", "v": 69, "t": "Nice nice", "b": "69 dní. Nice, ale v dňoch."}, {"id": "d77", "k": "d", "v": 77, "t": "Dve sedmičky", "b": "77 dní."}, {"id": "d99", "k": "d", "v": 99, "t": "Skoro", "b": "99 dní. Jeden do stovky."}, {"id": "d100", "k": "d", "v": 100, "t": "Stovka", "b": "100 dní."}, {"id": "d111", "k": "d", "v": 111, "t": "Jednotky", "b": "111 dní."}, {"id": "d128", "k": "d", "v": 128, "t": "128 dní", "b": "Tickrate, ale v dňoch."}, {"id": "d200", "k": "d", "v": 200, "t": "Dvesto", "b": "200 dní."}, {"id": "d256", "k": "d", "v": 256, "t": "Bajt", "b": "256 dní. Plný bajt."}, {"id": "d300", "k": "d", "v": 300, "t": "Spartan", "b": "300 dní."}, {"id": "d360", "k": "d", "v": 360, "t": "No-scope 360", "b": "360 dní. Celé kolo dookola."}, {"id": "d404", "k": "d", "v": 404, "t": "Not found", "b": "404 dní. Chuť sa stále nenašla."}, {"id": "d500", "k": "d", "v": 500, "t": "Päťsto", "b": "500 dní."}, {"id": "d1000", "k": "d", "v": 1000, "t": "Tisíc dní", "b": "1000 dní. Legenda."}, {"id": "m12", "k": "m", "v": 12, "t": "Prvých 12", "b": "12 € ostalo v peňaženke."}, {"id": "m69", "k": "m", "v": 69, "t": "Nice €", "b": "69 € ušetrených. Nice."}, {"id": "m200", "k": "m", "v": 200, "t": "Eco round", "b": "200 €. Konečne žiadny eco round."}, {"id": "m420", "k": "m", "v": 420, "t": "Stále ironické", "b": "420 € ušetrených."}, {"id": "m666", "k": "m", "v": 666, "t": "666 €", "b": "Diabolsky dobrá úspora."}, {"id": "m777", "k": "m", "v": 777, "t": "Jackpot €", "b": "777 €. Automat by ti toľko nedal."}, {"id": "m1337", "k": "m", "v": 1337, "t": "Leet", "b": "1337 € ušetrených. Elite."}, {"id": "m2000", "k": "m", "v": 2000, "t": "2k", "b": "2000 € ušetrených."}, {"id": "m4750", "k": "m", "v": 4750, "t": "AWP", "b": "4750 €. Presne na AWP."}, {"id": "m5000", "k": "m", "v": 5000, "t": "Päť tisíc", "b": "5000 €."}, {"id": "m9001", "k": "m", "v": 9001, "t": "Over 9000", "b": "It's over 9000!"}, {"id": "ms1", "k": "d", "v": 1, "t": "Deň 1", "b": "Prvý deň za tebou."}, {"id": "ms3", "k": "d", "v": 3, "t": "Deň 3", "b": "Najťažšie dni sú za tebou."}, {"id": "ms7", "k": "d", "v": 7, "t": "Týždeň", "b": "Celý týždeň."}, {"id": "ms14", "k": "d", "v": 14, "t": "Dva týždne", "b": "Dva týždne v kuse."}, {"id": "ms30", "k": "d", "v": 30, "t": "Mesiac", "b": "Celý mesiac. Rastlina dozrela."}];
 const ids = EGGS.map(e => "ts-" + ID + "-" + e.id);
-await Notification.removePending(ids);
 const upcoming = EGGS.map(e => {
   const off = e.k === "h" ? e.v * HOUR : e.k === "d" ? e.v * DAY : (PER_DAY > 0 ? e.v / PER_DAY * DAY : Infinity);
   return { e, at: new Date(START.getTime() + off) };
 }).filter(x => isFinite(x.at.getTime()) && x.at > now).sort((a, b) => a.at - b.at).slice(0, 50);
-for (const x of upcoming) {
-  const n = new Notification();
-  n.identifier = "ts-" + ID + "-" + x.e.id;
-  n.threadIdentifier = "tichy-streak";
-  n.title = x.e.t;
-  n.body = x.e.b;
-  n.setTriggerDate(x.at);
-  await n.schedule();
+if (!config.runsInWidget) {
+  await Notification.removePending(ids);
+  for (const x of upcoming) {
+    const n = new Notification();
+    n.identifier = "ts-" + ID + "-" + x.e.id;
+    n.threadIdentifier = "tichy-streak";
+    n.title = x.e.t;
+    n.body = x.e.b;
+    n.setTriggerDate(x.at);
+    await n.schedule();
+  }
 }
 
 // ===== Rastlinka: kreslí sa pixel po pixeli priamo vo widgete =====
@@ -389,40 +396,60 @@ if (bg) {
 }
 w.setPadding(14, 14, 14, 14);
 
-const lbl = w.addText(LABEL);
-lbl.font = Font.mediumSystemFont(11);
-lbl.textColor = new Color("#8d98ab");
+// ===== Texty =====
+const MILES = [0.5, 1, 3, 7, 14, 30, 60, 90, 180, 365];
+const sp = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+const eur = n => { const q = n.toFixed(2).split("."); return sp(q[0]) + "," + q[1]; };
+const dhm = t => { const m = Math.floor(t / 60000), dd = Math.floor(m / 1440); return (dd ? dd + " d " : "") + Math.floor((m % 1440) / 60) + " h " + (m % 60) + " min"; };
+const dayWord = n => n === 1 ? "deň" : n < 5 ? "dni" : "dní";
+const MUTED = new Color("#8d98ab"), WHITE = new Color("#e7eaf0"), DAWN = new Color("#f3b48c"), MINT = new Color("#9fd3b8");
+const put = (st, text, size, color, bold) => {
+  const t = st.addText(text);
+  t.font = bold ? Font.boldRoundedSystemFont(size) : Font.mediumSystemFont(size);
+  t.textColor = color;
+  t.minimumScaleFactor = 0.6;
+  return t;
+};
 
-const d = w.addText(String(days));
-d.font = Font.boldRoundedSystemFont(46);
-d.textColor = new Color("#f3b48c");
-d.minimumScaleFactor = 0.5;
+const big = FAM !== "small";
+const row = w.addStack();
+row.layoutHorizontally();
+const left = row.addStack();
+left.layoutVertically();
+put(left, LABEL, 11, MUTED, false);
+put(left, String(days), 46, DAWN, true);
 
 // Živé hodiny: hodiny:minúty:sekundy v aktuálnom dni
 const dayStart = new Date(START.getTime() + days * DAY);
-const t = w.addDate(now < START ? START : dayStart);
+const t = left.addDate(now < START ? START : dayStart);
 t.applyTimerStyle();
 t.font = Font.mediumMonospacedSystemFont(13);
-t.textColor = new Color("#e7eaf0");
+t.textColor = WHITE;
 
-w.addSpacer();
+left.addSpacer();
+put(left, eur(saved) + " €", 18, MINT, true);
+put(left, "ušetrené", 10, MUTED, false);
 
-const m = w.addText(saved.toFixed(0) + " €");
-m.font = Font.boldRoundedSystemFont(18);
-m.textColor = new Color("#9fd3b8");
-
-const ml = w.addText("ušetrené");
-ml.font = Font.systemFont(10);
-ml.textColor = new Color("#8d98ab");
-
-if (FAM !== "small") {
-  const left = Math.ceil(30 - dayF);
-  const pl = w.addText(left > 0 ? "Rastlina dozrie o " + left + " " + (left === 1 ? "deň" : left < 5 ? "dni" : "dní") : "Rastlina je zrelá");
-  pl.font = Font.systemFont(11);
-  pl.textColor = new Color("#9fd3b8");
+if (big) {
+  row.addSpacer(12);
+  const right = row.addStack();
+  right.layoutVertically();
+  put(right, "PRESNE", 9, MUTED, false);
+  put(right, dhm(ms), 12, WHITE, true);
+  put(right, sp(Math.floor(ms / HOUR)) + " h · " + sp(Math.floor(ms / 60000)) + " min", 10, MUTED, false);
+  right.addSpacer(6);
+  put(right, PER_DAY + " € / deň · " + (PER_DAY / 24).toFixed(2).replace(".", ",") + " € / h", 10, MINT, false);
+  if (GOAL > 0) put(right, GOAL_NAME + ": " + Math.min(100, saved / GOAL * 100).toFixed(1).replace(".", ",") + " %", 10, MINT, false);
+  const nm = MILES.find(v => v > dayF);
+  if (nm) {
+    const rem = START.getTime() + nm * DAY - now.getTime();
+    put(right, "Míľnik " + (nm < 1 ? "12 h" : nm + " " + dayWord(nm)) + " o " + dhm(rem), 10, WHITE, false);
+  }
+  const lf = Math.ceil(30 - dayF);
+  put(right, lf > 0 ? "Rastlina dozrie o " + lf + " " + dayWord(lf) : "Rastlina je zrelá", 10, MUTED, false);
 }
 
-w.refreshAfterDate = new Date(Date.now() + 15 * 60 * 1000);
+w.refreshAfterDate = new Date(Date.now() + 60 * 1000);
 
 if (config.runsInWidget) {
   Script.setWidget(w);
@@ -727,7 +754,7 @@ $("resetGame").addEventListener("click",()=>{if(!resetArmed){resetArmed=true;$("
 $("copy").addEventListener("click",()=>{const t=$("code");navigator.clipboard.writeText(t.value).then(()=>{$("copyMsg").textContent="Skopírované."}).catch(()=>{t.focus();t.select();$("copyMsg").textContent="Označil som text, skopíruj ho podržaním."})});
 const PLANTS=[["cannabis","Cannabis"],["kvet","Kvetina"],["slnecnica","Slnečnica"],["kaktus","Kaktus"]];
 function fillPlantSelect(sel){sel.innerHTML=PLANTS.map(p=>'<option value="'+p[0]+'">'+p[1]+'</option>').join("")}
-function widgetSrc(){return $("widgetTpl").textContent.replace("__START__",()=>S.start).replace("__PER__",()=>String(Number(S.per)||0)).replace("__ID__",()=>S.id).replace("__PLANT__",()=>S.plantMode||"cannabis").replace("__DRAW__",()=>drawPlantTo.toString())}
+function widgetSrc(){return $("widgetTpl").textContent.replace("__START__",()=>S.start).replace("__PER__",()=>String(Number(S.per)||0)).replace("__ID__",()=>S.id).replace("__GOAL__",()=>String(Number(S.goal)||0)).replace("__GOALNAME__",()=>JSON.stringify(S.goalName||"Cieľ")).replace("__PREV__",()=>String(Math.round(S.prevMs||0))).replace("__PLANT__",()=>S.plantMode||"cannabis").replace("__DRAW__",()=>drawPlantTo.toString())}
 function renderTabs(){const box=$("tabs");box.innerHTML="";
  ROOT.counters.forEach(c=>{const b=document.createElement("button");b.type="button";b.className="tab"+(c.id===ROOT.active?" on":"");b.textContent=c.name;b.addEventListener("click",()=>{if(c.id!==ROOT.active)switchTo(c.id)});box.appendChild(b)});
  const a=document.createElement("button");a.type="button";a.className="tab add";a.textContent="+";a.setAttribute("aria-label","Pridať počítadlo");a.addEventListener("click",openAdd);box.appendChild(a)}

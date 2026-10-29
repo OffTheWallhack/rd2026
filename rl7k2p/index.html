@@ -15,9 +15,6 @@
 <link rel="icon" href="icon-192.png">
 <style>html{-webkit-text-size-adjust:100%}:root{padding-top:env(safe-area-inset-top,0px)}body{margin:0;font-size:14px}img{max-width:100%}</style>
 <title>Rob Lounge</title>
-</head>
-<body>
-
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;700;800&family=Saira:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
@@ -580,6 +577,17 @@ main{padding-top:12px}
 .stamp{font-size:15px}
 @media (max-width:520px){.wheelwrap{width:min(100%,232px)}.rwheelp{padding:14px 10px 10px}}
 #rhist .lab{font-size:9px}
+/* profile stats */
+.profile{gap:10px}.phead{display:flex;align-items:center;gap:10px;min-width:0}.phead h2{margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pav{width:34px;height:34px;border-radius:50%;background-size:cover;background-position:center;border:1px solid var(--line);flex:none}
+#ptab{max-width:none;flex:none}
+.pst{display:grid;gap:10px}.pst .stats{margin:0;grid-template-columns:repeat(2,minmax(0,1fr))}
+.pst .stat small{display:block;font-size:10px;margin-top:2px;line-height:1.3;color:var(--dim)}
+.nethero{display:grid;gap:2px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:linear-gradient(180deg,var(--raise),var(--panel))}
+.nethero b{font:700 28px var(--mono);font-variant-numeric:tabular-nums;line-height:1.15}.nethero .lab{font-size:10px}
+.glist{display:grid}.grow{display:grid;grid-template-columns:1fr auto;gap:1px 10px;align-items:baseline;padding:8px 0;border-top:1px solid var(--line)}
+.grow b{font:700 13px var(--display);letter-spacing:.06em;text-transform:uppercase}.grow .gnet{font:700 15px var(--mono);font-variant-numeric:tabular-nums}
+.grow .lab{grid-column:1/-1;font-size:10px;line-height:1.35}
 </style>
 
 
@@ -754,10 +762,19 @@ const today=()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+
 let S={bal:100,inv:[],bets:[],daily:today(),ts:0,st:{open:0,spent:0,won:0,best:null,rw:0,sw:0,jw:0,lw:0}};
 try{const l=JSON.parse(localStorage.getItem('caselounge')||'null'); if(l&&l.inv)S=l}catch(e){}
 let DB=null,USER=null,REF=null,CAN_EDIT=false,saveT=null,MATCHES=[],dbState='wait';
-function save(){S.ts=Date.now(); try{localStorage.setItem('caselounge',JSON.stringify(S))}catch(e){}
+function save(){S.ts=Date.now(); {const L=LS();if(S.bal>L.peak)L.peak=S.bal;if(L.last!==today()){L.last=today();L.days++}} try{localStorage.setItem('caselounge',JSON.stringify(S))}catch(e){}
   clearTimeout(saveT); saveT=setTimeout(()=>{ if(REF) REF.set(JSON.parse(JSON.stringify(S))).catch(()=>{}) },1200);
   animBal(); dailyBtn();}
 function addBal(x){S.bal=Math.round((S.bal+x)*100)/100}
+/* ---------- lifetime stats (profile) ---------- */
+const r2=x=>Math.round(x*100)/100;
+function LS(){if(!S.ls){const o=S.st||{};let t0=Date.now();(S.inv||[]).forEach(x=>{if(x.t&&x.t<t0)t0=x.t});(S.bets||[]).forEach(b=>{if(b.t&&b.t<t0)t0=b.t});
+  const net=v=>({n:0,in:v<0?-v:0,out:v>0?v:0,w:0,l:0,best:0});
+  S.ls={since:t0,last:'',days:0,peak:S.bal,claim:{d:0,dn:0,t:0,tn:0},sold:{n:0,cr:0},
+    g:{case:{n:o.open||0,in:o.spent||0,out:o.won||0,w:0,l:0,best:o.best?o.best.p:0},roul:net(o.rw||0),slot:net(o.sw||0),jp:net(o.jw||0),lounge:net(o.lw||0)}}}
+  return S.ls}
+function rec(k,inn,out,n=1){const o=LS().g[k];o.in=r2(o.in+inn);o.out=r2(o.out+out);if(n){o.n+=n;const d=out-inn;if(d>.004){o.w++;if(d>o.best)o.best=r2(d)}else if(d<-.004)o.l++}}
+function recSold(n,cr){if(!n)return;const s=LS().sold;s.n+=n;s.cr=r2(s.cr+cr)}
 function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(t._t);t._t=setTimeout(()=>t.hidden=true,2600)}
 function dailyBtn(){const b=$('#daily'); const ok=S.daily!==today(); b.disabled=!ok; b.disabled=false;b.classList.toggle('dot',ok||earnT().done.length<TASKS.length);b.title='Denný bonus a kredity za zdravé veci'}
 $('#daily').onclick=()=>openCredits();
@@ -863,10 +880,10 @@ function openNow(n){
   const c=CASES[openCase],cost=caseCost(c); if(S.bal<cost*n){toast('Nemáš dosť kreditov');auto=null;renderOpener();return}
   addBal(-cost*n);const T=tday();S.st.open+=n;S.st.spent+=cost*n;T.open+=n;T.spent+=cost*n;
   const wins=Array.from({length:n},()=>rollCase(c));
-  wins.forEach(w=>{S.inv.unshift(w);const p=price(w);S.st.won+=p;T.won+=p;T.rar[ITEMS[w.i][2]]++;
+  wins.forEach(w=>{S.inv.unshift(w);const p=price(w);S.st.won+=p;rec('case',cost,p);T.won+=p;T.rar[ITEMS[w.i][2]]++;
     if(!S.st.best||p>S.st.best.p)S.st.best={p,i:w.i,f:w.f,s:w.s};if(!T.best||p>T.best.p)T.best={p,i:w.i,f:w.f,s:w.s};
     T.drops.unshift({i:w.i,f:w.f,s:w.s});T.drops.length=Math.min(T.drops.length,16)});
-  if(auto&&auto.sell){for(const w of wins){const p=price(w);if(p<1){S.inv=S.inv.filter(x=>x.id!==w.id);addBal(p);w.sold=1}}}
+  if(auto&&auto.sell){for(const w of wins){const p=price(w);if(p<1){S.inv=S.inv.filter(x=>x.id!==w.id);addBal(p);recSold(1,p);w.sold=1}}}
   save();
   const op=$('#opener');if(op&&op.getBoundingClientRect().top<0)op.scrollIntoView({behavior:'smooth',block:'start'});
   if(n>1){renderOpener();showWon(wins,cost*n);return}
@@ -903,7 +920,7 @@ function showWon(ws,cost){
      <div class="prow"><span class="rprice" id="rvp">0,00 CR</span>${prof?`<span class="pbadge">PROFIT +${fmt(pr-cost)}</span>`:`<span class="lose">${fmt(pr-cost)}</span>`}</div>
      ${w.sold?'<span class="lab">automaticky predané</span>':`<div class="betrow"><button class="btn sm" id="sellwon">Predať ${fmt(pr)}</button><a class="btn sm ghost" href="#inv">Inventár</a></div>`}</div></div>`;
     countUp($('#rvp'),pr,auto?450:850);if(r>=3){flash(RCOL[r]);buzz([40,60,90])}else if(prof){buzz(30)}if(r===4)confetti($('#rv'),'#e4ae39');else if(r===3)confetti($('#rv'),'#eb4b4b');else if(prof&&pr>cost*3)confetti($('#rv'),'#59d38a')}
-  const sb=$('#sellwon');if(sb)sb.onclick=()=>{const ids=new Set(lastWon.filter(w=>!w.sold).map(w=>w.id));let s=0;S.inv=S.inv.filter(x=>ids.has(x.id)?(s+=price(x),false):true);addBal(s);save();box.innerHTML='<div class="wonph lab">Predané za '+fmt(s)+' CR</div>';renderButtons()};
+  const sb=$('#sellwon');if(sb)sb.onclick=()=>{const ids=new Set(lastWon.filter(w=>!w.sold).map(w=>w.id));let s=0,cnt=0;S.inv=S.inv.filter(x=>ids.has(x.id)?(s+=price(x),cnt++,false):true);addBal(s);recSold(cnt,s);save();box.innerHTML='<div class="wonph lab">Predané za '+fmt(s)+' CR</div>';renderButtons()};
   renderToday();
 }
 function renderToday(){
@@ -930,7 +947,7 @@ function renderInv(){
 $('#invsort').onchange=renderInv;
 $('#invlist').onclick=e=>{const c=e.target.closest('[data-id]');if(!c)return;const id=c.dataset.id;selInv.has(id)?selInv.delete(id):selInv.add(id);renderInv()};
 $('#selcheap').onclick=()=>{S.inv.forEach(x=>{if(price(x)<1)selInv.add(x.id)});renderInv()};
-$('#sellsel').onclick=()=>{let s=0;S.inv=S.inv.filter(x=>selInv.has(x.id)?(s+=price(x),false):true);selInv.clear();addBal(s);save();renderInv();toast('Predané za '+fmt(s)+' CR')};
+$('#sellsel').onclick=()=>{let s=0,cnt=0;S.inv=S.inv.filter(x=>selInv.has(x.id)?(s+=price(x),cnt++,false):true);selInv.clear();addBal(s);recSold(cnt,s);save();renderInv();toast('Predané za '+fmt(s)+' CR')};
 
 /* ---------- bet amount helpers ---------- */
 function amt(inp){const v=parseFloat(String(inp.value).replace(',','.'));return isFinite(v)?Math.round(v*100)/100:0}
@@ -990,7 +1007,7 @@ $('#rspin').onclick=()=>{
   ball.classList.remove('drop');ball.offsetWidth;ball.classList.add('drop');
   let d=40,t=0;const tk=()=>{t+=d;if(t<5000){beep(1500,.015,.02);d*=1.06;setTimeout(tk,d)}};tk();
   setTimeout(()=>{rHist.push(n);let win=0;const hits=[];for(const key in RBET){if(hitK(key,n)){win+=RBET[key]*payX(key);hits.push(key)}}
-    win=Math.round(win*100)/100;addBal(win);S.st.rw+=win-tot;save();
+    win=Math.round(win*100)/100;addBal(win);S.st.rw+=win-tot;rec('roul',tot,win);save();
     const wr=$('#wres');wr.textContent=n;wr.className='wres on '+ncol(n);
     RBET={};RBhist=[];rBusy=false;renderR();
     const nb=document.querySelector(`#rtable [data-b="n${n}"]`);nb&&nb.classList.add('hit','won');
@@ -1060,7 +1077,7 @@ $('#sbm').onclick=()=>{if(sBetI>0)sBetI--;sBetShow()};$('#sbp').onclick=()=>{if(
 $('#sturbo').onclick=()=>{sTurbo=!sTurbo;$('#sturbo').textContent='Turbo: '+(sTurbo?'zap.':'vyp.')};
 $('#sauto').onclick=()=>{if(sAuto){sAuto=0;$('#sauto').textContent='Auto 10';return}sAuto=10;$('#sauto').textContent='Stop auto';if(!sBusy)doSpin()};
 $('#spin').onclick=()=>doSpin();
-$('#sbuy').onclick=()=>{if(sBusy||fsLeft>0)return;const bet=BETS[sBetI],cost=Math.round(bet*28*100)/100;if(cost>S.bal){toast('Nemáš dosť kreditov');return}addBal(-cost);S.st.sw-=cost;save();fsLeft=10;fsWin=0;fsBadge();flash('#e3a53c');chime(4);toast('10 free spinov ×3!');setTimeout(doSpin,700)};
+$('#sbuy').onclick=()=>{if(sBusy||fsLeft>0)return;const bet=BETS[sBetI],cost=Math.round(bet*28*100)/100;if(cost>S.bal){toast('Nemáš dosť kreditov');return}addBal(-cost);S.st.sw-=cost;rec('slot',cost,0,0);save();fsLeft=10;fsWin=0;fsBadge();flash('#e3a53c');chime(4);toast('10 free spinov ×3!');setTimeout(doSpin,700)};
 function animateReels(grid,done){
   const cell=parseFloat(getComputedStyle($('#sgrid')).getPropertyValue('--cell'));let left=5;const base=sTurbo?350:900,step=sTurbo?120:260;
   const tick=setInterval(sfx.tick,sTurbo?60:90);
@@ -1085,6 +1102,7 @@ function doSpin(){
   const {grid}=SL.spin(Math.random);
   animateReels(grid,()=>{
     curGrid=grid;const mult=free?SL.FSMULT:1;const res=SL.evaluate(grid,bet,mult);const win=Math.round(res.win*100)/100;
+    rec('slot',free?0:bet,win);
     if(win){addBal(win);S.st.sw+=win;if(free)fsWin+=win}
     showLines(res);
     let msg=win?`<span class="win">+${fmt(win)} CR</span>${res.wins.length?` · ${res.wins.length} ${res.wins.length===1?'línia':res.wins.length<5?'línie':'línií'}`:''}`:(free?'Free spin bez výhry':'');
@@ -1110,7 +1128,7 @@ function startBonus(bet,done){
     ${end?`<div class="betrow" style="margin-top:12px;justify-content:space-between"><span>Bonus vyplatil <b class="win">${fmt(total)} CR</b></span><button class="btn gold" id="bdone">Pokračovať</button></div>`:''}</div>`;
     if(end){$('#bdone').onclick=()=>{box.innerHTML='';done()};return}
     box.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{const k=+b.dataset.k;opened.push(k);total+=vals[k]*bet;beep(500+vals[k]*20,.12,.05,'triangle');
-      if(opened.length===3){addBal(total);S.st.sw+=total;if(fsLeft>0||fsWin)fsWin+=total;save();sfx.win();draw(true)}else draw(false)});
+      if(opened.length===3){addBal(total);S.st.sw+=total;rec('slot',0,total,0);if(fsLeft>0||fsWin)fsWin+=total;save();sfx.win();draw(true)}else draw(false)});
   };
   draw(false);box.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
@@ -1204,7 +1222,7 @@ function startJpRoll(){
 function finishJp(){
   const W=JP.winner,pot=jpPot();const all=JP.players.flatMap(p=>p.items).sort((a,b)=>price(b)-price(a));
   let feeLeft=pot*FEE;const fee=[];const keep=[];for(const it of all){const p=price(it);if(p<=feeLeft&&fee.length<6){fee.push(it);feeLeft-=p}else keep.push(it)}
-  const won=sum(keep);const mine=myStake();
+  const won=sum(keep);const mine=myStake();if(mine)rec('jp',mine,W.n==='Ty'?won:0);
   if(W.n==='Ty'){S.inv.unshift(...keep.map(it=>({...it,id:uid(),t:Date.now()})));S.st.jw+=won-mine;sfx.win();flash('#e3a53c');buzz([60,40,120]);chime(4);coinBurst($('.wallet'),24,$('#jpwheelbox'))}else if(mine){S.st.jw-=mine;sfx.lose()}
   if(mine){S.jpPending=null;save()}
   JP.hist.unshift({r:JP.round,n:W.n,v:pot,c:W.chance});JP.hist.length=Math.min(JP.hist.length,10);
@@ -1284,14 +1302,39 @@ const myAvURL=()=>{const a=prof().av;return a.startsWith('seed:')?avatarURL(a.sl
 const dn=n=>n==='Ty'?prof().name:n;
 const avURL=n=>n==='Ty'?myAvURL():avatarURL(n);
 function renderMe(){$('#mename').textContent=prof().name;$('#meav').style.backgroundImage=`url(${myAvURL()})`}
+const f0=n=>Math.round(n).toLocaleString('sk-SK');
+const sg=n=>(n>.004?'+':n<-.004?'−':'')+fmt(Math.abs(n));
+function statsHTML(){
+  const L=LS(),G=L.g,ks=[['case','Cases'],['roul','Ruleta'],['slot','Sloty'],['jp','Jackpot'],['lounge','Lounge']];
+  const T={n:0,in:0,out:0,w:0,l:0};let best=null;
+  ks.forEach(([k,nm])=>{const g=G[k];T.n+=g.n;T.in+=g.in;T.out+=g.out;T.w+=g.w;T.l+=g.l;if(g.best>0&&(!best||g.best>best.v))best={v:g.best,nm}});
+  const net=T.out-T.in,cl=L.claim,got=100+cl.d+cl.t,inv=S.inv.reduce((a,x)=>a+price(x),0);
+  const since=new Date(L.since).toLocaleDateString('sk-SK'),rate=T.w+T.l?Math.round(T.w/(T.w+T.l)*100):0;
+  const tile=(a,b,c)=>`<div class="stat"><span class="lab">${a}</span><b>${b}</b>${c?`<small class="lab">${c}</small>`:''}</div>`;
+  return `<div class="pst"><div class="nethero"><span class="lab">Bilancia hier od ${since}</span><b class="${net>=0?'win':'lose'}">${sg(net)} CR</b><span class="lab">${T.n} kôl · ${L.days} ${L.days===1?'aktívny deň':'aktívnych dní'}</span></div>
+   <div class="stats">
+    ${tile('Prevzaté kredity',fmt(got)+' CR',`štart 100 · bonus ${cl.dn}× · úlohy ${cl.tn}×`)}
+    ${tile('Vsadené spolu',fmt(T.in)+' CR','')}
+    ${tile('Vyplatené spolu',fmt(T.out)+' CR','')}
+    ${tile('Výhry / prehry',`<span class="win">${T.w}</span> / <span class="lose">${T.l}</span>`,rate+' % kôl vyhraných')}
+    ${tile('Najväčšia výhra',best?'+'+fmt(best.v):'—',best?best.nm:'')}
+    ${tile('Najvyšší zostatok',fmt(L.peak)+' CR','teraz '+fmt(S.bal))}
+    ${tile('Predané skiny',L.sold.n+' ks',fmt(L.sold.cr)+' CR')}
+    ${tile('Inventár',S.inv.length+' ks',fmt(inv)+' CR')}
+   </div>
+   <div class="glist">${ks.map(([k,nm])=>{const g=G[k],n=g.out-g.in;return `<div class="grow"><b>${nm}</b><span class="gnet ${n>=0?'win':'lose'}">${g.n||g.in||g.out?sg(n):'—'}</span><span class="lab">${g.n||g.in||g.out?`${g.n} kôl · ${g.w} V / ${g.l} P · vsadené ${f0(g.in)} · späť ${f0(g.out)}${g.best>0?' · max +'+fmt(g.best):''}`:'zatiaľ nehrané'}</span></div>`}).join('')}</div></div>`;
+}
 $('#mebtn').onclick=()=>{
-  const P=prof();let pick=P.av;const seeds=['rob','ace','eco','clutch','smoke','flash','entry','lurk','awp','igl','rush','plant'];
-  const draw=()=>{$('#modal').innerHTML=`<div class="modal"><div class="profile"><div class="mhead"><h2 style="font-size:24px">Tvoj profil</h2><button class="btn sm ghost" id="px">Zavrieť</button></div>
-   <label class="lab" for="pname">Meno v hre</label><input id="pname" class="field" maxlength="18" value="${esc(P.name)}">
+  const P=prof();let pick=P.av,tab='st';const seeds=['rob','ace','eco','clutch','smoke','flash','entry','lurk','awp','igl','rush','plant'];
+  const draw=()=>{$('#modal').innerHTML=`<div class="modal"><div class="profile"><div class="mhead"><div class="phead"><i class="pav" style="background-image:url(${pick.startsWith('seed:')?avatarURL(pick.slice(5)):pick})"></i><h2 style="font-size:20px">${esc(P.name)}</h2></div><button class="btn sm ghost" id="px">Zavrieť</button></div>
+   <div class="seg" id="ptab"><button data-t="st" class="${tab==='st'?'on':''}">Štatistiky</button><button data-t="ed" class="${tab==='ed'?'on':''}">Profil</button></div>
+   ${tab==='st'?statsHTML():`<label class="lab" for="pname">Meno v hre</label><input id="pname" class="field" maxlength="18" value="${esc(P.name)}">
    <span class="lab">Avatar</span><div class="avgrid">${seeds.map(s=>`<button data-s="seed:${s}" class="${pick==='seed:'+s?'on':''}" style="background-image:url(${avatarURL(s)})" aria-label="Avatar ${s}"></button>`).join('')}${pick.startsWith('data:')?`<button class="on" style="background-image:url(${pick})" aria-label="Vlastná fotka"></button>`:''}</div>
    <label class="btn sm" style="justify-self:start">Nahrať vlastnú fotku<input type="file" id="pfile" accept="image/*" hidden></label>
-   <div class="betrow" style="justify-content:flex-end"><button class="btn gold" id="psave">Uložiť</button></div></div></div>`;
+   <div class="betrow" style="justify-content:flex-end"><button class="btn gold" id="psave">Uložiť</button></div>`}</div></div>`;
    $('#px').onclick=()=>$('#modal').innerHTML='';
+   document.querySelectorAll('#ptab [data-t]').forEach(b=>b.onclick=()=>{if(tab==='ed'&&$('#pname'))P.name=$('#pname').value;tab=b.dataset.t;draw()});
+   if(tab!=='ed')return;
    $('.avgrid').onclick=e=>{const b=e.target.closest('[data-s]');if(b){P.name=$('#pname').value;pick=b.dataset.s;draw()}};
    $('#pfile').onchange=e=>{const f=e.target.files[0];if(!f)return;const img=new Image();img.onload=()=>{const c=document.createElement('canvas');c.width=c.height=96;const g=c.getContext('2d');const s=Math.min(img.width,img.height);g.drawImage(img,(img.width-s)/2,(img.height-s)/2,s,s,0,0,96,96);pick=c.toDataURL('image/jpeg',.82);P.name=$('#pname').value;draw()};img.src=URL.createObjectURL(f)};
    $('#psave').onclick=()=>{P.name=($('#pname').value||'Rob').trim().slice(0,18);P.av=pick;save();renderMe();$('#modal').innerHTML='';toast('Profil uložený');JP.dirty=true}};
@@ -1311,9 +1354,9 @@ function openCredits(){
    <div class="tasks">${TASKS.map(([id,n,cr,sec])=>{const done=E.done.includes(id);return `<div class="task${done?' done':''}"><span>${esc(n)}</span><span class="money">+${cr}</span>${done?'<span class="okc">✓</span>':`<button class="btn sm" data-task="${id}">${sec?'Spustiť '+Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0'):'Hotovo'}</button>`}</div>`}).join('')}</div>
    <p class="lab" style="margin:0">Keď minieš kredity, môžeš predať skiny v Inventári alebo počkať na zajtrajší bonus.</p></div></div>`;
   $('#cx').onclick=()=>{clearInterval(taskTimer);taskTimer=null;$('#modal').innerHTML=''};
-  const cd=$('#cdaily');if(cd)cd.onclick=()=>{S.daily=today();addBal(DAILY);save();chime(2);toast('+100 CR');openCredits()};
+  const cd=$('#cdaily');if(cd)cd.onclick=()=>{S.daily=today();addBal(DAILY);{const c=LS().claim;c.d=r2(c.d+DAILY);c.dn++}save();chime(2);toast('+100 CR');openCredits()};
   document.querySelectorAll('[data-task]').forEach(b=>b.onclick=()=>{
-    const t=TASKS.find(x=>x[0]===b.dataset.task);const award=()=>{const E2=earnT();if(E2.done.includes(t[0]))return;E2.done.push(t[0]);E2.cr+=t[2];addBal(t[2]);save();chime(3);toast(`+${t[2]} CR · ${t[1]}`);openCredits()};
+    const t=TASKS.find(x=>x[0]===b.dataset.task);const award=()=>{const E2=earnT();if(E2.done.includes(t[0]))return;E2.done.push(t[0]);E2.cr+=t[2];addBal(t[2]);{const c=LS().claim;c.t+=t[2];c.tn++}save();chime(3);toast(`+${t[2]} CR · ${t[1]}`);openCredits()};
     if(!t[3]){award();return}
     if(taskTimer)return;let left=t[3];b.disabled=true;b.classList.add('on');
     taskTimer=setInterval(()=>{left--;b.textContent=Math.floor(left/60)+':'+String(left%60).padStart(2,'0');if(left<=3&&left>0)beep(900,.05,.04);if(left<=0){clearInterval(taskTimer);taskTimer=null;award()}},1000);
@@ -1360,8 +1403,8 @@ function settle(){
     for(const l of b.legs){const m=MATCHES.find(x=>x.id===l.m);if(!m){if(dbState==='ok')l.r='void';else pending=true;continue}if(!m.result){pending=true;continue}
       if(m.result==='void'){l.r='void';continue} if(l.r==='void')continue; if(m.result===l.p){l.r='won';odds*=l.o}else{l.r='lost';lost=true}}
     const sv=b.cr+sum(b.items);
-    if(lost){b.st='lost';S.st.lw-=sv;changed=true}
-    else if(!pending){const gain=b.cr*odds+sum(b.items)*(odds-1);addBal(gain);S.inv.unshift(...b.items.map(x=>({...x,id:uid()})));b.st=odds===1&&b.legs.every(l=>l.r==='void')?'void':'won';b.pay=gain+sum(b.items);S.st.lw+=b.pay-sv;changed=true;if(b.st==='won')wonT.push(b)}}
+    if(lost){b.st='lost';S.st.lw-=sv;rec('lounge',sv,0);changed=true}
+    else if(!pending){const gain=b.cr*odds+sum(b.items)*(odds-1);addBal(gain);S.inv.unshift(...b.items.map(x=>({...x,id:uid()})));b.st=odds===1&&b.legs.every(l=>l.r==='void')?'void':'won';b.pay=gain+sum(b.items);S.st.lw+=b.pay-sv;rec('lounge',sv,b.pay,b.st==='void'?0:1);changed=true;if(b.st==='won')wonT.push(b)}}
   if(changed){save();if(wonT.length){toast(`Vyhral si ${wonT.length===1?'tiket':wonT.length+' tikety'}! +${fmt(wonT.reduce((a,b)=>a+b.pay,0))} CR`);flash('#59d38a');chime(4);buzz([60,40,120])}else toast('Tikety vyhodnotené')}
 }
 function obtn(m,p,big){const s=mStatus(m);const on=SLIP.some(x=>x.m===m.id&&x.p===p);const lab=m.options?esc(pickName(m,p).split(' ').slice(-1)[0]):p==='home'?'1':p==='draw'?'X':'2';
@@ -1502,6 +1545,3 @@ async function boot(){
 if(document.readyState==='complete')boot();else addEventListener('load',boot);
 setInterval(()=>{if(!$('#v-lounge').hidden&&!(document.activeElement&&document.activeElement.closest&&document.activeElement.closest('#slip,#lbody input')))renderLounge()},60000);
 </script>
-
-</body>
-</html>

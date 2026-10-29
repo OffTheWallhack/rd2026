@@ -597,6 +597,28 @@ main{padding-top:12px}
 .umsg{text-align:center;font:600 14px var(--mono);min-height:20px;display:grid;gap:2px;justify-items:center}
 .tures{display:grid;gap:10px;justify-items:center}.tures .it{width:150px}
 .tuc .chips,.upg .chips{justify-content:center}
+/* breathing guide + running task */
+.runp{display:grid;gap:8px;padding:12px;border:1px solid var(--gold);border-radius:10px;background:color-mix(in srgb,var(--gold) 8%,var(--bg))}
+.runh{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.runh .money{font:700 22px var(--mono);font-variant-numeric:tabular-nums}
+.runbar{height:5px;border-radius:3px;background:var(--line);overflow:hidden}.runbar i{display:block;height:100%;width:0;background:var(--gold)}
+.brz{position:relative;height:190px;display:grid;place-items:center}
+.brz::before{content:"";position:absolute;width:172px;height:172px;border-radius:50%;border:1px dashed var(--line)}
+.brc{position:absolute;width:172px;height:172px;border-radius:50%;border:2px solid var(--win);background:radial-gradient(circle,color-mix(in srgb,var(--win) 45%,transparent),color-mix(in srgb,var(--win) 10%,transparent) 72%);box-shadow:0 0 28px color-mix(in srgb,var(--win) 30%,transparent);transform:scale(.5);transition:transform .12s linear,border-color .3s}
+.brc[data-ph="hold"]{border-color:var(--gold)}
+.brt{position:relative;display:grid;gap:2px;text-align:center;pointer-events:none}.brt b{font:700 19px var(--display);letter-spacing:.05em;text-transform:uppercase}.brt span{font:600 30px var(--mono);font-variant-numeric:tabular-nums}
+@media (prefers-reduced-motion:reduce){.brc{transition:none}}
+/* jackpot chance */
+.jpch{display:flex;align-items:center;gap:12px;min-height:44px;margin:10px 0 0;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.jpch:has(.jpring){border-color:var(--gold);background:color-mix(in srgb,var(--gold) 8%,var(--bg))}
+.jpring{flex:none;position:relative;width:66px;height:66px;border-radius:50%;background:conic-gradient(var(--gold) 0 var(--p),var(--line) var(--p) 360deg);display:grid;place-items:center}
+.jpring::before{content:"";position:absolute;inset:6px;border-radius:50%;background:color-mix(in srgb,var(--gold) 8%,var(--bg))}
+.jpring b{position:relative;font:700 13px var(--mono);font-variant-numeric:tabular-nums}
+.jpchi{display:grid;gap:2px;min-width:0}.jpchi b{font:800 28px/1 var(--display);color:var(--gold);font-variant-numeric:tabular-nums}.jpchi .lab{line-height:1.3}
+.dl{font:700 10px var(--mono)}.dl.up{color:var(--win)}.dl.dn{color:var(--lose)}
+.jpch.bump{animation:jpb .4s ease}@keyframes jpb{0%{transform:scale(1)}40%{transform:scale(1.025)}100%{transform:scale(1)}}
+.sharebar{height:22px}.sharebar i{position:relative;display:grid;place-items:center;min-width:0}.sharebar em{font:700 10px var(--mono);font-style:normal;color:#fff;text-shadow:0 1px 2px #000a}.sharebar i.me{box-shadow:inset 0 0 0 2px #fff9}
+.pl{position:relative;overflow:hidden;padding-bottom:9px}.pl .pb{position:absolute;left:0;bottom:0;height:3px;width:var(--w);background:var(--pc);transition:width .4s ease}
+.pl .c.ch{color:var(--pc);font-weight:700;font-size:14px}.pl.me .c.ch{color:var(--gold)}
 </style>
 
 
@@ -670,6 +692,7 @@ main{padding-top:12px}
         </div>
         <div class="tbar"><i id="jptbar"></i></div>
         <div class="sharebar" id="jpshare"></div>
+        <div class="jpch" id="jpch"></div>
         <div class="jpwheel" id="jpwheelbox" hidden><div class="reel" id="jpreel"></div></div>
         <div id="jpresult"></div>
         <div class="betrow jpact"><button class="btn gold" id="jpadd">Vložiť skiny</button><span id="jpme" class="lab"></span></div>
@@ -1271,11 +1294,15 @@ function renderJpLive(){
   if(JP.phase==='run'){left=Math.max(0,(JP.ends-now)/1000);t.classList.remove('txt');t.textContent=left.toFixed(1).replace('.',',')+' s';t.classList.toggle('hot',left<=5);$('#jptbar').style.width=(left/ROUND_S*100)+'%'}
   else{t.classList.remove('hot');t.classList.add('txt');t.textContent=JP.phase==='wait'?'čaká sa na hráčov':JP.phase==='roll'?'točí sa':JP.phase==='done'?`ďalšie o ${Math.max(0,Math.ceil((JP.next-now)/1000))} s`:'—';$('#jptbar').style.width=JP.phase==='wait'?'100%':'0%'}
   const can=jpCanDeposit();$('#jpadd').disabled=!can;const ms=myStake();
-  $('#jpme').innerHTML=ms?`Tvoj vklad ${fmt(ms)} CR · šanca <b class="money">${(ms/pot*100).toFixed(2).replace('.',',')} %</b>`:(can?'':'Kolo je zamknuté');
+  const ch=pot?ms/pot:0;if(!ms){JP._ch=0;JP._d=0}else if(Math.abs(ch-(JP._ch||0))>1e-6){JP._d=ch-(JP._ch||0);JP._ch=ch}
+  const pc=x=>(x*100).toFixed(x>=.1?1:2).replace('.',',');
+  const chh=ms?`<div class="jpring" style="--p:${(ch*360).toFixed(1)}deg"><b>${pc(ch)}</b></div><div class="jpchi"><span class="lab">Tvoja šanca na výhru</span><b>${pc(ch)} %</b><span class="lab">1 z ${(1/ch).toFixed(1).replace('.',',')} · vklad ${fmt(ms)} CR · výhra ≈ ${fmt(pot*(1-FEE))} CR</span>${JP._d&&Math.abs(JP._d)>.0005?`<span class="dl ${JP._d>0?'up':'dn'}">${JP._d>0?'▲':'▼'} ${pc(Math.abs(JP._d))} % od posledného vkladu</span>`:''}</div>`:`<span class="lab">Vlož skiny a uvidíš svoju šancu na výhru</span>`;
+  if(JP._chh!==chh){const el=$('#jpch');el.innerHTML=chh;if(JP._chh!==undefined){el.classList.remove('bump');void el.offsetWidth;el.classList.add('bump')}JP._chh=chh}
+  $('#jpme').textContent=ms?'':(can?'':'Kolo je zamknuté');
   if(!JP.dirty)return;JP.dirty=false;
   const ps=[...JP.players].sort((a,b)=>b.v-a.v);
-  $('#jpshare').innerHTML=pot?JP.players.map(p=>`<i style="width:${p.v/pot*100}%;background:${pcol(p.n)}" title="${esc(dn(p.n))}"></i>`).join(''):'';
-  $('#jpplayers').innerHTML=ps.length?ps.map(p=>`<div class="pl${p.n==='Ty'?' me':''}">${av(p.n)}<span class="n">${esc(dn(p.n))} <span class="lab">${p.items.length} ks</span></span><span class="c">${fmt(p.v)} CR</span><span class="c ch">${(p.v/pot*100).toFixed(1).replace('.',',')} %</span></div>`).join(''):'<div class="empty">Zatiaľ nikto nevložil. Buď prvý.</div>';
+  $('#jpshare').innerHTML=pot?JP.players.map(p=>`<i class="${p.n==='Ty'?'me':''}" style="width:${p.v/pot*100}%;background:${pcol(p.n)}" title="${esc(dn(p.n))}"><em>${p.v/pot>=.09?Math.round(p.v/pot*100)+'%':''}</em></i>`).join(''):'';
+  $('#jpplayers').innerHTML=ps.length?ps.map(p=>`<div class="pl${p.n==='Ty'?' me':''}" style="--w:${(p.v/pot*100).toFixed(2)}%;--pc:${pcol(p.n)}">${av(p.n)}<span class="n">${esc(dn(p.n))} <span class="lab">${p.items.length} ks</span></span><span class="c">${fmt(p.v)} CR</span><span class="c ch">${(p.v/pot*100).toFixed(1).replace('.',',')} %</span><i class="pb"></i></div>`).join(''):'<div class="empty">Zatiaľ nikto nevložil. Buď prvý.</div>';
   syncFeed();
   $('#jphist').innerHTML=JP.hist.length?JP.hist.map(h=>`<div class="hr">${av(h.n)}<span><b>${esc(dn(h.n))}</b> · #${h.r}</span><span class="c">${fmt(h.v)} CR · ${(h.c*100).toFixed(1).replace('.',',')} %</span></div>`).join(''):'<span class="lab">zatiaľ žiadne</span>';
   $('#jphash').textContent=`Hash kola (provably fair): ${JP.hash}`;
@@ -1386,32 +1413,50 @@ const achDone=id=>!!(S.ach&&S.ach[id]);
 const achReady=()=>ACH.filter(a=>!achDone(a[0])&&a[3]()>=a[4]).length;
 const achProg=a=>RANKP.includes(a[0])?(topR()<0?'zatiaľ nič':'najlepší: '+RNAME[topR()]):Math.min(a[3](),a[4])+' / '+a[4];
 function claimExtra(cr){const c=LS().claim;c.a=r2((c.a||0)+cr);c.an=(c.an||0)+1}
-let taskTimer=null,credTab='day';
+const mmss=s=>Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+let credTab='day',RUN=null,runT=null;
+const BR={in:4,hold:2,out:6};
+function taskBtn(id,sec){
+  if(RUN&&RUN.id===id)return `<button class="btn sm on" data-task="${id}" disabled>${mmss(Math.max(0,Math.ceil((RUN.end-Date.now())/1000)))}</button>`;
+  return `<button class="btn sm" data-task="${id}"${RUN&&sec?' disabled':''}>${sec?'Spustiť '+mmss(sec):'Hotovo'}</button>`}
+function awardTask(t){const E2=earnT();if(E2.done.includes(t[0]))return;E2.done.push(t[0]);E2.cr+=t[2];addBal(t[2]);{const c=LS().claim;c.t+=t[2];c.tn++}
+  if(E2.done.length>=WK.min){const w=wkS();if(!w.days.includes(today()))w.days.push(today())}
+  save();chime(3);toast(`+${t[2]} CR · ${t[1]}`)}
+function runHTML(){const br=RUN.id==='breath';return `<div class="runp"><div class="runh"><b>${esc(RUN.name)}</b><span class="money" id="runtime">${mmss(Math.max(0,Math.ceil((RUN.end-Date.now())/1000)))}</span></div>${br?`<div class="brz"><div class="brc" id="brc"></div><div class="brt"><b id="brw">Nadýchni sa</b><span id="brs">${BR.in}</span></div></div>`:''}<div class="runbar"><i id="runbar"></i></div><div class="betrow" style="justify-content:space-between"><span class="lab">${br?`nádych ${BR.in} s · zadržať ${BR.hold} s · výdych ${BR.out} s`:'môžeš medzitým splniť aj iné veci'}</span><button class="btn sm ghost" id="runx">Zrušiť</button></div></div>`}
+function runStart(t){if(RUN)return;RUN={id:t[0],name:t[1],total:t[3],start:Date.now(),end:Date.now()+t[3]*1000,ph:'',beep:0};runT=setInterval(runTick,100);openCredits()}
+function runStop(){clearInterval(runT);runT=null;RUN=null}
+function runTick(){if(!RUN)return;const ms=RUN.end-Date.now(),left=Math.ceil(ms/1000);
+  if(ms<=0){const t=TASKS.find(x=>x[0]===RUN.id);runStop();awardTask(t);if($('#ctab'))openCredits();return}
+  const rt=$('#runtime');if(rt)rt.textContent=mmss(left);const rb=$('#runbar');if(rb)rb.style.width=((Date.now()-RUN.start)/(RUN.total*1000)*100)+'%';
+  const tb=document.querySelector(`.task [data-task="${RUN.id}"]`);if(tb)tb.textContent=mmss(left);
+  if(left<=3&&left>0&&RUN.beep!==left){RUN.beep=left;beep(900,.05,.04)}
+  if(RUN.id==='breath'&&$('#brc')){const cyc=BR.in+BR.hold+BR.out,e=((Date.now()-RUN.start)/1000)%cyc;let ph,s,w,sc;
+    if(e<BR.in){ph='in';w='Nadýchni sa';s=BR.in-e;sc=.5+.5*(.5-.5*Math.cos(Math.PI*e/BR.in))}
+    else if(e<BR.in+BR.hold){ph='hold';w='Zadrž';s=BR.in+BR.hold-e;sc=1}
+    else{ph='out';w='Vydýchni';s=cyc-e;sc=.5+.5*(.5+.5*Math.cos(Math.PI*(e-BR.in-BR.hold)/BR.out))}
+    const c=$('#brc');c.style.transform=`scale(${sc.toFixed(3)})`;c.dataset.ph=ph;$('#brw').textContent=w;$('#brs').textContent=Math.ceil(s);
+    if(RUN.ph!==ph){RUN.ph=ph;buzz(ph==='hold'?8:14);beep(ph==='in'?520:ph==='out'?400:460,.12,.025,'sine')}}}
 function openCredits(){
   const E=earnT(),claimed=S.daily===today(),W=wkS(),nx=nextStreak(),cur=streakNow(),bn=sbonus(nx),nAch=achReady();
   const dayHTML=`<div class="dailyc${claimed?' done':''}"><div><b>Denný bonus</b><span class="lab">${claimed?`séria ${cur} ${cur===1?'deň':cur<5?'dni':'dní'} · zajtra +${DAILY+sbonus(nx)} CR`:`séria ${nx} · dnes +${DAILY+bn} CR${bn?' (bonus za sériu)':''}`}</span></div>${claimed?'<span class="okc">✓ vybraný</span>':`<button class="btn gold" id="cdaily">Vybrať +${DAILY+bn} CR</button>`}</div>
    <div class="dailyc${W.paid?' done':''}"><div><b>Týždenná výzva</b><span class="lab">aspoň ${WK.min} vecí na ${WK.days} dni · ${Math.min(W.days.length,WK.days)} / ${WK.days}</span></div>${W.paid?'<span class="okc">✓ vybraná</span>':W.days.length>=WK.days?`<button class="btn gold" id="cwk">Vybrať +${WK.cr} CR</button>`:`<span class="money">+${WK.cr}</span>`}</div>
+   ${RUN?runHTML():''}
    <div><b>Sprav niečo dobré pre seba</b><p class="sub" style="margin:2px 0 0">Každá vec raz za deň. Dnes zarobené <b class="money">${fmt(E.cr)} / ${TASKMAX} CR</b></p></div>
-   <div class="tasks">${TASKS.map(([id,n,cr,sec])=>{const done=E.done.includes(id);return `<div class="task${done?' done':''}"><span>${esc(n)}</span><span class="money">+${cr}</span>${done?'<span class="okc">✓</span>':`<button class="btn sm" data-task="${id}">${sec?'Spustiť '+Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0'):'Hotovo'}</button>`}</div>`}).join('')}</div>
+   <div class="tasks">${TASKS.map(([id,n,cr,sec])=>{const done=E.done.includes(id);return `<div class="task${done?' done':''}"><span>${esc(n)}</span><span class="money">+${cr}</span>${done?'<span class="okc">✓</span>':taskBtn(id,sec)}</div>`}).join('')}</div>
    <p class="lab" style="margin:0">Keď minieš kredity, môžeš predať skiny v Inventári alebo počkať na zajtrajší bonus.</p>`;
   const rows=[...ACH].sort((a,b)=>(achDone(a[0])-achDone(b[0]))||((b[3]()>=b[4])-(a[3]()>=a[4])));
   const achHTML=`<div><b>Úspechy</b><p class="sub" style="margin:2px 0 0">Každý sa dá vybrať raz.</p></div><div class="tasks">${rows.map(a=>{const done=achDone(a[0]),ok=a[3]()>=a[4];return `<div class="task${done?' done':''}"><span>${esc(a[1])}<small class="lab" style="display:block">${achProg(a)}</small></span><span class="money">+${a[2]}</span>${done?'<span class="okc">✓</span>':ok?`<button class="btn sm gold" data-ach="${a[0]}">Vybrať</button>`:'<span></span>'}</div>`}).join('')}</div>`;
   $('#modal').innerHTML=`<div class="modal"><div class="credits"><div class="mhead"><h2 style="font-size:20px">Kredity</h2><button class="btn sm ghost" id="cx">Zavrieť</button></div>
    <div class="seg" id="ctab" style="max-width:none;flex:none"><button data-t="day" class="${credTab==='day'?'on':''}">Dnes</button><button data-t="ach" class="${credTab==='ach'?'on':''}">Úspechy${nAch?' · '+nAch:''}</button></div>
    ${credTab==='day'?dayHTML:achHTML}</div></div>`;
-  $('#cx').onclick=()=>{clearInterval(taskTimer);taskTimer=null;$('#modal').innerHTML=''};
-  document.querySelectorAll('#ctab [data-t]').forEach(b=>b.onclick=()=>{if(taskTimer)return;credTab=b.dataset.t;openCredits()});
+  $('#cx').onclick=()=>{$('#modal').innerHTML=''};
+  document.querySelectorAll('#ctab [data-t]').forEach(b=>b.onclick=()=>{credTab=b.dataset.t;openCredits()});
   const cd=$('#cdaily');if(cd)cd.onclick=()=>{const st=S.streak||(S.streak={n:0,last:''});const n=nextStreak(),b=sbonus(n),L=LS();st.n=n;st.last=today();S.daily=today();L.ms=Math.max(L.ms||0,n);addBal(DAILY+b);const c=L.claim;c.d=r2(c.d+DAILY+b);c.dn++;save();chime(b?3:2);toast(`+${DAILY+b} CR${b?' · séria '+n:''}`);openCredits()};
   const cw=$('#cwk');if(cw)cw.onclick=()=>{const w=wkS();if(w.paid)return;w.paid=true;addBal(WK.cr);claimExtra(WK.cr);save();chime(4);toast(`+${WK.cr} CR · týždenná výzva`);openCredits()};
   document.querySelectorAll('[data-ach]').forEach(b=>b.onclick=()=>{const a=ACH.find(x=>x[0]===b.dataset.ach);if(!a||achDone(a[0])||a[3]()<a[4])return;(S.ach||(S.ach={}))[a[0]]=Date.now();addBal(a[2]);claimExtra(a[2]);save();chime(3);toast(`+${a[2]} CR · ${a[1]}`);openCredits()});
-  document.querySelectorAll('[data-task]').forEach(b=>b.onclick=()=>{
-    const t=TASKS.find(x=>x[0]===b.dataset.task);const award=()=>{const E2=earnT();if(E2.done.includes(t[0]))return;E2.done.push(t[0]);E2.cr+=t[2];addBal(t[2]);{const c=LS().claim;c.t+=t[2];c.tn++}
-      if(E2.done.length>=WK.min){const w=wkS();if(!w.days.includes(today()))w.days.push(today())}
-      save();chime(3);toast(`+${t[2]} CR · ${t[1]}`);openCredits()};
-    if(!t[3]){award();return}
-    if(taskTimer)return;let left=t[3];b.disabled=true;b.classList.add('on');
-    taskTimer=setInterval(()=>{left--;b.textContent=Math.floor(left/60)+':'+String(left%60).padStart(2,'0');if(left<=3&&left>0)beep(900,.05,.04);if(left<=0){clearInterval(taskTimer);taskTimer=null;award()}},1000);
-  });
+  document.querySelectorAll('[data-task]:not([disabled])').forEach(b=>b.onclick=()=>{const t=TASKS.find(x=>x[0]===b.dataset.task);if(!t)return;if(!t[3]){awardTask(t);openCredits()}else runStart(t)});
+  const rx=$('#runx');if(rx)rx.onclick=()=>{runStop();openCredits()};
+  if(RUN)runTick();
 }
 
 /* ---------- upgrade: credits or skins -> multiplier ---------- */

@@ -588,6 +588,15 @@ main{padding-top:12px}
 .glist{display:grid}.grow{display:grid;grid-template-columns:1fr auto;gap:1px 10px;align-items:baseline;padding:8px 0;border-top:1px solid var(--line)}
 .grow b{font:700 13px var(--display);letter-spacing:.06em;text-transform:uppercase}.grow .gnet{font:700 15px var(--mono);font-variant-numeric:tabular-nums}
 .grow .lab{grid-column:1/-1;font-size:10px;line-height:1.35}
+/* upgrade + contract */
+.upg,.tuc{display:grid;gap:10px}
+.uring{position:relative;width:min(210px,58vw);aspect-ratio:1;margin:4px auto;border-radius:50%;background:conic-gradient(var(--win) 0 var(--p),var(--lose) var(--p) 360deg);display:grid;place-items:center}
+.uring::before{content:"";position:absolute;inset:14px;border-radius:50%;background:var(--panel)}
+.uptr{position:absolute;left:calc(50% - 2px);top:0;width:4px;height:50%;transform-origin:50% 100%;background:linear-gradient(#fff 0 20px,transparent 20px);border-radius:2px;z-index:1}
+.uc{position:relative;display:grid;gap:2px;text-align:center}.uc b{font:700 26px var(--mono);font-variant-numeric:tabular-nums}
+.umsg{text-align:center;font:600 14px var(--mono);min-height:20px;display:grid;gap:2px;justify-items:center}
+.tures{display:grid;gap:10px;justify-items:center}.tures .it{width:150px}
+.tuc .chips,.upg .chips{justify-content:center}
 </style>
 
 
@@ -612,7 +621,7 @@ main{padding-top:12px}
     <div class="shead"><h2>Inventár</h2></div>
     <div class="stats" id="stats"></div>
     <div class="toolbar"><select id="invsort" aria-label="Zoradiť inventár"><option value="new">Najnovšie</option><option value="price">Najdrahšie</option><option value="rar">Vzácnosť</option><option value="float">Najnižší float</option></select>
-      <button class="btn sm" id="sellsel" disabled>Predať označené</button><button class="btn sm ghost" id="selcheap">Označiť lacné (&lt; 1 CR)</button><span class="lab" id="invsum"></span></div>
+      <button class="btn sm" id="sellsel" disabled>Predať označené</button><button class="btn sm ghost" id="selcheap">Označiť lacné (&lt; 1 CR)</button><button class="btn sm" id="tradeup">Kontrakt</button><button class="btn sm" id="upgr">Upgrade</button><span class="lab" id="invsum"></span></div>
     <div class="grid" id="invlist"></div>
   </section>
 
@@ -773,10 +782,10 @@ function LS(){if(!S.ls){const o=S.st||{};let t0=Date.now();(S.inv||[]).forEach(x
   S.ls={since:t0,last:'',days:0,peak:S.bal,claim:{d:0,dn:0,t:0,tn:0},sold:{n:0,cr:0},
     g:{case:{n:o.open||0,in:o.spent||0,out:o.won||0,w:0,l:0,best:o.best?o.best.p:0},roul:net(o.rw||0),slot:net(o.sw||0),jp:net(o.jw||0),lounge:net(o.lw||0)}}}
   return S.ls}
-function rec(k,inn,out,n=1){const o=LS().g[k];o.in=r2(o.in+inn);o.out=r2(o.out+out);if(n){o.n+=n;const d=out-inn;if(d>.004){o.w++;if(d>o.best)o.best=r2(d)}else if(d<-.004)o.l++}}
+function rec(k,inn,out,n=1){const G=LS().g,o=G[k]||(G[k]={n:0,in:0,out:0,w:0,l:0,best:0});o.in=r2(o.in+inn);o.out=r2(o.out+out);if(n){o.n+=n;const d=out-inn;if(d>.004){o.w++;if(d>o.best)o.best=r2(d)}else if(d<-.004)o.l++}}
 function recSold(n,cr){if(!n)return;const s=LS().sold;s.n+=n;s.cr=r2(s.cr+cr)}
 function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(t._t);t._t=setTimeout(()=>t.hidden=true,2600)}
-function dailyBtn(){const b=$('#daily'); const ok=S.daily!==today(); b.disabled=!ok; b.disabled=false;b.classList.toggle('dot',ok||earnT().done.length<TASKS.length);b.title='Denný bonus a kredity za zdravé veci'}
+function dailyBtn(){const b=$('#daily'); const ok=S.daily!==today(); b.disabled=!ok; b.disabled=false;b.classList.toggle('dot',ok||earnT().done.length<TASKS.length||wkReady()||achReady()>0);b.title='Denný bonus a kredity za zdravé veci'}
 $('#daily').onclick=()=>openCredits();
 
 /* ---------- juice: feel every win ---------- */
@@ -880,7 +889,7 @@ function openNow(n){
   const c=CASES[openCase],cost=caseCost(c); if(S.bal<cost*n){toast('Nemáš dosť kreditov');auto=null;renderOpener();return}
   addBal(-cost*n);const T=tday();S.st.open+=n;S.st.spent+=cost*n;T.open+=n;T.spent+=cost*n;
   const wins=Array.from({length:n},()=>rollCase(c));
-  wins.forEach(w=>{S.inv.unshift(w);const p=price(w);S.st.won+=p;rec('case',cost,p);T.won+=p;T.rar[ITEMS[w.i][2]]++;
+  wins.forEach(w=>{S.inv.unshift(w);const p=price(w);S.st.won+=p;rec('case',cost,p);{const L0=LS();L0.top=Math.max(L0.top??-1,ITEMS[w.i][2])}T.won+=p;T.rar[ITEMS[w.i][2]]++;
     if(!S.st.best||p>S.st.best.p)S.st.best={p,i:w.i,f:w.f,s:w.s};if(!T.best||p>T.best.p)T.best={p,i:w.i,f:w.f,s:w.s};
     T.drops.unshift({i:w.i,f:w.f,s:w.s});T.drops.length=Math.min(T.drops.length,16)});
   if(auto&&auto.sell){for(const w of wins){const p=price(w);if(p<1){S.inv=S.inv.filter(x=>x.id!==w.id);addBal(p);recSold(1,p);w.sold=1}}}
@@ -1305,15 +1314,15 @@ function renderMe(){$('#mename').textContent=prof().name;$('#meav').style.backgr
 const f0=n=>Math.round(n).toLocaleString('sk-SK');
 const sg=n=>(n>.004?'+':n<-.004?'−':'')+fmt(Math.abs(n));
 function statsHTML(){
-  const L=LS(),G=L.g,ks=[['case','Cases'],['roul','Ruleta'],['slot','Sloty'],['jp','Jackpot'],['lounge','Lounge']];
+  const L=LS(),G=new Proxy(L.g,{get:(t,k)=>t[k]||{n:0,in:0,out:0,w:0,l:0,best:0}}),ks=[['case','Cases'],['roul','Ruleta'],['slot','Sloty'],['jp','Jackpot'],['lounge','Lounge'],['up','Upgrade'],['tu','Kontrakt']];
   const T={n:0,in:0,out:0,w:0,l:0};let best=null;
   ks.forEach(([k,nm])=>{const g=G[k];T.n+=g.n;T.in+=g.in;T.out+=g.out;T.w+=g.w;T.l+=g.l;if(g.best>0&&(!best||g.best>best.v))best={v:g.best,nm}});
-  const net=T.out-T.in,cl=L.claim,got=100+cl.d+cl.t,inv=S.inv.reduce((a,x)=>a+price(x),0);
+  const net=T.out-T.in,cl=L.claim,got=100+cl.d+cl.t+(cl.a||0),inv=S.inv.reduce((a,x)=>a+price(x),0);
   const since=new Date(L.since).toLocaleDateString('sk-SK'),rate=T.w+T.l?Math.round(T.w/(T.w+T.l)*100):0;
   const tile=(a,b,c)=>`<div class="stat"><span class="lab">${a}</span><b>${b}</b>${c?`<small class="lab">${c}</small>`:''}</div>`;
   return `<div class="pst"><div class="nethero"><span class="lab">Bilancia hier od ${since}</span><b class="${net>=0?'win':'lose'}">${sg(net)} CR</b><span class="lab">${T.n} kôl · ${L.days} ${L.days===1?'aktívny deň':'aktívnych dní'}</span></div>
    <div class="stats">
-    ${tile('Prevzaté kredity',fmt(got)+' CR',`štart 100 · bonus ${cl.dn}× · úlohy ${cl.tn}×`)}
+    ${tile('Prevzaté kredity',fmt(got)+' CR',`štart 100 · bonus ${cl.dn}× · úlohy ${cl.tn}× · úspechy ${cl.an||0}×`)}
     ${tile('Vsadené spolu',fmt(T.in)+' CR','')}
     ${tile('Vyplatené spolu',fmt(T.out)+' CR','')}
     ${tile('Výhry / prehry',`<span class="win">${T.w}</span> / <span class="lose">${T.l}</span>`,rate+' % kôl vyhraných')}
@@ -1345,23 +1354,136 @@ $('#mebtn').onclick=()=>{
 const TASKS=[['squat','20 drepov',20,0],['push','15 klikov (aj z kolien)',20,0],['plank','Plank 1 minúta',20,60],['walk','Prechádzka vonku aspoň 20 minút',25,0],['water','Veľký pohár vody',5,0],['read','10 minút čítania',15,0],['tidy','10 minút upratovania',15,0],['breath','Pokojné dýchanie 3 minúty',15,180],['stretch','Strečing 5 minút',15,300]];
 const TASKMAX=TASKS.reduce((a,t)=>a+t[2],0);
 function earnT(){const d=today();if(!S.earn||S.earn.d!==d)S.earn={d,done:[],cr:0};return S.earn}
-let taskTimer=null;
+const yday=()=>{const d=new Date();d.setDate(d.getDate()-1);return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()};
+const sbonus=n=>Math.min(Math.max(n-1,0),5)*5+(n%7===0?100:0);
+function streakNow(){const s=S.streak||{n:0,last:''};return s.last===today()||s.last===yday()?s.n:0}
+function nextStreak(){const s=S.streak||{n:0,last:''};return s.last===yday()||s.last===today()?s.n+1:1}
+const wkKey=()=>{const d=new Date(),m=new Date(d.getFullYear(),d.getMonth(),d.getDate()-((d.getDay()+6)%7));return m.getFullYear()+'-'+(m.getMonth()+1)+'-'+m.getDate()};
+const WK={days:4,min:5,cr:100};
+function wkS(){const k=wkKey();if(!S.wk||S.wk.k!==k)S.wk={k,days:[],paid:false};return S.wk}
+const wkReady=()=>{const w=wkS();return !w.paid&&w.days.length>=WK.days};
+const gx=k=>LS().g[k]||{n:0,in:0,out:0,w:0,l:0,best:0};
+const topR=()=>Math.max(LS().top??-1,...S.inv.map(x=>ITEMS[x.i][2]));
+const ACH=[
+ ['o10','Otvor 10 casov',20,()=>gx('case').n,10],
+ ['o100','Otvor 100 casov',60,()=>gx('case').n,100],
+ ['o500','Otvor 500 casov',200,()=>gx('case').n,500],
+ ['cl','Vypadne Classified alebo lepší skin',25,topR,2],
+ ['cv','Vypadne Covert',50,topR,3],
+ ['kn','Vypadne ★ nôž alebo rukavice',150,topR,4],
+ ['rw','Vyhraj 5 kôl v rulete',20,()=>gx('roul').w,5],
+ ['sl','Výhra aspoň 100 CR v jednom kole slotov',50,()=>Math.floor(gx('slot').best),100],
+ ['jp','Vyhraj jackpot',40,()=>gx('jp').w,1],
+ ['lg','Vyhraj tiket v Lounge',30,()=>gx('lounge').w,1],
+ ['up','Vyhraj Upgrade',20,()=>gx('up').w,1],
+ ['tu','Spusti Kontrakt',20,()=>gx('tu').n,1],
+ ['t10','Splň 10 zdravých vecí',50,()=>LS().claim.tn,10],
+ ['t50','Splň 50 zdravých vecí',150,()=>LS().claim.tn,50],
+ ['s7','Séria 7 dní denného bonusu',100,()=>LS().ms||0,7]
+];
+const RANKP=['cl','cv','kn'];
+const achDone=id=>!!(S.ach&&S.ach[id]);
+const achReady=()=>ACH.filter(a=>!achDone(a[0])&&a[3]()>=a[4]).length;
+const achProg=a=>RANKP.includes(a[0])?(topR()<0?'zatiaľ nič':'najlepší: '+RNAME[topR()]):Math.min(a[3](),a[4])+' / '+a[4];
+function claimExtra(cr){const c=LS().claim;c.a=r2((c.a||0)+cr);c.an=(c.an||0)+1}
+let taskTimer=null,credTab='day';
 function openCredits(){
-  const E=earnT();const claimed=S.daily===today();
-  $('#modal').innerHTML=`<div class="modal"><div class="credits"><div class="mhead"><h2 style="font-size:24px">Kredity na dnes</h2><button class="btn sm ghost" id="cx">Zavrieť</button></div>
-   <div class="dailyc${claimed?' done':''}"><div><b>Denný bonus</b><span class="lab">každý deň 100 CR</span></div>${claimed?'<span class="okc">✓ vybraný</span>':'<button class="btn gold" id="cdaily">Vybrať +100 CR</button>'}</div>
+  const E=earnT(),claimed=S.daily===today(),W=wkS(),nx=nextStreak(),cur=streakNow(),bn=sbonus(nx),nAch=achReady();
+  const dayHTML=`<div class="dailyc${claimed?' done':''}"><div><b>Denný bonus</b><span class="lab">${claimed?`séria ${cur} ${cur===1?'deň':cur<5?'dni':'dní'} · zajtra +${DAILY+sbonus(nx)} CR`:`séria ${nx} · dnes +${DAILY+bn} CR${bn?' (bonus za sériu)':''}`}</span></div>${claimed?'<span class="okc">✓ vybraný</span>':`<button class="btn gold" id="cdaily">Vybrať +${DAILY+bn} CR</button>`}</div>
+   <div class="dailyc${W.paid?' done':''}"><div><b>Týždenná výzva</b><span class="lab">aspoň ${WK.min} vecí na ${WK.days} dni · ${Math.min(W.days.length,WK.days)} / ${WK.days}</span></div>${W.paid?'<span class="okc">✓ vybraná</span>':W.days.length>=WK.days?`<button class="btn gold" id="cwk">Vybrať +${WK.cr} CR</button>`:`<span class="money">+${WK.cr}</span>`}</div>
    <div><b>Sprav niečo dobré pre seba</b><p class="sub" style="margin:2px 0 0">Každá vec raz za deň. Dnes zarobené <b class="money">${fmt(E.cr)} / ${TASKMAX} CR</b></p></div>
    <div class="tasks">${TASKS.map(([id,n,cr,sec])=>{const done=E.done.includes(id);return `<div class="task${done?' done':''}"><span>${esc(n)}</span><span class="money">+${cr}</span>${done?'<span class="okc">✓</span>':`<button class="btn sm" data-task="${id}">${sec?'Spustiť '+Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0'):'Hotovo'}</button>`}</div>`}).join('')}</div>
-   <p class="lab" style="margin:0">Keď minieš kredity, môžeš predať skiny v Inventári alebo počkať na zajtrajší bonus.</p></div></div>`;
+   <p class="lab" style="margin:0">Keď minieš kredity, môžeš predať skiny v Inventári alebo počkať na zajtrajší bonus.</p>`;
+  const rows=[...ACH].sort((a,b)=>(achDone(a[0])-achDone(b[0]))||((b[3]()>=b[4])-(a[3]()>=a[4])));
+  const achHTML=`<div><b>Úspechy</b><p class="sub" style="margin:2px 0 0">Každý sa dá vybrať raz.</p></div><div class="tasks">${rows.map(a=>{const done=achDone(a[0]),ok=a[3]()>=a[4];return `<div class="task${done?' done':''}"><span>${esc(a[1])}<small class="lab" style="display:block">${achProg(a)}</small></span><span class="money">+${a[2]}</span>${done?'<span class="okc">✓</span>':ok?`<button class="btn sm gold" data-ach="${a[0]}">Vybrať</button>`:'<span></span>'}</div>`}).join('')}</div>`;
+  $('#modal').innerHTML=`<div class="modal"><div class="credits"><div class="mhead"><h2 style="font-size:20px">Kredity</h2><button class="btn sm ghost" id="cx">Zavrieť</button></div>
+   <div class="seg" id="ctab" style="max-width:none;flex:none"><button data-t="day" class="${credTab==='day'?'on':''}">Dnes</button><button data-t="ach" class="${credTab==='ach'?'on':''}">Úspechy${nAch?' · '+nAch:''}</button></div>
+   ${credTab==='day'?dayHTML:achHTML}</div></div>`;
   $('#cx').onclick=()=>{clearInterval(taskTimer);taskTimer=null;$('#modal').innerHTML=''};
-  const cd=$('#cdaily');if(cd)cd.onclick=()=>{S.daily=today();addBal(DAILY);{const c=LS().claim;c.d=r2(c.d+DAILY);c.dn++}save();chime(2);toast('+100 CR');openCredits()};
+  document.querySelectorAll('#ctab [data-t]').forEach(b=>b.onclick=()=>{if(taskTimer)return;credTab=b.dataset.t;openCredits()});
+  const cd=$('#cdaily');if(cd)cd.onclick=()=>{const st=S.streak||(S.streak={n:0,last:''});const n=nextStreak(),b=sbonus(n),L=LS();st.n=n;st.last=today();S.daily=today();L.ms=Math.max(L.ms||0,n);addBal(DAILY+b);const c=L.claim;c.d=r2(c.d+DAILY+b);c.dn++;save();chime(b?3:2);toast(`+${DAILY+b} CR${b?' · séria '+n:''}`);openCredits()};
+  const cw=$('#cwk');if(cw)cw.onclick=()=>{const w=wkS();if(w.paid)return;w.paid=true;addBal(WK.cr);claimExtra(WK.cr);save();chime(4);toast(`+${WK.cr} CR · týždenná výzva`);openCredits()};
+  document.querySelectorAll('[data-ach]').forEach(b=>b.onclick=()=>{const a=ACH.find(x=>x[0]===b.dataset.ach);if(!a||achDone(a[0])||a[3]()<a[4])return;(S.ach||(S.ach={}))[a[0]]=Date.now();addBal(a[2]);claimExtra(a[2]);save();chime(3);toast(`+${a[2]} CR · ${a[1]}`);openCredits()});
   document.querySelectorAll('[data-task]').forEach(b=>b.onclick=()=>{
-    const t=TASKS.find(x=>x[0]===b.dataset.task);const award=()=>{const E2=earnT();if(E2.done.includes(t[0]))return;E2.done.push(t[0]);E2.cr+=t[2];addBal(t[2]);{const c=LS().claim;c.t+=t[2];c.tn++}save();chime(3);toast(`+${t[2]} CR · ${t[1]}`);openCredits()};
+    const t=TASKS.find(x=>x[0]===b.dataset.task);const award=()=>{const E2=earnT();if(E2.done.includes(t[0]))return;E2.done.push(t[0]);E2.cr+=t[2];addBal(t[2]);{const c=LS().claim;c.t+=t[2];c.tn++}
+      if(E2.done.length>=WK.min){const w=wkS();if(!w.days.includes(today()))w.days.push(today())}
+      save();chime(3);toast(`+${t[2]} CR · ${t[1]}`);openCredits()};
     if(!t[3]){award();return}
     if(taskTimer)return;let left=t[3];b.disabled=true;b.classList.add('on');
     taskTimer=setInterval(()=>{left--;b.textContent=Math.floor(left/60)+':'+String(left%60).padStart(2,'0');if(left<=3&&left>0)beep(900,.05,.04);if(left<=0){clearInterval(taskTimer);taskTimer=null;award()}},1000);
   });
 }
+
+/* ---------- upgrade: credits or skins -> multiplier ---------- */
+function openUpgrade(){
+  let src='cr',amt=Math.max(1,Math.min(10,Math.floor(S.bal))),pick=new Set(),mult=2,busy=false,rot=0,msg='';
+  const MS=[1.5,2,3,5,10,20];
+  const stake=()=>src==='cr'?amt:S.inv.filter(x=>pick.has(x.id)).reduce((a,x)=>a+price(x),0);
+  const chance=()=>Math.min(.95,.94/mult);
+  const draw=()=>{const st=stake(),ch=chance(),ok=!busy&&st>0&&(src==='skin'||st<=S.bal);
+    $('#modal').innerHTML=`<div class="modal"><div class="upg"><div class="mhead"><h2 style="font-size:20px">Upgrade</h2><button class="btn sm ghost" id="mx"${busy?' disabled':''}>Zavrieť</button></div>
+     <div class="uring" style="--p:${(ch*360).toFixed(1)}deg"><div class="uptr" id="uptr" style="transform:rotate(${rot}deg)"></div><div class="uc"><b>${(ch*100).toFixed(1).replace('.',',')} %</b><span class="lab">šanca · ×${String(mult).replace('.',',')}</span></div></div>
+     <div class="umsg" id="umsg">${msg||`Výhra ${fmt(st*mult)} CR`}</div>
+     <div class="seg" id="usrc" style="max-width:none;flex:none"><button data-s="cr" class="${src==='cr'?'on':''}">Kredity</button><button data-s="skin" class="${src==='skin'?'on':''}">Skiny</button></div>
+     ${src==='cr'?`<div class="betrow"><input id="uamt" class="field" inputmode="decimal" value="${amt}" style="width:96px"><button class="btn sm" data-q="half">½</button><button class="btn sm" data-q="dbl">×2</button><button class="btn sm" data-q="max">Max</button></div>`:`<div class="betrow"><button class="btn sm" id="upick"${busy?' disabled':''}>Vybrať skiny${pick.size?' ('+pick.size+')':''}</button><span class="lab">${fmt(st)} CR</span></div>`}
+     <div class="chips" id="umul">${MS.map(m=>`<button class="chip${m===mult?' on':''}" data-m="${m}">×${String(m).replace('.',',')}</button>`).join('')}</div>
+     <button class="btn gold" id="ugo" ${ok?'':'disabled'}>Upgrade · ${fmt(st)} CR</button></div></div>`;
+    $('#mx').onclick=()=>$('#modal').innerHTML='';
+    $('#usrc').onclick=e=>{const b=e.target.closest('[data-s]');if(b&&!busy){src=b.dataset.s;msg='';draw()}};
+    $('#umul').onclick=e=>{const b=e.target.closest('[data-m]');if(b&&!busy){mult=+b.dataset.m;msg='';draw()}};
+    if(src==='cr'){const i=$('#uamt');i.oninput=()=>{amt=Math.max(0,amt0(i));const st=stake();$('#ugo').disabled=!(st>0&&st<=S.bal);$('#ugo').textContent='Upgrade · '+fmt(st)+' CR';$('#umsg').textContent='Výhra '+fmt(st*mult)+' CR'};
+      document.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{if(busy)return;amt=b.dataset.q==='half'?Math.max(.01,r2(amt/2)):b.dataset.q==='dbl'?r2(amt*2):Math.floor(S.bal*100)/100;msg='';draw()})}
+    else $('#upick').onclick=()=>pickItems('Upgrade: vyber skiny',ids=>{pick=new Set(ids);msg='';draw()},20,pick);
+    $('#ugo').onclick=go};
+  const amt0=i=>{const v=parseFloat(String(i.value).replace(',','.'));return isFinite(v)?r2(v):0};
+  const go=()=>{if(busy)return;const st=stake();if(!(st>0))return;if(src==='cr'&&st>S.bal){toast('Nemáš dosť kreditov');return}
+    busy=true;if(src==='cr')addBal(-st);else{S.inv=S.inv.filter(x=>!pick.has(x.id));pick.clear()}
+    const ch=chance(),roll=Math.random(),win=roll<ch,pay=win?r2(st*mult):0;rec('up',st,pay);save();
+    ['#ugo','#mx','#ugo'].forEach(s=>{const e=$(s);e&&(e.disabled=true)});
+    rot=Math.ceil(rot/360)*360+360*5+roll*360;const p=$('#uptr');p.style.transition='transform 3.8s cubic-bezier(.12,.7,.15,1)';p.style.transform=`rotate(${rot}deg)`;
+    let d=40,t=0;const tk=()=>{t+=d;if(t<3700){beep(1300,.015,.02);d*=1.06;setTimeout(tk,d)}};tk();
+    setTimeout(()=>{busy=false;
+      if(win){addBal(pay);save();msg=`<span class="win">Výhra +${fmt(pay-st)} CR</span>`;flash('#e3a53c');chime(pay>=st*5?4:3);buzz([50,40,90]);coinBurst($('.wallet'),Math.min(26,8+Math.round(mult*2)),$('.uring'))}
+      else{msg=`<span class="lose">Prehra −${fmt(st)} CR</span>`;sfx.lose();buzz(40)}
+      if(src==='skin')src='cr';amt=Math.max(1,Math.min(amt,Math.floor(S.bal)));draw();$('#umsg').innerHTML=msg;},3900);
+  };
+  draw();
+}
+
+/* ---------- trade-up contract: 10 skins -> 1 of next rarity ---------- */
+function tuDist(items){
+  const w=new Map(),add=(i,x)=>w.set(i,(w.get(i)||0)+x);
+  items.forEach(it=>{const r=ITEMS[it.i][2],cs=CASES.filter(c=>c.c.includes(it.i));let got=false;
+    cs.forEach(c=>{const L=c.c.filter(i=>ITEMS[i][2]===r+1&&!ITEMS[i][7]);if(L.length){got=true;L.forEach(i=>add(i,1/cs.length/L.length))}});
+    if(!got){const L=[];CASES.forEach(c=>c.c.forEach(i=>{if(ITEMS[i][2]===r+1&&!ITEMS[i][7]&&!L.includes(i))L.push(i)}));L.forEach(i=>add(i,1/L.length))}});
+  return w;
+}
+function tuEV(items){const w=tuDist(items);let t=0,ev=0;w.forEach((x,i)=>{t+=x;ev+=x*basePrice(i)});return t?ev/t:0}
+function openTradeup(){
+  let rar=0,pick=new Set(),out=null;
+  const pool=r=>S.inv.filter(x=>ITEMS[x.i][2]===r&&!ITEMS[x.i][7]);
+  const draw=()=>{const L=pool(rar).sort((a,b)=>price(b)-price(a)),sel=S.inv.filter(x=>pick.has(x.id)),val=sel.reduce((a,x)=>a+price(x),0);
+    const body=out?`<div class="tures">${card(out.w)}<div class="umsg"><b class="${out.p>=out.v?'win':'lose'}">${out.p>=out.v?'+':'−'}${fmt(Math.abs(out.p-out.v))} CR</b><span class="lab">vložené ${fmt(out.v)} · získané ${fmt(out.p)}</span></div><button class="btn gold" id="tuagain">Nový kontrakt</button></div>`
+     :`<div class="chips" id="turar">${[0,1,2].map(r=>`<button class="chip${r===rar?' on':''}" data-r="${r}">${RNAME[r]} · ${pool(r).length}</button>`).join('')}</div>
+      <p class="sub" style="margin:0">Vyber 10 skinov rovnakej vzácnosti. Dostaneš 1 skin o stupeň vyššie z rovnakých casov. Vybrané <b>${sel.length} / 10</b> · ${fmt(val)} CR${sel.length===10?` · očakávaná hodnota ≈ <b class="money">${fmt(tuEV(sel))} CR</b>`:''}</p>
+      <div class="grid" id="mgrid">${L.length?L.map(x=>card(x,{cls:'pick'+(pick.has(x.id)?' sel':''),attr:` data-id="${x.id}"`})).join(''):`<div class="empty" style="grid-column:1/-1">Nemáš žiadne ${RNAME[rar]} skiny.</div>`}</div>
+      <div class="betrow" style="justify-content:flex-end"><button class="btn gold" id="tugo" ${sel.length===10?'':'disabled'}>Podpísať kontrakt</button></div>`;
+    $('#modal').innerHTML=`<div class="modal"><div class="tuc"><div class="mhead"><h2 style="font-size:20px">Kontrakt</h2><button class="btn sm ghost" id="mx">Zavrieť</button></div>${body}</div></div>`;
+    $('#mx').onclick=()=>$('#modal').innerHTML='';
+    if(out){$('#tuagain').onclick=()=>{out=null;pick.clear();draw()};return}
+    $('#turar').onclick=e=>{const b=e.target.closest('[data-r]');if(b){rar=+b.dataset.r;pick.clear();draw()}};
+    $('#mgrid').onclick=e=>{const c=e.target.closest('[data-id]');if(!c)return;const id=c.dataset.id;pick.has(id)?pick.delete(id):pick.size<10&&pick.add(id);const sc=$('.modal>div').scrollTop;draw();$('.modal>div').scrollTop=sc};
+    $('#tugo').onclick=()=>{const sel=S.inv.filter(x=>pick.has(x.id));if(sel.length!==10)return;
+      const w=tuDist(sel);let tot=0;w.forEach(x=>tot+=x);let r=Math.random()*tot,res=null;for(const [i,x] of w){r-=x;if(r<0){res=i;break}}if(res==null)res=[...w.keys()][0];
+      const nf=sel.reduce((a,x)=>{const [, , , , mn,mx]=ITEMS[x.i];return a+(mx>mn?(x.f-mn)/(mx-mn):.5)},0)/10;const [, , , , mn2,mx2,st2]=ITEMS[res];
+      const nw={id:uid(),i:res,f:+(mn2+(mx2-mn2)*Math.min(1,Math.max(0,nf))).toFixed(6),s:st2&&sel.every(x=>x.s)?1:0,t:Date.now()};
+      const v=sel.reduce((a,x)=>a+price(x),0),p=price(nw);
+      S.inv=S.inv.filter(x=>!pick.has(x.id));S.inv.unshift(nw);rec('tu',v,p);{const L0=LS();L0.top=Math.max(L0.top??-1,ITEMS[res][2])}save();
+      out={w:nw,v,p};chime(ITEMS[res][2]);if(p>=v){flash(RCOL[ITEMS[res][2]]);buzz([40,40,80])}draw()};
+  };
+  draw();
+}
+$('#upgr').onclick=openUpgrade;$('#tradeup').onclick=openTradeup;
 
 /* ---------- item picker modal ---------- */
 function pickItems(title,cb,max=20,pre){

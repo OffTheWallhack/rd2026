@@ -344,7 +344,7 @@ body.mplay .pp svg.i-play{display:none}
 #carStats .st{grid-template-columns:62px 1fr}
 #carStats .st span{font-size:9.5px;letter-spacing:.08em}
 /* step 2: the modes */
-.cards.modes{grid-template-columns:repeat(5,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:8px;min-height:0}
+.cards.modes{grid-template-columns:repeat(6,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:8px;min-height:0}
 @media (max-height:430px){.card.mode{padding:6px 10px;gap:2px}.card.mode .mi{width:24px;height:24px}.card.mode b{font-size:clamp(13px,2vw,17px)}.card.mode small{font-size:10.5px}}
 .card.mode{position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:6px;padding:12px;overflow:hidden}
 .card.mode::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ac,var(--amber));opacity:.55;transition:opacity .15s,width .15s}
@@ -582,7 +582,7 @@ body:not(.hwy) .hwrace{display:none}
 .card.mode .mi{position:absolute;right:8px;top:7px;width:20px;height:20px;stroke:#fff;filter:drop-shadow(0 1px 3px rgba(0,0,0,.9));z-index:1}
 .card.mode b{color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.9);position:relative}
 .card.mode small{color:#cfe0f7;text-shadow:0 1px 5px rgba(0,0,0,.95);position:relative}
-.card.mode[data-mode="free"]{--bgi:url(img/mode-free.webp)}.card.mode[data-mode="t60"]{--bgi:url(img/mode-t60.webp)}.card.mode[data-mode="job"]{--bgi:url(img/mode-job.webp)}.card.mode[data-mode="off"]{--bgi:url(img/mode-off.webp)}.card.mode[data-mode="train"]{--bgi:url(img/mode-train.webp)}.card.mode[data-mode="tokyo"]{--bgi:url(img/mode-tokyo.webp)}.card.mode[data-mode="drift"]{--bgi:url(img/mode-drift.webp)}.card.mode[data-mode="chase"]{--bgi:url(img/mode-chase.webp)}.card.mode[data-mode="hwy"]{--bgi:url(img/mode-hwy.webp)}.card.mode[data-mode="arena"]{--bgi:url(img/mode-arena.webp)}
+.card.mode[data-mode="free"]{--bgi:url(img/mode-free.webp)}.card.mode[data-mode="t60"]{--bgi:url(img/mode-t60.webp)}.card.mode[data-mode="job"]{--bgi:url(img/mode-job.webp)}.card.mode[data-mode="off"]{--bgi:url(img/mode-off.webp)}.card.mode[data-mode="train"]{--bgi:url(img/mode-train.webp)}.card.mode[data-mode="tokyo"]{--bgi:url(img/mode-tokyo.webp)}.card.mode[data-mode="drift"]{--bgi:url(img/mode-drift.webp)}.card.mode[data-mode="chase"]{--bgi:url(img/mode-chase.webp)}.card.mode[data-mode="hwy"]{--bgi:url(img/mode-hwy.webp)}.card.mode[data-mode="arena"]{--bgi:url(img/mode-arena.webp)}.card.mode[data-mode="dh"]{--bgi:url(img/mode-dh.webp)}
 /* info bar, like the grey strip at the bottom of GT menus */
 .menu .hint{border:0;border-top:1px solid rgba(190,220,255,.4);border-radius:10px;background:linear-gradient(180deg,rgba(0,0,0,.62),rgba(8,20,46,.78));color:#e6f1ff;box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
 /* step 2: garage */
@@ -701,6 +701,25 @@ body:not(.hwy) .hwrace{display:none}
 .lay i{font:700 9px/1 var(--hud);font-style:normal;letter-spacing:.16em;color:#9fb4d6;margin-right:3px}
 .lay button{min-width:26px;height:24px;padding:0 6px;border:1px solid rgba(160,190,235,.4);border-radius:12px;background:rgba(10,24,58,.55);color:#cfdcf5;font:700 12px/1 var(--hud);cursor:pointer}
 .lay button.on{border-color:var(--amber);background:rgba(255,178,26,.2);color:#fff}
+/* downhill: Pakoon-style readouts, green numbers with a black outline */
+.dhhud{position:fixed;inset:0;z-index:6;pointer-events:none;font-family:var(--hud)}
+body:not(.dh) .dhhud,body:not(.dh) .dhmsg{display:none}
+body.dh #hud .speed,body.dh #hud .score,body.dh #camBtn,body.dh #combo,body.dh #timer{display:none!important}
+.dhl{position:absolute;left:calc(12px + env(safe-area-inset-left,0px));top:calc(58px + env(safe-area-inset-top,0px));display:grid;gap:1px}
+.dhl small,.dhr small{font:700 11px/1.1 var(--hud);letter-spacing:.08em;color:#fff;text-shadow:0 0 2px #000,1px 1px 0 #000,-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000}
+.dhl b,.dhr b{font:700 italic 27px/1 var(--hud);color:#74ff5e;letter-spacing:.02em;text-shadow:0 0 3px #000,2px 2px 0 #000,-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000;margin-bottom:6px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.dhl b i{font-style:italic;color:#b9d3c4;font-size:.72em;margin-left:8px;opacity:.9}
+.dhc{position:absolute;left:50%;top:calc(8px + env(safe-area-inset-top,0px));transform:translateX(-50%);display:flex;align-items:center;gap:8px}
+.dhc svg{width:34px;height:34px;color:#6f8cff;filter:drop-shadow(1px 2px 0 rgba(0,0,0,.6));transition:transform .08s linear}
+.dhc b{font:700 italic 26px/1 var(--hud);color:#7f9bff;text-shadow:0 0 3px #10183a,2px 2px 0 #10183a;font-variant-numeric:tabular-nums;white-space:nowrap}
+.dhr{position:absolute;right:calc(12px + env(safe-area-inset-right,0px));top:calc(58px + env(safe-area-inset-top,0px));display:grid;justify-items:end}
+.dhr b{font-size:21px;color:#ffd54a}
+.dhmsg{position:fixed;left:50%;top:34%;transform:translate(-50%,-50%) scale(.6);z-index:8;pointer-events:none;opacity:0;font:700 italic 34px/1 var(--hud);color:#ff3b30;letter-spacing:.03em;text-shadow:0 0 4px #000,3px 3px 0 #000,-1px -1px 0 #000;white-space:nowrap;transition:transform .22s cubic-bezier(.2,1.6,.4,1),opacity .2s}
+.dhmsg.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.dhmsg.cd{font-size:84px;color:#fff}
+.dhmsg.go{color:#74ff5e;font-size:52px}
+.dhmsg.rec{color:#74ff5e}
+@media (max-height:420px){.dhl,.dhr{top:calc(50px + env(safe-area-inset-top,0px))}.dhl b{font-size:22px;margin-bottom:3px}.dhl small,.dhr small{font-size:9.5px}.dhc b{font-size:21px}.dhc svg{width:28px;height:28px}.dhr b{font-size:17px}.dhmsg{font-size:28px}.dhmsg.cd{font-size:64px}}
 </style>
 
 <canvas id="gl" aria-label="Drift hra"></canvas>
@@ -725,6 +744,12 @@ body:not(.hwy) .hwrace{display:none}
   <div class="hwlim" id="hwSpd"><b>130</b></div>
 </div>
 <div class="hwctl" id="hwCtl" hidden></div>
+<div class="dhhud" id="dhHud" hidden>
+  <div class="dhl"><small>ČAS JAZDY</small><b id="dhTime">00:00.00</b><small>VO VZDUCHU</small><b><span id="dhAir">00.00</span><i id="dhJump"></i></b><small>RÝCHLOSŤ (km/h)</small><b id="dhSpd">0</b></div>
+  <div class="dhc"><svg id="dhArrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l8 19-8-5-8 5z" fill="currentColor"/></svg><b id="dhDist">0 m</b></div>
+  <div class="dhr"><small>REKORD TRATE</small><b id="dhBest">--:--.--</b></div>
+</div>
+<div class="dhmsg" id="dhMsg" aria-live="polite"></div>
 <div class="job" id="jobHud" hidden>
   <div class="jlevel" id="jLevel" hidden></div>
   <div class="jtop"><svg class="jarrow" id="jArrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l8 19-8-5-8 5z" fill="currentColor"/></svg>
@@ -795,6 +820,7 @@ body:not(.hwy) .hwrace{display:none}
             <button class="card mode" type="button" data-mode="arena" style="--ac:#ffd23d"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="12" rx="9" ry="5.5"/><ellipse cx="12" cy="12" rx="4.2" ry="2"/><path d="M12 3v2.5M12 18.5V21"/></svg><b>DRIFT ARÉNA</b><small>3 okruhy · ľahký až peklo</small></button>
             <button class="card mode" type="button" data-mode="chase" style="--ac:#4d8dff"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 16h18M5 16l1.5-5h11L19 16M7 16a2 2 0 1 0 4 0a2 2 0 1 0-4 0M13 16a2 2 0 1 0 4 0a2 2 0 1 0-4 0M9 8h6M12 4v4M9 4h6"/></svg><b>NAHÁŇAČKA</b><small>Noc · polícia za tebou</small></button>
             <button class="card mode" type="button" data-mode="hwy" style="--ac:#4dd68c"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21L10 3M16 21L14 3M12 6v3M12 12v3M12 18v2"/></svg><b>DIAĽNICA</b><small>Z pohľadu vodiča</small></button>
+            <button class="card mode" type="button" data-mode="dh" style="--ac:#8fd8ff"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 20L9 7l3 4 2-3 8 12z"/><path d="M14 3l5 5M19 4v4h-4"/></svg><b>DOWNHILL</b><small>Chopok · zjazd z hory</small></button>
             </div>
             <p class="hint" id="modeDesc"></p>
           </div>
@@ -934,6 +960,8 @@ body:not(.hwy) .hwrace{display:none}
             <div class="tile"><small>DRIFT ARÉNA · REKORD</small><b id="recAr">–</b></div>
             <div class="tile"><small>DIAĽNICA · REKORD</small><b id="recHwy">–</b></div>
             <div class="tile"><small>NAHÁŇAČKA · REKORD</small><b id="recChase">–</b></div>
+            <div class="tile"><small>DOWNHILL CHOPOK · ČAS</small><b id="recDh">–</b></div>
+            <div class="tile"><small>DOWNHILL CHOPOK · VO VZDUCHU</small><b id="recDhAir">–</b></div>
           </div>
           </div>
         <div class="tb fit rec" id="recBdg" hidden><div class="badges" id="badgeList"></div></div>
@@ -4303,7 +4331,7 @@ function hold(el, key) {
   const off = () => { touch[key] = 0; el.classList.remove('on'); };
   el.addEventListener('pointerdown', on); el.addEventListener('pointerup', off); el.addEventListener('pointercancel', off); el.addEventListener('lostpointercapture', off);
 }
-function resetToStart() { if (!game.running) return; if (job.on) { jobRespawn(); return; } if (game.paused) return; if (DR.on) { drRespawn(); popText('SPÄŤ NA TRAŤ', true); updateCamera(0, true); return; } resetCar(); popText('SPÄŤ NA ŠTART', true); updateCamera(0, true); }
+function resetToStart() { if (!game.running) return; if (DH.on) { if (!game.paused && DH.started && !DH.over) dhRespawn(false); return; } if (job.on) { jobRespawn(); return; } if (game.paused) return; if (DR.on) { drRespawn(); popText('SPÄŤ NA TRAŤ', true); updateCamera(0, true); return; } resetCar(); popText('SPÄŤ NA ŠTART', true); updateCamera(0, true); }
 $('#resetBtn').addEventListener('click', resetToStart);
 ['dblclick', 'gesturestart', 'gesturechange', 'gestureend'].forEach(t => document.addEventListener(t, e => e.preventDefault()));
 document.addEventListener('contextmenu', e => { if (document.body.classList.contains('touch')) e.preventDefault(); });
@@ -4511,6 +4539,7 @@ function uiTick() {
 function frame(dt) {
   stageUpdate(dt);
   if (HW.on) { if (game.running && !game.paused) hwyStep(dt); hwyRender(dt); music.tick(dt); uiTick(); return; }
+  if (DH.on) { dhFrame(dt); return; }
   if (game.running && !game.paused && game.mode === 'job') {
     jobFrame(dt); squealK = 0;
   } else if (game.running && !game.paused) {
@@ -4567,7 +4596,7 @@ const $$ = s => [...document.querySelectorAll(s)];
 const menuEl = $('#menu'), pauseEl = $('#pauseMenu'), endEl = $('#endMenu'), curtain = $('#curtain'), stageEl = $('#stage'), muteBtn = $('#muteBtn');
 let pendingMode = store.get('mode', 'free'), tab = 'play', wiped = false;
 if (pendingMode === 'dovoz') pendingMode = 'job';
-if (!['free', 't60', 'train', 'tokyo', 'drift', 'arena', 'hwy', 'chase', 'job', 'off'].includes(pendingMode)) pendingMode = 'free';
+if (!['free', 't60', 'train', 'tokyo', 'drift', 'arena', 'hwy', 'chase', 'job', 'off', 'dh'].includes(pendingMode)) pendingMode = 'free';
 const isLv = m => m === 'train';
 const mmss = s => { s = Math.max(0, Math.round(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
 
@@ -4585,6 +4614,7 @@ const INFO = {
   buggy: { desc: 'Bugina side-by-side. Ľahká, skáče a hádže sa. Na hrbole a do blata ideálna, na asfalte trochu nervózna.', speed: 56, accel: 74, slide: 72, agil: 90 }
 };
 const MODE_TXT = {
+  dh: () => 'Zjazd z Chopku ako na snowboarde, len autom. Gravitácia ťa ženie dole, na hrebeňoch letíš. Dojdi do zeleného kruhu dole pri Jasnej čo najrýchlejšie, šípka hore ukazuje smer. Prevrátené auto sa samo postaví, tlačidlo ↺ ťa vráti na svah.' + (store.get('dhBest.chopok', 0) ? ' Rekord: ' + dhFmt(store.get('dhBest.chopok', 0)) + '.' : ''),
   free: 'Bez času a bez tlaku. Jazdi, driftuj a zbieraj combo. Body dávajú aj kúsky: dve kolesá, otočka 360 a tesné obiehanie.',
   t60: () => 'Minúta na čo najvyššie skóre.' + (game.best ? ' Tvoj rekord: ' + fmt(game.best) + '.' : ''),
   job: () => 'Celá misia: nalož aparatúru, prejdi starým mestom, cez neónovú zónu a po snehu až na vrchol. Hodnotí sa čas aj škoda.' + (store.get('jobBest', 0) ? ' Rekord: ' + fmt(store.get('jobBest', 0)) + ' bodov.' : '') + (carKey === 'zubor' ? ' Na snehu drž plyn, Zubor má pomoc do kopca.' : ''),
@@ -4669,7 +4699,7 @@ function renderCar() {
 }
 const LAYS = { drift: ['DLHÝ OKRUH', 'TECHNICKÁ'], hwy: ['ÚDOLIE', 'SERPENTÍNY', 'ESKÁ'], chase: ['ÚDOLIE', 'SERPENTÍNY', 'ESKÁ'] };   // road layouts per mode
 const layOf = m => { const L = LAYS[m]; return L ? clamp((+store.get('lay.' + m, 0)) | 0, 0, L.length - 1) : 0; };
-const MODE_NAME = { free: 'VOĽNÝ', t60: '60 S', train: 'TRÉNING', tokyo: 'TOKYO DRIFT', drift: 'RACING TRAŤ', arena: 'DRIFT ARÉNA', hwy: 'DIAĽNICA', chase: 'NAHÁŇAČKA', job: 'MISIA DOVOZ', off: 'MISIA DIVOČINA' };
+const MODE_NAME = { free: 'VOĽNÝ', t60: '60 S', train: 'TRÉNING', tokyo: 'TOKYO DRIFT', drift: 'RACING TRAŤ', arena: 'DRIFT ARÉNA', hwy: 'DIAĽNICA', dh: 'DOWNHILL', chase: 'NAHÁŇAČKA', job: 'MISIA DOVOZ', off: 'MISIA DIVOČINA' };
 const MODE_LV = { job: 'm1', off: 'm2' };
 const runLevel = () => isLv(pendingMode) ? curLevel() : MODE_LV[pendingMode] ? LEVELS.find(x => x.id === MODE_LV[pendingMode]) : null;
 function renderLay() {
@@ -4734,7 +4764,7 @@ const renderCam = () => $$('#camCards .card').forEach(c => c.classList.toggle('o
 const renderQ = () => $$('#qCards .card').forEach(c => c.classList.toggle('on', +c.dataset.q === settings.q));
 const renderWx = () => $$('#wxCards .card').forEach(c => c.classList.toggle('on', c.dataset.wx === settings.wx));
 function renderRecords() {
-  $('#recBest').textContent = fmt(game.best); $('#recTk').textContent = game.bestTk ? fmt(game.bestTk) : '–'; $('#recDr').textContent = game.bestDr ? fmt(game.bestDr) : '–'; $('#recAr').textContent = game.bestAr ? fmt(game.bestAr) : '–'; $('#recHwy').textContent = store.get('hwyBest', 0) ? fmt(store.get('hwyBest', 0)) : '–'; $('#recChase').textContent = store.get('chaseBest', 0) ? fmt(store.get('chaseBest', 0)) : '–';
+  $('#recBest').textContent = fmt(game.best); $('#recTk').textContent = game.bestTk ? fmt(game.bestTk) : '–'; $('#recDr').textContent = game.bestDr ? fmt(game.bestDr) : '–'; $('#recAr').textContent = game.bestAr ? fmt(game.bestAr) : '–'; $('#recHwy').textContent = store.get('hwyBest', 0) ? fmt(store.get('hwyBest', 0)) : '–'; { const db = store.get('dhBest.chopok', 0), da = store.get('dhAir.chopok', 0); $('#recDh').textContent = db ? dhFmt(db) : '–'; $('#recDhAir').textContent = da ? da.toFixed(1).replace('.', ',') + ' s' : '–'; } $('#recChase').textContent = store.get('chaseBest', 0) ? fmt(store.get('chaseBest', 0)) : '–';
   { const jb = store.get('jobBest', 0), ob = store.get('offBest', 0); $('#recJob').textContent = jb ? fmt(jb) + ' · ' + jobFmtT(store.get('jobBestT', 0)) : '–'; $('#recOff').textContent = ob ? fmt(ob) + ' · ' + jobFmtT(store.get('offBestT', 0)) : '–'; }
   $('#recLv').textContent = LEVELS.filter(L => lvStars(L.id) > 0).length + ' / ' + LEVELS.length; $('#recStars').textContent = LEVELS.reduce((a, L) => a + lvStars(L.id), 0) + ' / ' + LEVELS.length * 3;
   $('#recCombo').textContent = fmt(stats.bestCombo);
@@ -5142,7 +5172,7 @@ function startRun() {
   sound.init();
   const fromMenu = game.view === 'menu';
   const go = () => {
-    hwyLeave(); tkNight(false); wxClear(); drOn(false);
+    hwyLeave(); dhLeave(); tkNight(false); wxClear(); drOn(false);
     if (pendingMode !== 'hwy' && pendingMode !== 'chase' && (sg.shown !== carKey || !model || model.len === 5 && !CARS[carKey].failed && sg.shown === null)) { sg.target = carKey; stageSnap(); }   // never start with a model left over from the last run
     const L = runLevel(); job.level = L;
     game.mode = L ? 'job' : pendingMode; job.kind = L ? L.world : 'dovoz'; game.running = true; game.paused = false; game.view = 'play'; game.score = 0; game.combo = 0; game.mult = 1; game.comboT = 0; game.time = game.mode === 'tokyo' ? 90 : game.mode === 'drift' ? 120 : game.mode === 'arena' ? 150 : 60;
@@ -5150,14 +5180,15 @@ function startRun() {
     sound.pause(false);
     gear = 'P'; gearShow(); if (isTouch) setTimeout(() => { if (game.running && gear === 'P') popText('PREPNI NA D'); }, 700);
     if (game.mode === 'job') { jobSetWorld(true); jobStart(); } else { jobSetWorld(false); lvCones(null); setAmbient(!isDrM(game.mode)); resetCar(); if (game.mode === 'tokyo') tkNight(true); if (isDrM(game.mode)) { const ly = layOf('drift'); drOn(true, game.mode === 'arena' ? 'arena' : 'race', ly); if (game.mode === 'drift') setTimeout(() => { if (game.running) popText('TRAŤ ' + 'AB'[ly] + ' · ' + LAYS.drift[ly], true); }, 500); } }
-    if (game.mode !== 'tokyo' && game.mode !== 'hwy' && game.mode !== 'chase') { const wk = wxPick(); wxApply(wk); if (wk !== 'day') setTimeout(() => { if (game.running) popText(WX_NAME[wk]); }, 300); }
+    if (game.mode === 'dh') dhStart();
+    if (game.mode !== 'tokyo' && game.mode !== 'hwy' && game.mode !== 'chase' && game.mode !== 'dh') { const wk = wxPick(); wxApply(wk); if (wk !== 'day') setTimeout(() => { if (game.running) popText(WX_NAME[wk]); }, 300); }
     $('#jobHud').hidden = game.mode !== 'job'; $('#resetBtn').hidden = game.mode === 'job';
     menuEl.hidden = true; endEl.hidden = true; pauseEl.hidden = true; $('#hud').hidden = false;
     elTimer.hidden = game.mode !== 't60' && game.mode !== 'tokyo' && !isDrM(game.mode); elTimer.textContent = String(game.time); elTimer.classList.remove('low');
     $('#scoreLab').textContent = game.mode === 'job' ? 'ČAS' : (game.mode === 't60' || game.mode === 'tokyo' || isDrM(game.mode)) ? 'SKÓRE · REKORD ' + fmt(game.mode === 'tokyo' ? game.bestTk : game.mode === 'drift' ? game.bestDr : game.mode === 'arena' ? game.bestAr : game.best) : 'SKÓRE';
     $('#score').textContent = game.mode === 'job' ? '0:00' : '0'; elSpd.textContent = '0';
     document.body.classList.add('playing'); elCombo.classList.remove('on');
-    if (game.mode === 'hwy' || game.mode === 'chase') { HW.chase = game.mode === 'chase'; hwyStart(); $('#resetBtn').hidden = true; } else updateCamera(0, true);
+    if (game.mode === 'hwy' || game.mode === 'chase') { HW.chase = game.mode === 'chase'; hwyStart(); $('#resetBtn').hidden = true; } else if (game.mode !== 'dh') updateCamera(0, true);
     last = performance.now(); saveStats(); music.announce(true);
   };
   if (fromMenu && !runLevel()) go(); else fadeThen(go);
@@ -5173,7 +5204,7 @@ function toMenu(instant) {
     game.running = false; game.paused = false; game.view = 'menu'; sound.pause(false);
     pauseEl.hidden = true; endEl.hidden = true; menuEl.hidden = false; $('#hud').hidden = true; elTimer.hidden = true;
     document.body.classList.remove('playing'); elCombo.classList.remove('on');
-    hwyLeave(); tkNight(false); wxClear(); drOn(false); jobSetWorld(false); jEl.jobHud.hidden = true; MK.visible = false; job.over = true;
+    hwyLeave(); dhLeave(); tkNight(false); wxClear(); drOn(false); jobSetWorld(false); jEl.jobHud.hidden = true; MK.visible = false; job.over = true;
     resetCar(); renderMode(); setTab('home'); setStep(1);
     layoutStage(); updateCamera(0, true);
   };
@@ -5804,6 +5835,533 @@ function hwyRender(dt) {
   renderer.setRenderTarget(null); HW.cockpit.visible = true;
   renderer.render(scene, cam);
 }
+
+/* ================= DOWNHILL: Pakoon-style run down a whole mountain, own world and own rigid-body physics =================
+   The car is a rigid body (mass 1, box inertia) on four spring-damper wheels that ray-cast down to a height map. Gravity pulls it
+   down the slope and the tyres can only give μ × load, so at 200+ km/h on snow it carves and slides like a snowboard. When the ground
+   falls away faster than gravity the wheels lose contact and the car flies (air time). The body corners touch the ground too,
+   so the car can land on the roof, tumble and slide. First world: Chopok, finish in the circle at the bottom. */
+const DH_G = 9.81;
+const DH_WORLDS = {
+  chopok: { id: 'chopok', name: 'CHOPOK', area: 'Nízke Tatry', L: 2500, seed: 11,
+    // steepness (drop per metre) along the run; negative = the ground rises again (behind the start, after the finish)
+    slope: [[-700, -.32], [-140, -.22], [-40, -.03], [40, .03], [130, .2], [260, .36], [480, .31], [640, .2], [780, .27], [930, .46], [1130, .43], [1290, .19], [1450, .28], [1680, .39], [1890, .3], [2080, .2], [2250, .11], [2380, .03], [2620, .015], [2760, -.1], [3000, -.32], [3600, -.4]],
+    jumps: [[360, 3.4], [720, 2.4], [1230, 3.8], [1590, 2.8], [1960, 3.2], [2180, 2.2]],
+    bend: [[150, 520, 0], [60, 190, 1.3]],
+    mu: .92 }
+};
+const DH = { on: false, w: null, prof: null, Z0: -700, ZS: 2, g: null, chunks: new Map(), shown: new Set(), cc: '', trees: new Map(), saved: [], t: 0, run: 0, air: 0, jump: 0, maxV: 0, cd: 0, started: false, over: false, hud: 0, msgT: 0, safe: [], flipT: 0, shake: 0, camDir: new THREE.Vector3(0, 0, 1), camY: 0, fin: null };
+const dhQuint = t => t * t * t * (t * (t * 6 - 15) + 10);
+const dhSmooth = t => { t = clamp(t, 0, 1); return t * t * (3 - 2 * t); };
+function dhHash(i, j, s) { let h = Math.imul(i, 374761393) + Math.imul(j, 668265263) + Math.imul(s, 1274126177) | 0; h = Math.imul(h ^ (h >>> 13), 1274126177); h ^= h >>> 16; return (h & 0xffff) / 65535; }
+function dhNoise(x, z, s) {
+  const i = Math.floor(x), j = Math.floor(z), ux = dhQuint(x - i), uz = dhQuint(z - j);
+  const a = dhHash(i, j, s), b = dhHash(i + 1, j, s), c = dhHash(i, j + 1, s), d = dhHash(i + 1, j + 1, s);
+  return (a + (b - a) * ux + (c - a) * uz + (a - b - c + d) * ux * uz) * 2 - 1;
+}
+// the height profile along the run, integrated once from the steepness control points
+function dhProfile(W) {
+  const n = Math.ceil((4400) / DH.ZS) + 1, pr = new Float32Array(n), sl = W.slope;
+  const sAt = z => { if (z <= sl[0][0]) return sl[0][1]; for (let i = 1; i < sl.length; i++) if (z <= sl[i][0]) { const a = sl[i - 1], b = sl[i], t = (z - a[0]) / (b[0] - a[0]); return a[1] + (b[1] - a[1]) * (.5 - .5 * Math.cos(Math.PI * t)); } return sl[sl.length - 1][1]; };
+  const i0 = Math.round(-DH.Z0 / DH.ZS); pr[i0] = 0;
+  for (let i = i0 + 1; i < n; i++) { const z = DH.Z0 + i * DH.ZS; pr[i] = pr[i - 1] - sAt(z - DH.ZS / 2) * DH.ZS; }
+  for (let i = i0 - 1; i >= 0; i--) { const z = DH.Z0 + i * DH.ZS; pr[i] = pr[i + 1] + sAt(z + DH.ZS / 2) * DH.ZS; }
+  return pr;
+}
+function dhProf(z) { const f = clamp((z - DH.Z0) / DH.ZS, 0, DH.prof.length - 1.001), i = Math.floor(f), t = f - i; return DH.prof[i] + (DH.prof[i + 1] - DH.prof[i]) * t; }
+function dhCX(z) { let x = 0; for (const [a, wl, ph] of DH.w.bend) x += a * Math.sin(z / wl + ph); return x - DH.cx0; }
+function dhH(x, z) {
+  const W = DH.w, s = W.seed, dx = x - dhCX(z), ax = Math.abs(dx);
+  let h = dhProf(z) + .00042 * dx * dx + (ax > 380 ? Math.pow(ax - 380, 1.7) * .012 : 0);
+  const calm = dhSmooth((z - 30) / 140) * (1 - .85 * dhSmooth((z - (W.L - 380)) / 260)), fine = dhSmooth((z - 30) / 90) * (1 - dhSmooth((z - (W.L - 120)) / 80));
+  h += dhNoise(x / 330, z / 330, s) * 15 * (.35 + .65 * calm) + dhNoise(x / 125, z / 125, s + 1) * 3.6 * calm + dhNoise(x / 38, z / 38, s + 2) * .9 * fine + dhNoise(x / 11, z / 11, s + 3) * .12 * fine;
+  for (let i = 0; i < W.jumps.length; i++) {
+    const u = z - W.jumps[i][0]; if (u < -32 || u > 15) continue;
+    const wx = clamp(1 - (ax - 46) / 36, 0, 1); if (wx <= 0) continue;
+    h += W.jumps[i][1] * wx * (u < 0 ? dhSmooth((u + 32) / 32) : 1 - dhSmooth(u / 15));
+  }
+  return h;
+}
+function dhNormal(x, z, out) { const e = .5; out.set(dhH(x - e, z) - dhH(x + e, z), 2 * e, dhH(x, z - e) - dhH(x, z + e)).normalize(); return out; }
+
+/* ---------- the world: height-map chunks around the car (near ones fine, far ones coarse), trees, the lift, the Rotunda, start and finish ---------- */
+const DH_CH = 192;
+function dhObs(o) { const k = Math.floor(o.x / 20) + ',' + Math.floor(o.z / 20); let L = DH.trees.get(k); if (!L) DH.trees.set(k, L = []); L.push(o); }
+let dhSnowMat = null, dhRockCol = new THREE.Color(0x7d8389), dhSnowCol = new THREE.Color(0xeef2f7), dhShadeCol = new THREE.Color(0x9fb4cf);
+const DH_SUN = new THREE.Vector3(-.62, .5, .6).normalize();
+function dhChunk(ci, cj, lod) {
+  const key = ci + ',' + cj + ',' + lod; let m = DH.chunks.get(key); if (m) return m;
+  const N = lod ? 8 : 48, st = DH_CH / N, x0 = ci * DH_CH, z0 = cj * DH_CH, V = N + 1, skirt = 4 * V;
+  const pos = new Float32Array((V * V + skirt) * 3), nor = new Float32Array((V * V + skirt) * 3), col = new Float32Array((V * V + skirt) * 3), uv = new Float32Array((V * V + skirt) * 2);
+  const nv = new THREE.Vector3(), c = new THREE.Color(); let k = 0;
+  const put = (x, y, z, n) => {
+    pos[k * 3] = x; pos[k * 3 + 1] = y; pos[k * 3 + 2] = z; nor[k * 3] = n.x; nor[k * 3 + 1] = n.y; nor[k * 3 + 2] = n.z;
+    const steep = 1 - n.y, sn = clamp((.42 - steep) / .22, 0, 1), sh = .5 + .5 * dhNoise(x / 23, z / 23, 77), lit = clamp((n.dot(DH_SUN) - .35) * 2.4, 0, 1);
+    c.copy(dhShadeCol).lerp(dhSnowCol, clamp(.25 + .55 * lit + .2 * sh, 0, 1)); c.lerp(dhRockCol, 1 - sn);
+    col[k * 3] = c.r; col[k * 3 + 1] = c.g; col[k * 3 + 2] = c.b; uv[k * 2] = x / 7; uv[k * 2 + 1] = z / 7; k++;
+  };
+  for (let j = 0; j < V; j++) for (let i = 0; i < V; i++) { const x = x0 + i * st, z = z0 + j * st; put(x, dhH(x, z), z, dhNormal(x, z, nv)); }
+  const idx = [];
+  for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) { const a = j * V + i, b = a + 1, d = a + V, e = d + 1; idx.push(a, d, b, b, d, e); }
+  // skirts hide the cracks between fine and coarse neighbours
+  const edges = [[0, 1, 0], [V * (V - 1), 1, 1], [0, V, 2], [V - 1, V, 3]];
+  edges.forEach(([s0, stp, side]) => {
+    const base = k;
+    for (let t = 0; t < V; t++) { const vi = s0 + t * stp; nv.set(nor[vi * 3], nor[vi * 3 + 1], nor[vi * 3 + 2]); put(pos[vi * 3], pos[vi * 3 + 1] - (lod ? 14 : 5), pos[vi * 3 + 2], nv); }
+    for (let t = 0; t < N; t++) { const a = s0 + t * stp, b = s0 + (t + 1) * stp, a2 = base + t, b2 = base + t + 1; if (side === 0 || side === 3) idx.push(a, b, a2, b, b2, a2); else idx.push(a, a2, b, b, a2, b2); }
+  });
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.setAttribute('normal', new THREE.BufferAttribute(nor, 3));
+  g.setAttribute('color', new THREE.BufferAttribute(col, 3)); g.setAttribute('uv', new THREE.BufferAttribute(uv, 2)); g.setIndex(idx);
+  g.computeBoundingSphere();
+  m = new THREE.Mesh(g, dhSnowMat); m.receiveShadow = !lod; m.matrixAutoUpdate = false; m.updateMatrix(); m.visible = false; DH.g.add(m);
+  DH.chunks.set(key, m); return m;
+}
+function dhChunksAround(x, z, force) {
+  // new chunks are built a few per frame (nearest first) so a phone does not stutter when the car crosses into a new square
+  const ci = Math.floor(x / DH_CH), cj = Math.floor(z / DH_CH), key = ci + ',' + cj; if (!force && key === DH.cc) return;
+  const R = settings.q === 0 ? 4 : 5, want = new Set(), list = []; let budget = force ? 1e9 : 2, pending = false;
+  for (let j = -R; j <= R; j++) for (let i = -R; i <= R; i++) { if (i * i + j * j > R * R + 1) continue; list.push([i, j, i * i + j * j]); }
+  list.sort((a, b) => a[2] - b[2]);
+  for (const [i, j] of list) {
+    const lod = Math.max(Math.abs(i), Math.abs(j)) <= (settings.q > 1 ? 2 : 1) ? 0 : 1, k = (ci + i) + ',' + (cj + j) + ',';
+    let m = DH.chunks.get(k + lod);
+    if (!m && (lod === 1 || budget > 0)) { m = dhChunk(ci + i, cj + j, lod); if (lod === 0) budget--; }                  // coarse ones are cheap, always built at once
+    if (!m) { pending = true; m = DH.chunks.get(k + '1') || dhChunk(ci + i, cj + j, 1); }                                   // a fine one waits: the coarse one stands in
+    if (m) want.add(m);
+  }
+  if (!pending) DH.cc = key;
+  DH.shown.forEach(m => { if (!want.has(m)) m.visible = false; }); want.forEach(m => { m.visible = true; }); DH.shown = want;
+  if (DH.treeBands) DH.treeBands.forEach(b => { const on = Math.abs(b.z - (cj + .5) * DH_CH) < (R - .5) * DH_CH; b.m[0].visible = b.m[1].visible = on; });
+  if (DH.chunks.size > 420) for (const [k, m] of DH.chunks) { if (!want.has(m)) { DH.g.remove(m); m.geometry.dispose(); DH.chunks.delete(k); } if (DH.chunks.size < 300) break; }
+}
+function dhSnowTex() {
+  return canvasTex(256, 256, (g, w, h) => {
+    g.fillStyle = '#ffffff'; g.fillRect(0, 0, w, h);
+    for (let i = 0; i < 4200; i++) { const v = 205 + Math.random() * 50 | 0; g.fillStyle = 'rgba(' + (v - 14) + ',' + (v - 6) + ',' + v + ',' + (.3 + Math.random() * .5) + ')'; g.fillRect(Math.random() * w, Math.random() * h, 1 + Math.random() * 4, 1 + Math.random() * 2); }
+    g.globalAlpha = .22; g.strokeStyle = '#8aa1bf'; g.lineWidth = 1.4;
+    for (let i = 0; i < 34; i++) { g.beginPath(); const y = Math.random() * h; g.moveTo(-10, y); g.bezierCurveTo(w * .3, y + 16 * (Math.random() - .5), w * .6, y + 16 * (Math.random() - .5), w + 10, y + 6 * (Math.random() - .5)); g.stroke(); }
+  }, [1, 1]);
+}
+function dhTextTex(txt, bg, fg, w, h) {
+  return canvasTex(w || 512, h || 128, (g, W, H) => { g.fillStyle = bg; g.fillRect(0, 0, W, H); g.fillStyle = fg; g.font = '900 ' + Math.round(H * .62) + 'px "Chakra Petch",system-ui,sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(txt, W / 2, H / 2 + H * .04); });
+}
+function dhFlagTex() {
+  return canvasTex(192, 128, (g, w, h) => {
+    g.fillStyle = '#ffffff'; g.fillRect(0, 0, w, h / 3); g.fillStyle = '#0b4ea2'; g.fillRect(0, h / 3, w, h / 3); g.fillStyle = '#ee1c25'; g.fillRect(0, h * 2 / 3, w, h / 3);
+    // the coat of arms: a red shield edged white, a white double cross on three blue hills
+    const sx = 38, sy = 22, sw = 52, sh = 74;
+    g.beginPath(); g.moveTo(sx, sy); g.lineTo(sx + sw, sy); g.lineTo(sx + sw, sy + sh * .55); g.quadraticCurveTo(sx + sw, sy + sh * .92, sx + sw / 2, sy + sh); g.quadraticCurveTo(sx, sy + sh * .92, sx, sy + sh * .55); g.closePath();
+    g.fillStyle = '#ffffff'; g.fill(); g.save(); g.translate(sx + sw / 2, sy + sh / 2); g.scale(.9, .92); g.translate(-(sx + sw / 2), -(sy + sh / 2)); g.fillStyle = '#ee1c25'; g.fill(); g.restore();
+    g.fillStyle = '#0b4ea2'; g.beginPath(); g.arc(sx + sw / 2, sy + sh * .96, 13, Math.PI, 0); g.arc(sx + sw * .24, sy + sh * .98, 10, Math.PI, 0); g.arc(sx + sw * .76, sy + sh * .98, 10, Math.PI, 0); g.fill();
+    g.fillStyle = '#ffffff'; const cx = sx + sw / 2; g.fillRect(cx - 3, sy + 10, 6, 48); g.fillRect(cx - 11, sy + 20, 22, 5); g.fillRect(cx - 15, sy + 33, 30, 6);
+  });
+}
+function dhTrees(W) {
+  // pines on both sides of the run (snow on the tips), the chairlift pylons; all also used for collisions
+  const cell = settings.q === 0 ? 30 : 22, list = [];
+  for (let z = -260; z < W.L + 420; z += cell) for (let dx = -470; dx < 470; dx += cell) {
+    const rx = dhHash(dx / cell | 0, z / cell | 0, 5), ry = dhHash(dx / cell | 0, z / cell | 0, 6), r = dhHash(dx / cell | 0, z / cell | 0, 7);
+    const xx = dx + (rx - .5) * cell, zz = z + (ry - .5) * cell, a = Math.abs(xx);
+    let p = a < 135 ? 0 : a < 215 ? (a - 135) / 80 * .5 : .5; if (zz > W.L - 160 && zz < W.L + 140 && a < 120) p = 0;
+    if (zz < 120 && a < 150) p *= .3;
+    if (r > p) continue;
+    const x = xx + dhCX(zz), y = dhH(x, zz), n = dhNormal(x, zz, new THREE.Vector3()); if (n.y < .72) continue;
+    { const sc = .75 + dhHash(x | 0, zz | 0, 8) * .7; list.push({ x, y, z: zz, s: sc, r: .5 + .25 * sc, h: 8.5 * sc }); }
+  }
+  const g = new THREE.Group();
+  const cone1 = new THREE.ConeGeometry(2.4, 5.6, 7, 1, true), cone2 = new THREE.ConeGeometry(1.6, 4, 7, 1, true);
+  cone1.translate(0, 3.8, 0); cone2.translate(0, 6.9, 0);
+  // trees go in bands along the run, so the ones beyond the drawn terrain can be hidden (otherwise they float in the fog)
+  const matA = new THREE.MeshLambertMaterial({ color: 0x24402f, side: THREE.DoubleSide }), matB = new THREE.MeshLambertMaterial({ color: 0xdfe8ef, side: THREE.DoubleSide });
+  const M = new THREE.Matrix4(), Q = new THREE.Quaternion(), Sv = new THREE.Vector3(), Pv = new THREE.Vector3(), bands = new Map();
+  list.forEach(t => { const b = Math.floor(t.z / DH_CH); (bands.get(b) || bands.set(b, []).get(b)).push(t); });
+  DH.treeBands = [];
+  bands.forEach((L2, b) => {
+    const mA = new THREE.InstancedMesh(cone1, matA, L2.length), mB = new THREE.InstancedMesh(cone2, matB, L2.length);
+    L2.forEach((t, i) => { Q.setFromAxisAngle(new THREE.Vector3(0, 1, 0), t.x * 13.1 % 6.28); Sv.set(t.s, t.s * (.9 + (t.z * 7.7 % 1 + 1) % 1 * .35), t.s); M.compose(Pv.set(t.x, t.y - .3, t.z), Q, Sv); mA.setMatrixAt(i, M); mB.setMatrixAt(i, M); });
+    [mA, mB].forEach(m => { m.castShadow = settings.q > 1; m.computeBoundingSphere(); g.add(m); });
+    DH.treeBands.push({ z: (b + .5) * DH_CH, m: [mA, mB] });
+  });
+  // chairlift: pylons beside the run and two cables over them
+  const pyl = [], cab = [[], []], poles = [];
+  for (let z = 70; z < W.L - 70; z += 150) { const x = dhCX(z) - 64, y = dhH(x, z); pyl.push([x, y, z]); poles.push({ x, y, z, r: .9, h: 15 }); }
+  const pm = new THREE.MeshLambertMaterial({ color: 0x8b939c }), pg = new THREE.BoxGeometry(.8, 15, .8), bg = new THREE.BoxGeometry(6.2, .5, .5);
+  pyl.forEach(([x, y, z]) => { const p = new THREE.Mesh(pg, pm); p.position.set(x, y + 7.2, z); p.castShadow = settings.q > 1; g.add(p); const b = new THREE.Mesh(bg, pm); b.position.set(x, y + 14.6, z); g.add(b); cab[0].push(new THREE.Vector3(x - 2.9, y + 14.4, z)); cab[1].push(new THREE.Vector3(x + 2.9, y + 14.4, z)); });
+  const cm = new THREE.LineBasicMaterial({ color: 0x2c3036 });
+  cab.forEach(pts => { const arr = []; for (let i = 0; i < pts.length - 1; i++) { const a = pts[i], b = pts[i + 1]; for (let k = 0; k <= 8; k++) { const t = k / 8; arr.push(new THREE.Vector3(lerp(a.x, b.x, t), lerp(a.y, b.y, t) - Math.sin(Math.PI * t) * 2.2, lerp(a.z, b.z, t))); } } g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(arr), cm)); });
+  const chairM = new THREE.MeshLambertMaterial({ color: 0xd8322f }), chairG = new THREE.BoxGeometry(1.6, .9, .9);
+  for (let i = 0; i < pyl.length - 1; i++) for (let k = 1; k < 3; k++) { const a = pyl[i], b = pyl[i + 1], t = k / 3, side = k === 1 ? -2.9 : 2.9; const c = new THREE.Mesh(chairG, chairM); c.position.set(lerp(a[0], b[0], t) + side, lerp(a[1], b[1], t) + 14.4 - Math.sin(Math.PI * t) * 2.2 - 2.4, lerp(a[2], b[2], t)); g.add(c); }
+  // piste poles: both edges of the groomed run, every 36 m
+  { const pg2 = new THREE.CylinderGeometry(.11, .11, 2.6, 5); pg2.translate(0, 1.3, 0); const pts = [];
+    for (let z = 60; z < W.L - 40; z += 36) for (const side of [-1, 1]) { const x = dhCX(z) + side * (58 + 8 * Math.sin(z / 140)); pts.push([x, dhH(x, z), z]); }
+    const pm2 = new THREE.InstancedMesh(pg2, new THREE.MeshBasicMaterial({ map: canvasTex(8, 64, (g2, w2, h2) => { for (let i = 0; i < 8; i++) { g2.fillStyle = i % 2 ? '#141414' : '#ff6a1a'; g2.fillRect(0, i * h2 / 8, w2, h2 / 8); } }) }), pts.length);
+    const M2 = new THREE.Matrix4(); pts.forEach((p2, i) => { M2.makeTranslation(p2[0], p2[1] - .1, p2[2]); pm2.setMatrixAt(i, M2); }); pm2.frustumCulled = false; g.add(pm2); }
+  // collision grid
+  DH.trees = new Map(); list.forEach(dhObs); poles.forEach(dhObs);
+  return g;
+}
+function dhBuild(id) {
+  const W = DH.w = DH_WORLDS[id]; DH.cx0 = 0; DH.cx0 = dhCX(0); DH.prof = dhProfile(W);
+  if (DH.g) { DH.g.parent && DH.g.parent.remove(DH.g); DH.chunks.forEach(m => m.geometry.dispose()); DH.chunks.clear(); DH.shown = new Set(); DH.cc = ''; }
+  DH.g = new THREE.Group(); DH.g.visible = false; scene.add(DH.g); DH.built = id;
+  if (!dhSnowMat) dhSnowMat = new THREE.MeshLambertMaterial({ vertexColors: true, map: dhSnowTex(), side: THREE.DoubleSide });
+  DH.g.add(dhTrees(W));
+  const L = W.L, lam = c => new THREE.MeshLambertMaterial({ color: c });
+  // start: a gate with a banner, the Slovak flag, the Rotunda and the top lift station behind it
+  const sx = dhCX(26), sy = dhH(sx, 26), post = new THREE.BoxGeometry(.7, 7, .7), red = lam(0xd8322f);
+  [-10, 10].forEach(o => { const p = new THREE.Mesh(post, red), y = dhH(sx + o, 26); p.position.set(sx + o, y + 3.4, 26); p.castShadow = true; DH.g.add(p); dhObs({ x: sx + o, y, z: 26, r: .5, h: 7 }); });
+  const ban = new THREE.Mesh(new THREE.PlaneGeometry(20.7, 2.2), new THREE.MeshBasicMaterial({ map: dhTextTex('ŠTART · ' + W.name, '#d8322f', '#ffffff', 1024, 110), side: THREE.DoubleSide }));
+  ban.position.set(sx, sy + 6.2, 26); ban.rotation.y = Math.PI; DH.g.add(ban);
+  const fx = sx + 16, fz = 14, fy = dhH(fx, fz), pole = new THREE.Mesh(new THREE.CylinderGeometry(.09, .12, 9, 6), lam(0xdedede)); pole.position.set(fx, fy + 4.5, fz); DH.g.add(pole);
+  const flag = new THREE.Mesh(new THREE.PlaneGeometry(3, 2, 8, 1), new THREE.MeshLambertMaterial({ map: dhFlagTex(), side: THREE.DoubleSide })); flag.position.set(fx - 1.55, fy + 7.9, fz); flag.rotation.y = Math.PI; DH.g.add(flag); DH.flag = flag;
+  const rx = dhCX(-70) + 58, rz = -70; let ry = 1e9; for (let a = 0; a < 6.28; a += .5) ry = Math.min(ry, dhH(rx + Math.cos(a) * 14, rz + Math.sin(a) * 14));
+  const rot = new THREE.Group(); rot.position.set(rx, ry, rz);
+  const base = new THREE.Mesh(new THREE.CylinderGeometry(14, 14.5, 5, 28), lam(0x9aa1a8)); base.position.y = 1.5; rot.add(base);
+  const glass = new THREE.Mesh(new THREE.CylinderGeometry(14.6, 14.2, 3.4, 28), new THREE.MeshLambertMaterial({ color: 0x2c4c6c, emissive: 0x0d1f33 })); glass.position.y = 5.6; rot.add(glass);
+  const roof = new THREE.Mesh(new THREE.CylinderGeometry(9, 15.4, 2.2, 28), lam(0x5d6670)); roof.position.y = 8.4; rot.add(roof);
+  const mast = new THREE.Mesh(new THREE.CylinderGeometry(.25, .4, 9, 6), lam(0xc8c8c8)); mast.position.y = 13.7; rot.add(mast); rot.traverse(o => { if (o.isMesh) o.castShadow = settings.q > 1; }); DH.g.add(rot);
+  dhObs({ x: rx, y: ry, z: rz, r: 14.5, h: 10 });
+  const st1 = new THREE.Mesh(new THREE.BoxGeometry(14, 8, 10), lam(0x6f7882)); st1.position.set(dhCX(20) - 64, dhH(dhCX(20) - 64, 20) + 3, 20); DH.g.add(st1);
+  const st2 = new THREE.Mesh(new THREE.BoxGeometry(16, 9, 12), lam(0x6f7882)); st2.position.set(dhCX(L - 40) - 64, dhH(dhCX(L - 40) - 64, L - 40) + 3, L - 40); DH.g.add(st2);
+  // finish: the target circle lying on the snow, a tall beam you can see from the top, and an arch
+  const cx = dhCX(L), cz = L; DH.fin = { x: cx, z: cz, r: 22 };
+  const ringG = new THREE.RingGeometry(19.5, 22, 72, 1), rp = ringG.attributes.position;
+  ringG.rotateX(-Math.PI / 2); for (let i = 0; i < rp.count; i++) { const x = rp.getX(i) + cx, z = rp.getZ(i) + cz; rp.setXYZ(i, x, dhH(x, z) + .3, z); }
+  const ringM = new THREE.MeshBasicMaterial({ color: 0x35ff7a, transparent: true, opacity: .85, depthWrite: false }); const ring2 = new THREE.Mesh(ringG, ringM); ring2.renderOrder = 2; DH.g.add(ring2); DH.ring = ring2;
+  const discG = new THREE.CircleGeometry(19.5, 48); discG.rotateX(-Math.PI / 2); const dp = discG.attributes.position; for (let i = 0; i < dp.count; i++) { const x = dp.getX(i) + cx, z = dp.getZ(i) + cz; dp.setXYZ(i, x, dhH(x, z) + .25, z); }
+  const disc2 = new THREE.Mesh(discG, new THREE.MeshBasicMaterial({ color: 0x35ff7a, transparent: true, opacity: .16, depthWrite: false })); disc2.renderOrder = 2; DH.g.add(disc2);
+  const beam = new THREE.Mesh(new THREE.CylinderGeometry(3, 3, 260, 16, 1, true), new THREE.MeshBasicMaterial({ color: 0x5dff94, transparent: true, opacity: .22, depthWrite: false, side: THREE.DoubleSide, fog: false }));
+  beam.position.set(cx, dhH(cx, cz) + 130, cz); DH.g.add(beam); DH.beam = beam;
+  const ay = dhH(cx, cz - 30); [-13, 13].forEach(o => { const p = new THREE.Mesh(post, lam(0x1e9e4c)), y = dhH(cx + o, cz - 30); p.position.set(cx + o, y + 3.4, cz - 30); DH.g.add(p); dhObs({ x: cx + o, y, z: cz - 30, r: .5, h: 7 }); });
+  const ban2 = new THREE.Mesh(new THREE.PlaneGeometry(26.7, 2.6), new THREE.MeshBasicMaterial({ map: dhTextTex('CIEĽ · JASNÁ', '#1e9e4c', '#ffffff', 1024, 100), side: THREE.DoubleSide })); ban2.position.set(cx, ay + 6.3, cz - 30); ban2.rotation.y = Math.PI; DH.g.add(ban2);
+  DH.start = { x: sx, z: 4 };
+}
+
+/* ---------- the car as a rigid body ---------- */
+const DHB = { p: new THREE.Vector3(), v: new THREE.Vector3(), q: new THREE.Quaternion(), w: new THREE.Vector3(), I: new THREE.Vector3(1, 1, 1), cl: new THREE.Vector3(), wh: [], pts: [], delta: 0, st: 0, drive: 0, brk: 0, hb: 0, mu: 1, drag: 4e-4, df: 0, nc: 0, bc: 0, vF: 0, slide: 0, land: 0 };
+const DH_DROOP = .16, DH_UP = .26;
+const _u = new THREE.Vector3(), _f = new THREE.Vector3(), _r = new THREE.Vector3(), _a = new THREE.Vector3(), _n = new THREE.Vector3(), _gp = new THREE.Vector3(), _rr = new THREE.Vector3(), _vc = new THREE.Vector3(),
+  _d = new THREE.Vector3(), _s = new THREE.Vector3(), _F = new THREE.Vector3(), _Fa = new THREE.Vector3(), _Ta = new THREE.Vector3(), _t3 = new THREE.Vector3(), _qi = new THREE.Quaternion(), _dq = new THREE.Quaternion(), _wb = new THREE.Vector3(), _tb = new THREE.Vector3(), _Lb = new THREE.Vector3();
+const DH_TUNE = { zubor: { drag: 4.4e-4, mu: 1, com: .35 }, sugga: { drag: 5.2e-4, mu: 1.05, com: .34 }, mini: { drag: 3.8e-4, mu: 1, com: .36 }, gt: { drag: 3.1e-4, mu: 1.05, df: 4e-4, com: .33 }, f1: { drag: 2.9e-4, mu: 1.1, df: 1.1e-3, com: .3 }, xbow: { drag: 3.2e-4, mu: 1.08, df: 3e-4, com: .32 } };
+function dhCarSetup() {
+  // measure the real car model: where its wheels are, how big the body is
+  const car = model.car; car.position.set(0, 0, 0); car.rotation.set(0, 0, 0); car.quaternion.identity(); car.scale.setScalar(1); model.body.rotation.set(0, 0, 0); car.updateMatrixWorld(true);
+  const bb = new THREE.Box3(), tmp = new THREE.Vector3(); model.body.traverse(o => { if (o.isMesh && o.geometry) { o.geometry.boundingBox || o.geometry.computeBoundingBox(); const b = o.geometry.boundingBox.clone().applyMatrix4(o.matrixWorld); bb.union(b); } });
+  model.wheels.forEach(w => { w.pivot.getWorldPosition(tmp); bb.expandByPoint(tmp); });
+  if (bb.isEmpty()) bb.set(new THREE.Vector3(-1.1, 0, -2.5), new THREE.Vector3(1.1, 2, 2.5));
+  const T = DH_TUNE[carKey] || {}, wps = model.wheels.map(w => { w.pivot.getWorldPosition(tmp); return { c: tmp.clone(), w }; });
+  let zc = 0; wps.forEach(o => { zc += o.c.z; }); zc = wps.length ? zc / wps.length : (bb.min.z + bb.max.z) / 2;
+  const Hh = bb.max.y - Math.max(0, bb.min.y), comH = clamp(Hh * (T.com || .38), .45, 1.15);
+  DHB.cl.set(0, comH, zc);
+  const Wd = bb.max.x - bb.min.x, Ln = bb.max.z - bb.min.z;
+  DHB.I.set((Hh * Hh + Ln * Ln) / 12 * 1.25, (Wd * Wd + Ln * Ln) / 12 * 1.25, (Wd * Wd + Hh * Hh) / 12 * 1.25);
+  DHB.wh = wps.map(o => {
+    const r = Math.max(.25, o.c.y), sc = (() => { const s = new THREE.Vector3(); o.w.pivot.parent.getWorldScale(s); return s.y || 1; })();
+    return { a: new THREE.Vector3(o.c.x, o.c.y + DH_UP, o.c.z).sub(DHB.cl), r, Lf: DH_UP + r + DH_DROOP, front: !!o.w.front, w: o.w, restY: o.w.pivot.position.y, sc, x: 0, on: 0, vL: 0, spin: 0 };
+  });
+  DHB.wh.forEach((w, i) => { let bi = -1, bd = 1e9; DHB.wh.forEach((o, j) => { if (j === i || Math.sign(o.a.x) === Math.sign(w.a.x)) return; const d = Math.abs(o.a.z - w.a.z); if (d < bd) { bd = d; bi = j; } }); w.pair = bi; });
+  if (!DHB.wh.length) { [[-.9, 1.6, 1], [.9, 1.6, 1], [-.9, -1.6, 0], [.9, -1.6, 0]].forEach(([x, z, f]) => DHB.wh.push({ a: new THREE.Vector3(x, .4 + DH_UP, z).sub(DHB.cl), r: .4, Lf: DH_UP + .4 + DH_DROOP, front: !!f, w: null, x: 0, on: 0, vL: 0, pair: (x < 0 ? 1 : -1) + DHB.wh.length })); }
+  // body corners: a box a little inside the visual body, plus the roof and the nose / tail
+  const mn = bb.min, mx = bb.max, ix = (mx.x - mn.x) * .44, y0 = Math.max(.3, mn.y + (comH * .55)), y1 = mx.y * .96, z0 = mn.z * .95, z1 = mx.z * .95;
+  DHB.pts = [];
+  [y0, y1].forEach(y => [z0, z1].forEach(z => [-ix, ix].forEach(x => DHB.pts.push(new THREE.Vector3(x, y, z).sub(DHB.cl)))));
+  DHB.pts.push(new THREE.Vector3(0, y1, zc).sub(DHB.cl), new THREE.Vector3(0, y1 * .7, z1).sub(DHB.cl), new THREE.Vector3(0, y1 * .7, z0).sub(DHB.cl), new THREE.Vector3(-ix, y1, zc).sub(DHB.cl), new THREE.Vector3(ix, y1, zc).sub(DHB.cl));
+  DHB.mu = (DH.w.mu || .9) * (T.mu || 1) * clamp(P.ayMax / 7.2, .85, 1.25); DHB.drag = T.drag || 4e-4; DHB.df = T.df || 0;
+  DHB.len = Ln; DHB.hgt = Hh;
+}
+function dhPlace(x, z, yaw, v) {
+  const n = dhNormal(x, z, _n), y = dhH(x, z);
+  DHB.q.setFromAxisAngle(_t3.set(0, 1, 0), yaw); _qi.setFromUnitVectors(_t3.set(0, 1, 0), n); DHB.q.premultiply(_qi);
+  DHB.p.set(x, y, z).add(_t3.copy(DHB.cl).applyQuaternion(DHB.q)).addScaledVector(n, .25);
+  DHB.v.set(Math.sin(yaw), 0, Math.cos(yaw)).multiplyScalar(v || 0); DHB.w.set(0, 0, 0);
+  DHB.wh.forEach(w => { w.x = 0; w.on = 0; w.vL = 0; });
+}
+function dhSub(h) {
+  const B = DHB, q = B.q, mu = B.mu * (1 - .18 * clamp((B.v.length() - 30) / 60, 0, 1));   // snow gives less at 200+ km/h: the car slides instead of tipping
+  _u.set(0, 1, 0).applyQuaternion(q); _f.set(0, 0, 1).applyQuaternion(q); _r.crossVectors(_u, _f);   // _r points to the car's left
+  _Fa.set(0, -DH_G, 0); _Ta.set(0, 0, 0);
+  const sp = B.v.length(); _Fa.addScaledVector(B.v, -B.drag * sp);
+  if (B.df && B.nc) _Fa.addScaledVector(_u, -B.df * sp * sp);
+  // wheels: first where each one touches, then the forces (the anti-roll bars need both sides)
+  let nc = 0;
+  for (const w of B.wh) {
+    _a.copy(w.a).applyQuaternion(q).add(B.p);
+    const gh = dhH(_a.x, _a.z); dhNormal(_a.x, _a.z, _n); const un = _u.dot(_n);
+    w.on = 0; w.x = 0;
+    if (un < .3) continue;
+    const t = (_a.y - gh) * _n.y / un;
+    if (t >= w.Lf || t < -1) continue;
+    w.on = 1; w.x = Math.min(w.Lf - t, DH_DROOP + .42); w.t = t; w.nx = _n.x; w.ny = _n.y; w.nz = _n.z; nc++;
+  }
+  B.nc = nc;
+  for (let i = 0; i < B.wh.length; i++) {
+    const w = B.wh[i]; if (!w.on) continue;
+    _n.set(w.nx, w.ny, w.nz); _a.copy(w.a).applyQuaternion(q).add(B.p); _gp.copy(_a).addScaledVector(_u, -w.t);
+    _rr.subVectors(_gp, B.p); _vc.crossVectors(B.w, _rr).add(B.v);
+    const vn = _vc.dot(_n);
+    let Fn = 16.4 * w.x - (vn < 0 ? 1.7 : 2.6) * vn;
+    const bump = DH_DROOP + .24; if (w.x > bump) Fn += 320 * (w.x - bump) - 9 * Math.min(0, vn);
+    const pair = w.pair >= 0 ? B.wh[w.pair] : null; if (pair) Fn += 14 * (w.x - (pair.on ? pair.x : 0));                     // anti-roll bar (wheels come in left / right pairs)
+    Fn = clamp(Fn, 0, 70);
+    if (w.front) _d.set(Math.sin(B.delta), 0, Math.cos(B.delta)).applyQuaternion(q); else _d.copy(_f);
+    _d.addScaledVector(_n, -_d.dot(_n)).normalize(); _s.crossVectors(_n, _d);
+    const vL = _vc.dot(_d), vT = _vc.dot(_s); w.vL = vL;
+    let fyMax = mu * Fn, fx = B.drive / 4;
+    if (B.brk > 0) fx -= Math.sign(vL) * Math.min(1, Math.abs(vL) * 3) * B.brk * P.brake * .3;
+    if (B.hb && !w.front) { fx = -clamp(vL * 3, -1, 1) * mu * Fn * .85; fyMax *= .42; }
+    fx -= clamp(vL * 2, -1, 1) * .014 * Fn;
+    const vs = .45 + .15 * Math.abs(vL); let fy = -fyMax * clamp(vT / vs, -1, 1);
+    const lim = mu * Fn, tot = Math.hypot(fx, fy); if (tot > lim) { const k = lim / tot; fx *= k; fy *= k; }
+    if (Math.abs(vT) > 2.5) B.slide = Math.max(B.slide, Math.min(1, (Math.abs(vT) - 2.5) / 8));
+    _F.copy(_n).multiplyScalar(Fn).addScaledVector(_d, fx).addScaledVector(_s, fy);
+    _Fa.add(_F); _Ta.add(_t3.crossVectors(_rr, _F));
+    if (-vn > B.land) B.land = -vn;
+  }
+  // on the wheels the car leans but does not tip in an ordinary turn: past ~17° a hand pushes it back (a big hit or a side slope still rolls it)
+  if (nc >= 2) {
+    dhNormal(B.p.x, B.p.z, _n); _s.crossVectors(_n, _f).normalize(); const roll = Math.asin(clamp(-_u.dot(_s), -1, 1)), lim = .3;
+    if (Math.abs(roll) > lim) { const k = (Math.abs(roll) - lim) * Math.sign(roll); _Ta.addScaledVector(_f, -k * 18 * B.I.z); }
+    _Ta.addScaledVector(_f, -B.w.dot(_f) * 1.2 * B.I.z);
+  }
+  // the body: corners and roof hit the snow and slide on it
+  let bc = 0;
+  for (const b of B.pts) {
+    _a.copy(b).applyQuaternion(q).add(B.p);
+    const gh = dhH(_a.x, _a.z), pen = gh - _a.y; if (pen <= 0) continue;
+    dhNormal(_a.x, _a.z, _n); bc++;
+    _rr.subVectors(_a, B.p); _vc.crossVectors(B.w, _rr).add(B.v);
+    const vn = _vc.dot(_n), Fn = Math.max(0, 90 * pen * _n.y - 7 * vn);
+    _F.copy(_n).multiplyScalar(Fn);
+    _vc.addScaledVector(_n, -vn); const vt = _vc.length();
+    if (vt > .01) _F.addScaledVector(_vc, -Math.min(.42 * Fn, vt * 6) / vt);
+    _Fa.add(_F); _Ta.add(_t3.crossVectors(_rr, _F));
+    if (-vn > B.hit) B.hit = -vn;
+  }
+  B.bc = bc;
+  // in the air the driver can still nudge the car a little: steer turns it, the brake lifts the nose; a soft hand keeps it near level
+  if (!nc && !bc) {
+    _Ta.addScaledVector(_u, (B.st * .75 - B.w.dot(_u)) * 3 * B.I.y); _Ta.addScaledVector(_r, -B.airBrk * 1.6 * B.I.x);
+    dhNormal(B.p.x, B.p.z, _n); _t3.crossVectors(_u, _n); _Ta.x += _t3.x * 2.6 * B.I.x; _Ta.y += _t3.y * 2.6 * B.I.y; _Ta.z += _t3.z * 2.6 * B.I.z;
+  }
+  // integrate (semi-implicit Euler, angular part in body frame)
+  B.v.addScaledVector(_Fa, h); B.p.addScaledVector(B.v, h);
+  _qi.copy(q).invert(); _wb.copy(B.w).applyQuaternion(_qi); _tb.copy(_Ta).applyQuaternion(_qi);
+  const I = B.I; _Lb.set(_wb.x * I.x, _wb.y * I.y, _wb.z * I.z); _t3.crossVectors(_wb, _Lb);
+  _wb.x += (_tb.x - _t3.x) / I.x * h; _wb.y += (_tb.y - _t3.y) / I.y * h; _wb.z += (_tb.z - _t3.z) / I.z * h;
+  if (!nc && !bc) { _wb.x *= 1 - 1.1 * h; _wb.z *= 1 - 1.1 * h; _wb.y *= 1 - .4 * h; } else _wb.multiplyScalar(1 - .6 * h);
+  B.w.copy(_wb).applyQuaternion(q); if (B.w.lengthSq() > 144) B.w.setLength(12);
+  _dq.set(B.w.x * h * .5, B.w.y * h * .5, B.w.z * h * .5, 0).multiply(q); q.set(q.x + _dq.x, q.y + _dq.y, q.z + _dq.z, q.w + _dq.w).normalize();
+}
+function dhInput(dt) {
+  readInput(dt);
+  const B = DHB; _f.set(0, 0, 1).applyQuaternion(B.q); const vF = B.v.dot(_f); B.vF = vF;
+  let gas = input.gas, brk = input.brake, rev = input.rev || 0;
+  if (!input.gm && brk > 0 && vF < .6 && !gas) { rev = brk; brk = 0; }                                // keyboard: the brake key backs up once stopped
+  if (!DH.started) { gas = 0; rev = 0; brk = 1; }
+  B.st = lerp(B.st, input.steer, 1 - Math.exp(-dt * P.steerLag * 1.4));
+  B.delta = B.st * P.steerMax / (1 + Math.max(0, Math.abs(vF) - 7) / 9);
+  const pw = P.pw * 1.15, aMax = P.aMax * 1.2;
+  B.drive = gas > .01 ? gas * Math.min(aMax, pw / Math.max(Math.abs(vF), 2.5)) * (vF < 95 ? 1 : 0) : 0;
+  if (rev > .01) B.drive = vF > .8 ? 0 : -rev * Math.min(P.raMax * 1.2, 6 / Math.max(Math.abs(vF), 1)) * (vF > -P.rev * 1.4 ? 1 : 0);
+  if (rev > .01 && vF > .8) brk = Math.max(brk, rev);
+  B.brk = brk; B.hb = input.hb; B.airGas = gas; B.airBrk = Math.max(brk, rev);
+}
+// the last few spots where the car stood on its wheels: the reset button puts it back on one of them
+function dhSafeTick(dt) {
+  const B = DHB; DH.safeT = (DH.safeT || 0) - dt; if (DH.safeT > 0) return; DH.safeT = .5;
+  _u.set(0, 1, 0).applyQuaternion(B.q); dhNormal(B.p.x, B.p.z, _n);
+  if (B.nc >= 3 && _u.dot(_n) > .8) { _f.set(0, 0, 1).applyQuaternion(B.q); DH.safe.push({ x: B.p.x, z: B.p.z, yaw: Math.atan2(_f.x, _f.z) }); if (DH.safe.length > 12) DH.safe.shift(); }
+}
+function dhRespawn(here) {
+  let s = null; if (here) { _f.set(0, 0, 1).applyQuaternion(DHB.q); s = { x: DHB.p.x, z: DHB.p.z, yaw: Math.atan2(_f.x, _f.z) }; }
+  else s = DH.safe.length > 3 ? DH.safe[DH.safe.length - 4] : DH.safe[0] || { x: DH.start.x, z: DH.start.z, yaw: 0 };
+  dhPlace(s.x, s.z, s.yaw, 0); DH.flipT = 0; DH.safe.length = Math.max(0, DH.safe.length - 3);
+  fadeEl.style.opacity = 0; popText(here ? 'NA KOLESÁ' : 'SPÄŤ NA SVAH', true);
+}
+
+// trees, lift pylons, posts and the Rotunda: three circles along the car against the round obstacles
+function dhCollideObs() {
+  const B = DHB; _f.set(0, 0, 1).applyQuaternion(B.q); _f.y = 0; if (_f.lengthSq() < 1e-4) return; _f.normalize();
+  const off = (B.len || 5) * .32, cr = 1.15;
+  for (let k = -1; k <= 1; k++) {
+    const cx = B.p.x + _f.x * off * k, cz = B.p.z + _f.z * off * k, gi = Math.floor(cx / 20), gj = Math.floor(cz / 20);
+    for (let a = -1; a <= 1; a++) for (let b = -1; b <= 1; b++) {
+      const L = DH.trees.get((gi + a) + ',' + (gj + b)); if (!L) continue;
+      for (const o of L) {
+        const dx = cx - o.x, dz = cz - o.z, rr = o.r + cr, d2 = dx * dx + dz * dz; if (d2 >= rr * rr) continue;
+        if (o.y !== undefined && B.p.y - B.cl.y > o.y + (o.h || 9)) continue;      // flying over it
+        const d = Math.sqrt(d2) || .01, nx = dx / d, nz = dz / d, pen = rr - d;
+        B.p.x += nx * pen; B.p.z += nz * pen;
+        const vn = B.v.x * nx + B.v.z * nz;
+        if (vn < 0) {
+          const j = -vn * 1.25; B.v.x += nx * j; B.v.z += nz * j; B.v.x *= .82; B.v.z *= .82;
+          const rx = _f.x * off * k, rz = _f.z * off * k; B.w.y += (rz * nx * j - rx * nz * j) / B.I.y * .5;
+          if (-vn > B.hit) B.hit = -vn;
+        }
+      }
+    }
+  }
+}
+
+/* ---------- run ---------- */
+const dhEl = {};
+function dhFmt(t, ms) { t = Math.max(0, t); const m = Math.floor(t / 60), s = t - m * 60; return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s.toFixed(ms === false ? 0 : 2); }
+function dhFmtS(t) { t = Math.max(0, t); return (t < 10 ? '0' : '') + t.toFixed(2); }
+function dhEnter() {
+  const id = 'chopok'; if (DH.built !== id) dhBuild(id);
+  DH.dome = scene.children.find(o => o.isMesh && o.geometry && o.geometry.type === 'SphereGeometry' && o.geometry.parameters.radius === 360);
+  DH.saved = scene.children.filter(o => !o.isLight && o !== DH.g && o !== DH.dome && o !== model.car && o !== smokeMesh && o.visible);
+  DH.saved.forEach(o => { o.visible = false; });
+  const hemi = scene.children.find(o => o.isHemisphereLight);
+  DH.env = { near: scene.fog.near, far: scene.fog.far, col: scene.fog.color.getHex(), top: DH.dome.material.uniforms.top.value.getHex(), bot: DH.dome.material.uniforms.bot.value.getHex(), fov: camera.fov, hi: hemi.intensity, si: sun.intensity, ex: renderer.toneMappingExposure };
+  scene.fog.near = 380; scene.fog.far = 1250; scene.fog.color.setHex(0xdde6f0);
+  DH.dome.material.uniforms.top.value.setHex(0x4f86d0); DH.dome.material.uniforms.bot.value.setHex(0xe2eaf3);
+  hemi.intensity = .62; sun.intensity = 2.7; renderer.toneMappingExposure = .92;
+  camera.fov = 60; camera.updateProjectionMatrix(); setShift(0, 0);
+  DH.g.visible = true; DH.on = true; document.body.classList.add('dh');
+}
+function dhLeave() {
+  if (!DH.on) return;
+  DH.on = false; DH.g.visible = false; DH.saved.forEach(o => { o.visible = true; }); DH.saved = [];
+  const hemi = scene.children.find(o => o.isHemisphereLight), E = DH.env;
+  scene.fog.near = E.near; scene.fog.far = E.far; scene.fog.color.setHex(E.col); DH.dome.material.uniforms.top.value.setHex(E.top); DH.dome.material.uniforms.bot.value.setHex(E.bot);
+  hemi.intensity = E.hi; sun.intensity = E.si; renderer.toneMappingExposure = E.ex; camera.fov = E.fov; camera.updateProjectionMatrix();
+  if (DH.dome) DH.dome.position.set(0, 0, 0);
+  DHB.wh.forEach(w => { if (w.w) { w.w.pivot.position.y = w.restY; w.w.pivot.rotation.y = 0; } });
+  if (model && model.car) { model.car.quaternion.identity(); model.car.rotation.set(0, 0, 0); }
+  document.body.classList.remove('dh'); dhEl.hud.hidden = true; dhEl.msg.className = 'dhmsg';
+}
+function dhStart() {
+  dhEnter(); dhCarSetup();
+  DH.t = 0; DH.run = 0; DH.air = 0; DH.jump = 0; DH.maxV = 0; DH.cd = 3.4; DH.started = false; DH.over = false; DH.safe = []; DH.flipT = 0; DH.lastCd = 4; DH.shake = 0; DH.camSnap = true; DH.jumps = 0; DH.bestJump = 0;
+  DHB.st = 0; DHB.delta = 0; DHB.land = 0; DHB.hit = 0; DHB.slide = 0;
+  dhPlace(DH.start.x, DH.start.z, 0, 0);
+  dhChunksAround(DHB.p.x, DHB.p.z, true);
+  for (let i = 0; i < 240; i++) { DH.started = false; dhInput(1 / 240); dhSub(1 / 240); DHB.p.x = DH.start.x; DHB.p.z = DH.start.z; DHB.v.x = DHB.v.z = 0; }   // let the springs settle
+  gear = 'D'; gearShow();
+  const best = store.get('dhBest.' + DH.w.id, 0); dhEl.best.textContent = best ? dhFmt(best) : '--:--.--';
+  dhEl.hud.hidden = false; dhMsg('');
+  S.speed = 0; S.vF = 0;
+  $('#hud').hidden = false; $('#resetBtn').hidden = false;
+}
+function dhMsg(t, cls) { dhEl.msg.textContent = t; dhEl.msg.className = 'dhmsg' + (t ? ' on' : '') + (cls ? ' ' + cls : ''); if (t) { void dhEl.msg.offsetWidth; } DH.msgT = t ? 1.4 : 0; }
+function dhStep(dt) {
+  const B = DHB; DH.t += dt;
+  if (!DH.started) {
+    DH.cd -= dt; const n = Math.ceil(DH.cd - .4);
+    if (n !== DH.lastCd) { DH.lastCd = n; if (n > 0 && n <= 3) { dhMsg(String(n), 'cd'); sound.tick(); } else if (n <= 0) { DH.started = true; dhMsg('ŠTART!', 'go'); sound.bank(); buzz(40); } }
+  } else if (!DH.over) DH.run += dt;
+  dhInput(dt);
+  B.land = 0; B.hit = 0; B.slide = 0;
+  const n = clamp(Math.ceil(dt * 240), 1, 12), h = dt / n; let airAll = true;
+  for (let i = 0; i < n; i++) { dhSub(h); if (B.nc || B.bc) airAll = false; if (!DH.started) { B.p.x = DH.start.x; B.p.z = DH.start.z; B.v.x = B.v.z = 0; } }
+  // air time: all four wheels and the body off the snow
+  dhCollideObs();
+  if (airAll && DH.started) DH.jump += dt;
+  else if (DH.jump > 0) { if (DH.jump > .3 && !DH.over) DH.air += DH.jump; if (DH.jump > .9 && !DH.over) { DH.jumps++; popText('SKOK ' + DH.jump.toFixed(1).replace('.', ',') + ' s'); sound.bank(); } DH.bestJump = Math.max(DH.bestJump, DH.jump); DH.jump = 0; }
+  if (B.land > 3.5 || B.hit > 3.5) { const imp = Math.max(B.land * .6, B.hit); sound.thud(Math.min(1, imp / 14)); DH.shake = Math.min(1, DH.shake + imp / 22); if (imp > 6) buzz(Math.min(80, imp * 5)); if (!reduced) dhSpray(8, 1); }
+  const sp = B.v.length(); if (sp > DH.maxV) DH.maxV = sp;
+  _f.set(0, 0, 1).applyQuaternion(B.q); _u.set(0, 1, 0).applyQuaternion(B.q);
+  S.x = B.p.x; S.z = B.p.z; S.speed = sp; S.vF = B.vF; S.th = Math.atan2(_f.x, _f.z); S.gy = B.p.y; S.drifting = B.slide > .2; S.slip = B.slide;
+  if (B.nc >= 2 && sp > 14 && !reduced && Math.random() < .25 + B.slide) dhSpray(1 + (B.slide > .3 ? 2 : 0), .6 + B.slide);
+  dhSafeTick(dt);
+  // upside down or on the side and nearly stopped: back on the wheels after a moment
+  dhNormal(B.p.x, B.p.z, _n);
+  if (_u.dot(_n) < .35 && sp < 5) { DH.flipT += dt; if (DH.flipT > 1.6) fadeEl.style.opacity = clamp((DH.flipT - 1.6) / .4, 0, 1); if (DH.flipT > 2) dhRespawn(true); } else if (DH.flipT) { DH.flipT = 0; fadeEl.style.opacity = 0; }
+  if (B.p.y < dhH(B.p.x, B.p.z) - 6) dhRespawn(false);   // fell through: should never happen
+  // finish: into the circle
+  const fdx = DH.fin.x - B.p.x, fdz = DH.fin.z - B.p.z, fd = Math.hypot(fdx, fdz);
+  if (DH.started && !DH.over && fd < DH.fin.r && B.p.y < dhH(B.p.x, B.p.z) + 6) { dhFinish(); return; }
+  dhChunksAround(B.p.x, B.p.z, false);
+  // engine and wind
+  const kmh = sp * 3.6, bands = [0, 45, 85, 130, 180, 235, 300, 380]; let g = 0; while (g < bands.length - 2 && kmh > bands[g + 1]) g++;
+  let rpm = .22 + .78 * clamp((kmh - bands[g]) / (bands[g + 1] - bands[g]), 0, 1); if (!B.nc && B.airGas > .1) rpm = Math.min(1, rpm + .3); if (!DH.started && input.gas) rpm = .3 + input.gas * .6;
+  sound.setEngine(P.engine); sound.update(rpm, gasIn(), B.nc ? B.slide * .5 : 0);
+  stats.dist += sp * dt; stats.time += dt; if (kmh > stats.maxSpd) stats.maxSpd = kmh;
+  // HUD ~ 15 times a second
+  DH.hud -= dt; if (DH.hud <= 0) {
+    DH.hud = .066;
+    dhEl.time.textContent = dhFmt(DH.run); dhEl.air.textContent = dhFmtS(DH.air + (DH.jump > .3 ? DH.jump : 0)); dhEl.jump.textContent = DH.jump > .25 ? dhFmtS(DH.jump) : ''; dhEl.spd.textContent = Math.round(kmh);
+    dhEl.dist.textContent = Math.round(fd) + ' m';
+    const camYaw = Math.atan2(DH.camDir.x, DH.camDir.z), bear = Math.atan2(fdx, fdz);
+    dhEl.arrow.style.transform = 'rotate(' + (-angDiff(camYaw, bear) * 180 / Math.PI).toFixed(1) + 'deg)';
+  }
+  if (DH.msgT > 0) { DH.msgT -= dt; if (DH.msgT <= 0) dhEl.msg.className = 'dhmsg'; }
+}
+function dhSpray(n, k) {
+  const B = DHB;
+  for (const w of B.wh) {
+    if (!w.on || w.front) continue;
+    _a.copy(w.a).applyQuaternion(B.q).add(B.p);
+    for (let i = 0; i < n; i++) { puff(_a.x, _a.z, B.v.x * .9, B.v.z * .9, k); const p = smoke[(smokeI + SMOKE - 1) % SMOKE]; p.y = dhH(_a.x, _a.z) + .2; p.vy *= 1.3; }
+  }
+}
+function dhFinish() {
+  if (DH.over) return; DH.over = true;
+  const t = DH.run, id = DH.w.id, best = store.get('dhBest.' + id, 0), nb = !best || t < best; if (nb) store.set('dhBest.' + id, t);
+  if (DH.jump > .3) DH.air += DH.jump; DH.jump = 0; if (DH.air > store.get('dhAir.' + id, 0)) store.set('dhAir.' + id, DH.air);
+  stats.dh = (stats.dh || 0) + 1; saveStats();
+  dhMsg(nb ? 'NOVÝ REKORD TRATE!' : 'CIEĽ!', nb ? 'rec' : 'go'); sound.bank(); buzz([40, 30, 80]);
+  if (nb) dhEl.best.textContent = dhFmt(t);
+  game.running = false; game.view = 'end';
+  setTimeout(() => {
+    if (!DH.on || game.view !== 'end') return;
+    $('#nextBtn').hidden = true; $('#endTitle').innerHTML = DH.w.name + ' <span>DOWNHILL</span>';
+    $('#endScoreLab').textContent = 'ČAS'; $('#endScore').textContent = dhFmt(t);
+    $('#endL1').textContent = 'REKORD'; $('#endBest').textContent = dhFmt(nb ? t : best);
+    $('#endL2').textContent = 'VO VZDUCHU'; $('#endCombo').textContent = DH.air.toFixed(1).replace('.', ',') + ' s';
+    $('#endL3').textContent = 'MAX km/h'; $('#endCones').textContent = Math.round(DH.maxV * 3.6);
+    $('#endBadge').hidden = !nb;
+    $('#endNote').textContent = nb ? 'Nový rekord trate ' + DH.w.name + '. Daj screenshot kamošom.' : 'Rekord je ' + dhFmt(best) + '. Drž sa v strede svahu a na hrebeňoch pusti plyn, vo vzduchu sa nezrýchľuje.';
+    shareTxt = 'Zišiel som ' + DH.w.name + ' v Event Car Game za ' + dhFmt(t) + ', ' + DH.air.toFixed(1).replace('.', ',') + ' s vo vzduchu. Prebi ma!';
+    endEl.hidden = false; $('#hud').hidden = true; dhEl.hud.hidden = true; dhEl.msg.className = 'dhmsg'; DH.msgT = 0; document.body.classList.remove('playing'); sound.quiet(); checkBadges();
+  }, 1600);
+}
+function dhCoast(dt) {   // after the finish the car rolls out with the brake on
+  input.gas = 0; input.rev = 0; input.steer = 0; input.hb = 0; input.brake = .6; input.gm = 0;
+  const B = DHB; B.drive = 0; B.brk = .6; B.hb = 0; B.st *= .9; B.delta *= .9; B.land = B.hit = 0;
+  const n = clamp(Math.ceil(dt * 240), 1, 12); for (let i = 0; i < n; i++) dhSub(dt / n);
+  sound.quiet(); if (DH.msgT > 0) { DH.msgT -= dt; if (DH.msgT <= 0) dhEl.msg.className = 'dhmsg'; }
+}
+function dhRender(dt) {
+  const B = DHB, car = model.car;
+  // the car model: rigid body pose, minus where the centre of mass sits inside the model
+  car.quaternion.copy(B.q); car.position.copy(B.p).sub(_t3.copy(B.cl).applyQuaternion(B.q)); car.scale.setScalar(1);
+  model.body.rotation.set(0, 0, 0);
+  for (const w of B.wh) {
+    if (!w.w) continue;
+    const off = w.on ? clamp(w.x - DH_DROOP, -DH_DROOP, .3) : -DH_DROOP; w.w.pivot.position.y = w.restY + off / w.sc;
+    if (w.front) w.w.pivot.rotation.y = B.delta;
+    if (w.on) w.spin = w.vL / w.r; else w.spin *= Math.exp(-dt * .4);
+    w.w.spin.rotation.x += w.spin * dt;
+  }
+  if (DH.flag) DH.flag.rotation.z = Math.sin(DH.t * 3) * .04;
+  // chase camera: behind the car along where it is going, never under the snow
+  _f.set(0, 0, 1).applyQuaternion(B.q); _f.y = 0; if (_f.lengthSq() < 1e-4) _f.set(0, 0, 1); _f.normalize();
+  const sp = B.v.length(); _d.set(B.v.x, 0, B.v.z); const hs = _d.length();
+  if (hs > 3) { _d.divideScalar(hs); _f.lerp(_d, clamp((hs - 3) / 12, 0, .85)).normalize(); }
+  if (DH.camSnap) { DH.camDir.copy(_f); DH.camY = B.p.y; DH.camSnap = false; }
+  else { DH.camDir.lerp(_f, 1 - Math.exp(-dt * 2.6)).normalize(); DH.camY = lerp(DH.camY, B.p.y, 1 - Math.exp(-dt * 16)); DH.camY = clamp(DH.camY, B.p.y - 1.2, B.p.y + 1.2); }
+  const ck = clamp((B.len || 5) / 5.4, .9, 1.25), dist = (8.6 + sp * .028) * ck, hgt = (3.1 + sp * .012) * ck;
+  camera.position.set(B.p.x - DH.camDir.x * dist, DH.camY + hgt, B.p.z - DH.camDir.z * dist);
+  const gy = dhH(camera.position.x, camera.position.z) + 1.7; if (camera.position.y < gy) camera.position.y = gy;
+  if (DH.shake > 0) { camera.position.x += (Math.random() - .5) * DH.shake * .8; camera.position.y += (Math.random() - .5) * DH.shake * .5; DH.shake = Math.max(0, DH.shake - dt * 2.4); }
+  _t3.set(B.p.x + DH.camDir.x * 5, B.p.y + .7 + (camera.position.y - DH.camY - hgt) * .45, B.p.z + DH.camDir.z * 5); camera.lookAt(_t3);
+  if (DH.dome) DH.dome.position.set(camera.position.x, camera.position.y * .2, camera.position.z);
+  sun.position.set(B.p.x - 55, B.p.y + 38, B.p.z + 30); sun.target.position.set(B.p.x, B.p.y, B.p.z);
+  if (DH.ring) DH.ring.material.opacity = .65 + .3 * Math.sin(DH.t * 5);
+  updateSmoke(dt);
+  renderer.render(scene, camera);
+}
+function dhFrame(dt) {
+  if (game.running && !game.paused) dhStep(dt);
+  else if (game.view === 'end') dhCoast(dt);
+  dhRender(dt); music.tick(dt); uiTick();
+  if (settings.fps) { fpsT += dt; fpsN++; if (fpsT >= .5) { elFps.textContent = Math.round(fpsN / fpsT) + ' FPS'; fpsT = 0; fpsN = 0; } }
+}
+dhEl.hud = $('#dhHud'); dhEl.time = $('#dhTime'); dhEl.air = $('#dhAir'); dhEl.jump = $('#dhJump'); dhEl.spd = $('#dhSpd'); dhEl.dist = $('#dhDist'); dhEl.arrow = $('#dhArrow'); dhEl.best = $('#dhBest'); dhEl.msg = $('#dhMsg');
+window.__dh = { DH, DHB, dhH, dhStep, keys, touch, input, game, cx: dhCX, clearFx: () => smoke.forEach(p => { p.life = p.max; }) };   // test hook
 
 /* ================= TOKYO DRIFT: night, neon and lit zones you have to drift through ================= */
 const TK = { on: false, built: false, zones: [], i: 0, t: 0, hits: 0, saved: null };

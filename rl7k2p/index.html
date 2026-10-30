@@ -635,6 +635,37 @@ main{padding-top:12px}
 #vtool{gap:6px}
 .avscroll{max-height:176px;overflow:auto;padding:2px}
 #avset{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}#avset .chip{flex:none;padding:4px 10px;font-size:12px}
+/* skin list modes */
+.invhead{display:flex;gap:8px;margin-bottom:8px}.invhead .seg{max-width:none}#invseg{flex:1 1 auto}
+.vseg{flex:0 0 auto;display:flex}.vseg button{padding:5px 9px;display:grid;place-items:center}.vseg svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.pkf .vseg{max-width:none;flex:none}.pkf .vseg button{padding:4px 8px}
+.mini.flat{overflow:visible;flex:none}
+.mini.lst{grid-template-columns:minmax(0,1fr);gap:4px}
+.lst{display:grid;gap:4px}
+.rw{position:relative;display:grid;grid-template-columns:46px minmax(0,1fr) auto;grid-template-areas:"i n p" "i k p";align-items:center;gap:0 8px;padding:4px 8px 4px 6px;border:1px solid var(--line);border-left:3px solid var(--rc,var(--line));border-radius:8px;background:var(--bg);text-align:left;min-width:0}
+.rwi{grid-area:i;height:32px}.rwi i{display:block;height:100%;aspect-ratio:4/3;margin:0 auto;background-repeat:no-repeat}
+.rwn{grid-area:n;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}.rwn em{font-style:normal;color:var(--rc)}
+.rwk{grid-area:k;font:10px var(--mono);color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rwp{grid-area:p;font:700 14px var(--mono);color:var(--gold);font-variant-numeric:tabular-nums}
+.tx{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center;padding:6px 8px;border:0;border-left:3px solid var(--rc,var(--line));border-bottom:1px solid var(--line);background:transparent;text-align:left;font-size:13px;min-width:0}
+.txn{color:var(--rc);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.txk{font:10px var(--mono);color:var(--dim);white-space:nowrap}.txp{font:700 13px var(--mono);color:var(--gold);min-width:54px;text-align:right;font-variant-numeric:tabular-nums}
+.rw.sel,.tx.sel{outline:2px solid var(--gold);outline-offset:-2px;background:color-mix(in srgb,var(--gold) 10%,var(--bg))}
+.ult{margin-left:6px;color:var(--gold)}.ult.ok{color:var(--win)}
+/* roulette: one screen, landscape table */
+#v-roulette .shead{margin:0 0 6px}
+.rgrid2{gap:8px}
+.rwheelp{padding:8px 8px 6px!important}.wheelwrap{width:min(100%,206px)!important}
+.rh{margin-top:6px}.rh .tile{width:22px;height:22px;font-size:11px}
+#rmsg{margin:4px 0 0!important;min-height:1.2em!important;font-size:12px}
+#v-roulette .panel{padding:8px}
+.chiprow{margin-bottom:6px;gap:6px}.rchip{width:38px;height:38px;font-size:12px;border-width:2px}
+.rtable{grid-template-columns:30px repeat(12,minmax(0,1fr)) 32px;grid-template-rows:repeat(3,34px) 30px 30px;gap:2px;padding:4px;max-width:none}
+.rtable button{min-height:0;font-size:12px;border-radius:3px}
+.rtable .sm{font-size:11px;letter-spacing:0}.rtable .sm.nr,.rtable .sm.nb{font-size:12px}
+.rtable .chipb{right:-2px;top:-5px;min-width:17px;height:17px;font-size:9px;padding:0 3px;border-radius:9px}
+.rctl{gap:6px;margin-top:6px;justify-items:stretch}.rctl .betrow{justify-content:space-between}.rctl .spinbtn{width:100%}
+@media (min-width:821px){.wheelwrap{width:min(100%,300px)!important}}
 </style>
 
 
@@ -657,7 +688,7 @@ main{padding-top:12px}
 
   <section id="v-inv" hidden>
     <div class="shead"><h2>Inventár</h2></div>
-    <div class="seg" id="invseg" style="max-width:none;flex:none;margin-bottom:8px"><button data-v="inv" class="on">Inventár</button><button data-v="vault">Trezor</button></div>
+    <div class="invhead"><div class="seg" id="invseg"><button data-v="inv" class="on">Inventár</button><button data-v="vault">Trezor</button></div><div class="seg vseg" id="invview"></div></div>
     <div class="stats" id="stats"></div>
     <div class="toolbar" id="invtool"><select id="invsort" aria-label="Zoradiť inventár"><option value="new">Najnovšie</option><option value="price">Najdrahšie</option><option value="rar">Vzácnosť</option><option value="float">Najnižší float</option></select>
       <button class="btn sm" id="sellsel" disabled>Predať označené</button><button class="btn sm ghost" id="selcheap">Označiť lacné (&lt; 1 CR)</button><button class="btn sm" id="tovault">Do trezoru</button><button class="btn sm" id="tradeup">Kontrakt</button><button class="btn sm" id="upgr">Upgrade</button><span class="lab" id="invsum"></span></div>
@@ -669,7 +700,7 @@ main{padding-top:12px}
     <div class="shead"><h2>Ruleta</h2><span class="lab">európska · číslo 36× · tucet 3× · farba 2×</span></div>
     <div class="rgrid2">
       <div class="panel rwheelp">
-        <div class="wheelwrap" id="wheelwrap"><canvas id="rwheel" width="600" height="600" aria-label="Koleso rulety"></canvas><div class="ballring" id="ballring"><i class="ball" id="ball"></i></div><div class="wpin"></div><div class="wres" id="wres"></div></div>
+        <div class="wheelwrap" id="wheelwrap"><canvas id="rwheel" width="600" height="600" aria-label="Koleso rulety"></canvas><div class="ballring" id="ballring"><i class="ball" id="ball"></i></div><div class="wres" id="wres"></div></div>
         <div class="hist rh" id="rhist"></div>
         <p id="rmsg" class="sub" style="margin:8px 0 0;text-align:center;min-height:1.4em"></p>
       </div>
@@ -799,6 +830,19 @@ function look(i){
 const ATLAS_N=256,ATLAS_C=16;
 function spriteStyle(i){const n=Math.floor(i/ATLAS_N),k=i%ATLAS_N,inSheet=Math.min(ATLAS_N,ITEMS.length-n*ATLAS_N),rows=Math.ceil(inSheet/ATLAS_C);const col=k%ATLAS_C,row=Math.floor(k/ATLAS_C);
   return `background-image:url(img/atlas${n}.webp);background-size:${ATLAS_C*100}% ${rows*100}%;background-position:${col/(ATLAS_C-1)*100}% ${rows>1?row/(rows-1)*100:0}%`}
+const VI={cards:'<svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>',
+ tiles:'<svg viewBox="0 0 24 24"><rect x="3" y="3" width="5" height="5" rx="1"/><rect x="9.5" y="3" width="5" height="5" rx="1"/><rect x="16" y="3" width="5" height="5" rx="1"/><rect x="3" y="9.5" width="5" height="5" rx="1"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><rect x="16" y="9.5" width="5" height="5" rx="1"/><rect x="3" y="16" width="5" height="5" rx="1"/><rect x="9.5" y="16" width="5" height="5" rx="1"/><rect x="16" y="16" width="5" height="5" rx="1"/></svg>',
+ rows:'<svg viewBox="0 0 24 24"><rect x="3" y="4" width="6" height="4" rx="1"/><path d="M12 6h9"/><rect x="3" y="10" width="6" height="4" rx="1"/><path d="M12 12h9"/><rect x="3" y="16" width="6" height="4" rx="1"/><path d="M12 18h9"/></svg>',
+ text:'<svg viewBox="0 0 24 24"><path d="M3 5h12M19 5h2M3 9.5h9M19 9.5h2M3 14h14M19 14h2M3 18.5h8M19 18.5h2"/></svg>'};
+const VN={cards:'Karty',tiles:'Mriežka',rows:'Zoznam s obrázkom',text:'Textový zoznam'};
+const vbtns=(ms,cur)=>ms.map(m=>`<button data-m="${m}" class="${m===cur?'on':''}" title="${VN[m]}" aria-label="${VN[m]}">${VI[m]}</button>`).join('');
+function itemHTML(x,mode,o={}){
+  const [w,p,r,,,,,van]=ITEMS[x.i],on=o.sel&&o.sel.has(x.id),pr=fmt(price(x)),wr=van?'—':WEAR[wearIdx(x.f)][0],fl=van?'':x.f.toFixed(4);
+  const bd=o.ul?`<span class="ulb ${o.ul.c}">${o.ul.t}</span>`:'',inl=o.ul?`<span class="ult ${o.ul.c}">${o.ul.t}</span>`:'';
+  if(mode==='cards')return card(x,{cls:'pick'+(on?' sel':''),attr:` data-id="${x.id}"`}).replace(/<\/div>$/,bd+'</div>');
+  if(mode==='tiles')return `<button class="mt2 r${r}${on?' sel':''}" data-id="${x.id}"><span class="mg"><i style="${spriteStyle(x.i)}"></i></span><b class="mp">${pr}</b><span class="mn">${x.s?'ST™ ':''}${esc(w)}</span><span class="mk">${esc(p||'Vanilla')}${van?'':' · '+wr}</span>${bd}</button>`;
+  if(mode==='rows')return `<button class="rw r${r}${on?' sel':''}" data-id="${x.id}"><span class="rwi"><i style="${spriteStyle(x.i)}"></i></span><span class="rwn">${r===4?'★ ':''}<b>${x.s?'ST™ ':''}${esc(w)}</b> <em>${esc(p||'Vanilla')}</em></span><span class="rwk">${wr}${fl?' · '+fl:''}${inl}</span><span class="rwp">${pr}</span></button>`;
+  return `<button class="tx r${r}${on?' sel':''}" data-id="${x.id}"><span class="txn">${r===4?'★ ':''}${x.s?'ST™ ':''}${esc(w)} | ${esc(p||'Vanilla')}</span><span class="txk">${wr}${fl?' '+fl.slice(1):''}${inl}</span><span class="txp">${pr}</span></button>`}
 function card(it,opt={}){
   const [w,p,r,c,,,,van]=ITEMS[it.i];
   const wi=wearIdx(it.f);
@@ -984,14 +1028,15 @@ function renderToday(){
 
 /* ---------- inventory ---------- */
 const selInv=new Set();
-const selV=new Set();let invView='inv',vConf=0;const UL_MS=7*864e5;
+const selV=new Set();let invView='inv',vConf=0,invMode='cards';try{const m=localStorage.getItem('cl_inv');if(VI[m])invMode=m}catch(e){}
+const IMODES=['cards','tiles','rows','text'];const UL_MS=7*864e5;
 const ulLeft=x=>x.ul?x.ul-Date.now():0;
 const ulTxt=ms=>{const h=Math.ceil(ms/36e5);return h>=24?Math.floor(h/24)+' d '+(h%24)+' h':h+' h'};
 function renderInv(){
   const so=$('#invsort').value,vault=S.inv.filter(x=>x.v),free=S.inv.filter(x=>!x.v);
   const vv=vault.reduce((a,x)=>a+price(x),0),tot=free.reduce((a,x)=>a+price(x),0);
   document.querySelectorAll('#invseg [data-v]').forEach(b=>{b.classList.toggle('on',b.dataset.v===invView);if(b.dataset.v==='vault')b.textContent='Trezor'+(vault.length?' · '+vault.length:'')});
-  $('#invtool').hidden=invView!=='inv';$('#vtool').hidden=invView!=='vault';
+  $('#invtool').hidden=invView!=='inv';$('#vtool').hidden=invView!=='vault';$('#invview').innerHTML=vbtns(IMODES,invMode);$('#invlist').className=invMode==='cards'?'grid':invMode==='tiles'?'mini flat':'lst';
   const SRT=L=>{L=[...L];if(so==='price')L.sort((a,b)=>price(b)-price(a));else if(so==='rar')L.sort((a,b)=>ITEMS[b.i][2]-ITEMS[a.i][2]||price(b)-price(a));else if(so==='float')L.sort((a,b)=>a.f-b.f);return L};
   const st=S.st,net=st.won-st.spent;
   $('#stats').innerHTML=[['Otvorené casy',st.open],['Minuté na casy',fmt(st.spent)+' CR'],['Hodnota dropov',fmt(st.won)+' CR'],['Bilancia casov',`<span class="${net>=0?'win':'lose'}">${fmt(net)} CR</span>`],['Najlepší drop',st.best?`${esc(ITEMS[st.best.i][0])} · ${fmt(st.best.p)}`:'—'],['V trezore',`${vault.length} ks · ${fmt(vv)} CR`]].map(([a,b])=>`<div class="stat"><span class="lab">${a}</span><b>${b}</b></div>`).join('');
@@ -999,17 +1044,18 @@ function renderInv(){
     const L=SRT(vault);const now=Date.now();
     $('#vsum').textContent=`${vault.length} ks · ${fmt(vv)} CR · hodnota sa drží`;
     $('#invsum').textContent='';
-    $('#invlist').innerHTML=L.length?L.map(x=>{const h=card(x,{cls:'pick'+(selV.has(x.id)?' sel':''),attr:` data-id="${x.id}"`});const l=ulLeft(x);const bd=x.ul?(l<=0?'<span class="ulb ok">pripravené na vybratie</span>':`<span class="ulb">odomyká sa o ${ulTxt(l)}</span>`):'<span class="ulb lock">zamknuté</span>';return h.replace(/<\/div>$/,bd+'</div>')}).join(''):'<div class="empty" style="grid-column:1/-1">Trezor je prázdny. V Inventári označ skiny a dones ich tlačidlom Do trezoru. V trezore sa nedajú predať ani staviť.</div>';
+    $('#invlist').innerHTML=L.length?L.map(x=>{const l=ulLeft(x);return itemHTML(x,invMode,{sel:selV,ul:x.ul?(l<=0?{t:'pripravené',c:'ok'}:{t:'odomyká sa o '+ulTxt(l),c:''}):{t:'zamknuté',c:'lock'}})}).join(''):'<div class="empty" style="grid-column:1/-1">Trezor je prázdny. V Inventári označ skiny a dones ich tlačidlom Do trezoru. V trezore sa nedajú predať ani staviť.</div>';
     const S1=L.filter(x=>selV.has(x.id));
     $('#vunl').disabled=!S1.some(x=>!x.ul);$('#vcan').disabled=!S1.some(x=>x.ul&&ulLeft(x)>0);$('#vtake').disabled=!S1.some(x=>x.ul&&ulLeft(x)<=0);
     return}
   let L=SRT(free);
   $('#invsum').textContent=`${free.length} kusov · ${fmt(tot)} CR`;
-  $('#invlist').innerHTML=L.length?L.map(x=>card(x,{cls:'pick'+(selInv.has(x.id)?' sel':''),attr:` data-id="${x.id}"`})).join(''):'<div class="empty" style="grid-column:1/-1">Inventár je prázdny. Otvor prvý case v záložke Cases.</div>';
+  $('#invlist').innerHTML=L.length?L.map(x=>itemHTML(x,invMode,{sel:selInv})).join(''):'<div class="empty" style="grid-column:1/-1">Inventár je prázdny. Otvor prvý case v záložke Cases.</div>';
   const ch=free.filter(x=>selInv.has(x.id));
   $('#sellsel').disabled=!ch.length; $('#sellsel').textContent=ch.length?`Predať označené (${ch.length}) · ${fmt(ch.reduce((a,x)=>a+price(x),0))} CR`:'Predať označené';
   $('#tovault').disabled=!ch.length;$('#tovault').textContent=vConf&&ch.length?`Naozaj? Ďalej ${ch.length}`:'Do trezoru';
 }
+$('#invview').onclick=e=>{const b=e.target.closest('[data-m]');if(b){invMode=b.dataset.m;try{localStorage.setItem('cl_inv',invMode)}catch(x){}renderInv()}};
 $('#invseg').onclick=e=>{const b=e.target.closest('[data-v]');if(b){invView=b.dataset.v;vConf=0;renderInv()}};
 $('#tovault').onclick=()=>{const ch=S.inv.filter(x=>!x.v&&selInv.has(x.id));if(!ch.length)return;
   if(!vConf){vConf=1;renderInv();clearTimeout($('#tovault')._t);$('#tovault')._t=setTimeout(()=>{vConf=0;renderInv()},4000);return}
@@ -1053,11 +1099,11 @@ function renderR(){
   drawWheel();const ww=$('#wheelwrap');ww.style.setProperty('--wr',ww.clientWidth+'px');
   $('#chiprow').innerHTML=CHIPV.map(([v,c])=>`<button class="rchip${v===chipV?' on':''}" style="--cc:${c}" data-chip="${v}">${v<1?'½':v}</button>`).join('');
   const cell=(k,label,cls,st)=>`<button data-b="${k}" class="${cls}" style="${st}">${label}${RBET[k]?`<span class="chipb">${fmt(RBET[k]).replace(',00','')}</span>`:''}</button>`;
-  let h=cell('n0','0','nz','grid-column:3/6;grid-row:1');
-  for(let r=0;r<12;r++)for(let c=0;c<3;c++){const n=r*3+c+1;h+=cell('n'+n,n,REDS.has(n)?'nr':'nb',`grid-column:${c+3};grid-row:${r+2}`)}
-  [['low','1–18'],['even','Párne'],['red','◆'],['black','◆'],['odd','Nepár.'],['high','19–36']].forEach(([k,l],i)=>h+=cell(k,`<span class="vert">${l}</span>`,k==='red'?'nr':k==='black'?'nb':'',`grid-column:1;grid-row:${i*2+2}/span 2`));
-  ['d1','d2','d3'].forEach((k,i)=>h+=cell(k,`<span class="vert">${['1. tucet','2. tucet','3. tucet'][i]}</span>`,'',`grid-column:2;grid-row:${i*4+2}/span 4`));
-  ['c1','c2','c3'].forEach((k,i)=>h+=cell(k,'2:1','',`grid-column:${i+3};grid-row:14`));
+  let h=cell('n0','0','nz','grid-column:1;grid-row:1/span 3');
+  for(let n=1;n<=36;n++){const col=Math.floor((n-1)/3)+2,row=3-((n-1)%3);h+=cell('n'+n,n,REDS.has(n)?'nr':'nb',`grid-column:${col};grid-row:${row}`)}
+  [['c3',1],['c2',2],['c1',3]].forEach(([k,r])=>h+=cell(k,'2:1','sm',`grid-column:14;grid-row:${r}`));
+  [['d1','1. tucet'],['d2','2. tucet'],['d3','3. tucet']].forEach(([k,l],i)=>h+=cell(k,l,'sm',`grid-column:${i*4+2}/span 4;grid-row:4`));
+  [['low','1–18'],['even','Párne'],['red','◆'],['black','◆'],['odd','Nepárne'],['high','19–36']].forEach(([k,l],i)=>h+=cell(k,l,(k==='red'?'nr ':k==='black'?'nb ':'')+'sm',`grid-column:${i*2+2}/span 2;grid-row:5`));
   $('#rtable').innerHTML=h;$('#rtotal').textContent=fmt(rTotal())+' CR';
   $('#rhist').innerHTML=rHist.slice(-14).reverse().map(tileH).join('')||'<span class="lab">zatiaľ bez hodov</span>';
   $('#rspin').disabled=rBusy||!rTotal();
@@ -1074,9 +1120,9 @@ $('#rspin').onclick=()=>{
   rBusy=true;addBal(-tot);save();RBlast={...RBET};$('#wres').className='wres';$('#rmsg').textContent='Stávky prijaté, guľka letí…';
   document.querySelectorAll('#rtable .hit,#rtable .won').forEach(x=>x.classList.remove('hit','won'));renderR();
   const n=WHEEL[Math.floor(Math.random()*37)],k=WHEEL.indexOf(n),stepDeg=360/37;
-  const target=((-k*stepDeg)%360+360)%360,cur=((wheelRot%360)+360)%360;wheelRot+=360*4+((target-cur+360)%360);
+  wheelRot+=360*3+Math.random()*360;const pocketAng=((k*stepDeg+wheelRot)%360+360)%360;
   const cv=$('#rwheel');cv.style.transition='transform 5.2s cubic-bezier(.12,.62,.12,1)';cv.style.transform=`rotate(${wheelRot}deg)`;
-  const ring=$('#ballring'),ball=$('#ball');ballRot-=360*7+((ballRot%360)+360)%360;ring.style.transition='transform 5.2s cubic-bezier(.2,.6,.15,1)';ring.style.transform=`rotate(${ballRot}deg)`;
+  const ring=$('#ballring'),ball=$('#ball');{let nb=ballRot-360*7;nb-=((nb-pocketAng)%360+360)%360;ballRot=nb}ring.style.transition='transform 5.2s cubic-bezier(.2,.6,.15,1)';ring.style.transform=`rotate(${ballRot}deg)`;
   ball.classList.remove('drop');ball.offsetWidth;ball.classList.add('drop');
   let d=40,t=0;const tk=()=>{t+=d;if(t<5000){beep(1500,.015,.02);d*=1.06;setTimeout(tk,d)}};tk();
   setTimeout(()=>{rHist.push(n);let win=0;const hits=[];for(const key in RBET){if(hitK(key,n)){win+=RBET[key]*payX(key);hits.push(key)}}
@@ -1592,19 +1638,20 @@ function pickItems(title,cb,max=20,pre,opt={}){
   const SORT={price:(a,b)=>price(b)-price(a),cheap:(a,b)=>price(a)-price(b),rar:(a,b)=>ITEMS[b.i][2]-ITEMS[a.i][2]||price(b)-price(a),new:(a,b)=>(b.t||0)-(a.t||0)};
   const RS=['Mil','Restr','Class','Covert','★'];
   const view=()=>base.filter(x=>(rf<0||ITEMS[x.i][2]===rf)&&(!q||(ITEMS[x.i][0]+' '+ITEMS[x.i][1]).toLowerCase().includes(q))).sort(SORT[so]);
-  const tile=x=>{const [w,p,r,,,,,van]=ITEMS[x.i];return `<button class="mt2 r${r}${sel.has(x.id)?' sel':''}" data-id="${x.id}"><span class="mg"><i style="${spriteStyle(x.i)}"></i></span><b class="mp">${fmt(price(x))}</b><span class="mn">${x.s?'ST™ ':''}${esc(w)}</span><span class="mk">${esc(p||'Vanilla')}${van?'':' · '+WEAR[wearIdx(x.f)][0]}</span></button>`};
+  let pm='tiles';try{const m=localStorage.getItem('cl_pv');if(VI[m]&&m!=='cards')pm=m}catch(e){}
   const upd=()=>{const gs=$('#mgrid').scrollTop,L=view(),chosen=base.filter(x=>sel.has(x.id)),val=chosen.reduce((a,x)=>a+price(x),0);
-    $('#mgrid').innerHTML=L.map(tile).join('')||'<div class="empty" style="grid-column:1/-1">Nič nenájdené</div>';$('#mgrid').scrollTop=gs;
+    $('#mgrid').className='mini'+(pm==='tiles'?'':' lst');$('#pkv').innerHTML=vbtns(['tiles','rows','text'],pm);$('#mgrid').innerHTML=L.map(x=>itemHTML(x,pm,{sel})).join('')||'<div class="empty" style="grid-column:1/-1">Nič nenájdené</div>';$('#mgrid').scrollTop=gs;
     document.querySelectorAll('#pkr .chip').forEach(c=>c.classList.toggle('on',+c.dataset.r===rf));
     $('#pks').innerHTML=`<b>${sel.size}/${max}</b> · <span class="money">${fmt(val)} CR</span>${opt.info?`<div class="lab">${opt.info(chosen,val)}</div>`:''}`;$('#mok').disabled=!sel.size};
   $('#modal').innerHTML=`<div class="modal"><div class="pk"><div class="mhead"><h2 style="font-size:20px">${esc(title)}</h2><button class="btn sm ghost" id="mx">Zavrieť</button></div>
    <div class="pkf"><div class="chips" id="pkr"><button class="chip" data-r="-1">Všetko ${base.length}</button>${[0,1,2,3,4].map(r=>{const n=base.filter(x=>ITEMS[x.i][2]===r).length;return n?`<button class="chip" data-r="${r}">${RS[r]} ${n}</button>`:''}).join('')}</div>
-    <div class="betrow"><input id="pkq" class="field" placeholder="Hľadať…" style="flex:1;min-width:0"><select id="pkso" aria-label="Zoradiť"><option value="price">Najdrahšie</option><option value="cheap">Najlacnejšie</option><option value="rar">Vzácnosť</option><option value="new">Najnovšie</option></select></div>
+    <div class="betrow"><input id="pkq" class="field" placeholder="Hľadať…" style="flex:1;min-width:0"><select id="pkso" aria-label="Zoradiť"><option value="price">Najdrahšie</option><option value="cheap">Najlacnejšie</option><option value="rar">Vzácnosť</option><option value="new">Najnovšie</option></select><div class="seg vseg" id="pkv"></div></div>
     <div class="betrow"><button class="btn sm ghost" id="pktop">Top ${Math.min(5,max)}</button><button class="btn sm ghost" id="pkall">Zobrazené</button><button class="btn sm ghost" id="pkclr">Zrušiť výber</button></div></div>
    <div class="mini" id="mgrid"></div>
    <div class="pkb"><div id="pks"></div><button class="btn gold" id="mok">Potvrdiť</button></div></div></div>`;
   $('#mx').onclick=()=>$('#modal').innerHTML='';
   $('#mok').onclick=()=>{$('#modal').innerHTML='';cb(sel)};
+  $('#pkv').onclick=e=>{const b=e.target.closest('[data-m]');if(b){pm=b.dataset.m;try{localStorage.setItem('cl_pv',pm)}catch(x){}upd()}};
   $('#pkr').onclick=e=>{const b=e.target.closest('[data-r]');if(b){rf=+b.dataset.r;upd()}};
   $('#pkq').oninput=e=>{q=e.target.value.trim().toLowerCase();upd()};$('#pkso').onchange=e=>{so=e.target.value;upd()};
   $('#pktop').onclick=()=>{sel.clear();[...base].sort(SORT.price).slice(0,Math.min(5,max)).forEach(x=>sel.add(x.id));upd()};

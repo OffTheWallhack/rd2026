@@ -439,42 +439,24 @@ const put = (st, text, size, color, bold) => {
 };
 
 const big = FAM !== "small";
-const row = w.addStack();
-row.layoutHorizontally();
-const left = row.addStack();
-left.layoutVertically();
-put(left, LABEL, 11, MUTED, false);
-put(left, String(days), 46, DAWN, true);
+const pl = (n, a1, a2, a5) => n === 1 ? a1 : n >= 2 && n <= 4 ? a2 : a5;
+const mt = Math.floor(ms / 60000), dd = Math.floor(mt / 1440), hh = Math.floor((mt % 1440) / 60), mm = mt % 60;
+const long = (dd ? dd + " " + pl(dd, "deň", "dni", "dní") + " " : "") + hh + " " + pl(hh, "hodina", "hodiny", "hodín") + " " + mm + " " + pl(mm, "minúta", "minúty", "minút");
 
-// Živé hodiny: hodiny:minúty:sekundy v aktuálnom dni
-const dayStart = new Date(START.getTime() + days * DAY);
-const t = left.addDate(now < START ? START : dayStart);
+// Živé hodiny: celkové hodiny:minúty:sekundy od začiatku (idú samy každú sekundu)
+const t = w.addDate(START);
 t.applyTimerStyle();
-t.font = Font.mediumMonospacedSystemFont(13);
-t.textColor = WHITE;
+t.font = Font.boldMonospacedSystemFont(FAM === "small" ? 27 : FAM === "medium" ? 36 : 42);
+t.textColor = DAWN;
+t.minimumScaleFactor = 0.5;
 
-left.addSpacer();
-put(left, eur(saved) + " €", 18, MINT, true);
-put(left, "ušetrené", 10, MUTED, false);
+put(w, long, big ? 14 : 12, WHITE, true);
+put(w, "= " + sp(Math.floor(ms / HOUR)) + " " + pl(Math.floor(ms / HOUR), "hodina", "hodiny", "hodín") + " = " + sp(mt) + " " + pl(mt, "minúta", "minúty", "minút"), big ? 12 : 10, MUTED, false);
 
-if (big) {
-  row.addSpacer(12);
-  const right = row.addStack();
-  right.layoutVertically();
-  put(right, "PRESNE", 9, MUTED, false);
-  put(right, dhm(ms), 12, WHITE, true);
-  put(right, sp(Math.floor(ms / HOUR)) + " h · " + sp(Math.floor(ms / 60000)) + " min", 10, MUTED, false);
-  right.addSpacer(6);
-  put(right, PER_DAY + " € / deň · " + (PER_DAY / 24).toFixed(2).replace(".", ",") + " € / h", 10, MINT, false);
-  if (GOAL > 0) put(right, GOAL_NAME + ": " + Math.min(100, saved / GOAL * 100).toFixed(1).replace(".", ",") + " %", 10, MINT, false);
-  const nm = MILES.find(v => v > dayF);
-  if (nm) {
-    const rem = START.getTime() + nm * DAY - now.getTime();
-    put(right, "Míľnik " + (nm < 1 ? "12 h" : nm + " " + dayWord(nm)) + " o " + dhm(rem), 10, WHITE, false);
-  }
-  const lf = Math.ceil(30 - dayF);
-  put(right, lf > 0 ? "Rastlina dozrie o " + lf + " " + dayWord(lf) : "Rastlina je zrelá", 10, MUTED, false);
-}
+w.addSpacer();
+put(w, eur(saved) + " €", big ? 22 : 18, MINT, true);
+put(w, "ušetrené" + (PER_DAY > 0 ? " · " + PER_DAY + " € za deň" : ""), 10, MUTED, false);
+if (big && GOAL > 0) put(w, GOAL_NAME + ": " + Math.min(100, saved / GOAL * 100).toFixed(1).replace(".", ",") + " %", 11, MINT, false);
 
 w.refreshAfterDate = new Date(Date.now() + 60 * 1000);
 

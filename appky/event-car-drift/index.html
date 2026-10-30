@@ -394,7 +394,7 @@ body.mplay .pp svg.i-play{display:none}
 }
 
 /* highway mode */
-body.hwy #gear,body.hwy #padHb,body.hwy #camBtn,body.hwy #resetBtn{display:none!important}
+body.hwy #gear,body.hwy #padHb,body.hwy #resetBtn{display:none!important}
 .hwhud{position:fixed;z-index:7;left:50%;top:calc(10px + env(safe-area-inset-top,0px));transform:translateX(-50%);display:flex;gap:10px;align-items:center;pointer-events:none}
 body:not(.hwy) .hwhud,body:not(.hwy) .hwctl{display:none}
 .hwprog{position:relative;width:min(260px,34vw);height:30px;border-radius:15px;background:var(--glass);border:1px solid var(--line);overflow:hidden;backdrop-filter:blur(8px)}
@@ -704,7 +704,7 @@ body:not(.hwy) .hwrace{display:none}
 /* downhill: Pakoon-style readouts, green numbers with a black outline */
 .dhhud{position:fixed;inset:0;z-index:6;pointer-events:none;font-family:var(--hud)}
 body:not(.dh) .dhhud,body:not(.dh) .dhmsg{display:none}
-body.dh #hud .speed,body.dh #hud .score,body.dh #camBtn,body.dh #combo,body.dh #timer{display:none!important}
+body.dh #hud .speed,body.dh #hud .score,body.dh #combo,body.dh #timer{display:none!important}
 .dhl{position:absolute;left:calc(12px + env(safe-area-inset-left,0px));top:calc(58px + env(safe-area-inset-top,0px));display:grid;gap:1px}
 .dhl small,.dhr small{font:700 11px/1.1 var(--hud);letter-spacing:.08em;color:#fff;text-shadow:0 0 2px #000,1px 1px 0 #000,-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000}
 .dhl b,.dhr b{font:700 italic 27px/1 var(--hud);color:#74ff5e;letter-spacing:.02em;text-shadow:0 0 3px #000,2px 2px 0 #000,-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000;margin-bottom:6px;font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -1034,7 +1034,7 @@ const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
 if (isTouch) document.body.classList.add('touch');
 const store = { get(k, d) { try { const v = localStorage.getItem('ecd.' + k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
                 set(k, v) { try { localStorage.setItem('ecd.' + k, JSON.stringify(v)); } catch (e) {} } };
-const settings = { sfx: clamp(store.get('sfx', 1), 0, 1), q: store.get('q', isTouch ? 1 : 2), vib: store.get('vib', true), fps: store.get('fps', false), cam: store.get('cam', 'chase'), wx: store.get('wx', 'auto') };
+const settings = { sfx: clamp(store.get('sfx', 1), 0, 1), q: store.get('q', isTouch ? 1 : 2), vib: store.get('vib', true), fps: store.get('fps', false), cam: store.get('cam', 'chase'), wx: store.get('wx', 'auto'), dhCam: store.get('dhCam', 'chase'), hwCam: store.get('hwCam', 'cockpit') };
 const stats = Object.assign({ dist: 0, time: 0, runs: 0, cones: 0, bestCombo: 0, banked: 0, total: 0, maxSpd: 0, mult5: false, badges: {} }, store.get('stats', {}));
 
 /* ================= renderer / scene ================= */
@@ -3817,7 +3817,7 @@ const smokeGeo = new THREE.PlaneGeometry(1, 1);
 const smokeAlpha = new THREE.InstancedBufferAttribute(new Float32Array(SMOKE), 1); smokeGeo.setAttribute('aAlpha', smokeAlpha);
 const smokeMat = new THREE.ShaderMaterial({
   transparent: true, depthWrite: false,
-  vertexShader: 'attribute float aAlpha; varying float vA; varying vec2 vUv; void main(){ vA=aAlpha; vUv=uv; vec4 c=modelViewMatrix*instanceMatrix*vec4(0.,0.,0.,1.); float sc=length(instanceMatrix[0].xyz); c.xy+=position.xy*sc; gl_Position=projectionMatrix*c; }',
+  vertexShader: 'attribute float aAlpha; varying float vA; varying vec2 vUv; void main(){ vec4 c=modelViewMatrix*instanceMatrix*vec4(0.,0.,0.,1.); vA=aAlpha*smoothstep(1.6,6.5,-c.z); vUv=uv; float sc=length(instanceMatrix[0].xyz); c.xy+=position.xy*sc; gl_Position=projectionMatrix*c; }',
   fragmentShader: 'varying float vA; varying vec2 vUv; void main(){ vec2 u=vUv-.5; float d=length(u)*2.; float a=smoothstep(1.,.62,d)*vA; if(a<.015) discard; float sh=clamp(.5+.5*(u.y*1.4-u.x*.4),0.,1.); vec3 col=mix(vec3(.80,.82,.88),vec3(1.),sh); gl_FragColor=vec4(col,a); }'
 });
 const smokeMesh = new THREE.InstancedMesh(smokeGeo, smokeMat, SMOKE); smokeMesh.frustumCulled = false; smokeMesh.renderOrder = 3; scene.add(smokeMesh);
@@ -4250,7 +4250,7 @@ window.addEventListener('keydown', e => {
     if (hwyKey(k)) { /* highway keys */ }
     else if (k === 'm') music.toggle();
     else if (k === 'r') { if (!HW.on) resetToStart(); }
-    else if (k === 'c' && game.running) { if (!HW.on) cycleCam(); }
+    else if (k === 'c' && game.running) cycleCam();
     else if (!game.running) menuKey(e);
   }
 });
@@ -5630,7 +5630,8 @@ function hwyEnter() {
 function hwyLeave() {
   if (!HW.on) return; hwNight(false);
   HW.on = false; HW.g.visible = false; scene.remove(HW.cam);
-  HW.saved.forEach(o => { o.visible = true; }); HW.saved = [];
+  HW.saved.forEach(o => { o.visible = true; }); HW.saved = []; HW.chaseOn = false;
+  if (model && model.car) { model.car.visible = true; model.car.rotation.set(0, 0, 0); model.body.rotation.set(0, 0, 0); }
   scene.fog.near = HW.fog.near; scene.fog.far = HW.fog.far; scene.fog.color.setHex(HW.fog.col); sun.castShadow = HW.sun;
   if (HW.dome && HW.dome0) HW.dome.position.copy(HW.dome0);
   document.body.classList.remove('hwy'); $('#hwHud').hidden = true; $('#hwCtl').hidden = true; hwRaceUi(false);
@@ -5824,6 +5825,8 @@ function hwyRender(dt) {
   }
   // cluster, ~12 fps
   HW.cl -= dt; if (HW.cl <= 0) { HW.cl = .08; hwCluster(kmh, P.rpm, P.g, blinkOn); }
+  if (settings.hwCam === 'chase') { hwChaseView(dt, th); return; }
+  if (model && model.car && model.car.visible && HW.chaseOn) { model.car.visible = false; HW.chaseOn = false; }
   // mirrors first (cockpit hidden), then the main view
   const q = settings.q; HW.cockpit.visible = false;
   HW.mirrors.forEach((m, i) => {
@@ -5833,6 +5836,26 @@ function hwyRender(dt) {
     renderer.setRenderTarget(m.rt); renderer.render(scene, m.cam);
   });
   renderer.setRenderTarget(null); HW.cockpit.visible = true;
+  renderer.render(scene, cam);
+}
+
+// highway seen from behind the car: the player's own car model rides the lane, no cockpit and no mirrors
+function hwChaseView(dt, th) {
+  const P = HW.p, cam = HW.cam;
+  if (sg.shown !== carKey || !model || !model.car.parent) stageSnap();
+  const car = model && model.car; HW.cockpit.visible = false; HW.chaseOn = true;
+  const c = hWp(P.s, P.d), cx = c.x, cz = c.z;
+  if (car) {
+    car.visible = true; car.position.set(cx, 0, cz); car.rotation.set(0, th, 0); car.scale.setScalar(1);
+    model.body.rotation.set(0, 0, clamp(-(P.lat || 0) * .02, -.06, .06));
+    model.wheels.forEach(w => { if (w.front) w.pivot.rotation.y = P.st * .35; w.spin.rotation.x += P.v * dt / Math.max(.25, w.pivot.position.y * (w.pivot.parent.scale.y || 1)); });
+  }
+  const ck = model ? clamp(model.len / 5.4, .9, 1.25) : 1, dist = (8.4 + P.v * .04) * ck, h = (3.2 + P.v * .012) * ck;
+  const fx = Math.sin(th), fz = Math.cos(th);
+  cam.position.set(cx - fx * dist + (Math.random() - .5) * .3 * HW.shake, h, cz - fz * dist);
+  cam.lookAt(cx + fx * 6, 1.1, cz + fz * 6);
+  if (HW.dome) HW.dome.position.set(cam.position.x, 0, cam.position.z); HW.ground.position.x = cx; HW.ground.position.z = cz;
+  if (HW.lamp && HW.lamp.visible) { const a = hWp(P.s + 2, P.d), b2 = hWp(P.s + 40, P.d); HW.lamp.position.set(a.x, 1.0, a.z); HW.lamp.target.position.set(b2.x, 0, b2.z); }
   renderer.render(scene, cam);
 }
 
@@ -6068,7 +6091,7 @@ function dhCarSetup() {
   [y0, y1].forEach(y => [z0, z1].forEach(z => [-ix, ix].forEach(x => DHB.pts.push(new THREE.Vector3(x, y, z).sub(DHB.cl)))));
   DHB.pts.push(new THREE.Vector3(0, y1, zc).sub(DHB.cl), new THREE.Vector3(0, y1 * .7, z1).sub(DHB.cl), new THREE.Vector3(0, y1 * .7, z0).sub(DHB.cl), new THREE.Vector3(-ix, y1, zc).sub(DHB.cl), new THREE.Vector3(ix, y1, zc).sub(DHB.cl));
   DHB.mu = (DH.w.mu || .9) * (T.mu || 1) * clamp(P.ayMax / 7.2, .85, 1.25); DHB.drag = T.drag || 4e-4; DHB.df = T.df || 0;
-  DHB.len = Ln; DHB.hgt = Hh;
+  DHB.len = Ln; DHB.hgt = Hh; DHB.hood = new THREE.Vector3(0, Math.min(1.25, Hh * .5), mx.z + .35).sub(DHB.cl);
 }
 function dhPlace(x, z, yaw, v) {
   const n = dhNormal(x, z, _n), y = dhH(x, z);
@@ -6229,7 +6252,7 @@ function dhLeave() {
   hemi.intensity = E.hi; sun.intensity = E.si; renderer.toneMappingExposure = E.ex; camera.fov = E.fov; camera.updateProjectionMatrix();
   if (DH.dome) DH.dome.position.set(0, 0, 0);
   DHB.wh.forEach(w => { if (w.w) { w.w.pivot.position.y = w.restY; w.w.pivot.rotation.y = 0; } });
-  if (model && model.car) { model.car.quaternion.identity(); model.car.rotation.set(0, 0, 0); }
+  if (model && model.car) { model.car.quaternion.identity(); model.car.rotation.set(0, 0, 0); model.car.visible = true; }
   document.body.classList.remove('dh'); dhEl.hud.hidden = true; dhEl.msg.className = 'dhmsg';
 }
 function dhStart() {
@@ -6245,6 +6268,7 @@ function dhStart() {
   S.speed = 0; S.vF = 0;
   $('#hud').hidden = false; $('#resetBtn').hidden = false;
 }
+function dhMsgOff() { dhEl.msg.classList.remove('on'); const m = dhEl.msg.textContent; setTimeout(() => { if (dhEl.msg.textContent === m && !dhEl.msg.classList.contains('on')) { dhEl.msg.textContent = ''; dhEl.msg.className = 'dhmsg'; } }, 260); }
 function dhMsg(t, cls) { dhEl.msg.textContent = t; dhEl.msg.className = 'dhmsg' + (t ? ' on' : '') + (cls ? ' ' + cls : ''); if (t) { void dhEl.msg.offsetWidth; } DH.msgT = t ? 1.4 : 0; }
 function dhStep(dt) {
   const B = DHB; DH.t += dt;
@@ -6264,7 +6288,7 @@ function dhStep(dt) {
   const sp = B.v.length(); if (sp > DH.maxV) DH.maxV = sp;
   _f.set(0, 0, 1).applyQuaternion(B.q); _u.set(0, 1, 0).applyQuaternion(B.q);
   S.x = B.p.x; S.z = B.p.z; S.speed = sp; S.vF = B.vF; S.th = Math.atan2(_f.x, _f.z); S.gy = B.p.y; S.drifting = B.slide > .2; S.slip = B.slide;
-  if (B.nc >= 2 && sp > 14 && !reduced && Math.random() < .25 + B.slide) dhSpray(1 + (B.slide > .3 ? 2 : 0), .6 + B.slide);
+  if (B.nc >= 2 && sp > 10 && !reduced && Math.random() < .12 + B.slide * .5) dhSpray(1 + (B.slide > .4 ? 1 : 0), .35 + B.slide * .4);
   dhSafeTick(dt);
   // upside down or on the side and nearly stopped: back on the wheels after a moment
   dhNormal(B.p.x, B.p.z, _n);
@@ -6287,14 +6311,14 @@ function dhStep(dt) {
     const camYaw = Math.atan2(DH.camDir.x, DH.camDir.z), bear = Math.atan2(fdx, fdz);
     dhEl.arrow.style.transform = 'rotate(' + (-angDiff(camYaw, bear) * 180 / Math.PI).toFixed(1) + 'deg)';
   }
-  if (DH.msgT > 0) { DH.msgT -= dt; if (DH.msgT <= 0) dhEl.msg.className = 'dhmsg'; }
+  if (DH.msgT > 0) { DH.msgT -= dt; if (DH.msgT <= 0) dhMsgOff(); }
 }
 function dhSpray(n, k) {
   const B = DHB;
   for (const w of B.wh) {
     if (!w.on || w.front) continue;
     _a.copy(w.a).applyQuaternion(B.q).add(B.p);
-    for (let i = 0; i < n; i++) { puff(_a.x, _a.z, B.v.x * .9, B.v.z * .9, k); const p = smoke[(smokeI + SMOKE - 1) % SMOKE]; p.y = dhH(_a.x, _a.z) + .2; p.vy *= 1.3; }
+    for (let i = 0; i < n; i++) { puff(_a.x, _a.z, 0, 0, k); const p = smoke[(smokeI + SMOKE - 1) % SMOKE]; p.vx += B.v.x * .75; p.vz += B.v.z * .75; p.y = dhH(_a.x, _a.z) + .15; p.vy *= .8; p.s *= .7; }
   }
 }
 function dhFinish() {
@@ -6322,7 +6346,7 @@ function dhCoast(dt) {   // after the finish the car rolls out with the brake on
   input.gas = 0; input.rev = 0; input.steer = 0; input.hb = 0; input.brake = .6; input.gm = 0;
   const B = DHB; B.drive = 0; B.brk = .6; B.hb = 0; B.st *= .9; B.delta *= .9; B.land = B.hit = 0;
   const n = clamp(Math.ceil(dt * 240), 1, 12); for (let i = 0; i < n; i++) dhSub(dt / n);
-  sound.quiet(); if (DH.msgT > 0) { DH.msgT -= dt; if (DH.msgT <= 0) dhEl.msg.className = 'dhmsg'; }
+  sound.quiet(); if (DH.msgT > 0) { DH.msgT -= dt; if (DH.msgT <= 0) dhMsgOff(); }
 }
 function dhRender(dt) {
   const B = DHB, car = model.car;
@@ -6343,12 +6367,23 @@ function dhRender(dt) {
   if (hs > 3) { _d.divideScalar(hs); _f.lerp(_d, clamp((hs - 3) / 12, 0, .85)).normalize(); }
   if (DH.camSnap) { DH.camDir.copy(_f); DH.camY = B.p.y; DH.camSnap = false; }
   else { DH.camDir.lerp(_f, 1 - Math.exp(-dt * 2.6)).normalize(); DH.camY = lerp(DH.camY, B.p.y, 1 - Math.exp(-dt * 16)); DH.camY = clamp(DH.camY, B.p.y - 1.2, B.p.y + 1.2); }
-  const ck = clamp((B.len || 5) / 5.4, .9, 1.25), dist = (8.6 + sp * .028) * ck, hgt = (3.1 + sp * .012) * ck;
-  camera.position.set(B.p.x - DH.camDir.x * dist, DH.camY + hgt, B.p.z - DH.camDir.z * dist);
-  const gy = dhH(camera.position.x, camera.position.z) + 1.7; if (camera.position.y < gy) camera.position.y = gy;
-  if (DH.shake > 0) { camera.position.x += (Math.random() - .5) * DH.shake * .8; camera.position.y += (Math.random() - .5) * DH.shake * .5; DH.shake = Math.max(0, DH.shake - dt * 2.4); }
-  _t3.set(B.p.x + DH.camDir.x * 5, B.p.y + .7 + (camera.position.y - DH.camY - hgt) * .45, B.p.z + DH.camDir.z * 5); camera.lookAt(_t3);
-  if (DH.dome) DH.dome.position.set(camera.position.x, camera.position.y * .2, camera.position.z);
+  const view = settings.dhCam || 'chase';
+  if (view === 'hood') {
+    // on the bonnet, just in front of the windscreen line: rides with the car, pitch and roll included
+    _t3.copy(DHB.hood).applyQuaternion(B.q).add(B.p); camera.position.copy(_t3);
+    camera.quaternion.copy(B.q).multiply(_dq.setFromAxisAngle(_d.set(0, 1, 0), Math.PI));
+    if (DH.shake > 0) { camera.position.y += (Math.random() - .5) * DH.shake * .25; DH.shake = Math.max(0, DH.shake - dt * 2.4); }
+    model.car.visible = false;
+  } else {
+    model.car.visible = true;
+    const ck = clamp((B.len || 5) / 5.4, .9, 1.25), kD = view === 'near' ? .7 : view === 'high' ? 1.35 : 1, kH = view === 'near' ? .72 : view === 'high' ? 2.3 : 1;
+    const dist = (8.6 + sp * .028) * ck * kD, hgt = (3.1 + sp * .012) * ck * kH;
+    camera.position.set(B.p.x - DH.camDir.x * dist, DH.camY + hgt, B.p.z - DH.camDir.z * dist);
+    const gy = dhH(camera.position.x, camera.position.z) + 1.7; if (camera.position.y < gy) camera.position.y = gy;
+    if (DH.shake > 0) { camera.position.x += (Math.random() - .5) * DH.shake * .8; camera.position.y += (Math.random() - .5) * DH.shake * .5; DH.shake = Math.max(0, DH.shake - dt * 2.4); }
+    _t3.set(B.p.x + DH.camDir.x * 5, B.p.y + .7 + (camera.position.y - DH.camY - hgt) * .45, B.p.z + DH.camDir.z * 5); camera.lookAt(_t3);
+  }
+  if (DH.dome) DH.dome.position.copy(camera.position);
   sun.position.set(B.p.x - 55, B.p.y + 38, B.p.z + 30); sun.target.position.set(B.p.x, B.p.y, B.p.z);
   if (DH.ring) DH.ring.material.opacity = .65 + .3 * Math.sin(DH.t * 5);
   updateSmoke(dt);
@@ -6535,7 +6570,12 @@ $('#fileIn').addEventListener('change', e => { const ok = music.addFiles(e.targe
 [].forEach(([id, fn]) => $(id).addEventListener('pointerdown', e => { e.preventDefault(); sound.init(); fn(); }));
 $('#startBtn').addEventListener('click', startRun);
 $('#pauseBtn').addEventListener('click', togglePause);
+// every mode has its own set of views; the camera button (and C) steps through the views of the mode being played
+const DH_CAMS = ['chase', 'near', 'high', 'hood'], DH_CAM_NAME = { chase: 'ZA AUTOM', near: 'BLÍZKO', high: 'VYSOKO', hood: 'KAPOTA' };
+const HW_CAMS = ['cockpit', 'chase'], HW_CAM_NAME = { cockpit: 'KOKPIT', chase: 'ZA AUTOM' };
 function cycleCam() {
+  if (DH.on) { settings.dhCam = DH_CAMS[(DH_CAMS.indexOf(settings.dhCam) + 1) % DH_CAMS.length]; store.set('dhCam', settings.dhCam); DH.camSnap = true; toast('KAMERA · ' + DH_CAM_NAME[settings.dhCam]); return; }
+  if (HW.on) { settings.hwCam = HW_CAMS[(HW_CAMS.indexOf(settings.hwCam) + 1) % HW_CAMS.length]; store.set('hwCam', settings.hwCam); toast('KAMERA · ' + HW_CAM_NAME[settings.hwCam]); return; }
   settings.cam = CAM_ORDER[(CAM_ORDER.indexOf(settings.cam) + 1) % CAM_ORDER.length]; store.set('cam', settings.cam); renderCam(); toast('KAMERA · ' + CAM_NAME[settings.cam]);
 }
 $('#camBtn').addEventListener('click', cycleCam);

@@ -666,6 +666,44 @@ main{padding-top:12px}
 .rtable .chipb{right:-2px;top:-5px;min-width:17px;height:17px;font-size:9px;padding:0 3px;border-radius:9px}
 .rctl{gap:6px;margin-top:6px;justify-items:stretch}.rctl .betrow{justify-content:space-between}.rctl .spinbtn{width:100%}
 @media (min-width:821px){.wheelwrap{width:min(100%,300px)!important}}
+
+/* slots v2 — portrait mobile */
+.slotpanel{padding:0 10px 10px!important;margin-bottom:10px!important}
+.slotpanel .marquee{margin:0 -10px 6px;padding:7px 10px 6px}.slotpanel .marquee span{font-size:21px}.slotpanel .marquee small{margin-top:2px;font-size:9px}
+.slotpanel .sbar{min-height:36px;gap:8px}.slotpanel .sbar .money{font-size:20px;line-height:1.1}
+.streak{white-space:nowrap;font:800 13px var(--display);letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:12px;background:#ff6b5e22;color:#ff9a8f;border:1px solid #ff6b5e66;margin-right:auto}
+.streak.pop{animation:spop .4s cubic-bezier(.2,1.6,.4,1)}@keyframes spop{from{transform:scale(.5);opacity:.3}}
+.fsbadge{font-size:13px;padding:4px 9px;white-space:nowrap}.slotpanel .sbar>div:first-child{white-space:nowrap}.spinbtn#spin.fs{font-size:12px;line-height:1.1}
+.reelwrap{position:relative;border-radius:12px;padding:6px;margin:4px 0 4px;background:linear-gradient(180deg,#3b2a14,#1d140a);border:2px solid #8a6a2a;box-shadow:inset 0 0 18px #000a,0 0 0 1px #000}
+.reelwrap .sgrid{margin:0 auto;max-width:none;gap:5px;grid-template-columns:repeat(5,minmax(0,1fr))}
+.sgrid.scat .sreel{animation:scat .5s ease-in-out 3}@keyframes scat{50%{box-shadow:0 0 14px 2px #e3a53c;border-color:#e3a53c}}
+.sreel{border-radius:6px}.sreel.blur .col{filter:blur(1.4px) brightness(1.1)}
+.sreel.land .col{animation:land .22s ease-out}@keyframes land{0%{transform:translateY(7px)}60%{transform:translateY(-2px)}100%{transform:translateY(0)}}
+.sreel.antic{box-shadow:0 0 0 2px #ff6b5e,0 0 18px #ff6b5e;animation:antic .35s ease-in-out infinite}@keyframes antic{50%{box-shadow:0 0 0 2px #ffd24a,0 0 26px #ffd24a}}
+.sreel.xw{box-shadow:0 0 0 2px #7dff8a,0 0 22px #7dff8a;animation:xw .9s ease-in-out}.sreel.xw .sym{animation:xws .5s cubic-bezier(.2,1.5,.4,1)}
+@keyframes xws{from{transform:scaleY(.2);opacity:0}}@keyframes xw{50%{filter:brightness(1.5)}}
+.sym{padding:3px;border-bottom:1px solid #ffffff0a}.sym .sp{width:100%;height:auto;max-height:100%}
+.sym.hit{--lc:var(--gold);background:color-mix(in srgb,var(--lc) 24%,transparent);box-shadow:inset 0 0 0 2px var(--lc),0 0 12px var(--lc);animation:symhit .7s ease-in-out infinite;z-index:1}
+.lines polyline{stroke-width:3.5;stroke-dasharray:600;stroke-dashoffset:600;animation:ldraw .45s ease-out forwards;opacity:.95}@keyframes ldraw{to{stroke-dashoffset:0}}
+.reelwrap .bigwin{position:absolute;inset:0;border-radius:10px;gap:4px}.reelwrap .bigwin small{font:600 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#d9c08a;margin-top:6px}
+.reelwrap .bigwin b{font-size:clamp(38px,12vw,64px)}
+.reelwrap .confetti{position:absolute;inset:0;pointer-events:none;border-radius:10px}
+.slabel{min-height:22px;text-align:center;font:600 13px var(--mono);color:#fff;display:flex;justify-content:center;align-items:center;gap:6px}.slabel i{width:12px;height:12px;border-radius:3px;display:inline-block}.slabel b{color:var(--gold)}
+.smsg{text-align:center;margin:0 auto 6px!important;min-height:1.3em;font-size:13px}
+.sctl2{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}
+.sctl2 .stepper{padding:3px;gap:2px;justify-self:start}.sctl2 .stepper div{min-width:50px}.sctl2 .stepper .btn{padding:8px 11px}
+.sctl2 .spinbtn#spin{width:84px;height:84px;font-size:16px;margin:0 2px}
+.sside{display:grid;gap:6px;justify-self:end;width:100%;max-width:112px}.sside .btn{width:100%;padding:7px 8px;font-size:12px}
+.autoset{display:flex;gap:4px}.autoset #sauto{flex:1;padding:7px 4px;min-width:0}.autoset #sautoN{flex:none;min-width:34px;padding:7px 6px;color:var(--gold)}
+#sauto.on,#sturbo.on{background:var(--gold);color:var(--gold-ink);border-color:var(--gold)}
+.srow2{display:flex;justify-content:space-between;gap:8px;margin-top:8px}.srow2 .btn{flex:1;font-size:12px}
+.pay .pc{grid-template-columns:52px minmax(0,1fr)}.trio{display:flex}.trio .sp{width:18px;height:14px}.xwm{font:800 11px var(--display);background:var(--gold);color:var(--gold-ink);border-radius:3px;text-align:center;padding:2px 0}
+.slotpanel.wincol .marquee::before,.slotpanel.wincol .marquee::after{animation-duration:.18s}
+.slotpanel.wincol .reelwrap{border-color:#ffd24a;box-shadow:inset 0 0 18px #000a,0 0 22px #e3a53c88}
+.slotpanel.fsmode{border-color:#5fd38a!important;background:linear-gradient(180deg,#13281c,#141b18 30%,#10171a)}
+.slotpanel.fsmode .reelwrap{border-color:#5fd38a}
+.slotpanel.shake{animation:shake .5s}@keyframes shake{20%{transform:translate(-5px,2px)}40%{transform:translate(5px,-3px)}60%{transform:translate(-4px,0)}80%{transform:translate(3px,2px)}}
+@media (min-width:821px){#v-slots{max-width:520px;margin:0 auto}}
 </style>
 
 
@@ -708,7 +746,7 @@ main{padding-top:12px}
         <div class="chiprow" id="chiprow"></div>
         <div class="rtable" id="rtable"></div>
         <div class="rctl"><span class="lab">Na stole <b class="money" id="rtotal">0,00 CR</b></span>
-          <div class="betrow"><button class="btn sm" id="rundo">Späť</button><button class="btn sm" id="rclear">Zrušiť</button><button class="btn sm" id="rdbl">2×</button><button class="btn sm" id="rrep">Opakovať</button></div>
+          <div class="betrow"><button class="btn sm" id="rundo">Späť</button><button class="btn sm" id="rclear">Zrušiť</button><button class="btn sm" id="rhalf">½</button><button class="btn sm" id="rdbl">2×</button><button class="btn sm" id="rrep">Opakovať</button></div>
           <button class="btn gold spinbtn" id="rspin">Roztočiť</button></div>
       </div>
     </div>
@@ -716,16 +754,18 @@ main{padding-top:12px}
 
   <section id="v-slots" hidden>
     
-    <div class="panel slotpanel"><div class="marquee"><span>RUSH B</span><small>20 liniek · free spiny · bonus</small></div><div class="bigwin" id="sbig" hidden></div>
-      <div class="sbar"><div><span class="lab">Výhra</span><div class="money" id="swin">0,00 CR</div></div><div id="sfs" class="fsbadge" hidden></div></div>
-      <div class="sgrid" id="sgrid"></div>
-      <div class="sctl">
+    <div class="panel slotpanel"><div class="marquee"><span>RUSH B</span><small>20 línií · free spiny · bonus</small></div>
+      <div class="sbar"><div><span class="lab">Výhra</span><div class="money" id="swin">0,00 CR</div></div><span class="streak" id="sstreak" hidden></span><div id="sfs" class="fsbadge" hidden></div></div>
+      <div class="reelwrap" id="reelwrap"><div class="sgrid" id="sgrid"></div><div class="bigwin" id="sbig" hidden></div></div>
+      <div class="slabel" id="slabel"></div>
+      <p id="smsg" class="sub smsg"></p>
+      <div class="sctl2">
         <div class="stepper"><button class="btn sm" id="sbm" aria-label="Menšia stávka">−</button><div><span class="lab">Stávka</span><b id="sbet">1,00</b></div><button class="btn sm" id="sbp" aria-label="Väčšia stávka">+</button></div>
         <button class="btn gold spinbtn" id="spin">Točiť</button>
-        <div class="betrow"><button class="btn sm sbuy" id="sbuy">Kúpiť free spiny · 28×</button><button class="btn sm" id="sauto">Auto 10</button><button class="btn sm" id="sturbo">Turbo: vyp.</button></div>
+        <div class="sside"><div class="autoset"><button class="btn sm" id="sauto">Auto</button><button class="btn sm" id="sautoN" aria-label="Počet automatických spinov">10</button></div><button class="btn sm" id="sturbo">Turbo vyp.</button></div>
       </div>
-      <p id="smsg" class="sub" style="text-align:center;margin:10px auto 0;min-height:1.5em"></p>
-      <details style="margin-top:10px"><summary class="lab" style="cursor:pointer">Výplatná tabuľka (násobky stávky na líniu = stávka / 20)</summary><div class="pay" id="paytable"></div></details>
+      <div class="betrow srow2"><button class="btn sm" id="smax">Max stávka</button><button class="btn sm sbuy" id="sbuy">Free spiny · 40×</button></div>
+      <details style="margin-top:8px"><summary class="lab" style="cursor:pointer">Výplatná tabuľka a kombinácie</summary><div class="pay" id="paytable"></div></details>
     </div>
     <div id="bonus"></div>
   </section>
@@ -785,6 +825,7 @@ const RNAME=['Mil-Spec','Restricted','Classified','Covert','★ Nôž / rukavice
 const RODDS=[0.7992,0.1598,0.032,0.0064,0.0026];
 const WEAR=[['FN','Factory New',.07],['MW','Minimal Wear',.15],['FT','Field-Tested',.38],['WW','Well-Worn',.45],['BS','Battle-Scarred',1]];
 const $=s=>document.querySelector(s);
+const $$=s=>[...document.querySelectorAll(s)];
 const fmt=n=>(Math.round(n*100)/100).toLocaleString('sk-SK',{minimumFractionDigits:2,maximumFractionDigits:2});
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function hash(s){let h=2166136261;for(let i=0;i<s.length;i++)h=Math.imul(h^s.charCodeAt(i),16777619);return h>>>0}
@@ -1113,6 +1154,7 @@ $('#rtable').onclick=e=>{const b=e.target.closest('[data-b]');if(!b||rBusy)retur
   const k=b.dataset.b;RBET[k]=Math.round(((RBET[k]||0)+chipV)*100)/100;RBhist.push([k,chipV]);beep(1200,.03,.03);renderR()};
 $('#rundo').onclick=()=>{if(rBusy)return;const x=RBhist.pop();if(x){RBET[x[0]]-=x[1];if(RBET[x[0]]<=0.001)delete RBET[x[0]]}renderR()};
 $('#rclear').onclick=()=>{if(rBusy)return;RBET={};RBhist=[];renderR()};
+$('#rhalf').onclick=()=>{if(rBusy)return;for(const k in RBET){const nv=Math.round(RBET[k]/2*100)/100;if(nv<.05){RBhist.push([k,RBET[k]]);delete RBET[k]}else{RBhist.push([k,RBET[k]-nv]);RBET[k]=nv}}renderR()};
 $('#rdbl').onclick=()=>{if(rBusy)return;if(rTotal()*2>S.bal){toast('Nemáš dosť kreditov');return}for(const k in RBET){RBhist.push([k,RBET[k]]);RBET[k]*=2}renderR()};
 $('#rrep').onclick=()=>{if(rBusy||!RBlast)return;const t=Object.values(RBlast).reduce((a,b)=>a+b,0);if(t>S.bal){toast('Nemáš dosť kreditov');return}RBET={...RBlast};RBhist=Object.entries(RBET);renderR()};
 $('#rspin').onclick=()=>{
@@ -1139,9 +1181,11 @@ $('#rspin').onclick=()=>{
 // shared slot engine (page + simulation)
 const SL={
  LINES:[[1,1,1,1,1],[0,0,0,0,0],[2,2,2,2,2],[0,1,2,1,0],[2,1,0,1,2],[0,0,1,2,2],[2,2,1,0,0],[1,0,0,0,1],[1,2,2,2,1],[0,1,1,1,0],[2,1,1,1,2],[1,0,1,2,1],[1,2,1,0,1],[0,1,0,1,0],[2,1,2,1,2],[1,1,0,1,1],[1,1,2,1,1],[0,0,2,0,0],[2,2,0,2,2],[0,2,0,2,0]],
- PAY:{G:[5,15,50],U:[5,20,60],D:[10,30,100],M:[15,50,150],A:[20,75,250],W:[30,100,400],X:[50,200,1000]},
+ PAY:{G:[4,12,40],U:[4,16,50],D:[8,25,80],M:[12,40,120],A:[16,60,200],W:[24,80,300],X:[50,200,1000]},
  SCAT:{3:[2,10],4:[10,15],5:[50,25]}, // [x total bet, free spins]
- FSMULT:3,
+ FSMULT:2,
+ TRIO:{R:{set:'MAW',pay:5}}, // rifle trio: M4 + AK + AWP in any order on one line (wild substitutes)
+ EXPAND:[1,2,3], // free spins: a wild on these reels expands to the whole reel
  STRIPS:null,
  build(c){ // c: per reel counts {sym:n}
    this.STRIPS=c.map(o=>{const a=[];for(const k in o)for(let i=0;i<o[k];i++)a.push(k);
@@ -1149,6 +1193,7 @@ const SL={
  },
  spin(rng){const stops=this.STRIPS.map(s=>Math.floor(rng()*s.length));
    const grid=this.STRIPS.map((s,r)=>[0,1,2].map(k=>s[(stops[r]+k)%s.length]));return {stops,grid}},
+ expand(grid){const ex=[];const g=grid.map((c,r)=>{if(this.EXPAND.includes(r)&&c.includes('X')){ex.push(r);return ['X','X','X']}return c.slice()});return {grid:g,ex}},
  evaluate(grid,bet,mult=1){
    const lb=bet/this.LINES.length;let win=0;const wins=[];
    this.LINES.forEach((L,li)=>{const syms=L.map((row,r)=>grid[r][row]);
@@ -1159,6 +1204,8 @@ const SL={
      if(wn>=3){best=this.PAY.X[wn-3];bestN=wn;bestS='X'}
      if(base&&this.PAY[base]){let n=0;for(const s of syms){if(s===base||s==='X')n++;else break}
        if(n>=3&&this.PAY[base][n-3]>best){best=this.PAY[base][n-3];bestN=n;bestS=base}}
+     for(const k in this.TRIO){const t=this.TRIO[k],f=syms.slice(0,3).filter(s=>s!=='X');
+       if(f.length>=2&&f.every(s=>t.set.includes(s))&&new Set(f).size===f.length&&t.pay>best){best=t.pay;bestN=3;bestS=k}}
      if(best){const w=best*lb*mult;win+=w;wins.push({line:li,n:bestN,sym:bestS,win:w})}
    });
    let sc=0;grid.forEach(c=>c.forEach(s=>{if(s==='S')sc++}));
@@ -1179,65 +1226,114 @@ function symHTML(s,cls=''){
   if(s==='B')return `<div class="sym ${cls}"><div class="c4">C4</div></div>`;
   return `<div class="sym ${cls}"><i class="sp" style="${spriteStyle(SYMI[s])}"></i>${s==='X'?'<span class="tag">WILD</span>':''}</div>`;
 }
-const BETS=[.2,.5,1,2,5,10,20,50,100];let sBetI=2,sBusy=false,sAuto=0,sTurbo=false,fsLeft=0,fsWin=0,curGrid=null;
-function setCell(){const g=$('#sgrid');const w=(g.clientWidth-24)/5;g.style.setProperty('--cell',Math.max(48,Math.min(104,Math.round(w*.82)))+'px')}
+const BETS=[.2,.5,1,2,5,10,20,50,100],AUTON=[10,25,50,100],BUYX=40;
+let sBetI=2,sBusy=false,sAuto=0,sAutoN=10,sTurbo=false,fsLeft=0,fsWin=0,curGrid=null,sTok=0,winTok=0,sStreak=0,bigCb=null;
+const LCOL=['#ffd24a','#ff6b5e','#4fd8ff','#7dff8a','#d58bff','#ff9f43'];
+const sT=(fn,ms)=>{const k=sTok;return setTimeout(()=>{if(k===sTok)fn()},ms)};
+function setCell(){const g=$('#sgrid');const w=(g.clientWidth-24)/5;g.style.setProperty('--cw',w+'px');g.style.setProperty('--cell',Math.max(56,Math.min(126,Math.round(Math.min(w*1.5,(innerHeight-430)/3))))+'px')}
 function renderSlots(){
   if(!$('#sgrid').children.length){
     curGrid=SL.spin(Math.random).grid;
     $('#sgrid').innerHTML=[0,1,2,3,4].map(r=>`<div class="sreel"><div class="col" id="sr${r}">${curGrid[r].map(s=>symHTML(s)).join('')}</div></div>`).join('')+'<svg class="lines" id="slines"></svg>';
     $('#paytable').innerHTML=['X','W','A','M','D','U','G'].map(k=>`<div>${symHTML(k)}<span><b>${SYMN[k]}</b><br>3× ${SL.PAY[k][0]} · 4× ${SL.PAY[k][1]} · 5× ${SL.PAY[k][2]}</span></div>`).join('')
-      +`<div>${symHTML('S')}<span><b>Case</b><br>3/4/5 kdekoľvek: ${SL.SCAT[3][0]}× / ${SL.SCAT[4][0]}× / ${SL.SCAT[5][0]}× stávky + ${SL.SCAT[3][1]}/${SL.SCAT[4][1]}/${SL.SCAT[5][1]} free spinov (×${SL.FSMULT})</span></div><div>${symHTML('B')}<span><b>C4</b><br>na valcoch 1, 3 a 5: bonus Defuse, vyber 3 casy z 12</span></div>`;
+      +`<div>${symHTML('S')}<span><b>Case</b><br>3/4/5 kdekoľvek: ${SL.SCAT[3][0]}× / ${SL.SCAT[4][0]}× / ${SL.SCAT[5][0]}× stávky + ${SL.SCAT[3][1]}/${SL.SCAT[4][1]}/${SL.SCAT[5][1]} free spinov (×${SL.FSMULT})</span></div><div>${symHTML('B')}<span><b>C4</b><br>na valcoch 1, 3 a 5: bonus Defuse, vyber 3 casy z 12</span></div>`
+      +`<div class="pc"><span class="trio"><i class="sp" style="${spriteStyle(SYMI.M)}"></i><i class="sp" style="${spriteStyle(SYMI.A)}"></i><i class="sp" style="${spriteStyle(SYMI.W)}"></i></span><span><b>Puškové trio</b><br>M4 + AK + AWP v ľubovoľnom poradí na línii: ${SL.TRIO.R.pay}×</span></div>`
+      +`<div class="pc"><span class="xwm">WILD</span><span><b>Rozšírený wild</b><br>vo free spinoch sa wild na valcoch 2–4 roztiahne cez celý valec</span></div>`;
   }
-  setCell();sBetShow();
+  setCell();sBetShow();sAutoShow();fsBadge()
 }
 addEventListener('resize',()=>{if(!$('#v-slots').hidden)setCell()});
 function sBetShow(){$('#sbet').textContent=fmt(BETS[sBetI])}
+function sAutoShow(){const b=$('#sauto');b.textContent=sAuto?`Stop · ${sAuto===Infinity?'∞':sAuto}`:'Auto';b.classList.toggle('on',!!sAuto);$('#sautoN').hidden=!!sAuto;$('#sautoN').textContent=sAutoN===Infinity?'∞':sAutoN}
 $('#sbm').onclick=()=>{if(sBetI>0)sBetI--;sBetShow()};$('#sbp').onclick=()=>{if(sBetI<BETS.length-1)sBetI++;sBetShow()};
-$('#sturbo').onclick=()=>{sTurbo=!sTurbo;$('#sturbo').textContent='Turbo: '+(sTurbo?'zap.':'vyp.')};
-$('#sauto').onclick=()=>{if(sAuto){sAuto=0;$('#sauto').textContent='Auto 10';return}sAuto=10;$('#sauto').textContent='Stop auto';if(!sBusy)doSpin()};
-$('#spin').onclick=()=>doSpin();
-$('#sbuy').onclick=()=>{if(sBusy||fsLeft>0)return;const bet=BETS[sBetI],cost=Math.round(bet*28*100)/100;if(cost>S.bal){toast('Nemáš dosť kreditov');return}addBal(-cost);S.st.sw-=cost;rec('slot',cost,0,0);save();fsLeft=10;fsWin=0;fsBadge();flash('#e3a53c');chime(4);toast('10 free spinov ×3!');setTimeout(doSpin,700)};
+$('#smax').onclick=()=>{let k=0;BETS.forEach((b,i)=>{if(b<=S.bal)k=i});sBetI=k;sBetShow()};
+$('#sturbo').onclick=()=>{sTurbo=!sTurbo;$('#sturbo').classList.toggle('on',sTurbo);$('#sturbo').textContent='Turbo '+(sTurbo?'zap.':'vyp.')};
+$('#sautoN').onclick=()=>{const i=AUTON.indexOf(sAutoN);sAutoN=i<0||i===AUTON.length-1?AUTON[0]:AUTON[i+1];sAutoShow()};
+function stopAuto(){sAuto=0;sAutoShow();if(bigCb){const f=bigCb;bigCb=null;$('#sbig').hidden=true;f()}}
+$('#sauto').onclick=()=>{if(sAuto){stopAuto();return}sAuto=sAutoN;sAutoShow();if(!sBusy&&fsLeft<=0)doSpin()};
+$('#spin').onclick=()=>{if(sAuto)stopAuto();doSpin()};
+$('#sbuy').onclick=()=>{if(sBusy||fsLeft>0)return;const bet=BETS[sBetI],cost=Math.round(bet*BUYX*100)/100;if(cost>S.bal){toast('Nemáš dosť kreditov');return}addBal(-cost);S.st.sw-=cost;rec('slot',cost,0,0);save();fsLeft=10;fsWin=0;fsBadge();flash('#e3a53c');chime(4);toast('10 free spinov ×'+SL.FSMULT+'!');sT(doSpin,700)};
+function anticFor(grid){const a=[0,0,0,0,0];let sc=0;for(let r=0;r<5;r++){if(r>=3&&sc>=2)a[r]=1;sc+=grid[r].filter(s=>s==='S').length}return a}
 function animateReels(grid,done){
-  const cell=parseFloat(getComputedStyle($('#sgrid')).getPropertyValue('--cell'));let left=5;const base=sTurbo?350:900,step=sTurbo?120:260;
-  const tick=setInterval(sfx.tick,sTurbo?60:90);
-  for(let r=0;r<5;r++){const col=$('#sr'+r);const n=(sTurbo?8:16)+r*(sTurbo?3:6);const L=[...curGrid[r]];for(let k=0;k<n;k++)L.push(SL.STRIPS[r][Math.floor(Math.random()*SL.STRIPS[r].length)]);L.push(...grid[r]);
-    col.innerHTML=L.map(s=>symHTML(s)).join('');col.style.transition='none';col.style.transform='translateY(0)';col.offsetWidth;
-    const ms=base+r*step;col.style.transition=`transform ${ms}ms cubic-bezier(.25,.1,.2,1.04)`;col.style.transform=`translateY(${-(L.length-3)*cell}px)`;
-    setTimeout(()=>{col.style.transition='none';col.style.transform='translateY(0)';col.innerHTML=grid[r].map(s=>symHTML(s)).join('');beep(300+r*60,.05,.04,'triangle');if(--left===0){clearInterval(tick);done()}},ms+20)}
-}
-function showLines(res){
+  const cell=parseFloat(getComputedStyle($('#sgrid')).getPropertyValue('--cell'));let left=5;const base=sTurbo?350:900,step=sTurbo?120:260;const an=anticFor(grid);let extra=0;
+  const tick=setInterval(sfx.tick,sTurbo?60:90);const sp=$('#sgrid');sp.classList.add('spinning');
+  for(let r=0;r<5;r++){const col=$('#sr'+r),reel=col.parentNode;const n=(sTurbo?8:16)+r*(sTurbo?3:6)+(an[r]?10:0);const L=[...curGrid[r]];for(let k=0;k<n;k++)L.push(SL.STRIPS[r][Math.floor(Math.random()*SL.STRIPS[r].length)]);L.push(...grid[r]);
+    col.innerHTML=L.map(s=>symHTML(s)).join('');col.style.transition='none';col.style.transform='translateY(0)';col.offsetWidth;reel.classList.add('blur');
+    if(an[r])extra+=sTurbo?250:650;
+    const ms=base+r*step+extra;col.style.transition=`transform ${ms}ms cubic-bezier(.25,.1,.2,1.04)`;col.style.transform=`translateY(${-(L.length-3)*cell}px)`;
+    if(an[r]){const k=sTok;setTimeout(()=>{if(k===sTok&&sBusy){reel.classList.add('antic');beep(500,.35,.05,'sawtooth')}},base+(r-1)*step+extra-(sTurbo?250:650))}
+    sT(()=>{col.style.transition='none';col.style.transform='translateY(0)';col.innerHTML=grid[r].map(s=>symHTML(s)).join('');reel.classList.remove('blur','antic');reel.classList.remove('land');reel.offsetWidth;reel.classList.add('land');
+      const hasS=grid[r].includes('S'),hasB=grid[r].includes('B');beep(300+r*60,.05,.04,'triangle');if(hasS)sT(()=>beep(900+r*80,.12,.05,'triangle'),60);if(hasB&&[0,2,4].includes(r))sT(()=>beep(220,.15,.05,'square'),60);
+      if(--left===0){clearInterval(tick);sp.classList.remove('spinning');done()}},ms+20)}
+  sT(()=>{},0);return tick}
+function paintLines(wins,only){
   const svg=$('#slines'),g=$('#sgrid'),W=g.clientWidth,cell=parseFloat(getComputedStyle(g).getPropertyValue('--cell'));const cw=(W-24)/5;
   svg.setAttribute('viewBox',`0 0 ${W} ${cell*3}`);
-  svg.innerHTML=res.wins.slice(0,8).map(w=>`<polyline points="${SL.LINES[w.line].map((row,r)=>`${r*(cw+6)+cw/2},${row*cell+cell/2}`).join(' ')}"/>`).join('');
-  res.wins.forEach(w=>SL.LINES[w.line].slice(0,w.n).forEach((row,r)=>$('#sr'+r).children[row].classList.add('hit')));
+  svg.innerHTML=wins.map(w=>{const pts=SL.LINES[w.line].map((row,r)=>`${r*(cw+6)+cw/2},${row*cell+cell/2}`).join(' ');return `<polyline class="ln" style="stroke:${LCOL[w.line%LCOL.length]}" points="${pts}"/>`}).join('');
+  $$('.sym.hit').forEach(e=>e.classList.remove('hit'));
+  wins.forEach(w=>{const lc=LCOL[w.line%LCOL.length];SL.LINES[w.line].slice(0,w.n).forEach((row,r)=>{const e=$('#sr'+r).children[row];e.classList.add('hit');e.style.setProperty('--lc',lc)})})}
+const WNAME=s=>s==='R'?'Puškové trio':SYMN[s]||s;
+function showLines(res,tok){
+  paintLines(res.wins.slice(0,10));
   for(let r=0;r<5;r++)[0,1,2].forEach(k=>{if(curGrid[r][k]==='S'&&res.sc>=3)$('#sr'+r).children[k].classList.add('hit')});
-  if(res.wins.length||res.sc>=3)setTimeout(()=>{svg.innerHTML=''},sTurbo?900:2200);
+  const ws=[...res.wins].sort((a,b)=>b.win-a.win).slice(0,6);
+  if(ws.length>1&&!sTurbo){let i=0;const cyc=()=>{if(tok!==winTok||sBusy)return;const w=ws[i%ws.length];paintLines([w]);$('#slabel').innerHTML=`<i style="background:${LCOL[w.line%LCOL.length]}"></i>${w.sym==='R'?'Puškové trio':w.n+'× '+WNAME(w.sym)} · <b>+${fmt(w.win)}</b>`;i++;setTimeout(cyc,1100)};setTimeout(cyc,1500)}
+  else if(ws.length===1){const w=ws[0];$('#slabel').innerHTML=`<i style="background:${LCOL[w.line%LCOL.length]}"></i>${w.sym==='R'?'Puškové trio':w.n+'× '+WNAME(w.sym)} · <b>+${fmt(w.win)}</b>`}
 }
+function expandWilds(ex,done){
+  if(!ex.length){done();return}
+  ex.forEach(r=>{const col=$('#sr'+r);col.innerHTML=['X','X','X'].map(s=>symHTML(s)).join('');col.parentNode.classList.add('xw')});
+  chime(3);buzz([30,30,60]);flash('#7dff8a');$('#smsg').innerHTML='<b class="money">Rozšírený wild!</b>';
+  sT(()=>{ex.forEach(r=>$('#sr'+r).parentNode.classList.remove('xw'));done()},sTurbo?450:900)}
 function doSpin(){
-  if(sBusy)return;const bet=BETS[sBetI];const free=fsLeft>0;
-  if(!free&&bet>S.bal){toast('Nemáš dosť kreditov');sAuto=0;$('#sauto').textContent='Auto 10';return}
-  sBusy=true;$('#spin').disabled=true;$('#slines').innerHTML='';
+  if(sBusy)return;
+  if($('#v-slots').hidden){sAuto=0;sAutoShow();return}
+  const bet=BETS[sBetI];const free=fsLeft>0;
+  if(!free&&bet>S.bal){toast('Nemáš dosť kreditov');sAuto=0;sAutoShow();return}
+  winTok++;$('#slabel').innerHTML='';sBusy=true;$('#spin').disabled=true;$('#slines').innerHTML='';$$('.sym.hit').forEach(e=>e.classList.remove('hit'));$('#sbuy').disabled=true;
   if(free){fsLeft--;}else{addBal(-bet);S.st.sw-=bet;save()}
-  const {grid}=SL.spin(Math.random);
-  animateReels(grid,()=>{
-    curGrid=grid;const mult=free?SL.FSMULT:1;const res=SL.evaluate(grid,bet,mult);const win=Math.round(res.win*100)/100;
+  fsBadge();
+  const raw=SL.spin(Math.random).grid;let grid=raw,ex=[];if(free){const e=SL.expand(raw);grid=e.grid;ex=e.ex}
+  animateReels(raw,()=>{
+    curGrid=raw;
+    expandWilds(ex,()=>{curGrid=grid;
+    const mult=free?SL.FSMULT:1;const res=SL.evaluate(grid,bet,mult);const win=Math.round(res.win*100)/100;
     rec('slot',free?0:bet,win);
     if(win){addBal(win);S.st.sw+=win;if(free)fsWin+=win}
-    showLines(res);
+    const tok=winTok;if(res.wins.length||res.sc>=3)showLines(res,tok);
+    sStreak=win?sStreak+1:0;streakShow(win);
     let msg=win?`<span class="win">+${fmt(win)} CR</span>${res.wins.length?` · ${res.wins.length} ${res.wins.length===1?'línia':res.wins.length<5?'línie':'línií'}`:''}`:(free?'Free spin bez výhry':'');
-    $('#swin').textContent=fmt(free?fsWin:win)+' CR';
-    if(win>=bet*10)bigWin(win,bet);else if(win>=bet*4)sfx.win();
+    if(res.wins.some(w=>w.sym==='R'))msg+=' · <b class="money">Puškové trio!</b>';
+    const tgt=free?fsWin:win;if(win)countUp($('#swin'),tgt,sTurbo?300:700);else $('#swin').textContent=fmt(free?fsWin:0)+' CR';
+    const x=win/bet;
+    if(win){slotFx(x,free);}
+    if(res.sc>=3){$('#sgrid').classList.add('scat');setTimeout(()=>$('#sgrid').classList.remove('scat'),1400)}
     if(res.fs){fsLeft+=res.fs;msg+=` <b class="money">· ${res.fs} free spinov ×${SL.FSMULT}!</b>`;sfx.win();if(!free)fsWin=win}
     save();$('#smsg').innerHTML=msg;fsBadge();
-    const next=()=>{sBusy=false;$('#spin').disabled=false;
-      if(fsLeft>0){setTimeout(doSpin,sTurbo?500:1100);return}
+    const next=()=>{sBusy=false;$('#spin').disabled=false;$('#sbuy').disabled=false;
+      if(fsLeft>0){sT(doSpin,sTurbo?500:1100);return}
       if(free&&fsLeft===0){$('#smsg').innerHTML=`Free spiny skončili · spolu <span class="win">${fmt(fsWin)} CR</span>`;fsBadge()}
-      if(sAuto>0){sAuto--;if(sAuto>0)setTimeout(doSpin,sTurbo?300:800);else $('#sauto').textContent='Auto 10'}};
-    if(res.bonus){startBonus(bet*(free?SL.FSMULT:1),next)}else setTimeout(next,win?(sTurbo?400:900):150);
-  });
+      if(sAuto>0){sAuto--;sAutoShow();if(sAuto>0)sT(()=>{if(sAuto>0)doSpin()},sTurbo?300:800)}};
+    const afterWin=()=>{if(res.bonus){startBonus(bet*(free?SL.FSMULT:1),next)}else sT(next,win?(sTurbo?400:900):150)};
+    if(x>=10)bigWin(win,bet,afterWin);else afterWin();
+    })})
 }
-function bigWin(win,bet){const x=win/bet;const el=$('#sbig');el.hidden=false;el.innerHTML=`<b>${x>=100?'EPIC WIN':x>=30?'MEGA WIN':'BIG WIN'}</b><span id="sbigv">0,00 CR</span>`;countUp($('#sbigv'),win,1600);flash('#e3a53c');buzz([60,40,120]);chime(x>=50?4:3);setTimeout(()=>chime(4),700);const close=()=>{el.hidden=true};el.onclick=close;setTimeout(close,3200)}
-function fsBadge(){const b=$('#sfs');b.hidden=fsLeft<=0;b.textContent=`Free spiny: ${fsLeft} · ×${SL.FSMULT}`;$('#spin').textContent=fsLeft>0?'Free spin':'Točiť'}
+function streakShow(win){const b=$('#sstreak');b.hidden=sStreak<2;b.textContent=`Séria ×${sStreak}`;if(sStreak>=2){b.classList.remove('pop');b.offsetWidth;b.classList.add('pop')}}
+function slotFx(x,free){
+  const panel=$('.slotpanel'),box=$('#reelwrap');
+  if(x<2){sfx.win();return}
+  if(x<4){sfx.win();slotCoins(8,box);return}
+  if(x<10){sfx.win();slotCoins(18,box);buzz(30);panel.classList.add('wincol');setTimeout(()=>panel.classList.remove('wincol'),1400);return}
+  panel.classList.add('shake','wincol');setTimeout(()=>panel.classList.remove('shake'),600);setTimeout(()=>panel.classList.remove('wincol'),2600);slotCoins(x>=30?60:36,box)}
+function slotCoins(n,box){
+  if(reduced)return;const cv=document.createElement('canvas');cv.className='confetti';box.appendChild(cv);const W=cv.width=box.clientWidth,H=cv.height=box.clientHeight;const g=cv.getContext('2d');
+  const P=Array.from({length:n},()=>({x:W/2+(Math.random()-.5)*W*.5,y:H*.55,vx:(Math.random()-.5)*8,vy:-Math.random()*10-4,r:4+Math.random()*4,ph:Math.random()*6}));let t=0;
+  (function f(){g.clearRect(0,0,W,H);P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.45;p.ph+=.3;const w=Math.abs(Math.cos(p.ph))*p.r+1;g.fillStyle='#ffd24a';g.strokeStyle='#8a5d12';g.beginPath();g.ellipse(p.x,p.y,w,p.r,0,0,7);g.fill();g.stroke()});if(++t<85)requestAnimationFrame(f);else cv.remove()})()}
+function bigWin(win,bet,cb){const x=win/bet;const el=$('#sbig');el.hidden=false;
+  el.innerHTML=`<b>${x>=100?'EPIC WIN':x>=30?'MEGA WIN':'BIG WIN'}</b><span id="sbigv">0,00 CR</span><small>ťukni pre pokračovanie</small>`;
+  countUp($('#sbigv'),win,1600);flash('#e3a53c');buzz([60,40,120]);chime(x>=50?4:3);sT(()=>chime(4),700);
+  let done=false;const close=()=>{if(done)return;done=true;bigCb=null;el.hidden=true;cb&&cb()};bigCb=close;el.onclick=close;sT(close,sAuto?2600:3600)}
+function fsBadge(){const b=$('#sfs');b.hidden=fsLeft<=0;b.textContent=`FS ${fsLeft} · ×${SL.FSMULT}`;$('#spin').innerHTML=fsLeft>0?'Free<br>spin':'Točiť';$('#spin').classList.toggle('fs',fsLeft>0);$('#sbuy').textContent=`Free spiny · ${BUYX}×`;$('#v-slots .slotpanel').classList.toggle('fsmode',fsLeft>0)}
 function startBonus(bet,done){
   const box=$('#bonus');const vals=Array.from({length:12},()=>SL.PICKS[Math.floor(Math.random()*SL.PICKS.length)]);const opened=[];let total=0;
   sfx.win();
@@ -1803,6 +1899,7 @@ function renderAdmin(){
 const TABS=['cases','inv','roulette','slots','jackpot','lounge'];
 function route(){const t=TABS.includes(location.hash.slice(1))?location.hash.slice(1):'cases';const sec=$('#v-'+t);if(sec&&sec.hidden){sec.classList.remove('enter');void sec.offsetWidth;sec.classList.add('enter')}
   TABS.forEach(x=>$('#v-'+x).hidden=x!==t);if(t!=='lounge')$('#slip').innerHTML='';document.querySelectorAll('#tabs a').forEach(a=>a.classList.toggle('on',a.dataset.t===t));
+  if(t!=='slots'&&sAuto)stopAuto();
   if(t==='cases')renderOpener();if(t==='inv')renderInv();if(t==='roulette')renderR();if(t==='slots')renderSlots();if(t==='jackpot')renderJp();if(t==='lounge')renderLounge()}
 addEventListener('hashchange',route);
 

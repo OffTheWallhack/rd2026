@@ -27,6 +27,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Nainštalovať yt-dlp
+        run: python3 -m pip install -U yt-dlp
       - name: Zistiť dĺžky videí
         env:
           YT_API_KEY: ${{ secrets.YT_API_KEY }}

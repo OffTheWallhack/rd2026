@@ -5,6 +5,7 @@
 // Zdroje: 1) stránka videa (dĺžka + či sa dá vložiť), 2) oEmbed (či video existuje a dá sa vložiť).
 // Poistka: ak by naraz "zlyhala" veľká časť videí, YouTube nás asi blokuje — vtedy nič neoznačíme ako nefunkčné.
 import fs from 'node:fs';
+import { execFileSync } from 'node:child_process';
 
 const OBSAH = 'pozeral/obsah.js';
 const VYSTUP = 'pozeral/dlzky.json';
@@ -80,20 +81,34 @@ if (api){
     vysledky.push({ id, ...r });
     riadky.push([id, 'api', '=>', r.s || r.chyba || ('? ' + r.dovod)].join('  '));
   }
-} else for (const id of ids){
-  let v = null, oe = 0;
-  try { v = await zWatch(id); } catch (e) { v = { status:'SIEŤ', dovod:String(e) }; }
-  try { oe = await zOembed(id); } catch {}
-  let r;
-  if (v.status === 'OK' && v.s > 0 && v.embed !== false && oe !== 401 && oe !== 403) r = { s: v.s };
-  else if (oe === 401 || oe === 403 || (v.status === 'OK' && v.embed === false)) r = { chyba:'vkladanie zakázané' };
-  else if ((oe === 404 || oe === 400) && v.status !== 'OK') r = { chyba: v.dovod || 'video neexistuje alebo je súkromné' };
-  else if (oe === 200) r = { neiste:true, dovod:'existuje, dĺžku sa nepodarilo zistiť' };
-  else r = { neiste:true, dovod: v.dovod || v.status || 'nevieme' };
-  vysledky.push({ id, ...r });
-  riadky.push([id, 'watch:' + (v.http || '') + '/' + v.status, 'embed:' + v.embed, 's:' + (v.s || 0), 'oembed:' + oe, '=>', r.s || r.chyba || ('? ' + r.dovod)].join('  '));
-  console.log(riadky[riadky.length - 1]);
-  await sleep(600);
+} else {
+  // a) oEmbed: existuje video a dá sa vložiť? (YouTube ho z GitHubu neblokuje)
+  const oe = {};
+  for (const id of ids){ try { oe[id] = await zOembed(id); } catch { oe[id] = 0; } await sleep(250); }
+  // b) yt-dlp: presná dĺžka pre videá, ktoré existujú
+  const zive = [...ids].filter(id => oe[id] === 200);
+  const dlzky = {};
+  if (zive.length){
+    fs.writeFileSync('/tmp/ids.txt', zive.map(id => 'https://www.youtube.com/watch?v=' + id).join('\n'));
+    let out = '';
+    try {
+      out = execFileSync('yt-dlp', ['--skip-download', '--no-warnings', '--ignore-errors', '--no-playlist', '--sleep-requests', '1',
+        '--extractor-args', 'youtube:player_client=tv,android_vr,web_safari,mweb',
+        '--print', '%(id)s\t%(duration)s', '-a', '/tmp/ids.txt'], { encoding:'utf8', timeout: 20 * 60 * 1000, maxBuffer: 1 << 24 });
+    } catch (e) { out = (e.stdout || '').toString(); console.log('yt-dlp skončilo s chybou, beriem čo prešlo'); }
+    for (const line of out.split('\n')){ const [id, d] = line.trim().split('\t'); if (id && +d > 0) dlzky[id] = Math.round(+d); }
+  }
+  for (const id of ids){
+    const o = oe[id];
+    let r;
+    if (o === 401 || o === 403) r = { chyba:'vkladanie zakázané' };
+    else if (o === 404 || o === 400) r = { chyba:'video neexistuje alebo je súkromné' };
+    else if (dlzky[id]) r = { s: dlzky[id] };
+    else if (o === 200) r = { neiste:true, dovod:'existuje, dĺžku sa nepodarilo zistiť' };
+    else r = { neiste:true, dovod:'oEmbed ' + o };
+    vysledky.push({ id, ...r });
+    riadky.push([id, 'oembed:' + o, 'yt-dlp:' + (dlzky[id] || '-'), '=>', r.s || r.chyba || ('? ' + r.dovod)].join('  '));
+  }
 }
 
 // poistka proti blokovaniu: ak "padla" viac ako tretina videí, nové chyby nezapíšeme

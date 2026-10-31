@@ -5908,7 +5908,7 @@ function hwyStart() {
   hwyEnter();
   for (const c of HW.cars) if (c.g) HW.g.remove(c.g); HW.cars = [];
   HW.t = 0; HW.over = false; HW.newCar = ''; HW.race = null; HW.rcT = 28 + Math.random() * 20; hwRaceUi(false); HW.ev = 14; HW.hud = 0; HW.shake = 0; HW.radarDone = 0;
-  const p = HW.p = { s: 0, d: HLANE[0], psi: 0, st: 0, v: 22, g: 3, auto: true, rpm: 3000, cut: 0, bl: 0, blT: 0, lane: 0, prevLane: 0, laneT: 0, blOff: -9, score: 0, kos: 0, races: 0, over: 0, fines: 0, dmg: 0, lastOv: -9, dist: 0, wind: 0, strad: 0, tail: 0, cool: 0, shiftT: 0, bogT: 0, lastBl: 0, wheel: 0, ok: 0, phi: 0, phiV: 0, two: 0, rollT: 0, rollV: 0, rest: 0, pit: 0, pitV: 0, hv: 0, hvV: 0, aLat: 0, skid: 0 };
+  const p = HW.p = { s: 0, d: HLANE[0], psi: 0, st: 0, v: 22, g: 3, auto: true, rpm: 3000, cut: 0, bl: 0, blT: 0, lane: 0, prevLane: 0, laneT: 0, blOff: -9, score: 0, kos: 0, races: 0, over: 0, fines: 0, dmg: 0, lastOv: -9, dist: 0, wind: 0, strad: 0, tail: 0, cool: 0, shiftT: 0, bogT: 0, lastBl: 0, wheel: 0, ok: 0, phi: 0, phiS: 0, phiV: 0, lift: 0, liftV: 0, liftS: 1, two: 0, rollT: 0, rollV: 0, rest: 0, pit: 0, pitV: 0, hv: 0, hvV: 0, aLat: 0, skid: 0 };
   const n = HW.chase ? 12 : settings.q === 0 ? 14 : 20; for (let i = 0; i < n; i++) { const c = { g: null }; HW.cars.push(c); hwSpawn(c, true); }
   p.bust = 0; p.cops = 0; HW.bustHud = 0; $('#hwRace').classList.remove('hot'); HW.copT = HW.chase ? 28 : 1e9; HW.rcT = HW.chase ? 1e9 : HW.rcT;
   if (HW.chase) for (let i = 0; i < 2; i++) { const c = { g: null }; HW.cars.push(c); hwCopSpawn(c, 200 + i * 80); }
@@ -5992,55 +5992,76 @@ function hwRaceStep(dt) {
   if (gap > 460 || R.t > 110 || P.s > HLEN - 250) { popText(R.name + ' TI UŠIEL', true); c.sp = 0; hwRaceEnd(); return; }
   R.hud -= dt; if (R.hud <= 0) { R.hud = .15; hwRaceUi(true, R.name + (gap > 0 ? '  ·  PRED TEBOU ' : '  ·  ZA TEBOU ') + Math.abs(Math.round(gap)) + ' m'); }
 }
-/* ---- the body on its springs: roll from cornering, pitch from braking and throttle, a little heave from the road.
-   Roll is an underdamped spring (rocking left-right adds up). Past HLIFT the inner wheels leave the road: the springs
-   can't push back any harder and gravity starts to help, so hold the turn and it goes over. Then it slides on its
-   side or roof, stops, and gets put back on its wheels with damage. */
-const HLIFT = .13;
+/* ---- the body on its springs, done like a vehicle-dynamics model (numbers for a tall 3.4 t van):
+   - the suspension lets the body roll about 4° per g, at about 1.3 Hz with real dampers (ζ ≈ 0.4)
+   - the inner wheels lift only when the load transfer reaches 100 %: lateral force × centre-of-gravity height, plus the
+     body leaning out, plus the springs' momentum when the body rocks back and forth
+   - with ~0.8 g of grip a steady full-lock turn just slides wide; it takes rocking it left-right at speed to lift wheels
+   - lifted, the whole car pivots on its outer wheels (rigid body); past the tipping angle (~42°) gravity takes it over
+   Pitch (~2° when braking hard) and a little heave from the road go on top. */
+const HW_CG = { h: .95, t: .86, rc: .45, k2: 2.2 };                 // CG height, half track, roll centre, (pivot inertia)/mass
 function hwLean(dt, aLat, rl) {
-  const P = HW.p, W2 = 48, C = 4.2, KR = .8 * rl;
-  // pitch and heave (also while rolling, it is cheap)
-  P.pitV += (.4 * Math.sqrt(rl) * -(P.ax || 0) - 57 * P.pit - 5.2 * P.pitV) * dt; P.pit = clamp(P.pit + P.pitV * dt, -.09, .12);
-  P.hvV += (-81 * P.hv - 5.4 * P.hvV + (Math.random() - .5) * Math.min(P.v, 40) * 2.2) * dt; P.hv = clamp(P.hv + P.hvV * dt, -.05, .05);
-  if (P.rollT > 0) {                                                // the crash: roll on, slow down, come to rest on the nearest side
+  const P = HW.p, g = 9.81, W = 2 * Math.PI * 1.3, W2 = W * W, C = 2 * .4 * W;
+  const h = .55 + .42 * Math.min(1, rl), T = HW_CG.t, hr = HW_CG.rc, KR = .0712 / g * W2 * rl, IR = (h - hr) / KR;
+  P.pitV += (-.25 * Math.sqrt(rl) * (P.ax || 0) - 57 * P.pit - 6 * P.pitV) * dt; P.pit = clamp(P.pit + P.pitV * dt, -.05, .06);
+  P.hvV += (-110 * P.hv - 8 * P.hvV + (Math.random() - .5) * Math.min(P.v, 40) * .9) * dt; P.hv = clamp(P.hv + P.hvV * dt, -.02, .02);
+  if (P.rollT > 0) {                                                // over: it tumbles on, slides, and stops on the nearest side
     P.rollT += dt;
     if (P.rest <= 0) {
       const q = Math.PI / 2, near = Math.round(P.phi / q) * q;
-      P.rollV *= Math.exp(-dt * 1.1);
-      if (Math.abs(P.rollV) < 2.2 && Math.abs(P.phi - near) < .25) { P.rollV = 0; P.phi = near; P.rest = .001; sound.thud(.8); HW.shake = Math.max(HW.shake, .7); }
-      else { const prev = Math.floor(P.phi / q); P.phi += P.rollV * dt; if (Math.floor(P.phi / q) !== prev) { sound.thud(.9); HW.shake = 1; P.dmg += 4; } }
-    } else if ((P.rest += dt) > 1.7) hwUpright();
+      P.rollV *= Math.exp(-dt * 1.6);
+      if (Math.abs(P.rollV) < 1.8 && Math.abs(P.phi - near) < .2) { P.rollV = 0; P.phi = near; P.rest = .001; sound.thud(.8); HW.shake = Math.max(HW.shake, .6); }
+      else { const prev = Math.floor(P.phi / q); P.phi += P.rollV * dt; if (Math.floor(P.phi / q) !== prev) { sound.thud(.9); HW.shake = .8; P.dmg += 4; } }
+    } else if ((P.rest += dt) > 2) hwUpright();
     return;
   }
-  const ph = P.phi, sg = Math.sign(ph) || Math.sign(aLat) || 1;
-  let acc;
-  if (Math.abs(ph) < HLIFT) acc = KR * aLat - W2 * ph - C * P.phiV;
-  else acc = sg * (KR * aLat * sg - W2 * HLIFT + 15 * (Math.abs(ph) - HLIFT)) - C * .5 * P.phiV;   // on two wheels
-  P.phiV += acc * dt; P.phi += P.phiV * dt;
-  const two = Math.abs(P.phi) > HLIFT;
-  if (two && !P.two) { popText('DVE KOLESÁ!', true); buzz && buzz(40); }
-  if (!two && P.two && Math.abs(P.phiV) > .4) { sound.thud(.5); HW.shake = Math.max(HW.shake, .45); }
-  P.two = two;
-  if (Math.abs(P.phi) > .55) {                                      // past the point of no return
-    P.rollT = .001; P.rest = 0; P.rollV = Math.sign(P.phi) * Math.max(Math.abs(P.phiV), 2.6 + P.v * .1);
-    popText('PREVRÁTIL SI SA!', true); sound.thud(1); HW.shake = 1; if (navigator.vibrate && settings.vib) { try { navigator.vibrate([120, 60, 200]); } catch (e) {} }
+  if (P.lift <= 0) {
+    // on four wheels: the body rolls on its springs
+    const acc = KR * aLat - W2 * P.phiS - C * P.phiV;
+    P.phiV += acc * dt; P.phiS += P.phiV * dt;
+    // load transfer onto the outer wheels (1 = the inner ones carry nothing)
+    const sg = Math.sign(aLat) || Math.sign(P.phiS) || 1;
+    const lt = (Math.abs(aLat) * hr + sg * IR * (W2 * P.phiS + C * P.phiV) + g * h * Math.sin(sg * P.phiS)) / (g * T);
+    if (lt >= 1 && P.v > 8) { P.liftS = sg; P.lift = 1e-4; P.liftV = Math.max(0, sg * P.phiV) * .7; }
+  } else {
+    // inner wheels in the air: the car is a rigid body pivoting on its outer wheels
+    const sg = P.liftS, ps = P.lift + Math.abs(P.phiS), aO = Math.max(0, aLat * sg);
+    const acc = (aO * (h * Math.cos(ps) + T * Math.sin(ps)) - g * (T * Math.cos(ps) - h * Math.sin(ps))) / HW_CG.k2;
+    P.liftV += acc * dt; P.lift += P.liftV * dt;
+    if (P.lift <= 0) { const hit = Math.abs(P.liftV); P.lift = 0; P.liftV = 0; P.phiV = 0; if (hit > .15) { sound.thud(Math.min(1, hit)); HW.shake = Math.max(HW.shake, Math.min(.6, hit)); P.dmg += hit > .6 ? 2 : 0; } }
+    else if (ps > Math.atan2(T, h) + .05) {                         // past the tipping point: it goes over
+      P.phi = sg * ps; P.rollT = .001; P.rest = 0; P.rollV = sg * Math.max(P.liftV, 1.5 + P.v * .05);
+      P.lift = 0; P.liftV = 0; P.phiS = 0; P.phiV = 0;
+      popText('PREVRÁTIL SI SA', true); sound.thud(1); HW.shake = .8; if (navigator.vibrate && settings.vib) { try { navigator.vibrate([120, 60, 200]); } catch (e) {} }
+      return;
+    }
   }
+  const two = P.lift > .05;
+  if (two && !P.two) popText('KOLESÁ VO VZDUCHU!', true);
+  P.two = two;
+  P.phi = P.phiS + (P.liftS || 1) * P.lift;
 }
 function hwUpright() {
-  const P = HW.p, tw = Math.PI * 2, back = Math.abs(((P.phi % tw) + tw) % tw) < .3 || Math.abs(((P.phi % tw) + tw) % tw - tw) < .3;
-  P.rollT = 0; P.rest = 0; P.phi = 0; P.phiV = 0; P.two = false; P.psi = 0;
-  if (back) { popText('ZASE NA KOLESÁCH! +200'); P.score += 200; return; }
+  const P = HW.p;
+  P.rollT = 0; P.rest = 0; P.phi = 0; P.phiS = 0; P.phiV = 0; P.lift = 0; P.liftV = 0; P.two = false; P.psi = 0;
   let ln = 0, bd = 1e9; for (let i = 0; i < 3; i++) { const q = Math.abs(P.d - HLANE[i]); if (q < bd) { bd = q; ln = i; } }
   P.d = HLANE[ln]; P.v = Math.max(P.v, 12); P.dmg += 35; P.score -= 150;
   popText('POSTAVENÉ NA KOLESÁ −150', true);
   if (P.dmg >= 100) { P.dmg = 100; hwyEnd(false); }
 }
-// where the eye (or the car's centre) ends up when the body leans: the spring part around the roll centre,
-// what is past HLIFT around the outer wheels. Returns lateral offset (+ = right, toward +d) and height.
+// [side, body roll on the springs, extra rotation about the outer wheels] — during a crash all of it is about the wheels
+function hwRollParts() {
+  const P = HW.p;
+  if (P.rollT > 0) { const s = Math.sign(P.phi) || 1; return [s, 0, Math.abs(P.phi)]; }
+  const s = P.lift > 0 ? P.liftS : Math.sign(P.phiS) || 1;
+  return [s, Math.abs(P.phiS), P.lift];
+}
+// where the eye (or the car's centre) ends up: the spring roll turns about the roll centre, a lift about the outer wheels.
+// Returns lateral offset (+ = right, toward +d) and height.
 function hwRollPose(lat, y) {
-  const P = HW.p, s = Math.sign(P.phi) || 1, a = Math.abs(P.phi), aS = Math.min(a, HLIFT), aX = Math.max(0, a - HLIFT);
-  let x = lat, h = y - .6, c = Math.cos(aS), n = Math.sin(aS) * s;
-  let x2 = x * c + h * n, y2 = -x * n + h * c + .6;
+  const [s, aS, aX] = hwRollParts(), hr = HW_CG.rc;
+  let x = lat, h = y - hr, c = Math.cos(aS), n = Math.sin(aS) * s;
+  let x2 = x * c + h * n, y2 = -x * n + h * c + hr;
   if (aX > 0) { const pv = s * 1.0; x = x2 - pv; c = Math.cos(aX); n = Math.sin(aX) * s; x2 = x * c + y2 * n + pv; y2 = -x * n + y2 * c; }
   return [x2, y2];
 }
@@ -6076,8 +6097,8 @@ function hwyStep(dt) {
   // then one curve for everyone: fine control around the middle, the full lock really turns (and at speed, rolls)
   const lin = isTouch && !kb ? Math.sign(P.st) * Math.pow(Math.abs(P.st), 1 / 1.35) : P.st;
   const stE = Math.sign(lin) * Math.pow(Math.abs(lin), 1.7), dMax = .36 / (1 + Math.pow(P.v / 9, 1.6));
-  let yaw = P.v * stE * dMax / 3.5, aLat = P.v * yaw; const grip = 9.2 * (Math.abs(P.phi) > HLIFT ? .85 : 1);
-  P.skid = 0; if (Math.abs(aLat) > grip) { P.skid = Math.min(1, (Math.abs(aLat) - grip) / grip); aLat = Math.sign(aLat) * grip; yaw = aLat / Math.max(P.v, .5); }
+  let yaw = P.v * stE * dMax / 3.5, aLat = P.v * yaw; const grip = 7.85 * (P.lift > 0 ? .9 : 1);                       // ~0.8 g on the road
+  P.skid = 0; if (Math.abs(aLat) > grip) { P.skid = Math.min(1, (Math.abs(aLat) - grip) / grip); aLat = Math.sign(aLat) * grip * (1 - .08 * Math.min(1, P.skid * 4)); yaw = aLat / Math.max(P.v, .5); }   // past the limit the tyres slide and hold a bit less
   if (P.rollT > 0) { yaw = 0; aLat = 0; }
   P.aLat = aLat;
   P.psi = clamp(P.psi + (-yaw - P.psi * 1.6) * dt, -.6, .6);
@@ -6112,7 +6133,7 @@ function hwyStep(dt) {
   }
   P.gap = gapAhead;
   if (P.s >= HLEN) { hwyEnd(true); return; }
-  sound.setEngine(P.engine || 'v8'); sound.update(clamp(.22 + .78 * (P.rpm - 900) / 5700, 0, 1), gas, P.rollT > 0 ? 0 : clamp(P.skid * 1.5 + (Math.abs(P.phi) > HLIFT ? .5 : 0), 0, 1));
+  sound.setEngine(P.engine || 'v8'); sound.update(clamp(.22 + .78 * (P.rpm - 900) / 5700, 0, 1), gas, P.rollT > 0 ? 0 : clamp(P.skid * 1.5 + (P.lift > 0 ? .4 : 0), 0, 1));
   elSpd.textContent = Math.round(kmh); $('#score').textContent = fmt(Math.max(0, Math.round(P.score)));
   if (kmh > stats.maxSpd) stats.maxSpd = kmh;
   P.dist += P.v * dt; stats.dist += P.v * dt; stats.time += dt;
@@ -6164,7 +6185,7 @@ function hwChaseView(dt, th) {
   const car = model && model.car; HW.cockpit.visible = false; HW.chaseOn = true;
   const c = hWp(P.s, P.d), cx = c.x, cz = c.z;
   if (car) {
-    const s = Math.sign(P.phi) || 1, aS = Math.min(Math.abs(P.phi), HLIFT), aX = Math.max(0, Math.abs(P.phi) - HLIFT), dx = -s * (1 - Math.cos(aX));
+    const [s, aS, aX] = hwRollParts(), dx = -s * (1 - Math.cos(aX));
     car.visible = true; car.position.set(cx + dx * Math.cos(th), Math.sin(aX) + P.hv, cz - dx * Math.sin(th)); car.rotation.order = 'YXZ'; car.rotation.set(P.pit, th, s * aX); car.scale.setScalar(1);
     model.body.rotation.set(0, 0, s * aS);
     model.wheels.forEach(w => { if (w.front) w.pivot.rotation.y = P.st * .35; w.spin.rotation.x += P.v * dt / Math.max(.25, w.pivot.position.y * (w.pivot.parent.scale.y || 1)); });

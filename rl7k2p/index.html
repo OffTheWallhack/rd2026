@@ -1785,7 +1785,7 @@ const mTitle=m=>m.options?m.home:m.home+' – '+m.away;
 function teamC(n){if(TEAMC[n])return TEAMC[n];const h=hash(n)%360;const ab=n.replace(/^(FC|FK|AS|MFK|MŠK|ŠK|KFC|RB)\s+/,'').split(/[\s-]+/).filter(Boolean);const a=(ab.length>1?ab.slice(0,3).map(w=>w[0]).join(''):ab[0].slice(0,3)).toUpperCase();return [`hsl(${h} 55% 45%)`,`hsl(${(h+40)%360} 45% 25%)`,'#fff',a]}
 const crest=(n,cls='')=>{const [a,b,ink,ab]=teamC(n);return `<span class="crest ${cls}" style="--a:${a};--b:${b};--ink:${ink}" title="${esc(n)}">${esc(ab)}</span>`};
 let lseg='matches',lf='★',SLIP=[],slipOpen=false,slipCr=5,slipItems=[];
-const favs=()=>{if(!S.fav)S.fav=[...DEF_FAV];if(!S.favV2){['RB Leipzig','Red Bull Salzburg','Formula 1'].forEach(t=>S.fav.includes(t)||S.fav.push(t));S.favV2=1}return S.fav};
+const favs=()=>{if(!S.fav)S.fav=[...DEF_FAV];if(!S.favV2){['RB Leipzig','Red Bull Salzburg','Formula 1'].forEach(t=>S.fav.includes(t)||S.fav.push(t));S.favV2=1}if(!S.favV3){S.fav.includes('Formula 1')||S.fav.push('Formula 1');S.favV3=1}return S.fav};
 const isFav=m=>favs().includes(m.home)||favs().includes(m.away)||favs().includes(m.league);
 const mStatus=m=>m.result?'done':new Date(m.start)>new Date()?'open':'live';
 const pickName=(m,p)=>m.options?((m.options.find(o=>o.k===p)||{}).n||p):p==='home'?m.home:p==='away'?m.away:'Remíza';
@@ -1826,7 +1826,7 @@ function renderLounge(){
     return renderSlip()}
   const up=MATCHES.filter(m=>mStatus(m)==='open'&&filt(m)).sort((a,b)=>new Date(a.start)-new Date(b.start));
   let hero='';
-  if(lf==='★'){const seen=new Set();const H=[];for(const m of up){const t=favs().find(f=>f===m.home||f===m.away);if(t&&!seen.has(t)){seen.add(t);H.push([t,m])}}
+  if(lf==='★'){const seen=new Set();const H=[];for(const m of up){const t=favs().find(f=>f===m.home||f===m.away||(m.options&&f===m.league));if(t&&!seen.has(t)){seen.add(t);H.push([t,m])}}
     hero=H.length?`<div class="hero">${H.map(([t,m])=>heroHTML(t,m)).join('')}</div>`:''}
   let html='',day='';
   for(const m of up){const d=dfmt(new Date(m.start));if(d!==day){day=d;html+=`<div class="dayh">${esc(d)}</div>`}html+=rowHTML(m)}
@@ -1841,7 +1841,7 @@ function heroHTML(t,m){const tc=teamC(t)[0];
   <div class="vs"><div class="tm">${crest(m.home,'lg')}<span>${esc(m.home)}</span></div><div class="mid"><b>${tfmt(m)}</b>${new Date(m.start).toLocaleDateString('sk-SK',{weekday:'short',day:'numeric',month:'numeric'})}</div><div class="tm">${crest(m.away,'lg')}<span>${esc(m.away)}</span></div></div>
   <div class="odds3">${picksOf(m).map(p=>obtn(m,p,true)).join('')}</div></div>`}
 function f1Row(m){const s=mStatus(m);const L=[...m.options].sort((a,b)=>a.o-b.o);const w=m.result&&m.options.find(o=>o.k===m.result);
-  return `<div class="mrow f1row${isFav(m)?' fav':''}"><div class="when"><span>${s==='done'?'koniec':tfmt(m)}</span><small>F1</small></div><div class="tm2"><div class="tl"><span class="f1flag"></span><span><b>${esc(m.home)}</b>${w?` · víťaz ${esc(w.n)}`:''}</span></div>${admin(m)}</div>
+  return `<div class="mrow f1row${isFav(m)?' fav':''}"><div class="when"><span>${s==='done'?'koniec':tfmt(m)}</span><small>F1</small></div><div class="tm2"><div class="tl"><span class="f1flag"></span><span><b>${esc(m.home)}</b>${w?` · víťaz ${esc(w.n)}`:''}</span><button class="star${favs().includes(m.league)?' on':''}" data-fav="${esc(m.league)}" aria-label="Obľúbené F1">★</button></div>${admin(m)}</div>
    <div class="f1grid">${L.slice(0,6).map(o=>obtn(m,o.k,false).replace('<small>',`<small title="${esc(o.n)}">`)).join('')}</div>
    ${L.length>6?`<details class="f1more"><summary class="lab">Ďalší jazdci (${L.length-6})</summary><div class="f1grid">${L.slice(6).map(o=>obtn(m,o.k,false)).join('')}</div></details>`:''}</div>`}
 function rowHTML(m){if(m.options)return f1Row(m);const s=mStatus(m);

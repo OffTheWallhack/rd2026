@@ -55,8 +55,32 @@ async function zOembed(id){
   return r.status;   // 200 = existuje a dá sa vložiť, 401/403 = vkladanie zakázané, 400/404 = neexistuje alebo súkromné
 }
 
+// Ak je v GitHube uložený kľúč YouTube Data API (secret YT_API_KEY), použijeme oficiálne API — najspoľahlivejšie.
+const KLUC = process.env.YT_API_KEY || '';
+const isoNaSek = d => { const m = /P(?:(\d+)D)?T?(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/.exec(d || '') || []; return (+m[1]||0)*86400 + (+m[2]||0)*3600 + (+m[3]||0)*60 + (+m[4]||0); };
+async function zApi(zoznam){
+  const out = {};
+  for (let i = 0; i < zoznam.length; i += 50){
+    const kus = zoznam.slice(i, i + 50);
+    const r = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=contentDetails,status&id=${kus.join(',')}&key=${KLUC}`);
+    const j = await r.json();
+    if (!r.ok) throw new Error(JSON.stringify(j.error || j).slice(0, 200));
+    for (const it of j.items || []) out[it.id] = { s: isoNaSek(it.contentDetails.duration), embed: it.status.embeddable, verejne: it.status.privacyStatus !== 'private' };
+  }
+  return out;
+}
+
 const vysledky = [], riadky = [];
-for (const id of ids){
+let api = null;
+if (KLUC){ try { api = await zApi([...ids]); console.log('Používam YouTube Data API.'); } catch (e) { console.log('API zlyhalo:', e.message); } }
+if (api){
+  for (const id of ids){
+    const a = api[id];
+    const r = !a ? { chyba:'video neexistuje alebo je súkromné' } : !a.verejne ? { chyba:'súkromné' } : a.embed === false ? { chyba:'vkladanie zakázané' } : a.s > 0 ? { s:a.s } : { neiste:true, dovod:'bez dĺžky' };
+    vysledky.push({ id, ...r });
+    riadky.push([id, 'api', '=>', r.s || r.chyba || ('? ' + r.dovod)].join('  '));
+  }
+} else for (const id of ids){
   let v = null, oe = 0;
   try { v = await zWatch(id); } catch (e) { v = { status:'SIEŤ', dovod:String(e) }; }
   try { oe = await zOembed(id); } catch {}

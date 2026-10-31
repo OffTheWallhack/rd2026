@@ -28,6 +28,8 @@ jobs:
         with:
           node-version: 20
       - name: Zistiť dĺžky videí
+        env:
+          YT_API_KEY: ${{ secrets.YT_API_KEY }}
         run: node .github/pozeral/skener.mjs
       - name: Uložiť, ak sa niečo zmenilo
         env:

@@ -121,6 +121,7 @@ button,.card,.pad,.slider,.nv,.go,.lv,.ibtn{-webkit-user-select:none;user-select
 .cards.five{grid-template-columns:repeat(5,minmax(0,1fr))}
 .cards.five .card{padding:9px 8px}.cards.five .card b{font-size:14px}.cards.five .card small{font-size:10.5px}
 .cards.four{grid-template-columns:repeat(2,minmax(0,1fr))}
+.cards.four.six{grid-template-columns:repeat(6,minmax(0,1fr))}
 .card{appearance:none;text-align:left;border:1px solid var(--line);background:rgba(255,255,255,.05);border-radius:5px 14px 5px 14px;padding:11px 13px;cursor:pointer;min-width:0;color:var(--ink);transition:background .15s,border-color .15s}
 .card:hover{background:rgba(255,255,255,.1)}
 .card b{display:block;font:700 italic 17px/1.1 var(--hud);letter-spacing:.03em}
@@ -380,6 +381,7 @@ body.mplay .pp svg.i-play{display:none}
 .tiles{grid-template-columns:repeat(4,1fr)}
 .badges{grid-template-columns:repeat(3,1fr)}
 .cards.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+.cards.four.six{grid-template-columns:repeat(6,minmax(0,1fr))}
 /* portrait is not supported: a full-screen note asks for the phone to be turned */
 .turn{position:fixed;inset:0;z-index:200;display:none;place-items:center;align-content:center;gap:18px;padding:24px;text-align:center;background:#0b0a10;color:var(--ink)}
 .turn svg{width:92px;height:92px;fill:none;stroke:var(--amber);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;animation:turnphone 2.6s ease-in-out infinite}
@@ -882,11 +884,13 @@ body.dh #hud .speed,body.dh #hud .score,body.dh #combo,body.dh #timer{display:no
         <div class="tb fit two">
           <div class="col wide">
             <p class="lab2">KAMERA</p>
-            <div class="cards four" id="camCards">
+            <div class="cards four six" id="camCards">
               <button class="card" type="button" data-cam="near"><b>BLÍZKO</b><small>Tesne za autom.</small></button>
               <button class="card on" type="button" data-cam="chase"><b>ZA AUTOM</b><small>Klasika.</small></button>
               <button class="card" type="button" data-cam="high"><b>VYSOKO</b><small>Viac prehľadu.</small></button>
               <button class="card" type="button" data-cam="top"><b>ZHORA</b><small>Z vtáčej, auto hore.</small></button>
+              <button class="card" type="button" data-cam="pov"><b>Z KOKPITU</b><small>Zubor z kabíny, ostatné z kapoty.</small></button>
+              <button class="card" type="button" data-cam="free"><b>VOĽNÁ</b><small>Ťahaj a obzri si auto.</small></button>
             </div>
           </div>
           <div class="col kb">
@@ -1955,7 +1959,7 @@ function roundWheelGeos(r, w) {
 async function loadCarModel(key, file, SC, wr, ww, opt) {
   try {
     const [meta, tex] = await Promise.all([
-      fetch('model/' + file + '.json').then(r => { if (!r.ok) throw new Error('model'); return r.json(); }),
+      fetch('model/' + file + '.json?v=3').then(r => { if (!r.ok) throw new Error('model'); return r.json(); }),
       new Promise((ok, no) => new THREE.TextureLoader().load('model/' + file + '.jpg', ok, undefined, no))
     ]);
     const bin = Uint8Array.from(atob(meta.bin), c => c.charCodeAt(0)).buffer;
@@ -1972,6 +1976,18 @@ async function loadCarModel(key, file, SC, wr, ww, opt) {
     const bodyGeo = mk(meta.body);
     const ownGeos = meta.own ? meta.wheels.map(mk) : null;   // new models bring their own textured wheels, cut out of the body
     const wGeo = meta.own ? null : roundWheelGeos(meta.wr || wr, meta.ww || ww);
+    // the cut-out wheels keep only their textured rim; the tyre around it is a clean round one (the cut tyres were lumpy and had holes)
+    let tyreGeo = null, ringGeo = null, ringMat = null;
+    if (meta.own && opt && opt.tyre) {
+      const T = opt.tyre, r = meta.wr || wr, h = (meta.ww || ww) * (T.w || .5), ri = r * T.in, sh = T.sh || .1;
+      tyreGeo = new THREE.LatheGeometry([[ri, -h * .9], [ri * 1.03, -h], [r * (1 - sh * .55), -h * .98], [r * (1 - sh * .12), -h * .82], [r, -h * .55], [r, h * .55], [r * (1 - sh * .12), h * .82], [r * (1 - sh * .55), h * .98], [ri * 1.03, h], [ri, h * .9], [ri * .99, 0], [ri, -h * .9]].map(q => new THREE.Vector2(q[0], q[1])), 48);
+      tyreGeo.rotateZ(Math.PI / 2); tyreGeo.computeVertexNormals();
+      if (T.ring) {                                                  // coloured stripe on both sidewalls
+        const g1 = new THREE.RingGeometry(r * T.ring[0], r * T.ring[1], 48), g2 = g1.clone();
+        g1.rotateY(Math.PI / 2); g1.translate(h * .985 + .003, 0, 0); g2.rotateY(-Math.PI / 2); g2.translate(-h * .985 - .003, 0, 0);
+        ringGeo = [g1, g2]; ringMat = new THREE.MeshStandardMaterial({ color: T.ringC || 0xd8d8d8, roughness: .7 });
+      }
+    }
     const tyreMat = new THREE.MeshStandardMaterial({ color: 0x121213, roughness: .96, side: THREE.DoubleSide });
     const rimMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: .45, metalness: .55 });
     CARS[key].build = () => {
@@ -1986,7 +2002,7 @@ async function loadCarModel(key, file, SC, wr, ww, opt) {
       const wheels = meta.wheels.map((w, wi) => {
         const pivot = new THREE.Group(); pivot.position.set(w.center[0], meta.wr || wr, w.center[2]);
         const spin = new THREE.Group();
-        if (ownGeos) { const o = new THREE.Mesh(ownGeos[wi], mat); o.castShadow = false; spin.add(o); }
+        if (ownGeos) { const o = new THREE.Mesh(ownGeos[wi], mat); o.castShadow = false; spin.add(o); if (tyreGeo) { spin.add(new THREE.Mesh(tyreGeo, tyreMat)); if (ringGeo) ringGeo.forEach(g => spin.add(new THREE.Mesh(g, ringMat))); } }
         else { const t = new THREE.Mesh(wGeo.tyre, tyreMat), r = new THREE.Mesh(wGeo.rim, rimMat); t.castShadow = false; r.castShadow = false; spin.add(t, r); }
         pivot.add(spin); inner.add(pivot);
         return { pivot, spin, front: w.front };
@@ -1998,7 +2014,7 @@ async function loadCarModel(key, file, SC, wr, ww, opt) {
 }
 loadCarModel('zubor', 'zubor', 1.05, .42, .38);   // the whole Zubor is 5 % bigger than the raw Meshy proportions
 loadCarModel('sugga', 'sugga', 1.07, .345, .42);
-const LAZY_CARS = { gt: () => loadCarModel('gt', 'gt', 1, .3616, .4182, { rough: .4 }), f1: () => loadCarModel('f1', 'f1', 1, .309, .3787, { rough: .4 }) }, lazyDone = {};
+const LAZY_CARS = { gt: () => loadCarModel('gt', 'gt', 1, .3616, .4182, { rough: .4, tyre: { in: .72, w: .5, sh: .14 } }), f1: () => loadCarModel('f1', 'f1', 1, .309, .3787, { rough: .4, tyre: { in: .62, w: .52, sh: .16, ring: [.8, .835], ringC: 0xe8e8e8 } }) }, lazyDone = {};
 function ensureModel(k) { if (LAZY_CARS[k] && !lazyDone[k]) { lazyDone[k] = 1; LAZY_CARS[k](); } }
 /* tuning: brakes, tyres and engine, three levels each, paid with the stars from the levels */
 const TUNE_DEF = [['brake', 'BRZDY', 'Kratšia brzdná dráha', ['brake', 'brakeRamp'], .08], ['tyre', 'PNEUMATIKY', 'Viac priľnavosti v zákrutách a v šmyku', ['grip', 'ayMax', 'hbGrip'], .06], ['engine', 'MOTOR', 'Rýchlejší rozjazd a vyššia maximálka', ['pw', 'aMax', 'top'], .06]];
@@ -4371,7 +4387,8 @@ const lerpAng = (a, b, t) => a + Math.atan2(Math.sin(b - a), Math.cos(b - a)) * 
 const angDiff = (a, b) => Math.atan2(Math.sin(b - a), Math.cos(b - a));
 const easeIO = t => (t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 const CAMS = { near: { d: .82, h: .85 }, chase: { d: 1, h: 1 }, high: { d: 1.22, h: 1.7 }, top: { d: 1, h: 1 } };
-const CAM_ORDER = ['chase', 'near', 'high', 'top'], CAM_NAME = { near: 'BLÍZKO', chase: 'ZA AUTOM', high: 'VYSOKO', top: 'ZHORA' };
+const CAM_ORDER = ['chase', 'near', 'high', 'top', 'pov', 'free'], CAM_NAME = { near: 'BLÍZKO', chase: 'ZA AUTOM', high: 'VYSOKO', top: 'ZHORA', pov: 'Z KOKPITU', free: 'VOĽNÁ' };
+const camLabel = k => k === 'pov' && carKey !== 'zubor' ? (carKey === 'f1' ? 'NAD JAZDCOM' : 'Z KAPOTY') : CAM_NAME[k];
 const stage = { a: .75, elev: .19, r: 12, idle: 9, drag: false, lx: 0, ly: 0, sx: 0, sy: 0 };
 let camNow = null, camTrans = null, camMode = 'menu', camLook = 2.5, camPull = 1, camDuck = 99;
 
@@ -4395,10 +4412,16 @@ let revCam = false;
 function updateCamera(dt, snap) {
   if (window.__freeCam) return;
   const menu = game.view === 'menu';
+  if (!menu && settings.cam === 'pov' && model && model.car.parent) {
+    pvPlace(dt, S.steer / Math.max(.05, P.steerMax || .6), S.speed * 3.6, rpmOf() * 6200, gear);
+    sun.position.set(S.x - 18, 40 + (job.on || DR.on ? S.gy : 0), S.z - 10); sun.target.position.set(S.x, job.on || DR.on ? S.gy : 0, S.z);
+    return;
+  }
+  pvOff();
   // chase state is always kept up to date so the fly-in from the menu starts from the right place
   const cp = CAMS[settings.cam] || CAMS.chase;
   const vF = S.vx * Math.sin(S.th) + S.vz * Math.cos(S.th);
-  if (menu || !game.running) revCam = false; else if (vF < -.5) revCam = true; else if (vF > 1.4) revCam = false;
+  if (menu || !game.running) revCam = false; else if (vF < -.5 && settings.cam !== 'free') revCam = true; else if (vF > 1.4) revCam = false;
   const topCam = settings.cam === 'top' || revCam;
   let yawT = S.th;
   const jobW = job.on && job.kind !== 'lot';
@@ -4426,6 +4449,10 @@ function updateCamera(dt, snap) {
     camLook = jobW ? lerp(camLook, S.vF < -.6 ? -2.6 : (offCam ? 4.5 + S.speed * .6 : 2.6), hard ? 1 : 1 - Math.exp(-dt * 3)) : (job.on && S.vF < -.6 ? lerp(camLook, -2.6, hard ? 1 : 1 - Math.exp(-dt * 3)) : lerp(camLook, 2.5, hard ? 1 : 1 - Math.exp(-dt * 3)));
     const cl = revCam ? -2.6 : settings.cam === 'top' ? (jobW ? camLook * 1.5 : 3) : camLook;
     T = { a: cam.yaw + Math.PI, r: cam.dist - (revCam ? cl : 0), h: cam.h, lx: S.x + bx * cl, ly: 1.1 + (job.on || DR.on ? S.gy : 0), lz: S.z + bz * cl, sx: 0, sy: 0 };
+    if (settings.cam === 'free') {          // free camera: the player's orbit on top of the chase pose, looking at the car itself
+      fcRelax(dt, S.speed); const o = fcOrbit(T.r, T.h - T.ly);
+      T.a += FC.yaw; T.r = o.r; T.h = T.ly + o.h; T.lx = S.x + bx * .6; T.lz = S.z + bz * .6;
+    }
   }
   const mode = menu ? 'menu' : 'game';
   if (snap || !camNow) { camTrans = null; camNow = Object.assign({}, T); camMode = mode; }
@@ -4456,6 +4483,116 @@ function updateCamera(dt, snap) {
   setShift(C.sx, C.sy);
   sun.position.set(S.x - 18, 40 + (job.on || DR.on ? S.gy : 0), S.z - 10); sun.target.position.set(S.x, job.on || DR.on ? S.gy : 0, S.z);
 }
+
+/* ================= POV and the free camera =================
+   POV: in the Zubor you sit in its real cabin (the same one as on the highway); the other cars get a camera on the bonnet.
+   It rides with the body, so lean, pitch and bumps come through. Free camera: drag to look around the car, pinch or scroll
+   to zoom; once the car moves, the view swings back behind it, the faster you go the sooner. */
+const PV = { on: false, cab: false, m: null, eye: new THREE.Vector3(), fov0: 56, near0: .5, hid: [], cl: 0, wheel: 0, t: 0, qFix: new THREE.Quaternion(), qm: new THREE.Quaternion() };
+const _pvUp = new THREE.Vector3(0, 1, 0), _pvV = new THREE.Vector3(), _pvQ = new THREE.Quaternion(), _pvE = new THREE.Euler();
+// where the eye sits, measured once per car from the body's own vertices (in the body's local space)
+function pvMeasure() {
+  if (PV.m === model) return; PV.m = model; PV.hid = [];
+  const body = model.body; body.updateMatrixWorld(true);
+  const inv = new THREE.Matrix4().copy(body.matrixWorld).invert(), m = new THREE.Matrix4(), v = _pvV, box = new THREE.Box3(), pts = [];
+  body.traverse(o => {
+    if (!o.isMesh || !o.geometry || !o.geometry.attributes.position || (o.material && o.material.colorWrite === false)) return;
+    m.multiplyMatrices(inv, o.matrixWorld); const pa = o.geometry.attributes.position, step = Math.max(1, Math.floor(pa.count / 5000));
+    for (let i = 0; i < pa.count; i += step) { v.fromBufferAttribute(pa, i).applyMatrix4(m); box.expandByPoint(v); pts.push(v.x, v.y, v.z); }
+  });
+  if (box.isEmpty()) box.set(new THREE.Vector3(-1, 0, -2.5), new THREE.Vector3(1, 1.6, 2.5));
+  const w = box.max.x - box.min.x, L = box.max.z - box.min.z, cx = (box.min.x + box.max.x) / 2;
+  PV.box = box;
+  if (carKey === 'zubor') {                                    // driver's seat, on the left (local +x is the car's left)
+    PV.eye.set(cx + w * .19, box.max.y - .46, box.max.z - L * .44);
+  } else {                                                     // on the bonnet, a little above it
+    const zc = box.max.z - L * (carKey === 'f1' ? .5 : .3); let hy = -1;
+    for (let i = 0; i < pts.length; i += 3) if (Math.abs(pts[i] - cx) < w * .18 && Math.abs(pts[i + 2] - zc) < .22 && pts[i + 1] > hy) hy = pts[i + 1];
+    if (hy < 0) hy = box.min.y + (box.max.y - box.min.y) * .6;
+    PV.eye.set(cx, hy + (carKey === 'f1' ? .32 : .4), zc);
+  }
+}
+function pvBody(show) {
+  if (show) { PV.hid.forEach(o => { o.visible = true; }); PV.hid = []; return; }
+  if (PV.hid.length) return;
+  model.body.traverse(o => { if (o.isMesh && o.visible && !(o.material && o.material.colorWrite === false)) { o.visible = false; PV.hid.push(o); } });
+}
+// put the main camera into the car; `body` is the object the eye rides on, steer in -1..1, kmh, rpm 0..7000, gear letter
+function pvPlace(dt, steer, kmh, rpm, gl) {
+  pvMeasure();
+  const cab = carKey === 'zubor';
+  if (!PV.on) { PV.on = true; PV.fov0 = camera.fov; PV.near0 = camera.near; }
+  const fov = cab ? 64 : 62; if (camera.fov !== fov || camera.near !== .08) { camera.fov = fov; camera.near = .08; camera.updateProjectionMatrix(); }
+  if (camera.view && camera.view.enabled) camera.clearViewOffset();
+  if (cab) {
+    if (!HW.cockpitDone) { HW.cockpitDone = true; hwCockpit(); }
+    if (!camera.parent) scene.add(camera);
+    if (HW.cockpit.parent !== camera) camera.add(HW.cockpit);
+    HW.cockpit.visible = true; pvBody(false);
+  } else { pvCabOff(); pvBody(true); }
+  PV.cab = cab;
+  const body = model.body; body.updateMatrixWorld(true);
+  camera.position.copy(PV.eye).applyMatrix4(body.matrixWorld);
+  body.getWorldQuaternion(_pvQ);
+  PV.qFix.setFromEuler(_pvE.set(-(cab ? CAB_PITCH : .06), Math.PI, 0, 'YXZ'));
+  camera.quaternion.copy(_pvQ).multiply(PV.qFix);
+  // engine and road shake, a bit more at speed
+  PV.t += dt; const v = Math.min(1, kmh / 120);
+  camera.position.y += Math.sin(PV.t * 41) * .002 * v + Math.sin(PV.t * 77 + 1) * .0012 * v + (shake > 0 ? (Math.random() - .5) * shake * .05 : 0);
+  if (cab) {
+    PV.wheel += (clamp(steer, -1, 1) * 2.3 - PV.wheel) * (1 - Math.exp(-dt * 14)); HW.wheel.rotation.z = PV.wheel;
+    PV.cl -= dt; if (PV.cl <= 0) { PV.cl = .08; cabCluster(kmh, rpm, gl, 0, false); cabScreen(camera.position.x, camera.position.z, Math.atan2(_pvV.set(0, 0, 1).applyQuaternion(_pvQ).x, _pvV.z), kmh); }
+    HW.mirrors.forEach(m => { m.mesh.visible = m.frame.visible = m.side === 0 || settings.q > 0; });
+  }
+}
+// the mirrors outside the highway: little cameras on the car looking back (only in the cabin view)
+function pvMirrors() {
+  if (!PV.on || !PV.cab || !HW.mirrors) return;
+  const body = model.body; body.getWorldQuaternion(_pvQ); HW.cockpit.visible = false;
+  HW.mirrors.forEach((m, i) => {
+    if (!m.mesh.visible) return;
+    _pvV.set(PV.eye.x + (i === 1 ? .95 : i === 2 ? -1.15 : -.2), PV.eye.y + (i ? -.15 : .05), PV.eye.z + (i ? .2 : -.3)).applyMatrix4(body.matrixWorld);
+    m.cam.position.copy(_pvV); m.cam.quaternion.copy(_pvQ).multiply(PV.qm.setFromAxisAngle(_pvUp, i === 1 ? .2 : i === 2 ? -.2 : 0));
+    renderer.setRenderTarget(m.rt); renderer.render(scene, m.cam);
+  });
+  renderer.setRenderTarget(null); HW.cockpit.visible = true;
+}
+function pvCabOff() { if (HW.cockpit && HW.cockpit.parent === camera) { camera.remove(HW.cockpit); if (HW.cam) HW.cam.add(HW.cockpit); } }
+function pvOff() {
+  if (!PV.on) return; PV.on = false; PV.cab = false;
+  pvCabOff(); pvBody(true);
+  camera.fov = PV.fov0; camera.near = PV.near0; camera.updateProjectionMatrix();
+}
+
+// ---- free camera: orbit offsets on top of the chase camera
+const FC = { yaw: 0, pitch: 0, zoom: 1, drag: false, pts: new Map(), pinch: 0, held: 0 };
+const fcActive = () => game.view === 'play' && (HW.on ? settings.hwCam === 'free' : DH.on ? settings.dhCam === 'free' : settings.cam === 'free');
+function fcReset() { FC.yaw = 0; FC.pitch = 0; FC.zoom = 1; }
+// once the car moves, the view swings back behind it; the faster it goes, the quicker
+function fcRelax(dt, speed) {
+  FC.yaw = Math.atan2(Math.sin(FC.yaw), Math.cos(FC.yaw));
+  if (FC.drag) return; if (FC.held > 0) { FC.held -= dt; return; }
+  const k = clamp((Math.abs(speed) - .6) * .085, 0, 3);
+  if (k > 0) { const f = Math.exp(-dt * k); FC.yaw *= f; FC.pitch *= f; }
+}
+// orbit a chase pose (distance r on the ground, height h over the look point) by the free-camera offsets
+function fcOrbit(r, h) {
+  const el = clamp(Math.atan2(h, r) + FC.pitch, .03, 1.45), D = Math.hypot(r, h) * FC.zoom;
+  return { r: Math.cos(el) * D, h: Math.sin(el) * D };
+}
+canvas.addEventListener('pointerdown', e => {
+  if (!fcActive()) return;
+  FC.pts.set(e.pointerId, { x: e.clientX, y: e.clientY }); try { canvas.setPointerCapture(e.pointerId); } catch (x) {}
+  FC.drag = true; if (FC.pts.size === 2) { const [a, b] = [...FC.pts.values()]; FC.pinch = Math.hypot(a.x - b.x, a.y - b.y); }
+});
+canvas.addEventListener('pointermove', e => {
+  const p = FC.pts.get(e.pointerId); if (!p) return;
+  if (FC.pts.size === 1) { FC.yaw -= (e.clientX - p.x) * .0065; FC.pitch += (e.clientY - p.y) * .0045; FC.pitch = clamp(FC.pitch, -.6, 1.2); }
+  p.x = e.clientX; p.y = e.clientY;
+  if (FC.pts.size === 2) { const [a, b] = [...FC.pts.values()], d = Math.hypot(a.x - b.x, a.y - b.y); if (FC.pinch > 0) FC.zoom = clamp(FC.zoom * FC.pinch / d, .45, 2.6); FC.pinch = d; }
+});
+['pointerup', 'pointercancel', 'lostpointercapture'].forEach(t => canvas.addEventListener(t, e => { if (!FC.pts.delete(e.pointerId)) return; FC.pinch = 0; if (!FC.pts.size) { FC.drag = false; FC.held = .6; } }));
+canvas.addEventListener('wheel', e => { if (!fcActive()) return; e.preventDefault(); FC.zoom = clamp(FC.zoom * Math.exp(e.deltaY * .0012), .45, 2.6); }, { passive: false });
 
 /* ================= car visuals ================= */
 function updateCarVisual(dt) {
@@ -4573,6 +4710,7 @@ function frame(dt) {
   ring.visible = disc.visible = menu;
   if (menu) { ring.position.set(S.x, .05, S.z); disc.position.set(S.x, .045, S.z); ring.material.opacity = .35 + music.beat * .5; }
   music.tick(dt); uiTick();
+  pvMirrors();
   renderer.render(scene, camera);
   if (settings.fps) { fpsT += dt; fpsN++; if (fpsT >= .5) { elFps.textContent = Math.round(fpsN / fpsT) + ' FPS'; fpsT = 0; fpsN = 0; } }
 }
@@ -5205,7 +5343,7 @@ function toMenu(instant) {
     pauseEl.hidden = true; endEl.hidden = true; menuEl.hidden = false; $('#hud').hidden = true; elTimer.hidden = true;
     document.body.classList.remove('playing'); elCombo.classList.remove('on');
     hwyLeave(); dhLeave(); tkNight(false); wxClear(); drOn(false); jobSetWorld(false); jEl.jobHud.hidden = true; MK.visible = false; job.over = true;
-    resetCar(); renderMode(); setTab('home'); setStep(1);
+    resetCar(); renderMode(); setTab('home'); setStep(1); fcReset();
     layoutStage(); updateCamera(0, true);
   };
   if (instant) go(); else fadeThen(go);
@@ -5533,57 +5671,122 @@ function hwOvertake(c) {
   const P = HW.p; P.over++; P.score += 100; if (HW.t - P.lastOv < 4) { P.score += 40; } P.lastOv = HW.t; popText('PREDBEHNUTÉ +100');
 }
 
-/* ---------- the cockpit ---------- */
+/* ---------- the cockpit: the real Zubor cabin (a Ram dash inside the black armoured steel body, from night photos) ----------
+   Built in eye space: the driver's eye at 0,0,0 looking down -z, +x to the right. The camera looks a touch down (CAB_PITCH),
+   so the whole cabin hangs on a rig turned back up by the same angle and stays level with the car. One cabin serves both the
+   highway cockpit and the "Z KOKPITU" view in every other mode (it moves to whichever camera is driving). */
+const CAB_PITCH = .1;
 function hwCockpit() {
-  // the Zubor's cabin: grey dash with a silver lip, thin pillars, two round dials behind the wheel, a centre screen and the P R N D knob
-  const cp = HW.cockpit = new THREE.Group(), M = c => new THREE.MeshBasicMaterial({ color: c, fog: false });
-  const bx = (w, h, d, c, x, y, z, rx, ry, rz) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), M(c)); m.position.set(x, y, z); m.rotation.set(rx || 0, ry || 0, rz || 0); cp.add(m); return m; };
-  const GREY = 0x3b3d44, DARK = 0x24262b, SILVER = 0x8d9199, BLACK = 0x121316;
-  bx(4.0, .16, 1.1, GREY, 0, -.74, -2.2, -.1);                  // dash top, low and far so the road stays open
-  bx(4.0, .035, .08, SILVER, 0, -.62, -1.72);                  // silver lip along the dash
-  bx(4.0, .7, .9, DARK, 0, -1.15, -1.55);                       // lower dash, below the picture
-  bx(.1, 2.2, .12, BLACK, -1.98, .2, -1.95, 0, 0, .3);          // thin A-pillars at the very edge
-  bx(.1, 2.2, .12, BLACK, 1.98, .2, -1.95, 0, 0, -.3);
-  bx(4.6, .2, 1.2, 0x2a2b31, 0, 1.12, -1.9, .08);               // roof header
-  bx(.3, 1.4, 2.4, 0x2d2f35, -2.15, -.5, -.9);                  // doors
-  bx(.3, 1.4, 2.4, 0x2d2f35, 2.15, -.5, -.9);
-  bx(.26, .06, 1.6, SILVER, -2.08, -.28, -1.0); bx(.26, .06, 1.6, SILVER, 2.08, -.28, -1.0);   // door trims
-  // instrument cluster (a canvas, redrawn a few times a second) in a hooded binnacle
-  HW.cc = document.createElement('canvas'); HW.cc.width = 512; HW.cc.height = 200; HW.cx = HW.cc.getContext('2d');
-  HW.ct = new THREE.CanvasTexture(HW.cc); HW.ct.colorSpace = THREE.SRGBColorSpace;
-  bx(.9, .36, .12, BLACK, 0, -.4, -1.68, -.3);                 // binnacle body
-  const cl = new THREE.Mesh(new THREE.PlaneGeometry(.8, .31), new THREE.MeshBasicMaterial({ map: HW.ct, fog: false })); cl.position.set(0, -.4, -1.6); cl.rotation.x = -.3; cp.add(cl);
-  bx(.96, .03, .26, BLACK, 0, -.225, -1.66, -.3);               // hood
-  // centre stack: screen, vents, P R N D knob
-  bx(.62, .5, .1, DARK, .62, -.6, -1.78, -.12); bx(.66, .54, .02, SILVER, .62, -.6, -1.83, -.12);
+  const cp = HW.cockpit = new THREE.Group(), rig = new THREE.Group(); rig.rotation.x = CAB_PITCH; cp.add(rig);
+  const mats = {}, M = c => mats[c] || (mats[c] = new THREE.MeshBasicMaterial({ color: c, fog: false }));
+  const BLACK = 0x0b0c0e, STEEL = 0x141518, DASH = 0x1a1b1e, DASH2 = 0x222327, EDGE = 0x3d4045, CHROME = 0xaeb2b9, RIVET = 0x777a80, WOOD = 0x7b5434;
+  const V3 = (x, y, z) => new THREE.Vector3(x, y, z), UPY = V3(0, 1, 0);
+  const bx = (w, h, d, c, x, y, z, rx, ry, rz, par) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), M(c)); m.position.set(x, y, z); m.rotation.set(rx || 0, ry || 0, rz || 0); (par || rig).add(m); return m; };
+  // a square bar from a to b (pillars, frames, wipers)
+  const beam = (a, b, w, d, c, par) => { const L = a.distanceTo(b), m = new THREE.Mesh(new THREE.BoxGeometry(w, L, d), M(c)); m.position.copy(a).add(b).multiplyScalar(.5); m.quaternion.setFromUnitVectors(UPY, b.clone().sub(a).normalize()); (par || rig).add(m); return m; };
+  const rv = [];                                                     // rivets, drawn at the end as one instanced mesh
+  const rivRow = (a, b, n) => { for (let i = 0; i <= n; i++) rv.push(a.clone().lerp(b, i / n)); };
+  const tex = (w, h, draw) => { const t = hwTex(w, h, draw); return t; };
+
+  // ---- the armoured body around the glass: thick black steel A-pillars, a heavy roof header with a visor plate
+  const pa = V3(-.70, -.52, -1.86), pb = V3(-.97, .8, -1.32);
+  beam(pa, pb, .2, .17, BLACK); beam(V3(-.6, -.52, -1.8), V3(-.87, .8, -1.27), .016, .17, EDGE);              // pillar + its lit inner edge
+  rivRow(V3(-.66, -.4, -1.78), V3(-.88, .7, -1.33), 9);
+  const qa = V3(-1.06, -.55, -1.78), qb = V3(-1.33, .78, -1.22);
+  beam(qa, qb, .13, .15, BLACK); rivRow(V3(-1.02, -.45, -1.7), V3(-1.25, .68, -1.24), 8);                       // door post
+  // the small triangle window between them: louvred, light catches the slats
+  { const g = new THREE.BufferGeometry(), p = [-.8, -.52, -1.84, -1.0, -.54, -1.78, -1.24, .74, -1.24, -.9, .76, -1.31];
+    g.setAttribute('position', new THREE.Float32BufferAttribute(p, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute([0, 0, 1, 0, 1, 1, 0, 1], 2)); g.setIndex([0, 1, 2, 0, 2, 3]);
+    const t = tex(128, 256, (x, w, h) => { x.clearRect(0, 0, w, h); x.strokeStyle = 'rgba(200,205,214,.55)'; x.lineWidth = 3; for (let i = 0; i < 7; i++) { const y = 26 + i * 33; x.strokeRect(16, y, w - 32, 22); } x.fillStyle = 'rgba(10,11,13,.35)'; x.fillRect(0, 0, w, h); });
+    const m = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ map: t, transparent: true, depthWrite: false, side: THREE.DoubleSide, fog: false })); rig.add(m); }
+  beam(V3(-1.08, -.6, -1.75), V3(-1.7, -.66, -.2), .12, .12, BLACK);                                         // side window sill
+  bx(.16, 1.1, 1.9, STEEL, -1.34, -1.2, -.95);                                                              // door
+  rivRow(V3(-1.25, -.7, -1.7), V3(-1.4, -.72, -.4), 9); rivRow(V3(-1.25, -.95, -1.7), V3(-1.4, -.97, -.4), 9);
+  beam(V3(2.05, -.46, -2.05), V3(1.78, .8, -1.45), .2, .17, BLACK);                                          // right A-pillar
+  bx(4.8, .5, 1.5, STEEL, .55, 1.03, -1.45);                                                                // roof header
+  beam(V3(-.95, .76, -1.95), V3(2.1, .76, -2.05), .07, .08, BLACK); rivRow(V3(-.8, .72, -1.9), V3(1.9, .72, -1.98), 16);
+  bx(1.25, .035, .5, 0x2a2b2f, .2, .7, -1.48, -.28);                                                        // visor plate
+  rv.push(V3(-.25, .66, -1.36), V3(.62, .66, -1.36));
+  // ---- dashboard: wide, flat and black, double stitching on the passenger side, steel plate with rivets along the glass
+  bx(3.5, .12, 1.0, 0x202125, .7, -.43, -2.08, -.04);
+  bx(3.5, .52, .1, DASH2, .7, -.73, -1.62);
+  bx(3.5, .03, .7, STEEL, .7, -.37, -2.65);                                                                 // the steel cowl just under the glass
+  rivRow(V3(-.55, -.355, -2.42), V3(2.0, -.355, -2.42), 20); rivRow(V3(-.55, -.35, -2.8), V3(2.0, -.35, -2.8), 20);
+  bx(1.9, .006, .006, 0x8b8e94, 1.12, -.465, -1.6); bx(1.9, .006, .006, 0x6f7278, 1.12, -.475, -1.625);   // stitching
+  beam(V3(-.35, -.335, -2.66), V3(.95, -.3, -2.58), .022, .022, 0x050506); beam(V3(.95, -.335, -2.68), V3(2.1, -.3, -2.6), .022, .022, 0x050506);   // wipers
+  // vents: chrome frame and dark slats
+  const vent = (x, y, z, w, h) => { bx(w + .025, h + .025, .02, 0x6c7077, x, y, z); bx(w, h, .025, 0x08090a, x, y, z + .004); for (let i = 1; i < 5; i++) bx(w * .94, .008, .03, 0x2b2d31, x, y - h / 2 + i * h / 5, z + .006); };
+  vent(-.66, -.68, -1.56, .2, .1);
+  // ---- instrument cluster under its brow: two big chrome dials, four small ones, a screen in the middle
+  bx(.86, .045, .26, DASH, -.03, -.49, -1.43, .2);
+  bx(.84, .34, .06, 0x060708, -.03, -.66, -1.4);
+  HW.cc = document.createElement('canvas'); HW.cc.width = 640; HW.cc.height = 240; HW.cx = HW.cc.getContext('2d');
+  HW.ct = new THREE.CanvasTexture(HW.cc); HW.ct.colorSpace = THREE.SRGBColorSpace; HW.ct.anisotropy = 4;
+  const cl = new THREE.Mesh(new THREE.PlaneGeometry(.78, .2925), new THREE.MeshBasicMaterial({ map: HW.ct, fog: false })); cl.position.set(-.03, -.665, -1.366); cl.rotation.x = -.08; rig.add(cl);
+  // ---- centre stack: wood strip, two vents, the big touch screen, knobs and the P R N D dial
+  bx(1.0, .62, .07, 0x1c1d20, .95, -.88, -1.5);
+  bx(1.0, .05, .04, WOOD, .95, -.53, -1.47); bx(1.0, .008, .045, 0x9a9da3, .95, -.555, -1.47);
+  bx(.5, .36, .02, 0x4d5056, .95, -.74, -1.455);
+  vent(.6, -.72, -1.455, .13, .26); vent(1.3, -.72, -1.455, .13, .26);
   HW.sc = document.createElement('canvas'); HW.sc.width = 256; HW.sc.height = 160; HW.sx = HW.sc.getContext('2d');
   HW.st = new THREE.CanvasTexture(HW.sc); HW.st.colorSpace = THREE.SRGBColorSpace;
-  const scr = new THREE.Mesh(new THREE.PlaneGeometry(.42, .26), new THREE.MeshBasicMaterial({ map: HW.st, fog: false })); scr.position.set(.62, -.52, -1.72); scr.rotation.x = -.12; cp.add(scr);
-  [-.16, .16].forEach(dx => bx(.12, .06, .02, BLACK, .62 + dx, -.78, -1.72, -.12));
-  const knob = new THREE.Mesh(new THREE.CylinderGeometry(.045, .05, .05, 20), M(SILVER)); knob.position.set(.46, -.78, -1.68); cp.add(knob);
-  const kt = new THREE.Mesh(new THREE.CylinderGeometry(.03, .03, .052, 20), M(BLACK)); kt.position.copy(knob.position); cp.add(kt);
-  HW.knobTex = hwTex(128, 32, (g, w, h) => { g.fillStyle = '#1b1c20'; g.fillRect(0, 0, w, h); g.fillStyle = '#d8d8e0'; g.font = '700 22px Arial'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('P  R  N  D', w / 2, h / 2 + 1); });
-  const kl = new THREE.Mesh(new THREE.PlaneGeometry(.18, .045), new THREE.MeshBasicMaterial({ map: HW.knobTex, fog: false })); kl.position.set(.46, -.73, -1.72); kl.rotation.x = -.5; cp.add(kl);
-  // steering wheel: thick rim, silver spokes, a round hub
-  const pv = HW.wheelPivot = new THREE.Group(); pv.position.set(0, -.62, -1.12); pv.rotation.x = -.5; cp.add(pv);
+  const scr = new THREE.Mesh(new THREE.PlaneGeometry(.44, .275), new THREE.MeshBasicMaterial({ map: HW.st, fog: false })); scr.position.set(.95, -.74, -1.443); rig.add(scr);
+  const knob = (x, y, r, c) => { const k = new THREE.Mesh(new THREE.CylinderGeometry(r, r * 1.08, .04, 18), M(c)); k.rotation.x = Math.PI / 2; k.position.set(x, y, -1.44); rig.add(k); return k; };
+  knob(.8, -1.0, .035, 0x8f939a); knob(1.1, -1.0, .035, 0x8f939a); knob(.95, -1.03, .045, 0x2a2c30);
+  bx(.04, .03, .02, 0xd0322a, .95, -.94, -1.45);                                                            // hazard button
+  for (let i = 0; i < 6; i++) bx(.06, .025, .02, 0x2a2c30, .73 + i * .088, -1.1, -1.45);
+  // the rotary gear dial with its lit P R N D
+  bx(.15, .2, .05, 0x15161a, .55, -1.02, -1.44);
+  knob(.55, -1.06, .042, CHROME).position.z = -1.4;
+  HW.kc = document.createElement('canvas'); HW.kc.width = 128; HW.kc.height = 32; HW.kx = HW.kc.getContext('2d');
+  HW.knobTex = new THREE.CanvasTexture(HW.kc); HW.knobTex.colorSpace = THREE.SRGBColorSpace; cabKnob('D');
+  const kl = new THREE.Mesh(new THREE.PlaneGeometry(.13, .033), new THREE.MeshBasicMaterial({ map: HW.knobTex, fog: false })); kl.position.set(.55, -.955, -1.412); rig.add(kl);
+  // ---- the cap that rides on the dash
+  { const g = new THREE.Group(); g.position.set(.86, -.37, -2.1); g.rotation.y = .3; g.scale.setScalar(1.35); rig.add(g);
+    const crown = new THREE.Mesh(new THREE.SphereGeometry(.13, 18, 10, 0, Math.PI * 2, 0, Math.PI / 2), M(0x3c4b66)); crown.scale.set(1, .78, 1.1); g.add(crown);
+    const back = new THREE.Mesh(new THREE.SphereGeometry(.131, 18, 10, Math.PI * .5, Math.PI, 0, Math.PI / 2), M(0x2c3850)); back.scale.set(1, .78, 1.1); g.add(back);
+    const brim = new THREE.Mesh(new THREE.CylinderGeometry(.13, .13, .012, 20, 1, false, -Math.PI * .5, Math.PI), M(0x33425c)); brim.scale.set(1, 1, .85); brim.position.set(0, .006, .1); g.add(brim);
+    const t = tex(256, 128, (x, w, h) => { x.clearRect(0, 0, w, h); x.fillStyle = '#e9edf3'; x.font = '700 40px Arial Narrow, Arial'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText('365 DAYS', w / 2, 40); x.fillText('ON THE ROAD', w / 2, 88); });
+    const lab = new THREE.Mesh(new THREE.PlaneGeometry(.15, .075), new THREE.MeshBasicMaterial({ map: t, transparent: true, fog: false })); lab.position.set(0, .05, .132); lab.rotation.x = -.45; lab.scale.setScalar(1.1); g.add(lab);
+    const btn = new THREE.Mesh(new THREE.SphereGeometry(.012, 8, 6), M(0x3c4b66)); btn.position.y = .1; g.add(btn); }
+  // ---- steering column and the wheel: thick black rim, chrome-trimmed spokes with buttons, a big hub with a silver badge
+  bx(.2, .17, .55, 0x0f1012, -.02, -.92, -1.08, -.42);
+  const pv = HW.wheelPivot = new THREE.Group(); pv.position.set(-.02, -.66, -.86); pv.rotation.x = -.42; pv.scale.setScalar(.86); rig.add(pv);
   const wh = HW.wheel = new THREE.Group(); pv.add(wh);
-  const rim = new THREE.Mesh(new THREE.TorusGeometry(.2, .026, 10, 30), M(0x1a1b1f)); wh.add(rim);
-  const hub = new THREE.Mesh(new THREE.CylinderGeometry(.075, .075, .05, 18), M(0x1f2025)); hub.rotation.x = Math.PI / 2; wh.add(hub);
-  const badge = new THREE.Mesh(new THREE.CylinderGeometry(.03, .03, .056, 16), M(SILVER)); badge.rotation.x = Math.PI / 2; wh.add(badge);
-  [1.57, -1.57, 3.14].forEach(a => { const sp = new THREE.Mesh(new THREE.BoxGeometry(.17, .04, .02), M(SILVER)); sp.position.set(Math.cos(a) * .11, Math.sin(a) * .11, 0); sp.rotation.z = a; wh.add(sp); });
-  // mirrors rendered into small textures and shown on planes (mirrored horizontally)
+  wh.add(new THREE.Mesh(new THREE.TorusGeometry(.255, .036, 12, 44), M(0x131417)));
+  const hl = new THREE.Mesh(new THREE.TorusGeometry(.255, .011, 6, 30, Math.PI * .62), M(0x55585e)); hl.rotation.z = Math.PI * .19; hl.position.z = .03; wh.add(hl);
+  const hub = new THREE.Mesh(new THREE.CylinderGeometry(.1, .11, .07, 26), M(0x121316)); hub.rotation.x = Math.PI / 2; hub.position.y = -.02; wh.add(hub);
+  const badge = new THREE.Mesh(new THREE.CylinderGeometry(.03, .03, .074, 22), M(0x8c9097)); badge.rotation.x = Math.PI / 2; badge.scale.set(.8, 1, 1.1); badge.position.y = -.015; wh.add(badge);
+  [-1, 1].forEach(s => {
+    bx(.15, .085, .035, 0x1b1c1f, s * .17, -.035, .005, 0, 0, s * .1, wh);
+    bx(.15, .012, .04, 0x9da1a8, s * .17, -.08, .005, 0, 0, s * .1, wh);
+    for (let i = 0; i < 4; i++) bx(.026, .02, .01, 0x34363b, s * (.13 + (i % 2) * .05), -.02 - Math.floor(i / 2) * .032, .025, 0, 0, 0, wh);
+  });
+  bx(.09, .14, .03, 0x1b1c1f, 0, -.17, 0, 0, 0, 0, wh); bx(.012, .14, .034, 0x9da1a8, -.05, -.17, 0, 0, 0, 0, wh); bx(.012, .14, .034, 0x9da1a8, .05, -.17, 0, 0, 0, 0, wh);
+  // ---- mirrors rendered into small textures and shown on planes (mirrored horizontally)
+  bx(.03, .22, .03, BLACK, .42, .63, -1.3);
   HW.mirrors = [
-    { w: .5, h: .14, x: 0, y: .46, z: -1.15, rt: new THREE.WebGLRenderTarget(384, 112), off: 0, yaw: 0, fov: 36, side: 0 },
-    { w: .3, h: .2, x: -1.62, y: -.2, z: -1.6, rt: new THREE.WebGLRenderTarget(160, 112), off: .95, yaw: .13, fov: 40, side: 1 },
-    { w: .3, h: .2, x: 1.62, y: -.2, z: -1.6, rt: new THREE.WebGLRenderTarget(160, 112), off: -.95, yaw: -.13, fov: 40, side: 1 }
+    { w: .42, h: .115, x: .42, y: .47, z: -1.3, rt: new THREE.WebGLRenderTarget(384, 104), off: 0, yaw: 0, fov: 36, side: 0 },
+    { w: .24, h: .17, x: -1.58, y: -.32, z: -1.42, rt: new THREE.WebGLRenderTarget(160, 116), off: .95, yaw: .13, fov: 40, side: 1 },
+    { w: .26, h: .19, x: 2.35, y: -.3, z: -1.95, rt: new THREE.WebGLRenderTarget(160, 116), off: -.95, yaw: -.13, fov: 40, side: 1 }
   ];
   HW.mirrors.forEach(m => {
-    m.frame = new THREE.Mesh(new THREE.BoxGeometry(m.w + .04, m.h + .04, .03), M(0x1a1b1f)); m.frame.position.set(m.x, m.y, m.z - .02); cp.add(m.frame);
+    m.frame = new THREE.Mesh(new THREE.BoxGeometry(m.w + .04, m.h + .04, .03), M(0x111214)); m.frame.position.set(m.x, m.y, m.z - .02); rig.add(m.frame);
     const pg = new THREE.PlaneGeometry(m.w, m.h), uv = pg.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setX(i, 1 - uv.getX(i));
-    m.mesh = new THREE.Mesh(pg, new THREE.MeshBasicMaterial({ map: m.rt.texture, fog: false })); m.mesh.position.set(m.x, m.y, m.z); cp.add(m.mesh);
+    m.mesh = new THREE.Mesh(pg, new THREE.MeshBasicMaterial({ map: m.rt.texture, fog: false })); m.mesh.position.set(m.x, m.y, m.z); rig.add(m.mesh);
     m.cam = new THREE.PerspectiveCamera(m.fov, m.w / m.h, .4, 520); m.cam.rotation.order = 'YXZ';
   });
-  HW.cam = new THREE.PerspectiveCamera(64, 1.8, .12, 520); HW.cam.rotation.order = 'YXZ'; HW.cam.add(cp);
+  { const im = new THREE.InstancedMesh(new THREE.SphereGeometry(.011, 6, 4), M(RIVET), rv.length), m4 = new THREE.Matrix4();
+    rv.forEach((p, i) => im.setMatrixAt(i, m4.makeTranslation(p.x, p.y, p.z))); im.frustumCulled = false; rig.add(im); }
+  cp.traverse(o => { o.frustumCulled = false; o.renderOrder = 5; });
+  HW.cam = HW.cam || new THREE.PerspectiveCamera(64, 1.8, .08, 520); HW.cam.rotation.order = 'YXZ'; HW.cam.add(cp);
+}
+// the lit P R N D over the gear dial (redrawn only when the gear changes)
+function cabKnob(gl) {
+  if (!HW.kx || HW.kGear === gl) return; HW.kGear = gl;
+  const x = HW.kx, W = 128, H = 32; x.fillStyle = '#121317'; x.fillRect(0, 0, W, H); x.font = '700 21px Arial'; x.textAlign = 'center'; x.textBaseline = 'middle';
+  'PRND'.split('').forEach((c, i) => { x.fillStyle = c === gl ? '#ffffff' : '#5d6068'; x.fillText(c, 22 + i * 28, H / 2 + 1); });
+  HW.knobTex.needsUpdate = true;
 }
 function hwScreen() {
   // centre screen: distance, next radar, the limit and the race if one is on
@@ -5602,29 +5805,76 @@ function hwScreen() {
   else { g.fillStyle = '#5f6f80'; g.font = '700 13px Arial'; g.fillText('Nárazy: ' + (P.kos || 0) + '   Predbehnuté: ' + P.over, 16, 146); }
   HW.st.needsUpdate = true;
 }
-function hwCluster(kmh, rpm, g, blinkOn) {
-  const x = HW.cx, W = 512, H = 200; x.fillStyle = '#101115'; x.fillRect(0, 0, W, H); hwScreen();
-  const dial = (cx, cy, r, val, max, step, lab, red) => {
-    x.fillStyle = '#07080b'; x.beginPath(); x.arc(cx, cy, r + 2, 0, 7); x.fill(); x.strokeStyle = '#8d9199'; x.lineWidth = 3; x.beginPath(); x.arc(cx, cy, r, 0, 7); x.stroke();
-    for (let v = 0; v <= max; v += step) { const a = (135 + 270 * v / max) * Math.PI / 180, big = true, c = Math.cos(a), s = Math.sin(a); x.strokeStyle = red && v >= red ? '#ff3b30' : '#d8d8e0'; x.lineWidth = 3; x.beginPath(); x.moveTo(cx + c * (r - 4), cy + s * (r - 4)); x.lineTo(cx + c * (r - 15), cy + s * (r - 15)); x.stroke(); x.fillStyle = x.strokeStyle; x.font = '700 15px Arial'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(lab(v), cx + c * (r - 30), cy + s * (r - 30)); }
-    const a = (135 + 270 * clamp(val / max, 0, 1.02)) * Math.PI / 180; x.strokeStyle = '#ff8a1a'; x.lineWidth = 4; x.lineCap = 'round'; x.beginPath(); x.moveTo(cx - Math.cos(a) * 12, cy - Math.sin(a) * 12); x.lineTo(cx + Math.cos(a) * (r - 8), cy + Math.sin(a) * (r - 8)); x.stroke(); x.fillStyle = '#ff8a1a'; x.beginPath(); x.arc(cx, cy, 7, 0, 7); x.fill();
+// Ram-style cluster: tach left, speedo right (chrome rings, red needles), four small gauges, a screen in the middle with the speed
+function cabCluster(kmh, rpm, gl, gn, auto) {
+  const x = HW.cx, W = 640, H = 240; if (!x) return;
+  x.fillStyle = '#050607'; x.fillRect(0, 0, W, H);
+  const ring = (cx, cy, r, lw) => { const g = x.createLinearGradient(cx, cy - r, cx, cy + r); g.addColorStop(0, '#e4e7ec'); g.addColorStop(.5, '#7d828a'); g.addColorStop(1, '#c9ccd2'); x.strokeStyle = g; x.lineWidth = lw; x.beginPath(); x.arc(cx, cy, r, 0, 7); x.stroke(); };
+  const needle = (cx, cy, r, f, a0, span) => {
+    const a = (a0 + span * clamp(f, 0, 1.02)) * Math.PI / 180, c = Math.cos(a), s = Math.sin(a);
+    x.strokeStyle = '#ff2b1c'; x.lineWidth = Math.max(3, r * .05); x.lineCap = 'round'; x.beginPath(); x.moveTo(cx - c * r * .12, cy - s * r * .12); x.lineTo(cx + c * r * .86, cy + s * r * .86); x.stroke();
+    x.fillStyle = '#16171a'; x.beginPath(); x.arc(cx, cy, r * .16, 0, 7); x.fill(); ring(cx, cy, r * .16, 2);
   };
-  dial(104, 102, 92, kmh, 260, 20, v => v % 40 === 0 ? v : '', 0); dial(408, 102, 92, rpm / 1000, 7, 1, v => v, 6.2);
-  x.fillStyle = '#fff'; x.font = '700 italic 62px Arial'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(Math.round(kmh), 256, 76); x.fillStyle = '#9a9aa6'; x.font = '700 16px Arial'; x.fillText('km/h', 256, 108);
-  x.fillStyle = HW.p && HW.p.auto ? '#3ddc84' : '#ffb21a'; x.font = '700 28px Arial'; x.fillText('D' + g, 256, 138);
-  HW.ct.needsUpdate = true;
+  const dial = (cx, cy, r, val, max, step, lab, red) => {
+    x.fillStyle = '#0c0d10'; x.beginPath(); x.arc(cx, cy, r, 0, 7); x.fill(); ring(cx, cy, r, 7);
+    x.lineCap = 'butt'; x.font = '700 ' + Math.round(r * .17) + 'px Arial'; x.textAlign = 'center'; x.textBaseline = 'middle';
+    for (let v = 0; v <= max + 1e-6; v += step / 2) {
+      const a = (135 + 270 * v / max) * Math.PI / 180, c = Math.cos(a), s = Math.sin(a), big = Math.abs(v / step - Math.round(v / step)) < 1e-6;
+      x.strokeStyle = red && v >= red ? '#ff3b30' : '#e6e8ec'; x.lineWidth = big ? 3 : 1.5; x.beginPath(); x.moveTo(cx + c * (r - 8), cy + s * (r - 8)); x.lineTo(cx + c * (r - (big ? 19 : 14)), cy + s * (r - (big ? 19 : 14))); x.stroke();
+      if (big) { const t = lab(v); if (t !== '') { x.fillStyle = '#e6e8ec'; x.fillText(t, cx + c * (r - 33), cy + s * (r - 33)); } }
+    }
+    needle(cx, cy, r, val / max, 135, 270);
+  };
+  const small = (cx, cy, r, f) => {
+    x.fillStyle = '#0c0d10'; x.beginPath(); x.arc(cx, cy, r, 0, 7); x.fill(); ring(cx, cy, r, 4);
+    x.strokeStyle = '#e6e8ec'; x.lineWidth = 2; for (let i = 0; i <= 4; i++) { const a = (200 + 140 * i / 4) * Math.PI / 180; x.beginPath(); x.moveTo(cx + Math.cos(a) * (r - 5), cy + Math.sin(a) * (r - 5)); x.lineTo(cx + Math.cos(a) * (r - 11), cy + Math.sin(a) * (r - 11)); x.stroke(); }
+    needle(cx, cy, r * .9, f, 200, 140);
+  };
+  small(250, 44, 33, .5); small(390, 44, 33, .55);
+  dial(146, 128, 104, rpm / 1000, 7, 1, v => v, 5.5);
+  dial(494, 128, 104, kmh, 200, 20, v => v % 40 === 0 ? v : '', 0);
+  small(66, 206, 30, .62); small(574, 206, 30, .45);
+  // the middle screen
+  x.fillStyle = '#081019'; x.fillRect(262, 92, 116, 120); x.strokeStyle = '#1b2633'; x.lineWidth = 2; x.strokeRect(262, 92, 116, 120);
+  x.fillStyle = '#5aa9ff'; x.font = '700 50px Arial'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(Math.round(kmh), 320, 140);
+  x.fillStyle = '#8fb2d6'; x.font = '700 13px Arial'; x.fillText('km/h', 320, 170);
+  x.font = '700 15px Arial'; 'PRND'.split('').forEach((c, i) => { x.fillStyle = c === gl ? '#ffffff' : '#46505c'; x.fillText(c, 290 + i * 20, 197); });
+  if (gn) { x.fillStyle = auto ? '#3ddc84' : '#ffb21a'; x.font = '700 13px Arial'; x.fillText(String(gn), 368, 197); }
+  HW.ct.needsUpdate = true; cabKnob(gl);
+}
+function hwCluster(kmh, rpm, g) { hwScreen(); cabCluster(kmh, rpm, 'D', g, HW.p && HW.p.auto); }
+// the touch screen outside the highway: a phone-style map with the route and a column of app icons
+function cabScreen(x0, z0, th, kmh) {
+  const g = HW.sx, W = 256, H = 160; if (!g) return;
+  g.fillStyle = '#0b1118'; g.fillRect(0, 0, W, H);
+  g.fillStyle = '#121c27'; g.fillRect(0, 0, W, 20); g.fillStyle = '#c7d3df'; g.font = '700 12px Arial'; g.textBaseline = 'middle'; g.textAlign = 'left'; g.fillText('21.5°', 8, 10); g.textAlign = 'right'; g.fillText('21.5°', W - 8, 10);
+  g.textAlign = 'center'; const d = new Date(); g.fillText(String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'), W / 2, 10);
+  ['#3ddc84', '#2f80ff', '#ff3b30', '#ffb21a', '#a06bff'].forEach((c, i) => { g.fillStyle = c; g.beginPath(); g.roundRect ? g.roundRect(7, 28 + i * 25, 19, 19, 5) : g.rect(7, 28 + i * 25, 19, 19); g.fill(); });
+  // map: a grid of streets that slides under a fixed arrow, the route line ahead
+  g.save(); g.beginPath(); g.rect(34, 24, W - 40, H - 30); g.clip();
+  g.fillStyle = '#16222e'; g.fillRect(34, 24, W - 40, H - 30);
+  const cx = 34 + (W - 40) / 2, cy = 24 + (H - 30) * .7, sc = 1.6;
+  g.translate(cx, cy); g.rotate(th); g.strokeStyle = '#26384a'; g.lineWidth = 4;
+  const st = 40, ox = ((x0 * sc) % st + st) % st, oz = ((z0 * sc) % st + st) % st;
+  for (let i = -6; i <= 6; i++) { g.beginPath(); g.moveTo(i * st - ox, -260); g.lineTo(i * st - ox, 260); g.stroke(); g.beginPath(); g.moveTo(-260, i * st - oz); g.lineTo(260, i * st - oz); g.stroke(); }
+  g.restore();
+  g.strokeStyle = '#3d8bff'; g.lineWidth = 6; g.lineCap = 'round'; g.beginPath(); g.moveTo(cx, cy); g.lineTo(cx, 30); g.stroke();
+  g.fillStyle = '#ffffff'; g.beginPath(); g.moveTo(cx, cy - 9); g.lineTo(cx + 7, cy + 7); g.lineTo(cx, cy + 3); g.lineTo(cx - 7, cy + 7); g.closePath(); g.fill();
+  g.fillStyle = 'rgba(8,12,18,.85)'; g.fillRect(40, 28, 92, 34); g.fillStyle = '#ffffff'; g.font = '700 15px Arial'; g.textAlign = 'left'; g.fillText(Math.round(kmh) + ' km/h', 47, 45);
+  HW.st.needsUpdate = true;
 }
 
 /* ---------- run lifecycle ---------- */
 function hwyEnter() {
   HWLAY = layOf(HW.chase ? 'chase' : 'hwy'); if (!HW.built) hwBuild(); else if (HW.layBuilt !== HWLAY) hwRebuild();
   HW.dome = scene.children.find(o => o.isMesh && o.geometry && o.geometry.type === 'SphereGeometry' && o.geometry.parameters.radius === 360);
-  HW.saved = scene.children.filter(o => !o.isLight && o !== HW.g && o !== HW.dome && o !== HW.cam && o.visible);
+  HW.saved = scene.children.filter(o => !o.isLight && o !== HW.g && o !== HW.dome && o !== HW.cam && o !== camera && o.visible);
   HW.saved.forEach(o => { o.visible = false; });
   HW.fog = { near: scene.fog.near, far: scene.fog.far, col: scene.fog.color.getHex() }; scene.fog.near = 160; scene.fog.far = 400; scene.fog.color.setHex(0xcdd9e3);
   hwNight(!!HW.chase);
   HW.sun = sun.castShadow; sun.castShadow = false;
   HW.dome0 = HW.dome ? HW.dome.position.clone() : null;
+  pvOff(); if (HW.cockpit && HW.cockpit.parent !== HW.cam) HW.cam.add(HW.cockpit);
   HW.g.visible = true; scene.add(HW.cam); HW.on = true; document.body.classList.add('hwy');
 }
 function hwyLeave() {
@@ -5808,7 +6058,7 @@ function hwyRender(dt) {
   const bump = Math.sin(HW.t * 47) * .0022 * (P.v / 30) + Math.sin(HW.t * 83 + 1) * .0014 * (P.v / 30) + (Math.random() - .5) * .02 * HW.shake;
   cam.position.set(eye.x, 1.5 + bump, eye.z);
   P.wheel += (P.st * 1.15 - P.wheel) * (1 - Math.exp(-dt * 14));
-  cam.rotation.set(-(P.ax || 0) * .0022 + (Math.random() - .5) * .012 * HW.shake, th + Math.PI, P.st * .012 + (Math.random() - .5) * .02 * HW.shake);
+  cam.rotation.set(-CAB_PITCH - (P.ax || 0) * .0022 + (Math.random() - .5) * .012 * HW.shake, th + Math.PI, P.st * .012 + (Math.random() - .5) * .02 * HW.shake);
   HW.wheel.rotation.z = P.wheel;
   if (HW.dome) HW.dome.position.set(cam.position.x, 0, cam.position.z); HW.ground.position.x = eye.x; HW.ground.position.z = eye.z;
   if (HW.lamp && HW.lamp.visible) { const a = hWp(P.s + 2, P.d), b2 = hWp(P.s + 40, P.d); HW.lamp.position.set(a.x, 1.0, a.z); HW.lamp.target.position.set(b2.x, 0, b2.z); }
@@ -5825,7 +6075,7 @@ function hwyRender(dt) {
   }
   // cluster, ~12 fps
   HW.cl -= dt; if (HW.cl <= 0) { HW.cl = .08; hwCluster(kmh, P.rpm, P.g, blinkOn); }
-  if (settings.hwCam === 'chase') { hwChaseView(dt, th); return; }
+  if (settings.hwCam !== 'cockpit') { hwChaseView(dt, th); return; }
   if (model && model.car && model.car.visible && HW.chaseOn) { model.car.visible = false; HW.chaseOn = false; }
   // mirrors first (cockpit hidden), then the main view
   const q = settings.q; HW.cockpit.visible = false;
@@ -5850,10 +6100,11 @@ function hwChaseView(dt, th) {
     model.body.rotation.set(0, 0, clamp(-(P.lat || 0) * .02, -.06, .06));
     model.wheels.forEach(w => { if (w.front) w.pivot.rotation.y = P.st * .35; w.spin.rotation.x += P.v * dt / Math.max(.25, w.pivot.position.y * (w.pivot.parent.scale.y || 1)); });
   }
-  const ck = model ? clamp(model.len / 5.4, .9, 1.25) : 1, dist = (8.4 + P.v * .04) * ck, h = (3.2 + P.v * .012) * ck;
-  const fx = Math.sin(th), fz = Math.cos(th);
+  const ck = model ? clamp(model.len / 5.4, .9, 1.25) : 1, free = settings.hwCam === 'free';
+  let dist = (8.4 + P.v * .04) * ck, h = (3.2 + P.v * .012) * ck, fx = Math.sin(th), fz = Math.cos(th);
+  if (free) { fcRelax(dt, P.v); const c = Math.cos(FC.yaw), s = Math.sin(FC.yaw), nx = fx * c - fz * s; fz = fx * s + fz * c; fx = nx; const o = fcOrbit(dist, h - 1.1); dist = o.r; h = 1.1 + o.h; }
   cam.position.set(cx - fx * dist + (Math.random() - .5) * .3 * HW.shake, h, cz - fz * dist);
-  cam.lookAt(cx + fx * 6, 1.1, cz + fz * 6);
+  if (free) cam.lookAt(cx, 1.1, cz); else cam.lookAt(cx + fx * 6, 1.1, cz + fz * 6);
   if (HW.dome) HW.dome.position.set(cam.position.x, 0, cam.position.z); HW.ground.position.x = cx; HW.ground.position.z = cz;
   if (HW.lamp && HW.lamp.visible) { const a = hWp(P.s + 2, P.d), b2 = hWp(P.s + 40, P.d); HW.lamp.position.set(a.x, 1.0, a.z); HW.lamp.target.position.set(b2.x, 0, b2.z); }
   renderer.render(scene, cam);
@@ -6234,7 +6485,7 @@ function dhFmtS(t) { t = Math.max(0, t); return (t < 10 ? '0' : '') + t.toFixed(
 function dhEnter() {
   const id = 'chopok'; if (DH.built !== id) dhBuild(id);
   DH.dome = scene.children.find(o => o.isMesh && o.geometry && o.geometry.type === 'SphereGeometry' && o.geometry.parameters.radius === 360);
-  DH.saved = scene.children.filter(o => !o.isLight && o !== DH.g && o !== DH.dome && o !== model.car && o !== smokeMesh && o.visible);
+  DH.saved = scene.children.filter(o => !o.isLight && o !== DH.g && o !== DH.dome && o !== camera && o !== model.car && o !== smokeMesh && o.visible);
   DH.saved.forEach(o => { o.visible = false; });
   const hemi = scene.children.find(o => o.isHemisphereLight);
   DH.env = { near: scene.fog.near, far: scene.fog.far, col: scene.fog.color.getHex(), top: DH.dome.material.uniforms.top.value.getHex(), bot: DH.dome.material.uniforms.bot.value.getHex(), fov: camera.fov, hi: hemi.intensity, si: sun.intensity, ex: renderer.toneMappingExposure };
@@ -6368,25 +6619,31 @@ function dhRender(dt) {
   if (DH.camSnap) { DH.camDir.copy(_f); DH.camY = B.p.y; DH.camSnap = false; }
   else { DH.camDir.lerp(_f, 1 - Math.exp(-dt * 2.6)).normalize(); DH.camY = lerp(DH.camY, B.p.y, 1 - Math.exp(-dt * 16)); DH.camY = clamp(DH.camY, B.p.y - 1.2, B.p.y + 1.2); }
   const view = settings.dhCam || 'chase';
-  if (view === 'hood') {
+  if (view === 'pov') {
+    model.car.visible = true; car.updateMatrixWorld(true);
+    const v = B.v.length(); pvPlace(dt, clamp(B.delta / .45, -1, 1), v * 3.6, 900 + clamp(v / 45, 0, 1) * 5200, 'D');
+  } else if (view === 'hood') {
+    pvOff();
     // on the bonnet, just in front of the windscreen line: rides with the car, pitch and roll included
     _t3.copy(DHB.hood).applyQuaternion(B.q).add(B.p); camera.position.copy(_t3);
     camera.quaternion.copy(B.q).multiply(_dq.setFromAxisAngle(_d.set(0, 1, 0), Math.PI));
     if (DH.shake > 0) { camera.position.y += (Math.random() - .5) * DH.shake * .25; DH.shake = Math.max(0, DH.shake - dt * 2.4); }
     model.car.visible = false;
   } else {
-    model.car.visible = true;
+    pvOff(); model.car.visible = true;
     const ck = clamp((B.len || 5) / 5.4, .9, 1.25), kD = view === 'near' ? .7 : view === 'high' ? 1.35 : 1, kH = view === 'near' ? .72 : view === 'high' ? 2.3 : 1;
-    const dist = (8.6 + sp * .028) * ck * kD, hgt = (3.1 + sp * .012) * ck * kH;
-    camera.position.set(B.p.x - DH.camDir.x * dist, DH.camY + hgt, B.p.z - DH.camDir.z * dist);
+    let dist = (8.6 + sp * .028) * ck * kD, hgt = (3.1 + sp * .012) * ck * kH, dx = DH.camDir.x, dz = DH.camDir.z;
+    if (view === 'free') { fcRelax(dt, sp); const c = Math.cos(FC.yaw), s = Math.sin(FC.yaw), nx = dx * c - dz * s; dz = dx * s + dz * c; dx = nx; const o = fcOrbit(dist, hgt); dist = o.r; hgt = o.h; }
+    camera.position.set(B.p.x - dx * dist, DH.camY + hgt, B.p.z - dz * dist);
     const gy = dhH(camera.position.x, camera.position.z) + 1.7; if (camera.position.y < gy) camera.position.y = gy;
     if (DH.shake > 0) { camera.position.x += (Math.random() - .5) * DH.shake * .8; camera.position.y += (Math.random() - .5) * DH.shake * .5; DH.shake = Math.max(0, DH.shake - dt * 2.4); }
-    _t3.set(B.p.x + DH.camDir.x * 5, B.p.y + .7 + (camera.position.y - DH.camY - hgt) * .45, B.p.z + DH.camDir.z * 5); camera.lookAt(_t3);
+    if (view === 'free') _t3.set(B.p.x, B.p.y + .8, B.p.z); else _t3.set(B.p.x + DH.camDir.x * 5, B.p.y + .7 + (camera.position.y - DH.camY - hgt) * .45, B.p.z + DH.camDir.z * 5); camera.lookAt(_t3);
   }
   if (DH.dome) DH.dome.position.copy(camera.position);
   sun.position.set(B.p.x - 55, B.p.y + 38, B.p.z + 30); sun.target.position.set(B.p.x, B.p.y, B.p.z);
   if (DH.ring) DH.ring.material.opacity = .65 + .3 * Math.sin(DH.t * 5);
   updateSmoke(dt);
+  pvMirrors();
   renderer.render(scene, camera);
 }
 function dhFrame(dt) {
@@ -6571,12 +6828,16 @@ $('#fileIn').addEventListener('change', e => { const ok = music.addFiles(e.targe
 $('#startBtn').addEventListener('click', startRun);
 $('#pauseBtn').addEventListener('click', togglePause);
 // every mode has its own set of views; the camera button (and C) steps through the views of the mode being played
-const DH_CAMS = ['chase', 'near', 'high', 'hood'], DH_CAM_NAME = { chase: 'ZA AUTOM', near: 'BLÍZKO', high: 'VYSOKO', hood: 'KAPOTA' };
-const HW_CAMS = ['cockpit', 'chase'], HW_CAM_NAME = { cockpit: 'KOKPIT', chase: 'ZA AUTOM' };
+const DH_CAMS = ['chase', 'near', 'high', 'hood', 'pov', 'free'], DH_CAM_NAME = { chase: 'ZA AUTOM', near: 'BLÍZKO', high: 'VYSOKO', hood: 'KAPOTA', pov: 'Z KOKPITU', free: 'VOĽNÁ' };
+const HW_CAMS = ['cockpit', 'chase', 'free'], HW_CAM_NAME = { cockpit: 'KOKPIT', chase: 'ZA AUTOM', free: 'VOĽNÁ' };
+const camHint = k => { if (k === 'free') { fcReset(); setTimeout(() => { if (game.running) popText(isTouch ? 'ŤAHAJ PRSTOM' : 'ŤAHAJ MYŠOU'); }, 650); } };
 function cycleCam() {
-  if (DH.on) { settings.dhCam = DH_CAMS[(DH_CAMS.indexOf(settings.dhCam) + 1) % DH_CAMS.length]; store.set('dhCam', settings.dhCam); DH.camSnap = true; toast('KAMERA · ' + DH_CAM_NAME[settings.dhCam]); return; }
-  if (HW.on) { settings.hwCam = HW_CAMS[(HW_CAMS.indexOf(settings.hwCam) + 1) % HW_CAMS.length]; store.set('hwCam', settings.hwCam); toast('KAMERA · ' + HW_CAM_NAME[settings.hwCam]); return; }
-  settings.cam = CAM_ORDER[(CAM_ORDER.indexOf(settings.cam) + 1) % CAM_ORDER.length]; store.set('cam', settings.cam); renderCam(); toast('KAMERA · ' + CAM_NAME[settings.cam]);
+  if (DH.on) {
+    let i = DH_CAMS.indexOf(settings.dhCam); do i = (i + 1) % DH_CAMS.length; while (DH_CAMS[i] === 'pov' && carKey !== 'zubor');   // the other cars already have the bonnet view
+    settings.dhCam = DH_CAMS[i]; store.set('dhCam', settings.dhCam); DH.camSnap = true; toast('KAMERA · ' + DH_CAM_NAME[settings.dhCam]); camHint(settings.dhCam); return;
+  }
+  if (HW.on) { settings.hwCam = HW_CAMS[(HW_CAMS.indexOf(settings.hwCam) + 1) % HW_CAMS.length]; store.set('hwCam', settings.hwCam); toast('KAMERA · ' + HW_CAM_NAME[settings.hwCam]); camHint(settings.hwCam); return; }
+  settings.cam = CAM_ORDER[(CAM_ORDER.indexOf(settings.cam) + 1) % CAM_ORDER.length]; store.set('cam', settings.cam); renderCam(); toast('KAMERA · ' + camLabel(settings.cam)); camHint(settings.cam);
 }
 $('#camBtn').addEventListener('click', cycleCam);
 $('#resumeBtn').addEventListener('click', togglePause);

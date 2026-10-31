@@ -953,8 +953,11 @@ Promise.race([
   fetch('dlzky.json', { cache:'no-cache' }).then(r => r.ok ? r.json() : null).then(j => {
     if (!j || !j.videa) return;
     // poistka: keby skener omylom označil väčšinu videí ako nefunkčné, chyby ignorujeme
-    const vals = Object.values(j.videa), zle = vals.filter(x => x < 0).length;
-    DLZKY = zle > vals.length / 2 ? Object.fromEntries(Object.entries(j.videa).filter(([, x]) => x > 0)) : j.videa;
+    const vsetky = new Set();
+    (O.kanaly || []).forEach(k => (k.program || []).forEach(p => vsetky.add(KEY(p))));
+    [...(O.reklamy || []), ...(O.predely || [])].forEach(p => vsetky.add(KEY(p)));
+    const zle = Object.values(j.videa).filter(x => x < 0).length;
+    DLZKY = zle > vsetky.size / 2 ? Object.fromEntries(Object.entries(j.videa).filter(([, x]) => x > 0)) : j.videa;
   }).catch(() => {}),
   timeout
 ]).then(start);

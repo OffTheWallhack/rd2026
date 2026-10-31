@@ -93,7 +93,16 @@ window.POZERAL = {
         { id:'I6sNX_ZLciI', show:'Pohádky o mašinkách', ep:'3. díl', lang:'CZ', min:8 },
         { id:'kvvEvgNPKBI', show:'Bob a Bobek', ep:'Na útěku', lang:'CZ', min:8 },
         { id:'ptjfy7a4-Hc', show:'Bolek a Lolek', ep:'Žirafa', lang:'bez slov', min:10 },
-        { id:'6Iw3CbQ6j1Y', show:'Krtek', ep:'Krtek o Vánocích', lang:'bez slov', min:28 }
+        { id:'6Iw3CbQ6j1Y', show:'Krtek', ep:'Krtek o Vánocích', lang:'bez slov', min:28 },
+        { id:'GhBuGixYe9I', show:'Šmoulové', ep:'Šmoulinka', lang:'CZ', min:12 },
+        { id:'7hssKvYVeWQ', show:'Šmolkovia', ep:'Purpuroví Šmolkovia', lang:'SK', min:12 },
+        { id:'IKo5iM7I028', show:'Šmoulové', ep:'Šmoulí polévka', lang:'CZ', min:12 },
+        { id:'bVqxXSJ2pDY', show:'Šmolkovia', ep:'Myška Pískalka', lang:'SK', min:12 },
+        { id:'Ka7azkbEvwk', show:'Šmoulové', ep:'Šmoulové ve Strašidelném zámku', lang:'CZ', min:12 },
+        { id:'Ba_HMUsXZh0', show:'Šmoulové', ep:'Král Šmoulů', lang:'CZ', min:12 },
+        { id:'vHVXHptT2gA', show:'Šmoulové', ep:'Hafík', lang:'CZ', min:12 },
+        { id:'mBG6jYdyXOk', show:'Šmoulové', ep:'Dobrodružství Robina Šmoula', lang:'CZ', min:12 },
+        { id:'rb9YK_TuXqA', show:'Šmoulové', ep:'Šmoulata – část první', lang:'CZ', min:12 }
       ]
     },
     {
@@ -146,7 +155,29 @@ window.POZERAL = {
         { id:'MlrqMNysrgs', show:'Galactik Football', ep:'3. série – 2. díl', lang:'CZ', min:26 },
         { id:'76RQmb-hhjc', show:'Tři kamarádi a Jerry', ep:'Soutěž krásy', lang:'CZ', min:10 },
         { id:'rGABDba-FUM', show:'Tři kamarádi a Jerry', ep:'Vši', lang:'CZ', min:10 },
-        { id:'m7-xx__rSMo', show:'Tři kamarádi a Jerry', ep:'Koledníci', lang:'CZ', min:10 }
+        { id:'m7-xx__rSMo', show:'Tři kamarádi a Jerry', ep:'Koledníci', lang:'CZ', min:10 },
+        { id:'CcqpZpvybP0', show:'Život s Louiem', ep:'Nespokojené léto', lang:'CZ', min:22 },
+        { id:'Y-c4u3sQTNc', show:'Klíšťák', ep:'Klíšťák a Klíšťák (1. časť)', lang:'CZ', min:11 },
+        { id:'F2AwDKkWVnM', show:'Totally Spies – Špiónky', ep:'Nový Jerry', lang:'CZ', min:22 },
+        { id:'bg3JzT7WsN8', show:'Mr. Bean: Animované příběhy', ep:'Domácí biják', lang:'bez slov', min:11 },
+        { id:'IzlLq3tr3UI', show:'Garfieldova show', ep:'Těžké váhy', lang:'CZ', min:12 },
+        { id:'vgiIxzLsx-U', show:'Kačeří příběhy', ep:'Karanténa strýčka Skrblíka', lang:'CZ', min:22 },
+        { id:'A_CSxmUkPew', show:'Rychlá rota', ep:'Prohozená těla', lang:'CZ', min:22 },
+        { id:'jFDNPc8EgFo', show:'Totally Spies – Špiónky', ep:'Uteč pryč', lang:'CZ', min:22 },
+        { id:'7eOEZq8ORlw', show:'Garfieldova show', ep:'Stratený Lyman', lang:'SK', min:12 },
+        { id:'aKChMtuiykE', show:'Kim Possible', ep:'Halloween', lang:'CZ', min:22 },
+        { id:'KG20Le3mhUs', show:'Garfield a přátelé', ep:'Filmové šoky', lang:'CZ', min:7 },
+        { id:'PU-CdSmSiaU', show:'Mr. Bean: Animované příběhy', ep:'Skládací nábytek', lang:'bez slov', min:11 },
+        { id:'XouTkwoTH8I', show:'Garfieldova show', ep:'Podle přání', lang:'CZ', min:12 },
+        { id:'asb09scHGSM', show:'Totally Spies – Špiónky', ep:'1. série, 5. díl (1/2)', lang:'CZ', min:11 },
+        { id:'C11GBYdAP7k', show:'Dennis postrach okolí', ep:'Ja-bko', lang:'CZ', min:7 },
+        { id:'CJgcvSYN9YM', show:'Animáci', ep:'Super silní sourozenci Warnerovi', lang:'CZ', min:7 },
+        { id:'gc77arzV6HI', show:'Garfieldova show', ep:'Kočičí svět', lang:'CZ', min:12 },
+        { id:'sosuGW5J8rM', show:'Kocour Raplík', ep:'Kocour Raplík', lang:'CZ', min:22 },
+        { id:'YODEL-OWCEM', show:'Totally Spies – Špiónky', ep:'1. série, 6. díl (1/2)', lang:'CZ', min:11 },
+        { id:'eIAr6xDJJXc', show:'Garfieldova show', ep:'Král Nermal', lang:'CZ', min:12 },
+        { id:'lwhpvjQlxkw', show:'Garfieldova show', ep:'Najdrahší medvedík', lang:'SK', min:12 },
+        { id:'8utmK8TkRSw', show:'Kačeří příběhy', ep:'Poklad ze ztracené lampy (film)', lang:'CZ', min:74 }
       ]
     },
     {
@@ -171,7 +202,16 @@ window.POZERAL = {
         { id:'g3592ZthdnU', show:'Beyblade Metal Masters', ep:'43. díl', lang:'CZ', min:22 },
         { id:'iqUjm8oX7IM', show:'Power Rangers: Síla Strážců', ep:'Zdroj světla (1. část)', lang:'CZ', min:22 },
         { id:'WSbDlKyd70o', show:'Power Rangers: Operace Overdrive', ep:'Jednou Rangerem (1. část)', lang:'CZ', min:22 },
-        { id:'WM3Byx1-Z9k', show:'Power Rangers: Operace Overdrive', ep:'Jednou Rangerem (2. část)', lang:'CZ', min:22 }
+        { id:'WM3Byx1-Z9k', show:'Power Rangers: Operace Overdrive', ep:'Jednou Rangerem (2. část)', lang:'CZ', min:22 },
+        { id:'B9dig9jOvOM', show:'Pokémon', ep:'Pikachu, volím si tebe!', lang:'CZ', min:22 },
+        { id:'8jAuOt1kLYI', show:'Bakugan: Gundalian Invaders', ep:'1. díl', lang:'CZ', min:22 },
+        { id:'82347rgAJRU', show:'Naruto', ep:'132. díl', lang:'CZ', min:23 },
+        { id:'9a8gvUu1VaU', show:'Beyblade Metal Fusion', ep:'Chyťte vlka!', lang:'CZ', min:22 },
+        { id:'_W72hoVddDM', show:'Bakugan', ep:'Šest stupňů zkázy', lang:'CZ', min:22 },
+        { id:'HrFiDKeIZPA', show:'Bakugan: Gundalian Invaders', ep:'11. díl', lang:'CZ', min:22 },
+        { id:'6NMj1Iypb4o', show:'Bakugan: Gundalian Invaders', ep:'18. díl', lang:'CZ', min:22 },
+        { id:'Ol0qBsGWI5c', show:'Bakugan: Gundalian Invaders', ep:'25. díl', lang:'CZ', min:22 },
+        { id:'JDn8h8666MU', show:'Bakugan: Gundalian Invaders', ep:'35. díl', lang:'CZ', min:22 }
       ]
     }
   ],

@@ -1,0 +1,82 @@
+/* Hlasoval — spoločné tokeny a základ pre hlasovaciu stránku aj DJ obrazovku.
+   Jedna tmavá podoba (klubová obrazovka), žltá len na tom, čo práve vedie. */
+:root{
+  --bg:#121110;
+  --bg-deep:#0c0b0a;
+  --panel:#1a1917;
+  --panel-2:#242320;
+  --panel-3:#2e2c28;
+  --line:rgba(255,255,255,.08);
+  --line-strong:rgba(255,255,255,.16);
+  --fg:#f5f2ea;
+  --fg-2:#cfcac0;
+  --muted:#8f8a7f;
+  --bar:#4e4b45;
+  --accent:#ffc81e;
+  --accent-soft:rgba(255,200,30,.14);
+  --accent-ink:#171410;
+  --live:#ec1c45;
+  --up:#79d08c;
+  --down:#e88f73;
+  --f-display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --f-body:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --ease-out:cubic-bezier(.22,1,.36,1);
+  --ease-spring:cubic-bezier(.34,1.4,.64,1);
+  --r-s:10px; --r-m:14px; --r-l:20px;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{height:100%;-webkit-text-size-adjust:100%}
+body{
+  margin:0;min-height:100%;
+  background:var(--bg);color:var(--fg);
+  font-family:var(--f-body);font-size:15px;line-height:1.45;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  overflow-x:hidden;
+}
+/* Jemné zrno a diagonálne „plechy“ ako na aute */
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(60% 40% at 50% -5%,rgba(255,200,30,.07),transparent 70%),
+    linear-gradient(152deg,rgba(255,255,255,.028) 0 38%,transparent 38.2%),
+    linear-gradient(208deg,transparent 0 64%,rgba(255,255,255,.02) 64.2% 100%);
+}
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.035;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>");
+  background-size:160px 160px;
+}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0;margin:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+img{max-width:100%;display:block}
+a{color:inherit}
+[hidden]{display:none!important}
+
+.eyebrow{font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.display{font-family:var(--f-display);font-weight:900;text-transform:uppercase;letter-spacing:.01em;line-height:.9}
+.tnum{font-variant-numeric:tabular-nums}
+
+/* Živý bod */
+.live{display:inline-flex;align-items:center;gap:8px;font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-2);padding:7px 12px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.02)}
+.live i{width:7px;height:7px;border-radius:50%;background:var(--live);box-shadow:0 0 0 0 rgba(236,28,69,.55);animation:pulse 1.8s var(--ease-out) infinite}
+.live.paused i{background:var(--muted);animation:none;box-shadow:none}
+.live.off i{background:var(--down);animation:none;box-shadow:none}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(236,28,69,.55)}70%{box-shadow:0 0 0 10px rgba(236,28,69,0)}100%{box-shadow:0 0 0 0 rgba(236,28,69,0)}}
+
+/* Toast */
+.toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px) scale(.98);opacity:0;z-index:50;
+  background:var(--fg);color:var(--bg);font-weight:600;font-size:14px;padding:12px 16px;border-radius:999px;box-shadow:0 18px 40px -16px rgba(0,0,0,.8);
+  transition:transform .35s var(--ease-spring),opacity .25s;pointer-events:none;max-width:calc(100vw - 32px);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.toast.show{transform:translate(-50%,0) scale(1);opacity:1}
+
+/* Vstup na stránku */
+.reveal{opacity:0;transform:translateY(10px);animation:reveal .7s var(--ease-out) forwards}
+.reveal:nth-child(2){animation-delay:.06s}.reveal:nth-child(3){animation-delay:.12s}.reveal:nth-child(4){animation-delay:.18s}.reveal:nth-child(5){animation-delay:.24s}.reveal:nth-child(6){animation-delay:.3s}
+@keyframes reveal{to{opacity:1;transform:none}}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+  .reveal{opacity:1;transform:none}
+}

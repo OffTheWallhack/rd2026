@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hlasoval · DJ obrazovka</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#121110">
+<link rel="icon" type="image/png" href="../ikony/icon-192.png">
+<link rel="apple-touch-icon" href="../ikony/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://znsrokpaoczljisaoulu.supabase.co">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="../hlasoval.css">
+<style>
+/* Layout: obrazovka za pultom. Hore pruh s logom a stavom, potom vedúci žáner s QR kódom,
+   štyri čísla, poradie žánrov a úplne dole ovládanie. Na výšku sa všetko skladá pod seba. */
+html,body{height:100%}
+body{overflow-y:auto}
+body.idle{cursor:none}
+.app{position:relative;z-index:1;max-width:1480px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;gap:18px;
+  padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px));
+  padding-top:calc(16px + env(safe-area-inset-top,0px));padding-bottom:calc(18px + env(safe-area-inset-bottom,0px))}
+
+.top{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:14px;min-width:0}
+.brand img{width:66px;height:auto;filter:drop-shadow(0 8px 18px rgba(0,0,0,.5))}
+.brand h1{margin:0;font-size:30px}
+.brand h1 small{display:block;font-family:var(--f-mono);font-weight:500;font-size:11px;letter-spacing:.14em;color:var(--muted);margin-top:5px;text-transform:uppercase}
+.top-right{margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.clock{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.ghost{display:inline-flex;align-items:center;gap:8px;padding:8px 13px;border-radius:999px;font-size:13px;font-weight:600;color:var(--fg-2);box-shadow:inset 0 0 0 1px var(--line);background:rgba(255,255,255,.02);transition:background .2s,color .2s,box-shadow .2s}
+.ghost:hover{background:rgba(255,255,255,.06);color:var(--fg)}
+.ghost svg{width:15px;height:15px}
+
+.hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:28px;align-items:stretch;position:relative}
+.lead{position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:14px;min-width:0;padding:6px 0}
+.lead::before{content:"";position:absolute;left:-10%;top:-20%;width:70%;height:140%;pointer-events:none;background:radial-gradient(closest-side,rgba(255,200,30,.11),transparent);opacity:0;transition:opacity 1s}
+.lead.has::before{opacity:1}
+.lead-name{position:relative;margin:0;font-size:clamp(64px,9.5vw,150px);letter-spacing:0;text-wrap:balance;will-change:transform}
+.lead-name.swap{animation:swap .6s var(--ease-out)}
+@keyframes swap{from{transform:translateY(22px);opacity:0;filter:blur(4px)}to{transform:none;opacity:1;filter:none}}
+.lead-meta{display:flex;align-items:baseline;gap:20px;flex-wrap:wrap}
+.lead-pct{font-family:var(--f-display);font-weight:800;font-size:clamp(44px,5.6vw,80px);line-height:1;color:var(--accent);text-shadow:0 0 40px rgba(255,200,30,.25)}
+.lead-sub{color:var(--fg-2);font-size:15px}
+.lead-sub b{color:var(--fg);font-weight:600}
+.margin{font-size:14px;color:var(--muted)}
+.margin b{color:var(--fg);font-weight:600}
+
+.qr{background:#fff;color:#151310;border-radius:18px;padding:16px 16px 14px;display:flex;flex-direction:column;align-items:center;gap:10px;width:232px;
+  box-shadow:0 30px 60px -30px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.06)}
+.qr-box{width:200px;height:200px;display:grid;place-items:center;border-radius:6px;overflow:hidden}
+.qr-box svg{width:200px;height:200px;display:block}
+.qr-txt{display:flex;flex-direction:column;align-items:center;gap:3px}
+.qr strong{font-family:var(--f-display);font-weight:900;font-size:27px;text-transform:uppercase;letter-spacing:.02em;line-height:1}
+.qr span{font-family:var(--f-mono);font-size:11.5px;color:#5c5750;letter-spacing:.04em}
+
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.stat{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,0)),var(--panel);box-shadow:inset 0 0 0 1px var(--line),inset 0 1px 0 rgba(255,255,255,.04);border-radius:var(--r-m);padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.stat .k{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.stat .v{font-family:var(--f-display);font-weight:800;font-size:34px;line-height:1}
+.stat .sub{font-size:12.5px;color:var(--muted);margin-top:auto}
+.stat .v small{font-family:var(--f-body);font-size:12.5px;font-weight:500;color:var(--muted);margin-left:6px;letter-spacing:0}
+.gauge{position:relative;height:5px;border-radius:3px;background:linear-gradient(90deg,#3a3732,#6b665d 55%,var(--accent));margin-top:8px}
+.gauge i{position:absolute;top:-5px;width:3px;height:15px;background:var(--fg);border-radius:2px;transform:translateX(-50%);transition:left .8s var(--ease-out);box-shadow:0 0 0 2px var(--panel)}
+.scale{display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:10px;color:var(--muted);margin-top:2px}
+.seg{display:flex;gap:4px;padding:3px;border-radius:9px;background:rgba(0,0,0,.25);box-shadow:inset 0 0 0 1px var(--line);margin-top:2px}
+.seg button{flex:1;padding:7px 6px;border-radius:7px;font-size:12.5px;font-weight:600;color:var(--muted);white-space:nowrap;transition:background .25s,color .25s}
+.seg button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+
+.board-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.board-head h2{margin:0;font-size:22px;letter-spacing:.03em}
+.board{position:relative;--row:60px;--gap:8px}
+.row{position:absolute;left:0;right:0;height:var(--row);display:grid;grid-template-columns:minmax(130px,200px) minmax(0,1fr) 176px;align-items:center;gap:16px;transition:top .7s var(--ease-out)}
+.row .nm{display:flex;flex-direction:column;min-width:0;gap:3px}
+.row .nm b{font-family:var(--f-display);font-weight:800;font-size:24px;text-transform:uppercase;letter-spacing:.02em;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .3s}
+.row .nm span{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.track{position:relative;height:32px;background:rgba(255,255,255,.04);box-shadow:inset 0 0 0 1px var(--line);border-radius:8px;overflow:hidden}
+.fill{position:absolute;inset:0 auto 0 0;width:0;background:var(--bar);border-radius:8px;transition:width .7s var(--ease-out),background .4s}
+.fill::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.12),transparent 55%)}
+.row.top .fill{background:var(--accent)}
+.row.top .nm b{color:var(--accent)}
+.trend{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-family:var(--f-mono);font-size:11px;font-weight:700;letter-spacing:.06em;padding:3px 7px;border-radius:5px;background:rgba(0,0,0,.5);opacity:0;transition:opacity .4s}
+.trend.on{opacity:1}
+.trend.up{color:var(--up)}.trend.down{color:var(--down)}
+.num{display:flex;align-items:baseline;justify-content:flex-end;gap:8px}
+.num b{font-family:var(--f-display);font-weight:800;font-size:32px;line-height:1;white-space:nowrap}
+.num span{font-family:var(--f-mono);font-size:12px;color:var(--muted);min-width:58px;text-align:right;white-space:nowrap}
+.bump{position:absolute;right:186px;top:4px;font-family:var(--f-mono);font-size:12px;font-weight:700;color:var(--accent);pointer-events:none;animation:bump 1.1s var(--ease-out) forwards}
+@keyframes bump{0%{opacity:0;transform:translateY(6px)}20%{opacity:1}100%{opacity:0;transform:translateY(-22px)}}
+
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;border-top:1px solid var(--line);padding-top:16px;margin-top:auto}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 16px;border-radius:var(--r-s);font-weight:600;font-size:14px;color:var(--fg);background:var(--panel-2);box-shadow:inset 0 0 0 1px var(--line);transition:background .2s,transform .15s var(--ease-out),box-shadow .2s}
+.btn:hover{background:var(--panel-3)}
+.btn:active{transform:scale(.97)}
+.btn.danger{color:#ffb6a6}
+.btn.solid{background:var(--accent);color:var(--accent-ink);box-shadow:none}
+.btn.solid:hover{background:#ffd24a}
+.btn svg{width:15px;height:15px}
+.confirm{display:inline-flex;gap:8px;align-items:center;flex-wrap:wrap;animation:reveal .3s var(--ease-out)}
+.confirm span{font-size:14px}
+.hint{margin-left:auto;font-size:12.5px;color:var(--muted)}
+.hint kbd{font-family:var(--f-mono);font-size:11px;padding:1px 5px;border-radius:4px;box-shadow:inset 0 0 0 1px var(--line);margin:0 1px}
+
+/* PIN */
+.veil{position:fixed;inset:0;z-index:40;background:rgba(8,7,6,.7);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:grid;place-items:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s}
+.veil.show{opacity:1;pointer-events:auto}
+.sheet{width:min(380px,100%);background:var(--panel);border-radius:22px;padding:26px 24px 22px;box-shadow:0 40px 90px -30px rgba(0,0,0,.9),inset 0 0 0 1px var(--line);display:flex;flex-direction:column;gap:14px;transform:translateY(14px) scale(.98);transition:transform .45s var(--ease-spring)}
+.veil.show .sheet{transform:none}
+.sheet h3{margin:0;font-size:26px}
+.sheet p{margin:0;color:var(--fg-2);font-size:14px}
+.pin{width:100%;font-family:var(--f-mono);font-size:30px;letter-spacing:.5em;text-align:center;padding:12px 0 12px .5em;border-radius:12px;background:rgba(0,0,0,.3);color:var(--fg);border:0;box-shadow:inset 0 0 0 1px var(--line-strong)}
+.pin.shake{animation:shake .45s}
+@keyframes shake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-6px)}40%,60%{transform:translateX(6px)}}
+.sheet label{display:flex;gap:10px;align-items:center;font-size:13.5px;color:var(--fg-2)}
+.sheet .acts{display:flex;gap:8px;justify-content:flex-end}
+.sheet .error{color:var(--down);font-size:13px;min-height:1.3em}
+
+@media (max-width:1000px){
+  .row{grid-template-columns:minmax(110px,160px) minmax(0,1fr) 150px}
+  .num b{font-size:26px}
+}
+@media (max-width:760px){
+  .hero{grid-template-columns:minmax(0,1fr)}
+  .qr{flex-direction:row;width:100%;justify-content:flex-start;gap:16px;align-items:center}
+  .qr-box,.qr-box svg{width:120px;height:120px}
+  .qr-txt{align-items:flex-start}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .board{--row:66px;--gap:10px}
+  .row{grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto 12px;row-gap:6px;column-gap:10px}
+  .num{flex-direction:column;align-items:flex-end;gap:2px}.num span{min-width:0}
+  .row .nm{grid-column:1;grid-row:1}.row .num{grid-column:2;grid-row:1}
+  .row .track{grid-column:1 / -1;grid-row:2;height:12px;border-radius:6px}
+  .trend{display:none}
+  .bump{right:100px}
+  .row .nm b{font-size:21px}.num b{font-size:24px}
+  .brand img{width:52px}.brand h1{font-size:24px}
+  .hint{margin-left:0;width:100%}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top reveal">
+    <div class="brand">
+      <img src="../zubor.png" alt="Red Bull Zubor" width="66" height="57">
+      <h1 class="display">Čo hráme?<small>Hlasovanie davu naživo</small></h1>
+    </div>
+    <div class="top-right">
+      <span class="live" id="live"><i></i><span id="liveTxt">Hlasovanie beží</span></span>
+      <span class="clock tnum" id="clock">--:--</span>
+      <button class="ghost" id="fsBtn" type="button" title="Celá obrazovka (F)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg>
+        <span>Celá obrazovka</span>
+      </button>
+    </div>
+  </header>
+
+  <section class="hero reveal">
+    <div class="lead" id="lead">
+      <span class="eyebrow" id="eyebrow">Dav teraz chce</span>
+      <p class="lead-name display" id="leadName">Čakám na hlasy</p>
+      <div class="lead-meta">
+        <span class="lead-pct tnum" id="leadPct">0 %</span>
+        <span class="lead-sub" id="leadSub">Ukáž ľuďom QR kód</span>
+      </div>
+      <span class="margin" id="margin"></span>
+    </div>
+    <div class="qr">
+      <div class="qr-box" id="qr"></div>
+      <div class="qr-txt"><strong>Čo hráme?</strong><span id="qrUrl">durica.si/hlasoval</span></div>
+    </div>
+  </section>
+
+  <section class="stats reveal" aria-label="Čísla">
+    <div class="stat"><span class="k">Hlasov</span><span class="v tnum" id="sTotal">0</span><span class="sub" id="sTotalSub">—</span></div>
+    <div class="stat"><span class="k">Za 5 min</span><span class="v tnum"><span id="sRecent">0</span><small>nových</small></span><span class="sub" id="sRecentSub">—</span></div>
+    <div class="stat">
+      <span class="k">Želané tempo</span>
+      <span class="v tnum"><span id="sBpm">—</span><small>BPM</small></span>
+      <div class="gauge"><i id="bpmPin" style="left:0%"></i></div>
+      <div class="scale"><span>115</span><span>145</span><span>175</span></div>
+    </div>
+    <div class="stat">
+      <span class="k">Počítať</span>
+      <div class="seg" role="group" aria-label="Časové okno">
+        <button type="button" id="winAll" aria-pressed="true">Celý večer</button>
+        <button type="button" id="win30" aria-pressed="false">30 min</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="reveal" aria-label="Poradie žánrov">
+    <div class="board-head">
+      <h2 class="display">Poradie žánrov</h2>
+      <span class="eyebrow" id="roundInfo">Celý večer</span>
+    </div>
+    <div class="board" id="board" style="margin-top:12px"></div>
+  </section>
+
+  <footer class="controls reveal">
+    <button class="btn" id="pauseBtn" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 5v14M15 5v14"/></svg>
+      <span>Pozastaviť hlasovanie</span>
+    </button>
+    <span id="resetWrap"><button class="btn danger" id="resetBtn" type="button">Nové kolo</button></span>
+    <button class="ghost" id="pinBtn" type="button">Zadať PIN</button>
+    <span class="hint"><kbd>F</kbd> celá obrazovka · <kbd>P</kbd> pauza · <kbd>N</kbd> nové kolo · 1 telefón = 1 hlas</span>
+  </footer>
+</div>
+
+<div class="veil" id="veil" role="dialog" aria-modal="true" aria-labelledby="pinTitle">
+  <form class="sheet" id="pinForm">
+    <h3 class="display" id="pinTitle">PIN DJa</h3>
+    <p>Ovládanie (pauza, nové kolo) je chránené PINom. Samotná obrazovka funguje aj bez neho.</p>
+    <input class="pin" id="pinInput" type="password" inputmode="numeric" autocomplete="one-time-code" maxlength="12" placeholder="••••" aria-label="PIN">
+    <span class="error" id="pinErr"></span>
+    <label><input type="checkbox" id="pinRemember" checked> Zapamätať na tomto zariadení</label>
+    <div class="acts">
+      <button class="btn" type="button" id="pinCancel">Zrušiť</button>
+      <button class="btn solid" type="submit">Odomknúť</button>
+    </div>
+  </form>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="qrcode.min.js"></script>
+<script src="../hlasoval.js"></script>
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  let state = null, genres = [], byId = {}, rows = {}, prevCounts = null, lastLead = null, windowMin = 0, pollT = null, failures = 0;
+  let pin = null; try { pin = localStorage.getItem("hlasoval_pin"); } catch(e){}
+
+  /* QR */
+  $("qrUrl").textContent = HL.VOTE_URL.replace(/^https?:\/\//,"").replace(/\/$/,"");
+  try { const q = qrcode(0, "M"); q.addData(HL.VOTE_URL); q.make(); $("qr").innerHTML = q.createSvgTag({ cellSize: 8, margin: 0, scalable: true }); }
+  catch(e){ $("qr").textContent = "QR"; }
+
+  function buildRows(gs){
+    genres = gs; byId = HL.genreMap(gs); rows = {}; $("board").innerHTML = "";
+    gs.forEach(g=>{
+      const r = document.createElement("div"); r.className = "row"; r.id = "row-"+g.id;
+      r.innerHTML = `<div class="nm"><b>${g.name}</b><span>${g.bpm[0]}–${g.bpm[1]} BPM</span></div>
+        <div class="track"><div class="fill"></div><span class="trend"></span></div>
+        <div class="num"><b class="tnum">0 %</b><span class="tnum">0</span></div>`;
+      $("board").appendChild(r); rows[g.id] = r;
+    });
+  }
+
+  function render(){
+    if (!state) return;
+    const counts = windowMin ? (state.counts30||{}) : (state.counts||{});
+    const total = Object.values(counts).reduce((a,b)=>a+b,0);
+    const all = state.counts||{}, allTotal = state.total||0;
+    const c10 = state.counts10||{}, t10 = Object.values(c10).reduce((a,b)=>a+b,0);
+    const order = HL.order(genres, counts);
+    const pct = id => total ? (counts[id]||0)/total*100 : 0;
+
+    const b = $("board"), cs = getComputedStyle(b);
+    const rowH = parseFloat(cs.getPropertyValue("--row"))||60, gap = parseFloat(cs.getPropertyValue("--gap"))||8;
+    b.style.height = (order.length*(rowH+gap)-gap)+"px";
+    order.forEach((id,i)=>{
+      const r = rows[id]; if (!r) return;
+      r.style.top = (i*(rowH+gap))+"px";
+      r.classList.toggle("top", i===0 && (counts[id]||0)>0);
+      r.querySelector(".fill").style.width = pct(id).toFixed(1)+"%";
+      HL.tween(r.querySelector(".num b"), Math.round(pct(id)), v=>Math.round(v)+" %");
+      const n = counts[id]||0;
+      r.querySelector(".num span").textContent = n+" "+HL.plural(n,"hlas","hlasy","hlasov");
+      const tr = r.querySelector(".trend");
+      if (t10 >= 5 && allTotal){
+        const d = (c10[id]||0)/t10*100 - (all[id]||0)/allTotal*100;
+        if (d > 6){ tr.className = "trend up on"; tr.textContent = "▲ rastie"; }
+        else if (d < -6){ tr.className = "trend down on"; tr.textContent = "▼ klesá"; }
+        else tr.className = "trend";
+      } else tr.className = "trend";
+      if (prevCounts && (all[id]||0) > (prevCounts[id]||0)){
+        const k = document.createElement("span"); k.className = "bump"; k.textContent = "+"+((all[id]||0)-(prevCounts[id]||0));
+        r.appendChild(k); setTimeout(()=>k.remove(), 1200);
+      }
+    });
+    prevCounts = Object.assign({}, all);
+
+    const lead = order[0], second = order[1];
+    const ln = $("leadName");
+    $("lead").classList.toggle("has", total>0);
+    if (!total){
+      if (lastLead !== null){ ln.textContent = "Čakám na hlasy"; lastLead = null; }
+      $("leadPct").textContent = "0 %";
+      $("leadSub").textContent = windowMin && allTotal ? "Za posledných 30 min nikto nehlasoval" : "Ukáž ľuďom QR kód";
+      $("margin").textContent = "";
+    } else {
+      if (lead !== lastLead){ ln.textContent = byId[lead].name; ln.classList.remove("swap"); void ln.offsetWidth; ln.classList.add("swap"); lastLead = lead; }
+      HL.tween($("leadPct"), Math.round(pct(lead)), v=>Math.round(v)+" %");
+      $("leadSub").innerHTML = `<b>${counts[lead]}</b> z ${total} ${HL.plural(total,"hlasu","hlasov","hlasov")} · ${byId[lead].bpm[0]}–${byId[lead].bpm[1]} BPM`;
+      const diff = (counts[lead]||0)-(counts[second]||0);
+      $("margin").innerHTML = diff===0
+        ? `Remíza s <b>${byId[second].name}</b>. Skús mix oboch.`
+        : `Druhé je <b>${byId[second].name}</b> (${Math.round(pct(second))} %), náskok ${diff} ${HL.plural(diff,"hlas","hlasy","hlasov")}`;
+    }
+
+    HL.tween($("sTotal"), allTotal, v=>String(Math.round(v)));
+    HL.tween($("sRecent"), state.recent5||0, v=>String(Math.round(v)));
+    $("sTotalSub").textContent = "Kolo "+state.round+" · od "+HL.hhmm(state.round_started_at);
+    const r5 = state.recent5||0;
+    $("sRecentSub").textContent = r5 === 0 ? (allTotal ? "Ticho. Nikto nehlasuje." : "Ešte nikto nehlasoval.") : r5 < 4 ? "Pomaly, po jednom." : r5 < 12 ? "Ľudia hlasujú." : "Dav je v tom naplno.";
+    if (total){
+      const bpm = genres.reduce((s,g)=>s+(counts[g.id]||0)*(g.bpm[0]+g.bpm[1])/2,0)/total;
+      HL.tween($("sBpm"), Math.round(bpm), v=>String(Math.round(v)));
+      $("bpmPin").style.left = Math.min(100,Math.max(0,(bpm-115)/60*100))+"%";
+    } else { $("sBpm").textContent = "—"; $("sBpm").dataset.v = 0; $("bpmPin").style.left = "0%"; }
+
+    $("live").classList.toggle("paused", !!state.paused);
+    $("liveTxt").textContent = state.paused ? "Pozastavené" : "Hlasovanie beží";
+    $("pauseBtn").classList.toggle("solid", !!state.paused);
+    $("pauseBtn").querySelector("span").textContent = state.paused ? "Spustiť hlasovanie" : "Pozastaviť hlasovanie";
+    $("roundInfo").textContent = windowMin ? "Posledných 30 min" : "Celý večer";
+  }
+
+  async function refresh(){
+    try{
+      const t = await HL.tally(); failures = 0;
+      if (!state || JSON.stringify(state.genres) !== JSON.stringify(t.genres)) buildRows(t.genres);
+      if (state && t.round !== state.round){ prevCounts = null; lastLead = null; }
+      state = t; $("live").classList.remove("off"); render();
+    }catch(e){ failures++; $("live").classList.add("off"); $("liveTxt").textContent = "Bez spojenia"; }
+  }
+  function schedule(){ clearTimeout(pollT); if (document.hidden) return; pollT = setTimeout(async()=>{ await refresh(); schedule(); }, Math.min(2000+failures*1500, 10000)); }
+  document.addEventListener("visibilitychange", ()=>{ if (document.hidden) clearTimeout(pollT); else { refresh(); schedule(); } });
+
+  /* PIN */
+  let pinResolve = null;
+  function askPin(){
+    return new Promise(res=>{
+      pinResolve = res; $("pinErr").textContent = ""; $("pinInput").value = "";
+      $("veil").classList.add("show"); setTimeout(()=>$("pinInput").focus(), 80);
+    });
+  }
+  function closePin(v){ $("veil").classList.remove("show"); $("pinInput").blur(); if (pinResolve){ const r = pinResolve; pinResolve = null; r(v); } }
+  $("pinCancel").addEventListener("click", ()=>closePin(null));
+  $("veil").addEventListener("click", e=>{ if (e.target === $("veil")) closePin(null); });
+  $("pinForm").addEventListener("submit", async e=>{
+    e.preventDefault();
+    const v = $("pinInput").value.trim(); if (!v) return;
+    try{
+      await HL.admin(v, "check");
+      if ($("pinRemember").checked){ try{ localStorage.setItem("hlasoval_pin", v); }catch(x){} }
+      pin = v; closePin(v); pinLabel();
+    }catch(x){
+      $("pinErr").textContent = x.message === "bad_pin" ? "Nesprávny PIN." : "Nepodarilo sa overiť. Skús znova.";
+      $("pinInput").classList.remove("shake"); void $("pinInput").offsetWidth; $("pinInput").classList.add("shake");
+      $("pinInput").select();
+    }
+  });
+  async function withPin(fn){
+    if (!pin){ const p = await askPin(); if (!p) return false; }
+    try{ const t = await fn(pin); if (t && t.round !== undefined){ if (state && t.round !== state.round){ prevCounts = null; lastLead = null; } state = t; render(); } return true; }
+    catch(x){
+      if (x.message === "bad_pin"){ pin = null; try{ localStorage.removeItem("hlasoval_pin"); }catch(e){} pinLabel(); HL.toast("PIN už neplatí, zadaj ho znova"); }
+      else HL.toast("Nepodarilo sa. Skús znova.");
+    }
+  }
+  function pinLabel(){ $("pinBtn").textContent = pin ? "Zabudnúť PIN" : "Zadať PIN"; }
+  $("pinBtn").addEventListener("click", async ()=>{
+    if (pin){ pin = null; try{ localStorage.removeItem("hlasoval_pin"); }catch(e){} HL.toast("PIN zabudnutý na tomto zariadení"); }
+    else await askPin();
+    pinLabel();
+  });
+  pinLabel();
+
+  /* Controls */
+  function togglePause(){ withPin(p=>HL.admin(p, state && state.paused ? "resume" : "pause")).then(ok=>{ if (ok && state) HL.toast(state.paused ? "Hlasovanie pozastavené" : "Hlasovanie beží"); }); }
+  $("pauseBtn").addEventListener("click", togglePause);
+  function resetUI(){
+    $("resetWrap").innerHTML = '<button class="btn danger" id="resetBtn" type="button">Nové kolo</button>';
+    $("resetBtn").addEventListener("click", askReset);
+  }
+  function askReset(){
+    if ($("resetYes")) return;
+    const n = state ? state.total : 0;
+    $("resetWrap").innerHTML = `<span class="confirm"><span>Začať odznova a vynulovať ${n} ${HL.plural(n,"hlas","hlasy","hlasov")}?</span>
+      <button class="btn danger" id="resetYes" type="button">Áno, nové kolo</button><button class="btn" id="resetNo" type="button">Zrušiť</button></span>`;
+    $("resetYes").addEventListener("click", async ()=>{ const ok = await withPin(p=>HL.admin(p, "new_round")); resetUI(); if (ok) HL.toast("Nové kolo. Ľudia hlasujú odznova."); });
+    $("resetNo").addEventListener("click", resetUI);
+  }
+  $("resetBtn").addEventListener("click", askReset);
+
+  function setWin(m){ windowMin = m; $("winAll").setAttribute("aria-pressed", m===0); $("win30").setAttribute("aria-pressed", m===30); lastLead = null; render(); }
+  $("winAll").addEventListener("click", ()=>setWin(0));
+  $("win30").addEventListener("click", ()=>setWin(30));
+
+  /* Fullscreen, wake lock, idle cursor, clock, keys */
+  const fsBtn = $("fsBtn");
+  if (!document.documentElement.requestFullscreen) fsBtn.hidden = true;
+  fsBtn.addEventListener("click", ()=>{
+    const p = document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+    if (p && p.catch) p.catch(()=>{});
+  });
+  document.addEventListener("fullscreenchange", ()=>{ fsBtn.querySelector("span").textContent = document.fullscreenElement ? "Ukončiť" : "Celá obrazovka"; });
+  let lock = null;
+  async function wake(){ try{ if (navigator.wakeLock && !lock){ lock = await navigator.wakeLock.request("screen"); lock.addEventListener("release", ()=>{ lock = null; }); } }catch(e){} }
+  wake(); document.addEventListener("visibilitychange", ()=>{ if (!document.hidden) wake(); });
+  let idleT; function wakeCursor(){ document.body.classList.remove("idle"); clearTimeout(idleT); idleT = setTimeout(()=>document.body.classList.add("idle"), 3500); }
+  ["mousemove","mousedown","keydown","touchstart"].forEach(ev=>document.addEventListener(ev, wakeCursor, {passive:true})); wakeCursor();
+  function tick(){ $("clock").textContent = HL.hhmm(new Date()); } tick(); setInterval(tick, 10000);
+  document.addEventListener("keydown", e=>{
+    if (e.target.tagName === "INPUT" || e.metaKey || e.ctrlKey) return;
+    const k = e.key.toLowerCase();
+    if (k === "f") fsBtn.click();
+    else if (k === "p") togglePause();
+    else if (k === "n") askReset();
+    else if (k === "escape"){ if ($("veil").classList.contains("show")) closePin(null); else if ($("resetNo")) resetUI(); }
+  });
+  window.addEventListener("resize", render);
+
+  refresh().then(schedule);
+})();
+</script>
+</body>
+</html>

@@ -33,7 +33,7 @@
       dl: "<path d='M12 4v11m-4.5-4.5L12 15l4.5-4.5'/><path d='M4.5 17v2.5h15V17'/>",
       me: "<circle cx='12' cy='8.5' r='3.8'/><path d='M4.5 20c.8-3.8 3.8-6 7.5-6s6.7 2.2 7.5 6'/>"
     };
-    var LINKS = [[onHome ? "#sluzby" : ROOT, "Služby", "Services", rootPath, "svc"],
+    var LINKS = [[onHome ? "#top" : ROOT, "Domov", "Home", rootPath, "svc"],
      [ROOT + "blog/", "Blog", "Blog", rootPath + "blog/", "blog"],
      [ROOT + "na-stiahnutie/", "Na stiahnutie", "Downloads", rootPath + "na-stiahnutie/", "dl"],
      [ROOT + "kto-som/", "Kto som", "About me", rootPath + "kto-som/", "me"]];

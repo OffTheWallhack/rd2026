@@ -300,6 +300,8 @@
   $('.ro-webback').addEventListener('click', function (e) { e.stopPropagation(); closePhone(); });
   launch.addEventListener('click', openPhone);
   xBtn.addEventListener('click', function (e) { e.stopPropagation(); closePhone(); });
+  // any link on the page with data-robos-open opens the phone instead of leaving
+  document.addEventListener('click', function (e) { var a = e.target.closest && e.target.closest('[data-robos-open]'); if (a && !PAGE) { e.preventDefault(); openPhone(); } });
   window.addEventListener('resize', place);
   if (mobileMQ.addEventListener) mobileMQ.addEventListener('change', function () { if (isOpen && !PAGE) closePhone(); place(); });
 

@@ -3,43 +3,41 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="claude:viewport-fit-sides" content="cover">
-<title>Pozeral TV</title>
-<meta name="description" content="Nekomerčná retro televízia so starými rozprávkami v českom a slovenskom dabingu.">
-<meta name="theme-color" content="#0d4fc2">
+<title>Si pozeral</title>
+<meta name="description" content="Rozprávky z Jetixu, Minimaxu a Cartoon Network v českom a slovenskom dabingu. Bežia stále, ako v telke.">
+<meta name="theme-color" content="#101318">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Titan+One&family=VT323&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&family=VT323&display=swap" rel="stylesheet">
 <style>
-/* Layout: pripnutý horný bar s telkou (pri scrolle sa zmenší na ~25 % a vedľa nej naskočí "teraz beží"),
-   pod ním okná v štýle detských webov z roku 2002, dole pripnutý ovládač s bežiacim textom. Jeden svetlý vzhľad zámerne. */
+/* Layout: tmavá izba večer. Pripnutý horný bar s telkou, ktorá sa pri scrolle zmenší a vedľa nej naskočí "teraz beží".
+   Pod ňou pokojný obsah, dole pripnutý ovládač s bežiacim textom. Štýl roku 2002 len na telke, teletexte a predeloch. */
 :root{
-  --sky:#0b3d91;
-  --sky-2:#1c63d8;
-  --sky-3:#3a8bff;
-  --navy:#0a1f44;
-  --panel:#eaf3ff;
-  --panel-2:#d5e6ff;
-  --yellow:#ffd400;
-  --orange:#ff7a00;
-  --lime:#8fdc22;
-  --red:#e8261c;
-  --white:#ffffff;
+  --bg:#101318;
+  --bg-2:#151922;
+  --card:#181d26;
+  --line:#2a3140;
+  --ink:#ece8df;
+  --muted:#9aa2b0;
+  --accent:#ffd400;
+  --glow:rgba(70,130,255,.10);
   --silver-1:#f4f6f8;
   --silver-2:#c3cad3;
   --silver-3:#8e97a3;
+  --red:#e8261c;
   --tt-yellow:#ffe600;
   --tt-cyan:#2ee6f0;
   --tt-green:#3dff6a;
   --tt-red:#ff4a3d;
-  --f-logo:"Titan One", "Arial Black", Impact, sans-serif;
-  --f-body:Verdana, Tahoma, "DejaVu Sans", Geneva, sans-serif;
+  --tt-blue:#1730d6;
+  --f-logo:"Bricolage Grotesque", "Arial Narrow", system-ui, sans-serif;
+  --f-body:"Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-osd:"VT323", ui-monospace, "Courier New", monospace;
   --gut:max(16px, env(safe-area-inset-left, 0px));
   --gut-r:max(16px, env(safe-area-inset-right, 0px));
   --p:0;
   --hc:180px;
-  color-scheme:light;
+  color-scheme:dark;
 }
 *{box-sizing:border-box}
 [hidden]{display:none !important}
@@ -47,71 +45,37 @@ html,body{margin:0}
 html{scroll-behavior:smooth}
 @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
 body{
-  font-family:var(--f-body);
-  font-size:14px;
-  line-height:1.55;
-  color:var(--navy);
-  background-color:var(--sky);
-  background-image:
-    radial-gradient(rgba(255,255,255,.18) 1px, transparent 1.6px),
-    radial-gradient(rgba(255,212,0,.28) 1.4px, transparent 2px),
-    linear-gradient(180deg, var(--sky-2), var(--sky) 60%);
-  background-size:22px 22px, 61px 61px, 100% 100%;
-  background-position:0 0, 13px 29px, 0 0;
-  background-attachment:fixed;
-  padding-bottom:calc(74px + env(safe-area-inset-bottom, 0px));
+  font-family:var(--f-body);font-size:16px;line-height:1.55;color:var(--ink);
+  background:radial-gradient(ellipse 80% 55% at 50% 12%, var(--glow), transparent 70%) fixed, var(--bg);
+  padding-bottom:calc(72px + env(safe-area-inset-bottom, 0px));
+  transition:background-color .6s;
 }
-a{color:#0b4fd6}
-:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
-.wrap{max-width:900px;margin:0 auto;padding-left:var(--gut);padding-right:var(--gut-r)}
+body.on{--glow:rgba(70,130,255,.2)}
+a{color:var(--ink);text-decoration-color:rgba(236,232,223,.4);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.wrap{max-width:880px;margin:0 auto;padding-left:var(--gut);padding-right:var(--gut-r)}
 
 /* ---------- Horný bar ---------- */
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top, 0px);z-index:60;background:#0d4fc2}
-.top{position:fixed;left:0;right:0;top:env(safe-area-inset-top, 0px);z-index:50}
-.topbar{
-  position:relative;
-  background:linear-gradient(180deg, var(--sky-3) 0%, #1660e0 48%, #0d4fc2 52%, #0a3a99 100%);
-  border-bottom:3px solid var(--yellow);
-}
-.topbar::after{content:"";position:absolute;left:0;right:0;top:0;height:46%;background:linear-gradient(rgba(255,255,255,.35), rgba(255,255,255,.05));pointer-events:none}
-.topbar-in{display:flex;align-items:center;gap:12px;padding-block:8px;position:relative;z-index:1}
-.logo{
-  font-family:var(--f-logo);font-size:30px;line-height:1;text-decoration:none;color:var(--yellow);
-  -webkit-text-stroke:2px var(--navy);paint-order:stroke fill;text-shadow:3px 3px 0 var(--navy);
-  display:flex;align-items:center;gap:6px;margin-right:auto;letter-spacing:.01em;white-space:nowrap;
-}
-.logo-tv{
-  font-size:15px;-webkit-text-stroke:0;color:var(--white);background:var(--orange);
-  border:2px solid var(--navy);border-radius:999px;padding:3px 8px 2px;transform:rotate(-8deg);
-  text-shadow:1px 1px 0 var(--navy);box-shadow:2px 2px 0 var(--navy);
-}
-.nav{display:flex;gap:8px}
-.pill{
-  position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:6px;
-  font:bold 13px/1 var(--f-body);color:var(--navy);text-decoration:none;cursor:pointer;
-  background:linear-gradient(180deg, #c9f57a, var(--lime) 55%, #5aa810);
-  border:2px solid #2b5c00;border-radius:999px;padding:7px 13px;
-  box-shadow:0 2px 0 rgba(0,0,0,.35);
-}
-.pill::after{content:"";position:absolute;left:6%;right:6%;top:2px;height:42%;border-radius:999px;background:linear-gradient(rgba(255,255,255,.75), rgba(255,255,255,.1));pointer-events:none}
-.pill.o{background:linear-gradient(180deg, #ffc266, var(--orange) 55%, #d65a00);border-color:#7a3300;color:var(--white);text-shadow:1px 1px 0 #7a3300}
-.pill:active{transform:translateY(1px);box-shadow:0 1px 0 rgba(0,0,0,.35)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top, 0px);z-index:60;background:var(--bg)}
+.top{position:fixed;left:0;right:0;top:env(safe-area-inset-top, 0px);z-index:50;background:rgba(16,19,24,.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{display:flex;align-items:center;gap:18px;padding-block:12px}
+.logo{font-family:var(--f-logo);font-size:24px;line-height:1;letter-spacing:-.01em;text-decoration:none;margin-right:auto;white-space:nowrap;font-weight:500;color:var(--muted)}
+.logo b{font-weight:800;color:var(--ink)}
+.logo b.si{color:var(--accent)}
+.nav{display:flex;gap:18px;font-size:14px}
+.nav a{color:var(--muted);text-decoration:none}
+.nav a:hover{color:var(--ink)}
+.stage{display:flex;align-items:center;gap:calc(16px * var(--p));padding-block:calc(6px - 2px * var(--p)) calc(16px - 8px * var(--p))}
 
-.stage-band{
-  background:linear-gradient(180deg, #0f4cbc, #0b3d91);
-  border-bottom:3px solid var(--navy);
-  box-shadow:0 6px 0 rgba(10,31,68,.35);
-}
-.stage{display:flex;align-items:center;gap:calc(14px * var(--p));padding-block:calc(14px - 6px * var(--p))}
-
-/* ---------- Telka ---------- */
+/* ---------- Telka (tu je rok 2002) ---------- */
 .tv{
   flex:0 0 auto;
   background:linear-gradient(160deg, var(--silver-1) 0%, var(--silver-2) 45%, var(--silver-3) 100%);
   border:2px solid #5d6670;
-  border-radius:calc(26px - 14px * var(--p));
+  border-radius:calc(24px - 13px * var(--p));
   padding:calc(16px - 11px * var(--p)) calc(16px - 11px * var(--p)) calc(10px - 6px * var(--p));
-  box-shadow:inset 0 2px 0 rgba(255,255,255,.9), inset 0 -3px 0 rgba(0,0,0,.18), 0 6px 0 rgba(10,31,68,.55);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.9), inset 0 -3px 0 rgba(0,0,0,.18), 0 18px 40px -16px rgba(0,0,0,.8);
 }
 .screen{
   position:relative;aspect-ratio:4/3;width:100%;max-width:100%;
@@ -121,10 +85,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 }
 .screen > *{position:absolute;inset:0}
 #yt, #yt iframe, #vid{width:100%;height:100%;border:0;display:block;background:#000}
-.screen::after{
-  content:"";position:absolute;inset:0;pointer-events:none;z-index:9;border-radius:inherit;
-  background:radial-gradient(ellipse 75% 70% at 50% 50%, transparent 72%, rgba(0,0,0,.42) 100%);
-}
+.screen::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:9;border-radius:inherit;background:radial-gradient(ellipse 75% 70% at 50% 50%, transparent 72%, rgba(0,0,0,.42) 100%)}
 .tv-foot{display:flex;align-items:center;gap:10px;padding:8px 4px 0;opacity:calc(1 - var(--p) * 2.2);height:calc(30px * (1 - var(--p)));overflow:hidden}
 .grille{flex:1;height:12px;background:repeating-linear-gradient(90deg, #6f7883 0 3px, transparent 3px 7px);border-radius:3px;opacity:.75}
 .tv-brand{font-family:var(--f-osd);font-size:20px;letter-spacing:.3em;color:#4a525c;text-shadow:0 1px 0 rgba(255,255,255,.7)}
@@ -137,28 +98,28 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 #mono{width:100%;height:100%;z-index:5}
 
 .off{background:#050505;gap:3cqh;z-index:8;padding:6cqh}
-.off p{margin:0;color:#9aa6b8;font-size:max(10px,4.2cqh);max-width:34ch;line-height:1.35}
+.off p{margin:0;color:#8f98a6;font-size:max(10px,4.2cqh);max-width:34ch;line-height:1.35}
 @container (max-height:170px){ .off p{display:none} }
 .power-big{
-  position:relative;overflow:hidden;font-family:var(--f-logo);font-size:max(12px,7cqh);line-height:1;
-  color:var(--white);background:linear-gradient(180deg, #ff8a7a, var(--red) 55%, #9e130b);
+  position:relative;overflow:hidden;font:800 max(12px,6.5cqh)/1 var(--f-logo);letter-spacing:.02em;
+  color:#fff;background:linear-gradient(180deg, #ff8a7a, var(--red) 55%, #9e130b);
   border:2px solid #4a0905;border-radius:999px;padding:2.4cqh 6cqh;cursor:pointer;
-  text-shadow:2px 2px 0 #4a0905;box-shadow:0 3px 0 rgba(0,0,0,.6);
+  text-shadow:0 1px 0 #4a0905;box-shadow:0 3px 0 rgba(0,0,0,.6);
 }
-.power-big::after{content:"";position:absolute;left:8%;right:8%;top:2px;height:40%;border-radius:999px;background:linear-gradient(rgba(255,255,255,.65), rgba(255,255,255,.05))}
+.power-big::after{content:"";position:absolute;left:8%;right:8%;top:2px;height:40%;border-radius:999px;background:linear-gradient(rgba(255,255,255,.6), rgba(255,255,255,.05))}
 
 .bumper{background:#000;gap:1.6cqh;font-family:var(--f-osd);padding:4cqh}
 .bumper .big{font-size:13cqh;color:var(--tt-yellow);line-height:1;letter-spacing:.04em}
-.bumper .nxt{font-size:6.5cqh;color:var(--white);line-height:1.1}
+.bumper .nxt{font-size:6.5cqh;color:#fff;line-height:1.1}
 .bumper .show{color:var(--tt-cyan)}
 .bumper .cd{font-size:6cqh;color:var(--tt-green);font-variant-numeric:tabular-nums}
 .bars{display:flex;width:70%;height:3cqh}
 .bars i{flex:1}
-.bumper.ad{background:linear-gradient(135deg, #1c63d8, #0a3a99)}
-.bumper.ad .big{font-family:var(--f-logo);color:var(--yellow);-webkit-text-stroke:.5cqh var(--navy);paint-order:stroke fill;text-shadow:1cqh 1cqh 0 var(--navy)}
+.bumper.ad{background:var(--tt-blue)}
+.bumper.ad .bars{display:none}
 
 .err{z-index:7;justify-content:flex-end;padding-bottom:7cqh;pointer-events:none}
-.err .box{background:#000;color:var(--white);font-family:var(--f-osd);font-size:max(11px,5.6cqh);padding:1.4cqh 3cqh;line-height:1.15;max-width:90%}
+.err .box{background:#000;color:#fff;font-family:var(--f-osd);font-size:max(11px,5.6cqh);padding:1.4cqh 3cqh;line-height:1.15;max-width:90%}
 .err .box b{color:var(--tt-yellow);font-weight:400}
 
 .osd{
@@ -168,189 +129,126 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   text-shadow:0 0 6px rgba(61,255,106,.7), 2px 2px 0 #000;opacity:0;transition:opacity .25s;
 }
 .osd.show{opacity:1}
-.osd .title{font-size:max(10px,5.5cqh);margin-top:.8cqh;color:var(--white);text-shadow:2px 2px 0 #000}
+.osd .title{font-size:max(10px,5.5cqh);margin-top:.8cqh;color:#fff;text-shadow:2px 2px 0 #000}
 .osd .vol{text-align:right}
-.adtag{
-  z-index:8;pointer-events:none;inset:auto;top:4cqh;right:4%;
-  font-family:var(--f-osd);font-size:max(10px,5.5cqh);line-height:1;color:var(--white);
-  background:rgba(0,0,0,.55);padding:.6cqh 1.6cqh;border:1px solid rgba(255,255,255,.6);
-}
-.chip{
-  z-index:8;inset:auto;left:50%;bottom:6cqh;transform:translateX(-50%);
-  font-family:var(--f-osd);font-size:max(12px,6cqh);background:var(--tt-yellow);color:#000;border:0;
-  padding:.6cqh 3cqh;cursor:pointer;border-radius:4px;white-space:nowrap;
-}
+.adtag{z-index:8;pointer-events:none;inset:auto;top:4cqh;right:4%;font-family:var(--f-osd);font-size:max(10px,5.5cqh);line-height:1;color:#fff;background:rgba(0,0,0,.55);padding:.6cqh 1.6cqh;border:1px solid rgba(255,255,255,.6)}
+.chip{z-index:8;inset:auto;left:50%;bottom:6cqh;transform:translateX(-50%);font-family:var(--f-osd);font-size:max(12px,6cqh);background:var(--tt-yellow);color:#000;border:0;padding:.6cqh 3cqh;cursor:pointer;border-radius:4px;white-space:nowrap}
 
 /* mini info vedľa zmenšenej telky */
-.mini{flex:1 1 auto;min-width:0;overflow:hidden;color:var(--white);opacity:var(--p);display:grid;gap:4px}
+.mini{flex:1 1 auto;min-width:0;overflow:hidden;opacity:var(--p);display:grid;gap:5px}
 .mini[aria-hidden="true"]{visibility:hidden}
-.mini .lbl{display:flex;gap:8px;align-items:center;font:bold 11px/1 var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--yellow)}
-.mini .show{font-family:var(--f-logo);font-size:clamp(17px,3.6vw,26px);line-height:1.05;-webkit-text-stroke:1px var(--navy);paint-order:stroke fill;text-shadow:2px 2px 0 var(--navy);overflow-wrap:anywhere}
-.mini .ep{font-size:12px;color:#cfe0ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mini .next{font-size:12px;color:#cfe0ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mini .next b{color:var(--yellow)}
+.mini .lbl{display:flex;gap:8px;align-items:center;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.mini .show{font:800 clamp(17px,3.4vw,26px)/1.05 var(--f-logo);letter-spacing:-.01em;overflow-wrap:anywhere}
+.mini .ep,.mini .next{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mini .next b{color:var(--ink);font-weight:700}
 
-.prog{height:8px;background:rgba(10,31,68,.5);border:1px solid var(--navy);border-radius:999px;overflow:hidden}
-.prog i{display:block;height:100%;width:0;background:linear-gradient(180deg, #fff59a, var(--yellow) 50%, #e0a800)}
+.prog{height:4px;background:var(--line);border-radius:2px;overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:var(--accent)}
 
 /* ---------- Obsah ---------- */
 #spacer{height:var(--he, 640px)}
-main.wrap{display:grid;gap:26px;padding-block:22px 10px}
-.win{
-  background:var(--panel);border:3px solid var(--navy);border-radius:14px;
-  box-shadow:6px 6px 0 var(--navy);min-width:0;overflow:hidden;
-  scroll-margin-top:calc(var(--hc) + 14px);
-}
-.win-t{
-  display:flex;align-items:center;gap:10px;
-  font-family:var(--f-logo);font-size:19px;line-height:1;color:var(--white);
-  text-shadow:2px 2px 0 var(--navy);
-  background:linear-gradient(180deg, #ffb24d, var(--orange) 55%, #e05e00);
-  border-bottom:3px solid var(--navy);padding:9px 14px;position:relative;
-}
-.win-t::after{content:"";position:absolute;left:0;right:0;top:0;height:45%;background:linear-gradient(rgba(255,255,255,.45), rgba(255,255,255,0));pointer-events:none}
-.win-t.blue{background:linear-gradient(180deg, #5aa2ff, var(--sky-2) 55%, #0d4fc2)}
-.win-t.green{background:linear-gradient(180deg, #b6ef62, #6cc414 55%, #4c9a0a)}
-.win-b{padding:16px}
-.burst{
-  margin-left:auto;font:bold 11px/1 var(--f-body);color:var(--navy);text-shadow:none;
-  background:var(--yellow);padding:13px 9px;transform:rotate(8deg);
-  clip-path:polygon(50% 0,61% 18%,82% 10%,80% 32%,100% 40%,84% 55%,96% 76%,74% 76%,68% 98%,50% 84%,32% 98%,26% 76%,4% 76%,16% 55%,0 40%,20% 32%,18% 10%,39% 18%);
-}
+main.wrap{display:grid;gap:40px;padding-block:28px 12px}
+section{min-width:0;scroll-margin-top:calc(var(--hc) + 16px)}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
 
-.now{display:grid;gap:8px}
-.now h2{margin:0;font-family:var(--f-logo);font-weight:400;font-size:clamp(28px,6vw,40px);line-height:1.05;color:var(--sky);text-wrap:balance}
-.now .ep{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:15px}
-.lang{font:bold 11px/1 var(--f-body);padding:4px 7px;border-radius:999px;border:2px solid var(--navy);background:var(--tt-cyan);color:var(--navy);white-space:nowrap}
-.lang.sk{background:var(--lime)}
-.lang.ns{background:var(--yellow)}
-.lang.en{background:#d7dbe2}
-.meta{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12px;color:#33507f;font-variant-numeric:tabular-nums}
+.now{display:grid;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.now h2{margin:0;font:800 clamp(30px,6vw,44px)/1.02 var(--f-logo);letter-spacing:-.02em;text-wrap:balance}
+.now .ep{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:16px;color:var(--muted)}
+.lang{font-size:11px;font-weight:700;line-height:1;letter-spacing:.06em;padding:4px 7px;border-radius:4px;border:1px solid currentColor;color:var(--tt-cyan);white-space:nowrap}
+.lang.sk{color:var(--tt-green)}
+.lang.ns{color:var(--accent)}
+.lang.en{color:var(--muted)}
+.meta{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
 
-.tt{background:#000;font-family:var(--f-osd);font-size:clamp(18px,3.9vw,23px);line-height:1.15;padding:14px clamp(10px,3vw,20px) 18px;color:var(--white)}
+.tt{background:#000;border-radius:10px;font-family:var(--f-osd);font-size:clamp(18px,3.9vw,23px);line-height:1.15;padding:16px clamp(12px,3vw,22px) 18px;color:#fff;box-shadow:0 0 0 1px var(--line)}
 .tt-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .tt-head .p{color:var(--tt-yellow)}
-.tt-title{display:block;margin:10px 0 12px;padding:4px 10px;background:#1730d6;color:var(--tt-yellow);font-size:clamp(26px,5.6vw,38px);line-height:1;letter-spacing:.04em}
+.tt-title{display:block;margin:10px 0 12px;padding:4px 10px;background:var(--tt-blue);color:var(--tt-yellow);font-size:clamp(26px,5.6vw,38px);line-height:1;letter-spacing:.04em}
 .tt ol{list-style:none;margin:0;padding:0;display:grid;gap:3px}
 .tt li{display:grid;grid-template-columns:5ch 1fr auto;gap:12px;align-items:baseline}
 .tt .t{color:var(--tt-yellow);font-variant-numeric:tabular-nums}
 .tt .s{min-width:0}
 .tt .s span{color:var(--tt-cyan)}
-.tt li.cur .t{background:var(--tt-red);color:var(--white);padding:0 3px}
+.tt li.cur .t{background:var(--tt-red);color:#fff;padding:0 3px}
 .tt li.ad .s{color:#ff9cf0}
 .tt-foot{margin-top:12px;display:flex;gap:16px;flex-wrap:wrap}
 
-.cols{display:grid;gap:26px;grid-template-columns:repeat(auto-fit, minmax(min(100%, 320px), 1fr))}
-.win p{margin:0 0 10px;max-width:62ch}
+.about{display:grid;gap:12px}
+.about h2{margin:0;font:800 clamp(26px,5vw,34px)/1.1 var(--f-logo);letter-spacing:-.02em;text-wrap:balance}
+.about h2 b{color:var(--accent)}
+.about p{margin:0;color:var(--muted);max-width:62ch}
 
-form{display:grid;gap:10px}
-label{display:grid;gap:4px;font-weight:bold;font-size:12px}
-label span{font-weight:normal;color:#4a6390}
-input, select, textarea{
-  font:13px/1.4 var(--f-body);color:var(--navy);background:var(--white);
-  border:2px inset #9fb3d4;border-radius:3px;padding:6px 8px;width:100%;min-width:0;
-}
-textarea{min-height:84px;resize:vertical}
-.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.btn-fill{font:12px/1 var(--f-body);background:none;border:0;color:#0b4fd6;text-decoration:underline;cursor:pointer;padding:0}
-.status{margin:0;font-weight:bold}
-.status.ok{color:#1d7a00}
-.status.bad{color:#b31d14}
-.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
-
-.foot{text-align:center;color:#cfe0ff;font-size:11px;display:grid;gap:4px;padding-block:6px 4px}
-.foot b{color:var(--yellow)}
+.foot{color:var(--muted);font-size:12px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:14px}
 
 /* ---------- Dolný bar ---------- */
-.bottom{
-  position:fixed;left:0;right:0;bottom:0;z-index:50;
-  background:linear-gradient(180deg, #1a5ad0, #0a3a99 50%, #062a70);
-  border-top:3px solid var(--yellow);
-  padding-bottom:env(safe-area-inset-bottom, 0px);
-  box-shadow:0 -4px 0 rgba(10,31,68,.35);
-}
-.bottom-in{display:flex;align-items:center;gap:10px;height:62px}
+.bottom{position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--bg);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom, 0px)}
+.bottom-in{display:flex;align-items:center;gap:10px;height:60px}
 .remote{display:flex;gap:6px;flex:0 0 auto}
-.rb{
-  position:relative;overflow:hidden;width:44px;height:44px;border-radius:50%;cursor:pointer;
-  font:bold 12px/1 var(--f-body);color:var(--navy);
-  background:radial-gradient(circle at 50% 30%, #ffffff, #c9d2dd 45%, #8e97a3 100%);
-  border:2px solid var(--navy);box-shadow:0 3px 0 rgba(0,0,0,.45);
-}
-.rb.pw{background:radial-gradient(circle at 50% 30%, #ffb0a8, var(--red) 50%, #8e120a);color:var(--white);font-size:18px}
-.rb[aria-pressed="true"]{background:radial-gradient(circle at 50% 30%, #fff7b0, var(--yellow) 50%, #c79a00)}
-.rb:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.45)}
-.rb:disabled{opacity:.5;cursor:default}
-.ticker{
-  flex:1 1 auto;min-width:0;overflow:hidden;height:40px;display:flex;align-items:center;
-  background:#000;border:2px solid var(--navy);border-radius:6px;box-shadow:inset 0 2px 6px rgba(0,0,0,.8);
-}
-.ticker-run{display:inline-block;white-space:nowrap;padding-left:100%;font-family:var(--f-osd);font-size:24px;color:var(--tt-yellow);animation:run 32s linear infinite}
+.rb{width:42px;height:42px;border-radius:50%;cursor:pointer;font:700 15px/1 var(--f-body);color:var(--ink);background:var(--bg-2);border:1px solid var(--line)}
+.rb:hover{border-color:var(--muted)}
+.rb.pw{color:#ff6a5e}
+.rb.pw[data-on="true"]{background:var(--red);color:#fff;border-color:var(--red)}
+.rb[aria-pressed="true"]{color:var(--accent);border-color:var(--accent)}
+.rb:disabled{opacity:.4;cursor:default}
+.ticker{flex:1 1 auto;min-width:0;overflow:hidden;height:38px;display:flex;align-items:center;background:#000;border-radius:6px;box-shadow:0 0 0 1px var(--line)}
+.ticker-run{display:inline-block;white-space:nowrap;padding-left:100%;font-family:var(--f-osd);font-size:23px;color:var(--tt-yellow);animation:run 34s linear infinite}
 .ticker-run b{color:var(--tt-cyan);font-weight:400}
 @keyframes run{to{transform:translateX(-100%)}}
-@media (prefers-reduced-motion: reduce){
-  .ticker-run{animation:none;padding-left:10px}
-  .osd{transition:none}
-}
-@media (max-width:520px){
-  .nav .pill .long{display:none}
-  .logo{font-size:25px}
-  .rb{width:40px;height:40px}
-  .ticker-run{font-size:21px}
-}
+@media (prefers-reduced-motion: reduce){ .ticker-run{animation:none;padding-left:10px} .osd{transition:none} body{transition:none} }
+@media (max-width:520px){ .logo{font-size:20px} .nav{gap:12px} .rb{width:38px;height:38px} .ticker-run{font-size:20px} }
 
 /* ---------- Skener ---------- */
-.scan-box textarea{min-height:200px;background:#000;color:var(--tt-green);font-family:ui-monospace,monospace;font-size:12px;border:2px inset #444}
+.scan-box{display:grid;gap:10px;background:var(--card);border:1px dashed var(--line);border-radius:14px;padding:18px}
+.scan-box h3{margin:0;font:800 20px/1.2 var(--f-logo)}
+.scan-box p{margin:0;color:var(--muted)}
+.scan-box button{justify-self:start;font:700 14px/1 var(--f-body);background:var(--accent);color:#000;border:0;border-radius:6px;padding:10px 16px;cursor:pointer}
+.scan-box textarea{width:100%;min-height:220px;background:#000;color:var(--tt-green);font:12px/1.4 ui-monospace,monospace;border:1px solid var(--line);border-radius:6px;padding:8px}
 #scanYt{position:absolute;width:2px;height:2px;left:-9999px;top:0}
 </style>
 </head>
 <body>
 
 <header class="top" id="top">
-  <div class="topbar">
-    <div class="wrap topbar-in">
-      <a class="logo" href="#" id="logo">Pozeral<span class="logo-tv">TV</span></a>
-      <nav class="nav" aria-label="Menu">
-        <a class="pill" href="#program">Program<span class="long"> dnes</span></a>
-        <a class="pill o" href="#nahlasit">Nahlásiť<span class="long"> video</span></a>
-      </nav>
-    </div>
+  <div class="wrap topbar-in topbar">
+    <a class="logo" href="#" id="logo" aria-label="Si pozeral – na začiatok">durica.<b class="si">si</b>/<b>pozeral</b></a>
+    <nav class="nav" aria-label="Menu">
+      <a href="#program">Program</a>
+      <a href="#o-projekte">O projekte</a>
+    </nav>
   </div>
-  <div class="stage-band">
-    <div class="wrap stage" id="stage">
-      <div class="tv" id="tv">
-        <div class="screen" id="screen">
-          <div id="yt"></div>
-          <video id="vid" playsinline preload="none" hidden></video>
-          <canvas id="mono" hidden></canvas>
-          <div class="layer err" id="err" hidden><div class="box"><b>TECHNICKÁ PORUCHA</b><br>Toto video už na YouTube nie je.<br>Ďalej o <span id="errAt">--:--</span></div></div>
-          <div class="layer bumper scan" id="bumper" hidden>
-            <div class="bars" aria-hidden="true"><i style="background:#fff"></i><i style="background:#ffe600"></i><i style="background:#2ee6f0"></i><i style="background:#3dff6a"></i><i style="background:#ff3bd4"></i><i style="background:#ff4a3d"></i><i style="background:#2a3cff"></i></div>
-            <div class="big" id="bBig">HNEĎ SME SPÄŤ</div>
-            <div class="nxt">Ďalej: <span class="show" id="bNext">…</span></div>
-            <div class="cd" id="bCd">00:00</div>
-          </div>
-          <canvas id="noise" width="160" height="120" hidden></canvas>
-          <div class="osd" id="osd" aria-hidden="true">
-            <div><div id="osdCh">CH 01</div><div class="title" id="osdTitle"></div></div>
-            <div class="vol" id="osdVol"></div>
-          </div>
-          <div class="adtag" id="adtag" hidden>REKLAMA</div>
-          <button class="chip" id="unmute" hidden>Zapnúť zvuk</button>
-          <div class="layer off" id="off">
-            <button class="power-big" id="powerBig">ZAPNÚŤ TELKU</button>
-            <p>Rozprávky bežia stále, ako v telke. Zapneš a naskočíš do toho, čo práve ide.</p>
-          </div>
+  <div class="wrap stage" id="stage">
+    <div class="tv" id="tv">
+      <div class="screen" id="screen">
+        <div id="yt"></div>
+        <video id="vid" playsinline preload="none" hidden></video>
+        <canvas id="mono" hidden></canvas>
+        <div class="layer err" id="err" hidden><div class="box"><b>TECHNICKÁ PORUCHA</b><br>Toto video už na YouTube nie je.<br>Ďalej o <span id="errAt">--:--</span></div></div>
+        <div class="layer bumper scan" id="bumper" hidden>
+          <div class="bars" aria-hidden="true"><i style="background:#fff"></i><i style="background:#ffe600"></i><i style="background:#2ee6f0"></i><i style="background:#3dff6a"></i><i style="background:#ff3bd4"></i><i style="background:#ff4a3d"></i><i style="background:#2a3cff"></i></div>
+          <div class="big" id="bBig">HNEĎ SME SPÄŤ</div>
+          <div class="nxt">Ďalej: <span class="show" id="bNext">…</span></div>
+          <div class="cd" id="bCd">00:00</div>
         </div>
-        <div class="tv-foot"><span class="led" id="led"></span><span class="tv-brand">POZERAL</span><span class="grille" aria-hidden="true"></span></div>
+        <canvas id="noise" width="160" height="120" hidden></canvas>
+        <div class="osd" id="osd" aria-hidden="true">
+          <div><div id="osdCh">CH 01</div><div class="title" id="osdTitle"></div></div>
+          <div class="vol" id="osdVol"></div>
+        </div>
+        <div class="adtag" id="adtag" hidden>REKLAMA</div>
+        <button class="chip" id="unmute" hidden>Zapnúť zvuk</button>
+        <div class="layer off" id="off">
+          <button class="power-big" id="powerBig">ZAPNÚŤ TELKU</button>
+          <p>Rozprávky bežia stále, ako v telke. Zapneš a naskočíš do toho, čo práve ide.</p>
+        </div>
       </div>
-      <div class="mini" id="mini" aria-hidden="true">
-        <div class="lbl"><span>Teraz beží</span><span class="lang" id="mLang"></span></div>
-        <div class="show" id="mShow">…</div>
-        <div class="ep" id="mEp"></div>
-        <div class="prog"><i id="mProg"></i></div>
-        <div class="next" id="mNext"></div>
-      </div>
+      <div class="tv-foot"><span class="led" id="led"></span><span class="tv-brand">POZERAL</span><span class="grille" aria-hidden="true"></span></div>
+    </div>
+    <div class="mini" id="mini" aria-hidden="true">
+      <div class="lbl"><span>Teraz beží</span><span class="lang" id="mLang"></span></div>
+      <div class="show" id="mShow">…</div>
+      <div class="ep" id="mEp"></div>
+      <div class="prog"><i id="mProg"></i></div>
+      <div class="next" id="mNext"></div>
     </div>
   </div>
 </header>
@@ -358,90 +256,51 @@ textarea{min-height:84px;resize:vertical}
 
 <main class="wrap">
 
-  <section class="win">
-    <div class="win-t blue">Teraz beží na kanáli 1<span class="burst">ŽIVO!</span></div>
-    <div class="win-b now" aria-live="polite">
-      <h2 id="nShow">…</h2>
-      <div class="ep"><span id="nEp"></span><span class="lang" id="nLang"></span></div>
-      <div class="prog"><i id="nProg"></i></div>
-      <div class="meta"><span id="nTime">--:-- – --:--</span><a id="nLink" href="#" target="_blank" rel="noopener">Pôvodné video na YouTube ↗</a></div>
-    </div>
+  <section class="now" aria-live="polite">
+    <p class="eyebrow" style="margin:0">Teraz beží na kanáli 1</p>
+    <h2 id="nShow">…</h2>
+    <div class="ep"><span id="nEp"></span><span class="lang" id="nLang"></span></div>
+    <div class="prog"><i id="nProg"></i></div>
+    <div class="meta"><span id="nTime">--:-- – --:--</span><a id="nLink" href="#" target="_blank" rel="noopener">Pôvodné video na YouTube ↗</a></div>
   </section>
 
-  <section class="win" id="program" aria-label="Program">
-    <div class="win-t">Program na dnes</div>
+  <section id="program" aria-label="Program">
+    <p class="eyebrow">Program</p>
     <div class="tt">
-      <div class="tt-head"><span><span class="p">P100</span> POZERAL TEXT</span><span id="ttClock">--.--. --:--:--</span></div>
+      <div class="tt-head"><span><span class="p">P100</span> SI POZERAL TEXT</span><span id="ttClock">--.--. --:--:--</span></div>
       <span class="tt-title">PROGRAM · KANÁL 1</span>
       <ol id="guide"></ol>
       <div class="tt-foot"><span style="color:var(--tt-cyan)">CZ dabing</span><span style="color:var(--tt-green)">SK dabing</span><span style="color:var(--tt-yellow)">bez slov</span><span style="color:#ff9cf0">reklama</span></div>
     </div>
   </section>
 
-  <div class="cols">
-    <section class="win">
-      <div class="win-t green">Čo je Pozeral</div>
-      <div class="win-b">
-        <p>Nekomerčný projekt pre nostalgiu: staré rozprávky z čias Jetixu, Minimaxu a Cartoon Network s českým a slovenským dabingom, poskladané do jedného kanála s programom a reklamami na hračky, ako kedysi.</p>
-        <p>Videá sa prehrávajú cez oficiálny prehrávač YouTube z verejných videí iných používateľov a oficiálnych kanálov. Pozeral nič nesťahuje ani neukladá, nemá vlastné reklamy a nezarába. Všetky práva patria ich majiteľom.</p>
-      </div>
-    </section>
-
-    <section class="win" id="nahlasit">
-      <div class="win-t">Nahlásiť video</div>
-      <div class="win-b">
-        <p>Ste majiteľ práv a chcete video z programu stiahnuť? Alebo niečo nefunguje? Napíšte nám, do 48 hodín to vybavíme.</p>
-        <form id="form" novalidate>
-          <label for="fVideo">Ktoré video <span>(názov alebo odkaz)</span>
-            <input id="fVideo" name="video" required>
-          </label>
-          <div class="row"><button type="button" class="btn-fill" id="fillNow">Vyplniť to, čo práve beží</button></div>
-          <label for="fDovod">Dôvod
-            <select id="fDovod" name="dovod">
-              <option>Som majiteľ práv a chcem video odstrániť</option>
-              <option>Video nefunguje</option>
-              <option>Niečo iné</option>
-            </select>
-          </label>
-          <label for="fMail">Váš e-mail <span>(aby sme vám vedeli odpovedať)</span>
-            <input id="fMail" name="email" type="email" autocomplete="email" required>
-          </label>
-          <label for="fMsg">Správa <span>(nepovinné)</span>
-            <textarea id="fMsg" name="sprava"></textarea>
-          </label>
-          <div class="hp" aria-hidden="true"><label for="fBot">Nevypĺňať<input id="fBot" name="botcheck" tabindex="-1" autocomplete="off"></label></div>
-          <div class="row"><button class="pill o" type="submit" id="fSend">Odoslať</button></div>
-          <p class="status" id="fStatus" role="status"></p>
-        </form>
-      </div>
-    </section>
-  </div>
-
-  <section class="win scan-box" id="scanBox" hidden>
-    <div class="win-t blue">Skener dĺžok videí</div>
-    <div class="win-b" style="display:grid;gap:10px">
-      <p>Prejde všetky videá v programe aj reklamy, zistí presnú dĺžku a či sa dajú prehrať. Výsledok skopíruj do <b>const DLZKY</b> v súbore index.html.</p>
-      <div><button class="pill" id="scanGo">Skenovať</button></div>
-      <textarea id="scanOut" readonly></textarea>
-      <div id="scanYt"></div>
-    </div>
+  <section class="about" id="o-projekte">
+    <p class="eyebrow" style="margin:0">O projekte</p>
+    <h2>Toto <b>si pozeral</b>, keď si bol malý.</h2>
+    <p>Rozprávky z čias Jetixu, Minimaxu a Cartoon Network v českom a slovenskom dabingu, poskladané do jedného kanála s programom aj reklamami na hračky. Bežia stále, rovnako pre všetkých, ako kedysi v telke.</p>
+    <p>Všetky videá sú na YouTube a táto stránka ich iba prehráva cez oficiálny prehrávač YouTube. Nič sa tu nesťahuje ani neukladá a projekt nezarába. Ak ste majiteľ práv, video môžete <a href="https://support.google.com/youtube/answer/2807622" target="_blank" rel="noopener">nahlásiť priamo na YouTube</a>. Keď ho YouTube stiahne, zmizne aj odtiaľto.</p>
   </section>
 
-  <div class="foot">
-    <span>Stránka je najlepšie viditeľná v rozlíšení <b>1024×768</b> a v programe Internet Explorer 6.</span>
-    <span>Pozeral · nekomerčný projekt · Bratislava</span>
-  </div>
+  <section class="scan-box" id="scanBox" hidden>
+    <h3>Skener dĺžok videí</h3>
+    <p>Prejde všetky videá aj reklamy, zistí presnú dĺžku a či sa dajú prehrať. Nechaj stránku otvorenú, kým neskončí. Výsledok skopíruj do <b>const DLZKY</b> v súbore index.html.</p>
+    <button id="scanGo">Skenovať</button>
+    <textarea id="scanOut" readonly></textarea>
+    <div id="scanYt"></div>
+  </section>
+
+  <div class="foot"><span>durica.si/pozeral · nekomerčný projekt</span><span>Najlepšie vyzerá v rozlíšení 1024×768</span></div>
 </main>
 
 <footer class="bottom">
   <div class="wrap bottom-in">
     <div class="remote">
-      <button class="rb pw" id="bPower" aria-label="Zapnúť alebo vypnúť">⏻</button>
+      <button class="rb pw" id="bPower" aria-label="Zapnúť alebo vypnúť" data-on="false">⏻</button>
       <button class="rb" id="bDown" aria-label="Stíšiť" disabled>−</button>
       <button class="rb" id="bUp" aria-label="Zosilniť" disabled>+</button>
       <button class="rb" id="bMute" aria-pressed="false" aria-label="Stlmiť" disabled>M</button>
     </div>
-    <div class="ticker" aria-hidden="true"><span class="ticker-run" id="ticker">POZERAL TV · staré rozprávky v CZ a SK dabingu · stlač červené tlačidlo a zapni telku</span></div>
+    <div class="ticker" aria-hidden="true"><span class="ticker-run" id="ticker">SI POZERAL · rozprávky v CZ a SK dabingu · zapni telku</span></div>
   </div>
 </footer>
 
@@ -450,7 +309,6 @@ textarea{min-height:84px;resize:vertical}
    NASTAVENIA — toto môžeš meniť
    ========================================================= */
 const CONFIG = {
-  web3formsKluc: '',                      // kľúč z web3forms.com (zadarmo, zadáš tam svoj mail). Bez neho formulár neodosiela.
   zaciatok: Date.UTC(2026, 0, 1, 5, 0, 0),// od tohto času sa počíta program (6:00 v Bratislave)
   prestavka: 20,                          // sekundy "Hneď sme späť" po rozprávke, keď poznáme presné dĺžky
   reklamVBloku: 3                         // koľko reklám ide po každej rozprávke
@@ -507,7 +365,7 @@ const SEQ = [];
   const ads = REKLAMY.filter(works), idents = ZNELKY.filter(works);
   let a = 0, z = 0;
   PROGRAM.filter(works).forEach(p => {
-    if (idents.length) SEQ.push({ ...idents[z++ % idents.length], show:'Pozeral', lang:'', kind:'ident' });
+    if (idents.length) SEQ.push({ ...idents[z++ % idents.length], show:'Si pozeral', lang:'', kind:'ident' });
     SEQ.push({ ...p, kind:'show' });
     for (let j = 0; j < CONFIG.reklamVBloku && ads.length; j++) SEQ.push({ ...ads[a++ % ads.length], show:'Reklama', kind:'ad' });
   });
@@ -560,7 +418,7 @@ let lastGuideKey = '';
 function setLang(el, l){ el.textContent = l || ''; el.className = langClass(l); el.hidden = !l; }
 function renderNow(){
   const now = Date.now(), cur = at(now), it = SEQ[cur.i], nx = nextShow(cur.i);
-  const showName = it.kind === 'ad' ? 'Reklamná prestávka' : it.kind === 'ident' ? 'Pozeral TV' : it.show;
+  const showName = it.kind === 'ad' ? 'Reklamná prestávka' : it.kind === 'ident' ? 'Si pozeral' : it.show;
   const pct = Math.min(100, (now - cur.start) / (cur.end - cur.start) * 100) + '%';
   $('nShow').textContent = showName;
   $('nEp').textContent = it.ep;
@@ -589,7 +447,7 @@ function renderNow(){
       const t = document.createElement('span'); t.className = 't'; t.textContent = g.cur ? 'TERAZ' : hm(g.start);
       const s = document.createElement('span'); s.className = 's';
       if (p.kind === 'show'){ s.textContent = p.show + ' '; const e = document.createElement('span'); e.textContent = p.ep; s.appendChild(e); }
-      else s.textContent = p.kind === 'ad' ? 'Reklamná prestávka' : 'Pozeral TV';
+      else s.textContent = p.kind === 'ad' ? 'Reklamná prestávka' : 'Si pozeral';
       const l = document.createElement('span');
       l.textContent = p.kind !== 'show' ? '' : p.lang === 'bez slov' ? '—' : p.lang;
       l.style.color = p.lang === 'SK' ? 'var(--tt-green)' : p.lang === 'CZ' ? 'var(--tt-cyan)' : 'var(--tt-yellow)';
@@ -600,7 +458,7 @@ function renderNow(){
     const add = (lbl, txt) => { const bb = document.createElement('b'); bb.textContent = lbl; tk.append(bb, ' ' + txt + '   ✦   '); };
     add('TERAZ:', showName + ' – ' + it.ep);
     upcoming(5).slice(1).forEach(g => add(hm(g.start), SEQ[g.i].show + ' – ' + SEQ[g.i].ep));
-    tk.append('POZERAL TV · rozprávky ako v roku 2002');
+    tk.append('SI POZERAL · durica.si/pozeral');
   }
 }
 
@@ -804,7 +662,7 @@ function tick(){
   const left = (cur.end - now) / 1000;
   if (mode === 'bumper' || mode === 'error'){
     const nx = SEQ[(cur.i + 1) % SEQ.length];
-    $('bNext').textContent = nx.kind === 'show' ? nx.show + ' – ' + nx.ep : nx.kind === 'ad' ? 'reklama' : 'Pozeral TV';
+    $('bNext').textContent = nx.kind === 'show' ? nx.show + ' – ' + nx.ep : nx.kind === 'ad' ? 'reklama' : 'Si pozeral';
     $('bCd').textContent = mmss(left);
     $('errAt').textContent = hm(cur.end);
     return;
@@ -848,6 +706,8 @@ function power(on){
   powered = on;
   $('off').hidden = on;
   $('led').classList.toggle('on', on);
+  document.body.classList.toggle('on', on);
+  $('bPower').dataset.on = String(on);
   ['bDown','bUp','bMute'].forEach(id => $(id).disabled = !on);
   if (on){
     try{ actx = actx || new (window.AudioContext || window.webkitAudioContext)(); actx.resume(); }catch(e){}
@@ -878,36 +738,6 @@ function applyVol(){
   showOsd(true);
 }
 try{ const v = JSON.parse(localStorage.getItem('pozeral-vol') || 'null'); if (v){ volume = v.volume; muted = v.muted; } }catch(e){}
-
-/* =========================================================
-   FORMULÁR — Web3Forms posiela hlásenie na tvoj mail, mail nie je na stránke
-   ========================================================= */
-$('fillNow').addEventListener('click', () => {
-  const it = SEQ[at(Date.now()).i];
-  $('fVideo').value = (it.kind === 'show' ? it.show + ' – ' : 'Reklama – ') + it.ep + ' (' + (it.id ? 'https://youtu.be/' + it.id : it.src) + ')';
-});
-$('form').addEventListener('submit', async e => {
-  e.preventDefault();
-  const st = $('fStatus'); st.className = 'status';
-  if (!$('fVideo').value.trim()){ st.classList.add('bad'); st.textContent = 'Napíšte, o ktoré video ide.'; $('fVideo').focus(); return; }
-  if (!$('fMail').checkValidity()){ st.classList.add('bad'); st.textContent = 'Skontrolujte e-mail, aby sme vám vedeli odpovedať.'; $('fMail').focus(); return; }
-  if ($('fBot').value) return;
-  if (!CONFIG.web3formsKluc){ st.classList.add('bad'); st.textContent = 'Formulár ešte nie je zapojený. Skúste to prosím neskôr.'; return; }
-  $('fSend').disabled = true; st.textContent = 'Odosielam…';
-  try{
-    const r = await fetch('https://api.web3forms.com/submit', {
-      method:'POST', headers:{ 'Content-Type':'application/json', Accept:'application/json' },
-      body: JSON.stringify({
-        access_key: CONFIG.web3formsKluc, subject:'Pozeral – nahlásenie videa', from_name:'Pozeral TV',
-        video: $('fVideo').value, dovod: $('fDovod').value, email: $('fMail').value, sprava: $('fMsg').value
-      })
-    });
-    const j = await r.json().catch(() => ({}));
-    if (r.ok && j.success !== false){ st.classList.add('ok'); st.textContent = 'Odoslané. Ozveme sa do 48 hodín.'; $('form').reset(); }
-    else throw new Error();
-  }catch(err){ st.classList.add('bad'); st.textContent = 'Nepodarilo sa odoslať. Skontrolujte pripojenie a skúste znova.'; }
-  $('fSend').disabled = false;
-});
 
 /* =========================================================
    SKENER DĹŽOK (otvor stránku s ?skenuj)

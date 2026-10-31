@@ -1,0 +1,964 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Pozeral TV</title>
+<meta name="description" content="Nekomerčná retro televízia so starými rozprávkami v českom a slovenskom dabingu.">
+<meta name="theme-color" content="#0d4fc2">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Titan+One&family=VT323&display=swap" rel="stylesheet">
+<style>
+/* Layout: pripnutý horný bar s telkou (pri scrolle sa zmenší na ~25 % a vedľa nej naskočí "teraz beží"),
+   pod ním okná v štýle detských webov z roku 2002, dole pripnutý ovládač s bežiacim textom. Jeden svetlý vzhľad zámerne. */
+:root{
+  --sky:#0b3d91;
+  --sky-2:#1c63d8;
+  --sky-3:#3a8bff;
+  --navy:#0a1f44;
+  --panel:#eaf3ff;
+  --panel-2:#d5e6ff;
+  --yellow:#ffd400;
+  --orange:#ff7a00;
+  --lime:#8fdc22;
+  --red:#e8261c;
+  --white:#ffffff;
+  --silver-1:#f4f6f8;
+  --silver-2:#c3cad3;
+  --silver-3:#8e97a3;
+  --tt-yellow:#ffe600;
+  --tt-cyan:#2ee6f0;
+  --tt-green:#3dff6a;
+  --tt-red:#ff4a3d;
+  --f-logo:"Titan One", "Arial Black", Impact, sans-serif;
+  --f-body:Verdana, Tahoma, "DejaVu Sans", Geneva, sans-serif;
+  --f-osd:"VT323", ui-monospace, "Courier New", monospace;
+  --gut:max(16px, env(safe-area-inset-left, 0px));
+  --gut-r:max(16px, env(safe-area-inset-right, 0px));
+  --p:0;
+  --hc:180px;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+html,body{margin:0}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+body{
+  font-family:var(--f-body);
+  font-size:14px;
+  line-height:1.55;
+  color:var(--navy);
+  background-color:var(--sky);
+  background-image:
+    radial-gradient(rgba(255,255,255,.18) 1px, transparent 1.6px),
+    radial-gradient(rgba(255,212,0,.28) 1.4px, transparent 2px),
+    linear-gradient(180deg, var(--sky-2), var(--sky) 60%);
+  background-size:22px 22px, 61px 61px, 100% 100%;
+  background-position:0 0, 13px 29px, 0 0;
+  background-attachment:fixed;
+  padding-bottom:calc(74px + env(safe-area-inset-bottom, 0px));
+}
+a{color:#0b4fd6}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.wrap{max-width:900px;margin:0 auto;padding-left:var(--gut);padding-right:var(--gut-r)}
+
+/* ---------- Horný bar ---------- */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top, 0px);z-index:60;background:#0d4fc2}
+.top{position:fixed;left:0;right:0;top:env(safe-area-inset-top, 0px);z-index:50}
+.topbar{
+  position:relative;
+  background:linear-gradient(180deg, var(--sky-3) 0%, #1660e0 48%, #0d4fc2 52%, #0a3a99 100%);
+  border-bottom:3px solid var(--yellow);
+}
+.topbar::after{content:"";position:absolute;left:0;right:0;top:0;height:46%;background:linear-gradient(rgba(255,255,255,.35), rgba(255,255,255,.05));pointer-events:none}
+.topbar-in{display:flex;align-items:center;gap:12px;padding-block:8px;position:relative;z-index:1}
+.logo{
+  font-family:var(--f-logo);font-size:30px;line-height:1;text-decoration:none;color:var(--yellow);
+  -webkit-text-stroke:2px var(--navy);paint-order:stroke fill;text-shadow:3px 3px 0 var(--navy);
+  display:flex;align-items:center;gap:6px;margin-right:auto;letter-spacing:.01em;white-space:nowrap;
+}
+.logo-tv{
+  font-size:15px;-webkit-text-stroke:0;color:var(--white);background:var(--orange);
+  border:2px solid var(--navy);border-radius:999px;padding:3px 8px 2px;transform:rotate(-8deg);
+  text-shadow:1px 1px 0 var(--navy);box-shadow:2px 2px 0 var(--navy);
+}
+.nav{display:flex;gap:8px}
+.pill{
+  position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:6px;
+  font:bold 13px/1 var(--f-body);color:var(--navy);text-decoration:none;cursor:pointer;
+  background:linear-gradient(180deg, #c9f57a, var(--lime) 55%, #5aa810);
+  border:2px solid #2b5c00;border-radius:999px;padding:7px 13px;
+  box-shadow:0 2px 0 rgba(0,0,0,.35);
+}
+.pill::after{content:"";position:absolute;left:6%;right:6%;top:2px;height:42%;border-radius:999px;background:linear-gradient(rgba(255,255,255,.75), rgba(255,255,255,.1));pointer-events:none}
+.pill.o{background:linear-gradient(180deg, #ffc266, var(--orange) 55%, #d65a00);border-color:#7a3300;color:var(--white);text-shadow:1px 1px 0 #7a3300}
+.pill:active{transform:translateY(1px);box-shadow:0 1px 0 rgba(0,0,0,.35)}
+
+.stage-band{
+  background:linear-gradient(180deg, #0f4cbc, #0b3d91);
+  border-bottom:3px solid var(--navy);
+  box-shadow:0 6px 0 rgba(10,31,68,.35);
+}
+.stage{display:flex;align-items:center;gap:calc(14px * var(--p));padding-block:calc(14px - 6px * var(--p))}
+
+/* ---------- Telka ---------- */
+.tv{
+  flex:0 0 auto;
+  background:linear-gradient(160deg, var(--silver-1) 0%, var(--silver-2) 45%, var(--silver-3) 100%);
+  border:2px solid #5d6670;
+  border-radius:calc(26px - 14px * var(--p));
+  padding:calc(16px - 11px * var(--p)) calc(16px - 11px * var(--p)) calc(10px - 6px * var(--p));
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.9), inset 0 -3px 0 rgba(0,0,0,.18), 0 6px 0 rgba(10,31,68,.55);
+}
+.screen{
+  position:relative;aspect-ratio:4/3;width:100%;max-width:100%;
+  background:#000;border-radius:calc(18px - 10px * var(--p)) / calc(22px - 12px * var(--p));
+  overflow:hidden;container-type:size;
+  box-shadow:0 0 0 4px #20252b, 0 0 0 6px #6b747e;
+}
+.screen > *{position:absolute;inset:0}
+#yt, #yt iframe, #vid{width:100%;height:100%;border:0;display:block;background:#000}
+.screen::after{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:9;border-radius:inherit;
+  background:radial-gradient(ellipse 75% 70% at 50% 50%, transparent 72%, rgba(0,0,0,.42) 100%);
+}
+.tv-foot{display:flex;align-items:center;gap:10px;padding:8px 4px 0;opacity:calc(1 - var(--p) * 2.2);height:calc(30px * (1 - var(--p)));overflow:hidden}
+.grille{flex:1;height:12px;background:repeating-linear-gradient(90deg, #6f7883 0 3px, transparent 3px 7px);border-radius:3px;opacity:.75}
+.tv-brand{font-family:var(--f-osd);font-size:20px;letter-spacing:.3em;color:#4a525c;text-shadow:0 1px 0 rgba(255,255,255,.7)}
+.led{width:9px;height:9px;border-radius:50%;background:#5a1410;box-shadow:inset 0 1px 1px rgba(0,0,0,.6);flex:0 0 auto}
+.led.on{background:#ff3b2f;box-shadow:0 0 8px #ff3b2f}
+
+.layer{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;z-index:5}
+.scan::before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg, rgba(0,0,0,.28) 0 2px, transparent 2px 4px)}
+#noise{width:100%;height:100%;image-rendering:pixelated;z-index:6;background:#111}
+#mono{width:100%;height:100%;z-index:5}
+
+.off{background:#050505;gap:3cqh;z-index:8;padding:6cqh}
+.off p{margin:0;color:#9aa6b8;font-size:max(10px,4.2cqh);max-width:34ch;line-height:1.35}
+@container (max-height:170px){ .off p{display:none} }
+.power-big{
+  position:relative;overflow:hidden;font-family:var(--f-logo);font-size:max(12px,7cqh);line-height:1;
+  color:var(--white);background:linear-gradient(180deg, #ff8a7a, var(--red) 55%, #9e130b);
+  border:2px solid #4a0905;border-radius:999px;padding:2.4cqh 6cqh;cursor:pointer;
+  text-shadow:2px 2px 0 #4a0905;box-shadow:0 3px 0 rgba(0,0,0,.6);
+}
+.power-big::after{content:"";position:absolute;left:8%;right:8%;top:2px;height:40%;border-radius:999px;background:linear-gradient(rgba(255,255,255,.65), rgba(255,255,255,.05))}
+
+.bumper{background:#000;gap:1.6cqh;font-family:var(--f-osd);padding:4cqh}
+.bumper .big{font-size:13cqh;color:var(--tt-yellow);line-height:1;letter-spacing:.04em}
+.bumper .nxt{font-size:6.5cqh;color:var(--white);line-height:1.1}
+.bumper .show{color:var(--tt-cyan)}
+.bumper .cd{font-size:6cqh;color:var(--tt-green);font-variant-numeric:tabular-nums}
+.bars{display:flex;width:70%;height:3cqh}
+.bars i{flex:1}
+.bumper.ad{background:linear-gradient(135deg, #1c63d8, #0a3a99)}
+.bumper.ad .big{font-family:var(--f-logo);color:var(--yellow);-webkit-text-stroke:.5cqh var(--navy);paint-order:stroke fill;text-shadow:1cqh 1cqh 0 var(--navy)}
+
+.err{z-index:7;justify-content:flex-end;padding-bottom:7cqh;pointer-events:none}
+.err .box{background:#000;color:var(--white);font-family:var(--f-osd);font-size:max(11px,5.6cqh);padding:1.4cqh 3cqh;line-height:1.15;max-width:90%}
+.err .box b{color:var(--tt-yellow);font-weight:400}
+
+.osd{
+  z-index:8;pointer-events:none;inset:auto;top:5cqh;left:5%;right:5%;
+  display:flex;justify-content:space-between;gap:12px;align-items:flex-start;
+  font-family:var(--f-osd);color:var(--tt-green);font-size:max(11px,8cqh);line-height:1;
+  text-shadow:0 0 6px rgba(61,255,106,.7), 2px 2px 0 #000;opacity:0;transition:opacity .25s;
+}
+.osd.show{opacity:1}
+.osd .title{font-size:max(10px,5.5cqh);margin-top:.8cqh;color:var(--white);text-shadow:2px 2px 0 #000}
+.osd .vol{text-align:right}
+.adtag{
+  z-index:8;pointer-events:none;inset:auto;top:4cqh;right:4%;
+  font-family:var(--f-osd);font-size:max(10px,5.5cqh);line-height:1;color:var(--white);
+  background:rgba(0,0,0,.55);padding:.6cqh 1.6cqh;border:1px solid rgba(255,255,255,.6);
+}
+.chip{
+  z-index:8;inset:auto;left:50%;bottom:6cqh;transform:translateX(-50%);
+  font-family:var(--f-osd);font-size:max(12px,6cqh);background:var(--tt-yellow);color:#000;border:0;
+  padding:.6cqh 3cqh;cursor:pointer;border-radius:4px;white-space:nowrap;
+}
+
+/* mini info vedľa zmenšenej telky */
+.mini{flex:1 1 auto;min-width:0;overflow:hidden;color:var(--white);opacity:var(--p);display:grid;gap:4px}
+.mini[aria-hidden="true"]{visibility:hidden}
+.mini .lbl{display:flex;gap:8px;align-items:center;font:bold 11px/1 var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--yellow)}
+.mini .show{font-family:var(--f-logo);font-size:clamp(17px,3.6vw,26px);line-height:1.05;-webkit-text-stroke:1px var(--navy);paint-order:stroke fill;text-shadow:2px 2px 0 var(--navy);overflow-wrap:anywhere}
+.mini .ep{font-size:12px;color:#cfe0ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mini .next{font-size:12px;color:#cfe0ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mini .next b{color:var(--yellow)}
+
+.prog{height:8px;background:rgba(10,31,68,.5);border:1px solid var(--navy);border-radius:999px;overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:linear-gradient(180deg, #fff59a, var(--yellow) 50%, #e0a800)}
+
+/* ---------- Obsah ---------- */
+#spacer{height:var(--he, 640px)}
+main.wrap{display:grid;gap:26px;padding-block:22px 10px}
+.win{
+  background:var(--panel);border:3px solid var(--navy);border-radius:14px;
+  box-shadow:6px 6px 0 var(--navy);min-width:0;overflow:hidden;
+  scroll-margin-top:calc(var(--hc) + 14px);
+}
+.win-t{
+  display:flex;align-items:center;gap:10px;
+  font-family:var(--f-logo);font-size:19px;line-height:1;color:var(--white);
+  text-shadow:2px 2px 0 var(--navy);
+  background:linear-gradient(180deg, #ffb24d, var(--orange) 55%, #e05e00);
+  border-bottom:3px solid var(--navy);padding:9px 14px;position:relative;
+}
+.win-t::after{content:"";position:absolute;left:0;right:0;top:0;height:45%;background:linear-gradient(rgba(255,255,255,.45), rgba(255,255,255,0));pointer-events:none}
+.win-t.blue{background:linear-gradient(180deg, #5aa2ff, var(--sky-2) 55%, #0d4fc2)}
+.win-t.green{background:linear-gradient(180deg, #b6ef62, #6cc414 55%, #4c9a0a)}
+.win-b{padding:16px}
+.burst{
+  margin-left:auto;font:bold 11px/1 var(--f-body);color:var(--navy);text-shadow:none;
+  background:var(--yellow);padding:13px 9px;transform:rotate(8deg);
+  clip-path:polygon(50% 0,61% 18%,82% 10%,80% 32%,100% 40%,84% 55%,96% 76%,74% 76%,68% 98%,50% 84%,32% 98%,26% 76%,4% 76%,16% 55%,0 40%,20% 32%,18% 10%,39% 18%);
+}
+
+.now{display:grid;gap:8px}
+.now h2{margin:0;font-family:var(--f-logo);font-weight:400;font-size:clamp(28px,6vw,40px);line-height:1.05;color:var(--sky);text-wrap:balance}
+.now .ep{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:15px}
+.lang{font:bold 11px/1 var(--f-body);padding:4px 7px;border-radius:999px;border:2px solid var(--navy);background:var(--tt-cyan);color:var(--navy);white-space:nowrap}
+.lang.sk{background:var(--lime)}
+.lang.ns{background:var(--yellow)}
+.lang.en{background:#d7dbe2}
+.meta{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12px;color:#33507f;font-variant-numeric:tabular-nums}
+
+.tt{background:#000;font-family:var(--f-osd);font-size:clamp(18px,3.9vw,23px);line-height:1.15;padding:14px clamp(10px,3vw,20px) 18px;color:var(--white)}
+.tt-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.tt-head .p{color:var(--tt-yellow)}
+.tt-title{display:block;margin:10px 0 12px;padding:4px 10px;background:#1730d6;color:var(--tt-yellow);font-size:clamp(26px,5.6vw,38px);line-height:1;letter-spacing:.04em}
+.tt ol{list-style:none;margin:0;padding:0;display:grid;gap:3px}
+.tt li{display:grid;grid-template-columns:5ch 1fr auto;gap:12px;align-items:baseline}
+.tt .t{color:var(--tt-yellow);font-variant-numeric:tabular-nums}
+.tt .s{min-width:0}
+.tt .s span{color:var(--tt-cyan)}
+.tt li.cur .t{background:var(--tt-red);color:var(--white);padding:0 3px}
+.tt li.ad .s{color:#ff9cf0}
+.tt-foot{margin-top:12px;display:flex;gap:16px;flex-wrap:wrap}
+
+.cols{display:grid;gap:26px;grid-template-columns:repeat(auto-fit, minmax(min(100%, 320px), 1fr))}
+.win p{margin:0 0 10px;max-width:62ch}
+
+form{display:grid;gap:10px}
+label{display:grid;gap:4px;font-weight:bold;font-size:12px}
+label span{font-weight:normal;color:#4a6390}
+input, select, textarea{
+  font:13px/1.4 var(--f-body);color:var(--navy);background:var(--white);
+  border:2px inset #9fb3d4;border-radius:3px;padding:6px 8px;width:100%;min-width:0;
+}
+textarea{min-height:84px;resize:vertical}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn-fill{font:12px/1 var(--f-body);background:none;border:0;color:#0b4fd6;text-decoration:underline;cursor:pointer;padding:0}
+.status{margin:0;font-weight:bold}
+.status.ok{color:#1d7a00}
+.status.bad{color:#b31d14}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+
+.foot{text-align:center;color:#cfe0ff;font-size:11px;display:grid;gap:4px;padding-block:6px 4px}
+.foot b{color:var(--yellow)}
+
+/* ---------- Dolný bar ---------- */
+.bottom{
+  position:fixed;left:0;right:0;bottom:0;z-index:50;
+  background:linear-gradient(180deg, #1a5ad0, #0a3a99 50%, #062a70);
+  border-top:3px solid var(--yellow);
+  padding-bottom:env(safe-area-inset-bottom, 0px);
+  box-shadow:0 -4px 0 rgba(10,31,68,.35);
+}
+.bottom-in{display:flex;align-items:center;gap:10px;height:62px}
+.remote{display:flex;gap:6px;flex:0 0 auto}
+.rb{
+  position:relative;overflow:hidden;width:44px;height:44px;border-radius:50%;cursor:pointer;
+  font:bold 12px/1 var(--f-body);color:var(--navy);
+  background:radial-gradient(circle at 50% 30%, #ffffff, #c9d2dd 45%, #8e97a3 100%);
+  border:2px solid var(--navy);box-shadow:0 3px 0 rgba(0,0,0,.45);
+}
+.rb.pw{background:radial-gradient(circle at 50% 30%, #ffb0a8, var(--red) 50%, #8e120a);color:var(--white);font-size:18px}
+.rb[aria-pressed="true"]{background:radial-gradient(circle at 50% 30%, #fff7b0, var(--yellow) 50%, #c79a00)}
+.rb:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.45)}
+.rb:disabled{opacity:.5;cursor:default}
+.ticker{
+  flex:1 1 auto;min-width:0;overflow:hidden;height:40px;display:flex;align-items:center;
+  background:#000;border:2px solid var(--navy);border-radius:6px;box-shadow:inset 0 2px 6px rgba(0,0,0,.8);
+}
+.ticker-run{display:inline-block;white-space:nowrap;padding-left:100%;font-family:var(--f-osd);font-size:24px;color:var(--tt-yellow);animation:run 32s linear infinite}
+.ticker-run b{color:var(--tt-cyan);font-weight:400}
+@keyframes run{to{transform:translateX(-100%)}}
+@media (prefers-reduced-motion: reduce){
+  .ticker-run{animation:none;padding-left:10px}
+  .osd{transition:none}
+}
+@media (max-width:520px){
+  .nav .pill .long{display:none}
+  .logo{font-size:25px}
+  .rb{width:40px;height:40px}
+  .ticker-run{font-size:21px}
+}
+
+/* ---------- Skener ---------- */
+.scan-box textarea{min-height:200px;background:#000;color:var(--tt-green);font-family:ui-monospace,monospace;font-size:12px;border:2px inset #444}
+#scanYt{position:absolute;width:2px;height:2px;left:-9999px;top:0}
+</style>
+</head>
+<body>
+
+<header class="top" id="top">
+  <div class="topbar">
+    <div class="wrap topbar-in">
+      <a class="logo" href="#" id="logo">Pozeral<span class="logo-tv">TV</span></a>
+      <nav class="nav" aria-label="Menu">
+        <a class="pill" href="#program">Program<span class="long"> dnes</span></a>
+        <a class="pill o" href="#nahlasit">Nahlásiť<span class="long"> video</span></a>
+      </nav>
+    </div>
+  </div>
+  <div class="stage-band">
+    <div class="wrap stage" id="stage">
+      <div class="tv" id="tv">
+        <div class="screen" id="screen">
+          <div id="yt"></div>
+          <video id="vid" playsinline preload="none" hidden></video>
+          <canvas id="mono" hidden></canvas>
+          <div class="layer err" id="err" hidden><div class="box"><b>TECHNICKÁ PORUCHA</b><br>Toto video už na YouTube nie je.<br>Ďalej o <span id="errAt">--:--</span></div></div>
+          <div class="layer bumper scan" id="bumper" hidden>
+            <div class="bars" aria-hidden="true"><i style="background:#fff"></i><i style="background:#ffe600"></i><i style="background:#2ee6f0"></i><i style="background:#3dff6a"></i><i style="background:#ff3bd4"></i><i style="background:#ff4a3d"></i><i style="background:#2a3cff"></i></div>
+            <div class="big" id="bBig">HNEĎ SME SPÄŤ</div>
+            <div class="nxt">Ďalej: <span class="show" id="bNext">…</span></div>
+            <div class="cd" id="bCd">00:00</div>
+          </div>
+          <canvas id="noise" width="160" height="120" hidden></canvas>
+          <div class="osd" id="osd" aria-hidden="true">
+            <div><div id="osdCh">CH 01</div><div class="title" id="osdTitle"></div></div>
+            <div class="vol" id="osdVol"></div>
+          </div>
+          <div class="adtag" id="adtag" hidden>REKLAMA</div>
+          <button class="chip" id="unmute" hidden>Zapnúť zvuk</button>
+          <div class="layer off" id="off">
+            <button class="power-big" id="powerBig">ZAPNÚŤ TELKU</button>
+            <p>Rozprávky bežia stále, ako v telke. Zapneš a naskočíš do toho, čo práve ide.</p>
+          </div>
+        </div>
+        <div class="tv-foot"><span class="led" id="led"></span><span class="tv-brand">POZERAL</span><span class="grille" aria-hidden="true"></span></div>
+      </div>
+      <div class="mini" id="mini" aria-hidden="true">
+        <div class="lbl"><span>Teraz beží</span><span class="lang" id="mLang"></span></div>
+        <div class="show" id="mShow">…</div>
+        <div class="ep" id="mEp"></div>
+        <div class="prog"><i id="mProg"></i></div>
+        <div class="next" id="mNext"></div>
+      </div>
+    </div>
+  </div>
+</header>
+<div id="spacer" aria-hidden="true"></div>
+
+<main class="wrap">
+
+  <section class="win">
+    <div class="win-t blue">Teraz beží na kanáli 1<span class="burst">ŽIVO!</span></div>
+    <div class="win-b now" aria-live="polite">
+      <h2 id="nShow">…</h2>
+      <div class="ep"><span id="nEp"></span><span class="lang" id="nLang"></span></div>
+      <div class="prog"><i id="nProg"></i></div>
+      <div class="meta"><span id="nTime">--:-- – --:--</span><a id="nLink" href="#" target="_blank" rel="noopener">Pôvodné video na YouTube ↗</a></div>
+    </div>
+  </section>
+
+  <section class="win" id="program" aria-label="Program">
+    <div class="win-t">Program na dnes</div>
+    <div class="tt">
+      <div class="tt-head"><span><span class="p">P100</span> POZERAL TEXT</span><span id="ttClock">--.--. --:--:--</span></div>
+      <span class="tt-title">PROGRAM · KANÁL 1</span>
+      <ol id="guide"></ol>
+      <div class="tt-foot"><span style="color:var(--tt-cyan)">CZ dabing</span><span style="color:var(--tt-green)">SK dabing</span><span style="color:var(--tt-yellow)">bez slov</span><span style="color:#ff9cf0">reklama</span></div>
+    </div>
+  </section>
+
+  <div class="cols">
+    <section class="win">
+      <div class="win-t green">Čo je Pozeral</div>
+      <div class="win-b">
+        <p>Nekomerčný projekt pre nostalgiu: staré rozprávky z čias Jetixu, Minimaxu a Cartoon Network s českým a slovenským dabingom, poskladané do jedného kanála s programom a reklamami na hračky, ako kedysi.</p>
+        <p>Videá sa prehrávajú cez oficiálny prehrávač YouTube z verejných videí iných používateľov a oficiálnych kanálov. Pozeral nič nesťahuje ani neukladá, nemá vlastné reklamy a nezarába. Všetky práva patria ich majiteľom.</p>
+      </div>
+    </section>
+
+    <section class="win" id="nahlasit">
+      <div class="win-t">Nahlásiť video</div>
+      <div class="win-b">
+        <p>Ste majiteľ práv a chcete video z programu stiahnuť? Alebo niečo nefunguje? Napíšte nám, do 48 hodín to vybavíme.</p>
+        <form id="form" novalidate>
+          <label for="fVideo">Ktoré video <span>(názov alebo odkaz)</span>
+            <input id="fVideo" name="video" required>
+          </label>
+          <div class="row"><button type="button" class="btn-fill" id="fillNow">Vyplniť to, čo práve beží</button></div>
+          <label for="fDovod">Dôvod
+            <select id="fDovod" name="dovod">
+              <option>Som majiteľ práv a chcem video odstrániť</option>
+              <option>Video nefunguje</option>
+              <option>Niečo iné</option>
+            </select>
+          </label>
+          <label for="fMail">Váš e-mail <span>(aby sme vám vedeli odpovedať)</span>
+            <input id="fMail" name="email" type="email" autocomplete="email" required>
+          </label>
+          <label for="fMsg">Správa <span>(nepovinné)</span>
+            <textarea id="fMsg" name="sprava"></textarea>
+          </label>
+          <div class="hp" aria-hidden="true"><label for="fBot">Nevypĺňať<input id="fBot" name="botcheck" tabindex="-1" autocomplete="off"></label></div>
+          <div class="row"><button class="pill o" type="submit" id="fSend">Odoslať</button></div>
+          <p class="status" id="fStatus" role="status"></p>
+        </form>
+      </div>
+    </section>
+  </div>
+
+  <section class="win scan-box" id="scanBox" hidden>
+    <div class="win-t blue">Skener dĺžok videí</div>
+    <div class="win-b" style="display:grid;gap:10px">
+      <p>Prejde všetky videá v programe aj reklamy, zistí presnú dĺžku a či sa dajú prehrať. Výsledok skopíruj do <b>const DLZKY</b> v súbore index.html.</p>
+      <div><button class="pill" id="scanGo">Skenovať</button></div>
+      <textarea id="scanOut" readonly></textarea>
+      <div id="scanYt"></div>
+    </div>
+  </section>
+
+  <div class="foot">
+    <span>Stránka je najlepšie viditeľná v rozlíšení <b>1024×768</b> a v programe Internet Explorer 6.</span>
+    <span>Pozeral · nekomerčný projekt · Bratislava</span>
+  </div>
+</main>
+
+<footer class="bottom">
+  <div class="wrap bottom-in">
+    <div class="remote">
+      <button class="rb pw" id="bPower" aria-label="Zapnúť alebo vypnúť">⏻</button>
+      <button class="rb" id="bDown" aria-label="Stíšiť" disabled>−</button>
+      <button class="rb" id="bUp" aria-label="Zosilniť" disabled>+</button>
+      <button class="rb" id="bMute" aria-pressed="false" aria-label="Stlmiť" disabled>M</button>
+    </div>
+    <div class="ticker" aria-hidden="true"><span class="ticker-run" id="ticker">POZERAL TV · staré rozprávky v CZ a SK dabingu · stlač červené tlačidlo a zapni telku</span></div>
+  </div>
+</footer>
+
+<script>
+/* =========================================================
+   NASTAVENIA — toto môžeš meniť
+   ========================================================= */
+const CONFIG = {
+  web3formsKluc: '',                      // kľúč z web3forms.com (zadarmo, zadáš tam svoj mail). Bez neho formulár neodosiela.
+  zaciatok: Date.UTC(2026, 0, 1, 5, 0, 0),// od tohto času sa počíta program (6:00 v Bratislave)
+  prestavka: 20,                          // sekundy "Hneď sme späť" po rozprávke, keď poznáme presné dĺžky
+  reklamVBloku: 3                         // koľko reklám ide po každej rozprávke
+};
+
+/* ROZPRÁVKY — poradie, ako idú za sebou. Po skončení sa točí odznova.
+   id = YouTube ID (časť za watch?v=), min = odhad dĺžky v minútach, lang = 'CZ', 'SK' alebo 'bez slov' */
+const PROGRAM = [
+  { id:'wvDJPJLScqY', show:'Gumídci', ep:'Znělka (zpívá Karel Černoch)', lang:'CZ', min:2 },
+  { id:'rLm4Ficu5Fg', show:'Pat a Mat', ep:'Palačinky', lang:'bez slov', min:10 },
+  { id:'i56L6jU7MjI', show:'Šmolkovia', ep:'Úplná epizóda', lang:'SK', min:25 },
+  { id:'DuZ3fcaIo-I', show:'Tři kamarádi a Jerry', ep:'Tajná mise, Archeologický výkop, Bleší trh, Brýle, Bumerang', lang:'CZ', min:60 },
+  { id:'g-sb2JideT8', show:'Život s Louiem', ep:'Vánoční překvapení', lang:'CZ', min:30 },
+  { id:'3NeMjNMOi3E', show:'Pat a Mat', ep:'Natierajú podlahu', lang:'bez slov', min:10 },
+  { id:'f-gYesYeIuo', show:'Totally Spies – Špiónky', ep:'Ďábelské zakončení (1. část)', lang:'CZ', min:30 },
+  { id:'pwOIfrUEA8M', show:'Naruto', ep:'1. díl, 1. časť (Jetix dabing)', lang:'CZ', min:6 },
+  { id:'W_1TdqDf9G4', show:'Šmolkovia', ep:'Šmolkovský raj', lang:'SK', min:15 },
+  { id:'a98xtdBdlqU', show:'Život s Louiem', ep:'Táta má padáka', lang:'CZ', min:30 },
+  { id:'85mbr-0GygU', show:'Tři kamarádi a Jerry', ep:'Bleší trh', lang:'CZ', min:12 },
+  { id:'lWLpRq9TAU4', show:'Tři kamarádi a Jerry', ep:'Super model', lang:'CZ', min:11 },
+  { id:'1VLI47pHDcI', show:'Šmolkovia', ep:'Šľachetný Gargamel', lang:'SK', min:15 },
+  { id:'SxyHoiyugis', show:'Tři kamarádi a Jerry', ep:'Circus, Dát si pusu s Lindou, Dívčí šaty, Domovník, Dvoření pro začátečníky', lang:'CZ', min:60 },
+  { id:'nXJXmtwVXUg', show:'Život s Louiem', ep:'Prší mi do postele', lang:'CZ', min:30 }
+];
+
+/* REKLAMY — po každej rozprávke idú za sebou 3 (točia sa dokola). sek = odhad dĺžky v sekundách. */
+const REKLAMY = [
+  { id:'hWiR7oAHsqI', ep:'LEGO Bionicle – Maska moci', lang:'CZ', sek:35 },
+  { id:'4F270bSlSHk', ep:'Hot Wheels – Car Factory (2002)', lang:'EN', sek:35 },
+  { id:'zstpFp_Oi04', ep:'LEGO Bionicle', lang:'CZ', sek:35 },
+  { id:'AyJnyNX_vDg', ep:'Planet Hot Wheels – Energy Cars (2002)', lang:'EN', sek:35 },
+  { id:'lBP3n21jx28', ep:'LEGO Bionicle – Toa Nuva (2002)', lang:'EN', sek:35 },
+  { id:'5HFXx_ij93A', ep:'Hot Wheels – Turbo Jet City (2002)', lang:'EN', sek:35 },
+  { id:'PiovQRLC_S4', ep:'Hot Wheels – Shark Park (2002)', lang:'EN', sek:35 }
+];
+
+/* TVOJE VIDEÁ — znelky a predely, ktoré ide pred každou rozprávkou (točia sa dokola).
+   Súbor mp4 nahraj do priečinka videa/ vedľa index.html, alebo použi YouTube id.
+   Príklad: { src:'videa/znelka-1.mp4', ep:'Znelka', sek:10 },  alebo  { id:'YOUTUBE_ID', ep:'Predel', sek:15 } */
+const ZNELKY = [
+];
+
+/* Presné dĺžky v sekundách zo skenera (otvor stránku s ?skenuj). -1 = video nejde, vynechá sa. */
+const DLZKY = {
+};
+
+/* =========================================================
+   PROGRAM — výpočet, čo beží (rovnaké pre všetkých divákov)
+   ========================================================= */
+const KEY = it => it.id || it.src;
+const works = it => !(DLZKY[KEY(it)] < 0);
+const SEQ = [];
+(() => {
+  const ads = REKLAMY.filter(works), idents = ZNELKY.filter(works);
+  let a = 0, z = 0;
+  PROGRAM.filter(works).forEach(p => {
+    if (idents.length) SEQ.push({ ...idents[z++ % idents.length], show:'Pozeral', lang:'', kind:'ident' });
+    SEQ.push({ ...p, kind:'show' });
+    for (let j = 0; j < CONFIG.reklamVBloku && ads.length; j++) SEQ.push({ ...ads[a++ % ads.length], show:'Reklama', kind:'ad' });
+  });
+})();
+const SLOTS = SEQ.map(it => {
+  const d = DLZKY[KEY(it)];
+  if (d > 0) return Math.ceil(d) + (it.kind === 'show' ? CONFIG.prestavka : 1);
+  return it.sek || Math.round((it.min || 1) * 60);
+});
+const CYCLE = SLOTS.reduce((s, x) => s + x, 0);
+
+function at(t){
+  let s = ((t - CONFIG.zaciatok) / 1000) % CYCLE;
+  if (s < 0) s += CYCLE;
+  const cycleStart = t - s * 1000;
+  let acc = 0;
+  for (let i = 0; i < SEQ.length; i++){
+    if (s < acc + SLOTS[i]) return { i, offset: s - acc, start: cycleStart + acc*1000, end: cycleStart + (acc + SLOTS[i])*1000 };
+    acc += SLOTS[i];
+  }
+  return { i:0, offset:0, start:t, end:t + SLOTS[0]*1000 };
+}
+/* aktuálna položka + nasledujúce rozprávky (reklamy a znelky v programe nevypisujeme) */
+function upcoming(n){
+  const cur = at(Date.now());
+  const out = [{ i:cur.i, start:cur.start, cur:true }];
+  let t = cur.end, i = cur.i, guard = 0;
+  while (out.length < n && guard++ < SEQ.length * 3){
+    i = (i + 1) % SEQ.length;
+    if (SEQ[i].kind === 'show') out.push({ i, start:t });
+    t += SLOTS[i] * 1000;
+  }
+  return out;
+}
+function nextShow(fromI){
+  const cur = at(Date.now());
+  let t = cur.end, i = fromI;
+  for (let k = 0; k < SEQ.length; k++){ i = (i + 1) % SEQ.length; if (SEQ[i].kind === 'show') return { it:SEQ[i], start:t }; t += SLOTS[i]*1000; }
+  return { it:SEQ[0], start:t };
+}
+const hm = t => new Date(t).toLocaleTimeString('sk-SK', { hour:'2-digit', minute:'2-digit' });
+const mmss = s => { s = Math.max(0, Math.round(s)); return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0'); };
+const langClass = l => l === 'SK' ? 'lang sk' : l === 'CZ' ? 'lang' : l === 'EN' ? 'lang en' : 'lang ns';
+const $ = id => document.getElementById(id);
+
+/* =========================================================
+   UI — teraz beží, mini info, teletext, ticker
+   ========================================================= */
+let lastGuideKey = '';
+function setLang(el, l){ el.textContent = l || ''; el.className = langClass(l); el.hidden = !l; }
+function renderNow(){
+  const now = Date.now(), cur = at(now), it = SEQ[cur.i], nx = nextShow(cur.i);
+  const showName = it.kind === 'ad' ? 'Reklamná prestávka' : it.kind === 'ident' ? 'Pozeral TV' : it.show;
+  const pct = Math.min(100, (now - cur.start) / (cur.end - cur.start) * 100) + '%';
+  $('nShow').textContent = showName;
+  $('nEp').textContent = it.ep;
+  setLang($('nLang'), it.lang);
+  $('nTime').textContent = hm(cur.start) + ' – ' + hm(cur.end) + ' · zostáva ' + mmss((cur.end - now)/1000);
+  $('nProg').style.width = pct;
+  $('nLink').href = it.id ? 'https://www.youtube.com/watch?v=' + it.id : it.src;
+  $('mShow').textContent = showName;
+  $('mEp').textContent = it.ep;
+  setLang($('mLang'), it.lang);
+  $('mProg').style.width = pct;
+  $('mNext').innerHTML = '';
+  const b = document.createElement('b'); b.textContent = 'O ' + hm(nx.start) + ': ';
+  $('mNext').append(b, nx.it.show);
+  const d = new Date();
+  $('ttClock').textContent = d.toLocaleDateString('sk-SK', { day:'2-digit', month:'2-digit' }) + ' ' + d.toLocaleTimeString('sk-SK');
+
+  const key = cur.i + '|' + cur.start;
+  if (key !== lastGuideKey){
+    lastGuideKey = key;
+    const ol = $('guide'); ol.textContent = '';
+    for (const g of upcoming(10)){
+      const p = SEQ[g.i], li = document.createElement('li');
+      if (g.cur) li.classList.add('cur');
+      if (p.kind !== 'show') li.classList.add('ad');
+      const t = document.createElement('span'); t.className = 't'; t.textContent = g.cur ? 'TERAZ' : hm(g.start);
+      const s = document.createElement('span'); s.className = 's';
+      if (p.kind === 'show'){ s.textContent = p.show + ' '; const e = document.createElement('span'); e.textContent = p.ep; s.appendChild(e); }
+      else s.textContent = p.kind === 'ad' ? 'Reklamná prestávka' : 'Pozeral TV';
+      const l = document.createElement('span');
+      l.textContent = p.kind !== 'show' ? '' : p.lang === 'bez slov' ? '—' : p.lang;
+      l.style.color = p.lang === 'SK' ? 'var(--tt-green)' : p.lang === 'CZ' ? 'var(--tt-cyan)' : 'var(--tt-yellow)';
+      li.append(t, s, l); ol.appendChild(li);
+    }
+    // ticker
+    const tk = $('ticker'); tk.textContent = '';
+    const add = (lbl, txt) => { const bb = document.createElement('b'); bb.textContent = lbl; tk.append(bb, ' ' + txt + '   ✦   '); };
+    add('TERAZ:', showName + ' – ' + it.ep);
+    upcoming(5).slice(1).forEach(g => add(hm(g.start), SEQ[g.i].show + ' – ' + SEQ[g.i].ep));
+    tk.append('POZERAL TV · rozprávky ako v roku 2002');
+  }
+}
+
+/* =========================================================
+   HORNÝ BAR — telka sa pri scrolle zmenší
+   ========================================================= */
+const top_ = $('top'), stage = $('stage'), tv = $('tv'), mini = $('mini');
+let W0 = 600, WC = 160, RANGE = 300, raf = 0;
+function setP(p){
+  document.documentElement.style.setProperty('--p', p.toFixed(3));
+  const sw = stage.clientWidth - parseFloat(getComputedStyle(stage).paddingLeft) - parseFloat(getComputedStyle(stage).paddingRight);
+  const w = W0 - (W0 - WC) * p;
+  tv.style.width = w + 'px';
+  tv.style.marginLeft = ((sw - W0) / 2 * (1 - p)) + 'px';
+  mini.setAttribute('aria-hidden', p < 0.15 ? 'true' : 'false');
+}
+function layout(){
+  const cs = getComputedStyle(stage);
+  const sw = stage.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+  const topbarH = top_.querySelector('.topbar').offsetHeight;
+  const maxByHeight = (innerHeight - topbarH - 150) / 0.75 + 40;   // aby veľká telka nezabrala celú obrazovku
+  W0 = Math.max(220, Math.min(sw, maxByHeight));
+  WC = Math.max(140, Math.min(sw * 0.25, 230));
+  setP(0);
+  const he = top_.offsetHeight;
+  setP(1);
+  const hc = top_.offsetHeight;
+  document.documentElement.style.setProperty('--he', he + 'px');
+  document.documentElement.style.setProperty('--hc', hc + 'px');
+  RANGE = Math.max(1, he - hc);
+  onScroll();
+}
+function onScroll(){
+  cancelAnimationFrame(raf);
+  raf = requestAnimationFrame(() => setP(Math.min(1, Math.max(0, scrollY / RANGE))));
+}
+addEventListener('scroll', onScroll, { passive:true });
+addEventListener('resize', () => { layout(); if (mode === 'error') drawMono(); });
+$('logo').addEventListener('click', e => { e.preventDefault(); scrollTo({ top:0 }); });
+
+/* =========================================================
+   EFEKTY — šum pri prepnutí, monoskop pri poruche
+   ========================================================= */
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let noiseRaf = 0, noiseUntil = 0;
+function showStatic(ms){
+  const c = $('noise'); c.hidden = false; noiseUntil = performance.now() + ms;
+  const ctx = c.getContext('2d'), img = ctx.createImageData(c.width, c.height);
+  cancelAnimationFrame(noiseRaf);
+  const frame = now => {
+    if (now > noiseUntil){ c.hidden = true; return; }
+    if (!reduceMotion){
+      for (let p = 0; p < img.data.length; p += 4){ const v = Math.random()*255|0; img.data[p]=img.data[p+1]=img.data[p+2]=v; img.data[p+3]=255; }
+      ctx.putImageData(img, 0, 0);
+    } else { ctx.fillStyle = '#111'; ctx.fillRect(0,0,c.width,c.height); }
+    noiseRaf = requestAnimationFrame(frame);
+  };
+  noiseRaf = requestAnimationFrame(frame);
+  hiss(ms);
+}
+let actx = null;
+function hiss(ms){
+  if (!actx || muted || reduceMotion) return;
+  try{
+    const len = Math.floor(actx.sampleRate * ms / 1000), buf = actx.createBuffer(1, len, actx.sampleRate), d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = (Math.random()*2 - 1) * (1 - i/len);
+    const src = actx.createBufferSource(), g = actx.createGain();
+    g.gain.value = 0.05 * (volume/100); src.buffer = buf; src.connect(g).connect(actx.destination); src.start();
+  }catch(e){}
+}
+function drawMono(){
+  const c = $('mono'), r = c.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1);
+  c.width = Math.max(320, r.width*dpr); c.height = Math.max(240, r.height*dpr);
+  const x = c.getContext('2d'), w = c.width, h = c.height;
+  x.fillStyle = '#7d7d7d'; x.fillRect(0,0,w,h);
+  x.strokeStyle = '#f2f2f2'; x.lineWidth = Math.max(1, w/400);
+  const step = w/16;
+  for (let gx = step/2; gx < w; gx += step){ x.beginPath(); x.moveTo(gx,0); x.lineTo(gx,h); x.stroke(); }
+  for (let gy = (h % step)/2; gy < h; gy += step){ x.beginPath(); x.moveTo(0,gy); x.lineTo(w,gy); x.stroke(); }
+  const cx = w/2, cy = h/2, R = h*0.42;
+  x.save(); x.beginPath(); x.arc(cx,cy,R,0,Math.PI*2); x.clip();
+  x.fillStyle = '#303030'; x.fillRect(cx-R,cy-R,2*R,2*R);
+  const cols = ['#fff','#ffe600','#2ee6f0','#3dff6a','#ff3bd4','#ff4a3d','#2a3cff'];
+  const bw = 2*R/cols.length;
+  cols.forEach((col,k) => { x.fillStyle = col; x.fillRect(cx-R + k*bw, cy-R*0.62, bw+1, R*0.62); });
+  const grd = x.createLinearGradient(cx-R,0,cx+R,0); grd.addColorStop(0,'#000'); grd.addColorStop(1,'#fff');
+  x.fillStyle = grd; x.fillRect(cx-R, cy+R*0.12, 2*R, R*0.3);
+  for (let k = 0; k < 24; k++){ x.fillStyle = k%2 ? '#000' : '#fff'; x.fillRect(cx-R + k*(2*R/24), cy+R*0.46, 2*R/24+1, R*0.18); }
+  x.restore();
+  x.lineWidth = Math.max(2, w/250); x.strokeStyle = '#fff';
+  x.beginPath(); x.arc(cx,cy,R,0,Math.PI*2); x.stroke();
+  x.beginPath(); x.moveTo(cx-R*0.12,cy); x.lineTo(cx+R*0.12,cy); x.moveTo(cx,cy-R*0.08); x.lineTo(cx,cy+R*0.08); x.stroke();
+  x.fillStyle = '#000'; x.fillRect(cx-R*0.42, cy-R*0.86, R*0.84, R*0.18);
+  x.fillStyle = '#fff'; x.font = `${Math.round(R*0.15)}px VT323, monospace`; x.textAlign = 'center'; x.textBaseline = 'middle';
+  x.fillText('POZERAL  1', cx, cy-R*0.77);
+}
+
+/* =========================================================
+   PREHRÁVAČ — YouTube aj vlastné mp4
+   ========================================================= */
+let player = null, ytReady = false, powered = false;
+let playing = -1, mode = 'off', knownDur = 0, volume = 70, muted = false, osdTimer = 0, lastSync = 0, startAttempt = 0, usingFile = false;
+const vid = $('vid');
+
+const tag = document.createElement('script');
+tag.src = 'https://www.youtube.com/iframe_api';
+document.head.appendChild(tag);
+
+window.onYouTubeIframeAPIReady = function(){
+  const first = SEQ.find(s => s.id) || { id:'' };
+  player = new YT.Player('yt', {
+    videoId: first.id,
+    playerVars: { autoplay:0, controls:0, disablekb:1, rel:0, playsinline:1, iv_load_policy:3, fs:0, origin: location.origin },
+    events: {
+      onReady: () => { ytReady = true; if (powered && !usingFile) tuneIn(true); },
+      onStateChange: onState,
+      onError: onErr
+    }
+  });
+  if (new URLSearchParams(location.search).has('skenuj')) initScanPlayer();
+};
+
+function setLayers(m){
+  mode = m;
+  $('bumper').hidden = m !== 'bumper';
+  $('err').hidden = m !== 'error';
+  $('mono').hidden = m !== 'error';
+  if (m === 'error') drawMono();
+}
+
+function tuneIn(first){
+  if (!powered) return;
+  const cur = at(Date.now()), it = SEQ[cur.i];
+  const prev = playing >= 0 ? SEQ[playing] : null;
+  playing = cur.i; knownDur = 0; startAttempt = Date.now(); lastSync = Date.now();
+  setLayers('loading');
+  showStatic(first ? 450 : (prev && prev.kind === 'ad' && it.kind === 'ad') ? 250 : 700);
+  $('adtag').hidden = it.kind !== 'ad';
+  if (it.src && !it.id){
+    usingFile = true;
+    try{ player && player.stopVideo(); }catch(e){}
+    $('yt').hidden = true; vid.hidden = false;
+    playFile(it, cur.offset);
+  } else {
+    usingFile = false;
+    vid.pause(); vid.hidden = true; $('yt').hidden = false;
+    if (!ytReady) return;
+    try{
+      player.loadVideoById({ videoId: it.id, startSeconds: Math.floor(cur.offset) });
+      if (!muted){ player.unMute(); player.setVolume(volume); } else player.mute();
+    }catch(e){}
+  }
+  if (it.kind === 'show') showOsd();
+}
+
+function playFile(it, off){
+  vid.src = it.src; vid.muted = muted; vid.volume = volume/100;
+  vid.onloadedmetadata = () => {
+    knownDur = vid.duration || 0;
+    if (knownDur && off >= knownDur - 0.5){ filler(); return; }
+    vid.currentTime = off;
+    vid.play().then(() => setLayers('video')).catch(() => { vid.muted = true; vid.play().catch(()=>{}); $('unmute').hidden = false; setLayers('video'); });
+  };
+  vid.onended = filler;
+  vid.onerror = onErr;
+  vid.load();
+}
+
+function onState(e){
+  if (!powered || usingFile) return;
+  if (e.data === YT.PlayerState.PLAYING){
+    if (mode === 'bumper' || mode === 'error'){ player.pauseVideo(); return; }
+    setLayers('video');
+    knownDur = player.getDuration() || 0;
+    $('unmute').hidden = !(player.isMuted() && !muted);
+  } else if (e.data === YT.PlayerState.ENDED){
+    filler();
+  }
+}
+function onErr(){
+  if (!powered) return;
+  try{ usingFile ? vid.pause() : player.stopVideo(); }catch(e){}
+  setLayers('error');
+}
+function filler(){
+  try{ usingFile ? vid.pause() : player.stopVideo(); }catch(e){}
+  const it = SEQ[playing] || {};
+  const isAd = it.kind !== 'show';
+  $('bumper').classList.toggle('ad', isAd);
+  $('bBig').textContent = isAd ? 'REKLAMA' : 'HNEĎ SME SPÄŤ';
+  setLayers('bumper');
+}
+
+function curTime(){ return usingFile ? vid.currentTime : player.getCurrentTime(); }
+
+function tick(){
+  renderNow();
+  if (!powered) return;
+  const now = Date.now(), cur = at(now);
+  if (cur.i !== playing){ tuneIn(false); return; }
+  const left = (cur.end - now) / 1000;
+  if (mode === 'bumper' || mode === 'error'){
+    const nx = SEQ[(cur.i + 1) % SEQ.length];
+    $('bNext').textContent = nx.kind === 'show' ? nx.show + ' – ' + nx.ep : nx.kind === 'ad' ? 'reklama' : 'Pozeral TV';
+    $('bCd').textContent = mmss(left);
+    $('errAt').textContent = hm(cur.end);
+    return;
+  }
+  if (mode === 'video'){
+    if (knownDur && cur.offset > knownDur - 0.5){ filler(); return; }
+    if (now - lastSync > 15000){
+      lastSync = now;
+      try{
+        if (usingFile){ if (vid.paused) vid.play().catch(()=>{}); }
+        else if (player.getPlayerState() === YT.PlayerState.PAUSED) player.playVideo();
+        const diff = Math.abs(curTime() - cur.offset);
+        if (diff > 6 && (!knownDur || cur.offset < knownDur - 3)){
+          if (usingFile) vid.currentTime = cur.offset; else player.seekTo(cur.offset, true);
+        }
+      }catch(e){}
+    }
+  }
+  if (mode === 'loading' && !usingFile && ytReady && now - startAttempt > 4000){
+    // prehliadač nedovolil spustiť so zvukom: skús potichu a ponúkni zvuk
+    try{
+      const st = player.getPlayerState();
+      if (st !== YT.PlayerState.PLAYING && st !== YT.PlayerState.BUFFERING){ player.mute(); player.playVideo(); $('unmute').hidden = false; }
+    }catch(e){}
+    startAttempt = now;
+  }
+}
+
+function showOsd(volOnly){
+  const it = SEQ[playing >= 0 ? playing : at(Date.now()).i];
+  $('osdCh').textContent = volOnly ? '' : 'CH 01';
+  $('osdTitle').textContent = volOnly ? '' : it.show;
+  const bars = Math.round(volume/10);
+  $('osdVol').textContent = volOnly ? (muted ? 'MUTE' : 'VOL ' + '▮'.repeat(bars) + '▯'.repeat(10 - bars)) : '';
+  $('osd').classList.add('show');
+  clearTimeout(osdTimer);
+  osdTimer = setTimeout(() => $('osd').classList.remove('show'), volOnly ? 1500 : 4000);
+}
+
+function power(on){
+  powered = on;
+  $('off').hidden = on;
+  $('led').classList.toggle('on', on);
+  ['bDown','bUp','bMute'].forEach(id => $(id).disabled = !on);
+  if (on){
+    try{ actx = actx || new (window.AudioContext || window.webkitAudioContext)(); actx.resume(); }catch(e){}
+    tuneIn(true);
+    if (!ytReady && !usingFile) showStatic(1500);
+  } else {
+    try{ player && player.stopVideo(); }catch(e){}
+    vid.pause();
+    playing = -1; setLayers('off'); $('unmute').hidden = true; $('adtag').hidden = true;
+  }
+}
+
+$('powerBig').addEventListener('click', () => power(true));
+$('bPower').addEventListener('click', () => power(!powered));
+$('bUp').addEventListener('click', () => { volume = Math.min(100, volume + 10); muted = false; applyVol(); });
+$('bDown').addEventListener('click', () => { volume = Math.max(0, volume - 10); applyVol(); });
+$('bMute').addEventListener('click', () => { muted = !muted; applyVol(); });
+$('unmute').addEventListener('click', () => { muted = false; applyVol(); });
+function applyVol(){
+  $('bMute').setAttribute('aria-pressed', String(muted));
+  try{
+    vid.muted = muted; vid.volume = volume/100;
+    if (player){ if (muted) player.mute(); else { player.unMute(); player.setVolume(volume); } }
+    if (mode === 'video'){ if (usingFile) vid.play().catch(()=>{}); else player.playVideo(); }
+  }catch(e){}
+  $('unmute').hidden = true;
+  try{ localStorage.setItem('pozeral-vol', JSON.stringify({ volume, muted })); }catch(e){}
+  showOsd(true);
+}
+try{ const v = JSON.parse(localStorage.getItem('pozeral-vol') || 'null'); if (v){ volume = v.volume; muted = v.muted; } }catch(e){}
+
+/* =========================================================
+   FORMULÁR — Web3Forms posiela hlásenie na tvoj mail, mail nie je na stránke
+   ========================================================= */
+$('fillNow').addEventListener('click', () => {
+  const it = SEQ[at(Date.now()).i];
+  $('fVideo').value = (it.kind === 'show' ? it.show + ' – ' : 'Reklama – ') + it.ep + ' (' + (it.id ? 'https://youtu.be/' + it.id : it.src) + ')';
+});
+$('form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const st = $('fStatus'); st.className = 'status';
+  if (!$('fVideo').value.trim()){ st.classList.add('bad'); st.textContent = 'Napíšte, o ktoré video ide.'; $('fVideo').focus(); return; }
+  if (!$('fMail').checkValidity()){ st.classList.add('bad'); st.textContent = 'Skontrolujte e-mail, aby sme vám vedeli odpovedať.'; $('fMail').focus(); return; }
+  if ($('fBot').value) return;
+  if (!CONFIG.web3formsKluc){ st.classList.add('bad'); st.textContent = 'Formulár ešte nie je zapojený. Skúste to prosím neskôr.'; return; }
+  $('fSend').disabled = true; st.textContent = 'Odosielam…';
+  try{
+    const r = await fetch('https://api.web3forms.com/submit', {
+      method:'POST', headers:{ 'Content-Type':'application/json', Accept:'application/json' },
+      body: JSON.stringify({
+        access_key: CONFIG.web3formsKluc, subject:'Pozeral – nahlásenie videa', from_name:'Pozeral TV',
+        video: $('fVideo').value, dovod: $('fDovod').value, email: $('fMail').value, sprava: $('fMsg').value
+      })
+    });
+    const j = await r.json().catch(() => ({}));
+    if (r.ok && j.success !== false){ st.classList.add('ok'); st.textContent = 'Odoslané. Ozveme sa do 48 hodín.'; $('form').reset(); }
+    else throw new Error();
+  }catch(err){ st.classList.add('bad'); st.textContent = 'Nepodarilo sa odoslať. Skontrolujte pripojenie a skúste znova.'; }
+  $('fSend').disabled = false;
+});
+
+/* =========================================================
+   SKENER DĹŽOK (otvor stránku s ?skenuj)
+   ========================================================= */
+let scanPlayer = null, scanCb = null;
+function initScanPlayer(){
+  $('scanBox').hidden = false;
+  scanPlayer = new YT.Player('scanYt', {
+    width: 2, height: 2,
+    playerVars: { autoplay:0, controls:0, playsinline:1, mute:1 },
+    events: { onStateChange: e => scanCb && scanCb.state(e.data), onError: e => scanCb && scanCb.error(e.data) }
+  });
+}
+function probeYT(id){
+  return new Promise(res => {
+    let done = false;
+    const fin = v => { if (done) return; done = true; clearTimeout(to); scanCb = null; try{ scanPlayer.stopVideo(); }catch(e){} res(v); };
+    const to = setTimeout(() => fin({ err:'timeout' }), 20000);
+    scanCb = { state: s => { if (s === 1){ const d = scanPlayer.getDuration(); if (d > 0) fin({ dur: Math.round(d) }); } }, error: c => fin({ err: c }) };
+    scanPlayer.mute(); scanPlayer.loadVideoById(id);
+  });
+}
+function probeFile(src){
+  return new Promise(res => {
+    const v = document.createElement('video'); v.preload = 'metadata';
+    v.onloadedmetadata = () => res({ dur: Math.round(v.duration) });
+    v.onerror = () => res({ err:'súbor sa nedá načítať' });
+    v.src = src;
+  });
+}
+$('scanGo').addEventListener('click', async () => {
+  if (!scanPlayer) return;
+  $('scanGo').disabled = true;
+  const out = $('scanOut'), lines = [], all = [...PROGRAM.map(p => ({...p, t:p.show})), ...REKLAMY.map(p => ({...p, t:'Reklama'})), ...ZNELKY.map(p => ({...p, t:'Znelka'}))];
+  out.value = 'Skenujem…\n';
+  for (const p of all){
+    const r = p.id ? await probeYT(p.id) : await probeFile(p.src);
+    if (r.dur){ lines.push(`  '${KEY(p)}': ${r.dur}, // ${p.t} – ${p.ep} (${mmss(r.dur)})`); out.value += `OK   ${mmss(r.dur)}  ${p.t} – ${p.ep}\n`; }
+    else { lines.push(`  '${KEY(p)}': -1, // NEFUNGUJE (${r.err}) ${p.t} – ${p.ep}`); out.value += `ZLÉ  ${r.err}  ${p.t} – ${p.ep}\n`; }
+  }
+  out.value += '\n// Skopíruj toto do index.html namiesto const DLZKY:\nconst DLZKY = {\n' + lines.join('\n') + '\n};\n// -1 znamená, že video nejde a program ho preskočí.\n';
+  $('scanGo').disabled = false;
+});
+
+/* =========================================================
+   ŠTART
+   ========================================================= */
+renderNow();
+layout();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
+setInterval(tick, 500);
+</script>
+</body>
+</html>

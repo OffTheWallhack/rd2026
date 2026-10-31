@@ -2,10 +2,10 @@
 // Prejde všetky YouTube videá z pozeral/obsah.js, zistí presnú dĺžku a či sa dajú vložiť
 // na cudziu stránku, a zapíše výsledok do pozeral/dlzky.json. Spúšťa ho GitHub Action.
 //
-// Zdroje: 1) stránka videa (dĺžka + či sa dá vložiť), 2) oEmbed (či video existuje a dá sa vložiť).
+// Zdroje: 1) YouTube Data API, ak je v GitHube secret YT_API_KEY (dĺžka + či sa dá vložiť),
+//         2) inak oEmbed (len či video existuje a dá sa vložiť; dĺžky YouTube z GitHubu blokuje).
 // Poistka: ak by naraz "zlyhala" veľká časť videí, YouTube nás asi blokuje — vtedy nič neoznačíme ako nefunkčné.
 import fs from 'node:fs';
-import { execFileSync } from 'node:child_process';
 
 const OBSAH = 'pozeral/obsah.js';
 const VYSTUP = 'pozeral/dlzky.json';
@@ -23,33 +23,6 @@ add(O.reklamy); add(O.predely); add(O.znelky);
 
 let stare = { videa:{}, chyby:{} };
 try { stare = JSON.parse(fs.readFileSync(VYSTUP, 'utf8')); } catch {}
-
-// vytiahne JSON objekt, ktorý začína za daným textom (počíta zátvorky, ignoruje reťazce)
-function vytiahniJson(html, znacka){
-  const i = html.indexOf(znacka);
-  if (i < 0) return null;
-  const s = html.indexOf('{', i);
-  let d = 0, str = false, esc = false;
-  for (let j = s; j < html.length; j++){
-    const c = html[j];
-    if (str){ if (esc) esc = false; else if (c === '\\') esc = true; else if (c === '"') str = false; continue; }
-    if (c === '"') str = true;
-    else if (c === '{') d++;
-    else if (c === '}' && --d === 0){ try { return JSON.parse(html.slice(s, j + 1)); } catch { return null; } }
-  }
-  return null;
-}
-
-async function zWatch(id){
-  const r = await fetch(`https://www.youtube.com/watch?v=${id}&hl=en&has_verified=1&bpctr=9999999999`, {
-    headers:{ 'User-Agent':UA, 'Accept-Language':'en-US,en;q=0.9', Cookie:'CONSENT=YES+cb; SOCS=CAI' }
-  });
-  const html = await r.text();
-  const j = vytiahniJson(html, 'var ytInitialPlayerResponse') || vytiahniJson(html, 'ytInitialPlayerResponse');
-  if (!j) return { http:r.status, status:'NEČITATEĽNÉ' };
-  const ps = j.playabilityStatus || {};
-  return { http:r.status, status: ps.status, embed: ps.playableInEmbed, dovod: ps.reason || '', s: +(j.videoDetails?.lengthSeconds || 0) };
-}
 
 async function zOembed(id){
   const r = await fetch(`https://www.youtube.com/oembed?format=json&url=${encodeURIComponent('https://www.youtube.com/watch?v=' + id)}`, { headers:{ 'User-Agent':UA } });
@@ -85,19 +58,7 @@ if (api){
   // a) oEmbed: existuje video a dá sa vložiť? (YouTube ho z GitHubu neblokuje)
   const oe = {};
   for (const id of ids){ try { oe[id] = await zOembed(id); } catch { oe[id] = 0; } await sleep(250); }
-  // b) yt-dlp: presná dĺžka pre videá, ktoré existujú
-  const zive = [...ids].filter(id => oe[id] === 200);
-  const dlzky = {};
-  if (zive.length){
-    fs.writeFileSync('/tmp/ids.txt', zive.map(id => 'https://www.youtube.com/watch?v=' + id).join('\n'));
-    let out = '';
-    try {
-      out = execFileSync('yt-dlp', ['--skip-download', '--no-warnings', '--ignore-errors', '--no-playlist', '--sleep-requests', '1',
-        '--extractor-args', 'youtube:player_client=tv,android_vr,web_safari,mweb',
-        '--print', '%(id)s\t%(duration)s', '-a', '/tmp/ids.txt'], { encoding:'utf8', timeout: 20 * 60 * 1000, maxBuffer: 1 << 24 });
-    } catch (e) { out = (e.stdout || '').toString(); console.log('yt-dlp skončilo s chybou, beriem čo prešlo'); }
-    for (const line of out.split('\n')){ const [id, d] = line.trim().split('\t'); if (id && +d > 0) dlzky[id] = Math.round(+d); }
-  }
+  const dlzky = {};   // bez kľúča YouTube API dĺžky z GitHubu nezistíme (YouTube blokuje), stránka použije odhady
   for (const id of ids){
     const o = oe[id];
     let r;
@@ -107,7 +68,7 @@ if (api){
     else if (o === 200) r = { neiste:true, dovod:'existuje, dĺžku sa nepodarilo zistiť' };
     else r = { neiste:true, dovod:'oEmbed ' + o };
     vysledky.push({ id, ...r });
-    riadky.push([id, 'oembed:' + o, 'yt-dlp:' + (dlzky[id] || '-'), '=>', r.s || r.chyba || ('? ' + r.dovod)].join('  '));
+    riadky.push([id, 'oembed:' + o, '=>', r.s || r.chyba || ('? ' + r.dovod)].join('  '));
   }
 }
 

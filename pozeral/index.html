@@ -406,6 +406,8 @@ function dur(it){
 function slotLen(it){
   const d = dur(it);
   if (d) return Math.ceil(d) + (it.kind === 'show' ? CONFIG.prestavka : 1);
+  // dĺžku nepoznáme: pri rozprávke radšej o kúsok viac (zvyšok vyplní teletext), aby sa diel neodsekol
+  if (it.kind === 'show') return Math.round((it.min || 10) * 60 * 1.1 + 60);
   return it.sek || Math.round((it.min || 1) * 60);
 }
 function build(){

@@ -30,11 +30,14 @@ jobs:
       - name: Zistiť dĺžky videí
         run: node .github/pozeral/skener.mjs
       - name: Uložiť, ak sa niečo zmenilo
+        env:
+          UDALOST: ${{ github.event_name }}
         run: |
-          if [ -z "$(git status --porcelain -- pozeral/dlzky.json)" ]; then echo "Bez zmeny"; exit 0; fi
+          if [ -z "$(git status --porcelain -- pozeral/dlzky.json)" ] && [ "$UDALOST" = "schedule" ]; then echo "Bez zmeny"; exit 0; fi
+          if [ -z "$(git status --porcelain -- pozeral/dlzky.json .github/pozeral/posledny-sken.txt)" ]; then echo "Bez zmeny"; exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add pozeral/dlzky.json
+          git add pozeral/dlzky.json .github/pozeral/posledny-sken.txt
           git commit -m "Si pozeral: aktualizované dĺžky videí"
           git pull --rebase origin main
           git push

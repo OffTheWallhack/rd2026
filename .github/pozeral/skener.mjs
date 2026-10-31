@@ -1,10 +1,14 @@
 // Si pozeral — automatický skener dĺžok videí.
 // Prejde všetky YouTube videá z pozeral/obsah.js, zistí presnú dĺžku a či sa dajú vložiť
 // na cudziu stránku, a zapíše výsledok do pozeral/dlzky.json. Spúšťa ho GitHub Action.
+//
+// Zdroje: 1) stránka videa (dĺžka + či sa dá vložiť), 2) oEmbed (či video existuje a dá sa vložiť).
+// Poistka: ak by naraz "zlyhala" veľká časť videí, YouTube nás asi blokuje — vtedy nič neoznačíme ako nefunkčné.
 import fs from 'node:fs';
 
 const OBSAH = 'pozeral/obsah.js';
 const VYSTUP = 'pozeral/dlzky.json';
+const LOG = '.github/pozeral/posledny-sken.txt';
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
@@ -36,60 +40,57 @@ function vytiahniJson(html, znacka){
 }
 
 async function zWatch(id){
-  const r = await fetch(`https://www.youtube.com/watch?v=${id}&hl=en&gl=SK&has_verified=1&bpctr=9999999999`, {
-    headers:{ 'User-Agent':UA, 'Accept-Language':'en-US,en;q=0.9,sk;q=0.8', Cookie:'CONSENT=YES+cb; SOCS=CAI' }
+  const r = await fetch(`https://www.youtube.com/watch?v=${id}&hl=en&has_verified=1&bpctr=9999999999`, {
+    headers:{ 'User-Agent':UA, 'Accept-Language':'en-US,en;q=0.9', Cookie:'CONSENT=YES+cb; SOCS=CAI' }
   });
-  const j = vytiahniJson(await r.text(), 'ytInitialPlayerResponse');
-  if (!j) return null;
+  const html = await r.text();
+  const j = vytiahniJson(html, 'var ytInitialPlayerResponse') || vytiahniJson(html, 'ytInitialPlayerResponse');
+  if (!j) return { http:r.status, status:'NEČITATEĽNÉ' };
   const ps = j.playabilityStatus || {};
-  return { status: ps.status, embed: ps.playableInEmbed, dovod: ps.reason || '', s: +(j.videoDetails?.lengthSeconds || 0) };
+  return { http:r.status, status: ps.status, embed: ps.playableInEmbed, dovod: ps.reason || '', s: +(j.videoDetails?.lengthSeconds || 0) };
 }
 
-async function zEmbedu(id){
-  const r = await fetch('https://www.youtube.com/youtubei/v1/player?prettyPrint=false', {
-    method:'POST',
-    headers:{ 'Content-Type':'application/json', 'User-Agent':UA, Origin:'https://www.youtube.com' },
-    body: JSON.stringify({ videoId:id, context:{ client:{ clientName:'WEB_EMBEDDED_PLAYER', clientVersion:'1.20250310.01.00', hl:'en', gl:'SK' }, thirdParty:{ embedUrl:'https://durica.si/pozeral/' } } })
-  });
-  const j = await r.json().catch(() => null);
-  if (!j) return null;
-  const ps = j.playabilityStatus || {};
-  return { status: ps.status, dovod: ps.reason || '', s: +(j.videoDetails?.lengthSeconds || 0) };
+async function zOembed(id){
+  const r = await fetch(`https://www.youtube.com/oembed?format=json&url=${encodeURIComponent('https://www.youtube.com/watch?v=' + id)}`, { headers:{ 'User-Agent':UA } });
+  return r.status;   // 200 = existuje a dá sa vložiť, 401/403 = vkladanie zakázané, 400/404 = neexistuje alebo súkromné
 }
 
-const jeBot = d => /bot|sign in to confirm/i.test(d);
-const jeKrajina = d => /country|region/i.test(d);
-
-const videa = {}, chyby = {}, neiste = [];
+const vysledky = [], riadky = [];
 for (const id of ids){
-  let v = null, e = null;
-  try { v = await zWatch(id); } catch {}
-  try { e = await zEmbedu(id); } catch {}
-  const ok = x => x && x.status === 'OK' && x.s > 0;
-  let vysledok;
-  if (ok(e) && (!v || v.embed !== false)) vysledok = e.s;                       // ide prehrať vo vloženom prehrávači
-  else if (ok(v) && v.embed === false) vysledok = { chyba:'vkladanie zakázané' };
-  else if (ok(v) && !e) vysledok = v.s;
-  else {
-    const dovod = (e && e.dovod) || (v && v.dovod) || '';
-    if (!v && !e) vysledok = null;                                               // sieť zlyhala
-    else if (jeBot(dovod) || jeKrajina(dovod)) vysledok = null;                  // nevieme isto, necháme starú hodnotu
-    else vysledok = { chyba: dovod || 'nedostupné' };
-  }
-  if (vysledok === null){
-    neiste.push(id);
-    if (id in (stare.videa || {})) videa[id] = stare.videa[id];
-    if (stare.chyby && stare.chyby[id]) chyby[id] = stare.chyby[id];
-  } else if (typeof vysledok === 'number') videa[id] = vysledok;
-  else { videa[id] = -1; chyby[id] = vysledok.chyba; }
-  console.log(String(videa[id] ?? '?').padStart(6), id, chyby[id] || '');
-  await sleep(700);
+  let v = null, oe = 0;
+  try { v = await zWatch(id); } catch (e) { v = { status:'SIEŤ', dovod:String(e) }; }
+  try { oe = await zOembed(id); } catch {}
+  let r;
+  if (v.status === 'OK' && v.s > 0 && v.embed !== false && oe !== 401 && oe !== 403) r = { s: v.s };
+  else if (oe === 401 || oe === 403 || (v.status === 'OK' && v.embed === false)) r = { chyba:'vkladanie zakázané' };
+  else if ((oe === 404 || oe === 400) && v.status !== 'OK') r = { chyba: v.dovod || 'video neexistuje alebo je súkromné' };
+  else if (oe === 200) r = { neiste:true, dovod:'existuje, dĺžku sa nepodarilo zistiť' };
+  else r = { neiste:true, dovod: v.dovod || v.status || 'nevieme' };
+  vysledky.push({ id, ...r });
+  riadky.push([id, 'watch:' + (v.http || '') + '/' + v.status, 'embed:' + v.embed, 's:' + (v.s || 0), 'oembed:' + oe, '=>', r.s || r.chyba || ('? ' + r.dovod)].join('  '));
+  console.log(riadky[riadky.length - 1]);
+  await sleep(600);
 }
+
+// poistka proti blokovaniu: ak "padla" viac ako tretina videí, nové chyby nezapíšeme
+const noveChyby = vysledky.filter(x => x.chyba && !(stare.chyby || {})[x.id]).length;
+const blokovane = noveChyby > ids.size / 3;
+if (blokovane) console.log(`POZOR: ${noveChyby} nových chýb z ${ids.size} — YouTube asi blokuje, chyby nezapisujem.`);
+
+const videa = {}, chyby = {};
+for (const x of vysledky){
+  const staraDlzka = (stare.videa || {})[x.id];
+  if (x.s) videa[x.id] = x.s;
+  else if (x.chyba && !blokovane){ videa[x.id] = -1; chyby[x.id] = x.chyba; }
+  else if (staraDlzka > 0) videa[x.id] = staraDlzka;           // nevieme isto: necháme poslednú dobrú dĺžku
+}
+
+fs.writeFileSync(LOG, `Sken ${new Date().toISOString()}${blokovane ? '  (POISTKA: chyby nezapísané)' : ''}\n` + riadky.join('\n') + '\n');
 
 const zoradene = o => Object.fromEntries(Object.keys(o).sort().map(k => [k, o[k]]));
 const nove = { videa: zoradene(videa), chyby: zoradene(chyby) };
 const zmena = JSON.stringify(nove) !== JSON.stringify({ videa: stare.videa || {}, chyby: stare.chyby || {} });
 if (zmena || !fs.existsSync(VYSTUP)){
   fs.writeFileSync(VYSTUP, JSON.stringify({ aktualizovane: new Date().toISOString(), ...nove }, null, 1) + '\n');
-  console.log('Zapísané', Object.keys(videa).length, 'videí,', Object.keys(chyby).length, 'nefunguje,', neiste.length, 'neisté.');
+  console.log('Zapísané:', Object.values(videa).filter(x => x > 0).length, 'funguje,', Object.keys(chyby).length, 'nefunguje.');
 } else console.log('Bez zmeny.');

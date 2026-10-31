@@ -271,7 +271,8 @@
       return;
     }
     var s = Math.min(1, (window.innerHeight - 40) / H);
-    var peek = 236 * s + (hover ? 22 : 0);
+    // on laptops the phone would sit over the content column, so it peeks less there (clock still visible)
+    var peek = (window.innerWidth >= 1560 ? 236 : 150) * s + (hover ? 22 : 0);
     phone.style.transform = 'translateY(' + (isOpen ? -24 : (H * s - peek)) + 'px) scale(' + s + ')';
   }
   function setPeekAria(peek) {

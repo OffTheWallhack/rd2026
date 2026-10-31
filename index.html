@@ -63,7 +63,7 @@
 .bubble.alert:hover { box-shadow: 4px 5px 0 #7A0F18; }
 @media (prefers-reduced-motion: no-preference) { .bubble.alert { animation: bubBob 4s ease-in-out infinite, alertPulse 1.6s ease-in-out infinite; } @keyframes alertPulse { 50% { box-shadow: 3px 3px 0 #7A0F18, 0 0 0 7px rgba(214,43,58,.22); } } }
 @media (min-width: 56rem) {
-  .hero-in { grid-template-columns: minmax(0, 38%) minmax(0, 1fr); min-height: min(78vh, 46rem); align-content: center; }
+  .hero-in { grid-template-columns: minmax(0, 38%) minmax(0, 1fr); min-height: min(78svh, 46rem); align-content: center; }
   .hero-head { padding-top: 1rem; }
   #h1 { font-size: clamp(2.6rem, 4.2vw, 4rem); }
 }
@@ -871,6 +871,29 @@ html.tabs-hide .tabbar { transform: translateY(130%); opacity: 0; pointer-events
 .pr-box small { display: block; color: #A3A39B; font-size: .85rem; margin-top: .15rem; }
 .ways .card h3 { font-size: clamp(1.35rem, 3vw, 1.6rem); }
 @media (min-width: 896px) { .svc.ways { grid-template-columns: repeat(3, minmax(0, 1fr)); } .pr-more { grid-template-columns: 1fr 1fr; } }
+
+/* 2026-11-01 polish */
+.hero-in { will-change: transform, opacity; }
+.hero .actions .btn { min-width: 9rem; }
+.ways .card { background: #fff; }
+.ways .card .label { margin: 0; color: var(--muted); }
+.ways .card h3 { margin-top: .5rem; }
+.ways .card p { flex: 1 1 auto; }
+.proj-sec { position: relative; }
+.proj-sec::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 120px; background: linear-gradient(180deg, rgba(255,255,255,.05), transparent); pointer-events: none; }
+.proj-sec .built .label { color: var(--pulse); }
+.bcard { transition: border-color .2s ease, transform .2s ease; }
+@media (prefers-reduced-motion: no-preference) {
+  html.js .lp-wrap .latest-post { opacity: 0; translate: 0 18px; transition: transform .2s, box-shadow .2s, opacity .6s ease, translate .75s cubic-bezier(.2,.8,.2,1); }
+  html.js .lp-wrap.in .latest-post { opacity: 1; translate: none; }
+  .lp-wrap .latest-post:nth-child(2) { transition-delay: 90ms; } .lp-wrap .latest-post:nth-child(3) { transition-delay: 180ms; } .lp-wrap .latest-post:nth-child(4) { transition-delay: 270ms; }
+  html.js .contact .rv h2 { transition: opacity .8s ease, translate .9s cubic-bezier(.2,.7,.2,1), scale .9s cubic-bezier(.2,.7,.2,1); }
+  html.js .contact .rv:not(.in) h2 { translate: 0 22px; scale: .96; }
+  html.js .door-txt.rv:not(.in) h2 { translate: 0 14px; }
+  html.js .door-txt h2 { transition: translate .8s cubic-bezier(.2,.7,.2,1); }
+}
+@media (hover: hover) { .latest-post:hover .pp-img { scale: 1.02; } .latest-post .pp-img { transition: scale .5s ease; } }
+.lp-wrap { will-change: auto; }
 </style>
 </head>
 <body>
@@ -961,7 +984,7 @@ html.tabs-hide .tabbar { transform: translateY(130%); opacity: 0; pointer-events
       <h2 id="bl-title" data-en="What I’m building <span class='hl'>and writing about</span>.">Čo práve staviam <span class="hl">a o čom píšem</span>.</h2>
       <p data-en="Longer stories that don’t fit on Instagram: how my projects come to be and what I tried with AI.">Dlhšie príbehy, ktoré sa nezmestia na Instagram: ako vznikajú moje projekty a čo som s AI vyskúšal.</p>
     </div>
-    <div class="rv"><!--latest-post--><div class="lp-grid"><a class="latest-post first" href="blog/dve-hry-usage-of-empires/"><span class="lp-txt"><span class="label"><span class="dot" aria-hidden="true"></span> Článok dňa</span><b>Staviam dve hry s AI. Takto vznikli a ako fungujú.</b><span class="lp-lead">Usage of Empires dostal za pár dní vyše 30 nových verzií a popri ňom vznikla druhá hra, Usage of Empires II. Obe sú o dedine, ktorá žije, ale hrajú sa úplne inak. Tu je, ako ich staviam, ako fungujú a čo je nové.</span></span><img class="lp-img" src="img/blog/dve-hry-usage-of-empires-sm.webp" width="800" height="450" loading="lazy" alt=""></a><a class="latest-post" href="blog/event-car-drift-hra-s-ai/"><span class="lp-txt"><span class="label"><span class="dot" aria-hidden="true"></span> 20. októbra 2026</span><b>Postavil som si drift hru cez AI. Takto vznikala.</b><span class="lp-lead">Event Car Game (pôvodne Event Car Drift) je 3D hra, ktorú som si s AI postavil v prehliadači: parkovisko, tréning, dovoz, offroad až na vrchol hory, diaľnica z kokpitu, tajné preteky o Red Bull autá a nočná naháňačka s políciou. Tu je, ako presne vznikala, na čo sme prišli a čo som z nej vyhodil. Hrať sa dá priamo v mojom robOS.</span></span><img class="lp-img" src="img/blog/event-car-drift-sm.webp" width="800" height="450" loading="lazy" alt=""></a><a class="latest-post" href="blog/usage-of-empires-hraj/"><span class="lp-txt"><span class="label"><span class="dot" aria-hidden="true"></span> 20. októbra 2026</span><b>Usage of Empires je hrateľná. Vyskúšaj ju a povedz mi, čo je zle.</b><span class="lp-lead">Hra, ktorú si stavám s AI, sa dá odteraz hrať. Stačí odkaz, nič sa neinštaluje. Je to beta, takže čakaj chyby. Práve preto ju dávam von: potrebujem, aby ju vyskúšal niekto iný ako ja, a povedal mi, čo sa pokazilo.</span></span><img class="lp-img" src="img/blog/usage-of-empires-hraj-sm.webp" width="800" height="450" loading="lazy" alt=""></a></div><p class="lp-all"><a class="btn" href="blog/">Všetky články →</a></p><!--/latest-post--></div>
+    <div class="rv lp-wrap"><!--latest-post--><div class="lp-grid"><a class="latest-post first" href="blog/dve-hry-usage-of-empires/"><span class="lp-txt"><span class="label"><span class="dot" aria-hidden="true"></span> Článok dňa</span><b>Staviam dve hry s AI. Takto vznikli a ako fungujú.</b><span class="lp-lead">Usage of Empires dostal za pár dní vyše 30 nových verzií a popri ňom vznikla druhá hra, Usage of Empires II. Obe sú o dedine, ktorá žije, ale hrajú sa úplne inak. Tu je, ako ich staviam, ako fungujú a čo je nové.</span></span><img class="lp-img" src="img/blog/dve-hry-usage-of-empires-sm.webp" width="800" height="450" loading="lazy" alt=""></a><a class="latest-post" href="blog/event-car-drift-hra-s-ai/"><span class="lp-txt"><span class="label"><span class="dot" aria-hidden="true"></span> 20. októbra 2026</span><b>Postavil som si drift hru cez AI. Takto vznikala.</b><span class="lp-lead">Event Car Game (pôvodne Event Car Drift) je 3D hra, ktorú som si s AI postavil v prehliadači: parkovisko, tréning, dovoz, offroad až na vrchol hory, diaľnica z kokpitu, tajné preteky o Red Bull autá a nočná naháňačka s políciou. Tu je, ako presne vznikala, na čo sme prišli a čo som z nej vyhodil. Hrať sa dá priamo v mojom robOS.</span></span><img class="lp-img" src="img/blog/event-car-drift-sm.webp" width="800" height="450" loading="lazy" alt=""></a><a class="latest-post" href="blog/usage-of-empires-hraj/"><span class="lp-txt"><span class="label"><span class="dot" aria-hidden="true"></span> 20. októbra 2026</span><b>Usage of Empires je hrateľná. Vyskúšaj ju a povedz mi, čo je zle.</b><span class="lp-lead">Hra, ktorú si stavám s AI, sa dá odteraz hrať. Stačí odkaz, nič sa neinštaluje. Je to beta, takže čakaj chyby. Práve preto ju dávam von: potrebujem, aby ju vyskúšal niekto iný ako ja, a povedal mi, čo sa pokazilo.</span></span><img class="lp-img" src="img/blog/usage-of-empires-hraj-sm.webp" width="800" height="450" loading="lazy" alt=""></a></div><p class="lp-all"><a class="btn" href="blog/">Všetky články →</a></p><!--/latest-post--></div>
     <form class="nl rv" action="mailto:rdurica1995@gmail.com" method="get" data-nosi>
       <div class="nl-txt">
         <p class="label"><span class="dot" aria-hidden="true"></span><span data-en="Newsletter">Newsletter</span></p>
@@ -980,14 +1003,14 @@ html.tabs-hide .tabbar { transform: translateY(130%); opacity: 0; pointer-events
     <div class="built rv">
       <p class="label"><span class="dot" aria-hidden="true"></span><span data-en="02 · Projects">02 · Na čom robím</span></p>
       <h2 id="pr-title" data-en="Not demos. I use these myself.">Nie sú to demá. Používam to sám.</h2>
-      <div class="built-row">
+      <div class="built-row stg rv">
         <a class="bcard" href="blog/event-hub-appka-na-vlastnu-robotu/"><img src="img/eh-calendar.webp" width="700" height="972" loading="lazy" alt="Event Hub"><span><b>Event Hub</b><small data-en="My app that runs my whole job. Live since 2025.">Moja appka, v ktorej mám celú robotu. Beží od 2025.</small></span></a>
         <a class="bcard" href="blog/event-hub-appka-na-vlastnu-robotu/"><img src="img/eh-calendar.webp" width="700" height="972" loading="lazy" alt="Event Hub v2"><span><b>Event Hub v2</b><small data-en="Rebuilt from scratch on my own database. In progress.">Prestavaný od nuly na vlastnej databáze. V príprave.</small></span></a>
         <a class="bcard" href="appky/event-car-drift/"><img src="appky/event-car-drift/img/car-zubor.webp" width="512" height="512" loading="lazy" alt="Event Car Game"><span><b>Event Car Game</b><small data-en="Unofficial 3D game with the Red Bull event cars. Play it in your browser.">Neoficiálna 3D hra s Red Bull event autami. Hráš v prehliadači.</small></span></a>
         <a class="bcard" href="https://offthewallhack.github.io/usage-of-empires/" target="_blank" rel="noopener"><img src="img/blog/usage-of-empires-sm.webp" width="800" height="450" loading="lazy" alt="Usage of Empires"><span><b>Usage of Empires 1 a 2</b><small data-en="Two village games built only with AI. In the making.">Dve hry o dedine, stavané len cez AI. V príprave.</small></span></a>
         <a class="bcard" href="https://gosko.sk" target="_blank" rel="noopener"><img src="img/gosko-nalepky-poster.webp" width="800" height="1000" loading="lazy" alt="GOSko.sk"><span><b>GOSko.sk</b><small data-en="A whole web portal for the Slovak skate community.">Celý webový portál pre skate komunitu.</small></span></a>
       </div>
-      <div class="pr-more">
+      <div class="pr-more stg rv">
         <a class="pr-box" href="appky/" data-robos-open><b data-en="Open robOS →">Otvor robOS →</b><small data-en="My phone with all my apps and games. Try them right here.">Môj telefón so všetkými appkami a hrami. Vyskúšaj ich priamo tu.</small></a>
         <a class="pr-box" href="na-stiahnutie/"><b data-en="Free downloads →">Na stiahnutie zadarmo →</b><small data-en="My AI cheat sheets and guides as PDFs.">Moje ťaháky a príručky o AI v PDF.</small></a>
       </div>
@@ -1005,17 +1028,20 @@ html.tabs-hide .tabbar { transform: translateY(130%); opacity: 0; pointer-events
       <p data-en="I’m not a certified trainer. I’m someone who builds with AI every day and is happy to show you how. Especially if you know nothing about it yet.">Nie som školiteľ s certifikátom. Som človek, ktorý s AI každý deň niečo stavia, a rád ti ukážem, ako na to. Hlavne ak sa v tom zatiaľ vôbec nevyznáš.</p>
     </div>
     <div class="svc ways stg rv">
-      <article class="card card-a rv">
+      <article class="card rv">
+        <p class="label">01</p>
         <h3 data-en="I’ll show you">Ukážem ti to</h3>
         <p data-en="One on one, at your pace, on your own stuff. We start with what you actually need.">Jeden na jedného, tvojím tempom, na tvojich veciach. Začneme tým, čo naozaj potrebuješ.</p>
         <div class="card-foot"><a class="btn btn-green wa" href="#kontakt" data-wa-sk="tým, aby si mi ukázal AI" data-wa-en="showing me AI" data-en="Show me">Ukáž mi to</a></div>
       </article>
-      <article class="card card-b rv">
+      <article class="card rv">
+        <p class="label">02</p>
         <h3 data-en="Let’s build it together">Spravíme to spolu</h3>
         <p data-en="You have an idea or something that slows you down. We work out together whether AI can help and I build it.">Máš nápad alebo niečo, čo ťa brzdí. Spolu zistíme, či s tým AI pomôže, a ja to postavím.</p>
         <div class="card-foot"><a class="btn btn-green wa" href="#kontakt" data-wa-sk="spoluprácou na projekte" data-wa-en="working together on a project" data-en="I have an idea">Mám nápad</a></div>
       </article>
       <article class="card rv">
+        <p class="label">03</p>
         <h3 data-en="Add me to your project">Pridaj ma do projektu</h3>
         <p data-en="A bigger thing, a team, an event? I’m open to more. I bring AI, events, production and a head full of ideas.">Väčšia vec, tím, event? Som otvorený viacerým veciam. Prinesiem AI, eventy, produkciu a hlavu plnú nápadov.</p>
         <div class="card-foot"><a class="btn btn-green wa" href="#kontakt" data-wa-sk="väčším projektom" data-wa-en="a bigger project" data-en="Let’s talk">Poďme sa baviť</a></div>
@@ -1401,5 +1427,6 @@ html.tabs-hide .tabbar { transform: translateY(130%); opacity: 0; pointer-events
 })();
 </script>
 <script src="appky/robos.js" defer></script>
+<script src="assets/motion.js" defer></script>
 </body>
 </html>

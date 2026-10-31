@@ -274,3 +274,35 @@ html.si .cust-pop .aisi .on { color: var(--pulse-ink); }
 .lang.flags button.on { opacity: .4; filter: saturate(.55); cursor: default; }
 .lang.flags button:not(.on):hover { transform: translateY(-1px); }
 @media (max-width: 26rem) { .lang.flags { gap: .35rem; } }
+
+/* ---- 2026-11-01 polish: bulletproof basics ---- */
+html, body { overflow-x: clip; }
+html { -webkit-tap-highlight-color: transparent; }
+h1, h2, h3 { text-wrap: balance; }
+p, li { text-wrap: pretty; }
+a, button, summary, label { touch-action: manipulation; }
+.bar { background: color-mix(in srgb, var(--bg) 78%, transparent); -webkit-backdrop-filter: saturate(180%) blur(18px); backdrop-filter: saturate(180%) blur(18px); }
+/* reveal: a short lift with the fade, and the lift ends as "none" so nothing stays transformed */
+@media (prefers-reduced-motion: no-preference) {
+  html.js .rv { translate: 0 14px; transition: opacity .7s ease, translate .8s cubic-bezier(.2,.7,.2,1); }
+  html.js .rv.in { translate: none; }
+  .stg.in > * { translate: none; }
+}
+/* touch: no sticky hover states, a small press instead */
+@media (hover: none) {
+  .btn:hover { background: transparent; }
+  .btn-dark:hover { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+  .btn-green:hover { background: var(--pulse); border-color: var(--pulse); color: #0B1A12; }
+  .btn:hover, .latest-post:hover, .bcard:hover, .pr-box:hover, .card:hover { transform: none; box-shadow: none; }
+  .latest-post.first:hover { box-shadow: 5px 5px 0 var(--pulse); }
+  @media (prefers-reduced-motion: no-preference) {
+    .btn, .latest-post, .bcard, .pr-box, .tabbar a, .card { transition: transform .12s ease, box-shadow .12s ease, background .2s, color .2s, border-color .2s, opacity .6s ease, translate .7s cubic-bezier(.2,.8,.2,1); }
+    .btn:active, .latest-post:active, .bcard:active, .pr-box:active, .tabbar a:active, .card:active { transform: scale(.975); }
+  }
+}
+@media (prefers-reduced-motion: reduce) { .bar-in { transition: none; } }
+/* parallax picture frame (motion.js wraps the blog pictures in it) */
+.pp { display: block; position: relative; overflow: hidden; border-radius: 9px; background: #0B0C0B; aspect-ratio: 16 / 9; -webkit-mask-image: -webkit-radial-gradient(#fff, #fff); }
+.pp .pp-img { width: 100%; height: 100%; object-fit: cover; border-radius: 0; transform-origin: 50% 50%; will-change: transform; backface-visibility: hidden; }
+@media (prefers-reduced-motion: reduce) { .pp .pp-img { transform: none !important; will-change: auto; } }
+.bar.scrolled { background: color-mix(in srgb, var(--bg) 84%, transparent); }

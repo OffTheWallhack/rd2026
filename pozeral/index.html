@@ -233,6 +233,24 @@ section{min-width:0;scroll-margin-top:calc(var(--hc) + 16px)}
 .tt li.ad .s{color:var(--tt-pink)}
 .tt-foot{margin-top:12px;display:flex;gap:16px;flex-wrap:wrap}
 
+/* Návrhy divákov: malý teletextový formulár + zoznam */
+.nv .tt-title{margin-bottom:10px}
+.nv-q{display:block;color:var(--tt-cyan)}
+.nv-row{display:flex;gap:8px;margin-top:8px}
+.nv-row input{flex:1 1 auto;min-width:0;font:inherit;font-size:max(22px,1em);color:var(--tt-yellow);background:#000;border:2px solid var(--tt-cyan);border-radius:0;padding:4px 8px;caret-color:var(--tt-yellow)}
+.nv-row input::placeholder{color:#6d7480}
+.nv-row input:focus{outline:2px solid var(--tt-yellow);outline-offset:1px}
+.nv-row button{flex:0 0 auto;font:inherit;background:var(--tt-green);color:#000;border:0;padding:4px 14px;cursor:pointer}
+.nv-row button:disabled{opacity:.5;cursor:default}
+.nv-msg{margin:6px 0 0;min-height:1.15em;color:var(--tt-green)}
+.nv-msg.bad{color:var(--tt-red)}
+.nv-sub{margin:12px 0 6px;color:var(--tt-yellow)}
+.nv ol{display:grid;gap:3px}
+.nv li{grid-template-columns:1fr auto;gap:12px}
+.nv li .s{overflow-wrap:anywhere}
+.nv li .d{color:var(--tt-cyan);font-variant-numeric:tabular-nums}
+.nv li.empty{display:block;color:#9aa2b0}
+
 .about{display:grid;gap:12px}
 .about h2{margin:0;font:800 clamp(26px,5vw,34px)/1.1 var(--f-logo);letter-spacing:-.02em;text-wrap:balance}
 .about h2 b{color:var(--accent)}
@@ -339,6 +357,24 @@ section{min-width:0;scroll-margin-top:calc(var(--hc) + 16px)}
       <span class="tt-title" id="ttTitle">PROGRAM</span>
       <ol id="guide"></ol>
       <div class="tt-foot"><span style="color:var(--tt-cyan)">CZ dabing</span><span style="color:var(--tt-green)">SK dabing</span><span style="color:var(--tt-yellow)">bez slov</span></div>
+    </div>
+  </section>
+
+  <section id="navrhy" aria-label="Návrhy divákov">
+    <p class="eyebrow">Navrhni rozprávku</p>
+    <div class="tt nv">
+      <div class="tt-head"><span><span class="p">P777</span> NÁVRHY DIVÁKOV</span></div>
+      <span class="tt-title">ČO CHÝBA?</span>
+      <form id="nvForm" autocomplete="off">
+        <label class="nv-q" for="nvInput">Akú rozprávku by si tu chcel vidieť?</label>
+        <div class="nv-row">
+          <input id="nvInput" type="text" maxlength="80" placeholder="napr. Kačeři z Kačerova" required>
+          <button type="submit" id="nvBtn">POSLAŤ</button>
+        </div>
+        <p class="nv-msg" id="nvMsg" role="status" aria-live="polite"></p>
+      </form>
+      <p class="nv-sub">Čo už navrhli diváci</p>
+      <ol id="nvList"><li class="empty">Načítavam…</li></ol>
     </div>
   </section>
 
@@ -996,6 +1032,83 @@ Promise.race([
   timeout
 ]).then(start);
 setInterval(tick, 500);
+
+/* =========================================================
+   NÁVRHY DIVÁKOV — Supabase RPC cez fetch (rovnaký spôsob ako Hlasoval)
+   ========================================================= */
+(function(){
+  const BASE = 'https://znsrokpaoczljisaoulu.supabase.co/rest/v1/rpc/';
+  const APIKEY = 'sb_publishable_9bRi6q6rnTTr5_Rszk5IiQ_MBBoti45';
+  const form = document.getElementById('nvForm');
+  if (!form) return;
+  const input = document.getElementById('nvInput');
+  const btn = document.getElementById('nvBtn');
+  const msg = document.getElementById('nvMsg');
+  const list = document.getElementById('nvList');
+  let memDev = null;
+
+  function rpc(name, body){
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 8000);
+    return fetch(BASE + name, {
+      method:'POST',
+      headers:{ apikey:APIKEY, Authorization:'Bearer ' + APIKEY, 'Content-Type':'application/json', Accept:'application/json' },
+      body: JSON.stringify(body || {}),
+      signal: ctrl.signal,
+      cache:'no-store'
+    }).then(r => { if (!r.ok) throw new Error('http_' + r.status); return r.json(); }).finally(() => clearTimeout(t));
+  }
+  function device(){
+    try{
+      let d = localStorage.getItem('pozeral_device');
+      if (!d){ d = crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2) + Date.now(); localStorage.setItem('pozeral_device', d); }
+      return d;
+    }catch(e){
+      if (!memDev) memDev = String(Math.random()).slice(2) + Date.now();
+      return memDev;
+    }
+  }
+  function say(text, bad){ msg.textContent = text; msg.className = 'nv-msg' + (bad ? ' bad' : ''); }
+  function row(text, date){
+    const li = document.createElement('li');
+    const s = document.createElement('span'); s.className = 's'; s.textContent = text;
+    li.appendChild(s);
+    if (date){ const d = document.createElement('span'); d.className = 'd'; d.textContent = date; li.appendChild(d); }
+    return li;
+  }
+  function load(){
+    return rpc('pozeral_navrhy_list').then(rows => {
+      list.textContent = '';
+      if (!rows || !rows.length){ const li = row('Zatiaľ nikto nič nenavrhol. Buď prvý.'); li.className = 'empty'; list.appendChild(li); return; }
+      rows.forEach(r => {
+        const dt = new Date(r.created_at);
+        list.appendChild(row(r.nazov, dt.getDate() + '.' + (dt.getMonth() + 1) + '.'));
+      });
+    }).catch(() => {
+      list.textContent = '';
+      const li = row('Návrhy sa teraz nenačítali.'); li.className = 'empty'; list.appendChild(li);
+    });
+  }
+  const TEXTY = {
+    ok:'Poslané, vďaka! Je to hneď v zozname.',
+    uz_je:'Túto už niekto navrhol, je v zozname.',
+    odkaz:'Odkazy sem nedávame. Napíš len názov rozprávky.',
+    kratke:'Napíš aspoň názov rozprávky.',
+    prilis_casto:'Dosť na teraz, skús to neskôr.'
+  };
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const v = input.value.trim();
+    if (v.length < 2){ say(TEXTY.kratke, true); return; }
+    btn.disabled = true; say('Posielam…');
+    rpc('pozeral_navrh_pridaj', { p_nazov: v, p_device: device() }).then(r => {
+      say(TEXTY[r && r.kod] || 'Hotovo.', !(r && r.ok));
+      if (r && r.ok){ input.value = ''; return load(); }
+    }).catch(() => say('Nepodarilo sa odoslať, skús to ešte raz.', true))
+      .finally(() => { btn.disabled = false; });
+  });
+  load();
+})();
 </script>
 </body>
 </html>

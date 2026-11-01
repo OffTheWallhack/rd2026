@@ -15,6 +15,11 @@
    ========================================================= */
 window.POZERAL = {
 
+  // Ručne vyradené videá (napr. keď vieš, že na YouTube už nie sú). Skener tento zoznam nemení.
+  nefunguje: [
+    'pwOIfrUEA8M'   // Naruto 1. díl, 1. časť (Jetix dabing) – na YouTube nejde
+  ],
+
   kanaly: [
     {
       nazov: 'Rozprávka',

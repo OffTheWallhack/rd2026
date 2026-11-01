@@ -819,9 +819,51 @@ function onState(e){
     filler();
   }
 }
-function onErr(){
+/* Videá, ktoré YouTube odmietol prehrať (100 = zmazané/súkromné, 101 a 150 = vkladanie zakázané alebo blokované v krajine):
+   stránka ich preskočí, zapamätá si ich a nahlási ich, aby ich po dvoch hláseniach nedostali ani ostatní diváci. */
+const SB_URL = 'https://znsrokpaoczljisaoulu.supabase.co/rest/v1/rpc/';
+const SB_KEY = 'sb_publishable_9bRi6q6rnTTr5_Rszk5IiQ_MBBoti45';
+let SB_MEM = null;
+function sbRpc(name, body){
+  const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 6000);
+  return fetch(SB_URL + name, {
+    method:'POST', cache:'no-store', signal: ctrl.signal,
+    headers:{ apikey:SB_KEY, Authorization:'Bearer ' + SB_KEY, 'Content-Type':'application/json', Accept:'application/json' },
+    body: JSON.stringify(body || {})
+  }).then(r => r.ok ? r.json() : Promise.reject(new Error('http_' + r.status))).finally(() => clearTimeout(t));
+}
+function pDevice(){
+  try{
+    let d = localStorage.getItem('pozeral_device');
+    if (!d){ d = crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2) + Date.now(); localStorage.setItem('pozeral_device', d); }
+    return d;
+  }catch(e){ return SB_MEM || (SB_MEM = String(Math.random()).slice(2) + Date.now()); }
+}
+const ZLE = new Set();   // ID videí, ktoré nemáme púšťať (ručný zoznam, moja pamäť, zoznam od ostatných divákov)
+function lokalneZle(){
+  try{
+    const m = JSON.parse(localStorage.getItem('pozeral-zle2') || '{}'), teraz = Date.now(), out = {};
+    for (const [id, t] of Object.entries(m)) if (teraz - t < 3 * 864e5) out[id] = t;   // po troch dňoch to skúsime znova
+    return out;
+  }catch(e){ return {}; }
+}
+let autoSkipy = [];
+function oznacZle(id, kod){
+  ZLE.add(id); DLZKY[id] = -1;
+  try{ const m = lokalneZle(); m[id] = Date.now(); localStorage.setItem('pozeral-zle2', JSON.stringify(m)); }catch(e){}
+  sbRpc('pozeral_chyba', { p_video:id, p_kod:kod, p_device:pDevice() }).catch(() => {});
+  build(); lastGuideKey = ''; lastTickerKey = '';
+  renderNow(); tuneIn(false);
+}
+function onErr(e){
   if (!powered) return;
-  try{ usingFile ? vid.pause() : player.stopVideo(); }catch(e){}
+  try{ usingFile ? vid.pause() : player.stopVideo(); }catch(x){}
+  const it = curItem(), kod = e && e.data;
+  if (!usingFile && it && it.id && (kod === 100 || kod === 101 || kod === 150)){
+    const teraz = Date.now();
+    autoSkipy = autoSkipy.filter(t => teraz - t < 60000);
+    if (autoSkipy.length < 4){ autoSkipy.push(teraz); oznacZle(it.id, kod); return; }   // poistka: keď padá všetko, radšej ukážeme poruchu
+  }
   setLayers('error');
 }
 function curItem(){ return playing ? CH[playing.ch].seq[playing.i] : null; }
@@ -1007,6 +1049,7 @@ addEventListener('keydown', e => {
    ŠTART — najprv načítame presné dĺžky, potom spočítame program
    ========================================================= */
 function start(){
+  ZLE.forEach(id => { DLZKY[id] = -1; });
   build();
   if (ch >= CH.length) ch = 0;
   viewCh = ch;
@@ -1025,8 +1068,13 @@ renderTabs();
 layout();
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
 const timeout = new Promise(r => setTimeout(r, 4000));
+const zleP = (async () => {
+  (O.nefunguje || []).forEach(id => ZLE.add(id));
+  Object.keys(lokalneZle()).forEach(id => ZLE.add(id));
+  try{ const j = await sbRpc('pozeral_zle_videa'); if (Array.isArray(j)) j.forEach(id => ZLE.add(id)); }catch(e){}
+})();
 Promise.race([
-  fetch('playlisty.json', { cache:'no-cache' }).then(r => r.ok ? r.json() : null).then(j => { if (j) PL = j; }).catch(() => {})
+  Promise.all([ fetch('playlisty.json', { cache:'no-cache' }).then(r => r.ok ? r.json() : null).then(j => { if (j) PL = j; }).catch(() => {})
   .then(() => fetch('dlzky.json', { cache:'no-cache' })).then(r => r.ok ? r.json() : null).then(j => {
     if (!j || !j.videa) return;
     // poistka: keby skener omylom označil väčšinu videí ako nefunkčné, chyby ignorujeme
@@ -1035,7 +1083,7 @@ Promise.race([
     [...(O.reklamy || []), ...(O.predely || [])].forEach(p => vsetky.add(KEY(p)));
     const zle = Object.values(j.videa).filter(x => x < 0).length;
     DLZKY = zle > vsetky.size / 2 ? Object.fromEntries(Object.entries(j.videa).filter(([, x]) => x > 0)) : j.videa;
-  }).catch(() => {}),
+  }).catch(() => {}), zleP ]),
   timeout
 ]).then(start);
 setInterval(tick, 500);

@@ -21,6 +21,80 @@ const add = list => (list || []).forEach(x => x && x.id && ids.add(x.id));
 O.kanaly.forEach(k => add(k.program));
 add(O.reklamy); add(O.predely); add(O.znelky);
 
+// ---------- playlisty a kanály: { playlist:'PL…' } alebo { kanal:'@meno' } v programe ----------
+const PLAYLISTY = 'pozeral/playlisty.json';
+let starePl = {};
+try { starePl = JSON.parse(fs.readFileSync(PLAYLISTY, 'utf8')); } catch {}
+const plDlzky = {};
+function najdi(o, kluc, out = []){
+  if (Array.isArray(o)) o.forEach(x => najdi(x, kluc, out));
+  else if (o && typeof o === 'object') for (const [k, v] of Object.entries(o)){ if (k === kluc) out.push(v); else najdi(v, kluc, out); }
+  return out;
+}
+const casNaSek = t => (t || '').split(':').reduce((a, x) => a * 60 + (+x || 0), 0);
+const textZ = t => t ? (t.simpleText || (t.runs || []).map(r => r.text).join('')) : '';
+async function innertube(telo){
+  const r = await fetch('https://www.youtube.com/youtubei/v1/browse?prettyPrint=false', {
+    method:'POST', headers:{ 'Content-Type':'application/json', 'User-Agent':UA, Origin:'https://www.youtube.com' },
+    body: JSON.stringify({ context:{ client:{ clientName:'WEB', clientVersion:'2.20250312.04.00', hl:'cs', gl:'CZ' } }, ...telo })
+  });
+  return r.json();
+}
+function polozky(j){
+  const out = [];
+  for (const v of najdi(j, 'playlistVideoRenderer')){
+    if (!v.videoId || v.isPlayable === false) continue;
+    out.push({ id:v.videoId, nazov:textZ(v.title), s:+v.lengthSeconds || casNaSek(textZ(v.lengthText)) });
+  }
+  for (const v of najdi(j, 'videoRenderer')){
+    if (!v.videoId) continue;
+    out.push({ id:v.videoId, nazov:textZ(v.title), s:casNaSek(textZ(v.lengthText)) });
+  }
+  return out;
+}
+async function nacitajPlaylist(pl, max){
+  let j = await innertube({ browseId: 'VL' + pl }), vsetko = polozky(j), kolo = 0;
+  while (vsetko.length < max && kolo++ < 10){
+    const tok = najdi(j, 'continuationCommand').map(c => c.token).find(Boolean);
+    if (!tok) break;
+    j = await innertube({ continuation: tok });
+    const dalsie = polozky(j); if (!dalsie.length) break;
+    vsetko = vsetko.concat(dalsie);
+    await sleep(500);
+  }
+  return vsetko;
+}
+async function kanalNaPlaylist(handle){
+  const r = await fetch('https://www.youtube.com/' + handle, { headers:{ 'User-Agent':UA, 'Accept-Language':'cs', Cookie:'CONSENT=YES+cb; SOCS=CAI' } });
+  const m = /"(?:channelId|externalId)":"(UC[\w-]{22})"/.exec(await r.text());
+  return m ? 'UU' + m[1].slice(2) : null;
+}
+const plVysledky = {};
+for (const k of O.kanaly) for (const p of k.program){
+  if (!p.playlist && !p.kanal) continue;
+  const kluc = p.playlist || p.kanal;
+  try {
+    const pl = p.playlist || await kanalNaPlaylist(p.kanal);
+    const zoznam = pl ? await nacitajPlaylist(pl, p.max || 60) : [];
+    const unik = []; const videne = new Set();
+    const minS = p.minSek ?? 240, maxS = p.maxSek ?? 5400;   // bez krátkych klipov a dlhých kompilácií
+    for (const x of zoznam){
+      if (videne.has(x.id)) continue;
+      if (x.s && (x.s < minS || x.s > maxS)) continue;
+      videne.add(x.id); unik.push(x);
+    }
+    if (unik.length){ plVysledky[kluc] = unik.slice(0, p.max || 60); console.log('Playlist', kluc, '→', plVysledky[kluc].length, 'videí'); }
+    else if (starePl[kluc]){ plVysledky[kluc] = starePl[kluc]; console.log('Playlist', kluc, 'sa nepodarilo načítať, nechávam starý zoznam'); }
+    else console.log('Playlist', kluc, 'je prázdny alebo sa nedá načítať');
+  } catch (e) {
+    if (starePl[kluc]) plVysledky[kluc] = starePl[kluc];
+    console.log('Playlist', kluc, 'chyba:', e.message);
+  }
+  for (const x of plVysledky[kluc] || []){ ids.add(x.id); if (x.s > 0) plDlzky[x.id] = x.s; }
+  await sleep(500);
+}
+fs.writeFileSync(PLAYLISTY, JSON.stringify(plVysledky, null, 1) + '\n');
+
 let stare = { videa:{}, chyby:{} };
 try { stare = JSON.parse(fs.readFileSync(VYSTUP, 'utf8')); } catch {}
 
@@ -50,7 +124,7 @@ if (KLUC){ try { api = await zApi([...ids]); console.log('Používam YouTube Dat
 if (api){
   for (const id of ids){
     const a = api[id];
-    const r = !a ? { chyba:'video neexistuje alebo je súkromné' } : !a.verejne ? { chyba:'súkromné' } : a.embed === false ? { chyba:'vkladanie zakázané' } : a.s > 0 ? { s:a.s } : { neiste:true, dovod:'bez dĺžky' };
+    const r = !a ? { chyba:'video neexistuje alebo je súkromné' } : !a.verejne ? { chyba:'súkromné' } : a.embed === false ? { chyba:'vkladanie zakázané' } : a.s > 0 ? { s:a.s } : plDlzky[id] ? { s:plDlzky[id] } : { neiste:true, dovod:'bez dĺžky' };
     vysledky.push({ id, ...r });
     riadky.push([id, 'api', '=>', r.s || r.chyba || ('? ' + r.dovod)].join('  '));
   }
@@ -58,7 +132,7 @@ if (api){
   // a) oEmbed: existuje video a dá sa vložiť? (YouTube ho z GitHubu neblokuje)
   const oe = {};
   for (const id of ids){ try { oe[id] = await zOembed(id); } catch { oe[id] = 0; } await sleep(250); }
-  const dlzky = {};   // bez kľúča YouTube API dĺžky z GitHubu nezistíme (YouTube blokuje), stránka použije odhady
+  const dlzky = plDlzky;   // dĺžky máme len z playlistov; pri ostatných stránka použije odhady
   for (const id of ids){
     const o = oe[id];
     let r;

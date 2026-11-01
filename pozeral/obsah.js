@@ -10,6 +10,8 @@
                Videá, ktoré na YouTube zmizli alebo sa nedajú vložiť, skener sám vyradí.
    od / do = voliteľný výrez v sekundách, napr. { id:'…', od:30, do:75 }
    kusy    = dlhú kompiláciu rozseká na kúsky s touto dĺžkou v sekundách
+   playlist / kanal = celý playlist (ID za list=) alebo kanál (@meno) — skener ho sám načíta,
+                      max = najviac koľko dielov, show + lang platia pre všetky diely
    ========================================================= */
 window.POZERAL = {
 
@@ -102,7 +104,15 @@ window.POZERAL = {
         { id:'Ba_HMUsXZh0', show:'Šmoulové', ep:'Král Šmoulů', lang:'CZ', min:12 },
         { id:'vHVXHptT2gA', show:'Šmoulové', ep:'Hafík', lang:'CZ', min:12 },
         { id:'mBG6jYdyXOk', show:'Šmoulové', ep:'Dobrodružství Robina Šmoula', lang:'CZ', min:12 },
-        { id:'rb9YK_TuXqA', show:'Šmoulové', ep:'Šmoulata – část první', lang:'CZ', min:12 }
+        { id:'rb9YK_TuXqA', show:'Šmoulové', ep:'Šmoulata – část první', lang:'CZ', min:12 },
+        { playlist:'PLXkA6SvogZFumCc1H0KgXGPdsRrzCcTHw', show:'Pat a Mat', lang:'bez slov', min:8, max:40 },
+        { kanal:'@patamat_cz', show:'Pat a Mat', lang:'bez slov', min:8, max:25 },
+        { playlist:'PL3SFGj27PTbfdUXNVv20TCjhbm8sriSH_', show:'Pat a Mat', lang:'bez slov', min:8, max:25 },
+        { playlist:'PLXkA6SvogZFsro5cOPiQcy1CHMjSLOQq7', show:'Byl jednou jeden… život', lang:'CZ', min:25, max:26 },
+        { playlist:'PL_c00IPCdRoGD0k6aG7725OaqHQQffcVf', show:'Byl jednou jeden… život', lang:'CZ', min:25, max:26 },
+        { kanal:'@byljednoujedenzivot', show:'Byl jednou jeden… život', lang:'CZ', min:25, max:20 },
+        { playlist:'PLh4oNLWEP1pov-S4X2rwB3e1kKFFjecKe', show:'Bob a Bobek', lang:'CZ', min:8, max:30 },
+        { kanal:'@smolkovia', show:'Šmolkovia', lang:'SK', min:12, max:30 }
       ]
     },
     {
@@ -203,7 +213,11 @@ window.POZERAL = {
         { id:'a-3UHk-Fsk0', show:'Spongebob v kalhotách', ep:'Spongebob a studna', lang:'CZ', min:11 },
         { id:'wu65RVbFPPk', show:'Růžový panter', ep:'Smile Pretty, Say Pink', lang:'bez slov', min:7 },
         { id:'m-QpAnKfRB0', show:'Růžový panter', ep:'Psychedelic Pink', lang:'bez slov', min:7 },
-        { id:'ROrhFa1-iLM', show:'Asterix', ep:'Asterix a překvapení pro Cézara (film)', lang:'CZ', min:79 }
+        { id:'ROrhFa1-iLM', show:'Asterix', ep:'Asterix a překvapení pro Cézara (film)', lang:'CZ', min:79 },
+        { playlist:'PLQ7nXaicptSxRccybPZUBAPhSdxh1v9jI', show:'Galactik Football', lang:'CZ', min:26, max:40 },
+        { playlist:'PLwhLvPy7SFDEN8_qYEdv7LfbTdO3EQBBd', show:'Život s Louiem', lang:'CZ', min:22, max:40 },
+        { playlist:'PLpNHzGK1cU90EcFXgbD0C3n9LiHwJokg4', show:'Kačeří příběhy', lang:'CZ', min:22, max:40 },
+        { kanal:'@spionkycz-sk1054', show:'Totally Spies – Špiónky', lang:'CZ', min:22, max:40 }
       ]
     },
     {
@@ -239,7 +253,11 @@ window.POZERAL = {
         { id:'Ol0qBsGWI5c', show:'Bakugan: Gundalian Invaders', ep:'25. díl', lang:'CZ', min:22 },
         { id:'JDn8h8666MU', show:'Bakugan: Gundalian Invaders', ep:'35. díl', lang:'CZ', min:22 },
         { id:'ylgj7iP6Uk4', show:'Želvy Ninja', ep:'V hlubinách lesa', lang:'CZ', min:22 },
-        { id:'_IToi99XNWg', show:'Power Rangers: Operace Overdrive', ep:'Za každou cenu', lang:'CZ', min:22 }
+        { id:'_IToi99XNWg', show:'Power Rangers: Operace Overdrive', ep:'Za každou cenu', lang:'CZ', min:22 },
+        { kanal:'@pokemonserialczsk6452', show:'Pokémon', lang:'CZ', min:22, max:50 },
+        { playlist:'PLhr2MGr4OPNcEUNaI_aESmupie_m-Ppzr', show:'Král šamanů', lang:'CZ', min:22, max:40 },
+        { playlist:'PL3EEYr69JFOyn1EKmWZwkq6_cPL_LGxEY', show:'Beyblade Metal Masters', lang:'CZ', min:22, max:40 },
+        { kanal:'@beybladeskcz680', show:'Beyblade', lang:'CZ', min:22, max:40 }
       ]
     }
   ],

@@ -410,11 +410,44 @@ function slotLen(it){
   if (it.kind === 'show') return Math.round((it.min || 10) * 60 * 1.1 + 60);
   return it.sek || Math.round((it.min || 1) * 60);
 }
+/* playlisty a kanály: skener ich rozbalí do playlisty.json */
+let PL = {};
+function cistyNazov(t, show){
+  let x = String(t || '');
+  const esc = v => v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  if (show) x = x.replace(new RegExp(esc(show), 'ig'), '');
+  x = x.replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{FE0F}]/gu, '')
+       .replace(/\b(cz|sk)\s*dab(ing)?\b|\bčesky\b|\bslovensky\b|\bcel[ýá] d[ií]l\b|\bcel[áa] časť\b|\bHD\b|\(\s*(cz|sk)\s*\)|\[\s*(cz|sk)[^\]]*\]/ig, '')
+       .replace(/(^|\s)(cz|sk)(?=\s|$|\/)/ig, ' ').replace(/(\s*\/\s*)+$/g, '')
+       .replace(/\s{2,}/g, ' ').replace(/^[\s\-–—:|•.,\/]+|[\s\-–—:|•.,\/]+$/g, '');
+  if (/^\d+$/.test(x)) x = x + '. díl';
+  return x || String(t || '');
+}
+function rozbal(p){
+  if (!p.playlist && !p.kanal) return [p];
+  return (PL[p.playlist || p.kanal] || []).map(x => {
+    if (x.s > 0 && !(DLZKY[x.id] < 0) && !(DLZKY[x.id] > 0)) DLZKY[x.id] = x.s;
+    return { id:x.id, show:p.show, ep:cistyNazov(x.nazov, p.show), lang:p.lang, min: x.s > 0 ? x.s / 60 : (p.min || 22) };
+  });
+}
+/* premiešať po seriáloch: diely toho istého seriálu idú v poradí, ale striedajú sa s ostatnými */
+function premiesaj(list){
+  const skupiny = new Map();
+  list.forEach(p => { if (!skupiny.has(p.show)) skupiny.set(p.show, []); skupiny.get(p.show).push(p); });
+  const g = [...skupiny.values()], out = [];
+  let zostava = list.length, i = 0;
+  while (zostava){
+    for (const q of g){ if (q[i]){ out.push(q[i]); zostava--; } }
+    i++;
+  }
+  return out;
+}
 function build(){
   const ads = expand(O.reklamy).filter(works);
   const preds = [...expand(O.predely), ...(O.znelky || [])].filter(works);
   CH = (O.kanaly || []).map((k, ci) => {
-    const shows = (k.program || []).filter(works);
+    const videne = new Set();
+    const shows = premiesaj((k.program || []).flatMap(rozbal).filter(p => works(p) && !videne.has(KEY(p)) && videne.add(KEY(p))));
     const my = preds.filter(p => !p.kanaly || p.kanaly.includes(ci + 1));
     const seq = []; let a = ci * 11, z = ci * 5;
     const nAds = k.reklamy ?? 3, every = k.predelKazdych || 2;
@@ -950,11 +983,12 @@ layout();
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
 const timeout = new Promise(r => setTimeout(r, 4000));
 Promise.race([
-  fetch('dlzky.json', { cache:'no-cache' }).then(r => r.ok ? r.json() : null).then(j => {
+  fetch('playlisty.json', { cache:'no-cache' }).then(r => r.ok ? r.json() : null).then(j => { if (j) PL = j; }).catch(() => {})
+  .then(() => fetch('dlzky.json', { cache:'no-cache' })).then(r => r.ok ? r.json() : null).then(j => {
     if (!j || !j.videa) return;
     // poistka: keby skener omylom označil väčšinu videí ako nefunkčné, chyby ignorujeme
     const vsetky = new Set();
-    (O.kanaly || []).forEach(k => (k.program || []).forEach(p => vsetky.add(KEY(p))));
+    (O.kanaly || []).forEach(k => (k.program || []).forEach(p => { if (p.playlist || p.kanal) (PL[p.playlist || p.kanal] || []).forEach(x => vsetky.add(x.id)); else vsetky.add(KEY(p)); }));
     [...(O.reklamy || []), ...(O.predely || [])].forEach(p => vsetky.add(KEY(p)));
     const zle = Object.values(j.videa).filter(x => x < 0).length;
     DLZKY = zle > vsetky.size / 2 ? Object.fromEntries(Object.entries(j.videa).filter(([, x]) => x > 0)) : j.videa;

@@ -111,7 +111,6 @@ window.POZERAL = {
         { playlist:'PL_c00IPCdRoGD0k6aG7725OaqHQQffcVf', show:'Byl jednou jeden… život', lang:'CZ', min:25, max:26 },
         { kanal:'@byljednoujedenzivot', show:'Byl jednou jeden… život', lang:'CZ', min:25, max:20 },
         { playlist:'PLh4oNLWEP1pov-S4X2rwB3e1kKFFjecKe', show:'Bob a Bobek', lang:'CZ', min:8, max:30 },
-        { kanal:'@smolkovia', show:'Šmolkovia', lang:'SK', min:12, max:30, maxSek:1800 }
       ]
     },
     {

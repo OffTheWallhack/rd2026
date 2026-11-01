@@ -270,14 +270,25 @@ window.POZERAL = {
       program: [
         // Originál po anglicky. Skener kanály a playlisty sám rozbalí a prefiltruje podľa názvu:
         // obsahuje = názov musí sedieť, vynechaj = názov nesmie sedieť (klipy, iné jazyky).
-        // SpongeBob: oficiálny kanál, celé diely a maratóny dielov (nie krátke klipy a "momenty").
+
+        // SpongeBob: oficiálne maratóny celých dielov (dĺžka je odhad, slot sa počíta z min)
+        { id:'8FsJlCpSZRY', show:'SpongeBob SquarePants', ep:'1+ hodina dielov – 2. séria', lang:'EN', min:62 },
+        { id:'EDAICKYaUtU', show:'SpongeBob SquarePants', ep:'3 hodiny klasických dielov – 2. séria', lang:'EN', min:165 },
+        { id:'iDchyEK-l5Q', show:'SpongeBob SquarePants', ep:'3 hodiny najlepších dielov', lang:'EN', min:165 },
+        { id:'uoMvv03mm4E', show:'SpongeBob SquarePants', ep:'120 minút nových dielov', lang:'EN', min:110 },
+        // SpongeBob: oficiálne kanály, len diely a maratóny (nie krátke klipy a "momenty")
         { kanal:'@SpongeBobOfficial', show:'SpongeBob SquarePants', lang:'EN', min:44, max:600, minSek:1200, maxSek:14400,
-          obsahuje:'episodes?|marathon|full\\s+ep', vynechaj:'moment|scene|recreation|IRL|in \\d+ minutes?|minute from|clip|reaction|tutorial|how to|game|trailer|español|latino|bahasa|hindi' },
+          obsahuje:'episodes?|marathon|full\\s+ep', vynechaj:'moment|scene|recreation|IRL|in \\d+ minutes?|minute from|clip|reaction|tutorial|how to|game|trailer|LIVE|español|latino|capítulo|hindi|tamil|telugu|urdu|bahasa|indonesia|português|dublado|deutsch|français|русск' },
+        { playlist:'UUx27Pkk8plpiosF14qXq-VA', show:'SpongeBob SquarePants', lang:'EN', min:44, max:600, minSek:1200, maxSek:14400,
+          obsahuje:'episodes?|marathon|full\\s+ep', vynechaj:'moment|scene|recreation|IRL|in \\d+ minutes?|minute from|clip|reaction|tutorial|how to|game|trailer|LIVE|español|latino|capítulo|hindi|tamil|telugu|urdu|bahasa|indonesia|português|dublado|deutsch|français|русск' },
+
         // Johnny Bravo: celé diely po anglicky
         { playlist:'PLjScWr8bfGJPcWCgF_QNMQeRVyJQ9Q33W', show:'Johnny Bravo', lang:'EN', min:16, max:150, minSek:420, maxSek:3000,
-          vynechaj:'español|latino|capítulo|hindi|tamil|telugu|urdu|bahasa|indonesia|português|dublado|deutsch|français|русск' },
+          obsahuje:'Bravo|^Full Episode \\d+$', vynechaj:'español|latino|capítulo|hindi|tamil|telugu|urdu|bahasa|indonesia|português|dublado|deutsch|français|русск|dias|enamorados|jhonny|best of|best moments|top 10|compilation|Johnny Test' },
         { playlist:'PLCVuwQ1eXVCWVeSpX0khngqq_UIpX5hYU', show:'Johnny Bravo', lang:'EN', min:11, max:150, minSek:420, maxSek:3000,
-          obsahuje:'Bravo', vynechaj:'español|latino|capítulo|hindi|tamil|telugu|urdu|bahasa|indonesia|português|dublado|deutsch|français|русск|top 10|compilation' }
+          obsahuje:'Bravo', vynechaj:'español|latino|capítulo|hindi|tamil|telugu|urdu|bahasa|indonesia|português|dublado|deutsch|français|русск|best of|best moments|top 10|compilation|Johnny Test' },
+        { kanal:'johnnybravochannel', show:'Johnny Bravo', lang:'EN', min:22, max:300, minSek:420, maxSek:3000,
+          obsahuje:'Johnny Bravo', vynechaj:'español|latino|capítulo|hindi|tamil|telugu|urdu|bahasa|indonesia|português|dublado|deutsch|français|русск|best of|best moments|top 10|compilation|theme|intro|Johnny Test' }
       ]
     }
   ],

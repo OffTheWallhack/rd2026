@@ -721,6 +721,17 @@ body.dh #hud .speed,body.dh #hud .score,body.dh #combo,body.dh #timer{display:no
 .dhmsg.cd{font-size:84px;color:#fff}
 .dhmsg.go{color:#74ff5e;font-size:52px}
 .dhmsg.rec{color:#74ff5e}
+.dhmsg small{display:block;margin-top:8px;font-size:.42em;color:#fff;letter-spacing:.08em}
+.dhmsg.dq{color:#ff3b30}
+.dhr b#dhGates{color:#74ff5e}
+.dhr [hidden]{display:none}
+/* downhill: pick the run and the discipline */
+.dhpick{height:100%;min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:8px}
+.cards.dhtrk{grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:8px;min-height:0}
+.dhtrk .card.mode em{font:700 10.5px/1.1 var(--hud);font-style:normal;letter-spacing:.06em;color:#ffd54a;text-shadow:0 1px 4px rgba(0,0,0,.9);z-index:1}
+#dhDiscInfo{flex:1;min-width:0;margin:0;padding:0;border:0;background:none;font-size:11.5px;color:var(--muted);text-align:right}
+.dhpick #dhDesc{margin:0;padding:6px 10px;font-size:12px;line-height:1.35}
+@media (max-height:430px){.dhpick{gap:5px}.dhpick #dhDesc{font-size:10.5px;padding:4px 10px}#dhDiscInfo{font-size:10px}.dhtrk .card.mode em{font-size:9.5px}}
 @media (max-height:420px){.dhl,.dhr{top:calc(50px + env(safe-area-inset-top,0px))}.dhl b{font-size:22px;margin-bottom:3px}.dhl small,.dhr small{font-size:9.5px}.dhc b{font-size:21px}.dhc svg{width:28px;height:28px}.dhr b{font-size:17px}.dhmsg{font-size:28px}.dhmsg.cd{font-size:64px}}
 </style>
 
@@ -749,7 +760,7 @@ body.dh #hud .speed,body.dh #hud .score,body.dh #combo,body.dh #timer{display:no
 <div class="dhhud" id="dhHud" hidden>
   <div class="dhl"><small>ČAS JAZDY</small><b id="dhTime">00:00.00</b><small>VO VZDUCHU</small><b><span id="dhAir">00.00</span><i id="dhJump"></i></b><small>RÝCHLOSŤ (km/h)</small><b id="dhSpd">0</b></div>
   <div class="dhc"><svg id="dhArrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l8 19-8-5-8 5z" fill="currentColor"/></svg><b id="dhDist">0 m</b></div>
-  <div class="dhr"><small>REKORD TRATE</small><b id="dhBest">--:--.--</b></div>
+  <div class="dhr"><small id="dhBestLab">REKORD TRATE</small><b id="dhBest">--:--.--</b><small id="dhGatesLab" hidden>BRÁNKY</small><b id="dhGates" hidden>0/0</b></div>
 </div>
 <div class="dhmsg" id="dhMsg" aria-live="polite"></div>
 <div class="job" id="jobHud" hidden>
@@ -822,7 +833,7 @@ body.dh #hud .speed,body.dh #hud .score,body.dh #combo,body.dh #timer{display:no
             <button class="card mode" type="button" data-mode="arena" style="--ac:#ffd23d"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="12" rx="9" ry="5.5"/><ellipse cx="12" cy="12" rx="4.2" ry="2"/><path d="M12 3v2.5M12 18.5V21"/></svg><b>DRIFT ARÉNA</b><small>3 okruhy · ľahký až peklo</small></button>
             <button class="card mode" type="button" data-mode="chase" style="--ac:#4d8dff"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 16h18M5 16l1.5-5h11L19 16M7 16a2 2 0 1 0 4 0a2 2 0 1 0-4 0M13 16a2 2 0 1 0 4 0a2 2 0 1 0-4 0M9 8h6M12 4v4M9 4h6"/></svg><b>NAHÁŇAČKA</b><small>Noc · polícia za tebou</small></button>
             <button class="card mode" type="button" data-mode="hwy" style="--ac:#4dd68c"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21L10 3M16 21L14 3M12 6v3M12 12v3M12 18v2"/></svg><b>DIAĽNICA</b><small>Z pohľadu vodiča</small></button>
-            <button class="card mode" type="button" data-mode="dh" style="--ac:#8fd8ff"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 20L9 7l3 4 2-3 8 12z"/><path d="M14 3l5 5M19 4v4h-4"/></svg><b>DOWNHILL</b><small>Chopok · zjazd z hory</small></button>
+            <button class="card mode" type="button" data-mode="dh" style="--ac:#8fd8ff"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 20L9 7l3 4 2-3 8 12z"/><path d="M14 3l5 5M19 4v4h-4"/></svg><b>DOWNHILL</b><small>4 trate · 3 disciplíny</small></button>
             </div>
             <p class="hint" id="modeDesc"></p>
           </div>
@@ -841,8 +852,11 @@ body.dh #hud .speed,body.dh #hud .score,body.dh #combo,body.dh #timer{display:no
             </div>
             <div class="detail"><button class="carnav" id="carPrev" type="button" aria-label="Predošlé auto">‹</button><div class="cbig"><img id="carBig" alt="" draggable="false"><b id="carName"></b></div><div class="cinfo"><p id="carDesc"></p><div id="carStats"></div></div><button class="carnav" id="carNext" type="button" aria-label="Ďalšie auto">›</button></div>
           </div>
-          <div class="wz" data-step="3" hidden>
+          <div class="wz" data-step="3" data-for="train" hidden>
             <div class="lvwrap" id="lvWrap"><div class="lvtop"><div class="lvtabs" id="lvTabs"></div><p class="hint" id="lvSect"></p></div><div class="lvlist" id="lvList"></div><p class="hint" id="lvDesc"></p></div>
+          </div>
+          <div class="wz" data-step="3" data-for="dh" hidden>
+            <div class="dhpick"><div class="lvtop"><div class="lvtabs" id="dhDisc"><button type="button" data-d="speed">RÝCHLOSŤ</button><button type="button" data-d="slalom">SLALOM</button><button type="button" data-d="air">AIRTIME</button></div><p class="hint" id="dhDiscInfo"></p></div><div class="cards dhtrk" id="dhTrk"></div><p class="hint" id="dhDesc"></p></div>
           </div>
         </div>
         <footer class="wf" id="wf">
@@ -964,8 +978,8 @@ body.dh #hud .speed,body.dh #hud .score,body.dh #combo,body.dh #timer{display:no
             <div class="tile"><small>DRIFT ARÉNA · REKORD</small><b id="recAr">–</b></div>
             <div class="tile"><small>DIAĽNICA · REKORD</small><b id="recHwy">–</b></div>
             <div class="tile"><small>NAHÁŇAČKA · REKORD</small><b id="recChase">–</b></div>
-            <div class="tile"><small>DOWNHILL CHOPOK · ČAS</small><b id="recDh">–</b></div>
-            <div class="tile"><small>DOWNHILL CHOPOK · VO VZDUCHU</small><b id="recDhAir">–</b></div>
+            <div class="tile"><small>DOWNHILL · PREJDENÉ</small><b id="recDh">–</b></div>
+            <div class="tile"><small>DOWNHILL · NAJVIAC VO VZDUCHU</small><b id="recDhAir">–</b></div>
           </div>
           </div>
         <div class="tb fit rec" id="recBdg" hidden><div class="badges" id="badgeList"></div></div>
@@ -1886,13 +1900,13 @@ const CARS = {
     rollGain: .14, rollW: 6.2, rollZ: .4, tip: .3, over: .46, pitGain: .09, pitW: 7, pitZ: .45,
     power: 0, hitK: 1.0, bounce: 1.6 },
   // Red Bull GT (AMG-style GT3): fast, planted, stiff
-  gt: { engine: 'v8', build: () => PLACEHOLDER(), name: 'RB GT',
+  gt: { engine: 'v8gt', build: () => PLACEHOLDER(), name: 'RB GT',
     L: 2.65, pw: 118, aMax: 5.0, top: 36, rev: 4.5, raMax: 2.4, brake: 12.0, brakeRamp: 10, coast: .7,
     steerMax: .6, steerFall: 14, steerLag: 12, yawLag: 6.0, ayMax: 10.4, grip: 9.6, drift: 3.1, hbGrip: .88, kick: .75,
     rollGain: .045, rollW: 10, rollZ: .5, tip: .48, over: .68, pitGain: .05, pitW: 8.5, pitZ: .5,
     power: 1, hitK: 1.0, bounce: 1.1 },
   // Red Bull F1: huge downforce, brutal acceleration, very precise
-  f1: { engine: 'i4', build: () => PLACEHOLDER(), name: 'RB F1',
+  f1: { engine: 'v6', build: () => PLACEHOLDER(), name: 'RB F1',
     L: 3.2, pw: 150, aMax: 6.6, top: 44, rev: 4.5, raMax: 2.4, brake: 15.0, brakeRamp: 12, coast: .6,
     steerMax: .5, steerFall: 19, steerLag: 15, yawLag: 7.2, ayMax: 14.0, grip: 13.0, drift: 3.6, hbGrip: .92, kick: .8,
     rollGain: .02, rollW: 12, rollZ: .5, tip: .6, over: .8, pitGain: .04, pitW: 10, pitZ: .5,
@@ -3933,6 +3947,7 @@ function scoring(dt) {
 const sound = (() => {
   let ctx = null, master = null, vol = settings.sfx, paused = false;
   let smp = null, smpG = null, smpF = null, smpS = null; const smpBuf = { loop: null, start: null };
+  let windG = null, windF = null, sqBP = null, sqPK = null, surfK = 'tarmac';
   let engBus = null, eng = null, engS = null, engF = null, engG = null, shelf = null, roarG = null, roarF = null, raspG = null, clatG = null, clatO = null, turboO = null, turboG = null, sq = null, sqG = null;
   const waves = {};
   const level = () => (paused ? 0 : .4 * vol);   // quieter overall: the engine and tyres were far too loud
@@ -3940,8 +3955,13 @@ const sound = (() => {
      DIESEL = old 6-cyl turbo diesel (3 firings per revolution, sharp clatter, turbo whistle). Both are one oscillator running at
      the 4-stroke cycle frequency (rpm/120) with a hand-made harmonic recipe, then saturated, filtered and mixed with noise layers. */
   const ENG = {
-    v8:     { idle: 650, red: 5900, wave: 'v8',     gain: .2,  drive: 2.4, cut0: 260, cutR: 1500, cutL: 1100, roar: .1,  rasp: .1,  clat: 0,   turbo: 0,    flaps: true,  pops: true,  lope: true },
-    i4:     { idle: 850, red: 6900, wave: 'diesel', gain: .15, drive: 1.9, cut0: 640, cutR: 1700, cutL: 800,  roar: .08, rasp: .06, clat: .03, turbo: .03,  flaps: false, pops: false, lope: false },
+    v8:     { idle: 650, red: 5900, wave: 'v8',     gain: .2,  drive: 2.4, cut0: 260, cutR: 1500, cutL: 1100, roar: .1,  rasp: .1,  clat: 0,   turbo: 0,    flaps: true,  pops: true,  lope: true, smp: 1 },
+    // Red Bull GT: the same cross-plane V8 recording, but a 4.0 biturbo revs higher, sounds harder and the turbos whistle
+    v8gt:   { idle: 950, red: 7200, wave: 'v8',     gain: .2,  drive: 2.8, cut0: 320, cutR: 1900, cutL: 1100, roar: .1,  rasp: .14, clat: 0,   turbo: .03,  flaps: true,  pops: true,  lope: false, smp: 1.08 },
+    // inline four (Mini, X-Bow, buggy): two firings per turn, a buzzy rasp and a small turbo
+    i4:     { idle: 850, red: 7000, wave: 'i4',     gain: .15, drive: 2.2, cut0: 700, cutR: 2400, cutL: 900,  roar: .07, rasp: .05, clat: 0,   turbo: .025, flaps: false, pops: false, lope: false },
+    // F1: 1.6 V6 turbo hybrid, idles at 4 000 and screams to 12 500, bright and smooth with the hybrid whine on top
+    v6:     { idle: 4200, red: 12500, wave: 'v6',   gain: .13, drive: 2.8, cut0: 1500, cutR: 5200, cutL: 1500, roar: .05, rasp: .08, clat: 0,  turbo: .06,  flaps: false, pops: true,  lope: false },
     diesel: { idle: 720, red: 4300, wave: 'diesel', gain: .15, drive: 1.5, cut0: 520, cutR: 1500, cutL: 700,  roar: .05, rasp: 0,   clat: .13, turbo: .018, flaps: false, pops: false, lope: false }
   };
   let type = 'v8', rpmS = 650, lastT = 0, prevLoad = 0, flap = 0, popT = 0;
@@ -3953,6 +3973,10 @@ const sound = (() => {
        [4, .55], [12, .5], [20, .3], [28, .2], [36, .12],                          // bank-to-bank unevenness = the burble
        [2, .3], [6, .25], [10, .18], [14, .15], [18, .1],
        [1, .22], [3, .18], [5, .12], [7, .1]].forEach(([h, a]) => set(h, a));
+    } else if (k === 'i4') {
+      [[4, 1], [8, .85], [12, .62], [16, .46], [20, .33], [24, .23], [28, .16], [32, .1], [2, .24], [6, .14], [10, .08], [1, .06]].forEach(([h, a]) => set(h, a));
+    } else if (k === 'v6') {
+      [[6, 1], [12, .95], [18, .86], [24, .76], [30, .66], [36, .56], [42, .46], [48, .38], [54, .3], [60, .24], [3, .16], [9, .1]].forEach(([h, a]) => set(h, a));
     } else {
       [[6, 1], [12, .92], [18, .82], [24, .7], [30, .56], [36, .46], [42, .36], [48, .28], [54, .2], [60, .14],
        [3, .28], [9, .22], [2, .1], [1, .08]].forEach(([h, a]) => set(h, a));
@@ -3965,7 +3989,7 @@ const sound = (() => {
     try {
       ctx = new (window.AudioContext || window.webkitAudioContext)();
       master = ctx.createGain(); master.gain.value = level(); master.connect(ctx.destination);
-      waves.v8 = mkWave('v8'); waves.diesel = mkWave('diesel');
+      waves.v8 = mkWave('v8'); waves.diesel = mkWave('diesel'); waves.i4 = mkWave('i4'); waves.v6 = mkWave('v6');
       eng = ctx.createOscillator(); eng.setPeriodicWave(waves.v8); eng.frequency.value = 5.4;
       const sh = ctx.createWaveShaper(); sh.curve = driveCurve(2.4); sh.oversample = '2x'; engS = sh;
       engF = ctx.createBiquadFilter(); engF.type = 'lowpass'; engF.frequency.value = 600; engF.Q.value = 1.1;
@@ -3994,7 +4018,11 @@ const sound = (() => {
       const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 1100; bp.Q.value = 6;
       const bp2 = ctx.createBiquadFilter(); bp2.type = 'peaking'; bp2.frequency.value = 2400; bp2.gain.value = 8;
       sqG = ctx.createGain(); sqG.gain.value = 0;
-      sq.connect(bp); bp.connect(bp2); bp2.connect(sqG); sqG.connect(master);
+      sq.connect(bp); bp.connect(bp2); bp2.connect(sqG); sqG.connect(master); sqBP = bp; sqPK = bp2;
+      // wind: grows with speed, the only thing you hear at 250 km/h besides the engine
+      const wn = noise(), wf = ctx.createBiquadFilter(); wf.type = 'bandpass'; wf.frequency.value = 500; wf.Q.value = .55; windF = wf;
+      const wl = ctx.createBiquadFilter(); wl.type = 'lowpass'; wl.frequency.value = 2600; windG = ctx.createGain(); windG.gain.value = 0;
+      wn.connect(wf); wf.connect(wl); wl.connect(windG); windG.connect(master);
       lastT = ctx.currentTime; applyType(); loadSamples();
     } catch (e) { ctx = null; }
     if (ctx) music.attach(ctx);
@@ -4041,15 +4069,15 @@ const sound = (() => {
     shelf.gain.setTargetAtTime(fo * 7 - 2, t, .08);
     engG.gain.setTargetAtTime((E.gain + load * E.gain * .55 + rn * E.gain * .3) * (1 + fo * .45), t, .05);
     roarG.gain.setTargetAtTime(E.roar * (.25 + load * .75) * (.3 + rn), t, .06); roarF.frequency.setTargetAtTime(300 + rn * 900 + fo * 500, t, .08);
-    raspG.gain.setTargetAtTime(E.rasp * fo * (.2 + load * .8) * rn, t, .06);
+    raspG.gain.setTargetAtTime(E.rasp * (E.flaps ? fo : 1) * (.2 + load * .8) * rn, t, .06);
     if (E.clat) { clatO.frequency.setTargetAtTime(rpmS / 120, t, .03); sound.clatM.gain.setTargetAtTime(E.clat * (1 - rn * .55) * (.6 + load * .4), t, .06); clatG.gain.setTargetAtTime(E.clat * .5 * (1 - rn * .55), t, .06); }
     else { sound.clatM.gain.setTargetAtTime(0, t, .05); clatG.gain.setTargetAtTime(0, t, .05); }
     turboO.frequency.setTargetAtTime(2200 + rn * 5200, t, .08); turboG.gain.setTargetAtTime(E.turbo * load * rn, t, .1);
     sqG.gain.setTargetAtTime(squeal * .22, t, .05);
-    const useSmp = type === 'v8' && !!smp;
+    const useSmp = !!E.smp && !!smp;
     if (useSmp) {
-      engG.gain.setTargetAtTime(0, t, .03); roarG.gain.setTargetAtTime(0, t, .03); raspG.gain.setTargetAtTime(0, t, .03);
-      smp.playbackRate.setTargetAtTime(clamp(rpmS / 1600, .38, 3.7), t, .03);
+      engG.gain.setTargetAtTime(0, t, .03); roarG.gain.setTargetAtTime(0, t, .03); raspG.gain.setTargetAtTime(E.rasp > .1 ? (E.rasp - .1) * 3 * fo * rn : 0, t, .06);
+      smp.playbackRate.setTargetAtTime(clamp(rpmS / 1600 * E.smp, .38, 4.8), t, .03);
       smpF.frequency.setTargetAtTime(1500 + rn * 6500 + load * 3500 + fo * 1800, t, .05);
       smpS.gain.setTargetAtTime(fo * 5 - 1.5, t, .08);
       smpG.gain.setTargetAtTime((.55 + load * .4 + rn * .2) * (1 + fo * .25) * 1.9, t, .05);
@@ -4063,7 +4091,7 @@ const sound = (() => {
   }
   function quiet() {
     if (!ctx) return; const t = ctx.currentTime;
-    [engG, roarG, raspG, clatG, turboG, sqG, smpG].forEach(g => g && g.gain.setTargetAtTime(0, t, .05));
+    [engG, roarG, raspG, clatG, turboG, sqG, smpG, windG].forEach(g => g && g.gain.setTargetAtTime(0, t, .05));
     sound.clatM.gain.setTargetAtTime(0, t, .05);
   }
   function burst(dur, freq, vol2) {
@@ -4110,8 +4138,12 @@ const sound = (() => {
   }
   const setBus = v => { if (engBus) engBus.gain.setTargetAtTime(v, ctx.currentTime, .04); };
   const setLevel = () => { if (master) master.gain.setTargetAtTime(level(), ctx.currentTime, .03); };
+  // what the tyres roll on: tarmac squeals, snow crunches and hisses, grass and sand rumble low, ice rings
+  const SURF_SND = { tarmac: [1100, 6, 8], snow: [900, .9, 2], grass: [380, .8, -6], sand: [620, .7, -3], ice: [1900, 3, 5] };
+  function surface(k) { if (!ctx || !sqBP || k === surfK || !SURF_SND[k]) return; surfK = k; const [f, q, pk] = SURF_SND[k], t = ctx.currentTime; sqBP.frequency.setTargetAtTime(f, t, .08); sqBP.Q.setTargetAtTime(q, t, .08); sqPK.gain.setTargetAtTime(pk, t, .08); }
+  function wind(v, air) { if (!ctx || !windG) return; const t = ctx.currentTime, k = Math.pow(clamp((v - 6) / 75, 0, 1.2), 1.6); windG.gain.setTargetAtTime(k * .3 * (air ? 1.15 : 1), t, .12); windF.frequency.setTargetAtTime(320 + v * 13, t, .15); }
   return {
-    init, update, quiet, setEngine, boom, riser, starter, startClip, setBus, noiseBuf: null, clatM: null, get ready() { return !!ctx && ctx.state === 'running'; },
+    init, update, quiet, setEngine, surface, wind, boom, riser, starter, startClip, setBus, noiseBuf: null, clatM: null, get ready() { return !!ctx && ctx.state === 'running'; },
     thud: v => burst(.35, 220, .9 * v),
     fall: () => { if (!ctx) return; const t = ctx.currentTime, o = ctx.createOscillator(); o.type = 'sine'; o.frequency.setValueAtTime(900, t); o.frequency.exponentialRampToValueAtTime(70, t + 1); const g = ctx.createGain(); g.gain.setValueAtTime(.18, t); g.gain.exponentialRampToValueAtTime(.001, t + 1.05); o.connect(g); g.connect(master); o.start(t); o.stop(t + 1.1); burst(.5, 700, .3); },
     tick: () => burst(.12, 1800, .35),
@@ -4752,7 +4784,7 @@ const INFO = {
   buggy: { desc: 'Bugina side-by-side. Ľahká, skáče a hádže sa. Na hrbole a do blata ideálna, na asfalte trochu nervózna.', speed: 56, accel: 74, slide: 72, agil: 90 }
 };
 const MODE_TXT = {
-  dh: () => 'Zjazd z Chopku ako na snowboarde, len autom. Gravitácia ťa ženie dole, na hrebeňoch letíš. Dojdi do zeleného kruhu dole pri Jasnej čo najrýchlejšie, šípka hore ukazuje smer. Prevrátené auto sa samo postaví, tlačidlo ↺ ťa vráti na svah.' + (store.get('dhBest.chopok', 0) ? ' Rekord: ' + dhFmt(store.get('dhBest.chopok', 0)) + '.' : ''),
+  dh: () => 'Zjazd z kopca autom ako na snowboarde. Štyri slovenské trate: zasnežený Chopok, letná Kráľova hoľa so skokmi cez vlny, strmé Skalnaté pleso medzi skalami a Devín pri západe slnka. Tri disciplíny: rýchlosť, slalom a airtime. Trať a disciplínu vyberieš v treťom kroku.',
   free: 'Bez času a bez tlaku. Jazdi, driftuj a zbieraj combo. Body dávajú aj kúsky: dve kolesá, otočka 360 a tesné obiehanie.',
   t60: () => 'Minúta na čo najvyššie skóre.' + (game.best ? ' Tvoj rekord: ' + fmt(game.best) + '.' : ''),
   job: () => 'Celá misia: nalož aparatúru, prejdi starým mestom, cez neónovú zónu a po snehu až na vrchol. Hodnotí sa čas aj škoda.' + (store.get('jobBest', 0) ? ' Rekord: ' + fmt(store.get('jobBest', 0)) + ' bodov.' : '') + (carKey === 'zubor' ? ' Na snehu drž plyn, Zubor má pomoc do kopca.' : ''),
@@ -4845,7 +4877,7 @@ function renderLay() {
   e.innerHTML = '<i>TRAŤ</i>' + L.map((n, i) => '<button type="button" data-lay="' + i + '" class="' + (i === cur ? 'on' : '') + '" title="' + n + '" aria-label="Trať ' + 'ABC'[i] + ': ' + n + '">' + 'ABC'[i] + '</button>').join('');
 }
 { const e = $('#layRow'); if (e) e.addEventListener('click', ev => { const b = ev.target.closest('button'); if (!b || !LAYS[pendingMode]) return; store.set('lay.' + pendingMode, +b.dataset.lay); renderLay(); renderSum(); }); }
-function renderSum() { renderLay(); const hs = $('#homeSum'); if (hs) hs.textContent = carKey.toUpperCase() + ' · ' + (MODE_NAME[pendingMode] || ''); { const hc = $('#homeCar'), cc = $('#carCards .card[data-car="' + carKey + '"] .ci'); if (hc && cc) { if (hc.getAttribute('src') !== cc.getAttribute('src')) hc.src = cc.getAttribute('src'); $('#homeCarName').textContent = (cc.alt || carKey).toUpperCase(); $('#homeModeName').textContent = MODE_NAME[pendingMode] || ''; } } const e = $('#goSum'); if (!e) return; const L = isLv(pendingMode) ? curLevel() : null; e.textContent = (wiz.step < 3 || !L) ? carKey.toUpperCase() + ' · ' + (MODE_NAME[pendingMode] || '') + (LAYS[pendingMode] ? ' · ' + LAYS[pendingMode][layOf(pendingMode)] : '') : carKey.toUpperCase() + ' · ' + lvTag(L) + ' · ' + L.name; }
+function renderSum() { renderLay(); const hs = $('#homeSum'); if (hs) hs.textContent = carKey.toUpperCase() + ' · ' + (MODE_NAME[pendingMode] || ''); { const hc = $('#homeCar'), cc = $('#carCards .card[data-car="' + carKey + '"] .ci'); if (hc && cc) { if (hc.getAttribute('src') !== cc.getAttribute('src')) hc.src = cc.getAttribute('src'); $('#homeCarName').textContent = (cc.alt || carKey).toUpperCase(); $('#homeModeName').textContent = MODE_NAME[pendingMode] || ''; } } const e = $('#goSum'); if (!e) return; const L = isLv(pendingMode) ? curLevel() : null; e.textContent = (wiz.step < 3 || !L) ? carKey.toUpperCase() + ' · ' + (MODE_NAME[pendingMode] || '') + (LAYS[pendingMode] ? ' · ' + LAYS[pendingMode][layOf(pendingMode)] : '') + (pendingMode === 'dh' ? ' · ' + DH_WORLDS[dhSelW()].name + ' · ' + DH_DISC[dhSelD()] : '') : carKey.toUpperCase() + ' · ' + lvTag(L) + ' · ' + L.name; }
 const lvList = () => LEVELS;
 function curLevel() {
   let L = LEVELS.find(x => x.id === LV.sel);
@@ -4879,30 +4911,44 @@ function renderLevels() {
 }
 /* the HRAŤ screen is a wizard, one step at a time: 1 mode, 2 car, 3 level (only for the training) */
 const wiz = { step: 1 };
-const lastStep = () => isLv(pendingMode) ? 3 : 2;
+const lastStep = () => isLv(pendingMode) || pendingMode === 'dh' ? 3 : 2;
 function setStep(n) {
-  if (n === 3 && !isLv(pendingMode)) n = 2;
+  if (n === 3 && !isLv(pendingMode) && pendingMode !== 'dh') n = 2;
   wiz.step = clamp(n, 1, 3);
-  $$('.wz').forEach(w => { w.hidden = +w.dataset.step !== wiz.step; });
+  const for3 = pendingMode === 'dh' ? 'dh' : 'train';
+  $$('.wz').forEach(w => { w.hidden = +w.dataset.step !== wiz.step || (!!w.dataset.for && w.dataset.for !== for3); });
+  { const s3 = $('#steps [data-step="3"] span'); if (s3) s3.textContent = pendingMode === 'dh' ? 'TRAŤ' : 'LEVEL'; }
   $$('#steps button').forEach(b => { const k = +b.dataset.step; b.classList.toggle('on', k === wiz.step); b.classList.toggle('done', k < wiz.step); });
   const fin = wiz.step === lastStep();
   $('#wBack').hidden = false; $('#wNext').hidden = fin; $('#startBtn').hidden = !fin; $('#tuneBtn').hidden = wiz.step !== 2; renderTuneBtn();
-  if (wiz.step === 3) renderLevels();
+  if (wiz.step === 3) { if (pendingMode === 'dh') renderDhPick(); else renderLevels(); }
   renderSum();
+}
+const DH_DISC_TXT = { speed: 'Čo najrýchlejšie dole do zeleného kruhu.', slalom: 'Prejdi medzi tyčami každej bránky. Vynecháš jednu a si diskvalifikovaný.', air: 'Pribudnú veľké skokánky. Rozhoduje čas vo vzduchu, ale do cieľa musíš doraziť.' };
+function renderDhPick() {
+  const d = dhSelD(), w = dhSelW(), box = $('#dhTrk');
+  $$('#dhDisc button').forEach(b => b.classList.toggle('on', b.dataset.d === d)); $('#dhDiscInfo').textContent = DH_DISC_TXT[d];
+  if (!box.children.length) DH_ORDER.forEach(id => {
+    const W = DH_WORLDS[id], b = document.createElement('button'); b.type = 'button'; b.className = 'card mode'; b.dataset.w = id;
+    b.style.setProperty('--ac', W.ac); b.style.setProperty('--bgi', 'url(img/dh-' + id + '.webp)'); b.innerHTML = '<b></b><small></small><em></em>';
+    b.querySelector('b').textContent = W.name; b.querySelector('small').textContent = W.area + ' · ' + W.km; box.appendChild(b);
+  });
+  $$('#dhTrk .card').forEach(b => { b.classList.toggle('on', b.dataset.w === w); b.querySelector('em').textContent = 'REKORD ' + dhRecTxt(b.dataset.w, d); });
+  const W = DH_WORLDS[w]; $('#dhDesc').textContent = W.start.replace('ŠTART · ', '') + ' → ' + W.finish.replace('CIEĽ · ', '') + ' · ' + W.km + ' · ' + W.tag + '.';
 }
 function renderMode() {
   const tr = isLv(pendingMode);
   $$('#modeCards .card').forEach(c => { c.classList.toggle('on', c.dataset.mode === pendingMode); c.disabled = false; });
   const d = MODE_TXT[pendingMode]; $('#modeDesc').textContent = typeof d === 'function' ? d() : d;
-  $('#steps [data-step="3"]').hidden = !tr;
-  if (wiz.step === 3 && !tr) setStep(2); else setStep(wiz.step);
+  $('#steps [data-step="3"]').hidden = !tr && pendingMode !== 'dh';
+  if (wiz.step === 3 && !tr && pendingMode !== 'dh') setStep(2); else setStep(wiz.step);
   renderLevels(); renderSum();
 }
 const renderCam = () => $$('#camCards .card').forEach(c => c.classList.toggle('on', c.dataset.cam === settings.cam));
 const renderQ = () => $$('#qCards .card').forEach(c => c.classList.toggle('on', +c.dataset.q === settings.q));
 const renderWx = () => $$('#wxCards .card').forEach(c => c.classList.toggle('on', c.dataset.wx === settings.wx));
 function renderRecords() {
-  $('#recBest').textContent = fmt(game.best); $('#recTk').textContent = game.bestTk ? fmt(game.bestTk) : '–'; $('#recDr').textContent = game.bestDr ? fmt(game.bestDr) : '–'; $('#recAr').textContent = game.bestAr ? fmt(game.bestAr) : '–'; $('#recHwy').textContent = store.get('hwyBest', 0) ? fmt(store.get('hwyBest', 0)) : '–'; { const db = store.get('dhBest.chopok', 0), da = store.get('dhAir.chopok', 0); $('#recDh').textContent = db ? dhFmt(db) : '–'; $('#recDhAir').textContent = da ? da.toFixed(1).replace('.', ',') + ' s' : '–'; } $('#recChase').textContent = store.get('chaseBest', 0) ? fmt(store.get('chaseBest', 0)) : '–';
+  $('#recBest').textContent = fmt(game.best); $('#recTk').textContent = game.bestTk ? fmt(game.bestTk) : '–'; $('#recDr').textContent = game.bestDr ? fmt(game.bestDr) : '–'; $('#recAr').textContent = game.bestAr ? fmt(game.bestAr) : '–'; $('#recHwy').textContent = store.get('hwyBest', 0) ? fmt(store.get('hwyBest', 0)) : '–'; { let n = 0, air = 0; DH_ORDER.forEach(w => Object.keys(DH_DISC).forEach(d => { const r = dhRec(w, d); if (r) n++; if (d === 'air' && r > air) air = r; })); $('#recDh').textContent = n + ' / ' + DH_ORDER.length * 3; $('#recDhAir').textContent = air ? air.toFixed(1).replace('.', ',') + ' s' : '–'; } $('#recChase').textContent = store.get('chaseBest', 0) ? fmt(store.get('chaseBest', 0)) : '–';
   { const jb = store.get('jobBest', 0), ob = store.get('offBest', 0); $('#recJob').textContent = jb ? fmt(jb) + ' · ' + jobFmtT(store.get('jobBestT', 0)) : '–'; $('#recOff').textContent = ob ? fmt(ob) + ' · ' + jobFmtT(store.get('offBestT', 0)) : '–'; }
   $('#recLv').textContent = LEVELS.filter(L => lvStars(L.id) > 0).length + ' / ' + LEVELS.length; $('#recStars').textContent = LEVELS.reduce((a, L) => a + lvStars(L.id), 0) + ' / ' + LEVELS.length * 3;
   $('#recCombo').textContent = fmt(stats.bestCombo);
@@ -6248,15 +6294,51 @@ function hwChaseView(dt, th) {
    falls away faster than gravity the wheels lose contact and the car flies (air time). The body corners touch the ground too,
    so the car can land on the roof, tumble and slide. First world: Chopok, finish in the circle at the bottom. */
 const DH_G = 9.81;
+// surfaces: grip (mu) and rolling resistance; snd picks the sound of the tyres on it
+const DH_SURF = { snow: { mu: .92, roll: .028, snd: 'snow' }, grass: { mu: .8, roll: .045, snd: 'grass' }, sand: { mu: .6, roll: .11, snd: 'sand' }, ice: { mu: .3, roll: .012, snd: 'ice' } };
+/* every run is a set of numbers: the steepness along it, crests, bends, how wide the valley is, the ground, the light and what stands around it.
+   jumps / kick: [z, height, ramp length, drop length, half width]; kick are the extra kickers that only the AIRTIME discipline gets */
 const DH_WORLDS = {
-  chopok: { id: 'chopok', name: 'CHOPOK', area: 'Nízke Tatry', L: 2500, seed: 11,
-    // steepness (drop per metre) along the run; negative = the ground rises again (behind the start, after the finish)
+  chopok: { id: 'chopok', name: 'CHOPOK', area: 'Nízke Tatry', km: '2,5 km', tag: 'sneh · lanovka · Rotunda', ac: '#8fd8ff',
+    start: 'ŠTART · CHOPOK', finish: 'CIEĽ · JASNÁ', L: 2500, seed: 11,
     slope: [[-700, -.32], [-140, -.22], [-40, -.03], [40, .03], [130, .2], [260, .36], [480, .31], [640, .2], [780, .27], [930, .46], [1130, .43], [1290, .19], [1450, .28], [1680, .39], [1890, .3], [2080, .2], [2250, .11], [2380, .03], [2620, .015], [2760, -.1], [3000, -.32], [3600, -.4]],
-    jumps: [[360, 3.4], [720, 2.4], [1230, 3.8], [1590, 2.8], [1960, 3.2], [2180, 2.2]],
-    bend: [[150, 520, 0], [60, 190, 1.3]],
-    mu: .92 }
+    jumps: [[360, 3.4, 32, 15, 46], [720, 2.4, 32, 15, 46], [1230, 3.8, 32, 15, 46], [1590, 2.8, 32, 15, 46], [1960, 3.2, 32, 15, 46], [2180, 2.2, 32, 15, 46]],
+    kick: [[210, 4.2, 22, 8, 34], [560, 4.8, 22, 8, 34], [1040, 5.2, 24, 8, 34], [1420, 4.6, 22, 8, 34], [1790, 5, 22, 8, 34], [2060, 4, 20, 8, 34]],
+    bend: [[150, 520, 0], [60, 190, 1.3]], wk: .00042, wall: 380, crag: 10, nz: [15, 3.6, .9, .12], surf: 'snow', tex: 'snow',
+    pal: { lit: 0xeef2f7, shade: 0x9fb4cf, rock: 0x7d8389, rockAt: .42 },
+    sky: { top: 0x4f86d0, bot: 0xe2eaf3, fog: 0xdde6f0, near: 380, far: 1250, hemi: .62, sun: 2.7, sunCol: 0xfff1dc, exp: .92, dir: [-55, 38, 30] },
+    trees: { kind: 'pineSnow', in: 135, out: 215, dens: .5 }, lift: 'chair', poles: ['#ff6a1a', '#141414'], gate: 70 },
+  hola: { id: 'hola', name: 'KRÁĽOVA HOĽA', area: 'Horehronie · leto', km: '2,9 km', tag: 'tráva · vlny · dlhé lety', ac: '#9be05a',
+    start: 'ŠTART · KRÁĽOVA HOĽA', finish: 'CIEĽ · ŠUMIAC', L: 2900, seed: 23,
+    slope: [[-700, -.3], [-140, -.2], [-40, -.03], [40, .03], [150, .22], [400, .3], [700, .25], [1000, .33], [1300, .27], [1600, .35], [1900, .28], [2200, .25], [2500, .16], [2750, .05], [3020, .015], [3150, -.1], [3400, -.3], [4000, -.4]],
+    jumps: [[430, 3, 30, 14, 60], [890, 3.6, 30, 14, 60], [1350, 2.8, 30, 14, 60], [1730, 4, 32, 15, 60], [2160, 3.2, 30, 14, 60], [2490, 2.6, 30, 14, 60]],
+    kick: [[260, 4.5, 22, 8, 36], [650, 5, 22, 8, 36], [1120, 5.4, 24, 8, 36], [1540, 5, 22, 8, 36], [1960, 5.6, 24, 8, 36], [2330, 4.4, 22, 8, 36]],
+    waves: [4.2, 34], bend: [[220, 600, .7], [45, 170, 2.1]], wk: .00024, wall: 470, crag: 5, nz: [11, 4.2, 1.1, .15], surf: 'grass', tex: 'grass',
+    pal: { lit: 0x9bc95a, shade: 0x46733a, rock: 0x8a8270, rockAt: .5, alt: 0xc2bb5c },
+    sky: { top: 0x3f7fd6, bot: 0xd2e5f2, fog: 0xc9dcea, near: 420, far: 1450, hemi: .78, sun: 2.5, sunCol: 0xfff4e0, exp: .95, dir: [-40, 60, -20] },
+    trees: { kind: 'spruce', in: 175, out: 260, dens: .45, top: { kind: 'dwarf', until: 620, in: 95 } }, lift: null, poles: ['#e8322f', '#f4f4f4'], gate: 72 },
+  lomnica: { id: 'lomnica', name: 'SKALNATÉ PLESO', area: 'Vysoké Tatry · podvečer', km: '2,0 km', tag: 'strmé · skaly · kabínky', ac: '#ffb36b',
+    start: 'ŠTART · LOMNICKÉ SEDLO', finish: 'CIEĽ · SKALNATÉ PLESO', L: 2000, seed: 37,
+    slope: [[-700, -.45], [-140, -.3], [-40, -.03], [40, .04], [120, .3], [260, .5], [430, .44], [600, .55], [800, .4], [980, .52], [1200, .46], [1420, .34], [1640, .22], [1860, .06], [2120, .015], [2260, -.08], [2500, -.35], [3200, -.45]],
+    jumps: [[330, 3, 30, 14, 40], [690, 2.6, 30, 14, 40], [1060, 3.4, 30, 14, 40], [1500, 2.6, 30, 14, 40]],
+    kick: [[190, 4, 20, 8, 30], [520, 4.6, 22, 8, 30], [880, 5, 22, 8, 30], [1290, 4.8, 22, 8, 30], [1700, 4.2, 20, 8, 30]],
+    bend: [[90, 300, .4], [40, 120, 1.9]], wk: .0009, wall: 240, crag: 26, nz: [16, 4, 1.4, .2], surf: 'snow', tex: 'snow',
+    pal: { lit: 0xf6f4f2, shade: 0x8f9cc8, rock: 0x625b56, rockAt: .33, rockN: .5, ice: 0x9fc6de },
+    lake: { dz: 210, dx: 0, r: 85 },
+    sky: { top: 0x4a6ab4, bot: 0xf3d0b4, fog: 0xe8d2c2, near: 320, far: 1150, hemi: .7, sun: 2.6, sunCol: 0xffdcb8, exp: .95, dir: [-85, 30, 35] },
+    trees: { kind: 'dwarf', in: 105, out: 170, dens: .32 }, rocks: { run: .045, side: .3 }, lift: 'gondola', poles: ['#ff6a1a', '#141414'], gate: 64 },
+  devin: { id: 'devin', name: 'DEVÍN', area: 'Devínska Kobyla · západ slnka', km: '1,7 km', tag: 'les · piesok · hrad', ac: '#ff8a5c',
+    start: 'ŠTART · DEVÍNSKA KOBYLA', finish: 'CIEĽ · DEVÍN', L: 1700, seed: 51,
+    slope: [[-700, -.25], [-140, -.15], [-40, -.03], [40, .03], [120, .18], [300, .26], [480, .2], [650, .31], [820, .22], [1000, .29], [1200, .21], [1400, .12], [1580, .04], [1780, .012], [1860, .05], [2000, .32], [2200, .38], [3000, .3]],
+    jumps: [[260, 2.6, 28, 13, 36], [560, 3, 28, 13, 36], [900, 2.4, 28, 13, 36], [1180, 3.2, 28, 13, 36], [1450, 2, 28, 13, 36]],
+    kick: [[180, 4, 20, 8, 30], [420, 4.4, 22, 8, 30], [740, 4.8, 22, 8, 30], [1040, 4.6, 22, 8, 30], [1320, 4.2, 20, 8, 30]],
+    bend: [[70, 240, 1], [35, 95, .3]], wk: .0006, wall: 300, crag: 7, nz: [9, 3.2, 1.3, .22], surf: 'grass', tex: 'grass', sand: true,
+    pal: { lit: 0xa9b65c, shade: 0x4f6638, rock: 0x9a8a6e, rockAt: .45, sand: 0xe0bd80, alt: 0xc9a24e },
+    sky: { top: 0x34488e, bot: 0xf6a764, fog: 0xd6a283, near: 280, far: 1000, hemi: .8, sun: 2.5, sunCol: 0xffbd80, exp: 1.12, dir: [-90, 24, 28] },
+    trees: { kind: 'leaf', in: 72, out: 128, dens: .55 }, lift: null, poles: ['#e8322f', '#f4f4f4'], gate: 60, river: true }
 };
-const DH = { on: false, w: null, prof: null, Z0: -700, ZS: 2, g: null, chunks: new Map(), shown: new Set(), cc: '', trees: new Map(), saved: [], t: 0, run: 0, air: 0, jump: 0, maxV: 0, cd: 0, started: false, over: false, hud: 0, msgT: 0, safe: [], flipT: 0, shake: 0, camDir: new THREE.Vector3(0, 0, 1), camY: 0, fin: null };
+const DH_ORDER = ['chopok', 'hola', 'lomnica', 'devin'];
+const DH = { on: false, w: null, wid: 'chopok', disc: 'speed', jl: [], prof: null, Z0: -700, ZS: 2, g: null, chunks: new Map(), shown: new Set(), cc: '', trees: new Map(), saved: [], t: 0, run: 0, air: 0, jump: 0, maxV: 0, cd: 0, started: false, over: false, dq: false, hud: 0, msgT: 0, safe: [], flipT: 0, shake: 0, camDir: new THREE.Vector3(0, 0, 1), camY: 0, fin: null, gates: [], gi: 0, sun: new THREE.Vector3(-.62, .5, .6).normalize() };
 const dhQuint = t => t * t * t * (t * (t * 6 - 15) + 10);
 const dhSmooth = t => { t = clamp(t, 0, 1); return t * t * (3 - 2 * t); };
 function dhHash(i, j, s) { let h = Math.imul(i, 374761393) + Math.imul(j, 668265263) + Math.imul(s, 1274126177) | 0; h = Math.imul(h ^ (h >>> 13), 1274126177); h ^= h >>> 16; return (h & 0xffff) / 65535; }
@@ -6277,33 +6359,48 @@ function dhProfile(W) {
 function dhProf(z) { const f = clamp((z - DH.Z0) / DH.ZS, 0, DH.prof.length - 1.001), i = Math.floor(f), t = f - i; return DH.prof[i] + (DH.prof[i + 1] - DH.prof[i]) * t; }
 function dhCX(z) { let x = 0; for (const [a, wl, ph] of DH.w.bend) x += a * Math.sin(z / wl + ph); return x - DH.cx0; }
 function dhH(x, z) {
-  const W = DH.w, s = W.seed, dx = x - dhCX(z), ax = Math.abs(dx);
-  let h = dhProf(z) + .00042 * dx * dx + (ax > 380 ? Math.pow(ax - 380, 1.7) * .012 : 0);
+  const W = DH.w, s = W.seed, dx = x - dhCX(z), ax = Math.abs(dx), nz = W.nz;
+  let h = dhProf(z) + W.wk * dx * dx + (ax > W.wall ? Math.pow(ax - W.wall, 1.7) * .012 : 0);
   const calm = dhSmooth((z - 30) / 140) * (1 - .85 * dhSmooth((z - (W.L - 380)) / 260)), fine = dhSmooth((z - 30) / 90) * (1 - dhSmooth((z - (W.L - 120)) / 80));
-  h += dhNoise(x / 330, z / 330, s) * 15 * (.35 + .65 * calm) + dhNoise(x / 125, z / 125, s + 1) * 3.6 * calm + dhNoise(x / 38, z / 38, s + 2) * .9 * fine + dhNoise(x / 11, z / 11, s + 3) * .12 * fine;
-  for (let i = 0; i < W.jumps.length; i++) {
-    const u = z - W.jumps[i][0]; if (u < -32 || u > 15) continue;
-    const wx = clamp(1 - (ax - 46) / 36, 0, 1); if (wx <= 0) continue;
-    h += W.jumps[i][1] * wx * (u < 0 ? dhSmooth((u + 32) / 32) : 1 - dhSmooth(u / 15));
+  h += dhNoise(x / 330, z / 330, s) * nz[0] * (.35 + .65 * calm) + dhNoise(x / 125, z / 125, s + 1) * nz[1] * calm + dhNoise(x / 38, z / 38, s + 2) * nz[2] * fine + dhNoise(x / 11, z / 11, s + 3) * nz[3] * fine;
+  // crags on the valley walls: ridges and gullies, so the sides are mountains and not a smooth bowl
+  if (W.crag && ax > 120) { const k = clamp((ax - 120) / 180, 0, 1); h += (dhNoise(x / 95, z / 95, s + 7) * .6 + Math.abs(dhNoise(x / 42, z / 60, s + 8)) * .8 - .3) * W.crag * k; }
+  // rolling waves across the slope (summer meadows): a crest throws the car at speed
+  if (W.waves) h += W.waves[0] * (.45 + .55 * (.5 + .5 * dhNoise(z / 260, 3.3, s + 4))) * Math.sin(z / W.waves[1] + Math.sin(x / 170 + s) * 1.3) * calm * clamp(1 - (ax - 240) / 140, 0, 1);
+  const J = DH.jl;
+  for (let i = 0; i < J.length; i++) {
+    const j = J[i], u = z - j[0]; if (u < -j[2] || u > j[3]) continue;
+    const wx = clamp(1 - (ax - j[4]) / 30, 0, 1); if (wx <= 0) continue;
+    h += j[1] * wx * (u < 0 ? dhSmooth((u + j[2]) / j[2]) : 1 - dhSmooth(u / j[3]));
   }
+  if (DH.lake) { const L = DH.lake, d = Math.hypot(x - L.x, z - L.z); if (d < L.r + 34) h = lerp(h, Math.min(h, L.y), dhSmooth((L.r + 34 - d) / 34)); }
   return h;
 }
 function dhNormal(x, z, out) { const e = .5; out.set(dhH(x - e, z) - dhH(x + e, z), 2 * e, dhH(x, z - e) - dhH(x, z + e)).normalize(); return out; }
+// sand pits on the Devín run (Sandberg): soft, slow and slidey
+function dhSandK(x, z) { const W = DH.w; if (!W.sand) return 0; const ax = Math.abs(x - dhCX(z)); if (ax > 110 || z < 90 || z > W.L - 60) return 0; return clamp((dhNoise(x / 48, z / 48, W.seed + 9) - .32) * 5, 0, 1) * clamp((110 - ax) / 30, 0, 1); }
+function dhLakeK(x, z) { const L = DH.lake; if (!L) return 0; const d = Math.hypot(x - L.x, z - L.z); return clamp((L.r - d) / 6, 0, 1); }
+function dhSurf(x, z) { if (DH.lake && dhLakeK(x, z) > .5) return DH_SURF.ice; if (DH.w.sand && dhSandK(x, z) > .5) return DH_SURF.sand; return DH_SURF[DH.w.surf]; }
 
-/* ---------- the world: height-map chunks around the car (near ones fine, far ones coarse), trees, the lift, the Rotunda, start and finish ---------- */
+/* ---------- the world: height-map chunks around the car (near ones fine, far ones coarse), plants, lifts, landmarks, start and finish ---------- */
 const DH_CH = 192;
 function dhObs(o) { const k = Math.floor(o.x / 20) + ',' + Math.floor(o.z / 20); let L = DH.trees.get(k); if (!L) DH.trees.set(k, L = []); L.push(o); }
-let dhSnowMat = null, dhRockCol = new THREE.Color(0x7d8389), dhSnowCol = new THREE.Color(0xeef2f7), dhShadeCol = new THREE.Color(0x9fb4cf);
-const DH_SUN = new THREE.Vector3(-.62, .5, .6).normalize();
+const dhMats = {};
 function dhChunk(ci, cj, lod) {
   const key = ci + ',' + cj + ',' + lod; let m = DH.chunks.get(key); if (m) return m;
   const N = lod ? 8 : 48, st = DH_CH / N, x0 = ci * DH_CH, z0 = cj * DH_CH, V = N + 1, skirt = 4 * V;
   const pos = new Float32Array((V * V + skirt) * 3), nor = new Float32Array((V * V + skirt) * 3), col = new Float32Array((V * V + skirt) * 3), uv = new Float32Array((V * V + skirt) * 2);
-  const nv = new THREE.Vector3(), c = new THREE.Color(); let k = 0;
+  const nv = new THREE.Vector3(), c = new THREE.Color(), W = DH.w, Pc = DH.pal, s = W.seed, sun = DH.sun; let k = 0;
   const put = (x, y, z, n) => {
     pos[k * 3] = x; pos[k * 3 + 1] = y; pos[k * 3 + 2] = z; nor[k * 3] = n.x; nor[k * 3 + 1] = n.y; nor[k * 3 + 2] = n.z;
-    const steep = 1 - n.y, sn = clamp((.42 - steep) / .22, 0, 1), sh = .5 + .5 * dhNoise(x / 23, z / 23, 77), lit = clamp((n.dot(DH_SUN) - .35) * 2.4, 0, 1);
-    c.copy(dhShadeCol).lerp(dhSnowCol, clamp(.25 + .55 * lit + .2 * sh, 0, 1)); c.lerp(dhRockCol, 1 - sn);
+    const steep = 1 - n.y, sh = .5 + .5 * dhNoise(x / 23, z / 23, 77), lit = clamp((n.dot(sun) - .35) * 2.4, 0, 1);
+    let rk = 1 - clamp((W.pal.rockAt - steep) / .2, 0, 1);
+    if (W.pal.rockN) rk = Math.max(rk, clamp((dhNoise(x / 42, z / 42, s + 6) - W.pal.rockN) * 4, 0, 1) * clamp((Math.abs(x - dhCX(z)) - 30) / 40, 0, 1));
+    c.copy(Pc.shade).lerp(Pc.lit, clamp(.25 + .55 * lit + .2 * sh, 0, 1));
+    if (Pc.alt) c.lerp(Pc.alt, clamp(dhNoise(x / 70, z / 70, s + 5) * .9, 0, .5));
+    c.lerp(Pc.rock, rk);
+    if (W.sand) { const sk = dhSandK(x, z); if (sk > 0) c.lerp(Pc.sand, sk * .92); }
+    if (DH.lake) { const lk = dhLakeK(x, z); if (lk > 0) c.lerp(Pc.ice, lk); }
     col[k * 3] = c.r; col[k * 3 + 1] = c.g; col[k * 3 + 2] = c.b; uv[k * 2] = x / 7; uv[k * 2 + 1] = z / 7; k++;
   };
   for (let j = 0; j < V; j++) for (let i = 0; i < V; i++) { const x = x0 + i * st, z = z0 + j * st; put(x, dhH(x, z), z, dhNormal(x, z, nv)); }
@@ -6320,7 +6417,7 @@ function dhChunk(ci, cj, lod) {
   g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.setAttribute('normal', new THREE.BufferAttribute(nor, 3));
   g.setAttribute('color', new THREE.BufferAttribute(col, 3)); g.setAttribute('uv', new THREE.BufferAttribute(uv, 2)); g.setIndex(idx);
   g.computeBoundingSphere();
-  m = new THREE.Mesh(g, dhSnowMat); m.receiveShadow = !lod; m.matrixAutoUpdate = false; m.updateMatrix(); m.visible = false; DH.g.add(m);
+  m = new THREE.Mesh(g, DH.mat); m.receiveShadow = !lod; m.matrixAutoUpdate = false; m.updateMatrix(); m.visible = false; DH.g.add(m);
   DH.chunks.set(key, m); return m;
 }
 function dhChunksAround(x, z, force) {
@@ -6338,7 +6435,7 @@ function dhChunksAround(x, z, force) {
   }
   if (!pending) DH.cc = key;
   DH.shown.forEach(m => { if (!want.has(m)) m.visible = false; }); want.forEach(m => { m.visible = true; }); DH.shown = want;
-  if (DH.treeBands) DH.treeBands.forEach(b => { const on = Math.abs(b.z - (cj + .5) * DH_CH) < (R - .5) * DH_CH; b.m[0].visible = b.m[1].visible = on; });
+  if (DH.treeBands) DH.treeBands.forEach(b => { const on = Math.abs(b.z - (cj + .5) * DH_CH) < (R - .5) * DH_CH; for (const m of b.m) m.visible = on; });
   if (DH.chunks.size > 420) for (const [k, m] of DH.chunks) { if (!want.has(m)) { DH.g.remove(m); m.geometry.dispose(); DH.chunks.delete(k); } if (DH.chunks.size < 300) break; }
 }
 function dhSnowTex() {
@@ -6347,6 +6444,19 @@ function dhSnowTex() {
     for (let i = 0; i < 4200; i++) { const v = 205 + Math.random() * 50 | 0; g.fillStyle = 'rgba(' + (v - 14) + ',' + (v - 6) + ',' + v + ',' + (.3 + Math.random() * .5) + ')'; g.fillRect(Math.random() * w, Math.random() * h, 1 + Math.random() * 4, 1 + Math.random() * 2); }
     g.globalAlpha = .22; g.strokeStyle = '#8aa1bf'; g.lineWidth = 1.4;
     for (let i = 0; i < 34; i++) { g.beginPath(); const y = Math.random() * h; g.moveTo(-10, y); g.bezierCurveTo(w * .3, y + 16 * (Math.random() - .5), w * .6, y + 16 * (Math.random() - .5), w + 10, y + 6 * (Math.random() - .5)); g.stroke(); }
+  }, [1, 1]);
+}
+// grass: a light neutral texture (the vertex colours make it green, yellow or sandy), short blades and tufts
+function dhGrassTex() {
+  return canvasTex(256, 256, (g, w, h) => {
+    g.fillStyle = '#e4e4e0'; g.fillRect(0, 0, w, h);
+    for (let i = 0; i < 1400; i++) { const v = 170 + Math.random() * 80 | 0; g.fillStyle = 'rgba(' + v + ',' + v + ',' + (v - 10) + ',.55)'; g.fillRect(Math.random() * w, Math.random() * h, 2 + Math.random() * 7, 2 + Math.random() * 7); }
+    g.lineCap = 'round';
+    for (let i = 0; i < 3800; i++) {
+      const x = Math.random() * w, y = Math.random() * h, l = 3 + Math.random() * 7, a = -Math.PI / 2 + (Math.random() - .5) * 1.1, v = 120 + Math.random() * 135 | 0;
+      g.strokeStyle = 'rgba(' + v + ',' + v + ',' + (v - 15) + ',' + (.35 + Math.random() * .5) + ')'; g.lineWidth = .8 + Math.random() * 1.2;
+      g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(a) * l, y + Math.sin(a) * l); g.stroke();
+    }
   }, [1, 1]);
 }
 function dhTextTex(txt, bg, fg, w, h) {
@@ -6363,117 +6473,262 @@ function dhFlagTex() {
     g.fillStyle = '#ffffff'; const cx = sx + sw / 2; g.fillRect(cx - 3, sy + 10, 6, 48); g.fillRect(cx - 11, sy + 20, 22, 5); g.fillRect(cx - 15, sy + 33, 30, 6);
   });
 }
-function dhTrees(W) {
-  // pines on both sides of the run (snow on the tips), the chairlift pylons; all also used for collisions
-  const cell = settings.q === 0 ? 30 : 22, list = [];
+// stripes for poles: two colours in bands
+const dhStripeTex = (a, b, n) => canvasTex(8, 64, (g, w, h) => { for (let i = 0; i < n; i++) { g.fillStyle = i % 2 ? b : a; g.fillRect(0, i * h / n, w, h / n); } });
+
+/* ---------- plants and rocks: placed on a jittered grid on both sides of the run, kept in bands along it ---------- */
+function dhVeg(W) {
+  const g = new THREE.Group(), T = W.trees, cell = settings.q === 0 ? 30 : 22, lists = {};
+  const push = (kind, o) => (lists[kind] || (lists[kind] = [])).push(o);
   for (let z = -260; z < W.L + 420; z += cell) for (let dx = -470; dx < 470; dx += cell) {
-    const rx = dhHash(dx / cell | 0, z / cell | 0, 5), ry = dhHash(dx / cell | 0, z / cell | 0, 6), r = dhHash(dx / cell | 0, z / cell | 0, 7);
+    const ix = dx / cell | 0, iz = z / cell | 0, rx = dhHash(ix, iz, 5), ry = dhHash(ix, iz, 6), r = dhHash(ix, iz, 7);
     const xx = dx + (rx - .5) * cell, zz = z + (ry - .5) * cell, a = Math.abs(xx);
-    let p = a < 135 ? 0 : a < 215 ? (a - 135) / 80 * .5 : .5; if (zz > W.L - 160 && zz < W.L + 140 && a < 120) p = 0;
+    const top = T.top && zz < T.top.until, inner = top ? T.top.in : T.in, kind = top ? T.top.kind : T.kind;
+    let p = a < inner ? 0 : a < inner + (T.out - T.in) ? (a - inner) / (T.out - T.in) * T.dens : T.dens; if (zz > W.L - 160 && zz < W.L + 140 && a < 120) p = 0;
     if (zz < 120 && a < 150) p *= .3;
     if (r > p) continue;
-    const x = xx + dhCX(zz), y = dhH(x, zz), n = dhNormal(x, zz, new THREE.Vector3()); if (n.y < .72) continue;
-    { const sc = .75 + dhHash(x | 0, zz | 0, 8) * .7; list.push({ x, y, z: zz, s: sc, r: .5 + .25 * sc, h: 8.5 * sc }); }
+    const x = xx + dhCX(zz); if (DH.lake && dhLakeK(x, zz) > 0) continue;
+    const y = dhH(x, zz), n = dhNormal(x, zz, new THREE.Vector3()); if (n.y < .72) continue;
+    const sc = .75 + dhHash(x | 0, zz | 0, 8) * .7;
+    if (kind === 'dwarf') push(kind, { x, y, z: zz, s: sc, r: .7 + .6 * sc, h: 1.6 * sc });
+    else if (kind === 'leaf') push(kind, { x, y, z: zz, s: sc, r: .45 + .2 * sc, h: 9 * sc });
+    else push(kind, { x, y, z: zz, s: sc, r: .5 + .25 * sc, h: 8.5 * sc });
   }
-  const g = new THREE.Group();
-  const cone1 = new THREE.ConeGeometry(2.4, 5.6, 7, 1, true), cone2 = new THREE.ConeGeometry(1.6, 4, 7, 1, true);
-  cone1.translate(0, 3.8, 0); cone2.translate(0, 6.9, 0);
-  // trees go in bands along the run, so the ones beyond the drawn terrain can be hidden (otherwise they float in the fog)
-  const matA = new THREE.MeshLambertMaterial({ color: 0x24402f, side: THREE.DoubleSide }), matB = new THREE.MeshLambertMaterial({ color: 0xdfe8ef, side: THREE.DoubleSide });
-  const M = new THREE.Matrix4(), Q = new THREE.Quaternion(), Sv = new THREE.Vector3(), Pv = new THREE.Vector3(), bands = new Map();
-  list.forEach(t => { const b = Math.floor(t.z / DH_CH); (bands.get(b) || bands.set(b, []).get(b)).push(t); });
-  DH.treeBands = [];
-  bands.forEach((L2, b) => {
-    const mA = new THREE.InstancedMesh(cone1, matA, L2.length), mB = new THREE.InstancedMesh(cone2, matB, L2.length);
-    L2.forEach((t, i) => { Q.setFromAxisAngle(new THREE.Vector3(0, 1, 0), t.x * 13.1 % 6.28); Sv.set(t.s, t.s * (.9 + (t.z * 7.7 % 1 + 1) % 1 * .35), t.s); M.compose(Pv.set(t.x, t.y - .3, t.z), Q, Sv); mA.setMatrixAt(i, M); mB.setMatrixAt(i, M); });
-    [mA, mB].forEach(m => { m.castShadow = settings.q > 1; m.computeBoundingSphere(); g.add(m); });
-    DH.treeBands.push({ z: (b + .5) * DH_CH, m: [mA, mB] });
+  if (W.rocks) {   // boulders: many beside the run, a few in it (Tatras)
+    const rc = 26;
+    for (let z = 60; z < W.L + 300; z += rc) for (let dx = -240; dx < 240; dx += rc) {
+      const ix = dx / rc | 0, iz = z / rc | 0, xx = dx + (dhHash(ix, iz, 15) - .5) * rc, zz = z + (dhHash(ix, iz, 16) - .5) * rc, a = Math.abs(xx);
+      const p = a < 22 ? 0 : a < 62 ? W.rocks.run : W.rocks.side; if (dhHash(ix, iz, 17) > p || (zz > W.L - 120 && a < 60) || zz < 70) continue;   // the middle of the run stays clear (the slalom gates stand there)
+      if (DH.jl.some(j => zz > j[0] - j[2] - 6 && zz < j[0] + j[3] + 30)) continue;
+      const x = xx + dhCX(zz); if (DH.lake && dhLakeK(x, zz) > 0) continue;
+      const s2 = (a < 62 ? 1 : 1.2) + dhHash(ix, iz, 18) * (a < 62 ? 1.2 : 2.6);
+      push('rock', { x, y: dhH(x, zz), z: zz, s: s2, r: s2 * .9, h: s2 * 1.25 });
+    }
+  }
+  const M = new THREE.Matrix4(), Q = new THREE.Quaternion(), Sv = new THREE.Vector3(), Pv = new THREE.Vector3(), Y = new THREE.Vector3(0, 1, 0), C = new THREE.Color();
+  const shapes = {
+    pineSnow: () => { const a = new THREE.ConeGeometry(2.4, 5.6, 7, 1, true), b = new THREE.ConeGeometry(1.6, 4, 7, 1, true); a.translate(0, 3.8, 0); b.translate(0, 6.9, 0); return [[a, 0x24402f], [b, 0xdfe8ef]]; },
+    spruce: () => { const a = new THREE.ConeGeometry(2.5, 6, 7, 1, true), b = new THREE.ConeGeometry(1.7, 4.4, 7, 1, true), t = new THREE.CylinderGeometry(.22, .3, 1.6, 5); a.translate(0, 4, 0); b.translate(0, 7.4, 0); t.translate(0, .8, 0); return [[a, 0x1f3b26], [b, 0x2a4d2f], [t, 0x4a3426]]; },
+    dwarf: () => { const a = new THREE.IcosahedronGeometry(1.4, 0); a.scale(1.3, .62, 1.1); a.translate(0, .55, 0); return [[a, 0x2e4a2a]]; },
+    leaf: () => { const a = new THREE.IcosahedronGeometry(2.6, 0), t = new THREE.CylinderGeometry(.25, .35, 4.2, 5); a.scale(1, .9, 1); a.translate(0, 6, 0); t.translate(0, 2.1, 0); return [[a, null], [t, 0x4b3826]]; },
+    rock: () => { const a = new THREE.IcosahedronGeometry(1, 0); a.translate(0, .25, 0); return [[a, 0x77706a]]; }
+  };
+  const leafCols = [0x4f7a2e, 0x6b8a2c, 0x8a8a2a, 0xb07a2a, 0x5d7f3a, 0xa35a24];
+  DH.treeBands = []; const bands = new Map();
+  for (const kind in lists) for (const t of lists[kind]) { const b = Math.floor(t.z / DH_CH); let o = bands.get(b); if (!o) bands.set(b, o = {}); (o[kind] || (o[kind] = [])).push(t); }
+  const geos = {}, mats = {};
+  bands.forEach((byKind, b) => {
+    const meshes = [];
+    for (const kind in byKind) {
+      const L2 = byKind[kind], parts = geos[kind] || (geos[kind] = shapes[kind]());
+      parts.forEach(([geo, col], pi) => {
+        const key = kind + pi, mat = mats[key] || (mats[key] = new THREE.MeshLambertMaterial({ color: col === null ? 0xffffff : col, side: THREE.DoubleSide, flatShading: kind === 'rock' || kind === 'dwarf' || kind === 'leaf' }));
+        const m = new THREE.InstancedMesh(geo, mat, L2.length);
+        L2.forEach((t, i) => {
+          Q.setFromAxisAngle(Y, t.x * 13.1 % 6.28);
+          if (kind === 'rock') { Q.setFromEuler(new THREE.Euler(t.x % 1.3, t.z % 6.28, t.x * .7 % 1.1)); Sv.set(t.s * 1.2, t.s * .85, t.s); }
+          else Sv.set(t.s, t.s * (.9 + (t.z * 7.7 % 1 + 1) % 1 * .35), t.s);
+          M.compose(Pv.set(t.x, t.y - (kind === 'rock' ? t.s * .25 : .3), t.z), Q, Sv); m.setMatrixAt(i, M);
+          if (col === null) m.setColorAt(i, C.setHex(leafCols[(dhHash(t.x | 0, t.z | 0, 21) * leafCols.length) | 0]));
+        });
+        m.castShadow = settings.q > 1 && kind !== 'dwarf'; m.computeBoundingSphere(); g.add(m); meshes.push(m);
+      });
+    }
+    DH.treeBands.push({ z: (b + .5) * DH_CH, m: meshes });
   });
-  // chairlift: pylons beside the run and two cables over them
-  const pyl = [], cab = [[], []], poles = [];
-  for (let z = 70; z < W.L - 70; z += 150) { const x = dhCX(z) - 64, y = dhH(x, z); pyl.push([x, y, z]); poles.push({ x, y, z, r: .9, h: 15 }); }
-  const pm = new THREE.MeshLambertMaterial({ color: 0x8b939c }), pg = new THREE.BoxGeometry(.8, 15, .8), bg = new THREE.BoxGeometry(6.2, .5, .5);
-  pyl.forEach(([x, y, z]) => { const p = new THREE.Mesh(pg, pm); p.position.set(x, y + 7.2, z); p.castShadow = settings.q > 1; g.add(p); const b = new THREE.Mesh(bg, pm); b.position.set(x, y + 14.6, z); g.add(b); cab[0].push(new THREE.Vector3(x - 2.9, y + 14.4, z)); cab[1].push(new THREE.Vector3(x + 2.9, y + 14.4, z)); });
-  const cm = new THREE.LineBasicMaterial({ color: 0x2c3036 });
-  cab.forEach(pts => { const arr = []; for (let i = 0; i < pts.length - 1; i++) { const a = pts[i], b = pts[i + 1]; for (let k = 0; k <= 8; k++) { const t = k / 8; arr.push(new THREE.Vector3(lerp(a.x, b.x, t), lerp(a.y, b.y, t) - Math.sin(Math.PI * t) * 2.2, lerp(a.z, b.z, t))); } } g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(arr), cm)); });
-  const chairM = new THREE.MeshLambertMaterial({ color: 0xd8322f }), chairG = new THREE.BoxGeometry(1.6, .9, .9);
-  for (let i = 0; i < pyl.length - 1; i++) for (let k = 1; k < 3; k++) { const a = pyl[i], b = pyl[i + 1], t = k / 3, side = k === 1 ? -2.9 : 2.9; const c = new THREE.Mesh(chairG, chairM); c.position.set(lerp(a[0], b[0], t) + side, lerp(a[1], b[1], t) + 14.4 - Math.sin(Math.PI * t) * 2.2 - 2.4, lerp(a[2], b[2], t)); g.add(c); }
-  // piste poles: both edges of the groomed run, every 36 m
-  { const pg2 = new THREE.CylinderGeometry(.11, .11, 2.6, 5); pg2.translate(0, 1.3, 0); const pts = [];
-    for (let z = 60; z < W.L - 40; z += 36) for (const side of [-1, 1]) { const x = dhCX(z) + side * (58 + 8 * Math.sin(z / 140)); pts.push([x, dhH(x, z), z]); }
-    const pm2 = new THREE.InstancedMesh(pg2, new THREE.MeshBasicMaterial({ map: canvasTex(8, 64, (g2, w2, h2) => { for (let i = 0; i < 8; i++) { g2.fillStyle = i % 2 ? '#141414' : '#ff6a1a'; g2.fillRect(0, i * h2 / 8, w2, h2 / 8); } }) }), pts.length);
-    const M2 = new THREE.Matrix4(); pts.forEach((p2, i) => { M2.makeTranslation(p2[0], p2[1] - .1, p2[2]); pm2.setMatrixAt(i, M2); }); pm2.frustumCulled = false; g.add(pm2); }
-  // collision grid
-  DH.trees = new Map(); list.forEach(dhObs); poles.forEach(dhObs);
+  DH.trees = new Map(); for (const kind in lists) lists[kind].forEach(dhObs);
   return g;
 }
-function dhBuild(id) {
-  const W = DH.w = DH_WORLDS[id]; DH.cx0 = 0; DH.cx0 = dhCX(0); DH.prof = dhProfile(W);
+/* ---------- lifts: chairlift (Chopok) or the red cabins to Skalnaté pleso ---------- */
+function dhLift(W, g) {
+  const gond = W.lift === 'gondola', H = gond ? 24 : 15, step = gond ? 190 : 150, side = gond ? 70 : -64, pyl = [], cab = [[], []];
+  const pm = new THREE.MeshLambertMaterial({ color: gond ? 0x6d757e : 0x8b939c }), pg = new THREE.BoxGeometry(gond ? 1.2 : .8, H, gond ? 1.2 : .8), bg = new THREE.BoxGeometry(6.2, .5, .5);
+  for (let z = 70; z < W.L - 70; z += step) { const x = dhCX(z) + side, y = dhH(x, z); pyl.push([x, y, z]); dhObs({ x, y, z, r: gond ? 1.2 : .9, h: H }); }
+  pyl.forEach(([x, y, z]) => { const p = new THREE.Mesh(pg, pm); p.position.set(x, y + H / 2 - .3, z); p.castShadow = settings.q > 1; g.add(p); const b = new THREE.Mesh(bg, pm); b.position.set(x, y + H - .4, z); g.add(b); cab[0].push(new THREE.Vector3(x - 2.9, y + H - .6, z)); cab[1].push(new THREE.Vector3(x + 2.9, y + H - .6, z)); });
+  const sag = gond ? 4 : 2.2, cm = new THREE.LineBasicMaterial({ color: 0x2c3036 });
+  cab.forEach(pts => { const arr = []; for (let i = 0; i < pts.length - 1; i++) { const a = pts[i], b = pts[i + 1]; for (let k = 0; k <= 8; k++) { const t = k / 8; arr.push(new THREE.Vector3(lerp(a.x, b.x, t), lerp(a.y, b.y, t) - Math.sin(Math.PI * t) * sag, lerp(a.z, b.z, t))); } } g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(arr), cm)); });
+  const chairM = new THREE.MeshLambertMaterial({ color: gond ? 0xd52b2b : 0xd8322f }), chairG = gond ? new THREE.BoxGeometry(2.4, 2.3, 2.6) : new THREE.BoxGeometry(1.6, .9, .9), winG = new THREE.BoxGeometry(2.45, .8, 2.2), winM = new THREE.MeshLambertMaterial({ color: 0x24303c }), rod = new THREE.BoxGeometry(.12, 2, .12);
+  for (let i = 0; i < pyl.length - 1; i++) for (let k = 1; k < 3; k++) {
+    const a = pyl[i], b = pyl[i + 1], t = k / 3, sd = k === 1 ? -2.9 : 2.9, x = lerp(a[0], b[0], t) + sd, y = lerp(a[1], b[1], t) + H - .6 - Math.sin(Math.PI * t) * sag, z = lerp(a[2], b[2], t);
+    const c = new THREE.Mesh(chairG, chairM); c.position.set(x, y - (gond ? 3.4 : 2.4), z); g.add(c);
+    if (gond) { const w2 = new THREE.Mesh(winG, winM); w2.position.set(x, y - 3.05, z); g.add(w2); const r2 = new THREE.Mesh(rod, pm); r2.position.set(x, y - 1.2, z); g.add(r2); }
+  }
+}
+/* ---------- landmarks ---------- */
+function dhMinAround(x, z, r) { let m = 1e9; for (let a = 0; a < 6.28; a += .5) for (const k of [0, .5, 1]) m = Math.min(m, dhH(x + Math.cos(a) * r * k, z + Math.sin(a) * r * k)); return m; }
+const dhLam = c => new THREE.MeshLambertMaterial({ color: c });
+function dhDeco(W, g) {
+  const sh = o => { o.traverse(m => { if (m.isMesh) m.castShadow = settings.q > 1; }); return o; };
+  if (W.id === 'chopok') {
+    // Rotunda on the top of Chopok and the two lift stations
+    const rx = dhCX(-70) + 58, rz = -70, ry = dhMinAround(rx, rz, 14);
+    const rot = new THREE.Group(); rot.position.set(rx, ry, rz);
+    const base = new THREE.Mesh(new THREE.CylinderGeometry(14, 14.5, 5, 28), dhLam(0x9aa1a8)); base.position.y = 1.5; rot.add(base);
+    const glass = new THREE.Mesh(new THREE.CylinderGeometry(14.6, 14.2, 3.4, 28), new THREE.MeshLambertMaterial({ color: 0x2c4c6c, emissive: 0x0d1f33 })); glass.position.y = 5.6; rot.add(glass);
+    const roof = new THREE.Mesh(new THREE.CylinderGeometry(9, 15.4, 2.2, 28), dhLam(0x5d6670)); roof.position.y = 8.4; rot.add(roof);
+    const mast = new THREE.Mesh(new THREE.CylinderGeometry(.25, .4, 9, 6), dhLam(0xc8c8c8)); mast.position.y = 13.7; rot.add(mast); g.add(sh(rot));
+    dhObs({ x: rx, y: ry, z: rz, r: 14.5, h: 10 });
+    const st1 = new THREE.Mesh(new THREE.BoxGeometry(14, 8, 10), dhLam(0x6f7882)); st1.position.set(dhCX(20) - 64, dhH(dhCX(20) - 64, 20) + 3, 20); g.add(st1);
+    const st2 = new THREE.Mesh(new THREE.BoxGeometry(16, 9, 12), dhLam(0x6f7882)); st2.position.set(dhCX(W.L - 40) - 64, dhH(dhCX(W.L - 40) - 64, W.L - 40) + 3, W.L - 40); g.add(st2);
+  } else if (W.id === 'hola') {
+    // the transmitter on the summit: concrete shaft, the equipment ring, then the red and white mast
+    const tx = dhCX(260) - 190, tz = 260, ty = dhMinAround(tx, tz, 6), tw = new THREE.Group(); tw.position.set(tx, ty, tz);
+    const shaft = new THREE.Mesh(new THREE.CylinderGeometry(2.6, 3.6, 44, 16), dhLam(0xbfbab2)); shaft.position.y = 22; tw.add(shaft);
+    const ring = new THREE.Mesh(new THREE.CylinderGeometry(6.5, 6.5, 6, 20), dhLam(0xd8d4cc)); ring.position.y = 40; tw.add(ring);
+    const ringW = new THREE.Mesh(new THREE.CylinderGeometry(6.6, 6.6, 1.6, 20), dhLam(0x384350)); ringW.position.y = 40.5; tw.add(ringW);
+    for (let i = 0; i < 8; i++) { const seg = new THREE.Mesh(new THREE.CylinderGeometry(.9 - i * .07, 1 - i * .07, 7, 8), dhLam(i % 2 ? 0xf2f2f2 : 0xd8322f)); seg.position.y = 46.5 + i * 7; tw.add(seg); }
+    const base = new THREE.Mesh(new THREE.BoxGeometry(16, 5, 11), dhLam(0x9d968a)); base.position.set(-9, 2.5, 4); tw.add(base);
+    g.add(sh(tw)); dhObs({ x: tx, y: ty, z: tz, r: 9, h: 100 }); dhObs({ x: tx - 9, y: ty, z: tz + 4, r: 8, h: 5 });
+    // a mountain hut lower down beside the run
+    const hx = dhCX(1180) + 105, hz = 1180, hy = dhMinAround(hx, hz, 6), hut = new THREE.Group(); hut.position.set(hx, hy, hz);
+    const wall = new THREE.Mesh(new THREE.BoxGeometry(9, 4, 7), dhLam(0x7a5636)); wall.position.y = 2; hut.add(wall);
+    const roofG = new THREE.CylinderGeometry(.01, 6.4, 3.4, 4, 1); roofG.rotateY(Math.PI / 4); roofG.scale(1.05, 1, .8); const hr = new THREE.Mesh(roofG, dhLam(0x3c3f45)); hr.position.y = 5.6; hut.add(hr);
+    g.add(sh(hut)); dhObs({ x: hx, y: hy, z: hz, r: 5.5, h: 6 });
+  } else if (W.id === 'lomnica') {
+    // Lomnický štít behind the start: a rock spire with the observatory on top
+    const px = dhCX(700) + 640, pz = 700, py = dhH(px, pz) - 120;   // far out beyond the valley wall, sunk deep so its foot never floats
+    const spG = new THREE.ConeGeometry(120, 520, 7, 4); { const a = spG.attributes.position; for (let i = 0; i < a.count; i++) { const y = a.getY(i); if (y < 250) { a.setX(i, a.getX(i) * (1 + .18 * Math.sin(i * 1.7))); a.setZ(i, a.getZ(i) * (1 + .18 * Math.cos(i * 2.3))); } } spG.computeVertexNormals(); }
+    const spire = new THREE.Mesh(spG, new THREE.MeshLambertMaterial({ color: 0x6f6762, flatShading: true })); spire.position.set(px, py + 260, pz); g.add(spire);
+    const cap = new THREE.Mesh(new THREE.ConeGeometry(40, 90, 7, 1), new THREE.MeshLambertMaterial({ color: 0xf3ece4, flatShading: true })); cap.position.set(px, py + 474, pz); g.add(cap);
+    const obs = new THREE.Group(); obs.position.set(px, py + 520, pz);
+    const ob = new THREE.Mesh(new THREE.BoxGeometry(9, 5, 7), dhLam(0x8a8f96)); obs.add(ob); const dome = new THREE.Mesh(new THREE.SphereGeometry(2.6, 12, 8, 0, 6.28, 0, 1.6), dhLam(0xe6e8ea)); dome.position.set(2, 2.6, 0); obs.add(dome); g.add(obs);
+    // Skalnaté pleso: the frozen lake below the finish and the observatory hut beside it
+    const L = DH.lake, ox = L.x + L.r + 26, oz = L.z - 20, oy = dhMinAround(ox, oz, 8), ob2 = new THREE.Group(); ob2.position.set(ox, oy, oz);
+    const b2 = new THREE.Mesh(new THREE.BoxGeometry(14, 6, 9), dhLam(0xd9d2c4)); b2.position.y = 3; ob2.add(b2); const r2 = new THREE.Mesh(new THREE.BoxGeometry(15, 1, 10), dhLam(0x4d3d33)); r2.position.y = 6.4; ob2.add(r2);
+    const d2 = new THREE.Mesh(new THREE.SphereGeometry(2.4, 12, 8, 0, 6.28, 0, 1.6), dhLam(0xe6e8ea)); d2.position.set(4, 6.9, 0); ob2.add(d2); g.add(sh(ob2)); dhObs({ x: ox, y: oy, z: oz, r: 8, h: 8 });
+  } else if (W.id === 'devin') {
+    // Devín castle on its rock above the rivers, the Maiden Tower on its own needle, and the Danube below
+    const cx = dhCX(W.L + 250) + 70, cz = W.L + 250, ry = dhH(cx, cz);
+    const rock = new THREE.Mesh(new THREE.CylinderGeometry(26, 42, 70, 9, 2), new THREE.MeshLambertMaterial({ color: 0x8c7d6a, flatShading: true })); rock.position.set(cx, ry - 10, cz); g.add(rock);
+    const top = ry + 25, wallM = dhLam(0xcbbd9f), roofM = dhLam(0x6a3d2c), cas = new THREE.Group(); cas.position.set(cx, top, cz);
+    [[0, 0, 22, 9, 16], [-14, 6, 8, 14, 8], [12, -8, 10, 7, 12], [4, 12, 18, 6, 6]].forEach(([x, z, w, h, d]) => { const b = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), wallM); b.position.set(x, h / 2, z); cas.add(b); });
+    const tower = new THREE.Mesh(new THREE.CylinderGeometry(3.2, 3.6, 18, 10), wallM); tower.position.set(-14, 9, 6); cas.add(tower);
+    const tRoof = new THREE.Mesh(new THREE.ConeGeometry(4.2, 5, 10), roofM); tRoof.position.set(-14, 20.5, 6); cas.add(tRoof); g.add(sh(cas));
+    const nx = cx + 48, nz = cz + 26, needle = new THREE.Mesh(new THREE.CylinderGeometry(4, 9, 46, 7), new THREE.MeshLambertMaterial({ color: 0x8c7d6a, flatShading: true })); needle.position.set(nx, ry - 16, nz); g.add(needle);
+    const maiden = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.4, 7, 8), wallM); maiden.position.set(nx, ry + 10.5, nz); g.add(maiden);
+    const mRoof = new THREE.Mesh(new THREE.ConeGeometry(2.9, 3.2, 8), roofM); mRoof.position.set(nx, ry + 15.6, nz); g.add(mRoof);
+    const river = new THREE.Mesh(new THREE.PlaneGeometry(5000, 900), new THREE.MeshLambertMaterial({ color: 0x3b5d78, emissive: 0x1a2b3d })); river.rotation.x = -Math.PI / 2; river.position.set(dhCX(W.L) , dhProf(W.L + 330) - 4, W.L + 760); g.add(river);
+  }
+}
+
+/* ---------- the run: terrain for this world, plants, lift, landmarks, the start and the finish ---------- */
+function dhBuild(id, disc) {
+  const W = DH.w = DH_WORLDS[id], key = id + (disc === 'air' ? ':air' : '');
+  DH.jl = W.jumps.concat(disc === 'air' ? W.kick : []);
+  DH.cx0 = 0; DH.cx0 = dhCX(0); DH.prof = dhProfile(W); DH.lake = null;
+  if (W.lake) { const lz = W.L + W.lake.dz, lx = dhCX(lz) + W.lake.dx; let m = 1e9; for (let a = 0; a < 6.28; a += .4) for (const k of [0, .4, .8, 1]) m = Math.min(m, dhH(lx + Math.cos(a) * W.lake.r * k, lz + Math.sin(a) * W.lake.r * k)); DH.lake = { x: lx, z: lz, r: W.lake.r, y: m - .3 }; }
   if (DH.g) { DH.g.parent && DH.g.parent.remove(DH.g); DH.chunks.forEach(m => m.geometry.dispose()); DH.chunks.clear(); DH.shown = new Set(); DH.cc = ''; }
-  DH.g = new THREE.Group(); DH.g.visible = false; scene.add(DH.g); DH.built = id;
-  if (!dhSnowMat) dhSnowMat = new THREE.MeshLambertMaterial({ vertexColors: true, map: dhSnowTex(), side: THREE.DoubleSide });
-  DH.g.add(dhTrees(W));
-  const L = W.L, lam = c => new THREE.MeshLambertMaterial({ color: c });
-  // start: a gate with a banner, the Slovak flag, the Rotunda and the top lift station behind it
-  const sx = dhCX(26), sy = dhH(sx, 26), post = new THREE.BoxGeometry(.7, 7, .7), red = lam(0xd8322f);
+  DH.g = new THREE.Group(); DH.g.visible = false; scene.add(DH.g); DH.built = key;
+  DH.pal = {}; for (const k in W.pal) if (typeof W.pal[k] === 'number' && k !== 'rockAt' && k !== 'rockN') DH.pal[k] = new THREE.Color(W.pal[k]);
+  if (!DH.pal.ice) DH.pal.ice = new THREE.Color(0xa9cde3); if (!DH.pal.sand) DH.pal.sand = new THREE.Color(0xe0bd80);
+  DH.sun.set(W.sky.dir[0], W.sky.dir[1], W.sky.dir[2]).normalize();
+  DH.mat = dhMats[W.tex] || (dhMats[W.tex] = new THREE.MeshLambertMaterial({ vertexColors: true, map: W.tex === 'grass' ? dhGrassTex() : dhSnowTex(), side: THREE.DoubleSide }));
+  DH.g.add(dhVeg(W));
+  if (W.lift) dhLift(W, DH.g);
+  dhDeco(W, DH.g);
+  // piste poles along both edges of the run
+  { const pg2 = new THREE.CylinderGeometry(.11, .11, 2.6, 5); pg2.translate(0, 1.3, 0); const pts = [];
+    for (let z = 60; z < W.L - 40; z += 36) for (const side of [-1, 1]) { const x = dhCX(z) + side * (58 + 8 * Math.sin(z / 140)); if (DH.lake && dhLakeK(x, z) > 0) continue; pts.push([x, dhH(x, z), z]); }
+    const pm2 = new THREE.InstancedMesh(pg2, new THREE.MeshBasicMaterial({ map: dhStripeTex(W.poles[0], W.poles[1], 8) }), pts.length);
+    const M2 = new THREE.Matrix4(); pts.forEach((p2, i) => { M2.makeTranslation(p2[0], p2[1] - .1, p2[2]); pm2.setMatrixAt(i, M2); }); pm2.frustumCulled = false; DH.g.add(pm2); }
+  // airtime kickers: orange flags on both ends of every lip
+  if (disc === 'air') {
+    const fg = new THREE.ConeGeometry(.9, 1.6, 3); fg.rotateZ(-Math.PI / 2); fg.translate(.8, 2.6, 0); const pg3 = new THREE.CylinderGeometry(.07, .07, 3.4, 5); pg3.translate(0, 1.7, 0);
+    const fm = new THREE.MeshBasicMaterial({ color: 0xff7a1a }), pm3 = dhLam(0xeeeeee);
+    W.kick.forEach(j => [-1, 1].forEach(sd => { const z = j[0], x = dhCX(z) + sd * (j[4] + 2), y = dhH(x, z); const p = new THREE.Mesh(pg3, pm3); p.position.set(x, y, z); DH.g.add(p); const f = new THREE.Mesh(fg, fm); f.position.set(x, y, z); DH.g.add(f); }));
+  }
+  // start: a gate with a banner and the Slovak flag
+  const sx = dhCX(26), sy = dhH(sx, 26), post = new THREE.BoxGeometry(.7, 7, .7), red = dhLam(0xd8322f);
   [-10, 10].forEach(o => { const p = new THREE.Mesh(post, red), y = dhH(sx + o, 26); p.position.set(sx + o, y + 3.4, 26); p.castShadow = true; DH.g.add(p); dhObs({ x: sx + o, y, z: 26, r: .5, h: 7 }); });
-  const ban = new THREE.Mesh(new THREE.PlaneGeometry(20.7, 2.2), new THREE.MeshBasicMaterial({ map: dhTextTex('ŠTART · ' + W.name, '#d8322f', '#ffffff', 1024, 110), side: THREE.DoubleSide }));
+  const ban = new THREE.Mesh(new THREE.PlaneGeometry(20.7, 2.2), new THREE.MeshBasicMaterial({ map: dhTextTex(W.start, '#d8322f', '#ffffff', 1024, 110), side: THREE.DoubleSide }));
   ban.position.set(sx, sy + 6.2, 26); ban.rotation.y = Math.PI; DH.g.add(ban);
-  const fx = sx + 16, fz = 14, fy = dhH(fx, fz), pole = new THREE.Mesh(new THREE.CylinderGeometry(.09, .12, 9, 6), lam(0xdedede)); pole.position.set(fx, fy + 4.5, fz); DH.g.add(pole);
+  const fx = sx + 16, fz = 14, fy = dhH(fx, fz), pole = new THREE.Mesh(new THREE.CylinderGeometry(.09, .12, 9, 6), dhLam(0xdedede)); pole.position.set(fx, fy + 4.5, fz); DH.g.add(pole);
   const flag = new THREE.Mesh(new THREE.PlaneGeometry(3, 2, 8, 1), new THREE.MeshLambertMaterial({ map: dhFlagTex(), side: THREE.DoubleSide })); flag.position.set(fx - 1.55, fy + 7.9, fz); flag.rotation.y = Math.PI; DH.g.add(flag); DH.flag = flag;
-  const rx = dhCX(-70) + 58, rz = -70; let ry = 1e9; for (let a = 0; a < 6.28; a += .5) ry = Math.min(ry, dhH(rx + Math.cos(a) * 14, rz + Math.sin(a) * 14));
-  const rot = new THREE.Group(); rot.position.set(rx, ry, rz);
-  const base = new THREE.Mesh(new THREE.CylinderGeometry(14, 14.5, 5, 28), lam(0x9aa1a8)); base.position.y = 1.5; rot.add(base);
-  const glass = new THREE.Mesh(new THREE.CylinderGeometry(14.6, 14.2, 3.4, 28), new THREE.MeshLambertMaterial({ color: 0x2c4c6c, emissive: 0x0d1f33 })); glass.position.y = 5.6; rot.add(glass);
-  const roof = new THREE.Mesh(new THREE.CylinderGeometry(9, 15.4, 2.2, 28), lam(0x5d6670)); roof.position.y = 8.4; rot.add(roof);
-  const mast = new THREE.Mesh(new THREE.CylinderGeometry(.25, .4, 9, 6), lam(0xc8c8c8)); mast.position.y = 13.7; rot.add(mast); rot.traverse(o => { if (o.isMesh) o.castShadow = settings.q > 1; }); DH.g.add(rot);
-  dhObs({ x: rx, y: ry, z: rz, r: 14.5, h: 10 });
-  const st1 = new THREE.Mesh(new THREE.BoxGeometry(14, 8, 10), lam(0x6f7882)); st1.position.set(dhCX(20) - 64, dhH(dhCX(20) - 64, 20) + 3, 20); DH.g.add(st1);
-  const st2 = new THREE.Mesh(new THREE.BoxGeometry(16, 9, 12), lam(0x6f7882)); st2.position.set(dhCX(L - 40) - 64, dhH(dhCX(L - 40) - 64, L - 40) + 3, L - 40); DH.g.add(st2);
-  // finish: the target circle lying on the snow, a tall beam you can see from the top, and an arch
-  const cx = dhCX(L), cz = L; DH.fin = { x: cx, z: cz, r: 22 };
+  // finish: the target circle lying on the ground, a tall beam you can see from the top, and an arch
+  const L = W.L, cx = dhCX(L), cz = L; DH.fin = { x: cx, z: cz, r: 22 };
   const ringG = new THREE.RingGeometry(19.5, 22, 72, 1), rp = ringG.attributes.position;
   ringG.rotateX(-Math.PI / 2); for (let i = 0; i < rp.count; i++) { const x = rp.getX(i) + cx, z = rp.getZ(i) + cz; rp.setXYZ(i, x, dhH(x, z) + .3, z); }
-  const ringM = new THREE.MeshBasicMaterial({ color: 0x35ff7a, transparent: true, opacity: .85, depthWrite: false }); const ring2 = new THREE.Mesh(ringG, ringM); ring2.renderOrder = 2; DH.g.add(ring2); DH.ring = ring2;
+  const ring2 = new THREE.Mesh(ringG, new THREE.MeshBasicMaterial({ color: 0x35ff7a, transparent: true, opacity: .85, depthWrite: false })); ring2.renderOrder = 2; DH.g.add(ring2); DH.ring = ring2;
   const discG = new THREE.CircleGeometry(19.5, 48); discG.rotateX(-Math.PI / 2); const dp = discG.attributes.position; for (let i = 0; i < dp.count; i++) { const x = dp.getX(i) + cx, z = dp.getZ(i) + cz; dp.setXYZ(i, x, dhH(x, z) + .25, z); }
   const disc2 = new THREE.Mesh(discG, new THREE.MeshBasicMaterial({ color: 0x35ff7a, transparent: true, opacity: .16, depthWrite: false })); disc2.renderOrder = 2; DH.g.add(disc2);
   const beam = new THREE.Mesh(new THREE.CylinderGeometry(3, 3, 260, 16, 1, true), new THREE.MeshBasicMaterial({ color: 0x5dff94, transparent: true, opacity: .22, depthWrite: false, side: THREE.DoubleSide, fog: false }));
   beam.position.set(cx, dhH(cx, cz) + 130, cz); DH.g.add(beam); DH.beam = beam;
-  const ay = dhH(cx, cz - 30); [-13, 13].forEach(o => { const p = new THREE.Mesh(post, lam(0x1e9e4c)), y = dhH(cx + o, cz - 30); p.position.set(cx + o, y + 3.4, cz - 30); DH.g.add(p); dhObs({ x: cx + o, y, z: cz - 30, r: .5, h: 7 }); });
-  const ban2 = new THREE.Mesh(new THREE.PlaneGeometry(26.7, 2.6), new THREE.MeshBasicMaterial({ map: dhTextTex('CIEĽ · JASNÁ', '#1e9e4c', '#ffffff', 1024, 100), side: THREE.DoubleSide })); ban2.position.set(cx, ay + 6.3, cz - 30); ban2.rotation.y = Math.PI; DH.g.add(ban2);
+  const ay = dhH(cx, cz - 30); [-13, 13].forEach(o => { const p = new THREE.Mesh(post, dhLam(0x1e9e4c)), y = dhH(cx + o, cz - 30); p.position.set(cx + o, y + 3.4, cz - 30); DH.g.add(p); dhObs({ x: cx + o, y, z: cz - 30, r: .5, h: 7 }); });
+  const ban2 = new THREE.Mesh(new THREE.PlaneGeometry(26.7, 2.6), new THREE.MeshBasicMaterial({ map: dhTextTex(W.finish, '#1e9e4c', '#ffffff', 1024, 100), side: THREE.DoubleSide })); ban2.position.set(cx, ay + 6.3, cz - 30); ban2.rotation.y = Math.PI; DH.g.add(ban2);
   DH.start = { x: sx, z: 4 };
+}
+/* ---------- slalom gates: two poles each, the colours alternate; the car has to pass between them ---------- */
+function dhGatesBuild() {
+  if (DH.gatesG) { DH.gatesG.parent && DH.gatesG.parent.remove(DH.gatesG); DH.gatesG = null; }
+  DH.gates = []; DH.gi = 0; if (DH.disc !== 'slalom') return;
+  const W = DH.w, g = new THREE.Group(), gap = W.gate || 56, half = 7;
+  const pg = new THREE.CylinderGeometry(.1, .1, 2.8, 6); pg.translate(0, 1.4, 0);
+  const panG = new THREE.PlaneGeometry(1.4, 1); panG.translate(0, 2.1, 0);
+  const mats = [[dhLam(0xd8322f), new THREE.MeshBasicMaterial({ color: 0xe8322f, side: THREE.DoubleSide })], [dhLam(0x1f57c8), new THREE.MeshBasicMaterial({ color: 0x2462e0, side: THREE.DoubleSide })]];
+  let side = 1;
+  for (let z = 140; z < W.L - 120; z += gap) {
+    if (DH.jl.some(j => z > j[0] - j[2] - 10 && z < j[0] + j[3] + 55)) continue;   // no gate on a jump or just after the landing
+    const n = DH.gates.length, off = side * (6.5 + 3.5 * dhHash(n, 3, W.seed)); side = -side;   // the gates swing left and right, never so far that they can't be linked at speed
+    const x = dhCX(z) + off, mm = mats[n % 2], parts = [];
+    [-half, half].forEach(o => {
+      const px = x + o, py = dhH(px, z), p = new THREE.Mesh(pg, mm[0]); p.position.set(px, py, z); g.add(p); parts.push(p);
+      const pan = new THREE.Mesh(panG, mm[1]); pan.position.set(px - Math.sign(o) * .72, py, z); g.add(pan); parts.push(pan);
+    });
+    DH.gates.push({ x, z, half, parts, n });
+  }
+  DH.g.add(g); DH.gatesG = g;
 }
 
 /* ---------- the car as a rigid body ---------- */
 const DHB = { p: new THREE.Vector3(), v: new THREE.Vector3(), q: new THREE.Quaternion(), w: new THREE.Vector3(), I: new THREE.Vector3(1, 1, 1), cl: new THREE.Vector3(), wh: [], pts: [], delta: 0, st: 0, drive: 0, brk: 0, hb: 0, mu: 1, drag: 4e-4, df: 0, nc: 0, bc: 0, vF: 0, slide: 0, land: 0 };
-const DH_DROOP = .16, DH_UP = .26;
+const DH_UP = .26;
 const _u = new THREE.Vector3(), _f = new THREE.Vector3(), _r = new THREE.Vector3(), _a = new THREE.Vector3(), _n = new THREE.Vector3(), _gp = new THREE.Vector3(), _rr = new THREE.Vector3(), _vc = new THREE.Vector3(),
   _d = new THREE.Vector3(), _s = new THREE.Vector3(), _F = new THREE.Vector3(), _Fa = new THREE.Vector3(), _Ta = new THREE.Vector3(), _t3 = new THREE.Vector3(), _qi = new THREE.Quaternion(), _dq = new THREE.Quaternion(), _wb = new THREE.Vector3(), _tb = new THREE.Vector3(), _Lb = new THREE.Vector3();
-const DH_TUNE = { zubor: { drag: 4.4e-4, mu: 1, com: .35 }, sugga: { drag: 5.2e-4, mu: 1.05, com: .34 }, mini: { drag: 3.8e-4, mu: 1, com: .36 }, gt: { drag: 3.1e-4, mu: 1.05, df: 4e-4, com: .33 }, f1: { drag: 2.9e-4, mu: 1.1, df: 1.1e-3, com: .3 }, xbow: { drag: 3.2e-4, mu: 1.08, df: 3e-4, com: .32 } };
+/* how each car sits and moves on the slope: f = suspension frequency (Hz, soft van to stiff F1), z = damping ratio, trav = bump travel (m),
+   arb = anti-roll bar, com = centre of mass height as a share of the body, fr = share of the weight on the front axle (engine in front = more), roll / rollK = from what lean (rad) and how hard the car is held
+   back from tipping in an ordinary turn (a jump, a side slope or a tree still rolls it), drag, mu = tyre grip, df = downforce, drv = driven wheels */
+const DH_CAR = {
+  zubor:  { f: 1.15, z: .36, trav: .26, arb: 9,  com: .37, roll: .3,  rollK: 9,  drag: 4.4e-4, mu: 1,    fr: 0.55, drv: 'awd' },
+  sugga:  { f: 1.3,  z: .4,  trav: .3,  arb: 11, com: .36, roll: .36, rollK: 12, drag: 5.2e-4, mu: 1.06, fr: 0.55, drv: 'awd' },
+  mini:   { f: 1.75, z: .44, trav: .18, arb: 16, com: .34, roll: .42, rollK: 18, drag: 3.8e-4, mu: 1,    fr: 0.61, drv: 'fwd' },
+  jeep:   { f: 1.3,  z: .38, trav: .28, arb: 10, com: .38, roll: .34, rollK: 11, drag: 4.6e-4, mu: 1.02, fr: 0.55, drv: 'awd' },
+  buggy:  { f: 1.2,  z: .48, trav: .38, arb: 8,  com: .33, roll: .44, rollK: 16, drag: 4.2e-4, mu: 1.04, fr: 0.45, drv: 'awd' },
+  truck:  { f: 1.1,  z: .34, trav: .22, arb: 12, com: .42, roll: .28, rollK: 8,  drag: 5.6e-4, mu: .96,  fr: 0.58, drv: 'rwd' },
+  unimog: { f: 1.05, z: .4,  trav: .34, arb: 12, com: .4,  roll: .33, rollK: 12, drag: 5.4e-4, mu: 1.04, fr: 0.55, drv: 'awd' },
+  xbow:   { f: 2.4,  z: .55, trav: .15, arb: 22, com: .3,  roll: .5,  rollK: 24, drag: 3.2e-4, mu: 1.08, df: 3e-4,   fr: 0.42, drv: 'rwd' },
+  gt:     { f: 2.1,  z: .5,  trav: .15, arb: 20, com: .33, roll: .48, rollK: 22, drag: 3.1e-4, mu: 1.05, df: 4e-4,   fr: 0.5, drv: 'rwd' },
+  f1:     { f: 3.2,  z: .6,  trav: .11, arb: 26, com: .3,  roll: .55, rollK: 28, drag: 2.9e-4, mu: 1.1,  df: 1.1e-3, fr: 0.45, drv: 'rwd' }
+};
 function dhCarSetup() {
   // measure the real car model: where its wheels are, how big the body is
   const car = model.car; car.position.set(0, 0, 0); car.rotation.set(0, 0, 0); car.quaternion.identity(); car.scale.setScalar(1); model.body.rotation.set(0, 0, 0); car.updateMatrixWorld(true);
   const bb = new THREE.Box3(), tmp = new THREE.Vector3(); model.body.traverse(o => { if (o.isMesh && o.geometry) { o.geometry.boundingBox || o.geometry.computeBoundingBox(); const b = o.geometry.boundingBox.clone().applyMatrix4(o.matrixWorld); bb.union(b); } });
   model.wheels.forEach(w => { w.pivot.getWorldPosition(tmp); bb.expandByPoint(tmp); });
   if (bb.isEmpty()) bb.set(new THREE.Vector3(-1.1, 0, -2.5), new THREE.Vector3(1.1, 2, 2.5));
-  const T = DH_TUNE[carKey] || {}, wps = model.wheels.map(w => { w.pivot.getWorldPosition(tmp); return { c: tmp.clone(), w }; });
-  let zc = 0; wps.forEach(o => { zc += o.c.z; }); zc = wps.length ? zc / wps.length : (bb.min.z + bb.max.z) / 2;
+  const T = DH_CAR[carKey] || DH_CAR.zubor, wps = model.wheels.map(w => { w.pivot.getWorldPosition(tmp); return { c: tmp.clone(), w }; });
+  let zc = (bb.min.z + bb.max.z) / 2;
+  if (wps.length) { const fz = wps.filter(o => o.w.front), rz = wps.filter(o => !o.w.front), av = l => l.reduce((a, o) => a + o.c.z, 0) / l.length;
+    if (fz.length && rz.length) { const zf = av(fz), zr = av(rz); zc = zr + (T.fr || .5) * (zf - zr); } else zc = av(wps); }   // the centre of mass sits nearer the heavier axle
   const Hh = bb.max.y - Math.max(0, bb.min.y), comH = clamp(Hh * (T.com || .38), .45, 1.15);
   DHB.cl.set(0, comH, zc);
   const Wd = bb.max.x - bb.min.x, Ln = bb.max.z - bb.min.z;
-  DHB.I.set((Hh * Hh + Ln * Ln) / 12 * 1.25, (Wd * Wd + Ln * Ln) / 12 * 1.25, (Wd * Wd + Hh * Hh) / 12 * 1.25);
+  DHB.I.set((Hh * Hh + Ln * Ln) / 12 * 1.25, (Wd * Wd + Ln * Ln) / 12 * 1.25, Math.max(.75, (Wd * Wd + Hh * Hh) / 12 * 1.25));   // a low, wide racer still has some roll inertia (wheels, driver, fuel)
+  // springs: per wheel (the car's mass is 1, a quarter on each wheel); at rest each spring is compressed by the sag
+  const k = Math.pow(2 * Math.PI * T.f, 2) / 4; DHB.k = k; DHB.sag = Math.max(.03, DH_G / 4 / k); DHB.trav = T.trav; DHB.arb = T.arb;
+  DHB.cC = T.z * .85 * Math.sqrt(k); DHB.cR = T.z * 1.4 * Math.sqrt(k); DHB.rollLim = T.roll; DHB.rollK = T.rollK;
   DHB.wh = wps.map(o => {
-    const r = Math.max(.25, o.c.y), sc = (() => { const s = new THREE.Vector3(); o.w.pivot.parent.getWorldScale(s); return s.y || 1; })();
-    return { a: new THREE.Vector3(o.c.x, o.c.y + DH_UP, o.c.z).sub(DHB.cl), r, Lf: DH_UP + r + DH_DROOP, front: !!o.w.front, w: o.w, restY: o.w.pivot.position.y, sc, x: 0, on: 0, vL: 0, spin: 0 };
+    const r = Math.max(.25, o.c.y), sc = (() => { const s = new THREE.Vector3(); o.w.pivot.parent.getWorldScale(s); return s.y || 1; })(), front = !!o.w.front;
+    return { a: new THREE.Vector3(o.c.x, o.c.y + DH_UP, o.c.z).sub(DHB.cl), r, Lf: DH_UP + r + DHB.sag, front, drv: T.drv === 'awd' || (T.drv === 'fwd') === front, w: o.w, restY: o.w.pivot.position.y, sc, x: 0, on: 0, vL: 0, spin: 0 };
   });
   DHB.wh.forEach((w, i) => { let bi = -1, bd = 1e9; DHB.wh.forEach((o, j) => { if (j === i || Math.sign(o.a.x) === Math.sign(w.a.x)) return; const d = Math.abs(o.a.z - w.a.z); if (d < bd) { bd = d; bi = j; } }); w.pair = bi; });
-  if (!DHB.wh.length) { [[-.9, 1.6, 1], [.9, 1.6, 1], [-.9, -1.6, 0], [.9, -1.6, 0]].forEach(([x, z, f]) => DHB.wh.push({ a: new THREE.Vector3(x, .4 + DH_UP, z).sub(DHB.cl), r: .4, Lf: DH_UP + .4 + DH_DROOP, front: !!f, w: null, x: 0, on: 0, vL: 0, pair: (x < 0 ? 1 : -1) + DHB.wh.length })); }
+  if (!DHB.wh.length) { [[-.9, 1.6, 1], [.9, 1.6, 1], [-.9, -1.6, 0], [.9, -1.6, 0]].forEach(([x, z, f]) => DHB.wh.push({ a: new THREE.Vector3(x, .4 + DH_UP, z).sub(DHB.cl), r: .4, Lf: DH_UP + .4 + DHB.sag, front: !!f, drv: true, w: null, x: 0, on: 0, vL: 0, pair: (x < 0 ? 1 : -1) + DHB.wh.length })); }
+  DHB.nDrv = Math.max(1, DHB.wh.filter(w => w.drv).length);
   // body corners: a box a little inside the visual body, plus the roof and the nose / tail
   const mn = bb.min, mx = bb.max, ix = (mx.x - mn.x) * .44, y0 = Math.max(.3, mn.y + (comH * .55)), y1 = mx.y * .96, z0 = mn.z * .95, z1 = mx.z * .95;
   DHB.pts = [];
   [y0, y1].forEach(y => [z0, z1].forEach(z => [-ix, ix].forEach(x => DHB.pts.push(new THREE.Vector3(x, y, z).sub(DHB.cl)))));
   DHB.pts.push(new THREE.Vector3(0, y1, zc).sub(DHB.cl), new THREE.Vector3(0, y1 * .7, z1).sub(DHB.cl), new THREE.Vector3(0, y1 * .7, z0).sub(DHB.cl), new THREE.Vector3(-ix, y1, zc).sub(DHB.cl), new THREE.Vector3(ix, y1, zc).sub(DHB.cl));
-  DHB.mu = (DH.w.mu || .9) * (T.mu || 1) * clamp(P.ayMax / 7.2, .85, 1.25); DHB.drag = T.drag || 4e-4; DHB.df = T.df || 0;
+  DHB.mu = (T.mu || 1) * clamp(P.ayMax / 7.2, .85, 1.25); DHB.drag = T.drag || 4e-4; DHB.df = T.df || 0;   // grip of the car; the ground multiplies it per wheel
   DHB.len = Ln; DHB.hgt = Hh; DHB.hood = new THREE.Vector3(0, Math.min(1.25, Hh * .5), mx.z + .35).sub(DHB.cl);
 }
 function dhPlace(x, z, yaw, v) {
@@ -6484,7 +6739,7 @@ function dhPlace(x, z, yaw, v) {
   DHB.wh.forEach(w => { w.x = 0; w.on = 0; w.vL = 0; });
 }
 function dhSub(h) {
-  const B = DHB, q = B.q, mu = B.mu * (1 - .18 * clamp((B.v.length() - 30) / 60, 0, 1));   // snow gives less at 200+ km/h: the car slides instead of tipping
+  const B = DHB, q = B.q, mu = B.mu * (1 - .18 * clamp((B.v.length() - 30) / 60, 0, 1)), sag = B.sag, bump = sag + B.trav;   // the ground gives less at 200+ km/h: the car slides instead of tipping
   _u.set(0, 1, 0).applyQuaternion(q); _f.set(0, 0, 1).applyQuaternion(q); _r.crossVectors(_u, _f);   // _r points to the car's left
   _Fa.set(0, -DH_G, 0); _Ta.set(0, 0, 0);
   const sp = B.v.length(); _Fa.addScaledVector(B.v, -B.drag * sp);
@@ -6498,7 +6753,7 @@ function dhSub(h) {
     if (un < .3) continue;
     const t = (_a.y - gh) * _n.y / un;
     if (t >= w.Lf || t < -1) continue;
-    w.on = 1; w.x = Math.min(w.Lf - t, DH_DROOP + .42); w.t = t; w.nx = _n.x; w.ny = _n.y; w.nz = _n.z; nc++;
+    w.on = 1; w.x = Math.min(w.Lf - t, bump + .2); w.t = t; w.nx = _n.x; w.ny = _n.y; w.nz = _n.z; nc++;
   }
   B.nc = nc;
   for (let i = 0; i < B.wh.length; i++) {
@@ -6506,19 +6761,22 @@ function dhSub(h) {
     _n.set(w.nx, w.ny, w.nz); _a.copy(w.a).applyQuaternion(q).add(B.p); _gp.copy(_a).addScaledVector(_u, -w.t);
     _rr.subVectors(_gp, B.p); _vc.crossVectors(B.w, _rr).add(B.v);
     const vn = _vc.dot(_n);
-    let Fn = 16.4 * w.x - (vn < 0 ? 1.7 : 2.6) * vn;
-    const bump = DH_DROOP + .24; if (w.x > bump) Fn += 320 * (w.x - bump) - 9 * Math.min(0, vn);
-    const pair = w.pair >= 0 ? B.wh[w.pair] : null; if (pair) Fn += 14 * (w.x - (pair.on ? pair.x : 0));                     // anti-roll bar (wheels come in left / right pairs)
+    let Fn = B.k * w.x - (vn < 0 ? B.cC : B.cR) * vn;
+    if (w.x > bump) Fn += 320 * (w.x - bump) * (vn > 0 ? .3 : 1) - 14 * Math.min(0, vn);                                          // bump stop: a rubber block, it soaks the hit up instead of throwing it back
+    const pair = w.pair >= 0 ? B.wh[w.pair] : null; if (pair) Fn += B.arb * (w.x - (pair.on ? pair.x : 0));                   // anti-roll bar (wheels come in left / right pairs)
     Fn = clamp(Fn, 0, 70);
     if (w.front) _d.set(Math.sin(B.delta), 0, Math.cos(B.delta)).applyQuaternion(q); else _d.copy(_f);
     _d.addScaledVector(_n, -_d.dot(_n)).normalize(); _s.crossVectors(_n, _d);
     const vL = _vc.dot(_d), vT = _vc.dot(_s); w.vL = vL;
-    let fyMax = mu * Fn, fx = B.drive / 4;
-    if (B.brk > 0) fx -= Math.sign(vL) * Math.min(1, Math.abs(vL) * 3) * B.brk * P.brake * .3;
-    if (B.hb && !w.front) { fx = -clamp(vL * 3, -1, 1) * mu * Fn * .85; fyMax *= .42; }
-    fx -= clamp(vL * 2, -1, 1) * .014 * Fn;
-    const vs = .45 + .15 * Math.abs(vL); let fy = -fyMax * clamp(vT / vs, -1, 1);
-    const lim = mu * Fn, tot = Math.hypot(fx, fy); if (tot > lim) { const k = lim / tot; fx *= k; fy *= k; }
+    const sf = dhSurf(_gp.x, _gp.z), muW = mu * sf.mu; if (!w.front) B.snd = sf.snd;
+    let fyMax = muW * Fn, fx = w.drv ? B.drive / B.nDrv : 0;
+    let abs = false;
+    if (B.brk > 0) { fx -= Math.sign(vL) * Math.min(1, Math.abs(vL) * 3) * Math.min(B.brk * P.brake * .3, .85 * muW * Fn); abs = true; }   // ABS: the wheel never locks, it keeps some grip to steer
+    if (B.hb && !w.front) { fx = -clamp(vL * 3, -1, 1) * muW * Fn * .85; fyMax *= .42; }
+    fx -= clamp(vL * 2, -1, 1) * sf.roll * Fn;                                                                                    // rolling resistance: snow and sand hold the car back
+    const vs = (.45 + .15 * Math.abs(vL)) * (w.front ? 1 : .72); let fy = -fyMax * clamp(vT / vs, -1, 1);
+    const lim = muW * Fn, tot = Math.hypot(fx, fy);
+    if (tot > lim) { if (abs && !(B.hb && !w.front)) { fy = clamp(fy, -lim, lim); fx = Math.sign(fx) * Math.sqrt(Math.max(0, lim * lim - fy * fy)) ; fx = Math.sign(fx) * Math.max(Math.abs(fx), .35 * lim); const t2 = Math.hypot(fx, fy); if (t2 > lim) { fx *= lim / t2; fy *= lim / t2; } } else { const k = lim / tot; fx *= k; fy *= k; } }   // braking: the steering keeps priority
     if (Math.abs(vT) > 2.5) B.slide = Math.max(B.slide, Math.min(1, (Math.abs(vT) - 2.5) / 8));
     _F.copy(_n).multiplyScalar(Fn).addScaledVector(_d, fx).addScaledVector(_s, fy);
     _Fa.add(_F); _Ta.add(_t3.crossVectors(_rr, _F));
@@ -6526,9 +6784,14 @@ function dhSub(h) {
   }
   // on the wheels the car leans but does not tip in an ordinary turn: past ~17° a hand pushes it back (a big hit or a side slope still rolls it)
   if (nc >= 2) {
-    dhNormal(B.p.x, B.p.z, _n); _s.crossVectors(_n, _f).normalize(); const roll = Math.asin(clamp(-_u.dot(_s), -1, 1)), lim = .3;
-    if (Math.abs(roll) > lim) { const k = (Math.abs(roll) - lim) * Math.sign(roll); _Ta.addScaledVector(_f, -k * 18 * B.I.z); }
+    dhNormal(B.p.x, B.p.z, _n); _s.crossVectors(_n, _f).normalize(); const roll = Math.asin(clamp(-_u.dot(_s), -1, 1)), lim = B.rollLim;
+    if (Math.abs(roll) > lim) { const k = (Math.abs(roll) - lim) * Math.sign(roll); _Ta.addScaledVector(_f, -k * B.rollK * 2 * B.I.z); }
     _Ta.addScaledVector(_f, -B.w.dot(_f) * 1.2 * B.I.z);
+  }
+  // stability aid: the car may slide up to ~17° freely (more with the handbrake), past that a gentle yaw pushes the nose back to where it is going
+  if (nc >= 2 && sp > 8) {
+    const vF2 = B.v.dot(_f), vR2 = B.v.dot(_r), beta = Math.atan2(vR2, Math.abs(vF2)), ex = Math.abs(beta) - (B.hb ? .7 : .3);
+    if (ex > 0 && vF2 > 0) _Ta.addScaledVector(_u, Math.sign(beta) * Math.min(ex, .6) * 7 * B.I.y);
   }
   // the body: corners and roof hit the snow and slide on it
   let bc = 0;
@@ -6548,14 +6811,14 @@ function dhSub(h) {
   // in the air the driver can still nudge the car a little: steer turns it, the brake lifts the nose; a soft hand keeps it near level
   if (!nc && !bc) {
     _Ta.addScaledVector(_u, (B.st * .75 - B.w.dot(_u)) * 3 * B.I.y); _Ta.addScaledVector(_r, -B.airBrk * 1.6 * B.I.x);
-    dhNormal(B.p.x, B.p.z, _n); _t3.crossVectors(_u, _n); _Ta.x += _t3.x * 2.6 * B.I.x; _Ta.y += _t3.y * 2.6 * B.I.y; _Ta.z += _t3.z * 2.6 * B.I.z;
+    dhNormal(B.p.x, B.p.z, _n); _t3.crossVectors(_u, _n); _Ta.x += _t3.x * 3.4 * B.I.x; _Ta.y += _t3.y * 3.4 * B.I.y; _Ta.z += _t3.z * 3.4 * B.I.z;
   }
   // integrate (semi-implicit Euler, angular part in body frame)
   B.v.addScaledVector(_Fa, h); B.p.addScaledVector(B.v, h);
   _qi.copy(q).invert(); _wb.copy(B.w).applyQuaternion(_qi); _tb.copy(_Ta).applyQuaternion(_qi);
   const I = B.I; _Lb.set(_wb.x * I.x, _wb.y * I.y, _wb.z * I.z); _t3.crossVectors(_wb, _Lb);
   _wb.x += (_tb.x - _t3.x) / I.x * h; _wb.y += (_tb.y - _t3.y) / I.y * h; _wb.z += (_tb.z - _t3.z) / I.z * h;
-  if (!nc && !bc) { _wb.x *= 1 - 1.1 * h; _wb.z *= 1 - 1.1 * h; _wb.y *= 1 - .4 * h; } else _wb.multiplyScalar(1 - .6 * h);
+  if (!nc && !bc) { _wb.x *= 1 - 1.6 * h; _wb.z *= 1 - 1.9 * h; _wb.y *= 1 - .4 * h; } else _wb.multiplyScalar(1 - .6 * h);
   B.w.copy(_wb).applyQuaternion(q); if (B.w.lengthSq() > 144) B.w.setLength(12);
   _dq.set(B.w.x * h * .5, B.w.y * h * .5, B.w.z * h * .5, 0).multiply(q); q.set(q.x + _dq.x, q.y + _dq.y, q.z + _dq.z, q.w + _dq.w).normalize();
 }
@@ -6566,7 +6829,11 @@ function dhInput(dt) {
   if (!input.gm && brk > 0 && vF < .6 && !gas) { rev = brk; brk = 0; }                                // keyboard: the brake key backs up once stopped
   if (!DH.started) { gas = 0; rev = 0; brk = 1; }
   B.st = lerp(B.st, input.steer, 1 - Math.exp(-dt * P.steerLag * 1.4));
-  B.delta = B.st * P.steerMax / (1 + Math.max(0, Math.abs(vF) - 7) / 9);
+  // at speed the wheels turn only a little, but steering into a slide (counter-steer) always gets as much lock as the slide needs
+  _u.set(0, 1, 0).applyQuaternion(B.q); _r.crossVectors(_u, _f); const vR = B.v.dot(_r), beta = Math.atan2(vR, Math.max(2, Math.abs(vF)));
+  let dm = P.steerMax / (1 + Math.max(0, Math.abs(vF) - 7) / 9);
+  if (B.st * vR > 0) dm = Math.max(dm, Math.min(P.steerMax, Math.abs(beta) + .12));
+  B.delta = B.st * dm;
   const pw = P.pw * 1.15, aMax = P.aMax * 1.2;
   B.drive = gas > .01 ? gas * Math.min(aMax, pw / Math.max(Math.abs(vF), 2.5)) * (vF < 95 ? 1 : 0) : 0;
   if (rev > .01) B.drive = vF > .8 ? 0 : -rev * Math.min(P.raMax * 1.2, 6 / Math.max(Math.abs(vF), 1)) * (vF > -P.rev * 1.4 ? 1 : 0);
@@ -6614,16 +6881,22 @@ function dhCollideObs() {
 const dhEl = {};
 function dhFmt(t, ms) { t = Math.max(0, t); const m = Math.floor(t / 60), s = t - m * 60; return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s.toFixed(ms === false ? 0 : 2); }
 function dhFmtS(t) { t = Math.max(0, t); return (t < 10 ? '0' : '') + t.toFixed(2); }
+const DH_DISC = { speed: 'RÝCHLOSŤ', slalom: 'SLALOM', air: 'AIRTIME' };
+const dhSelW = () => { const w = store.get('dhW', 'chopok'); return DH_WORLDS[w] ? w : 'chopok'; };
+const dhSelD = () => { const d = store.get('dhD', 'speed'); return DH_DISC[d] ? d : 'speed'; };
+const dhRecKey = (w, d) => 'dh.' + d + '.' + w;
+function dhRec(w, d) { return store.get(dhRecKey(w, d), 0) || (d === 'speed' ? store.get('dhBest.' + w, 0) : 0); }
+function dhRecTxt(w, d) { const r = dhRec(w, d); return r ? (d === 'air' ? r.toFixed(2).replace('.', ',') + ' s' : dhFmt(r)) : '–'; }
 function dhEnter() {
-  const id = 'chopok'; if (DH.built !== id) dhBuild(id);
+  const id = DH.wid, key = id + (DH.disc === 'air' ? ':air' : ''); if (DH.built !== key) dhBuild(id, DH.disc);
   DH.dome = scene.children.find(o => o.isMesh && o.geometry && o.geometry.type === 'SphereGeometry' && o.geometry.parameters.radius === 360);
   DH.saved = scene.children.filter(o => !o.isLight && o !== DH.g && o !== DH.dome && o !== camera && o !== model.car && o !== smokeMesh && o.visible);
   DH.saved.forEach(o => { o.visible = false; });
   const hemi = scene.children.find(o => o.isHemisphereLight);
-  DH.env = { near: scene.fog.near, far: scene.fog.far, col: scene.fog.color.getHex(), top: DH.dome.material.uniforms.top.value.getHex(), bot: DH.dome.material.uniforms.bot.value.getHex(), fov: camera.fov, hi: hemi.intensity, si: sun.intensity, ex: renderer.toneMappingExposure };
-  scene.fog.near = 380; scene.fog.far = 1250; scene.fog.color.setHex(0xdde6f0);
-  DH.dome.material.uniforms.top.value.setHex(0x4f86d0); DH.dome.material.uniforms.bot.value.setHex(0xe2eaf3);
-  hemi.intensity = .62; sun.intensity = 2.7; renderer.toneMappingExposure = .92;
+  DH.env = { near: scene.fog.near, far: scene.fog.far, col: scene.fog.color.getHex(), top: DH.dome.material.uniforms.top.value.getHex(), bot: DH.dome.material.uniforms.bot.value.getHex(), fov: camera.fov, hi: hemi.intensity, si: sun.intensity, sc: sun.color.getHex(), ex: renderer.toneMappingExposure };
+  const K = DH.w.sky; scene.fog.near = K.near; scene.fog.far = K.far; scene.fog.color.setHex(K.fog);
+  DH.dome.material.uniforms.top.value.setHex(K.top); DH.dome.material.uniforms.bot.value.setHex(K.bot);
+  hemi.intensity = K.hemi; sun.intensity = K.sun; sun.color.setHex(K.sunCol); renderer.toneMappingExposure = K.exp;
   camera.fov = 60; camera.updateProjectionMatrix(); setShift(0, 0);
   DH.g.visible = true; DH.on = true; document.body.classList.add('dh');
 }
@@ -6632,27 +6905,32 @@ function dhLeave() {
   DH.on = false; DH.g.visible = false; DH.saved.forEach(o => { o.visible = true; }); DH.saved = [];
   const hemi = scene.children.find(o => o.isHemisphereLight), E = DH.env;
   scene.fog.near = E.near; scene.fog.far = E.far; scene.fog.color.setHex(E.col); DH.dome.material.uniforms.top.value.setHex(E.top); DH.dome.material.uniforms.bot.value.setHex(E.bot);
-  hemi.intensity = E.hi; sun.intensity = E.si; renderer.toneMappingExposure = E.ex; camera.fov = E.fov; camera.updateProjectionMatrix();
+  hemi.intensity = E.hi; sun.intensity = E.si; sun.color.setHex(E.sc); renderer.toneMappingExposure = E.ex; camera.fov = E.fov; camera.updateProjectionMatrix();
+  sound.surface('tarmac'); sound.wind(0);
   if (DH.dome) DH.dome.position.set(0, 0, 0);
   DHB.wh.forEach(w => { if (w.w) { w.w.pivot.position.y = w.restY; w.w.pivot.rotation.y = 0; } });
   if (model && model.car) { model.car.quaternion.identity(); model.car.rotation.set(0, 0, 0); model.car.visible = true; }
   document.body.classList.remove('dh'); dhEl.hud.hidden = true; dhEl.msg.className = 'dhmsg';
+  if (DH.gatesG) { DH.gatesG.parent && DH.gatesG.parent.remove(DH.gatesG); DH.gatesG = null; }
 }
 function dhStart() {
-  dhEnter(); dhCarSetup();
-  DH.t = 0; DH.run = 0; DH.air = 0; DH.jump = 0; DH.maxV = 0; DH.cd = 3.4; DH.started = false; DH.over = false; DH.safe = []; DH.flipT = 0; DH.lastCd = 4; DH.shake = 0; DH.camSnap = true; DH.jumps = 0; DH.bestJump = 0;
+  DH.wid = dhSelW(); DH.disc = dhSelD();
+  dhEnter(); dhCarSetup(); dhGatesBuild();
+  DH.t = 0; DH.run = 0; DH.air = 0; DH.jump = 0; DH.maxV = 0; DH.cd = 3.4; DH.started = false; DH.over = false; DH.dq = false; DH.safe = []; DH.flipT = 0; DH.lastCd = 4; DH.shake = 0; DH.camSnap = true; DH.jumps = 0; DH.bestJump = 0;
   DHB.st = 0; DHB.delta = 0; DHB.land = 0; DHB.hit = 0; DHB.slide = 0;
   dhPlace(DH.start.x, DH.start.z, 0, 0);
   dhChunksAround(DHB.p.x, DHB.p.z, true);
   for (let i = 0; i < 240; i++) { DH.started = false; dhInput(1 / 240); dhSub(1 / 240); DHB.p.x = DH.start.x; DHB.p.z = DH.start.z; DHB.v.x = DHB.v.z = 0; }   // let the springs settle
   gear = 'D'; gearShow();
-  const best = store.get('dhBest.' + DH.w.id, 0); dhEl.best.textContent = best ? dhFmt(best) : '--:--.--';
+  dhEl.best.textContent = dhRec(DH.w.id, DH.disc) ? dhRecTxt(DH.w.id, DH.disc) : (DH.disc === 'air' ? '--,-- s' : '--:--.--'); dhEl.bestLab.textContent = DH.disc === 'air' ? 'REKORD VO VZDUCHU' : 'REKORD TRATE';
+  dhEl.gatesLab.hidden = dhEl.gates.hidden = DH.disc !== 'slalom'; dhEl.gates.textContent = '0/' + DH.gates.length;
+  DH.px = DHB.p.x; DH.pz = DHB.p.z;
   dhEl.hud.hidden = false; dhMsg('');
   S.speed = 0; S.vF = 0;
   $('#hud').hidden = false; $('#resetBtn').hidden = false;
 }
 function dhMsgOff() { dhEl.msg.classList.remove('on'); const m = dhEl.msg.textContent; setTimeout(() => { if (dhEl.msg.textContent === m && !dhEl.msg.classList.contains('on')) { dhEl.msg.textContent = ''; dhEl.msg.className = 'dhmsg'; } }, 260); }
-function dhMsg(t, cls) { dhEl.msg.textContent = t; dhEl.msg.className = 'dhmsg' + (t ? ' on' : '') + (cls ? ' ' + cls : ''); if (t) { void dhEl.msg.offsetWidth; } DH.msgT = t ? 1.4 : 0; }
+function dhMsg(t, cls, sub) { dhEl.msg.textContent = t; if (sub) { const sm = document.createElement('small'); sm.textContent = sub; dhEl.msg.appendChild(sm); } dhEl.msg.className = 'dhmsg' + (t ? ' on' : '') + (cls ? ' ' + cls : ''); if (t) { void dhEl.msg.offsetWidth; } DH.msgT = t ? (sub ? 2.6 : 1.4) : 0; }
 function dhStep(dt) {
   const B = DHB; DH.t += dt;
   if (!DH.started) {
@@ -6663,7 +6941,17 @@ function dhStep(dt) {
   B.land = 0; B.hit = 0; B.slide = 0;
   const n = clamp(Math.ceil(dt * 240), 1, 12), h = dt / n; let airAll = true;
   for (let i = 0; i < n; i++) { dhSub(h); if (B.nc || B.bc) airAll = false; if (!DH.started) { B.p.x = DH.start.x; B.p.z = DH.start.z; B.v.x = B.v.z = 0; } }
-  // air time: all four wheels and the body off the snow
+  // slalom: when the car crosses the line of the next gate it has to be between the two poles
+  if (DH.disc === 'slalom' && DH.started && !DH.over && DH.gi < DH.gates.length) {
+    const G = DH.gates[DH.gi];
+    if (B.p.z >= G.z) {
+      const t = B.p.z - DH.pz > 1e-3 ? clamp((G.z - DH.pz) / (B.p.z - DH.pz), 0, 1) : 1, xc = DH.px + (B.p.x - DH.px) * t;
+      if (Math.abs(xc - G.x) <= G.half + .4) { DH.gi++; G.parts.forEach(m => { m.material = DH.gateOk || (DH.gateOk = new THREE.MeshBasicMaterial({ color: 0x35ff7a, side: THREE.DoubleSide })); }); sound.beep(); dhEl.gates.textContent = DH.gi + '/' + DH.gates.length; }
+      else { DH.dqAt = { gx: G.x, xc, z: G.z, half: G.half, cx: dhCX(G.z) }; dhDisq(G.n + 1); return; }
+    }
+  }
+  DH.px = B.p.x; DH.pz = B.p.z;
+  // air time: all four wheels and the body off the ground
   dhCollideObs();
   if (airAll && DH.started) DH.jump += dt;
   else if (DH.jump > 0) { if (DH.jump > .3 && !DH.over) DH.air += DH.jump; if (DH.jump > .9 && !DH.over) { DH.jumps++; popText('SKOK ' + DH.jump.toFixed(1).replace('.', ',') + ' s'); sound.bank(); } DH.bestJump = Math.max(DH.bestJump, DH.jump); DH.jump = 0; }
@@ -6684,7 +6972,7 @@ function dhStep(dt) {
   // engine and wind
   const kmh = sp * 3.6, bands = [0, 45, 85, 130, 180, 235, 300, 380]; let g = 0; while (g < bands.length - 2 && kmh > bands[g + 1]) g++;
   let rpm = .22 + .78 * clamp((kmh - bands[g]) / (bands[g + 1] - bands[g]), 0, 1); if (!B.nc && B.airGas > .1) rpm = Math.min(1, rpm + .3); if (!DH.started && input.gas) rpm = .3 + input.gas * .6;
-  sound.setEngine(P.engine); sound.update(rpm, gasIn(), B.nc ? B.slide * .5 : 0);
+  sound.setEngine(P.engine); sound.update(rpm, gasIn(), B.nc ? clamp(sp / 55, 0, 1) * .3 + B.slide * .6 : 0); sound.surface(B.snd || DH.w.surf); sound.wind(sp, !B.nc && !B.bc);
   stats.dist += sp * dt; stats.time += dt; if (kmh > stats.maxSpd) stats.maxSpd = kmh;
   // HUD ~ 15 times a second
   DH.hud -= dt; if (DH.hud <= 0) {
@@ -6706,24 +6994,49 @@ function dhSpray(n, k) {
 }
 function dhFinish() {
   if (DH.over) return; DH.over = true;
-  const t = DH.run, id = DH.w.id, best = store.get('dhBest.' + id, 0), nb = !best || t < best; if (nb) store.set('dhBest.' + id, t);
-  if (DH.jump > .3) DH.air += DH.jump; DH.jump = 0; if (DH.air > store.get('dhAir.' + id, 0)) store.set('dhAir.' + id, DH.air);
+  if (DH.jump > .3) DH.air += DH.jump; DH.bestJump = Math.max(DH.bestJump, DH.jump); DH.jump = 0;
+  const W = DH.w, d = DH.disc, t = DH.run, val = d === 'air' ? DH.air : t, best = dhRec(W.id, d), nb = d === 'air' ? val > best + 1e-6 : !best || val < best;
+  if (nb) store.set(dhRecKey(W.id, d), val);
   stats.dh = (stats.dh || 0) + 1; saveStats();
-  dhMsg(nb ? 'NOVÝ REKORD TRATE!' : 'CIEĽ!', nb ? 'rec' : 'go'); sound.bank(); buzz([40, 30, 80]);
-  if (nb) dhEl.best.textContent = dhFmt(t);
+  dhMsg(nb ? (d === 'air' ? 'NOVÝ REKORD VO VZDUCHU!' : 'NOVÝ REKORD TRATE!') : 'CIEĽ!', nb ? 'rec' : 'go'); sound.bank(); buzz([40, 30, 80]);
+  if (nb) dhEl.best.textContent = dhRecTxt(W.id, d);
   game.running = false; game.view = 'end';
   setTimeout(() => {
     if (!DH.on || game.view !== 'end') return;
-    $('#nextBtn').hidden = true; $('#endTitle').innerHTML = DH.w.name + ' <span>DOWNHILL</span>';
-    $('#endScoreLab').textContent = 'ČAS'; $('#endScore').textContent = dhFmt(t);
-    $('#endL1').textContent = 'REKORD'; $('#endBest').textContent = dhFmt(nb ? t : best);
-    $('#endL2').textContent = 'VO VZDUCHU'; $('#endCombo').textContent = DH.air.toFixed(1).replace('.', ',') + ' s';
-    $('#endL3').textContent = 'MAX km/h'; $('#endCones').textContent = Math.round(DH.maxV * 3.6);
+    const bestV = nb ? val : best, air = DH.air.toFixed(1).replace('.', ',') + ' s', kmh = Math.round(DH.maxV * 3.6), recT = d === 'air' ? bestV.toFixed(2).replace('.', ',') + ' s' : dhFmt(bestV);
+    $('#nextBtn').hidden = true; $('#endTitle').innerHTML = W.name + ' <span>' + DH_DISC[d] + '</span>';
+    if (d === 'air') {
+      $('#endScoreLab').textContent = 'VO VZDUCHU'; $('#endScore').textContent = DH.air.toFixed(2).replace('.', ',') + ' s';
+      $('#endL1').textContent = 'REKORD'; $('#endBest').textContent = recT; $('#endL2').textContent = 'ČAS'; $('#endCombo').textContent = dhFmt(t); $('#endL3').textContent = 'NAJDLHŠÍ SKOK'; $('#endCones').textContent = DH.bestJump.toFixed(1).replace('.', ',') + ' s';
+      $('#endNote').textContent = nb ? 'Nový rekord vo vzduchu na trati ' + W.name + '.' : 'Rekord je ' + recT + '. Na skokánky choď čo najrýchlejšie a rovno, vo vzduchu drž auto rovno.';
+      shareTxt = 'Na trati ' + W.name + ' v Event Car Game som bol ' + air + ' vo vzduchu. Prebi ma!';
+    } else {
+      $('#endScoreLab').textContent = 'ČAS'; $('#endScore').textContent = dhFmt(t);
+      $('#endL1').textContent = 'REKORD'; $('#endBest').textContent = recT;
+      if (d === 'slalom') { $('#endL2').textContent = 'BRÁNKY'; $('#endCombo').textContent = DH.gi + '/' + DH.gates.length; }
+      else { $('#endL2').textContent = 'VO VZDUCHU'; $('#endCombo').textContent = air; }
+      $('#endL3').textContent = 'MAX km/h'; $('#endCones').textContent = kmh;
+      $('#endNote').textContent = nb ? 'Nový rekord trate ' + W.name + (d === 'slalom' ? ' v slalome' : '') + '. Daj screenshot kamošom.' : 'Rekord je ' + recT + '. ' + (d === 'slalom' ? 'Pred bránkou nebrzdi, mier do nej už od predošlej.' : 'Drž sa v strede svahu a na hrebeňoch pusti plyn, vo vzduchu sa nezrýchľuje.');
+      shareTxt = (d === 'slalom' ? 'Prešiel som slalom ' : 'Zišiel som ') + W.name + ' v Event Car Game za ' + dhFmt(t) + '. Prebi ma!';
+    }
     $('#endBadge').hidden = !nb;
-    $('#endNote').textContent = nb ? 'Nový rekord trate ' + DH.w.name + '. Daj screenshot kamošom.' : 'Rekord je ' + dhFmt(best) + '. Drž sa v strede svahu a na hrebeňoch pusti plyn, vo vzduchu sa nezrýchľuje.';
-    shareTxt = 'Zišiel som ' + DH.w.name + ' v Event Car Game za ' + dhFmt(t) + ', ' + DH.air.toFixed(1).replace('.', ',') + ' s vo vzduchu. Prebi ma!';
     endEl.hidden = false; $('#hud').hidden = true; dhEl.hud.hidden = true; dhEl.msg.className = 'dhmsg'; DH.msgT = 0; document.body.classList.remove('playing'); sound.quiet(); checkBadges();
   }, 1600);
+}
+function dhDisq(n) {
+  if (DH.over) return; DH.over = true; DH.dq = true;
+  dhMsg('DISKVALIFIKOVANÝ!', 'dq', 'VYNECHAL SI BRÁNKU ' + n); sound.thud(.7); buzz([60, 40, 90]);
+  game.running = false; game.view = 'end';
+  setTimeout(() => {
+    if (!DH.on || game.view !== 'end') return;
+    const W = DH.w, best = dhRec(W.id, 'slalom');
+    $('#nextBtn').hidden = true; $('#endTitle').innerHTML = W.name + ' <span>DISKVALIFIKÁCIA</span>';
+    $('#endScoreLab').textContent = 'BRÁNKY'; $('#endScore').textContent = DH.gi + '/' + DH.gates.length;
+    $('#endL1').textContent = 'REKORD'; $('#endBest').textContent = best ? dhFmt(best) : '–'; $('#endL2').textContent = 'ČAS'; $('#endCombo').textContent = dhFmt(DH.run); $('#endL3').textContent = 'MAX km/h'; $('#endCones').textContent = Math.round(DH.maxV * 3.6);
+    $('#endNote').textContent = 'Vynechal si bránku ' + n + '. V slalome musíš prejsť medzi tyčami každej bránky, inak si diskvalifikovaný. Spomaľ a mier do ďalšej bránky skôr.';
+    shareTxt = 'V slalome na trati ' + W.name + ' v Event Car Game som prešiel ' + DH.gi + ' z ' + DH.gates.length + ' bránok. Dáš viac?'; $('#endBadge').hidden = true;
+    endEl.hidden = false; $('#hud').hidden = true; dhEl.hud.hidden = true; dhEl.msg.className = 'dhmsg'; DH.msgT = 0; document.body.classList.remove('playing'); sound.quiet();
+  }, 1900);
 }
 function dhCoast(dt) {   // after the finish the car rolls out with the brake on
   input.gas = 0; input.rev = 0; input.steer = 0; input.hb = 0; input.brake = .6; input.gm = 0;
@@ -6738,7 +7051,7 @@ function dhRender(dt) {
   model.body.rotation.set(0, 0, 0);
   for (const w of B.wh) {
     if (!w.w) continue;
-    const off = w.on ? clamp(w.x - DH_DROOP, -DH_DROOP, .3) : -DH_DROOP; w.w.pivot.position.y = w.restY + off / w.sc;
+    const off = w.on ? clamp(w.x - B.sag, -B.sag, B.trav) : -B.sag; w.w.pivot.position.y = w.restY + off / w.sc;
     if (w.front) w.w.pivot.rotation.y = B.delta;
     if (w.on) w.spin = w.vL / w.r; else w.spin *= Math.exp(-dt * .4);
     w.w.spin.rotation.x += w.spin * dt;
@@ -6772,10 +7085,11 @@ function dhRender(dt) {
     if (view === 'free') _t3.set(B.p.x, B.p.y + .8, B.p.z); else _t3.set(B.p.x + DH.camDir.x * 5, B.p.y + .7 + (camera.position.y - DH.camY - hgt) * .45, B.p.z + DH.camDir.z * 5); camera.lookAt(_t3);
   }
   if (DH.dome) DH.dome.position.copy(camera.position);
-  sun.position.set(B.p.x - 55, B.p.y + 38, B.p.z + 30); sun.target.position.set(B.p.x, B.p.y, B.p.z);
+  const sd = DH.w.sky.dir; sun.position.set(B.p.x + sd[0], B.p.y + sd[1], B.p.z + sd[2]); sun.target.position.set(B.p.x, B.p.y, B.p.z);
   if (DH.ring) DH.ring.material.opacity = .65 + .3 * Math.sin(DH.t * 5);
   updateSmoke(dt);
   pvMirrors();
+  if (window.__dhCam) window.__dhCam(camera, DHB);   // test hook
   renderer.render(scene, camera);
 }
 function dhFrame(dt) {
@@ -6784,7 +7098,7 @@ function dhFrame(dt) {
   dhRender(dt); music.tick(dt); uiTick();
   if (settings.fps) { fpsT += dt; fpsN++; if (fpsT >= .5) { elFps.textContent = Math.round(fpsN / fpsT) + ' FPS'; fpsT = 0; fpsN = 0; } }
 }
-dhEl.hud = $('#dhHud'); dhEl.time = $('#dhTime'); dhEl.air = $('#dhAir'); dhEl.jump = $('#dhJump'); dhEl.spd = $('#dhSpd'); dhEl.dist = $('#dhDist'); dhEl.arrow = $('#dhArrow'); dhEl.best = $('#dhBest'); dhEl.msg = $('#dhMsg');
+dhEl.hud = $('#dhHud'); dhEl.time = $('#dhTime'); dhEl.air = $('#dhAir'); dhEl.jump = $('#dhJump'); dhEl.spd = $('#dhSpd'); dhEl.dist = $('#dhDist'); dhEl.arrow = $('#dhArrow'); dhEl.best = $('#dhBest'); dhEl.msg = $('#dhMsg'); dhEl.bestLab = $('#dhBestLab'); dhEl.gates = $('#dhGates'); dhEl.gatesLab = $('#dhGatesLab');
 window.__dh = { DH, DHB, dhH, dhStep, keys, touch, input, game, cx: dhCX, clearFx: () => smoke.forEach(p => { p.life = p.max; }) };   // test hook
 
 /* ================= TOKYO DRIFT: night, neon and lit zones you have to drift through ================= */
@@ -6913,6 +7227,8 @@ $('#tabBack').addEventListener('click', () => setTab('home'));
 $('#menu').addEventListener('click', e => { const g = e.target.closest('[data-go]'); if (!g) return; if (g.dataset.go === 'play') goPlay(); else setTab(g.dataset.go); });
 $('#recSeg').addEventListener('click', e => { const b = e.target.closest('button'); if (b) recPage(b.dataset.rp); });
 $('#wNext').addEventListener('click', () => setStep(wiz.step + 1));
+$('#dhDisc').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; store.set('dhD', b.dataset.d); renderDhPick(); renderSum(); });
+$('#dhTrk').addEventListener('click', e => { const b = e.target.closest('.card'); if (!b) return; store.set('dhW', b.dataset.w); renderDhPick(); renderSum(); });
 $('#lvTabs').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; const w = b.dataset.sect, g = LEVELS.filter(x => x.world === w && !x.mission); const n = g.find(x => !lvStars(x.id)) || g[g.length - 1]; LV.sel = n.id; store.set('lvSel', LV.sel); renderMode(); });
 $('#lvList').addEventListener('click', e => { const b = e.target.closest('.lv'); if (!b) return; const i = lvIndex(b.dataset.lv); if (i < 0) return; LV.sel = b.dataset.lv; store.set('lvSel', LV.sel); renderMode(); });
 $('#nextBtn').addEventListener('click', () => { const n = lvNext(LEVELS[Math.max(0, lvIndex(LV.sel))]); if (n) { LV.sel = n.id; store.set('lvSel', LV.sel); } startRun(); });

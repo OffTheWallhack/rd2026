@@ -233,6 +233,13 @@ section{min-width:0;scroll-margin-top:calc(var(--hc) + 16px)}
 .tt li.ad .s{color:var(--tt-pink)}
 .tt-foot{margin-top:12px;display:flex;gap:16px;flex-wrap:wrap}
 
+/* Živý počet divákov pri kanáloch */
+.chrow .live{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:none;color:#ff8479;white-space:nowrap}
+.chrow .live::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--red);animation:livepulse 1.8s ease-in-out infinite}
+.chrow .live[hidden]{display:none}
+@keyframes livepulse{50%{opacity:.35}}
+@media (prefers-reduced-motion: reduce){ .chrow .live::before{animation:none} }
+
 /* Návrhy divákov: malý teletextový formulár + zoznam */
 .nv .tt-title{margin-bottom:10px}
 .nv-q{display:block;color:var(--tt-cyan)}
@@ -1032,6 +1039,65 @@ Promise.race([
   timeout
 ]).then(start);
 setInterval(tick, 500);
+
+/* =========================================================
+   ŽIVÝ POČET DIVÁKOV — zapnutá telka sa každých 20 s ohlási (kanál), počty sa ukážu pri kanáloch
+   ========================================================= */
+(function(){
+  const URL_LIVE = 'https://znsrokpaoczljisaoulu.supabase.co/rest/v1/rpc/pozeral_live';
+  const APIKEY = 'sb_publishable_9bRi6q6rnTTr5_Rszk5IiQ_MBBoti45';
+  let counts = {}, sentKey = '', mem = null, inflight = false;
+
+  function device(){
+    try{
+      let d = localStorage.getItem('pozeral_device');
+      if (!d){ d = crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2) + Date.now(); localStorage.setItem('pozeral_device', d); }
+      return d;
+    }catch(e){ return mem || (mem = String(Math.random()).slice(2) + Date.now()); }
+  }
+  function call(kanal, keepalive){
+    return fetch(URL_LIVE, {
+      method:'POST', keepalive: !!keepalive, cache:'no-store',
+      headers:{ apikey:APIKEY, Authorization:'Bearer ' + APIKEY, 'Content-Type':'application/json', Accept:'application/json' },
+      body: JSON.stringify({ p_device: device(), p_kanal: kanal })
+    }).then(r => r.ok ? r.json() : null);
+  }
+  function slovo(n){ return n === 1 ? '1 divák pozerá' : (n >= 2 && n <= 4 ? n + ' diváci pozerajú' : n + ' divákov pozerá'); }
+  function paint(){
+    document.querySelectorAll('#chlist .chrow').forEach(row => {
+      const n = +(counts[row.dataset.ch] || 0);
+      let el = row.querySelector('.live');
+      if (!el){ el = document.createElement('span'); el.className = 'live'; el.hidden = true; const nm = row.querySelector('.name'); if (nm) nm.appendChild(el); else return; }
+      const txt = n > 0 ? slovo(n) : '';
+      if (el.textContent !== txt) el.textContent = txt;
+      el.hidden = n < 1;
+    });
+  }
+  function sync(kanal, keepalive){
+    if (inflight && !keepalive) return;
+    inflight = true;
+    call(kanal, keepalive).then(j => { if (j && typeof j === 'object'){ counts = j; paint(); } }).catch(() => {}).finally(() => { inflight = false; });
+  }
+  function jeZapnuta(){ return typeof powered !== 'undefined' && powered; }
+
+  // každú sekundu skontrolujeme, či sa zmenil kanál alebo zapnutie; zmena = hneď oznam
+  setInterval(() => {
+    const on = jeZapnuta();
+    const key = on ? 'on:' + ch : 'off';
+    if (key !== sentKey && !inflight){
+      const bolaZapnuta = sentKey.startsWith('on:');
+      sentKey = key;
+      if (on) sync(ch); else if (bolaZapnuta) sync(-1); else sync(null);
+    }
+    paint();
+  }, 1000);
+  // každých 20 s: zapnutá telka pošle "som tu", ostatní si len načítajú počty
+  setInterval(() => {
+    if (jeZapnuta()) sync(ch);
+    else if (!document.hidden) sync(null);
+  }, 20000);
+  addEventListener('pagehide', () => { if (jeZapnuta()) call(-1, true).catch(() => {}); });
+})();
 
 /* =========================================================
    NÁVRHY DIVÁKOV — Supabase RPC cez fetch (rovnaký spôsob ako Hlasoval)

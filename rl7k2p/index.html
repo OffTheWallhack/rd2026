@@ -737,7 +737,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     <div class="stats" id="stats"></div>
     <div class="toolbar" id="invtool"><select id="invsort" aria-label="Zoradiť inventár"><option value="new">Najnovšie</option><option value="price">Najdrahšie</option><option value="rar">Vzácnosť</option><option value="float">Najnižší float</option></select>
       <button class="btn sm" id="sellsel" disabled>Predať označené</button><button class="btn sm ghost" id="selcheap">Označiť lacné (&lt; 1 CR)</button><button class="btn sm" id="tovault">Do trezoru</button><button class="btn sm" id="tradeup">Kontrakt</button><button class="btn sm" id="upgr">Upgrade</button><span class="lab" id="invsum"></span></div>
-    <div class="toolbar" id="vtool" hidden><button class="btn sm" id="vunl" disabled>Odomknúť (7 dní)</button><button class="btn sm ghost" id="vcan" disabled>Zrušiť odomykanie</button><button class="btn sm gold" id="vtake" disabled>Vybrať odomknuté</button><span class="lab" id="vsum"></span></div>
+    <div class="toolbar" id="vtool" hidden><button class="btn sm" id="vunl" disabled>Odomknúť (15 min)</button><button class="btn sm ghost" id="vcan" disabled>Zrušiť odomykanie</button><button class="btn sm gold" id="vtake" disabled>Vybrať odomknuté</button><span class="lab" id="vsum"></span></div>
     <div class="grid" id="invlist"></div>
   </section>
 
@@ -1085,9 +1085,9 @@ function renderToday(){
 /* ---------- inventory ---------- */
 const selInv=new Set();
 const selV=new Set();let invView='inv',vConf=0,invMode='cards';try{const m=localStorage.getItem('cl_inv');if(VI[m])invMode=m}catch(e){}
-const IMODES=['cards','tiles','rows','text'];const UL_MS=7*864e5;
-const ulLeft=x=>x.ul?x.ul-Date.now():0;
-const ulTxt=ms=>{const h=Math.ceil(ms/36e5);return h>=24?Math.floor(h/24)+' d '+(h%24)+' h':h+' h'};
+const IMODES=['cards','tiles','rows','text'];const UL_MS=15*60*1e3;
+const ulLeft=x=>x.ul?Math.min(x.ul-Date.now(),UL_MS):0;
+const ulTxt=ms=>{const m=Math.ceil(ms/6e4);if(m<60)return m+' min';const h=Math.ceil(ms/36e5);return h>=24?Math.floor(h/24)+' d '+(h%24)+' h':h+' h'};
 function renderInv(){
   const so=$('#invsort').value,vault=S.inv.filter(x=>x.v),free=S.inv.filter(x=>!x.v);
   const vv=vault.reduce((a,x)=>a+price(x),0),tot=free.reduce((a,x)=>a+price(x),0);
@@ -1116,7 +1116,7 @@ $('#invseg').onclick=e=>{const b=e.target.closest('[data-v]');if(b){invView=b.da
 $('#tovault').onclick=()=>{const ch=S.inv.filter(x=>!x.v&&selInv.has(x.id));if(!ch.length)return;
   if(!vConf){vConf=1;renderInv();clearTimeout($('#tovault')._t);$('#tovault')._t=setTimeout(()=>{vConf=0;renderInv()},4000);return}
   const val=ch.reduce((a,x)=>a+price(x),0);ch.forEach(x=>{x.v=1;delete x.ul});selInv.clear();vConf=0;save();renderInv();toast(`${ch.length} ks v trezore · ${fmt(val)} CR`);chime(2)};
-$('#vunl').onclick=()=>{S.inv.forEach(x=>{if(x.v&&selV.has(x.id)&&!x.ul)x.ul=Date.now()+UL_MS});save();renderInv();toast('Odomykanie potrvá 7 dní')};
+$('#vunl').onclick=()=>{S.inv.forEach(x=>{if(x.v&&selV.has(x.id)&&!x.ul)x.ul=Date.now()+UL_MS});save();renderInv();toast('Odomykanie potrvá 15 minút')};
 $('#vcan').onclick=()=>{S.inv.forEach(x=>{if(x.v&&selV.has(x.id)&&x.ul&&ulLeft(x)>0)delete x.ul});save();renderInv()};
 $('#vtake').onclick=()=>{let n=0;S.inv.forEach(x=>{if(x.v&&selV.has(x.id)&&x.ul&&ulLeft(x)<=0){delete x.v;delete x.ul;selV.delete(x.id);n++}});save();renderInv();if(n)toast(`${n} ks späť v inventári`)};
 $('#invsort').onchange=renderInv;

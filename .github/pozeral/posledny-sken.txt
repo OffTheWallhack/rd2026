@@ -1,32 +1,32 @@
-Sken 2026-11-01T20:06:42.644Z
+Sken 2026-11-01T22:00:20.515Z
 innertube PLXkA6SvogZFumCc1H0KgXGPdsRrzCcTHw: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 100 videí; alert: []
 innertube PL3SFGj27PTbfdUXNVv20TCjhbm8sriSH_: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 0 videí; alert: []
-html PL3SFGj27PTbfdUXNVv20TCjhbm8sriSH_: http 200, 881168 B, 0 videí
+html PL3SFGj27PTbfdUXNVv20TCjhbm8sriSH_: http 200, 875425 B, 0 videí
 rss PL3SFGj27PTbfdUXNVv20TCjhbm8sriSH_: http 200, 0 videí
 innertube PLXkA6SvogZFsro5cOPiQcy1CHMjSLOQq7: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 4 videí; alert: []
 innertube PL_c00IPCdRoGD0k6aG7725OaqHQQffcVf: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 7 videí; alert: []
-kanál @byljednoujedenzivot: http 200, 1114096 B, id UCg0IwNjbI490rs0g_cPGFXA
+kanál @byljednoujedenzivot: http 200, 1059136 B, id UCg0IwNjbI490rs0g_cPGFXA
 innertube UUg0IwNjbI490rs0g_cPGFXA: kľúče responseContext,contents,header,metadata,trackingParams,topbar,microformat,sidebar; 26 videí; alert: []
 innertube PLh4oNLWEP1pov-S4X2rwB3e1kKFFjecKe: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 37 videí; alert: []
 innertube PLQ7nXaicptSxRccybPZUBAPhSdxh1v9jI: kľúče responseContext,contents,header,metadata,trackingParams,topbar,microformat,sidebar; 72 videí; alert: []
 innertube PLwhLvPy7SFDEN8_qYEdv7LfbTdO3EQBBd: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 21 videí; alert: []
 innertube PLpNHzGK1cU90EcFXgbD0C3n9LiHwJokg4: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 52 videí; alert: []
-kanál @spionkycz-sk1054: http 200, 1058347 B, id UCWY2ygfhSISX-SF2YjGKhgw
+kanál @spionkycz-sk1054: http 200, 1056738 B, id UCWY2ygfhSISX-SF2YjGKhgw
 innertube UUWY2ygfhSISX-SF2YjGKhgw: kľúče responseContext,contents,header,metadata,trackingParams,topbar,microformat,sidebar; 25 videí; alert: []
-kanál @pokemonserialczsk6452: http 200, 874098 B, id UCEarul-dRmRW6dpUePG8xpA
+kanál @pokemonserialczsk6452: http 200, 875806 B, id UCEarul-dRmRW6dpUePG8xpA
 innertube UUEarul-dRmRW6dpUePG8xpA: kľúče responseContext,alerts,trackingParams,topbar,microformat; 0 videí; alert: [{"type":"ERROR","text":{"runs":[{"text":"Playlist neexistuje."}]}}]
-html UUEarul-dRmRW6dpUePG8xpA: http 200, 855800 B, 0 videí
+html UUEarul-dRmRW6dpUePG8xpA: http 200, 855016 B, 0 videí
 rss UUEarul-dRmRW6dpUePG8xpA: http 404, 0 videí
 innertube PLhr2MGr4OPNcEUNaI_aESmupie_m-Ppzr: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 0 videí; alert: []
-html PLhr2MGr4OPNcEUNaI_aESmupie_m-Ppzr: http 200, 887975 B, 0 videí
+html PLhr2MGr4OPNcEUNaI_aESmupie_m-Ppzr: http 200, 878533 B, 0 videí
 rss PLhr2MGr4OPNcEUNaI_aESmupie_m-Ppzr: http 200, 4 videí
 innertube PL3EEYr69JFOyn1EKmWZwkq6_cPL_LGxEY: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 45 videí; alert: []
-kanál @SpongeBobOfficial: http 200, 1896111 B, id UCf4nYHJi6V0_lil4uGX4HwQ
+kanál @SpongeBobOfficial: http 200, 1893222 B, id UCf4nYHJi6V0_lil4uGX4HwQ
 innertube UUf4nYHJi6V0_lil4uGX4HwQ: kľúče responseContext,contents,header,metadata,trackingParams,topbar,microformat,sidebar; 100 videí; alert: []
 innertube UUx27Pkk8plpiosF14qXq-VA: kľúče responseContext,contents,header,metadata,trackingParams,topbar,microformat,sidebar; 100 videí; alert: []
 innertube PLjScWr8bfGJPcWCgF_QNMQeRVyJQ9Q33W: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 95 videí; alert: []
 innertube PLCVuwQ1eXVCWVeSpX0khngqq_UIpX5hYU: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 82 videí; alert: []
-kanál johnnybravochannel: http 200, 885038 B, id UCW_cynN0NH7tVBdZP5LsMjQ
+kanál johnnybravochannel: http 200, 886693 B, id UCW_cynN0NH7tVBdZP5LsMjQ
 innertube UUW_cynN0NH7tVBdZP5LsMjQ: kľúče responseContext,contents,header,metadata,trackingParams,topbar,microformat,sidebar; 1 videí; alert: []
 ---
 wvDJPJLScqY  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť

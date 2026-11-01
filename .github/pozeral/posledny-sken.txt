@@ -1,26 +1,24 @@
-Sken 2026-11-01T16:44:35.982Z
+Sken 2026-11-01T16:47:58.299Z
 innertube PLXkA6SvogZFumCc1H0KgXGPdsRrzCcTHw: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 100 videí; alert: []
 innertube PL3SFGj27PTbfdUXNVv20TCjhbm8sriSH_: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 0 videí; alert: []
-html PL3SFGj27PTbfdUXNVv20TCjhbm8sriSH_: http 200, 884359 B, 0 videí
+html PL3SFGj27PTbfdUXNVv20TCjhbm8sriSH_: http 200, 875862 B, 0 videí
 rss PL3SFGj27PTbfdUXNVv20TCjhbm8sriSH_: http 200, 0 videí
 innertube PLXkA6SvogZFsro5cOPiQcy1CHMjSLOQq7: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 4 videí; alert: []
 innertube PL_c00IPCdRoGD0k6aG7725OaqHQQffcVf: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 7 videí; alert: []
-kanál @byljednoujedenzivot: http 200, 1063705 B, id UCg0IwNjbI490rs0g_cPGFXA
+kanál @byljednoujedenzivot: http 200, 1062713 B, id UCg0IwNjbI490rs0g_cPGFXA
 innertube UUg0IwNjbI490rs0g_cPGFXA: kľúče responseContext,contents,header,metadata,trackingParams,topbar,microformat,sidebar; 26 videí; alert: []
 innertube PLh4oNLWEP1pov-S4X2rwB3e1kKFFjecKe: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 37 videí; alert: []
-kanál @smolkovia: http 200, 1857870 B, id UCwEYV37N3Nb03STOzZN-JMQ
-innertube UUwEYV37N3Nb03STOzZN-JMQ: kľúče responseContext,contents,header,metadata,trackingParams,topbar,microformat,sidebar; 39 videí; alert: []
 innertube PLQ7nXaicptSxRccybPZUBAPhSdxh1v9jI: kľúče responseContext,contents,header,metadata,trackingParams,topbar,microformat,sidebar; 72 videí; alert: []
 innertube PLwhLvPy7SFDEN8_qYEdv7LfbTdO3EQBBd: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 21 videí; alert: []
 innertube PLpNHzGK1cU90EcFXgbD0C3n9LiHwJokg4: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 52 videí; alert: []
-kanál @spionkycz-sk1054: http 200, 1057203 B, id UCWY2ygfhSISX-SF2YjGKhgw
+kanál @spionkycz-sk1054: http 200, 1054968 B, id UCWY2ygfhSISX-SF2YjGKhgw
 innertube UUWY2ygfhSISX-SF2YjGKhgw: kľúče responseContext,contents,header,metadata,trackingParams,topbar,microformat,sidebar; 25 videí; alert: []
-kanál @pokemonserialczsk6452: http 200, 875583 B, id UCEarul-dRmRW6dpUePG8xpA
+kanál @pokemonserialczsk6452: http 200, 872660 B, id UCEarul-dRmRW6dpUePG8xpA
 innertube UUEarul-dRmRW6dpUePG8xpA: kľúče responseContext,alerts,trackingParams,topbar,microformat; 0 videí; alert: [{"type":"ERROR","text":{"runs":[{"text":"Playlist neexistuje."}]}}]
-html UUEarul-dRmRW6dpUePG8xpA: http 200, 853104 B, 0 videí
+html UUEarul-dRmRW6dpUePG8xpA: http 200, 858620 B, 0 videí
 rss UUEarul-dRmRW6dpUePG8xpA: http 404, 0 videí
 innertube PLhr2MGr4OPNcEUNaI_aESmupie_m-Ppzr: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 0 videí; alert: []
-html PLhr2MGr4OPNcEUNaI_aESmupie_m-Ppzr: http 200, 885956 B, 0 videí
+html PLhr2MGr4OPNcEUNaI_aESmupie_m-Ppzr: http 200, 880394 B, 0 videí
 rss PLhr2MGr4OPNcEUNaI_aESmupie_m-Ppzr: http 200, 4 videí
 innertube PL3EEYr69JFOyn1EKmWZwkq6_cPL_LGxEY: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 45 videí; alert: []
 ---
@@ -380,32 +378,6 @@ yT875RTzg2w  oembed:200  =>  481
 ahARUQ3Uo3U  oembed:200  =>  484
 xrXD5MQeol0  oembed:200  =>  454
 pVS_xo_uKzw  oembed:200  =>  424
-zb9ypvuMTW8  oembed:200  =>  1371
-A9xojfzUXL8  oembed:200  =>  1370
-AYfAyrnW078  oembed:200  =>  1370
-wvlhREs0sVo  oembed:200  =>  1371
-xKQNFP0A9yI  oembed:200  =>  1387
-5nWnn4Z0X20  oembed:200  =>  1370
-Tv7t0wokvP0  oembed:200  =>  1369
-ZCufN-58QRQ  oembed:200  =>  1365
-jlnyKYC0wq0  oembed:200  =>  1360
-qu7FTbGWz6I  oembed:200  =>  1371
-LaPfpa_kwLA  oembed:200  =>  676
-t0bhfx8Tz9U  oembed:200  =>  1370
-dpYZFqmvAd4  oembed:200  =>  1448
-qiQHb2pQwz0  oembed:200  =>  1721
-sP6zniGwois  oembed:200  =>  1457
-idwF7UkHV-U  oembed:200  =>  1361
-RXtcJF7TUrU  oembed:200  =>  1635
-rvg8FEl7uAo  oembed:200  =>  1457
-riJSRRRnW94  oembed:200  =>  1449
-yQVF93xYO0c  oembed:200  =>  1359
-rQb57b4nxFY  oembed:200  =>  1370
-Yc9zHOyOmXQ  oembed:200  =>  627
-M-NNZyAj8vo  oembed:200  =>  1437
-V35RKX7YFFo  oembed:200  =>  1448
-RraJ6ZElph0  oembed:200  =>  625
-VHXrjFbvMQo  oembed:200  =>  1457
 IbNGijd63YU  oembed:200  =>  1440
 QNiqO9_JvyE  oembed:200  =>  1440
 5IuWokv9wG4  oembed:200  =>  1440

@@ -1,7 +1,7 @@
 {
   "name": "si/pozeral",
   "short_name": "si/pozeral",
-  "description": "Rozprávky v CZ a SK dabingu na troch kanáloch, ako v telke.",
+  "description": "Rozprávky v CZ a SK dabingu a originály po anglicky na štyroch kanáloch, ako v telke.",
   "lang": "sk",
   "start_url": "/pozeral/",
   "scope": "/pozeral/",

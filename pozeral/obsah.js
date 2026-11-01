@@ -261,6 +261,19 @@ window.POZERAL = {
         { playlist:'PLhr2MGr4OPNcEUNaI_aESmupie_m-Ppzr', show:'Král šamanů', lang:'CZ', min:22, max:40 },
         { playlist:'PL3EEYr69JFOyn1EKmWZwkq6_cPL_LGxEY', show:'Beyblade Metal Masters', lang:'CZ', min:22, max:40 }
       ]
+    },
+    {
+      nazov: 'Originál',
+      popis: 'zahraničné rozprávky po anglicky',
+      reklamy: 3,
+      predelKazdych: 3,
+      program: [
+        // SpongeBob: celé diely, čo najviac. Skener playlisty sám rozbalí do playlisty.json.
+        { playlist:'PLPopsOoFH2QJh89eAGV9fB1es8co5UxIK', show:'SpongeBob SquarePants', lang:'EN', min:11, max:300 },
+        { playlist:'PLPS0ERUCtf0Adw7XYPE7fbn3xpCy0eJNc', show:'SpongeBob SquarePants', lang:'EN', min:11, max:300 },
+        { playlist:'PLCVuwQ1eXVCWVeSpX0khngqq_UIpX5hYU', show:'Johnny Bravo', lang:'EN', min:11, max:150 },
+        { playlist:'PLjScWr8bfGJPcWCgF_QNMQeRVyJQ9Q33W', show:'Johnny Bravo', lang:'EN', min:11, max:150 }
+      ]
     }
   ],
 

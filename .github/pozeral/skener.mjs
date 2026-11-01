@@ -46,14 +46,42 @@ function polozky(j){
     if (!v.videoId || v.isPlayable === false) continue;
     out.push({ id:v.videoId, nazov:textZ(v.title), s:+v.lengthSeconds || casNaSek(textZ(v.lengthText)) });
   }
+  for (const v of najdi(j, 'lockupViewModel')){
+    if (!v.contentId || (v.contentType && v.contentType !== 'LOCKUP_CONTENT_TYPE_VIDEO')) continue;
+    const nazov = v.metadata?.lockupMetadataViewModel?.title?.content || '';
+    const cas = najdi(v, 'thumbnailBadgeViewModel').map(b => b.text).find(t => /^\d+(:\d+)+$/.test(t || '')) || '';
+    out.push({ id:v.contentId, nazov, s:casNaSek(cas) });
+  }
   for (const v of najdi(j, 'videoRenderer')){
     if (!v.videoId) continue;
     out.push({ id:v.videoId, nazov:textZ(v.title), s:casNaSek(textZ(v.lengthText)) });
   }
   return out;
 }
+const ladenie = [];
+async function zRss(pl){
+  const r = await fetch('https://www.youtube.com/feeds/videos.xml?playlist_id=' + pl, { headers:{ 'User-Agent':UA } });
+  const x = await r.text();
+  const out = [];
+  for (const m of x.matchAll(/<entry>[\s\S]*?<yt:videoId>([\w-]{11})<\/yt:videoId>[\s\S]*?<title>([^<]*)<\/title>/g)) out.push({ id:m[1], nazov:m[2].replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&#39;/g,"'"), s:0 });
+  ladenie.push(`rss ${pl}: http ${r.status}, ${out.length} videí`);
+  return out;
+}
+async function zHtml(pl){
+  const r = await fetch('https://www.youtube.com/playlist?list=' + pl + '&hl=cs', { headers:{ 'User-Agent':UA, 'Accept-Language':'cs', Cookie:'CONSENT=YES+cb; SOCS=CAI' } });
+  const html = await r.text();
+  const i = html.indexOf('ytInitialData'), st = html.indexOf('{', i);
+  let j = null;
+  if (i > 0){ let d = 0, str = false, esc = false; for (let k = st; k < html.length; k++){ const c = html[k]; if (str){ if (esc) esc = false; else if (c === '\\') esc = true; else if (c === '"') str = false; continue; } if (c === '"') str = true; else if (c === '{') d++; else if (c === '}' && --d === 0){ try { j = JSON.parse(html.slice(st, k + 1)); } catch {} break; } } }
+  const out = j ? polozky(j) : [];
+  ladenie.push(`html ${pl}: http ${r.status}, ${html.length} B, ${out.length} videí`);
+  return out;
+}
 async function nacitajPlaylist(pl, max){
   let j = await innertube({ browseId: 'VL' + pl }), vsetko = polozky(j), kolo = 0;
+  ladenie.push(`innertube ${pl}: kľúče ${Object.keys(j || {}).slice(0, 8).join(',')}; ${vsetko.length} videí; alert: ${JSON.stringify(najdi(j, 'alertRenderer')).slice(0, 160)}`);
+  if (!vsetko.length){ vsetko = await zHtml(pl); }
+  if (!vsetko.length){ return await zRss(pl); }
   while (vsetko.length < max && kolo++ < 10){
     const tok = najdi(j, 'continuationCommand').map(c => c.token).find(Boolean);
     if (!tok) break;
@@ -66,7 +94,9 @@ async function nacitajPlaylist(pl, max){
 }
 async function kanalNaPlaylist(handle){
   const r = await fetch('https://www.youtube.com/' + handle, { headers:{ 'User-Agent':UA, 'Accept-Language':'cs', Cookie:'CONSENT=YES+cb; SOCS=CAI' } });
-  const m = /"(?:channelId|externalId)":"(UC[\w-]{22})"/.exec(await r.text());
+  const html = await r.text();
+  const m = /"(?:channelId|externalId)":"(UC[\w-]{22})"/.exec(html) || /channel\/(UC[\w-]{22})/.exec(html);
+  ladenie.push(`kanál ${handle}: http ${r.status}, ${html.length} B, id ${m ? m[1] : '-'}`);
   return m ? 'UU' + m[1].slice(2) : null;
 }
 const plVysledky = {};
@@ -159,7 +189,7 @@ for (const x of vysledky){
   else if (staraDlzka > 0) videa[x.id] = staraDlzka;           // nevieme isto: necháme poslednú dobrú dĺžku
 }
 
-fs.writeFileSync(LOG, `Sken ${new Date().toISOString()}${blokovane ? '  (POISTKA: chyby nezapísané)' : ''}\n` + riadky.join('\n') + '\n');
+fs.writeFileSync(LOG, `Sken ${new Date().toISOString()}${blokovane ? '  (POISTKA: chyby nezapísané)' : ''}\n` + ladenie.join('\n') + '\n---\n' + riadky.join('\n') + '\n');
 
 const zoradene = o => Object.fromEntries(Object.keys(o).sort().map(k => [k, o[k]]));
 const nove = { videa: zoradene(videa), chyby: zoradene(chyby) };

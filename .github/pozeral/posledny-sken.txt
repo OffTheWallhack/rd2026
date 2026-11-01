@@ -1,32 +1,28 @@
-Sken 2026-11-01T16:41:00.701Z
+Sken 2026-11-01T16:44:35.982Z
 innertube PLXkA6SvogZFumCc1H0KgXGPdsRrzCcTHw: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 100 videí; alert: []
-kanál @patamat_cz: http 200, 2064365 B, id UC8ZKvF049Iku9y41WpIUUCA
-innertube UU8ZKvF049Iku9y41WpIUUCA: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 39 videí; alert: []
 innertube PL3SFGj27PTbfdUXNVv20TCjhbm8sriSH_: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 0 videí; alert: []
-html PL3SFGj27PTbfdUXNVv20TCjhbm8sriSH_: http 200, 879546 B, 0 videí
+html PL3SFGj27PTbfdUXNVv20TCjhbm8sriSH_: http 200, 884359 B, 0 videí
 rss PL3SFGj27PTbfdUXNVv20TCjhbm8sriSH_: http 200, 0 videí
 innertube PLXkA6SvogZFsro5cOPiQcy1CHMjSLOQq7: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 4 videí; alert: []
 innertube PL_c00IPCdRoGD0k6aG7725OaqHQQffcVf: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 7 videí; alert: []
-kanál @byljednoujedenzivot: http 200, 1119353 B, id UCg0IwNjbI490rs0g_cPGFXA
+kanál @byljednoujedenzivot: http 200, 1063705 B, id UCg0IwNjbI490rs0g_cPGFXA
 innertube UUg0IwNjbI490rs0g_cPGFXA: kľúče responseContext,contents,header,metadata,trackingParams,topbar,microformat,sidebar; 26 videí; alert: []
 innertube PLh4oNLWEP1pov-S4X2rwB3e1kKFFjecKe: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 37 videí; alert: []
-kanál @smolkovia: http 200, 1859772 B, id UCwEYV37N3Nb03STOzZN-JMQ
+kanál @smolkovia: http 200, 1857870 B, id UCwEYV37N3Nb03STOzZN-JMQ
 innertube UUwEYV37N3Nb03STOzZN-JMQ: kľúče responseContext,contents,header,metadata,trackingParams,topbar,microformat,sidebar; 39 videí; alert: []
 innertube PLQ7nXaicptSxRccybPZUBAPhSdxh1v9jI: kľúče responseContext,contents,header,metadata,trackingParams,topbar,microformat,sidebar; 72 videí; alert: []
 innertube PLwhLvPy7SFDEN8_qYEdv7LfbTdO3EQBBd: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 21 videí; alert: []
 innertube PLpNHzGK1cU90EcFXgbD0C3n9LiHwJokg4: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 52 videí; alert: []
-kanál @spionkycz-sk1054: http 200, 1056859 B, id UCWY2ygfhSISX-SF2YjGKhgw
+kanál @spionkycz-sk1054: http 200, 1057203 B, id UCWY2ygfhSISX-SF2YjGKhgw
 innertube UUWY2ygfhSISX-SF2YjGKhgw: kľúče responseContext,contents,header,metadata,trackingParams,topbar,microformat,sidebar; 25 videí; alert: []
-kanál @pokemonserialczsk6452: http 200, 872031 B, id UCEarul-dRmRW6dpUePG8xpA
+kanál @pokemonserialczsk6452: http 200, 875583 B, id UCEarul-dRmRW6dpUePG8xpA
 innertube UUEarul-dRmRW6dpUePG8xpA: kľúče responseContext,alerts,trackingParams,topbar,microformat; 0 videí; alert: [{"type":"ERROR","text":{"runs":[{"text":"Playlist neexistuje."}]}}]
-html UUEarul-dRmRW6dpUePG8xpA: http 200, 851308 B, 0 videí
+html UUEarul-dRmRW6dpUePG8xpA: http 200, 853104 B, 0 videí
 rss UUEarul-dRmRW6dpUePG8xpA: http 404, 0 videí
 innertube PLhr2MGr4OPNcEUNaI_aESmupie_m-Ppzr: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 0 videí; alert: []
-html PLhr2MGr4OPNcEUNaI_aESmupie_m-Ppzr: http 200, 879359 B, 0 videí
+html PLhr2MGr4OPNcEUNaI_aESmupie_m-Ppzr: http 200, 885956 B, 0 videí
 rss PLhr2MGr4OPNcEUNaI_aESmupie_m-Ppzr: http 200, 4 videí
 innertube PL3EEYr69JFOyn1EKmWZwkq6_cPL_LGxEY: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 45 videí; alert: []
-kanál @beybladeskcz680: http 200, 991942 B, id UChvmhtQa6uAZyaoApQzNCnQ
-innertube UUhvmhtQa6uAZyaoApQzNCnQ: kľúče responseContext,contents,header,metadata,trackingParams,topbar,microformat,sidebar; 4 videí; alert: []
 ---
 wvDJPJLScqY  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 rLm4Ficu5Fg  oembed:401  =>  vkladanie zakázané
@@ -189,7 +185,7 @@ LopOr5-uLPQ  oembed:200  =>  1413
 iob2jUGBQ50  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 DQjN5Ka8qTk  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 -DJ6CEA0i9I  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
-gPNbYDIuPXs  oembed:200  =>  917
+gPNbYDIuPXs  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 R63piJHBAmc  oembed:403  =>  vkladanie zakázané
 o5U7eIwo32M  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 yIasDc7XTxY  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
@@ -328,31 +324,6 @@ jHtk9CcmUkE  oembed:200  =>  499
 ygOUHhhJmqw  oembed:200  =>  483
 H1Z7zkdVsM4  oembed:200  =>  495
 7R032eBn9YA  oembed:200  =>  506
-D6u8MZti8FU  oembed:401  =>  vkladanie zakázané
-sVBrRv8s2jQ  oembed:401  =>  vkladanie zakázané
-__VW8vuPu_c  oembed:401  =>  vkladanie zakázané
-KTs-LhnUMFs  oembed:401  =>  vkladanie zakázané
-4AVdVbPhxFo  oembed:401  =>  vkladanie zakázané
-ZgBMXI1WKWg  oembed:401  =>  vkladanie zakázané
-LqGqqzTO8MQ  oembed:401  =>  vkladanie zakázané
-WesccyQ6V5U  oembed:401  =>  vkladanie zakázané
-O2XNh-vXZfQ  oembed:401  =>  vkladanie zakázané
-pXb6wz7RF60  oembed:401  =>  vkladanie zakázané
-lhuMnz4enzU  oembed:401  =>  vkladanie zakázané
-oKtWpECeuIc  oembed:401  =>  vkladanie zakázané
-9XjgsdslX5A  oembed:401  =>  vkladanie zakázané
-X811vvZbYwg  oembed:401  =>  vkladanie zakázané
-otTwNhLcDfQ  oembed:401  =>  vkladanie zakázané
-AheExCxJxlo  oembed:401  =>  vkladanie zakázané
-WXbkiXqOpvk  oembed:401  =>  vkladanie zakázané
-cZQFpvKhbyw  oembed:401  =>  vkladanie zakázané
-lcY7MY_NT_s  oembed:401  =>  vkladanie zakázané
-zalSHd-B26c  oembed:401  =>  vkladanie zakázané
-Bh1AnyL6lR4  oembed:401  =>  vkladanie zakázané
-__6ShpvC_Tw  oembed:401  =>  vkladanie zakázané
-h8xO4PiJ--w  oembed:401  =>  vkladanie zakázané
-lfmQoI5Mur8  oembed:401  =>  vkladanie zakázané
-RYwrCTxF9Oc  oembed:401  =>  vkladanie zakázané
 8_GPYYaxSTw  oembed:200  =>  1497
 J9VaGj_x4dQ  oembed:200  =>  1497
 lAnDVe-pTvI  oembed:200  =>  1497
@@ -409,8 +380,6 @@ yT875RTzg2w  oembed:200  =>  481
 ahARUQ3Uo3U  oembed:200  =>  484
 xrXD5MQeol0  oembed:200  =>  454
 pVS_xo_uKzw  oembed:200  =>  424
-616LJKdc0eM  oembed:200  =>  3125
-Rx2KqpQhxKc  oembed:200  =>  3130
 zb9ypvuMTW8  oembed:200  =>  1371
 A9xojfzUXL8  oembed:200  =>  1370
 AYfAyrnW078  oembed:200  =>  1370
@@ -494,11 +463,9 @@ EDPfWyr4u9w  oembed:200  =>  1230
 thPdyQ18fQU  oembed:200  =>  1223
 jflIO1zo6ew  oembed:200  =>  886
 J2IUJZxhTiM  oembed:200  =>  461
-zYpOGvrwlTc  oembed:200  =>  580
 KCchPcPGdBc  oembed:200  =>  296
 8nGxV_9r3ro  oembed:200  =>  598
 eBSlsAC-gEE  oembed:200  =>  464
-sFFywRb_z8o  oembed:200  =>  299
 ZnSPahq4r68  oembed:200  =>  245
 y3asW87oaEc  oembed:200  =>  331
 8_BpTpgRmhI  oembed:200  =>  533
@@ -572,5 +539,3 @@ DWFD0nYjXAg  oembed:200  =>  1293
 otQ5wvaMD3g  oembed:200  =>  1292
 pLBQlQs5yIE  oembed:200  =>  1292
 pfxMHAxRM_Y  oembed:200  =>  1294
-XJ2yeUMCac0  oembed:200  =>  404
-dYMfKOQch3Y  oembed:200  =>  307

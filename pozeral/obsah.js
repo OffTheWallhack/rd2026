@@ -177,7 +177,33 @@ window.POZERAL = {
         { id:'YODEL-OWCEM', show:'Totally Spies – Špiónky', ep:'1. série, 6. díl (1/2)', lang:'CZ', min:11 },
         { id:'eIAr6xDJJXc', show:'Garfieldova show', ep:'Král Nermal', lang:'CZ', min:12 },
         { id:'lwhpvjQlxkw', show:'Garfieldova show', ep:'Najdrahší medvedík', lang:'SK', min:12 },
-        { id:'8utmK8TkRSw', show:'Kačeří příběhy', ep:'Poklad ze ztracené lampy (film)', lang:'CZ', min:74 }
+        { id:'8utmK8TkRSw', show:'Kačeří příběhy', ep:'Poklad ze ztracené lampy (film)', lang:'CZ', min:74 },
+        { id:'JhapP0DuETo', show:'Růžový panter', ep:'Sink Pink', lang:'bez slov', min:7 },
+        { id:'RVU2-KAQ1xU', show:'Spongebob v kalhotách', ep:'Silák Spongebob', lang:'CZ', min:11 },
+        { id:'0v-0ufXF8KA', show:'Detektiv Duck', ep:'Little Girl Blue', lang:'CZ', min:22 },
+        { id:'KpqWI_ZdwjI', show:'Mr. Bean: Animované příběhy', ep:'Ztracený medvídek', lang:'bez slov', min:11 },
+        { id:'G5j-k9mnLII', show:'Rychlá rota', ep:'Rychlá rota', lang:'CZ', min:22 },
+        { id:'41aGCrXM20E', show:'Růžový panter', ep:'The Pink Phink', lang:'bez slov', min:7 },
+        { id:'LopOr5-uLPQ', show:'Galactik Football', ep:'2. série – 11. díl', lang:'CZ', min:26 },
+        { id:'3X4vSyK2fhE', show:'Spongebob v kalhotách', ep:'Spongebob a Plankton', lang:'CZ', min:11 },
+        { id:'iob2jUGBQ50', show:'Kačer Kabrňák', ep:'Kačer Kabrňák', lang:'CZ', min:22 },
+        { id:'DQjN5Ka8qTk', show:'Mr. Bean: Animované příběhy', ep:'Vynálezce', lang:'bez slov', min:11 },
+        { id:'-DJ6CEA0i9I', show:'Růžový panter', ep:'Dial "P" for Pink', lang:'bez slov', min:7 },
+        { id:'gPNbYDIuPXs', show:'Kačeří příběhy', ep:'Kačeří příběhy (1987)', lang:'CZ', min:22 },
+        { id:'R63piJHBAmc', show:'Spongebob v kalhotách', ep:'Spongebob a bubliny', lang:'CZ', min:11 },
+        { id:'o5U7eIwo32M', show:'Rychlá rota', ep:'Rychlá rota', lang:'CZ', min:22 },
+        { id:'yIasDc7XTxY', show:'Růžový panter', ep:'Pink Ice', lang:'bez slov', min:7 },
+        { id:'yRyBfGRUTcI', show:'Mr. Bean: Animované příběhy', ep:'Problémy s autem', lang:'bez slov', min:11 },
+        { id:'H2wm_I7pSaE', show:'Galactik Football', ep:'2. série – 16. díl', lang:'CZ', min:26 },
+        { id:'WHOs6nm8qg4', show:'Spongebob v kalhotách', ep:'Spongebobův klon', lang:'CZ', min:11 },
+        { id:'xiA6qe5S2wU', show:'Růžový panter', ep:'Pink, Plunk, Plink', lang:'bez slov', min:7 },
+        { id:'JrJnY5rpmm8', show:'Rychlá rota', ep:'Chip, Dale, Monty Jack a Gedžitka', lang:'CZ', min:22 },
+        { id:'OTT2XxDbWic', show:'Mr. Bean: Animované příběhy', ep:'Problémy vo vlaku', lang:'bez slov', min:11 },
+        { id:'T0t_Ivp99sY', show:'Růžový panter', ep:'Vitamin Pink', lang:'bez slov', min:7 },
+        { id:'a-3UHk-Fsk0', show:'Spongebob v kalhotách', ep:'Spongebob a studna', lang:'CZ', min:11 },
+        { id:'wu65RVbFPPk', show:'Růžový panter', ep:'Smile Pretty, Say Pink', lang:'bez slov', min:7 },
+        { id:'m-QpAnKfRB0', show:'Růžový panter', ep:'Psychedelic Pink', lang:'bez slov', min:7 },
+        { id:'ROrhFa1-iLM', show:'Asterix', ep:'Asterix a překvapení pro Cézara (film)', lang:'CZ', min:79 }
       ]
     },
     {
@@ -211,7 +237,9 @@ window.POZERAL = {
         { id:'HrFiDKeIZPA', show:'Bakugan: Gundalian Invaders', ep:'11. díl', lang:'CZ', min:22 },
         { id:'6NMj1Iypb4o', show:'Bakugan: Gundalian Invaders', ep:'18. díl', lang:'CZ', min:22 },
         { id:'Ol0qBsGWI5c', show:'Bakugan: Gundalian Invaders', ep:'25. díl', lang:'CZ', min:22 },
-        { id:'JDn8h8666MU', show:'Bakugan: Gundalian Invaders', ep:'35. díl', lang:'CZ', min:22 }
+        { id:'JDn8h8666MU', show:'Bakugan: Gundalian Invaders', ep:'35. díl', lang:'CZ', min:22 },
+        { id:'ylgj7iP6Uk4', show:'Želvy Ninja', ep:'V hlubinách lesa', lang:'CZ', min:22 },
+        { id:'_IToi99XNWg', show:'Power Rangers: Operace Overdrive', ep:'Za každou cenu', lang:'CZ', min:22 }
       ]
     }
   ],

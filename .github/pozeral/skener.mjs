@@ -107,10 +107,13 @@ for (const k of O.kanaly) for (const p of k.program){
     const pl = p.playlist || await kanalNaPlaylist(p.kanal);
     const zoznam = pl ? await nacitajPlaylist(pl, p.max || 60) : [];
     const unik = []; const videne = new Set();
+    const vlozit = p.obsahuje ? new RegExp(p.obsahuje, 'i') : null, vynechat = p.vynechaj ? new RegExp(p.vynechaj, 'i') : null;
     const minS = p.minSek ?? 240, maxS = p.maxSek ?? 5400;   // bez krátkych klipov a dlhých kompilácií
     for (const x of zoznam){
       if (videne.has(x.id)) continue;
       if (x.s && (x.s < minS || x.s > maxS)) continue;
+      if (vlozit && !vlozit.test(x.nazov || '')) continue;      // voliteľné: názov musí obsahovať (obsahuje:'regex')
+      if (vynechat && vynechat.test(x.nazov || '')) continue;   // voliteľné: názov nesmie obsahovať (vynechaj:'regex')
       if (/porovnání|porovnanie|trailer|upoutávka|upútavka|unboxing|ukážka|ukázka|intro\b|znělka|znelka|opening|reakce|recenze|parodie|AMV/i.test(x.nazov || '')) continue;
       videne.add(x.id); unik.push(x);
     }

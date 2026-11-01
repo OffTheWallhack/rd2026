@@ -268,11 +268,16 @@ window.POZERAL = {
       reklamy: 3,
       predelKazdych: 3,
       program: [
-        // SpongeBob: celé diely, čo najviac. Skener playlisty sám rozbalí do playlisty.json.
-        { playlist:'PLPopsOoFH2QJh89eAGV9fB1es8co5UxIK', show:'SpongeBob SquarePants', lang:'EN', min:11, max:300 },
-        { playlist:'PLPS0ERUCtf0Adw7XYPE7fbn3xpCy0eJNc', show:'SpongeBob SquarePants', lang:'EN', min:11, max:300 },
-        { playlist:'PLCVuwQ1eXVCWVeSpX0khngqq_UIpX5hYU', show:'Johnny Bravo', lang:'EN', min:11, max:150 },
-        { playlist:'PLjScWr8bfGJPcWCgF_QNMQeRVyJQ9Q33W', show:'Johnny Bravo', lang:'EN', min:11, max:150 }
+        // Originál po anglicky. Skener kanály a playlisty sám rozbalí a prefiltruje podľa názvu:
+        // obsahuje = názov musí sedieť, vynechaj = názov nesmie sedieť (klipy, iné jazyky).
+        // SpongeBob: oficiálny kanál, celé diely a maratóny dielov (nie krátke klipy a "momenty").
+        { kanal:'@SpongeBobOfficial', show:'SpongeBob SquarePants', lang:'EN', min:44, max:600, minSek:1200, maxSek:14400,
+          obsahuje:'episodes?|marathon|full\\s+ep', vynechaj:'moment|scene|recreation|IRL|in \\d+ minutes?|minute from|clip|reaction|tutorial|how to|game|trailer|español|latino|bahasa|hindi' },
+        // Johnny Bravo: celé diely po anglicky
+        { playlist:'PLjScWr8bfGJPcWCgF_QNMQeRVyJQ9Q33W', show:'Johnny Bravo', lang:'EN', min:16, max:150, minSek:420, maxSek:3000,
+          vynechaj:'español|latino|capítulo|hindi|tamil|telugu|urdu|bahasa|indonesia|português|dublado|deutsch|français|русск' },
+        { playlist:'PLCVuwQ1eXVCWVeSpX0khngqq_UIpX5hYU', show:'Johnny Bravo', lang:'EN', min:11, max:150, minSek:420, maxSek:3000,
+          obsahuje:'Bravo', vynechaj:'español|latino|capítulo|hindi|tamil|telugu|urdu|bahasa|indonesia|português|dublado|deutsch|français|русск|top 10|compilation' }
       ]
     }
   ],

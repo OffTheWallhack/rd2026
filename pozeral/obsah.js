@@ -120,7 +120,7 @@ window.POZERAL = {
     },
     {
       nazov: 'Po škole',
-      popis: 'Fox Kids, Jetix, Cartoon Network',
+      popis: 'seriály, na ktoré si sa ponáhľal zo školy',
       reklamy: 3,
       predelKazdych: 2,
       program: [

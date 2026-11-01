@@ -111,6 +111,7 @@ for (const k of O.kanaly) for (const p of k.program){
     for (const x of zoznam){
       if (videne.has(x.id)) continue;
       if (x.s && (x.s < minS || x.s > maxS)) continue;
+      if (/porovnání|porovnanie|trailer|upoutávka|upútavka|unboxing|ukážka|ukázka|intro\b|znělka|znelka|opening|reakce|recenze|parodie|AMV/i.test(x.nazov || '')) continue;
       videne.add(x.id); unik.push(x);
     }
     if (unik.length){ plVysledky[kluc] = unik.slice(0, p.max || 60); console.log('Playlist', kluc, '→', plVysledky[kluc].length, 'videí'); }

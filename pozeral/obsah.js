@@ -106,13 +106,12 @@ window.POZERAL = {
         { id:'mBG6jYdyXOk', show:'Šmoulové', ep:'Dobrodružství Robina Šmoula', lang:'CZ', min:12 },
         { id:'rb9YK_TuXqA', show:'Šmoulové', ep:'Šmoulata – část první', lang:'CZ', min:12 },
         { playlist:'PLXkA6SvogZFumCc1H0KgXGPdsRrzCcTHw', show:'Pat a Mat', lang:'bez slov', min:8, max:40 },
-        { kanal:'@patamat_cz', show:'Pat a Mat', lang:'bez slov', min:8, max:25 },
         { playlist:'PL3SFGj27PTbfdUXNVv20TCjhbm8sriSH_', show:'Pat a Mat', lang:'bez slov', min:8, max:25 },
         { playlist:'PLXkA6SvogZFsro5cOPiQcy1CHMjSLOQq7', show:'Byl jednou jeden… život', lang:'CZ', min:25, max:26 },
         { playlist:'PL_c00IPCdRoGD0k6aG7725OaqHQQffcVf', show:'Byl jednou jeden… život', lang:'CZ', min:25, max:26 },
         { kanal:'@byljednoujedenzivot', show:'Byl jednou jeden… život', lang:'CZ', min:25, max:20 },
         { playlist:'PLh4oNLWEP1pov-S4X2rwB3e1kKFFjecKe', show:'Bob a Bobek', lang:'CZ', min:8, max:30 },
-        { kanal:'@smolkovia', show:'Šmolkovia', lang:'SK', min:12, max:30 }
+        { kanal:'@smolkovia', show:'Šmolkovia', lang:'SK', min:12, max:30, maxSek:1800 }
       ]
     },
     {
@@ -256,8 +255,7 @@ window.POZERAL = {
         { id:'_IToi99XNWg', show:'Power Rangers: Operace Overdrive', ep:'Za každou cenu', lang:'CZ', min:22 },
         { kanal:'@pokemonserialczsk6452', show:'Pokémon', lang:'CZ', min:22, max:50 },
         { playlist:'PLhr2MGr4OPNcEUNaI_aESmupie_m-Ppzr', show:'Král šamanů', lang:'CZ', min:22, max:40 },
-        { playlist:'PL3EEYr69JFOyn1EKmWZwkq6_cPL_LGxEY', show:'Beyblade Metal Masters', lang:'CZ', min:22, max:40 },
-        { kanal:'@beybladeskcz680', show:'Beyblade', lang:'CZ', min:22, max:40 }
+        { playlist:'PL3EEYr69JFOyn1EKmWZwkq6_cPL_LGxEY', show:'Beyblade Metal Masters', lang:'CZ', min:22, max:40 }
       ]
     }
   ],

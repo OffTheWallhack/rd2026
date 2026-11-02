@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<title>si/editoval · fotoeditor na hranie</title>
+<meta name="description" content="Nahraj fotku a sprav z nej dither, ASCII, halftone alebo kovový reliéf. Priamo v prehliadači, bez Photoshopu, zadarmo.">
+<meta name="theme-color" content="#0f0e0c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="si/editoval">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="ikony/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="ikony/icon-180.png">
+<meta property="og:title" content="si/editoval">
+<meta property="og:description" content="Dither, ASCII, halftone a kovový reliéf z tvojej fotky. V prehliadači, zadarmo.">
+<meta property="og:image" content="https://durica.si/editoval/og.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@700&family=Syne:wght@700;800&family=VT323&family=UnifrakturMaguntia&display=swap">
+<link rel="stylesheet" href="style.css">
+<script data-goatcounter="https://durica.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</head>
+<body data-mode="dither">
+
+<div class="app">
+  <header class="top">
+    <div class="brand"><i aria-hidden="true"></i><h1>si/editoval</h1></div>
+    <span class="pill" id="pill">UKÁŽKA</span>
+  </header>
+
+  <section class="stage" id="stage">
+    <div class="frame" id="frame">
+      <canvas id="cv" width="720" height="900"></canvas>
+      <canvas id="draw" class="drawlayer" hidden></canvas>
+      <span class="badge" id="orig" hidden>ORIGINÁL</span>
+    </div>
+    <div class="busy" id="busy" hidden><strong>…</strong><p class="hint">Ukladám v plnom rozlíšení.</p></div>
+  </section>
+  <p class="msg" id="msg" role="status" aria-live="polite"></p>
+
+  <nav class="modes" role="tablist" aria-label="Nástroj">
+    <button class="mode" type="button" role="tab" data-m="dither"><b>Dither</b><small>bodky, vlny</small></button>
+    <button class="mode" type="button" role="tab" data-m="ascii"><b>ASCII</b><small>znaky, text</small></button>
+    <button class="mode" type="button" role="tab" data-m="emboss"><b>Reliéf</b><small>kovový štetec</small></button>
+    <button class="mode" type="button" role="tab" data-m="look"><b>Look</b><small>film, VHS</small></button>
+  </nav>
+
+  <!-- ============ DITHER ============ -->
+  <section class="panel" data-for="dither">
+    <div class="row">
+      <span class="lbl">Štýl</span>
+      <div class="chips" data-key="dstyle">
+        <button type="button" data-v="bayer4">Bayer</button>
+        <button type="button" data-v="bayer8">Bayer jemný</button>
+        <button type="button" data-v="fs">Floyd</button>
+        <button type="button" data-v="atk">Atkinson</button>
+        <button type="button" data-v="noise">Šum</button>
+        <button type="button" data-v="dots">Halftone</button>
+        <button type="button" data-v="wave">Vlny</button>
+        <button type="button" data-v="lines">Riadky</button>
+        <button type="button" data-v="pixel">Pixel</button>
+      </div>
+    </div>
+    <div class="row">
+      <label class="lbl" for="dscale">Veľkosť bodu <output id="dscaleV"></output></label>
+      <input id="dscale" type="range" min="1" max="14" step="1">
+    </div>
+    <div class="row">
+      <label class="lbl" for="dthr">Prah svetla <output id="dthrV"></output></label>
+      <input id="dthr" type="range" min="-60" max="60" step="1">
+    </div>
+    <div class="row">
+      <label class="lbl" for="dden">Hustota vĺn <output id="ddenV"></output></label>
+      <input id="dden" type="range" min="1" max="40" step="1">
+    </div>
+    <div class="row" id="palRow">
+      <span class="lbl">Paleta</span>
+      <div class="chips" data-key="pal" id="palChips"></div>
+      <div class="custom" id="customPal">
+        <label><input type="color" id="c1" value="#0b0b0b"> papier</label>
+        <label><input type="color" id="c2" value="#ff5a47"> farba</label>
+        <label><input type="color" id="c3" value="#7dff9c"> tretia</label>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ASCII ============ -->
+  <section class="panel" data-for="ascii" hidden>
+    <div class="row">
+      <span class="lbl">Znaky</span>
+      <div class="chips" data-key="aset">
+        <button type="button" data-v="min">Minimál</button>
+        <button type="button" data-v="full">Hustý</button>
+        <button type="button" data-v="blocks">Bloky</button>
+        <button type="button" data-v="hearts">Srdiečka</button>
+        <button type="button" data-v="bin">Binárne</button>
+        <button type="button" data-v="text">Vlastný text</button>
+      </div>
+      <input id="atext" type="text" maxlength="40" autocomplete="off" spellcheck="false" placeholder="Napíš text, z ktorého bude obrázok" hidden>
+    </div>
+    <div class="row">
+      <label class="lbl" for="acols">Hustota znakov <output id="acolsV"></output></label>
+      <input id="acols" type="range" min="30" max="160" step="2">
+    </div>
+    <div class="row">
+      <label class="lbl" for="athr">Hĺbka <output id="athrV"></output></label>
+      <input id="athr" type="range" min="-60" max="60" step="1">
+    </div>
+    <div class="row">
+      <span class="lbl">Písmo</span>
+      <div class="chips" data-key="afont">
+        <button type="button" data-v="mono">Mono</button>
+        <button type="button" data-v="serif">Serif</button>
+        <button type="button" data-v="gothic">Gotika</button>
+      </div>
+    </div>
+    <div class="row">
+      <span class="lbl">Farba znakov</span>
+      <div class="chips" data-key="aink">
+        <button type="button" data-v="pal">Z palety</button>
+        <button type="button" data-v="color">Pôvodné farby</button>
+      </div>
+      <div class="chips" data-key="pal" id="palChips2"></div>
+    </div>
+    <label class="sw-row" for="atrans"><span><b>Priehľadné pozadie</b><small>PNG bez pozadia, na nálepky</small></span><input id="atrans" class="sw" type="checkbox"></label>
+  </section>
+
+  <!-- ============ EMBOSS ============ -->
+  <section class="panel" data-for="emboss" hidden>
+    <p class="hint">Kresli prstom priamo do obrázka. Ťah sa vylisuje do kovu alebo do tvojej fotky.</p>
+    <div class="row">
+      <span class="lbl">Podklad</span>
+      <div class="chips" data-key="ebg">
+        <button type="button" data-v="steel">Brúsená oceľ</button>
+        <button type="button" data-v="gold">Mosadz</button>
+        <button type="button" data-v="black">Čierny lak</button>
+        <button type="button" data-v="photo">Moja fotka</button>
+      </div>
+    </div>
+    <div class="row">
+      <label class="lbl" for="ebrush">Hrúbka štetca <output id="ebrushV"></output></label>
+      <input id="ebrush" type="range" min="4" max="80" step="1">
+    </div>
+    <div class="row">
+      <label class="lbl" for="evol">Objem <output id="evolV"></output></label>
+      <input id="evol" type="range" min="0" max="100" step="1">
+    </div>
+    <div class="row">
+      <label class="lbl" for="eslope">Mäkkosť hrany <output id="eslopeV"></output></label>
+      <input id="eslope" type="range" min="0" max="100" step="1">
+    </div>
+    <div class="row">
+      <label class="lbl" for="erecess">Priehlbina okolo <output id="erecessV"></output></label>
+      <input id="erecess" type="range" min="0" max="100" step="1">
+    </div>
+    <div class="row">
+      <label class="lbl" for="erough">Drsnosť <output id="eroughV"></output></label>
+      <input id="erough" type="range" min="0" max="100" step="1">
+    </div>
+    <div class="row">
+      <label class="lbl" for="eshine">Lesk <output id="eshineV"></output></label>
+      <input id="eshine" type="range" min="0" max="100" step="1">
+    </div>
+    <div class="row">
+      <label class="lbl" for="eangle">Uhol svetla <output id="eangleV"></output></label>
+      <input id="eangle" type="range" min="0" max="360" step="5">
+    </div>
+    <div class="row">
+      <span class="lbl">Symetria</span>
+      <div class="chips" data-key="esym">
+        <button type="button" data-v="none">Žiadna</button>
+        <button type="button" data-v="v">Zvislá</button>
+        <button type="button" data-v="h">Vodorovná</button>
+        <button type="button" data-v="vh">Obe osi</button>
+      </div>
+    </div>
+    <div class="chips">
+      <button type="button" id="eundo">Späť</button>
+      <button type="button" id="eclear">Vymazať kresbu</button>
+    </div>
+    <label class="sw-row" for="eonly"><span><b>Uložiť len kresbu</b><small>Priehľadné PNG, bez podkladu</small></span><input id="eonly" class="sw" type="checkbox"></label>
+  </section>
+
+  <!-- ============ LOOK ============ -->
+  <section class="panel" data-for="look" hidden>
+    <div class="row">
+      <span class="lbl">Nálada</span>
+      <div class="chips" data-key="lvar">
+        <button type="button" data-v="warm">Teplá dráma</button>
+        <button type="button" data-v="cold">Nočná modrá</button>
+        <button type="button" data-v="bw">Čiernobiely film</button>
+        <button type="button" data-v="vhs">VHS 2000s</button>
+        <button type="button" data-v="poster">Jesenný plagát</button>
+      </div>
+    </div>
+    <div class="row">
+      <label class="lbl" for="lamt">Sila <output id="lamtV"></output></label>
+      <input id="lamt" type="range" min="0" max="100" step="1">
+    </div>
+    <div class="row">
+      <label class="lbl" for="lgrain">Zrno <output id="lgrainV"></output></label>
+      <input id="lgrain" type="range" min="0" max="100" step="1">
+    </div>
+    <div class="row">
+      <label class="lbl" for="ltext">Text na plagát</label>
+      <input id="ltext" type="text" maxlength="60" autocomplete="off" spellcheck="false" placeholder="napr. A LONG, LONG TIME AGO">
+    </div>
+    <p class="hint">Na videá s ASCII anonymom a cenzúrou tváre je samostatná appka <a href="https://claude.ai/code/artifact/e5f1fb0a-fde2-489a-9152-93aa1d4526ae" id="rdlooks">RD Looks</a>.</p>
+  </section>
+
+  <!-- ============ SPOLOČNÉ ============ -->
+  <details class="adj">
+    <summary>Úpravy obrázka</summary>
+    <label class="sw-row" for="auto"><span><b>Auto svetlo</b><small>Vytiahne tmavé fotky</small></span><input id="auto" class="sw" type="checkbox"></label>
+    <div class="row"><label class="lbl" for="bri">Jas <output id="briV"></output></label><input id="bri" type="range" min="-100" max="100" step="1"></div>
+    <div class="row"><label class="lbl" for="con">Kontrast <output id="conV"></output></label><input id="con" type="range" min="-100" max="100" step="1"></div>
+    <div class="row"><label class="lbl" for="sat">Sýtosť <output id="satV"></output></label><input id="sat" type="range" min="-100" max="100" step="1"></div>
+    <div class="row"><label class="lbl" for="blur">Rozmazanie <output id="blurV"></output></label><input id="blur" type="range" min="0" max="20" step="1"></div>
+    <label class="sw-row" for="inv"><span><b>Invertovať</b><small>Negatív pred efektom</small></span><input id="inv" class="sw" type="checkbox"></label>
+    <div class="chips"><button type="button" id="reset">Vrátiť nastavenia</button></div>
+  </details>
+
+  <section class="credits" aria-label="Kto za tým stojí">
+    <div class="stars" aria-hidden="true">★ ★ ★ ★ ★</div>
+    <p class="cr-line"><span>nápad.</span><a href="https://instagram.com/filip_cano" target="_blank" rel="noopener">mugiwara. <em>@filip_cano</em></a><small>profesionálny kamarát.</small></p>
+    <p class="cr-line"><span>realizácia a hosting.</span><a href="../">durica.si <em>@duriica</em></a><small>robert ďurica.</small></p>
+    <p class="cr-line cr-note">poslal mi reels, že takéto veci ľudia milujú a niekto ich predáva za 15 dolárov. tak je to tu zadarmo.</p>
+    <div class="stars" aria-hidden="true">★ ★ ★ ★ ★</div>
+  </section>
+
+  <footer class="foot">
+    <p>Všetko sa deje v tvojom telefóne, fotky sa nikam neposielajú. <a href="../">durica.si</a> · <a href="../appky/">ďalšie appky</a></p>
+  </footer>
+</div>
+
+<footer class="bar">
+  <div class="bar-in">
+    <label class="side" for="file">
+      <span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg></span>
+      <span>Fotka</span>
+    </label>
+    <input id="file" class="vh" type="file" accept="image/*">
+    <div class="shoot">
+      <button class="shutter" id="shoot" type="button" aria-label="Uložiť obrázok"><span></span></button>
+      <span>Uložiť</span>
+    </div>
+    <button class="side" id="rnd" type="button" aria-label="Náhodné nastavenie">
+      <span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8" cy="8" r="1.4" fill="currentColor"/><circle cx="16" cy="8" r="1.4" fill="currentColor"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/><circle cx="8" cy="16" r="1.4" fill="currentColor"/><circle cx="16" cy="16" r="1.4" fill="currentColor"/></svg></span>
+      <span>Náhodne</span>
+    </button>
+  </div>
+</footer>
+
+<div class="sheet" id="sheet" hidden>
+  <div class="media" id="resMedia"></div>
+  <p class="info" id="resInfo"></p>
+  <div class="acts">
+    <button class="btn" id="resClose" type="button">Zavrieť</button>
+    <button class="btn pri" id="resShare" type="button">Uložiť / zdieľať</button>
+  </div>
+  <p class="info">Na iPhone: podrž obrázok → Uložiť do Fotiek, alebo klikni Uložiť / zdieľať.</p>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "si/editoval",
+  "short_name": "si/editoval",
+  "description": "Dither, ASCII, halftone a kovový reliéf z tvojej fotky. V prehliadači, zadarmo.",
+  "lang": "sk",
+  "start_url": "/editoval/",
+  "scope": "/editoval/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f0e0c",
+  "theme_color": "#0f0e0c",
+  "icons": [
+    { "src": "ikony/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "ikony/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

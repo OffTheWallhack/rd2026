@@ -25,6 +25,7 @@
     drift: BASE + 'event-car-drift/',
     acid: BASE + 'acid-box/',
     wall: BASE + 'wallflash/',
+    edit: ROOT + 'editoval/',
     me: ROOT + 'img/portrait.webp',
     icon: BASE + 'img/robos-192.png',
     wallBase: BASE + 'tapety/'
@@ -35,7 +36,7 @@
     { id: 'chrom', name: 'Chróm', light: true }, { id: 'halftone', name: 'Halftone' }, { id: 'grafika', name: 'Čiernobiela' },
     { id: 'obloha', name: 'Obloha' }, { id: 'led', name: 'LED' }, { id: 'rave', name: 'Rave' }, { id: 'beton', name: 'Betón', light: true }
   ];
-  var AWAY = { led: CFG.led, wall: CFG.wall, bg: CFG.bgMaker };      // on the website these open full screen in a new tab
+  var AWAY = { led: CFG.led, wall: CFG.wall, bg: CFG.bgMaker, edit: CFG.edit };      // on the website these open full screen in a new tab
   var TAGC = { 'GOSko': '#39ff88', 'Drop Ups': '#b98cff', 'Red Bull': '#ff6170', 'Festival': '#ffb21a' };
   var reduced = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
   var mobileMQ = window.matchMedia('(max-width: 47.99rem)');
@@ -63,6 +64,7 @@
     drift: '<img src="' + BASE + 'img/drift-192.png" alt="">',
     acid: '<img src="' + BASE + 'img/acid-192.png" alt="">',
     wall: '<img src="' + BASE + 'img/wallflash-192.png" alt="">',
+    edit: '<img src="' + BASE + 'img/editoval-192.png" alt="">',
     bg: '<svg viewBox="0 0 62 62"><defs><radialGradient id="roB1" cx=".2" cy=".2" r=".9"><stop offset="0" stop-color="#ff3dd8"/><stop offset="1" stop-color="#ff3dd8" stop-opacity="0"/></radialGradient><radialGradient id="roB2" cx=".9" cy=".9" r=".9"><stop offset="0" stop-color="#ffb21a"/><stop offset="1" stop-color="#ffb21a" stop-opacity="0"/></radialGradient><pattern id="roSt" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)"><rect width="2" height="6" fill="rgba(255,255,255,.12)"/></pattern></defs><rect width="62" height="62" fill="#2a1450"/><rect width="62" height="62" fill="url(#roB1)"/><rect width="62" height="62" fill="url(#roB2)"/><rect width="62" height="62" fill="url(#roSt)"/><rect x="17" y="17" width="28" height="28" rx="6" fill="none" stroke="#fff" stroke-width="2.6"/><path d="M21 39l7-8 5 5 4-4 5 7" fill="none" stroke="#fff" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/></svg>',
     cal: '<svg viewBox="0 0 62 62"><rect width="62" height="62" fill="#17141d"/><rect width="62" height="18" fill="#ffb21a"/><text class="ro-calmon" x="31" y="13.5" text-anchor="middle" font-family="-apple-system,system-ui,sans-serif" font-size="10.5" font-weight="800" letter-spacing="1" fill="#1b1200">OKT</text><text class="ro-calday" x="31" y="49" text-anchor="middle" font-family="-apple-system,system-ui,sans-serif" font-size="28" font-weight="700" fill="#fff">18</text></svg>',
     me: '<img src="' + CFG.me + '" alt="" style="object-position:50% 12%">',
@@ -108,6 +110,7 @@
        '<button class="ro-app" type="button" data-ro-open="drift"><span class="ro-ic" data-ro-icon="drift"></span><span>Car Game</span></button>' +
        '<button class="ro-app" type="button" data-ro-open="acid"><span class="ro-ic" data-ro-icon="acid"></span><span>Acid Box</span></button>' +
        '<button class="ro-app" type="button" data-ro-open="wall"><span class="ro-ic" data-ro-icon="wall"></span><span>Wallflash</span></button>' +
+       '<button class="ro-app" type="button" data-ro-open="edit"><span class="ro-ic" data-ro-icon="edit"></span><span>si/editoval</span></button>' +
        '<button class="ro-app" type="button" data-ro-open="bg"><span class="ro-ic" data-ro-icon="bg"></span><span>BG Maker</span></button>' +
        '<button class="ro-app" type="button" data-ro-open="eventy"><span class="ro-ic" data-ro-icon="cal"></span><span>Eventy</span></button>' +
        '<button class="ro-app" type="button" data-ro-open="me"><span class="ro-ic" data-ro-icon="me"></span><span>O mne</span></button>' +
@@ -351,7 +354,7 @@
 
   /* ---------- apps ---------- */
   var current = null, toastShown = false, frames = {};
-  var FRAMES = { led: { src: CFG.led, title: 'LED IT ROLL', allow: 'fullscreen; microphone; autoplay; screen-wake-lock' }, drift: { src: CFG.drift, title: 'Event Car Game', allow: 'fullscreen; autoplay; accelerometer; gyroscope' }, wall: { src: CFG.wall, title: 'Wallflash', allow: 'fullscreen; microphone; autoplay; screen-wake-lock' }, acid: { src: CFG.acid, title: 'Acid Box', allow: 'fullscreen; autoplay' } };
+  var FRAMES = { led: { src: CFG.led, title: 'LED IT ROLL', allow: 'fullscreen; microphone; autoplay; screen-wake-lock' }, drift: { src: CFG.drift, title: 'Event Car Game', allow: 'fullscreen; autoplay; accelerometer; gyroscope' }, wall: { src: CFG.wall, title: 'Wallflash', allow: 'fullscreen; microphone; autoplay; screen-wake-lock' }, acid: { src: CFG.acid, title: 'Acid Box', allow: 'fullscreen; autoplay' }, edit: { src: CFG.edit, title: 'si/editoval', allow: 'fullscreen' } };
   function setHomebar() { homebar.setAttribute('aria-hidden', isOpen && lock.classList.contains('away') && current ? 'false' : 'true'); }
   function openApp(id, fromEl) {
     if (current) return;

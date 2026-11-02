@@ -169,3 +169,5 @@ body.wait,body.wait *{cursor:wait!important}
   .tool{flex:0 1 96px}
   .toolbar{justify-content:flex-start}
 }
+.tool span{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:420px){.toolbar{gap:2px}.tool{font-size:10.5px;padding:6px 1px 5px}.tool svg{width:24px;height:24px}}

@@ -94,9 +94,9 @@ var lid=0;function nid(){return 'L'+(++lid)+'_'+Date.now().toString(36);}
 function defFx(){return {dstyle:'dots',dscale:5,dthr:0,dden:12,pal:'phos',c1:'#000000',c2:'#ff0000',c3:'#ffffff',
   aset:'min',atext:'EDITOVAL ',acols:70,athr:0,afont:'mono',aink:'pal',atrans:false,
   lvar:'warm',lamt:70,lgrain:35,
-  mat:'steel',evol:65,eslope:35,erecess:60,erough:8,eshine:65,eangle:300,egoo:0,ithr:50,ibold:0,iinv:false,idrip:40};}
+  mat:'steel',evol:65,eslope:35,erecess:60,erough:8,eshine:65,eangle:300,egoo:0,ithr:50,ibold:0,iinv:false,idrip:40,gamt:60,gseed:1};}
 function defAdj(){return {auto:false,bri:0,con:0,sat:0,blur:0,inv:false};}
-var D={fmt:'4x5',bg:{kind:'color',color:'#ffffff'},layers:[]};
+var D={fmt:'4x5',bg:{kind:'color',color:'#ffffff'},layers:[],mirror:'none'};
 var S={sel:null,tool:'move',color:'#000000',gesture:false,hist:[],fut:[],gx:false,gy:false,group:0};
 try{var sv=JSON.parse(localStorage.getItem('editoval2')||'null');if(sv&&FORMATS.some(function(f){return f.id===sv.fmt;}))D.fmt=sv.fmt;}catch(e){}
 function savePrefs(){try{localStorage.setItem('editoval2',JSON.stringify({fmt:D.fmt}));}catch(e){}}
@@ -115,17 +115,38 @@ function redo(){if(!S.fut.length)return;S.hist.push(lastSnap);lastSnap=S.fut.pop
 
 /* ================= textúry ================= */
 var TEX={};
+var MATN={steel:'Brúsená oceľ',polish:'Leštená oceľ',spun:'Sústružená',hammer:'Kovaná',chrome:'Zrkadlový chróm',titan:'Titán',holo:'Hologram',copper:'Meď',rose:'Ružové zlato',gold:'Mosadz',black:'Čierny lak',paper:'Biely papier'};
+var METALS=['steel','polish','spun','hammer','chrome','titan','holo','copper','rose','gold','black'];
+var ENVM={chrome:1,titan:1,holo:1};
+function isMetal(k){return METALS.indexOf(k)>=0;}
+function hsl(h,s,l){h=((h%360)+360)%360/360;var q=l<.5?l*(1+s):l+s-l*s,p=2*l-q;var f=function(t){t=(t+1)%1;return t<1/6?p+(q-p)*6*t:t<.5?q:t<2/3?p+(q-p)*(2/3-t)*6:p;};return [f(h+1/3)*255,f(h)*255,f(h-1/3)*255];}
+var CHROME=[[0,[252,253,255]],[.3,[160,198,240]],[.46,[34,52,98]],[.5,[8,12,28]],[.54,[118,98,76]],[.72,[222,208,184]],[1,[255,255,255]]];
+function chromeEnv(t){t=clamp(t,0,1);for(var i=1;i<CHROME.length;i++)if(t<=CHROME[i][0]){var a=CHROME[i-1],b=CHROME[i],k=(t-a[0])/(b[0]-a[0]);return [a[1][0]+(b[1][0]-a[1][0])*k,a[1][1]+(b[1][1]-a[1][1])*k,a[1][2]+(b[1][2]-a[1][2])*k];}return CHROME[CHROME.length-1][1];}
+/* farba "odrazu" podľa sklonu povrchu: chróm odráža oblohu a zem, titán a hologram menia dúhu */
+function envColor(mat,nx,ny,h){
+  if(mat==='chrome')return chromeEnv(.5+ny*.95+nx*.25);
+  if(mat==='holo')return hsl(nx*170+ny*230+h*140+200,.8,.78);
+  return hsl(250+h*230+nx*70+ny*50,.6,.55);
+}
+function cellHash(i,j){var n=(i*374761393+j*668265263)>>>0;n=Math.imul(n^(n>>>13),1274126177)>>>0;return (n&65535)/65535;}
 function texture(kind,W,H){
   var key=kind+W+'x'+H;if(TEX[key])return TEX[key];
-  var c=mk(W,H),g=c.getContext('2d',{willReadFrequently:true}),im=g.createImageData(W,H),d=im.data,x,y,i;
-  var base=kind==='gold'?[214,170,88]:kind==='black'?[26,26,30]:kind==='paper'?[244,240,230]:[178,180,184];
-  var rowN=new Float32Array(H);hashSeed=7;for(y=0;y<H;y++)rowN[y]=rnd();
-  for(y=0;y<H;y++){
-    var rn=(rowN[y]-.5)*(kind==='black'?.04:kind==='paper'?.012:.14);
-    for(x=0;x<W;x++){i=(y*W+x)*4;var v;
-      if(kind==='paper'){v=1+rn+(rnd()-.5)*.05;}
-      else{var u=x/W,band=Math.exp(-Math.pow((u-.62)*4.2,2))*.42+Math.exp(-Math.pow((u-.15)*6,2))*.18-u*.12;v=1+band+rn+(rnd()-.5)*(kind==='black'?.03:.07);}
-      d[i]=clamp(base[0]*v,0,255);d[i+1]=clamp(base[1]*v,0,255);d[i+2]=clamp(base[2]*v,0,255);d[i+3]=255;}}
+  var c=mk(W,H),g=c.getContext('2d',{willReadFrequently:true}),im=g.createImageData(W,H),d=im.data,x,y,i,col;
+  var BASE={steel:[178,180,184],polish:[192,195,200],spun:[182,184,188],hammer:[172,174,178],copper:[192,112,72],rose:[226,168,148],gold:[214,170,88],black:[26,26,30],paper:[244,240,230]};
+  var base=BASE[kind]||BASE.steel,rowN=new Float32Array(Math.max(W,H)*2),cell=Math.max(8,Math.min(W,H)/14),cxm=W/2,cym=H/2;
+  hashSeed=7;for(y=0;y<rowN.length;y++)rowN[y]=rnd();
+  for(y=0;y<H;y++)for(x=0;x<W;x++){i=(y*W+x)*4;var u=x/W,v=1,fine=rnd()-.5;col=base;
+    if(kind==='paper'){v=1+(rowN[y]-.5)*.012+fine*.05;}
+    else if(kind==='polish'){v=1+.38*Math.exp(-Math.pow((u*.8+y/H*.4-.6)*2.4,2))-.22*(y/H)+fine*.012;}
+    else if(kind==='spun'){var dx=x-cxm,dy=y-cym,r=Math.sqrt(dx*dx+dy*dy),a=Math.atan2(dy,dx);v=1+.28*Math.cos(2*(a-.7))+(rowN[(r|0)%rowN.length]-.5)*.16+fine*.05;}
+    else if(kind==='hammer'){var ci=Math.floor(x/cell),cj=Math.floor(y/cell),bd=1e9,bx=0,by=0;
+      for(var oj=-1;oj<=1;oj++)for(var oi=-1;oi<=1;oi++){var px=(ci+oi+.2+cellHash(ci+oi,cj+oj)*.6)*cell,py=(cj+oj+.2+cellHash(cj+oj,ci+oi+99)*.6)*cell,dd=(x-px)*(x-px)+(y-py)*(y-py);if(dd<bd){bd=dd;bx=x-px;by=y-py;}}
+      v=1+(-bx*.6-by*.8)/cell*.5+.12*Math.exp(-Math.pow((u-.6)*3,2))+fine*.04;}
+    else if(kind==='chrome'){col=chromeEnv(y/H+.035*Math.sin(u*9.4)+.02*Math.sin(u*23+y/H*5));v=1+fine*.02;}
+    else if(kind==='holo'){col=hsl(u*210+y/H*150+28*Math.sin(u*7+y/H*4),.72,.8);v=1+(rowN[y]-.5)*.05+fine*.06;}
+    else if(kind==='titan'){col=hsl(240+(u+y/H)*110,.5,.52);var bt=Math.exp(-Math.pow((u-.62)*4.2,2))*.3;v=1+bt+(rowN[y]-.5)*.12+fine*.05;}
+    else{var band=Math.exp(-Math.pow((u-.62)*4.2,2))*.42+Math.exp(-Math.pow((u-.15)*6,2))*.18-u*.12;v=1+band+(rowN[y]-.5)*(kind==='black'?.04:.14)+fine*(kind==='black'?.03:.07);}
+    d[i]=clamp(col[0]*v,0,255);d[i+1]=clamp(col[1]*v,0,255);d[i+2]=clamp(col[2]*v,0,255);d[i+3]=255;}
   g.putImageData(im,0,0);
   if(Object.keys(TEX).length>8)TEX={};TEX[key]=c;return c;
 }
@@ -256,7 +277,7 @@ function fxLook(src,p){
 function light(d,matD,Hh,M,R,w,h,p,kk,alpha,metal){
   var ang=(p.eangle+180)*Math.PI/180,Lx=Math.cos(ang),Ly=-Math.sin(ang),Lz=.75,Ll=Math.sqrt(Lx*Lx+Ly*Ly+Lz*Lz);Lx/=Ll;Ly/=Ll;Lz/=Ll;
   var Hx=Lx,Hy=Ly,Hz=Lz+1,Hl=Math.sqrt(Hx*Hx+Hy*Hy+Hz*Hz);Hx/=Hl;Hy/=Hl;Hz/=Hl;
-  var rough=p.erough/100,shine=p.eshine/100,recess=p.erecess/100,x,y,i,j;hashSeed=99;
+  var rough=p.erough/100,shine=p.eshine/100,recess=p.erecess/100,x,y,i,j,envOn=!!ENVM[p.mat];hashSeed=99;
   for(y=0;y<h;y++)for(x=0;x<w;x++){i=y*w+x;j=i*4;var m=1;
     if(M){var hv=M[i];m=hv<.02?0:hv>.55?1:(hv-.02)/.53;m=m*m*(3-2*m);}
     if(m<=0){if(R&&recess>0){var ring=clamp(R[i]-M[i]*1.2,0,1)*recess*alpha;if(ring>0){var dk=1-ring*.55;d[j]*=dk;d[j+1]*=dk;d[j+2]*=dk;if(d[j+3]<255)d[j+3]=Math.max(d[j+3],ring*120);}}continue;}
@@ -266,6 +287,7 @@ function light(d,matD,Hh,M,R,w,h,p,kk,alpha,metal){
     var diff=Math.max(0,nx*Lx+ny*Ly+nz*Lz),sp=Math.pow(Math.max(0,nx*Hx+ny*Hy+nz*Hz),metal?60:24)*shine*1.3;
     var env=metal?(.5+.5*Math.sin(ny*5.5+nx*2.2))*shine*.5:0,lit=.42+.95*diff+env*.6;
     var b0=matD?matD[j]:d[j],b1=matD?matD[j+1]:d[j+1],b2=matD?matD[j+2]:d[j+2],k=m*alpha;
+    if(envOn){var ec=envColor(p.mat,nx,ny,Hh[i]);b0=ec[0];b1=ec[1];b2=ec[2];lit=.72+.38*diff;}
     d[j]=clamp(d[j]+(b0*lit+sp*255-d[j])*k,0,255);d[j+1]=clamp(d[j+1]+(b1*lit+sp*255-d[j+1])*k,0,255);d[j+2]=clamp(d[j+2]+(b2*lit+sp*255-d[j+2])*k,0,255);
     if(d[j+3]<255)d[j+3]=Math.max(d[j+3],k*255);}
 }
@@ -295,7 +317,7 @@ function matData(mat,W,H,M){var k=mat==='self'?'steel':mat;return texture(k,W,H)
 function reliefOnto(g,W,H,box,drawMask,thick,p,alpha,goo){
   goo=Math.round(goo||0);var M=maskRegion(W,H,box,drawMask,Math.ceil(thick*2+6+goo*2));if(!M)return;
   var A=gooify(M.A,M.w,M.h,goo),im=g.getImageData(M.x0,M.y0,M.w,M.h),matD=p.mat==='below'?null:matData(p.mat,W,H,M);
-  var metal=/steel|gold|black/.test(p.mat)||(p.mat==='below'&&/steel|gold|black/.test(D.bg.kind));
+  var metal=isMetal(p.mat)||(p.mat==='below'&&isMetal(D.bg.kind));
   reliefA(im.data,matD,A,M.w,M.h,thick,p,alpha,metal);g.putImageData(im,M.x0,M.y0);
 }
 /* tekutá kresba farbou (bez reliéfu) */
@@ -324,7 +346,7 @@ function fxInk(src,p,U){
   A=gooify(A,W,H,Math.round(p.egoo/100*10*U),.16);
   var out=mk(W,H),o=out.getContext('2d',{willReadFrequently:true});
   if(p.mat==='self'||p.mat==='below')o.drawImage(src,0,0);else o.drawImage(texture(p.mat,W,H),0,0);
-  var im=o.getImageData(0,0,W,H);reliefA(im.data,null,A,W,H,th,p,1,/steel|gold|black/.test(p.mat));o.putImageData(im,0,0);
+  var im=o.getImageData(0,0,W,H);reliefA(im.data,null,A,W,H,th,p,1,isMetal(p.mat));o.putImageData(im,0,0);
   return out;
 }
 
@@ -334,14 +356,25 @@ function ensureFont(f){if(FL[f.id]||!document.fonts||!document.fonts.load)return
 function tmet(L,U){
   var f=fontOf(L.font),px=Math.max(4,L.size*U);MC.font=fstr(f,px);if('letterSpacing' in MC)MC.letterSpacing=(L.ls*U)+'px';
   var lines=String(L.text==null?'':L.text).split('\n'),mw=1;lines.forEach(function(s){mw=Math.max(mw,MC.measureText(s).width);});
-  var lh=px*L.lh;return {f:f,px:px,lines:lines,w:mw,h:Math.max(px,lines.length*lh),lh:lh};
+  var lh=px*L.lh,c=L.curve||0,res={f:f,px:px,lines:lines,w:mw,h:Math.max(px,lines.length*lh),lh:lh,c:c,R:0,sag:0,bw:mw};
+  if(Math.abs(c)>=1){var R=mw/(Math.PI*Math.abs(c)/100),th=Math.min(Math.PI/2,mw/2/R);res.R=R;res.sag=R*(1-Math.cos(th));res.bw=2*R*Math.sin(th);}
+  return res;
 }
 function paintText(g,L,W,H,U,mask){
-  var m=tmet(L,U),n=m.lines.length;
-  g.save();g.translate(L.x*W,L.y*H);g.rotate(L.r*Math.PI/180);g.font=fstr(m.f,m.px);if('letterSpacing' in g)g.letterSpacing=(L.ls*U)+'px';
+  var m=tmet(L,U),n=m.lines.length,curved=m.R>0,ls=L.ls*U,hasLS='letterSpacing' in g;
+  g.save();g.translate(L.x*W,L.y*H);g.rotate(L.r*Math.PI/180);g.scale(L.fh?-1:1,L.fv?-1:1);g.font=fstr(m.f,m.px);if(hasLS)g.letterSpacing=ls+'px';
   g.textBaseline='middle';g.textAlign=L.align;g.lineJoin='round';
+  if(curved)g.translate(0,m.c>0?-m.sag/2:m.sag/2);
   var ax=L.align==='left'?-m.w/2:L.align==='right'?m.w/2:0;
-  var each=function(fn){m.lines.forEach(function(s,i){fn(s,ax,(i-(n-1)/2)*m.lh);});};
+  /* rovný text: celé riadky; v oblúku: každé písmeno zvlášť, natočené po kružnici */
+  var each=function(fn){m.lines.forEach(function(s,i){var ly=(i-(n-1)/2)*m.lh;
+    if(!curved){fn(s,ax,ly,null);return;}
+    if(hasLS)g.letterSpacing='0px';g.textAlign='center';
+    var chars=Array.from(s),ws=chars.map(function(ch){return g.measureText(ch).width+ls;}),lw=ws.reduce(function(a,b){return a+b;},0)-ls;
+    var x=L.align==='left'?-m.w/2:L.align==='right'?m.w/2-lw:-lw/2,up=m.c>0,r=Math.max(1,up?m.R-ly:m.R+ly);
+    chars.forEach(function(ch,k){var cxk=x+(ws[k]-ls)/2,th=cxk/r;
+      g.save();g.translate(r*Math.sin(th),up?m.R-r*Math.cos(th):-m.R+r*Math.cos(th));g.rotate(up?th:-th);fn(ch,0,0,cxk);g.restore();x+=ws[k];});
+    if(hasLS)g.letterSpacing=ls+'px';g.textAlign=L.align;});};
   var fill=function(s,x,y){g.fillText(s,x,y);};
   if(mask){g.fillStyle='#fff';each(fill);g.restore();return;}
   var st=L.style;
@@ -353,7 +386,7 @@ function paintText(g,L,W,H,U,mask){
   else if(st==='wordart'){ /* WordArt z Wordu 97: dúhový prechod a 3D vytiahnutie */
     var dep=Math.max(3,Math.round(m.px*.09)),stp=Math.max(1,dep/8);
     g.fillStyle='#4b3a00';for(var z=dep;z>0;z-=stp)each(function(s,x,y){g.fillText(s,x+z*.8,y+z);});
-    each(function(s,x,y){var x0=x-(L.align==='left'?0:L.align==='right'?m.w:m.w/2),gr=g.createLinearGradient(x0,0,x0+m.w,0);
+    each(function(s,x,y,gx){var x0=gx!=null?-gx-m.w/2:x-(L.align==='left'?0:L.align==='right'?m.w:m.w/2),gr=g.createLinearGradient(x0,0,x0+m.w,0);
       ['#ff0000','#ff8000','#ffff00','#00c000','#0080ff','#8000ff'].forEach(function(c,i,a){gr.addColorStop(i/(a.length-1),c);});
       g.fillStyle=gr;g.fillText(s,x,y);g.lineWidth=Math.max(1,m.px*.02);g.strokeStyle='#000';g.strokeText(s,x,y);});}
   else{g.fillStyle=L.color;each(fill);}
@@ -401,20 +434,69 @@ function avgSize(L){if(!L.strokes.length)return L.bsize;var s=0;L.strokes.forEac
 /* ================= geometria vrstiev ================= */
 function layerBox(L,W,H,U){
   if(L.type==='image'){var src=SRC[L.src];if(!src)return null;var lw=L.s*W;return {cx:L.x*W,cy:L.y*H,w:lw,h:lw*src.height/src.width,r:L.r*Math.PI/180};}
-  if(L.type==='text'){var m=tmet(L,U);return {cx:L.x*W,cy:L.y*H,w:m.w+m.px*.2,h:m.h+m.px*.1,r:L.r*Math.PI/180};}
+  if(L.type==='text'){var m=tmet(L,U);return {cx:L.x*W,cy:L.y*H,w:m.bw+m.px*.2+(m.R?m.px*.4:0),h:m.h+m.px*.1+m.sag,r:L.r*Math.PI/180};}
   if(L.type==='draw'&&L.strokes.length){var b=drawBox(L,W,H,U);return {cx:(b.x0+b.x1)/2,cy:(b.y0+b.y1)/2,w:b.x1-b.x0,h:b.y1-b.y0,r:0};}
   return null;
 }
 function aabb(b){var c=Math.abs(Math.cos(b.r)),s=Math.abs(Math.sin(b.r)),hw=b.w/2*c+b.h/2*s,hh=b.w/2*s+b.h/2*c;return {x0:b.cx-hw,y0:b.cy-hh,x1:b.cx+hw,y1:b.cy+hh};}
 
+/* ================= skreslenie (vlna, vír, bublina…) ================= */
+function warp(src,kind,amt){
+  var W=src.width,H=src.height,sd=src.getContext('2d',{willReadFrequently:true}).getImageData(0,0,W,H).data,out=mk(W,H),o=out.getContext('2d'),im=o.createImageData(W,H),d=im.data;
+  var A=amt/100,cx=W/2,cy=H/2,R=Math.min(W,H)/2,x,y,sx,sy;
+  for(y=0;y<H;y++)for(x=0;x<W;x++){
+    var dx=x-cx,dy=y-cy,dd=Math.sqrt(dx*dx+dy*dy)||1e-6;sx=x;sy=y;
+    if(kind==='wave'){sx=x+Math.sin(y/H*Math.PI*5)*W*.05*A;sy=y+Math.sin(x/W*Math.PI*4)*H*.035*A;}
+    else if(kind==='ripple'){var of=Math.sin(dd/R*Math.PI*9)*R*.035*A;sx=x+dx/dd*of;sy=y+dy/dd*of;}
+    else if(kind==='twirl'){if(dd<R){var an=A*4*Math.pow(1-dd/R,2),c=Math.cos(an),sn=Math.sin(an);sx=cx+dx*c-dy*sn;sy=cy+dx*sn+dy*c;}}
+    else if(kind==='bulge'){if(dd<R){var rs=dd*Math.pow(dd/R,A*.9);sx=cx+dx/dd*rs;sy=cy+dy/dd*rs;}}
+    else if(kind==='pinch'){if(dd<R){var rp=dd*Math.pow(dd/R,-A*.45);rp=Math.min(rp,R);sx=cx+dx/dd*rp;sy=cy+dy/dd*rp;}}
+    else if(kind==='melt'){sy=y-Math.max(0,Math.sin(x/W*Math.PI*7+1.3)*.5+.5*Math.sin(x/W*Math.PI*17))*H*.12*A*(y/H);}
+    sx=clamp(sx,0,W-1.001);sy=clamp(sy,0,H-1.001);
+    var x0=sx|0,y0=sy|0,fx=sx-x0,fy=sy-y0,i00=(y0*W+x0)*4,i10=i00+4,i01=i00+W*4,i11=i01+4,j=(y*W+x)*4;
+    if(x0+1>=W){i10=i00;i11=i01;}if(y0+1>=H){i01=i00;i11=i10;}
+    for(var k=0;k<4;k++)d[j+k]=(sd[i00+k]*(1-fx)+sd[i10+k]*fx)*(1-fy)+(sd[i01+k]*(1-fx)+sd[i11+k]*fx)*fy;}
+  o.putImageData(im,0,0);return out;
+}
+/* glitch: posunuté pásy, rozdelené farby, farebné bloky a riadky */
+function fxGlitch(src,p,U){
+  var W=src.width,H=src.height,out=mk(W,H),o=out.getContext('2d',{willReadFrequently:true});o.drawImage(src,0,0);
+  var im=o.getImageData(0,0,W,H),d=im.data,org=new Uint8ClampedArray(d),A=p.gamt/100,keep=hashSeed,sh=Math.round(W*.012*A)+1,y=0,x,yy;
+  hashSeed=(p.gseed*977+13)>>>0;
+  while(y<H){var hg=Math.max(2,Math.round(H*(.004+rnd()*.06))),off=rnd()<.35*A+.05?Math.round((rnd()-.5)*W*.28*A):0;
+    for(yy=y;yy<Math.min(H,y+hg);yy++)for(x=0;x<W;x++){var sx=clamp(x-off,0,W-1),j=(yy*W+x)*4,r0=yy*W;
+      d[j]=org[(r0+clamp(sx+sh,0,W-1))*4];d[j+1]=org[(r0+sx)*4+1];d[j+2]=org[(r0+clamp(sx-sh,0,W-1))*4+2];}
+    y+=hg;}
+  o.putImageData(im,0,0);
+  o.globalCompositeOperation='difference';var nb=Math.round(A*9);
+  for(var b=0;b<nb;b++){o.fillStyle=pick(['#ff00ff','#00ffff','#ffff00','#ffffff']);o.fillRect(rnd()*W,rnd()*H,W*(.05+rnd()*.35),H*(.005+rnd()*.03));}
+  o.globalCompositeOperation='source-over';o.fillStyle='rgba(0,0,0,'+(.18*A)+')';var st=Math.max(2,Math.round(3*U));for(y=0;y<H;y+=st)o.fillRect(0,y,W,Math.max(1,st/3));
+  hashSeed=keep;return out;
+}
+/* zrkadlenie celého obrázka */
+var MIRN={none:'Bez zrkadla',lr:'Ľavá → pravá',rl:'Pravá → ľavá',tb:'Horná → dolná',bt:'Dolná → horná',quad:'Štyri rohy',k6:'Kaleidoskop 6',k8:'Kaleidoskop 8',k12:'Kaleidoskop 12'};
+var MIRCYCLE=['none','lr','rl','tb','quad','k6','k8','k12'];
+function mirrorDoc(C,mode){
+  if(!mode||mode==='none')return;
+  if(mode==='quad'){mirrorDoc(C,'lr');mirrorDoc(C,'tb');return;}
+  var W=C.width,H=C.height,g=C.getContext('2d'),S0=mk(W,H);S0.getContext('2d').drawImage(C,0,0);g.save();
+  if(mode==='lr'){g.clearRect(W/2,0,W/2,H);g.translate(W,0);g.scale(-1,1);g.drawImage(S0,0,0,W/2,H,0,0,W/2,H);}
+  else if(mode==='rl'){g.clearRect(0,0,W/2,H);g.translate(W,0);g.scale(-1,1);g.drawImage(S0,W/2,0,W/2,H,W/2,0,W/2,H);}
+  else if(mode==='tb'){g.clearRect(0,H/2,W,H/2);g.translate(0,H);g.scale(1,-1);g.drawImage(S0,0,0,W,H/2,0,0,W,H/2);}
+  else if(mode==='bt'){g.clearRect(0,0,W,H/2);g.translate(0,H);g.scale(1,-1);g.drawImage(S0,0,H/2,W,H/2,0,H/2,W,H/2);}
+  else{var n=+mode.slice(1),step=Math.PI*2/n,cx=W/2,cy=H/2,R=Math.hypot(W,H);g.clearRect(0,0,W,H);
+    for(var k=0;k<n;k++){g.save();g.translate(cx,cy);g.rotate((k%2?k+1:k)*step);if(k%2)g.scale(1,-1);g.beginPath();g.moveTo(0,0);g.arc(0,0,R,-.003,step+.003);g.closePath();g.clip();var z=Math.hypot(W,H)/Math.min(W,H)*1.02;g.scale(z,z);g.drawImage(S0,-cx,-cy);g.restore();}}
+  g.restore();
+}
+
 /* ================= vykreslenie dokumentu ================= */
 function imgRaster(L,W,U,preview){
   var src=SRC[L.src],lw=Math.max(2,Math.round(L.s*W)),lh=Math.max(2,Math.round(lw*src.height/src.width));
   var cap=Math.sqrt(9e6/(lw*lh));if(cap<1){lw=Math.round(lw*cap);lh=Math.round(lh*cap);} /* obrovsky zväčšená vrstva: počíta sa v menšom */
-  var key=[lw,lh,L.fx,JSON.stringify(L.p),JSON.stringify(L.adj),L.src].join('|');
+  var key=[lw,lh,L.fx,JSON.stringify(L.p),JSON.stringify(L.adj),L.src,L.warp,L.wamt].join('|');
   if(preview&&L._c&&(L._c.key===key||S.gesture))return L._c.cv;
-  var a=adjust(src,lw,lh,L.adj,U),out=a;
-  if(L.fx==='dither')out=fxDither(a,L.p,U);else if(L.fx==='ascii')out=fxAscii(a,L.p);else if(L.fx==='look')out=fxLook(a,L.p);else if(L.fx==='relief')out=fxMetal(a,L.p,U);else if(L.fx==='ink')out=fxInk(a,L.p,U);
+  var a=adjust(src,lw,lh,L.adj,U);if(L.warp&&L.warp!=='none')a=warp(a,L.warp,L.wamt);var out=a;
+  if(L.fx==='dither')out=fxDither(a,L.p,U);else if(L.fx==='ascii')out=fxAscii(a,L.p);else if(L.fx==='look')out=fxLook(a,L.p);else if(L.fx==='relief')out=fxMetal(a,L.p,U);else if(L.fx==='ink')out=fxInk(a,L.p,U);else if(L.fx==='glitch')out=fxGlitch(a,L.p,U);
   if(preview)L._c={key:key,cv:out};
   return out;
 }
@@ -430,7 +512,7 @@ function renderDoc(W,H,preview){
   D.layers.forEach(function(L){
     if(L.hidden)return;var a=clamp(L.o/100,0,1);if(a<=0)return;
     if(L.type==='image'){var src=SRC[L.src];if(!src)return;var r=imgRaster(L,W,U,preview),lw=L.s*W,lh=lw*src.height/src.width;
-      g.save();g.globalAlpha=a;g.translate(L.x*W,L.y*H);g.rotate(L.r*Math.PI/180);g.drawImage(r,-lw/2,-lh/2,lw,lh);g.restore();}
+      g.save();g.globalAlpha=a;g.translate(L.x*W,L.y*H);g.rotate(L.r*Math.PI/180);g.scale(L.fh?-1:1,L.fv?-1:1);g.drawImage(r,-lw/2,-lh/2,lw,lh);g.restore();}
     else if(L.type==='text'){ensureFont(fontOf(L.font));if(!String(L.text).trim())return;
       if(L.style==='relief'){var m=tmet(L,U);reliefOnto(g,W,H,aabb(layerBox(L,W,H,U)),function(x){paintText(x,L,W,H,U,true);},m.px*.14,L.p,a,(L.p.egoo||0)/100*m.px*.08);}
       else{g.save();g.globalAlpha=a;paintText(g,L,W,H,U,false);g.restore();}}
@@ -442,6 +524,7 @@ function renderDoc(W,H,preview){
       else if(liq>0)paintOnto(g,W,H,bx,mf,L.color,a,goo);
       else{g.save();g.globalAlpha=a;strokesPath(g,L,W,H,U);g.restore();}}
   });
+  mirrorDoc(C,D.mirror);
   return C;
 }
 
@@ -539,7 +622,7 @@ function fitLayer(L,mode){
   var f=fmtOf(),src=SRC[L.src];if(!src)return;var docAR=f.w/f.h,imgAR=src.width/src.height;
   L.s=mode==='cover'?Math.max(1,imgAR/docAR):Math.min(1,imgAR/docAR)*(mode==='small'?.6:1);L.x=.5;L.y=.5;L.r=0;L.fit=mode==='small'?null:mode;
 }
-function newImage(id){var n=D.layers.filter(function(l){return l.type==='image';}).length+1;return {id:nid(),type:'image',name:'Obrázok '+n,src:id,x:.5,y:.5,s:.6,r:0,o:100,fx:'none',p:defFx(),adj:defAdj(),hidden:false,fit:null};}
+function newImage(id){var n=D.layers.filter(function(l){return l.type==='image';}).length+1;return {id:nid(),type:'image',name:'Obrázok '+n,src:id,x:.5,y:.5,s:.6,r:0,o:100,fx:'none',p:defFx(),adj:defAdj(),hidden:false,fit:null,warp:'none',wamt:50,fh:false,fv:false};}
 function insertLayer(L){var cur=selLayer(),i=cur?D.layers.indexOf(cur)+1:D.layers.length;
   if(L.type==='image'&&!cur){i=0;while(i<D.layers.length&&D.layers[i].type==='image')i++;} /* nová fotka ide pod texty */
   D.layers.splice(i,0,L);}
@@ -604,7 +687,7 @@ function buildLayers(){
   var L=selLayer();['#lUp','#lDown','#lDup','#lDel'].forEach(function(s){$(s).disabled=!L;});
   if(L){$('#lUp').disabled=D.layers.indexOf(L)===D.layers.length-1;$('#lDown').disabled=D.layers.indexOf(L)===0;}
 }
-var BGN={color:'farba',paper:'papier',steel:'oceľ',gold:'mosadz',black:'čierny lak',none:'priehľadné'};
+var BGN=Object.assign({color:'farba',none:'priehľadné'},MATN);
 $('#lUp').onclick=function(){moveLayer(1);};$('#lDown').onclick=function(){moveLayer(-1);};$('#lDup').onclick=dupLayer;$('#lDel').onclick=delLayer;
 
 /* ================= panel: vlastnosti ================= */
@@ -635,8 +718,9 @@ function palChips(par,p){
   if(p.pal==='custom'){var r=el('div','colors');[['c1','pozadie'],['c2','farba'],['c3','tretia']].forEach(function(q){var l=el('label'),i=document.createElement('input');i.type='color';i.value=p[q[0]];i.oninput=function(){p[q[0]]=i.value;dirty();};i.onchange=commit;l.appendChild(i);l.appendChild(document.createTextNode(q[1]));r.appendChild(l);});par.appendChild(r);}
 }
 function reliefControls(par,p,below,o){
-  o=o||{};var mats=o.mats||[['steel','Oceľ'],['gold','Mosadz'],['black','Čierny lak'],['paper','Biely papier']];if(below)mats=[['below','Do podkladu']].concat(mats);
-  chips(par,'Materiál',p,'mat',mats);
+  o=o||{};var mats=(o.mats||METALS.concat(['paper'])).map(function(k){return [k,MATN[k]];});if(o.self)mats.push(['self','Pôvodné farby']);if(below)mats=[['below','Do podkladu']].concat(mats);
+  chips(par,'Materiál',p,'mat',mats,true);
+  btns(par,[['🎲 Náhodná oceľ',function(){p.mat=pick(METALS);p.evol=ri(45,100);p.eslope=ri(15,70);p.eshine=ri(40,100);p.erough=ri(0,25);p.eangle=ri(0,71)*5;commit();buildProps();buildLayers();dirty();msg('Materiál: '+MATN[p.mat]+'. Klikni znova pre ďalší.');}]]);
   if(o.goo)slider(par,'Tekutosť',p,'egoo',0,100,1);
   slider(par,'Objem',p,'evol',0,100,1);
   slider(par,'Mäkkosť hrany',p,'eslope',0,100,1);
@@ -651,8 +735,13 @@ function buildProps(){
   $('#propsT').textContent='Vlastnosti – '+(L?(L.type==='image'?L.name:L.type==='text'?'text':'kresba'):'pozadie');
   if(!L){
     g=grp('Pozadie');
-    chips(g,null,D.bg,'kind',[['color','Farba'],['paper','Papier'],['steel','Oceľ'],['gold','Mosadz'],['black','Čierny lak'],['none','Priehľadné']]);
+    chips(g,null,D.bg,'kind',[['color','Farba']].concat(METALS.concat(['paper']).map(function(k){return [k,MATN[k]];})).concat([['none','Priehľadné']]));
+    btns(g,[['🎲 Náhodná oceľ',function(){D.bg={kind:pick(METALS)};commit();buildProps();buildLayers();dirty();msg('Pozadie: '+MATN[D.bg.kind]+'.');}]]);
     hint(g,'Farbu pozadia vyberieš v palete pod obrázkom. Priehľadné sa uloží ako PNG bez pozadia.');
+    g=grp('Zrkadlenie celého obrázka');
+    if(!D.mirror)D.mirror='none';
+    chips(g,null,D,'mirror',Object.keys(MIRN).map(function(k){return [k,MIRN[k],mirrorTool];}));
+    hint(g,'Zrkadlí všetko naraz, aj texty a kresbu. Tlačidlo Zrkadlo hore prepína režimy dookola.');
     g=grp('Začni tu');
     btns(g,[['Tekutý text z fotky…',inkFromPhoto]]);
     hint(g,'Pridaj <b>Fotku</b>, <b>Text</b> alebo kresli <b>Štetcom</b>. Štetec kreslí tekutý kovový ťah. Na obrázku ťahaj vrstvu prstom, rohom ju zväčšíš, krúžkom otočíš. Dvoma prstami naraz zväčšíš aj otočíš.');
@@ -660,7 +749,7 @@ function buildProps(){
   }
   if(L.type==='image'){
     g=grp('Efekt');
-    chips(g,null,L,'fx',[['none','Žiadny'],['ink','Tekutý',function(){if(!L.p.egoo)L.p.egoo=45;if(L.p.mat==='below')L.p.mat='steel';}],['dither','Dither'],['ascii','ASCII'],['look','Look'],['relief','Kov']],true);
+    chips(g,null,L,'fx',[['none','Žiadny'],['ink','Tekutý',function(){if(!L.p.egoo)L.p.egoo=45;if(L.p.mat==='below')L.p.mat='steel';}],['dither','Dither'],['ascii','ASCII'],['look','Look'],['relief','Kov'],['glitch','Glitch']],true);
     var p=L.p;
     if(L.fx==='dither'){
       chips(g,'Štýl',p,'dstyle',[['bayer4','Bayer'],['bayer8','Bayer jemný'],['fs','Floyd'],['atk','Atkinson'],['noise','Šum'],['dots','Halftone'],['wave','Vlny'],['lines','Riadky'],['pixel','Pixel']],true);
@@ -684,18 +773,26 @@ function buildProps(){
     }else if(L.fx==='relief'){
       hint(g,'Svetlé miesta fotky vystúpia z kovovej platne.');
       reliefControls(g,p,false);
+    }else if(L.fx==='glitch'){
+      slider(g,'Sila',p,'gamt',0,100,1);
+      btns(g,[['🎲 Iný glitch',function(){p.gseed=(p.gseed||1)+1;commit();dirty();}]]);
     }else if(L.fx==='ink'){
       hint(g,'Daj sem fotku s textom, napríklad svoj post: biele pozadie a čierne písmo. Písmo sa zmení na tekutý reliéf.');
       slider(g,'Citlivosť na písmo',p,'ithr',5,95,1);
       slider(g,'Hrúbka písma',p,'ibold',-60,100,1,sgn);
       slider(g,'Kvapky a stekanie',p,'idrip',0,100,1);
       check(g,'Svetlé písmo na tmavom pozadí',p,'iinv');
-      reliefControls(g,p,false,{goo:true,mats:[['steel','Oceľ'],['gold','Mosadz'],['black','Čierny lak'],['paper','Biely papier'],['self','Pôvodné farby']]});
+      reliefControls(g,p,false,{goo:true,self:true});
     }else hint(g,'Vyber efekt. Každá fotka môže mať iný a môžeš ich vrstviť cez seba. Fotku s textom zmeníš na tekutý reliéf efektom Tekutý.');
     g=grp('Poloha');
     slider(g,'Veľkosť',L,'s',.05,4,.01,function(v){return Math.round(v*100)+' %';},function(){L.fit=null;});
     slider(g,'Otočenie',L,'r',-180,180,1,function(v){return Math.round(v)+'°';});
     slider(g,'Priehľadnosť',L,'o',0,100,1,function(v){return v+' %';});
+    btns(g,[['Prevrátiť ↔',function(){L.fh=!L.fh;commit();dirty();}],['Prevrátiť ↕',function(){L.fv=!L.fv;commit();dirty();}],['Zrkadlová kópia',function(){mirrorCopy(L);}]]);
+    g=grp('Skreslenie');if(!L.warp)L.warp='none';if(L.wamt==null)L.wamt=50;
+    chips(g,null,L,'warp',[['none','Žiadne'],['wave','Vlna'],['ripple','Kruhy na vode'],['twirl','Vír'],['bulge','Bublina'],['pinch','Stiahnutie'],['melt','Topenie']],true);
+    if(L.warp!=='none')slider(g,'Sila skreslenia',L,'wamt',0,100,1);
+    g=grp('Rozloženie');
     btns(g,[['Vyplniť',function(){fitLayer(L,'cover');commit();buildProps();dirty();}],['Celá',function(){fitLayer(L,'contain');commit();buildProps();dirty();}],['Na stred',function(){L.x=.5;L.y=.5;commit();dirty();}],['Vymeniť fotku',function(){S.replace=L.id;$('#file').click();}]]);
     var det=el('details');det.appendChild(el('summary','','Úpravy fotky (jas, kontrast…)'));g=grp(null,det);var a=L.adj;
     check(g,'Auto svetlo – vytiahne tmavé fotky',a,'auto');
@@ -714,6 +811,8 @@ function buildProps(){
     var rf=el('div','row');rf.appendChild(fz);g.appendChild(rf);
     slider(g,'Veľkosť',L,'size',8,700,1);
     slider(g,'Rozostup písmen',L,'ls',-20,100,1);
+    if(L.curve==null)L.curve=0;
+    slider(g,'Oblúk',L,'curve',-100,100,1,function(v){return v>0?'∩ '+v:v<0?'∪ '+(-v):'rovno';});
     if(String(L.text).indexOf('\n')>=0)slider(g,'Riadkovanie',L,'lh',.6,2,.05,function(v){return v.toFixed(2);});
     chips(g,'Zarovnanie',L,'align',[['left','Vľavo'],['center','Na stred'],['right','Vpravo']]);
     g=grp('Štýl');
@@ -723,6 +822,7 @@ function buildProps(){
     slider(g,'Otočenie',L,'r',-180,180,1,function(v){return Math.round(v)+'°';});
     slider(g,'Priehľadnosť',L,'o',0,100,1,function(v){return v+' %';});
     btns(g,[['Na stred',function(){L.x=.5;L.y=.5;commit();dirty();}],['Hore',function(){L.x=.5;L.y=.12;commit();dirty();}],['Dole',function(){L.x=.5;L.y=.88;commit();dirty();}]]);
+    btns(g,[['Prevrátiť ↔',function(){L.fh=!L.fh;commit();dirty();}],['Prevrátiť ↕',function(){L.fv=!L.fv;commit();dirty();}],['Zrkadlová kópia',function(){mirrorCopy(L);}]]);
   }else{
     g=grp('Štetec');
     hint(g,'Kresli prstom priamo po obrázku. Kým je vybratá táto vrstva, štetec kreslí.');
@@ -765,14 +865,14 @@ $('#tUndo').onclick=undo;
 $('#tSave').onclick=function(){save();};
 $('#tRnd').onclick=function(){
   var L=selLayer();
-  if(!L){D.bg=pick([{kind:'color',color:pick(W98)},{kind:'paper'},{kind:'steel'},{kind:'gold'},{kind:'black'}]);}
-  else if(L.type==='image'){var p=L.p;L.fx=pick(['dither','dither','ascii','look','relief']);
+  if(!L){D.bg=Math.random()<.25?{kind:'color',color:pick(W98)}:{kind:pick(METALS.concat(['paper']))};}
+  else if(L.type==='image'){var p=L.p;L.fx=pick(['dither','dither','ascii','look','relief','glitch','ink']);if(Math.random()<.3){L.warp=pick(['wave','ripple','twirl','bulge','melt']);L.wamt=ri(25,80);}else L.warp='none';p.gseed=ri(1,999);if(L.fx==='ink'&&!p.egoo)p.egoo=45;
     if(L.fx==='dither'){p.dstyle=pick(['bayer4','bayer8','fs','atk','noise','dots','wave','lines','pixel']);p.dscale=ri(2,10);p.dthr=ri(-25,25);p.dden=ri(4,30);p.pal=pick(PALS.filter(function(q){return q.id!=='custom';})).id;}
     else if(L.fx==='ascii'){p.aset=pick(['min','full','blocks','hearts','bin']);p.acols=ri(40,130);p.athr=ri(-20,20);p.afont=pick(['mono','serif','gothic']);p.aink=pick(['pal','color']);p.pal=pick(PALS.filter(function(q){return q.c;})).id;}
     else if(L.fx==='look'){p.lvar=pick(['warm','cold','bw','vhs','poster']);p.lamt=ri(40,100);p.lgrain=ri(0,80);}
-    else{p.mat=pick(['steel','gold','black']);p.evol=ri(35,100);p.eslope=ri(10,80);p.eshine=ri(30,100);p.eangle=ri(0,71)*5;}}
-  else if(L.type==='text'){L.font=pick(FONTS).id;L.style=pick(['plain','shadow','outline','chrome','wordart','relief']);L.color=pick(W98);L.p.mat=pick(['below','steel','gold']);}
-  else{L.p.evol=ri(30,100);L.p.eslope=ri(10,80);L.p.erecess=ri(0,100);L.p.eshine=ri(30,100);L.p.eangle=ri(0,71)*5;}
+    else if(L.fx==='relief'||L.fx==='ink'){p.mat=pick(METALS);p.evol=ri(35,100);p.eslope=ri(10,80);p.eshine=ri(30,100);p.eangle=ri(0,71)*5;}}
+  else if(L.type==='text'){L.font=pick(FONTS).id;L.style=pick(['plain','shadow','outline','chrome','wordart','relief']);L.color=pick(W98);L.p.mat=pick(['below'].concat(METALS));L.curve=Math.random()<.35?ri(-70,70):0;}
+  else{L.p.mat=pick(['below'].concat(METALS));L.p.evol=ri(30,100);L.p.eslope=ri(10,80);L.p.erecess=ri(0,100);L.p.eshine=ri(30,100);L.p.eangle=ri(0,71)*5;}
   commit();buildProps();buildLayers();dirty();msg('Náhodná kombinácia. Nepáči sa? Klikni znova alebo Späť.');
 };
 
@@ -834,7 +934,7 @@ modal.addEventListener('click',function(e){if(e.target===modal)closeDlg();});
 var MENUS={
   file:function(){return [['Nový obrázok',newDoc],['Otvoriť fotku…',function(){$('#file').click();}],['Tekutý text z fotky…',inkFromPhoto],'-',['Uložiť ako PNG',function(){save('png');},'Ctrl+S'],['Uložiť ako JPG',function(){save('jpg');}]];},
   edit:function(){return [['Späť',undo,'Ctrl+Z'],['Znova',redo,'Ctrl+Y'],'-',['Pridať text',addText],['Duplikovať vrstvu',dupLayer],['Zmazať vrstvu',delLayer,'Del']];},
-  img:function(){return FORMATS.map(function(f){return [f.n+' – '+f.d,function(){setFormat(f.id);},f.w+'×'+f.h,f.id===D.fmt];}).concat(['-',['Vycentrovať vrstvu',function(){var L=selLayer();if(L&&L.x!=null){L.x=.5;L.y=.5;commit();dirty();}}]]);},
+  img:function(){return FORMATS.map(function(f){return [f.n+' – '+f.d,function(){setFormat(f.id);},f.w+'×'+f.h,f.id===D.fmt];}).concat(['-'],MIRCYCLE.map(function(k){return ['Zrkadlo: '+MIRN[k],function(){D.mirror=k;mirrorTool();commit();dirty();buildProps();},'',(D.mirror||'none')===k];}),['-',['Vycentrovať vrstvu',function(){var L=selLayer();if(L&&L.x!=null){L.x=.5;L.y=.5;commit();dirty();}}]]);},
   help:function(){return [['Ako na to',help],['O programe si/editoval',about]];}
 };
 var menu=$('#menu'),menuBtn=null;
@@ -850,6 +950,10 @@ $$('#menubar button').forEach(function(b){b.addEventListener('click',function(e)
 document.addEventListener('click',function(e){if(!menu.hidden&&!menu.contains(e.target))closeMenu();});
 function about(){dialog('O programe si/editoval',$('#about .abody').outerHTML,[['OK',closeDlg,true]]);}
 function help(){dialog('Ako na to','<p><b>1.</b> Hore vyber formát (4:5 post, 9:16 story…).</p><p><b>2.</b> <b>Fotka</b> pridá obrázok ako novú vrstvu. Prvá fotka nahradí ukážku.</p><p><b>3.</b> Vpravo (na mobile nižšie) vyber efekt: Dither, ASCII, Look alebo Kov.</p><p><b>4.</b> <b>Text</b> pridá nápis. Vyber písmo a štýl, farbu klikni v palete.</p><p><b>5.</b> <b>Štetec</b> kreslí tekutý ťah: pomaly = hrubšie, robí kvapky a stekanie. Tekutosť nastavíš posuvníkom.</p><p><b>Tip:</b> Súbor → Tekutý text z fotky. Daj tam svoj post s bielym pozadím a textom a písmo sa zmení na tekutý kov.</p><p><b>6.</b> Vrstvy ťahaj prstom, roh zväčšuje, krúžok otáča. Poradie meníš v okne Vrstvy.</p><p><b>7.</b> Disketa = Uložiť.</p>');}
+function mirrorTool(){var on=D.mirror&&D.mirror!=='none';$('#tMirror').setAttribute('aria-pressed',on?'true':'false');}
+$('#tMirror').onclick=function(){var i=MIRCYCLE.indexOf(D.mirror||'none');D.mirror=MIRCYCLE[(i+1)%MIRCYCLE.length];mirrorTool();commit();dirty();if(!selLayer())buildProps();msg('Zrkadlo: '+MIRN[D.mirror]+'. Klikni znova pre ďalší režim.');};
+function mirrorCopy(L){var c=JSON.parse(JSON.stringify(L,function(k,v){return k.charAt(0)==='_'?undefined:v;}));c.id=nid();c.sample=false;c.name=L.name+' (zrkadlo)';c.fh=!L.fh;c.x=1-L.x;c.r=-L.r;
+  if(Math.abs(c.x-L.x)<.02){c.x=Math.min(.95,L.x+.15);}D.layers.splice(D.layers.indexOf(L)+1,0,c);select(c.id);commit();msg('Zrkadlová kópia na druhej strane.');}
 function inkFromPhoto(){S.inkNext=true;$('#file').click();}
 function newDoc(){D.layers=[];D.bg={kind:'color',color:'#ffffff'};S.sel='bg';commit();refreshAll();msg('Nový prázdny obrázok. Pridaj fotku alebo text.');}
 
@@ -885,7 +989,7 @@ function startDoc(){
   var t2={id:nid(),type:'text',name:'Text',text:'nahraj fotku ↓ a hraj sa',font:'vt323',size:64,color:'#ffffff',align:'center',style:'plain',ls:2,lh:1.05,x:.5,y:.9,r:0,o:100,hidden:false,p:Object.assign(defFx(),{mat:'below'})};
   D.layers=[img,t1,t2];S.sel=img.id;
 }
-function refreshAll(){buildFormats();buildLayers();buildProps();toolState();status();dirty();}
+function refreshAll(){mirrorTool();buildFormats();buildLayers();buildProps();toolState();status();dirty();}
 
 startDoc();lastSnap=snap();
 $('#curColor').style.background=S.color;syncCells();

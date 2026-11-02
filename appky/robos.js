@@ -16,8 +16,8 @@
   var CFG = {
     whatsapp: 'https://wa.me/421908109541',
     mail: 'rdurica1995@gmail.com',
-    instagram: 'https://instagram.com/robodurica',
-    x: 'https://x.com/',                              // doplniť handle na X
+    instagram: 'https://instagram.com/duriica',
+    x: 'https://x.com/moat_wanted',
     bgMaker: 'https://bg-maker-gamma.vercel.app',
     game: 'https://offthewallhack.github.io/usage-of-empires/',
     gameIcon: BASE + 'img/uoe-192.png',
@@ -140,7 +140,7 @@
        '<div class="ro-me"><img src="' + CFG.me + '" alt="Robert Ďurica"><h2>Robert Ďurica</h2><p class="ro-lead">Robím eventy a jazdím s event autami. Popri tom hrám ako DJ a skladám malé appky, ktoré nájdeš tu v telefóne.</p></div>' +
        '<div class="ro-rows">' +
         '<a class="ro-row" href="' + ROOT + '"><span class="ro-ic" data-ro-icon="web"></span><span>Web<small>Všetko o mne a mojej práci</small></span>' + CHEV + '</a>' +
-        '<a class="ro-row" href="' + CFG.instagram + '" target="_blank" rel="noopener"><span class="ro-ic" data-ro-icon="ig"></span><span>Instagram<small>@robodurica</small></span>' + CHEV + '</a>' +
+        '<a class="ro-row" href="' + CFG.instagram + '" target="_blank" rel="noopener"><span class="ro-ic" data-ro-icon="ig"></span><span>Instagram<small>@duriica</small></span>' + CHEV + '</a>' +
         '<a class="ro-row" href="' + CFG.whatsapp + '" target="_blank" rel="noopener"><span class="ro-ic" data-ro-icon="msg"></span><span>Správy<small>Napíš mi na WhatsApp</small></span>' + CHEV + '</a>' +
         '<button class="ro-row" type="button" data-ro-sheet="mail"><span class="ro-ic" data-ro-icon="mail"></span><span>Mail<small>' + CFG.mail + '</small></span>' + CHEV + '</button>' +
        '</div>' +

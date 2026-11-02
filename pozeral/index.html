@@ -141,7 +141,7 @@ body.fs .screen > #yt, body.fs .screen > #vid{left:0;width:100%;transform:none}
 .ttv .band{background:var(--tt-blue);color:var(--tt-yellow);font-size:10cqh;line-height:1;padding:1.2cqh 2%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ttv.ad .band{background:#a0168a;color:#fff}
 .ttv ol{list-style:none;margin:0;padding:0;display:grid;gap:.8cqh;flex:1;min-height:0;overflow:hidden}
-.ttv li{display:grid;grid-template-columns:6ch 1fr;gap:3%;white-space:nowrap;overflow:hidden}
+.ttv li{display:grid;grid-template-columns:9ch 1fr;gap:3%;white-space:nowrap;overflow:hidden}
 .ttv li span{overflow:hidden;text-overflow:ellipsis}
 .ttv .t{color:var(--tt-yellow)}
 .ttv .f{color:var(--tt-green);display:flex;justify-content:space-between;gap:2%}
@@ -231,7 +231,7 @@ section{min-width:0;scroll-margin-top:calc(var(--hc) + 16px)}
 .tt-tabs button[aria-selected="true"]{background:var(--tt-cyan);color:#000}
 .tt-title{display:block;margin:10px 0 12px;padding:4px 10px;background:var(--tt-blue);color:var(--tt-yellow);font-size:clamp(26px,5.6vw,38px);line-height:1;letter-spacing:.04em}
 .tt ol{list-style:none;margin:0;padding:0;display:grid;gap:3px}
-.tt li{display:grid;grid-template-columns:5ch 1fr auto;gap:12px;align-items:baseline}
+.tt li{display:grid;grid-template-columns:9ch 1fr auto;gap:12px;align-items:baseline}
 .tt .t{color:var(--tt-yellow);font-variant-numeric:tabular-nums}
 .tt .s{min-width:0}
 .tt .s span{color:var(--tt-cyan)}
@@ -326,7 +326,7 @@ dialog.nvd .tt{max-height:calc(100dvh - 48px);overflow:auto}
         <div id="yt"></div>
         <video id="vid" playsinline preload="none" hidden></video>
         <canvas id="mono" hidden></canvas>
-        <div class="layer err" id="err" hidden><div class="box"><b>TECHNICKÁ PORUCHA</b><br>Toto video sa nedá prehrať.<br>Ďalej o <span id="errAt">--:--</span><br><button type="button" class="fixBtn">ZAVOLAŤ ŠKRIATKOV</button></div></div>
+        <div class="layer err" id="err" hidden><div class="box"><b>TECHNICKÁ PORUCHA</b><br>Toto video sa nedá prehrať.<br>Ďalší program <span id="errAt">hneď</span><br><button type="button" class="fixBtn">ZAVOLAŤ ŠKRIATKOV</button></div></div>
         <div class="ttv scan" id="ttv" hidden>
           <div class="h"><span><b id="ttvP">P101</b> <span id="ttvName">SI POZERAL</span></span><span id="ttvClock">--:--:--</span></div>
           <div class="band" id="ttvBand">HNEĎ SME SPÄŤ</div>
@@ -435,7 +435,7 @@ dialog.nvd .tt{max-height:calc(100dvh - 48px);overflow:auto}
    ========================================================= */
 const CONFIG = {
   zaciatok: Date.UTC(2026, 0, 1, 5, 0, 0), // od tohto času sa počíta program (6:00 v Bratislave)
-  prestavka: 20                            // sekundy teletextu po rozprávke, keď poznáme presnú dĺžku
+  prestavka: 0                             // žiadne pauzy: po videu hneď ide ďalšie
 };
 const O = window.POZERAL || { kanaly:[], reklamy:[] };
 let DLZKY = {};
@@ -466,8 +466,8 @@ function dur(it){
 function slotLen(it){
   const d = dur(it);
   if (d) return Math.ceil(d) + (it.kind === 'show' ? CONFIG.prestavka : 1);
-  // dĺžku nepoznáme: pri rozprávke radšej o kúsok viac (zvyšok vyplní teletext), aby sa diel neodsekol
-  if (it.kind === 'show') return Math.round((it.min || 10) * 60 * 1.1 + 60);
+  // dĺžku nepoznáme: odhad podľa minút (keď je diel dlhší, program počká; keď kratší, hneď ide ďalší)
+  if (it.kind === 'show') return Math.round((it.min || 10) * 60);
   return it.sek || Math.round((it.min || 1) * 60);
 }
 /* playlisty a kanály: skener ich rozbalí do playlisty.json */
@@ -535,9 +535,17 @@ function at(ci, t){
   }
   return { i:0, it:c.seq[0], offset:0, start:t, end:t + c.slots[0]*1000 };
 }
+/* Každý kanál má vlastný posun času: keď video skončí skôr, skočíme na ďalšie (posun dopredu),
+   keď beží dlhšie, program počká (posun dozadu). Takže nikdy nie je prázdna pauza a nič sa neodsekne. */
+const posun = {};
+const vt = ci => Date.now() + (posun[ci] || 0);
+function za(t, ci){
+  const m = Math.round((t - vt(ci)) / 60000);
+  return m <= 0 ? 'hneď' : 'za ' + m + ' min';
+}
 /* aktuálna položka + nasledujúce rozprávky (reklamy a predely v programe nevypisujeme) */
 function upcoming(ci, n){
-  const c = CH[ci], cur = at(ci, Date.now());
+  const c = CH[ci], cur = at(ci, vt(ci));
   if (!cur) return [];
   const out = [{ i:cur.i, it:cur.it, start:cur.start, cur:true }];
   let t = cur.end, i = cur.i, guard = 0;
@@ -584,19 +592,19 @@ function renderChannels(now){
     });
   }
   CH.forEach((c, ci) => {
-    const row = box.children[ci], cur = at(ci, now);
+    const row = box.children[ci], nowc = vt(ci), cur = at(ci, nowc);
     row.setAttribute('aria-current', String(ci === ch));
     if (!cur) return;
     const it = cur.it, show = it.kind === 'show' ? it : upcoming(ci, 2)[1]?.it || it;
     row.querySelector('.what b').textContent = it.kind === 'show' ? it.show : label(it);
     row.querySelector('.what span').textContent = it.kind === 'show' ? it.ep : 'potom ' + show.show;
-    row.querySelector('.prog i').style.width = Math.min(100, (now - cur.start) / (cur.end - cur.start) * 100) + '%';
+    row.querySelector('.prog i').style.width = Math.min(100, (nowc - cur.start) / (cur.end - cur.start) * 100) + '%';
   });
 }
 
 function renderNow(){
   if (!CH.length) return;
-  const now = Date.now(), cur = at(ch, now);
+  const now = vt(ch), cur = at(ch, now);
   renderChannels(now);
   const d = new Date();
   $('ttClock').textContent = d.toLocaleDateString('sk-SK', { day:'2-digit', month:'2-digit' }) + ' ' + d.toLocaleTimeString('sk-SK');
@@ -604,7 +612,9 @@ function renderNow(){
   if (!cur) return;
   const it = cur.it, pct = Math.min(100, (now - cur.start) / (cur.end - cur.start) * 100) + '%';
   const nx = upcoming(ch, 2)[1];
-  $('nTime').textContent = 'Kanál ' + chName(ch) + ' · ' + hm(cur.start) + ' – ' + hm(cur.end) + ' · zostáva ' + mmss((cur.end - now)/1000);
+  let zost = (cur.end - now) / 1000;
+  if (powered && mode === 'video' && knownEnd){ try{ zost = knownEnd - curTime(); }catch(e){} }
+  $('nTime').textContent = 'Kanál ' + chName(ch) + ' · zostáva ' + mmss(zost);
   $('nLink').href = it.id ? 'https://www.youtube.com/watch?v=' + it.id + (it.od ? '&t=' + it.od : '') : it.src;
   $('mCh').textContent = 'Kanál ' + chName(ch);
   $('mShow').textContent = label(it);
@@ -612,9 +622,9 @@ function renderNow(){
   setLang($('mLang'), it.kind === 'show' ? it.lang : '');
   $('mProg').style.width = pct;
   $('mNext').textContent = '';
-  if (nx){ const b = document.createElement('b'); b.textContent = hm(nx.start) + ' '; $('mNext').append(b, nx.it.show); }
+  if (nx){ const b = document.createElement('b'); b.textContent = za(nx.start, ch) + ' '; $('mNext').append(b, nx.it.show); }
 
-  const key = viewCh + '|' + at(viewCh, now).i + '|' + at(viewCh, now).start;
+  const vnow = vt(viewCh), key = viewCh + '|' + at(viewCh, vnow).i + '|' + at(viewCh, vnow).start + '|' + Math.round((at(viewCh, vnow).end - vnow) / 60000);
   if (key !== lastGuideKey){
     lastGuideKey = key;
     renderTabs();
@@ -625,7 +635,7 @@ function renderNow(){
       const p = g.it, li = document.createElement('li');
       if (g.cur) li.classList.add('cur');
       if (p.kind !== 'show') li.classList.add('ad');
-      const t = document.createElement('span'); t.className = 't'; t.textContent = g.cur ? 'TERAZ' : hm(g.start);
+      const t = document.createElement('span'); t.className = 't'; t.textContent = g.cur ? 'TERAZ' : za(g.start, viewCh);
       const s = document.createElement('span'); s.className = 's';
       if (p.kind === 'show'){ s.textContent = p.show + ' '; const e = document.createElement('span'); e.textContent = p.ep; s.appendChild(e); }
       else s.textContent = label(p);
@@ -641,7 +651,7 @@ function renderNow(){
     const tk = $('ticker'); tk.textContent = '';
     const add = (lbl, txt) => { const bb = document.createElement('b'); bb.textContent = lbl; tk.append(bb, ' ' + txt + '   ✦   '); };
     add('KANÁL ' + chName(ch).toUpperCase() + ':', label(it) + ' – ' + it.ep);
-    upcoming(ch, 5).slice(1).forEach(g => add(hm(g.start), g.it.show + ' – ' + g.it.ep));
+    upcoming(ch, 5).slice(1).forEach(g => add(za(g.start, ch).toUpperCase(), g.it.show + ' – ' + g.it.ep));
     tk.append('SI POZERAL · durica.si/pozeral');
   }
 }
@@ -783,11 +793,11 @@ const startAbs = it => it.od || 0;
 
 function tuneIn(first){
   if (!powered || !ready) return;
-  const cur = at(ch, Date.now());
+  const cur = at(ch, vt(ch));
   if (!cur){ setLayers('error'); return; }
   const it = cur.it;
   const prev = playing;
-  playing = { ch, i:cur.i, start:cur.start }; knownEnd = it.do || 0; startAttempt = loadStart = Date.now(); lastSync = Date.now(); loadTries = 0; bufStart = 0; bufTries = 0;
+  playing = { ch, i:cur.i, start:cur.start, end:cur.end, drzim:false }; knownEnd = it.do || 0; startAttempt = loadStart = Date.now(); lastSync = Date.now(); loadTries = 0; bufStart = 0; bufTries = 0;
   setLayers('loading');
   const quick = prev && prev.ch === ch && CH[ch].seq[prev.i] && CH[ch].seq[prev.i].kind !== 'show' && it.kind !== 'show';
   showStatic(first ? 450 : quick ? 250 : 700);
@@ -816,11 +826,11 @@ function playFile(it, pos){
   vid.src = it.src; vid.muted = muted; vid.volume = volume/100;
   vid.onloadedmetadata = () => {
     knownEnd = it.do || vid.duration || 0;
-    if (knownEnd && pos >= knownEnd - 0.5){ filler(); return; }
+    if (knownEnd && pos >= knownEnd - 0.5){ dalej(); return; }
     vid.currentTime = pos;
     vid.play().then(() => setLayers('video')).catch(() => { vid.muted = true; vid.play().catch(()=>{}); $('unmute').hidden = false; setLayers('video'); });
   };
-  vid.onended = filler;
+  vid.onended = dalej;
   vid.onerror = onErr;
   vid.load();
 }
@@ -837,7 +847,7 @@ function onState(e){
   } else if (e.data === YT.PlayerState.BUFFERING){
     if (mode === 'video' && !bufStart) bufStart = Date.now();
   } else if (e.data === YT.PlayerState.ENDED){
-    filler();
+    dalej();
   }
 }
 /* Videá, ktoré YouTube odmietol prehrať (100 = zmazané/súkromné, 101 a 150 = vkladanie zakázané alebo blokované v krajine):
@@ -900,6 +910,13 @@ function preskocTu(id){
 }
 function curItem(){ return playing ? CH[playing.ch].seq[playing.i] : null; }
 
+/* video skončilo: posunieme čas kanála na koniec jeho miesta v programe a hneď pustíme ďalšie */
+function dalej(){
+  const t = vt(ch), cur = at(ch, t);
+  if (cur) posun[ch] = (posun[ch] || 0) + Math.max(0, cur.end - t) + 50;
+  tuneIn(false);
+}
+
 /* teletext medzi programami */
 function filler(){
   try{ usingFile ? vid.pause() : player.stopVideo(); }catch(e){}
@@ -912,7 +929,7 @@ function filler(){
   const list = upcoming(ch, 7).slice(1);
   list.forEach(g => {
     const li = document.createElement('li');
-    const t = document.createElement('span'); t.className = 't'; t.textContent = hm(g.start);
+    const t = document.createElement('span'); t.className = 't'; t.textContent = za(g.start, ch);
     const s = document.createElement('span'); s.textContent = g.it.show;
     li.append(t, s); ol.appendChild(li);
   });
@@ -924,55 +941,66 @@ function curTime(){ return usingFile ? vid.currentTime : player.getCurrentTime()
 function tick(){
   renderNow();
   if (!powered || !ready) return;
-  const now = Date.now(), cur = at(ch, now);
+  const real = Date.now();
+  let now = vt(ch), cur = at(ch, now);
   if (!cur) return;
+  // diel je dlhší, ako sme čakali: program počká, kým dobehne
+  if (playing && playing.ch === ch && mode === 'video' && cur.i !== playing.i && now >= playing.end){
+    let d = 0; try{ d = knownEnd || (usingFile ? vid.duration : player.getDuration()) || 0; }catch(e){}
+    let t = 0; try{ t = curTime(); }catch(e){}
+    if (d && t < d - 1){
+      posun[ch] = (posun[ch] || 0) - (now - playing.end + 300);
+      playing.drzim = true;
+      now = vt(ch); cur = at(ch, now);
+    }
+  }
   if (!playing || playing.ch !== ch || playing.i !== cur.i || playing.start !== cur.start){ tuneIn(false); return; }
   const it = cur.it, pos = startAbs(it) + cur.offset;
   if (mode === 'filler' || mode === 'error'){
     $('ttvCd').textContent = mmss((cur.end - now) / 1000);
-    $('errAt').textContent = hm(cur.end);
+    $('errAt').textContent = za(cur.end, ch);
     return;
   }
   if (mode === 'video'){
-    if (knownEnd && pos > knownEnd - 0.5){ filler(); return; }
-    if (now - lastSync > 15000){
-      lastSync = now;
+    if (knownEnd && pos > knownEnd - 0.5 && !playing.drzim){ dalej(); return; }
+    if (real - lastSync > 15000){
+      lastSync = real;
       try{
         if (usingFile){ if (vid.paused) vid.play().catch(()=>{}); }
         else if (player.getPlayerState() === YT.PlayerState.PAUSED) player.playVideo();
         const diff = Math.abs(curTime() - pos);
-        if (diff > 6 && (!knownEnd || pos < knownEnd - 3)){
+        if (diff > 6 && !playing.drzim && (!knownEnd || pos < knownEnd - 3)){
           if (usingFile) vid.currentTime = pos; else player.seekTo(pos, true);
         }
       }catch(e){}
     }
   }
-  if (mode === 'video' && !usingFile && bufStart && now - bufStart > 15000){
+  if (mode === 'video' && !usingFile && bufStart && real - bufStart > 15000){
     // video sa seká dlho: raz ho načítame nanovo, potom preskočíme
-    bufStart = now;
+    bufStart = real;
     if (bufTries++ < 1){ try{ const o = { videoId: it.id, startSeconds: Math.floor(pos) }; if (it.do) o.endSeconds = it.do; player.loadVideoById(o); }catch(e){} }
     else if (it.id && mozemPreskocit()){ preskocTu(it.id); return; }
   }
-  if (mode === 'loading' && !ytReady && !usingFile && now - loadStart > 12000){ setLayers('error'); return; }   // YouTube sa vôbec nenačítal
-  if (mode === 'loading' && !usingFile && ytReady && now - loadStart > 10000){
+  if (mode === 'loading' && !ytReady && !usingFile && real - loadStart > 12000){ setLayers('error'); return; }   // YouTube sa vôbec nenačítal
+  if (mode === 'loading' && !usingFile && ytReady && real - loadStart > 10000){
     // video nenaskočilo: raz skúsime znova, potom ideme na ďalšie
-    loadStart = now;
+    loadStart = real;
     if (loadTries++ < 1){ try{ const o = { videoId: it.id, startSeconds: Math.floor(pos) }; if (it.do) o.endSeconds = it.do; player.loadVideoById(o); player.mute(); $('unmute').hidden = muted; }catch(e){} }
     else if (it.id && mozemPreskocit()){ preskocTu(it.id); return; }
     else { setLayers('error'); return; }
   }
-  if (mode === 'loading' && !usingFile && ytReady && now - startAttempt > 4000){
+  if (mode === 'loading' && !usingFile && ytReady && real - startAttempt > 4000){
     // prehliadač nedovolil spustiť so zvukom: skús potichu a ponúkni zvuk
     try{
       const st = player.getPlayerState();
       if (st !== YT.PlayerState.PLAYING && st !== YT.PlayerState.BUFFERING){ player.mute(); player.playVideo(); $('unmute').hidden = false; }
     }catch(e){}
-    startAttempt = now;
+    startAttempt = real;
   }
 }
 
 function showOsd(volOnly){
-  const cur = at(ch, Date.now());
+  const cur = at(ch, vt(ch));
   $('osdCh').textContent = volOnly ? '' : 'CH ' + chName(ch).toUpperCase();
   $('osdTitle').textContent = volOnly || !cur ? '' : label(cur.it);
   const bars = Math.round(volume/10);
@@ -1140,7 +1168,7 @@ document.addEventListener('visibilitychange', () => { if (!document.hidden && po
    ========================================================= */
 const WA_CISLO = '421908109541';
 function zavolajSkriatkov(){
-  const cur = CH.length ? at(ch, Date.now()) : null, it = cur && cur.it;
+  const cur = CH.length ? at(ch, vt(ch)) : null, it = cur && cur.it;
   const riadky = [
     'Haló, nefunguje ti web, choď si ho opraviť, ty primitív 🔧',
     '',

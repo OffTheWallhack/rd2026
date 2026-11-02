@@ -216,6 +216,7 @@ window.POZERAL = {
         { id:'a-3UHk-Fsk0', show:'Spongebob v kalhotách', ep:'Spongebob a studna', lang:'CZ', min:11 },
         { id:'wu65RVbFPPk', show:'Růžový panter', ep:'Smile Pretty, Say Pink', lang:'bez slov', min:7 },
         { id:'m-QpAnKfRB0', show:'Růžový panter', ep:'Psychedelic Pink', lang:'bez slov', min:7 },
+        { id:'f2GxXHcXCPc', show:'Kim Possible', ep:'Amnézia', lang:'SK', min:22 },
         { id:'ROrhFa1-iLM', show:'Asterix', ep:'Asterix a překvapení pro Cézara (film)', lang:'CZ', min:79 },
         { playlist:'PLQ7nXaicptSxRccybPZUBAPhSdxh1v9jI', show:'Galactik Football', lang:'CZ', min:26, max:40 },
         { playlist:'PLwhLvPy7SFDEN8_qYEdv7LfbTdO3EQBBd', show:'Život s Louiem', lang:'CZ', min:22, max:40 },

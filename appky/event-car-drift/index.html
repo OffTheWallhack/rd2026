@@ -729,7 +729,7 @@ body.dh #hud .speed,body.dh #hud .score,body.dh #combo,body.dh #timer{display:no
 .dhr [hidden]{display:none}
 /* downhill: pick the run and the discipline */
 .dhpick{height:100%;min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:8px}
-.cards.dhtrk{grid-template-columns:repeat(5,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:8px;min-height:0}
+.cards.dhtrk{grid-template-columns:repeat(6,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:8px;min-height:0}
 .dhtrk .card.mode em{font:700 10.5px/1.1 var(--hud);font-style:normal;letter-spacing:.06em;color:#ffd54a;text-shadow:0 1px 4px rgba(0,0,0,.9);z-index:1}
 #dhDiscInfo{flex:1;min-width:0;margin:0;padding:0;border:0;background:none;font-size:11.5px;color:var(--muted);text-align:right}
 .dhpick #dhDesc{margin:0;padding:6px 10px;font-size:12px;line-height:1.35}
@@ -835,7 +835,7 @@ body.dh #hud .speed,body.dh #hud .score,body.dh #combo,body.dh #timer{display:no
             <button class="card mode" type="button" data-mode="arena" style="--ac:#ffd23d"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="12" rx="9" ry="5.5"/><ellipse cx="12" cy="12" rx="4.2" ry="2"/><path d="M12 3v2.5M12 18.5V21"/></svg><b>DRIFT ARÉNA</b><small>3 okruhy · ľahký až peklo</small></button>
             <button class="card mode" type="button" data-mode="chase" style="--ac:#4d8dff"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 16h18M5 16l1.5-5h11L19 16M7 16a2 2 0 1 0 4 0a2 2 0 1 0-4 0M13 16a2 2 0 1 0 4 0a2 2 0 1 0-4 0M9 8h6M12 4v4M9 4h6"/></svg><b>NAHÁŇAČKA</b><small>Noc · polícia za tebou</small></button>
             <button class="card mode" type="button" data-mode="hwy" style="--ac:#4dd68c"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21L10 3M16 21L14 3M12 6v3M12 12v3M12 18v2"/></svg><b>DIAĽNICA</b><small>Z pohľadu vodiča</small></button>
-            <button class="card mode" type="button" data-mode="dh" style="--ac:#8fd8ff"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 20L9 7l3 4 2-3 8 12z"/><path d="M14 3l5 5M19 4v4h-4"/></svg><b>DOWNHILL</b><small>5 tratí · 3 disciplíny</small></button>
+            <button class="card mode" type="button" data-mode="dh" style="--ac:#8fd8ff"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 20L9 7l3 4 2-3 8 12z"/><path d="M14 3l5 5M19 4v4h-4"/></svg><b>DOWNHILL</b><small>6 tratí · 3 disciplíny</small></button>
             </div>
             <p class="hint" id="modeDesc"></p>
           </div>
@@ -4801,7 +4801,7 @@ const INFO = {
   buggy: { desc: 'Bugina side-by-side. Ľahká, skáče a hádže sa. Na hrbole a do blata ideálna, na asfalte trochu nervózna.', speed: 56, accel: 74, slide: 72, agil: 90 }
 };
 const MODE_TXT = {
-  dh: () => 'Zjazd z kopca autom ako na snowboarde. Päť slovenských tratí: zasnežený Chopok, letná Kráľova hoľa so skokmi cez vlny, strmé Skalnaté pleso medzi skalami, Devín pri západe slnka a bonus Štrbské pleso: zo skokanského mostíka na zamrznuté pleso. Tri disciplíny: rýchlosť, slalom a airtime. Trať a disciplínu vyberieš v treťom kroku.',
+  dh: () => 'Zjazd z kopca autom ako na snowboarde. Päť slovenských tratí: zasnežený Chopok, letná Kráľova hoľa so skokmi cez vlny, strmé Skalnaté pleso medzi skalami, Devín pri západe slnka, bonus Štrbské pleso zo skokanského mostíka na zamrznuté pleso a VEĽKÝ ZJAZD: dve minúty z Gerlachovského štítu do Popradu cez útes, kaňon, galériu, priepasť a mega rampu. Tri disciplíny: rýchlosť, slalom a airtime. Trať a disciplínu vyberieš v treťom kroku.',
   free: 'Bez času a bez tlaku. Jazdi, driftuj a zbieraj combo. Body dávajú aj kúsky: dve kolesá, otočka 360 a tesné obiehanie.',
   t60: () => 'Minúta na čo najvyššie skóre.' + (game.best ? ' Tvoj rekord: ' + fmt(game.best) + '.' : ''),
   job: () => 'Celá misia: nalož aparatúru, prejdi starým mestom, cez neónovú zónu a po snehu až na vrchol. Hodnotí sa čas aj škoda.' + (store.get('jobBest', 0) ? ' Rekord: ' + fmt(store.get('jobBest', 0)) + ' bodov.' : '') + (carKey === 'zubor' ? ' Na snehu drž plyn, Zubor má pomoc do kopca.' : ''),
@@ -6362,9 +6362,23 @@ const DH_WORLDS = {
     pal: { lit: 0xf2f6fb, shade: 0x93a8cc, rock: 0x7a8088, rockAt: .52, ice: 0xa6d2ec },
     lake: { dz: -170, dx: 0, r: 240 },
     sky: { top: 0x3d7bd6, bot: 0xe6eef6, fog: 0xdbe6f1, near: 360, far: 1200, hemi: .66, sun: 2.6, sunCol: 0xfff3e2, exp: .92, dir: [-60, 40, 20] },
-    trees: { kind: 'pineSnow', in: 70, out: 140, dens: .55 }, lift: null, poles: ['#ff6a1a', '#141414'], gate: 55, jump: true }
+    trees: { kind: 'pineSnow', in: 70, out: 140, dens: .55 }, lift: null, poles: ['#ff6a1a', '#141414'], gate: 55, jump: true },
+  // the big one: about two minutes from the highest peak of Slovakia down to Poprad, a surprise around every corner
+  gerlach: { id: 'gerlach', name: 'VEĽKÝ ZJAZD', area: 'Gerlachovský štít → Poprad', km: '6,6 km', tag: 'útes · kaňon · galéria · priepasť · mega rampa', ac: '#ffd23d',
+    start: 'ŠTART · GERLACHOVSKÝ ŠTÍT', finish: 'CIEĽ · POPRAD', L: 6600, seed: 77,
+    slope: [[-700, -.3], [-140, -.2], [-30, -.02], [30, .05], [90, .45], [350, .55], [560, .48], [700, .3], [850, .28], [1100, .34], [1300, .3], [1380, .16], [1396, .14],
+      [1404, .95], [1470, .9], [1520, .6], [1640, .45], [1720, .3], [2000, .33], [2300, .3], [2400, .18], [2650, .2], [2700, .26], [3100, .24], [3200, .22], [3500, .25], [3560, .22],
+      [3700, .3], [3800, .38], [4600, .34], [4690, .2], [4760, .42], [4900, .35], [5000, .3], [5900, .28], [6100, .15], [6400, .04], [6600, .01], [6900, .005], [7200, -.1], [7600, -.35], [8800, -.4]],
+    jumps: [[650, 4, 30, 14, 50], [960, 3, 30, 14, 60], [1170, 3.4, 30, 14, 60], [1390, 1.6, 20, 4, 90], [2760, 1.8, 14, 10, 50], [2800, 1.8, 14, 10, 50], [2840, 1.8, 14, 10, 50], [2880, 1.8, 14, 10, 50], [2920, 1.8, 14, 10, 50], [2960, 1.8, 14, 10, 50], [3000, 1.8, 14, 10, 50], [3040, 1.8, 14, 10, 50], [3080, 1.8, 14, 10, 50], [3598, 4.5, 26, 5, 90], [4742, 7, 42, 8, 60], [5300, 3, 30, 14, 60], [5800, 3.6, 32, 14, 60]],
+    kick: [[420, 4.4, 22, 8, 34], [2150, 4.6, 22, 8, 26], [4250, 4.8, 22, 8, 30], [5550, 5.2, 24, 8, 36], [6050, 4.4, 22, 8, 36]],
+    bend: [[150, 900, .3], [45, 330, 1.7], [12, 140, .2]], wk: .0005, wall: 330, crag: 14, straight: [[1300, 1800], [3500, 3780], [4600, 5250]], nz: [13, 3.4, .9, .12], surf: 'snow', tex: 'snow',
+    waves: [3.8, 32], wavesZ: [[800, 1300], [5000, 5900]], pipe: [[1820, 2340, .0045]], iceZ: [[3180, 3460]], gaps: [[3610, 3680, 34]],
+    noGate: [[1330, 1760], [1800, 2360], [2700, 3120], [3500, 3760], [4650, 4900]], radar: 5600,
+    pal: { lit: 0xf3f5f8, shade: 0x95a6c8, rock: 0x6f6964, rockAt: .4, ice: 0xa6d2ec },
+    sky: { top: 0x3f72c8, bot: 0xf1e2cf, fog: 0xe6dccf, near: 420, far: 1400, hemi: .66, sun: 2.8, sunCol: 0xffe6c4, exp: .94, dir: [-70, 34, 25] },
+    trees: { kind: 'pineSnow', in: 120, out: 200, dens: .5, narrow: [[3800, 4600, 24, .85]] }, lift: null, poles: ['#ff6a1a', '#141414'], gate: 66 }
 };
-const DH_ORDER = ['chopok', 'hola', 'lomnica', 'devin', 'strbske'];
+const DH_ORDER = ['chopok', 'hola', 'lomnica', 'devin', 'strbske', 'gerlach'];
 const DH = { on: false, w: null, wid: 'chopok', disc: 'speed', jl: [], prof: null, Z0: -700, ZS: 2, g: null, chunks: new Map(), shown: new Set(), cc: '', trees: new Map(), saved: [], t: 0, run: 0, air: 0, jump: 0, maxV: 0, cd: 0, started: false, over: false, dq: false, hud: 0, msgT: 0, safe: [], flipT: 0, shake: 0, camDir: new THREE.Vector3(0, 0, 1), camY: 0, fin: null, gates: [], gi: 0, sun: new THREE.Vector3(-.62, .5, .6).normalize() };
 const dhQuint = t => t * t * t * (t * (t * 6 - 15) + 10);
 const dhSmooth = t => { t = clamp(t, 0, 1); return t * t * (3 - 2 * t); };
@@ -6376,7 +6390,7 @@ function dhNoise(x, z, s) {
 }
 // the height profile along the run, integrated once from the steepness control points
 function dhProfile(W) {
-  const n = Math.ceil((4400) / DH.ZS) + 1, pr = new Float32Array(n), sl = W.slope;
+  const n = Math.ceil((Math.max(4400, W.L + 2400)) / DH.ZS) + 1, pr = new Float32Array(n), sl = W.slope;
   const sAt = z => { if (z <= sl[0][0]) return sl[0][1]; for (let i = 1; i < sl.length; i++) if (z <= sl[i][0]) { const a = sl[i - 1], b = sl[i], t = (z - a[0]) / (b[0] - a[0]); return a[1] + (b[1] - a[1]) * (.5 - .5 * Math.cos(Math.PI * t)); } return sl[sl.length - 1][1]; };
   const i0 = Math.round(-DH.Z0 / DH.ZS); pr[i0] = 0;
   for (let i = i0 + 1; i < n; i++) { const z = DH.Z0 + i * DH.ZS; pr[i] = pr[i - 1] - sAt(z - DH.ZS / 2) * DH.ZS; }
@@ -6384,16 +6398,24 @@ function dhProfile(W) {
   return pr;
 }
 function dhProf(z) { const f = clamp((z - DH.Z0) / DH.ZS, 0, DH.prof.length - 1.001), i = Math.floor(f), t = f - i; return DH.prof[i] + (DH.prof[i + 1] - DH.prof[i]) * t; }
-function dhCX(z) { let x = 0; for (const [a, wl, ph] of DH.w.bend) x += a * Math.sin(z / wl + ph); return x - DH.cx0; }
+function dhCX(z) { let x = 0; for (const [a, wl, ph] of DH.w.bend) x += a * Math.sin(z / wl + ph);
+  if (DH.w.straight) for (const [z0, z1] of DH.w.straight) { const k = dhZoneK(z, z0, z1, 280); if (k > 0) { const zc = clamp(z, z0, z1); let xc = 0; for (const [a, wl, ph] of DH.w.bend) xc += a * Math.sin(zc / wl + ph); x = lerp(x, xc, k); } }   // under the long flights the run holds its line
+  return x - DH.cx0; }
+const dhZoneK = (z, z0, z1, r) => dhSmooth((z - z0) / r) * (1 - dhSmooth((z - z1) / r));
 function dhH(x, z) {
-  const W = DH.w, s = W.seed, dx = x - dhCX(z), ax = Math.abs(dx), nz = W.nz;
-  let h = dhProf(z) + W.wk * dx * dx + (ax > W.wall ? Math.pow(ax - W.wall, 1.7) * .012 : 0);
+  const W = DH.w, s = W.seed, dx = x - dhCX(z), ax = Math.abs(dx);
+  let nz = W.nz, wk = W.wk, pk = 0;
+  let pipeH = 0;
+  if (W.pipe) for (const [z0, z1, w2] of W.pipe) { const k = dhZoneK(z, z0, z1, 70); if (k > 0) { pipeH += (w2 - wk) * k * Math.min(dx * dx, 3000) + (ax > 55 ? (ax - 55) * .25 * k : 0); pk = Math.max(pk, k); } }   // snow canyon: walls like a half-pipe right beside the run (not a whole new valley)
+  if (pk > 0) nz = [nz[0] * (1 - .85 * pk), nz[1] * (1 - .6 * pk), nz[2], nz[3]];
+  let h = dhProf(z) + pipeH + wk * dx * dx + (ax > W.wall ? Math.pow(ax - W.wall, 1.7) * .012 : 0);
+  if (W.gaps) for (const [z0, z1, d] of W.gaps) { if (z > z0 - 8 && z < z1 + 8) h -= d * dhSmooth((z - z0 + 4) / 8) * (1 - dhSmooth((z - z1 + 4) / 8)); }   // a ravine right across the valley
   const calm = dhSmooth((z - 30) / 140) * (1 - .85 * dhSmooth((z - (W.L - 380)) / 260)), fine = dhSmooth((z - 30) / 90) * (1 - dhSmooth((z - (W.L - 120)) / 80));
   h += dhNoise(x / 330, z / 330, s) * nz[0] * (.35 + .65 * calm) + dhNoise(x / 125, z / 125, s + 1) * nz[1] * calm + dhNoise(x / 38, z / 38, s + 2) * nz[2] * fine + dhNoise(x / 11, z / 11, s + 3) * nz[3] * fine;
   // crags on the valley walls: ridges and gullies, so the sides are mountains and not a smooth bowl
   if (W.crag && ax > 120) { const k = clamp((ax - 120) / 180, 0, 1); h += (dhNoise(x / 95, z / 95, s + 7) * .6 + Math.abs(dhNoise(x / 42, z / 60, s + 8)) * .8 - .3) * W.crag * k; }
   // rolling waves across the slope (summer meadows): a crest throws the car at speed
-  if (W.waves) h += W.waves[0] * (.45 + .55 * (.5 + .5 * dhNoise(z / 260, 3.3, s + 4))) * Math.sin(z / W.waves[1] + Math.sin(x / 170 + s) * 1.3) * calm * clamp(1 - (ax - 240) / 140, 0, 1);
+  if (W.waves && (!W.wavesZ || W.wavesZ.some(([z0, z1]) => z > z0 - 70 && z < z1 + 70))) h += (W.wavesZ ? W.wavesZ.reduce((m, [z0, z1]) => Math.max(m, dhZoneK(z, z0, z1, 60)), 0) : 1) * W.waves[0] * (.45 + .55 * (.5 + .5 * dhNoise(z / 260, 3.3, s + 4))) * Math.sin(z / W.waves[1] + Math.sin(x / 170 + s) * 1.3) * calm * clamp(1 - (ax - 240) / 140, 0, 1);
   const J = DH.jl;
   for (let i = 0; i < J.length; i++) {
     const j = J[i], u = z - j[0]; if (u < -j[2] || u > j[3]) continue;
@@ -6407,7 +6429,8 @@ function dhNormal(x, z, out) { const e = .5; out.set(dhH(x - e, z) - dhH(x + e, 
 // sand pits on the Devín run (Sandberg): soft, slow and slidey
 function dhSandK(x, z) { const W = DH.w; if (!W.sand) return 0; const ax = Math.abs(x - dhCX(z)); if (ax > 110 || z < 90 || z > W.L - 60) return 0; return clamp((dhNoise(x / 48, z / 48, W.seed + 9) - .32) * 5, 0, 1) * clamp((110 - ax) / 30, 0, 1); }
 function dhLakeK(x, z) { const L = DH.lake; if (!L) return 0; const d = Math.hypot(x - L.x, z - L.z); return clamp((L.r - d) / 6, 0, 1); }
-function dhSurf(x, z) { if (DH.lake && dhLakeK(x, z) > .5) return DH_SURF.ice; if (DH.w.sand && dhSandK(x, z) > .5) return DH_SURF.sand; return DH_SURF[DH.w.surf]; }
+function dhIceK(x, z) { const W = DH.w; if (!W.iceZ) return 0; let k = 0; for (const [z0, z1] of W.iceZ) k = Math.max(k, dhZoneK(z, z0, z1, 12)); if (!k) return 0; return k * clamp((95 - Math.abs(x - dhCX(z))) / 20, 0, 1); }
+function dhSurf(x, z) { if (DH.w.iceZ && dhIceK(x, z) > .5) return DH_SURF.ice; if (DH.lake && dhLakeK(x, z) > .5) return DH_SURF.ice; if (DH.w.sand && dhSandK(x, z) > .5) return DH_SURF.sand; return DH_SURF[DH.w.surf]; }
 
 /* ---------- the world: height-map chunks around the car (near ones fine, far ones coarse), plants, lifts, landmarks, start and finish ---------- */
 const DH_CH = 192;
@@ -6427,6 +6450,7 @@ function dhChunk(ci, cj, lod) {
     if (Pc.alt) c.lerp(Pc.alt, clamp(dhNoise(x / 70, z / 70, s + 5) * .9, 0, .5));
     c.lerp(Pc.rock, rk);
     if (W.sand) { const sk = dhSandK(x, z); if (sk > 0) c.lerp(Pc.sand, sk * .92); }
+    if (W.iceZ) { const ik = dhIceK(x, z); if (ik > 0) c.lerp(Pc.ice, ik * (.75 + .25 * sh)); }
     if (DH.lake) { const lk = dhLakeK(x, z); if (lk > 0) c.lerp(Pc.ice, lk); }
     col[k * 3] = c.r; col[k * 3 + 1] = c.g; col[k * 3 + 2] = c.b; uv[k * 2] = x / 7; uv[k * 2 + 1] = z / 7; k++;
   };
@@ -6510,8 +6534,9 @@ function dhVeg(W) {
   for (let z = -260; z < W.L + 420; z += cell) for (let dx = -470; dx < 470; dx += cell) {
     const ix = dx / cell | 0, iz = z / cell | 0, rx = dhHash(ix, iz, 5), ry = dhHash(ix, iz, 6), r = dhHash(ix, iz, 7);
     const xx = dx + (rx - .5) * cell, zz = z + (ry - .5) * cell, a = Math.abs(xx);
-    const top = T.top && zz < T.top.until, inner = top ? T.top.in : T.in, kind = top ? T.top.kind : T.kind;
-    let p = a < inner ? 0 : a < inner + (T.out - T.in) ? (a - inner) / (T.out - T.in) * T.dens : T.dens; if (zz > W.L - 160 && zz < W.L + 140 && a < 120) p = 0;
+    const top = T.top && zz < T.top.until, nar = T.narrow && T.narrow.find(([z0, z1]) => zz > z0 && zz < z1), inner = nar ? nar[2] : top ? T.top.in : T.in, kind = top ? T.top.kind : T.kind;
+    const dens = nar && nar[3] ? nar[3] : T.dens, span = nar ? 30 : T.out - T.in;
+    let p = a < inner ? 0 : a < inner + span ? (a - inner) / span * dens : dens; if (zz > W.L - 160 && zz < W.L + 140 && a < 120) p = 0;
     if (zz < 120 && a < 150) p *= .3;
     if (r > p) continue;
     const x = xx + dhCX(zz); if (DH.lake && dhLakeK(x, zz) > 0) continue;
@@ -6648,6 +6673,26 @@ function dhDeco(W, g) {
     const L = DH.lake, hx = L.x - L.r - 40, hz = L.z - 40, hy = dhMinAround(hx, hz, 22), ho = new THREE.Group(); ho.position.set(hx, hy, hz);
     for (let i = 0; i < 9; i++) { const w = 46 - i * 4.6, b = new THREE.Mesh(new THREE.BoxGeometry(w, 3.6, 22 - i * 1.6), i % 2 ? dhLam(0xe9e4da) : new THREE.MeshLambertMaterial({ color: 0x40556c, emissive: 0x111c28 })); b.position.y = 1.8 + i * 3.6; ho.add(b); }
     const roof = new THREE.Mesh(new THREE.BoxGeometry(6, 1.2, 8), dhLam(0x5d6670)); roof.position.y = 33; ho.add(roof); ho.rotation.y = .5; g.add(sh(ho)); dhObs({ x: hx, y: hy, z: hz, r: 22, h: 34 });
+  } else if (W.id === 'gerlach') {
+    // warning signs before every big thing, on both sides, facing up the hill
+    const sign = (z, txt, bg) => { const tex = dhTextTex(txt, bg, '#ffffff', 1024, 150); [-1, 1].forEach(sd => { const x = dhCX(z) + sd * 34, y = dhH(x, z), pm = dhLam(0x30353b), pg = new THREE.BoxGeometry(.35, 6, .35);
+      [-4.6, 4.6].forEach(o => { const p2 = new THREE.Mesh(pg, pm); p2.position.set(x + o, y + 3, z); g.add(p2); }); const b = new THREE.Mesh(new THREE.PlaneGeometry(10, 1.5), new THREE.MeshBasicMaterial({ map: tex, side: THREE.DoubleSide })); b.position.set(x, y + 5.4, z); b.rotation.y = Math.PI; g.add(b); dhObs({ x, y, z, r: 5, h: 6 }); }); };
+    sign(1180, 'POZOR · ÚTES O 200 m', '#d8322f'); sign(1330, 'ÚTES! PLNÝ PLYN', '#d8322f'); sign(1760, 'SNEHOVÝ KAŇON', '#1f57c8'); sign(2380, 'LAVÍNOVÁ GALÉRIA', '#4d5866');
+    sign(2700, 'RYTMUS · 9 SKOKOV', '#1e9e4c'); sign(3150, 'ĽAD · NEBRZDI', '#3b8fd0'); sign(3420, 'PRIEPASŤ · PLNÝ PLYN', '#d8322f'); sign(3780, 'LES · ÚZKO', '#1e9e4c'); sign(4560, 'MEGA RAMPA', '#e07b16'); sign(5450, 'RADAR', '#4d5866');
+    // the avalanche gallery: concrete portals over the run
+    const cm = dhLam(0xb9b4ab), pg = new THREE.BoxGeometry(2.2, 13, 2.2), bg = new THREE.BoxGeometry(66, 2.2, 7);
+    for (let z = 2420; z <= 2630; z += 15) { const cx = dhCX(z), y = dhH(cx, z); [-31, 31].forEach(o => { const p2 = new THREE.Mesh(pg, cm); p2.position.set(cx + o, dhH(cx + o, z) + 5.5, z); g.add(p2); dhObs({ x: cx + o, y: dhH(cx + o, z), z, r: 1.4, h: 13 }); }); const r2 = new THREE.Mesh(bg, cm); r2.position.set(cx, y + 13, z); g.add(r2); }
+    // the radar gate on the long straight
+    { const z = W.radar, cx = dhCX(z), y = dhH(cx, z); [-30, 30].forEach(o => { const p2 = new THREE.Mesh(new THREE.BoxGeometry(1, 10, 1), dhLam(0x30353b)); p2.position.set(cx + o, dhH(cx + o, z) + 5, z); g.add(p2); dhObs({ x: cx + o, y: dhH(cx + o, z), z, r: .8, h: 10 }); });
+      const b = new THREE.Mesh(new THREE.PlaneGeometry(61, 2.4), new THREE.MeshBasicMaterial({ map: dhTextTex('RADAR · RÝCHLOSTNÁ SKÚŠKA', '#30353b', '#ffd23d', 1536, 90), side: THREE.DoubleSide })); b.position.set(cx, y + 10, z); b.rotation.y = Math.PI; g.add(b); }
+    // the finish arena: stands full of people on both sides, then the town
+    const crowd = canvasTex(256, 64, (c2, w2, h2) => { c2.fillStyle = '#2b2f36'; c2.fillRect(0, 0, w2, h2); for (let i = 0; i < 900; i++) { c2.fillStyle = ['#e8322f', '#2462e0', '#ffd23d', '#f4f4f4', '#1e9e4c', '#ff8a3d'][i % 6]; c2.fillRect(Math.random() * w2, Math.random() * h2, 3, 4); } }, [6, 1]);
+    const crM = new THREE.MeshLambertMaterial({ map: crowd }), fz = W.L;
+    [-1, 1].forEach(sd => { for (let k = 0; k < 5; k++) { const x = dhCX(fz) + sd * (34 + k * 3), y = dhMinAround(x, fz, 8); const b = new THREE.Mesh(new THREE.BoxGeometry(3, 1.8 + k * 1.6, 90), crM); b.position.set(x, y + (1.8 + k * 1.6) / 2, fz - 10); g.add(b); } dhObs({ x: dhCX(fz) + sd * 40, y: 0, z: fz - 10, r: 8, h: 99 }); });
+    const houseM = [dhLam(0xe8e0d0), dhLam(0xd9c9a8), dhLam(0xc8d3dd)], roofM = dhLam(0x8a3b2a);
+    for (let i = 0; i < 26; i++) { const z = fz + 140 + (i % 13) * 34, x = dhCX(z) + (i < 13 ? -1 : 1) * (40 + dhHash(i, 2, 5) * 60), y = dhMinAround(x, z, 6), hh = 7 + dhHash(i, 3, 5) * 9;
+      const b = new THREE.Mesh(new THREE.BoxGeometry(12, hh, 10), houseM[i % 3]); b.position.set(x, y + hh / 2, z); g.add(b); const rg = new THREE.CylinderGeometry(.01, 8.6, 4, 4, 1); rg.rotateY(Math.PI / 4); const r2 = new THREE.Mesh(rg, roofM); r2.scale.set(1, 1, .82); r2.position.set(x, y + hh + 2, z); g.add(r2); dhObs({ x, y, z, r: 7, h: hh + 4 }); }
+    { const z = fz + 330, x = dhCX(z) + 10, y = dhMinAround(x, z, 6); const t2 = new THREE.Mesh(new THREE.BoxGeometry(7, 26, 7), dhLam(0xefe8da)); t2.position.set(x, y + 13, z); g.add(t2); const sp = new THREE.Mesh(new THREE.ConeGeometry(4.6, 14, 4), dhLam(0x3d5a3c)); sp.position.set(x, y + 33, z); sp.rotation.y = Math.PI / 4; g.add(sp); }
   }
 }
 
@@ -6713,7 +6758,7 @@ function dhGatesBuild() {
   const mats = [[dhLam(0xd8322f), new THREE.MeshBasicMaterial({ color: 0xe8322f, side: THREE.DoubleSide })], [dhLam(0x1f57c8), new THREE.MeshBasicMaterial({ color: 0x2462e0, side: THREE.DoubleSide })]];
   let side = 1;
   for (let z = 140; z < W.L - 120; z += gap) {
-    if (DH.jl.some(j => z > j[0] - j[2] - 10 && z < j[0] + j[3] + 55)) continue;   // no gate on a jump or just after the landing
+    if (DH.jl.some(j => z > j[0] - j[2] - 10 && z < j[0] + j[3] + 55) || (W.noGate && W.noGate.some(([z0, z1]) => z > z0 && z < z1))) continue;   // no gate on a jump or just after the landing
     const n = DH.gates.length, off = side * (6.5 + 3.5 * dhHash(n, 3, W.seed)); side = -side;   // the gates swing left and right, never so far that they can't be linked at speed
     const x = dhCX(z) + off, mm = mats[n % 2], parts = [];
     [-half, half].forEach(o => {
@@ -7014,7 +7059,7 @@ function ghPose(i, k, j) {
 function dhStart() {
   DH.wid = dhSelW(); DH.disc = dhSelD();
   dhEnter(); dhCarSetup(); dhGatesBuild();
-  DH.t = 0; DH.run = 0; DH.air = 0; DH.jump = 0; DH.maxV = 0; DH.cd = 3.4; DH.started = false; DH.over = false; DH.dq = false; DH.safe = []; DH.flipT = 0; DH.lastCd = 4; DH.shake = 0; DH.camSnap = true; DH.jumps = 0; DH.bestJump = 0;
+  DH.radarDone = false; DH.gapT = 0; DH.t = 0; DH.run = 0; DH.air = 0; DH.jump = 0; DH.maxV = 0; DH.cd = 3.4; DH.started = false; DH.over = false; DH.dq = false; DH.safe = []; DH.flipT = 0; DH.lastCd = 4; DH.shake = 0; DH.camSnap = true; DH.jumps = 0; DH.bestJump = 0;
   DHB.st = 0; DHB.delta = 0; DHB.land = 0; DHB.hit = 0; DHB.slide = 0;
   dhPlace(DH.start.x, DH.start.z, 0, 0);
   dhChunksAround(DHB.p.x, DHB.p.z, true);
@@ -7053,16 +7098,25 @@ function dhStep(dt) {
   // air time: all four wheels and the body off the ground
   dhCollideObs();
   if (airAll && DH.started) DH.jump += dt;
-  else if (DH.jump > 0) { if (DH.jump > .3 && !DH.over) DH.air += DH.jump; if (DH.jump > .9 && !DH.over) { DH.jumps++; if (Math.hypot(DH.fin.x - B.p.x, DH.fin.z - B.p.z) > 90) popText('SKOK ' + DH.jump.toFixed(1).replace('.', ',') + ' s'); sound.bank(); } DH.bestJump = Math.max(DH.bestJump, DH.jump); DH.jump = 0; }
+  else if (DH.jump > 0) { if (DH.jump > .3 && !DH.over) DH.air += DH.jump; if (DH.jump > 3 && !DH.over) { DH.jumps++; dhMsg('OBRÍ SKOK!', 'rec', DH.jump.toFixed(1).replace('.', ',') + ' s VO VZDUCHU'); sound.bank(); } else if (DH.jump > .9 && !DH.over) { DH.jumps++; if (Math.hypot(DH.fin.x - B.p.x, DH.fin.z - B.p.z) > 90) popText('SKOK ' + DH.jump.toFixed(1).replace('.', ',') + ' s'); sound.bank(); } DH.bestJump = Math.max(DH.bestJump, DH.jump); DH.jump = 0; }
   if (B.land > 3.5 || B.hit > 3.5) { const imp = Math.max(B.land * .6, B.hit); sound.thud(Math.min(1, imp / 14)); DH.shake = Math.min(1, DH.shake + imp / 22); if (imp > 6) buzz(Math.min(80, imp * 5)); if (!reduced) dhSpray(8, 1); }
   const sp = B.v.length(); if (sp > DH.maxV) DH.maxV = sp;
   _f.set(0, 0, 1).applyQuaternion(B.q); _u.set(0, 1, 0).applyQuaternion(B.q);
   S.x = B.p.x; S.z = B.p.z; S.speed = sp; S.vF = B.vF; S.th = Math.atan2(_f.x, _f.z); S.gy = B.p.y; S.drifting = B.slide > .2; S.slip = B.slide;
   if (B.nc >= 2 && sp > 10 && !reduced && Math.random() < .12 + B.slide * .5) dhSpray(1 + (B.slide > .4 ? 1 : 0), .35 + B.slide * .4);
   dhSafeTick(dt); ghRecord(dt);
+  // radar on the long straight
+  if (DH.w.radar && DH.started && !DH.over && !DH.radarDone && B.p.z >= DH.w.radar) {
+    DH.radarDone = true; const v = Math.round(sp * 3.6), k = 'dhRadar.' + DH.w.id, best = store.get(k, 0), nb = v > best; if (nb) store.set(k, v);
+    dhMsg('RADAR ' + v + ' km/h', nb ? 'rec' : 'go', nb ? 'NOVÝ REKORD RÝCHLOSTI' : 'REKORD ' + best + ' km/h'); sound.bank();
+  }
+  // fell into the ravine: back up the hill with a running start
+  if (DH.w.gaps && DH.started && !DH.over) for (const [z0, z1, d] of DH.w.gaps) {
+    if (B.p.z > z0 - 4 && B.p.z < z1 + 4 && B.p.y < dhProf(z0 - 12) - d * .55) { DH.gapT = (DH.gapT || 0) + dt; if (DH.gapT > .8) { DH.gapT = 0; const z = z0 - 190; dhPlace(dhCX(z), z, 0, 46); DH.safe = []; DH.camSnap = true; dhMsg('PRIEPASŤ!', 'dq', 'PRED RAMPOU PLNÝ PLYN'); } }
+  }
   // upside down or on the side and nearly stopped: back on the wheels after a moment
   dhNormal(B.p.x, B.p.z, _n);
-  if (_u.dot(_n) < .35 && sp < 5) { DH.flipT += dt; if (DH.flipT > 1.6) fadeEl.style.opacity = clamp((DH.flipT - 1.6) / .4, 0, 1); if (DH.flipT > 2) dhRespawn(true); } else if (DH.flipT) { DH.flipT = 0; fadeEl.style.opacity = 0; }
+  if ((_u.dot(_n) < .35 && sp < 5) || (_u.dot(_n) < .62 && sp < 2 && DH.started)) { DH.flipT += dt; if (DH.flipT > 1.6) fadeEl.style.opacity = clamp((DH.flipT - 1.6) / .4, 0, 1); if (DH.flipT > 2) dhRespawn(true); } else if (DH.flipT) { DH.flipT = 0; fadeEl.style.opacity = 0; }
   if (B.p.y < dhH(B.p.x, B.p.z) - 6) dhRespawn(false);   // fell through: should never happen
   // finish: into the circle
   const fdx = DH.fin.x - B.p.x, fdz = DH.fin.z - B.p.z, fd = Math.hypot(fdx, fdz);

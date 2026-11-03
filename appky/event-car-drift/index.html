@@ -1862,12 +1862,12 @@ function buildBuggy() {
    leans hard in corners (roll is an underdamped spring, so rocking it left-right adds up), lifts the inner wheels past `tip`
    and goes over past `over`. Sugga is lighter, lower, weaker: harder to roll, easier to place. */
 const CARS = {
-  zubor: { engine: 'v8', build: buildZubor, name: 'ZUBOR',
+  zubor: { engine: 'zubor', build: buildZubor, name: 'ZUBOR',
     L: 3.7, pw: 110, aMax: 3.4, top: 27, rev: 4.5, raMax: 2.2, brake: 9.4, brakeRamp: 8, coast: .8,
     steerMax: .68, steerFall: 9, steerLag: 6.5, yawLag: 3.8, ayMax: 7.0, grip: 6.0, drift: 1.9, hbGrip: .7, kick: .6,
     rollGain: .16, rollW: 3.8, rollZ: .26, tip: .215, over: .262, pitGain: .13, pitW: 6.3, pitZ: .5,
     power: 1, hitK: 1.5, bounce: 1.15 },
-  sugga: { engine: 'sugga', build: buildSugga, name: 'SUGGA',
+  sugga: { engine: 'diesel', build: buildSugga, name: 'SUGGA',
     L: 2.9, pw: 52, aMax: 2.7, top: 22, rev: 4, raMax: 2, brake: 8.4, brakeRamp: 7, coast: .9,
     steerMax: .62, steerFall: 8, steerLag: 8, yawLag: 5, ayMax: 7.4, grip: 7, drift: 2.1, hbGrip: .8, kick: .7,
     rollGain: .15, rollW: 6.9, rollZ: .45, tip: .24, over: .38, pitGain: .09, pitW: 7.5, pitZ: .5,
@@ -3967,8 +3967,8 @@ const sound = (() => {
     // F1: 1.6 V6 turbo hybrid, idles at 4 000 and screams to 12 500, bright and smooth with the hybrid whine on top
     v6:     { idle: 4200, red: 12500, wave: 'v6',   gain: .13, drive: 2.8, cut0: 1500, cutR: 5200, cutL: 1500, roar: .05, rasp: .08, clat: 0,  turbo: .06,  flaps: false, pops: true,  lope: false },
     diesel: { idle: 720, red: 4300, wave: 'diesel', gain: .15, drive: 1.5, cut0: 520, cutR: 1500, cutL: 700,  roar: .05, rasp: 0,   clat: .13, turbo: .018, flaps: false, pops: false, lope: false },
-    // Sugga: its own engine, recorded at an event (idle loop), pitched up with the revs; at high revs the synth diesel joins in
-    sugga:  { idle: 720, red: 4300, wave: 'diesel', gain: .15, drive: 1.5, cut0: 520, cutR: 1500, cutL: 700,  roar: .04, rasp: 0,   clat: 0,   turbo: .015, flaps: false, pops: false, lope: false, rec: 1 }
+    // Zubor: the real car recorded at an event (idle loop) for idle and low revs, blending into the V8 recording as the revs climb
+    zubor:  { idle: 650, red: 5900, wave: 'v8',     gain: .2,  drive: 2.4, cut0: 260, cutR: 1500, cutL: 1100, roar: .1,  rasp: .1,  clat: 0,   turbo: 0,    flaps: true,  pops: true,  lope: false, smp: 1, rec: 1 }
   };
   let type = 'v8', rpmS = 650, lastT = 0, prevLoad = 0, flap = 0, popT = 0;
   const mkWave = k => {
@@ -4036,7 +4036,7 @@ const sound = (() => {
   // the 5.7 V8 is a real recording (cut into a seamless loop at ~1600 rpm) that is pitch-shifted with the revs
   async function loadSamples() {
     try {
-      for (const [k, u] of [['loop', 'sfx/v8-loop.wav'], ['start', 'sfx/v8-start.wav'], ['dloop', 'sfx/diesel-loop.wav']]) { const r = await fetch(u); if (!r.ok) throw new Error('sfx'); smpBuf[k] = await ctx.decodeAudioData(await r.arrayBuffer()); }
+      for (const [k, u] of [['loop', 'sfx/v8-loop.wav'], ['start', 'sfx/v8-start.wav'], ['dloop', 'sfx/zubor-idle.wav']]) { const r = await fetch(u); if (!r.ok) throw new Error('sfx'); smpBuf[k] = await ctx.decodeAudioData(await r.arrayBuffer()); }
       smpF = ctx.createBiquadFilter(); smpF.type = 'lowpass'; smpF.frequency.value = 3000; smpF.Q.value = .5;
       smpS = ctx.createBiquadFilter(); smpS.type = 'highshelf'; smpS.frequency.value = 2200; smpS.gain.value = 0;
       smpG = ctx.createGain(); smpG.gain.value = 0;
@@ -4083,20 +4083,22 @@ const sound = (() => {
     turboO.frequency.setTargetAtTime(2200 + rn * 5200, t, .08); turboG.gain.setTargetAtTime(E.turbo * load * rn, t, .1);
     sqG.gain.setTargetAtTime(squeal * .22, t, .05);
     const useSmp = !!E.smp && !!smp, useRec = !!E.rec && !!smpD;
-    if (smpV) { smpV.gain.setTargetAtTime(useSmp ? 1 : 0, t, .03); smpDG.gain.setTargetAtTime(useRec ? 1 : 0, t, .03); }
-    if (useRec) {
-      // the recording is an idle loop: up to ~3x its speed it still sounds like the real engine, the synth fills in the top end
-      smpD.playbackRate.setTargetAtTime(clamp(1 + rn * 1.9 + (rpmS < E.idle ? (rpmS - E.idle) / E.idle : 0), .7, 3), t, .03);
-      smpF.frequency.setTargetAtTime(1800 + rn * 4500 + load * 2500, t, .05); smpS.gain.setTargetAtTime(load * 3 - 1, t, .08);
+    if (smpV && !useSmp) { smpV.gain.setTargetAtTime(0, t, .03); smpDG.gain.setTargetAtTime(useRec ? 1 : 0, t, .03); }
+    if (useRec && !useSmp) {
+      smpD.playbackRate.setTargetAtTime(clamp(rpmS / E.idle, .8, 3), t, .03);
       smpG.gain.setTargetAtTime((.6 + load * .45 + rn * .15) * 1.5, t, .05);
-      engG.gain.setTargetAtTime(E.gain * rn * (.5 + load * .5) * .9, t, .05);
-    } else if (useSmp) {
+    }
+    if (useSmp) {
+      // the car's own recording at idle and low revs, fading into the V8 recording higher up
+      const rm = useRec ? clamp(1 - (rpmS - E.idle) / 1500, 0, 1) : 0;
+      smpV.gain.setTargetAtTime(1 - rm * .85, t, .05); smpDG.gain.setTargetAtTime(rm * 1.25, t, .05);
+      if (useRec) smpD.playbackRate.setTargetAtTime(clamp(rpmS / E.idle, .8, 3.2), t, .03);
       engG.gain.setTargetAtTime(0, t, .03); roarG.gain.setTargetAtTime(0, t, .03); raspG.gain.setTargetAtTime(E.rasp > .1 ? (E.rasp - .1) * 3 * fo * rn : 0, t, .06);
       smp.playbackRate.setTargetAtTime(clamp(rpmS / 1600 * E.smp, .38, 4.8), t, .03);
       smpF.frequency.setTargetAtTime(1500 + rn * 6500 + load * 3500 + fo * 1800, t, .05);
       smpS.gain.setTargetAtTime(fo * 5 - 1.5, t, .08);
       smpG.gain.setTargetAtTime((.55 + load * .4 + rn * .2) * (1 + fo * .25) * 1.9, t, .05);
-    } else if (smpG) smpG.gain.setTargetAtTime(0, t, .05);
+    } else if (smpG && !useRec) smpG.gain.setTargetAtTime(0, t, .05);
     // burble: lifting off the throttle at revs makes the V8 crackle and pop
     if (E.pops) {
       if (prevLoad > .55 && load < .15 && rpmS > 2600) { for (let i = 0; i < 5; i++) setTimeout(() => pop(.35 + Math.random() * .35), 40 + i * 70 + Math.random() * 60); }
@@ -6236,7 +6238,7 @@ function hwyStep(dt) {
   }
   P.gap = gapAhead;
   if (P.s >= HLEN) { hwyEnd(true); return; }
-  sound.setEngine(P.engine || 'v8'); sound.update(clamp(.22 + .78 * (P.rpm - 900) / 5700, 0, 1), gas, P.rollT > 0 ? 0 : clamp(P.skid * 1.5 + (P.lift > 0 ? .4 : 0), 0, 1));
+  sound.setEngine((CARS[carKey] && CARS[carKey].engine) || 'v8'); sound.update(clamp(.22 + .78 * (P.rpm - 900) / 5700, 0, 1), gas, P.rollT > 0 ? 0 : clamp(P.skid * 1.5 + (P.lift > 0 ? .4 : 0), 0, 1));
   elSpd.textContent = Math.round(kmh); $('#score').textContent = fmt(Math.max(0, Math.round(P.score)));
   if (kmh > stats.maxSpd) stats.maxSpd = kmh;
   P.dist += P.v * dt; stats.dist += P.v * dt; stats.time += dt;

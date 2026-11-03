@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,user-scalable=no">
 <title>Pult · si/mixoval</title>
-<meta name="description" content="DJ pult v prehliadači: dva decky, crossfader, EQ, filter, sync tempa, slučky a nahrávanie mixu do MP3. Skladby ostávajú u teba.">
-<meta name="theme-color" content="#0c0e0f">
+<meta name="description" content="DJ pult v prehliadači v klubovom rozložení: dva prehrávače a mixér. Displej s vlnou, jog, hot cue, slučky, sync, EQ, filter, FX a nahrávanie mixu do MP3. Skladby ostávajú u teba.">
+<meta name="theme-color" content="#07080a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -13,52 +13,50 @@
 <link rel="manifest" href="../manifest.webmanifest">
 <link rel="icon" href="../ikony/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../ikony/icon-180.png">
+<meta property="og:title" content="Pult · si/mixoval">
+<meta property="og:description" content="DJ pult v prehliadači: dva prehrávače a mixér. Zadarmo.">
+<meta property="og:image" content="https://durica.si/mixoval/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="../mx.css">
 <link rel="stylesheet" href="pult.css">
 <script data-goatcounter="https://durica.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </head>
 <body>
-<header class="top">
+<header class="bar">
   <a class="back" href="../" aria-label="Späť na mixoval">‹<span class="bt"> mixoval</span></a>
-  <h1>Pult</h1>
   <span class="sp"></span>
-  <div class="mst" title="Master">
-    <div class="mm" id="mm"><span><i></i></span><span><i></i></span></div>
-    <div class="cw"><div class="knob sm" data-ctl="m.vol" data-def="0.8" data-type="k"><b></b></div><small>MASTER</small></div>
-  </div>
   <div class="rec">
     <select id="kbps" aria-label="Kvalita MP3"><option value="320">320</option><option value="256">256</option><option value="192">192</option></select>
     <button class="btn recbtn" id="recBtn" type="button"><span class="dot"></span><span id="recTxt">REC</span></button>
-    <span class="mono recinfo" id="recInfo"></span>
   </div>
+  <span class="mono recinfo" id="recInfo"></span>
 </header>
 
-<main class="decks" id="decks">
-  <!-- decky sa vložia z pult.js -->
-  <section class="xfw" id="xfw">
-    <span class="xl a">A</span>
-    <div class="hf" data-ctl="xf" data-def="0.5" data-type="h" aria-label="Crossfader"><b></b></div>
-    <span class="xl b">B</span>
-  </section>
-</main>
+<main class="booth" id="booth" aria-label="DJ pult"></main>
 
 <div class="recout" id="recOut" hidden></div>
 
-<section class="lib" id="lib">
-  <div class="libh">
-    <h2>Skladby</h2>
-    <button class="btn" id="addFiles" type="button">Súbory</button>
-    <button class="btn" id="addDir" type="button">Priečinok / USB</button>
-    <input type="file" id="fileIn" class="vh" accept="audio/*,.mp3,.wav,.aif,.aiff,.flac,.m4a,.aac,.ogg,.opus" multiple>
-    <input type="file" id="dirIn" class="vh" webkitdirectory multiple>
+<!-- knižnica skladieb (otvorí sa tlačidlom BROWSE na prehrávači) -->
+<div class="sheet" id="sheet" hidden>
+  <div class="sheetin" role="dialog" aria-label="Skladby">
+    <div class="sh-h">
+      <h2>Skladby</h2>
+      <div class="tgt" id="tgt" aria-label="Načítať do decku"><button type="button" data-t="0" class="ta">A</button><button type="button" data-t="1" class="tb">B</button></div>
+      <button class="x" id="sheetX" type="button" aria-label="Zavrieť">×</button>
+    </div>
+    <div class="sh-b">
+      <button class="btn" id="addFiles" type="button">Súbory</button>
+      <button class="btn" id="addDir" type="button">Priečinok / USB</button>
+      <input type="file" id="fileIn" class="vh" accept="audio/*,.mp3,.wav,.aif,.aiff,.flac,.m4a,.aac,.ogg,.opus" multiple>
+      <input type="file" id="dirIn" class="vh" webkitdirectory multiple>
+    </div>
+    <input type="search" id="q" class="q" placeholder="Hľadať v skladbách…" autocomplete="off" autocapitalize="off" spellcheck="false">
+    <div class="list" id="list"></div>
+    <p class="empty" id="empty">Pridaj skladby z telefónu, počítača alebo USB (aj z rekordboxu). Všetko ostáva v tvojom prehliadači a nikam sa to nenahráva. Môžeš ich sem aj pretiahnuť.</p>
   </div>
-  <input type="search" id="q" class="q" placeholder="Hľadať v skladbách…" autocomplete="off" autocapitalize="off" spellcheck="false">
-  <div class="list" id="list"></div>
-  <p class="empty" id="empty">Pridaj skladby z telefónu, počítača alebo USB (aj z rekordboxu). Všetko ostáva v tvojom prehliadači a nikam sa to nenahráva. Môžeš ich sem aj pretiahnuť.</p>
-</section>
+</div>
 
 <div class="toast" id="toast" role="status"></div>
 <script src="../lame.min.js"></script>

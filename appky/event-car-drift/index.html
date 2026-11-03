@@ -1867,7 +1867,7 @@ const CARS = {
     steerMax: .68, steerFall: 9, steerLag: 6.5, yawLag: 3.8, ayMax: 7.0, grip: 6.0, drift: 1.9, hbGrip: .7, kick: .6,
     rollGain: .16, rollW: 3.8, rollZ: .26, tip: .215, over: .262, pitGain: .13, pitW: 6.3, pitZ: .5,
     power: 1, hitK: 1.5, bounce: 1.15 },
-  sugga: { engine: 'diesel', build: buildSugga, name: 'SUGGA',
+  sugga: { engine: 'sugga', build: buildSugga, name: 'SUGGA',
     L: 2.9, pw: 52, aMax: 2.7, top: 22, rev: 4, raMax: 2, brake: 8.4, brakeRamp: 7, coast: .9,
     steerMax: .62, steerFall: 8, steerLag: 8, yawLag: 5, ayMax: 7.4, grip: 7, drift: 2.1, hbGrip: .8, kick: .7,
     rollGain: .15, rollW: 6.9, rollZ: .45, tip: .24, over: .38, pitGain: .09, pitW: 7.5, pitZ: .5,
@@ -3950,6 +3950,7 @@ function scoring(dt) {
 const sound = (() => {
   let ctx = null, master = null, vol = settings.sfx, paused = false;
   let smp = null, smpG = null, smpF = null, smpS = null; const smpBuf = { loop: null, start: null };
+  let smpV = null, smpD = null, smpDG = null;
   let windG = null, windF = null, sqBP = null, sqPK = null, surfK = 'tarmac';
   let engBus = null, eng = null, engS = null, engF = null, engG = null, shelf = null, roarG = null, roarF = null, raspG = null, clatG = null, clatO = null, turboO = null, turboG = null, sq = null, sqG = null;
   const waves = {};
@@ -3965,7 +3966,9 @@ const sound = (() => {
     i4:     { idle: 850, red: 7000, wave: 'i4',     gain: .15, drive: 2.2, cut0: 700, cutR: 2400, cutL: 900,  roar: .07, rasp: .05, clat: 0,   turbo: .025, flaps: false, pops: false, lope: false },
     // F1: 1.6 V6 turbo hybrid, idles at 4 000 and screams to 12 500, bright and smooth with the hybrid whine on top
     v6:     { idle: 4200, red: 12500, wave: 'v6',   gain: .13, drive: 2.8, cut0: 1500, cutR: 5200, cutL: 1500, roar: .05, rasp: .08, clat: 0,  turbo: .06,  flaps: false, pops: true,  lope: false },
-    diesel: { idle: 720, red: 4300, wave: 'diesel', gain: .15, drive: 1.5, cut0: 520, cutR: 1500, cutL: 700,  roar: .05, rasp: 0,   clat: .13, turbo: .018, flaps: false, pops: false, lope: false }
+    diesel: { idle: 720, red: 4300, wave: 'diesel', gain: .15, drive: 1.5, cut0: 520, cutR: 1500, cutL: 700,  roar: .05, rasp: 0,   clat: .13, turbo: .018, flaps: false, pops: false, lope: false },
+    // Sugga: its own engine, recorded at an event (idle loop), pitched up with the revs; at high revs the synth diesel joins in
+    sugga:  { idle: 720, red: 4300, wave: 'diesel', gain: .15, drive: 1.5, cut0: 520, cutR: 1500, cutL: 700,  roar: .04, rasp: 0,   clat: 0,   turbo: .015, flaps: false, pops: false, lope: false, rec: 1 }
   };
   let type = 'v8', rpmS = 650, lastT = 0, prevLoad = 0, flap = 0, popT = 0;
   const mkWave = k => {
@@ -4033,12 +4036,14 @@ const sound = (() => {
   // the 5.7 V8 is a real recording (cut into a seamless loop at ~1600 rpm) that is pitch-shifted with the revs
   async function loadSamples() {
     try {
-      for (const [k, u] of [['loop', 'sfx/v8-loop.wav'], ['start', 'sfx/v8-start.wav']]) { const r = await fetch(u); if (!r.ok) throw new Error('sfx'); smpBuf[k] = await ctx.decodeAudioData(await r.arrayBuffer()); }
+      for (const [k, u] of [['loop', 'sfx/v8-loop.wav'], ['start', 'sfx/v8-start.wav'], ['dloop', 'sfx/diesel-loop.wav']]) { const r = await fetch(u); if (!r.ok) throw new Error('sfx'); smpBuf[k] = await ctx.decodeAudioData(await r.arrayBuffer()); }
       smpF = ctx.createBiquadFilter(); smpF.type = 'lowpass'; smpF.frequency.value = 3000; smpF.Q.value = .5;
       smpS = ctx.createBiquadFilter(); smpS.type = 'highshelf'; smpS.frequency.value = 2200; smpS.gain.value = 0;
       smpG = ctx.createGain(); smpG.gain.value = 0;
       smp = ctx.createBufferSource(); smp.buffer = smpBuf.loop; smp.loop = true; smp.playbackRate.value = .45;
-      smp.connect(smpF); smpF.connect(smpS); smpS.connect(smpG); smpG.connect(engBus); smp.start();
+      smpV = ctx.createGain(); smpV.gain.value = 1; smp.connect(smpV); smpV.connect(smpF);
+      smpD = ctx.createBufferSource(); smpD.buffer = smpBuf.dloop; smpD.loop = true; smpDG = ctx.createGain(); smpDG.gain.value = 0; smpD.connect(smpDG); smpDG.connect(smpF);
+      smpF.connect(smpS); smpS.connect(smpG); smpG.connect(engBus); smp.start(); smpD.start();
     } catch (e) { smp = null; }
   }
   function startClip() {
@@ -4077,8 +4082,15 @@ const sound = (() => {
     else { sound.clatM.gain.setTargetAtTime(0, t, .05); clatG.gain.setTargetAtTime(0, t, .05); }
     turboO.frequency.setTargetAtTime(2200 + rn * 5200, t, .08); turboG.gain.setTargetAtTime(E.turbo * load * rn, t, .1);
     sqG.gain.setTargetAtTime(squeal * .22, t, .05);
-    const useSmp = !!E.smp && !!smp;
-    if (useSmp) {
+    const useSmp = !!E.smp && !!smp, useRec = !!E.rec && !!smpD;
+    if (smpV) { smpV.gain.setTargetAtTime(useSmp ? 1 : 0, t, .03); smpDG.gain.setTargetAtTime(useRec ? 1 : 0, t, .03); }
+    if (useRec) {
+      // the recording is an idle loop: up to ~3x its speed it still sounds like the real engine, the synth fills in the top end
+      smpD.playbackRate.setTargetAtTime(clamp(1 + rn * 1.9 + (rpmS < E.idle ? (rpmS - E.idle) / E.idle : 0), .7, 3), t, .03);
+      smpF.frequency.setTargetAtTime(1800 + rn * 4500 + load * 2500, t, .05); smpS.gain.setTargetAtTime(load * 3 - 1, t, .08);
+      smpG.gain.setTargetAtTime((.6 + load * .45 + rn * .15) * 1.5, t, .05);
+      engG.gain.setTargetAtTime(E.gain * rn * (.5 + load * .5) * .9, t, .05);
+    } else if (useSmp) {
       engG.gain.setTargetAtTime(0, t, .03); roarG.gain.setTargetAtTime(0, t, .03); raspG.gain.setTargetAtTime(E.rasp > .1 ? (E.rasp - .1) * 3 * fo * rn : 0, t, .06);
       smp.playbackRate.setTargetAtTime(clamp(rpmS / 1600 * E.smp, .38, 4.8), t, .03);
       smpF.frequency.setTargetAtTime(1500 + rn * 6500 + load * 3500 + fo * 1800, t, .05);

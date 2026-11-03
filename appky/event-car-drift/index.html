@@ -725,6 +725,7 @@ body.dh #hud .speed,body.dh #hud .score,body.dh #combo,body.dh #timer{display:no
 .dhmsg.dq{color:#ff3b30}
 .dhr b#dhGates,.dhr b#dhPos{color:#74ff5e}
 .dhr b#dhPos.bad{color:#ff5a4a}
+.dhr small.dlt{font-size:13px;color:#74ff5e}.dhr small.dlt.bad{color:#ff5a4a}
 .dhr [hidden]{display:none}
 /* downhill: pick the run and the discipline */
 .dhpick{height:100%;min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:8px}
@@ -761,7 +762,7 @@ body.dh #hud .speed,body.dh #hud .score,body.dh #combo,body.dh #timer{display:no
 <div class="dhhud" id="dhHud" hidden>
   <div class="dhl"><small>ČAS JAZDY</small><b id="dhTime">00:00.00</b><small>VO VZDUCHU</small><b><span id="dhAir">00.00</span><i id="dhJump"></i></b><small>RÝCHLOSŤ (km/h)</small><b id="dhSpd">0</b></div>
   <div class="dhc"><svg id="dhArrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l8 19-8-5-8 5z" fill="currentColor"/></svg><b id="dhDist">0 m</b></div>
-  <div class="dhr"><small id="dhBestLab">REKORD TRATE</small><b id="dhBest">--:--.--</b><small id="dhGatesLab" hidden>BRÁNKY</small><b id="dhGates" hidden>0/0</b><small id="dhPosLab" hidden>POZÍCIA</small><b id="dhPos" hidden>–</b></div>
+  <div class="dhr"><small id="dhBestLab">REKORD TRATE</small><b id="dhBest">--:--.--</b><small id="dhGatesLab" hidden>BRÁNKY</small><b id="dhGates" hidden>0/0</b><small id="dhPosLab" hidden>POZÍCIA</small><b id="dhPos" hidden>–</b><small id="dhDlt" class="dlt" hidden></small></div>
 </div>
 <div class="dhmsg" id="dhMsg" aria-live="polite"></div>
 <div class="job" id="jobHud" hidden>
@@ -6926,17 +6927,17 @@ function dhLeave() {
 const GH = { on: false, rec: [], recT: 0, play: null, mesh: null, mat: null };
 const ghKey = () => 'dhGhost.' + DH.w.id + '.' + DH.disc;
 function ghStart() {
-  GH.rec = []; GH.recT = 0; GH.play = null;
+  GH.rec = []; GH.recT = 0; GH.play = null; GH.zi = 0; GH.split = 0; GH.delta = undefined;
   if (GH.mesh) { GH.mesh.parent && GH.mesh.parent.remove(GH.mesh); GH.mesh = null; }
   let g = null; try { g = JSON.parse(localStorage.getItem('ecd.' + ghKey()) || 'null'); } catch (e) {}
-  if (!settings.ghost || !g || !g.d || g.d.length < 16) { dhEl.posLab.hidden = dhEl.pos.hidden = true; return; }
+  if (!settings.ghost || !g || !g.d || g.d.length < 16) { dhEl.posLab.hidden = dhEl.pos.hidden = dhEl.dlt.hidden = true; return; }
   GH.play = g; ensureModel(g.car); const k = CARS[g.car] && CARS[g.car].ready ? g.car : carKey;   // the car of the record run, or yours while its model still loads
   let built = null; try { built = (CARS[k] && CARS[k].build ? CARS[k] : CARS[carKey]).build(); } catch (e) { built = null; }
   if (!built) { GH.play = null; return; }
   GH.mat = GH.mat || new THREE.MeshBasicMaterial({ color: 0x2fb8ff, transparent: true, opacity: .42, depthWrite: false, fog: true });
   built.car.traverse(o => { if (o.isMesh) { if (o.material && o.material.colorWrite === false) { o.visible = false; return; } o.material = GH.mat; o.castShadow = false; o.receiveShadow = false; } });   // the invisible shadow boxes stay invisible
   GH.mesh = built.car; GH.mesh.visible = false; DH.g.add(GH.mesh);
-  dhEl.posLab.hidden = dhEl.pos.hidden = false; dhEl.pos.textContent = '–';
+  dhEl.posLab.hidden = dhEl.pos.hidden = dhEl.dlt.hidden = false; dhEl.pos.textContent = '–'; dhEl.dlt.textContent = '';
 }
 // every 0.1 s: run time, where the car model is and how it is turned
 function ghRecord(dt) {
@@ -6955,6 +6956,18 @@ function ghUpdate() {
   // race position like in Pakoon: ahead of or behind your best run
   const gz = lerp(d[lo * 8 + 3], d[hi * 8 + 3], k), ahead = DHB.p.z >= gz;
   dhEl.pos.textContent = (ahead ? '1' : '2') + '/2'; dhEl.pos.classList.toggle('bad', !ahead);
+  // time gap: when was the ghost where you are now
+  const tg = ghTimeAt(DHB.p.z); if (tg !== null && !DH.over) { const dl = DH.run - tg; GH.delta = dl; dhEl.dlt.textContent = (dl < 0 ? '−' : '+') + Math.abs(dl).toFixed(2).replace('.', ',') + ' s'; dhEl.dlt.classList.toggle('bad', dl > 0); }
+  // splits at a third and two thirds of the run, like on a real downhill
+  const L = DH.w.L; for (let i = 0; i < 2; i++) { const zs = L * (i + 1) / 3; if (GH.split <= i && DHB.p.z >= zs && GH.delta !== undefined) { GH.split = i + 1; const dl = GH.delta; dhMsg('MEDZIČAS ' + (i + 1), dl <= 0 ? 'go' : 'dq', (dl < 0 ? '−' : '+') + Math.abs(dl).toFixed(2).replace('.', ',') + ' s ' + (dl <= 0 ? 'PRED DUCHOM' : 'ZA DUCHOM')); if (dl <= 0) sound.beep(); } }
+}
+function ghTimeAt(z) {   // the ghost goes down the hill, so its z grows with time; find when it passed z
+  const d = GH.play.d, n = d.length / 8; let i = GH.zi || 0;
+  if (i > 0 && d[i * 8 + 3] > z) i = 0;
+  while (i < n - 1 && d[(i + 1) * 8 + 3] < z) i++;
+  GH.zi = i; if (i >= n - 1) return null;
+  const z0 = d[i * 8 + 3], z1 = d[(i + 1) * 8 + 3]; if (z1 <= z0) return d[i * 8];
+  return lerp(d[i * 8], d[(i + 1) * 8], clamp((z - z0) / (z1 - z0), 0, 1));
 }
 function ghPose(i, k, j) {
   const d = GH.play.d, a = i * 8, b = (j === undefined ? i : j) * 8;
@@ -7148,7 +7161,7 @@ function dhFrame(dt) {
   dhRender(dt); music.tick(dt); uiTick();
   if (settings.fps) { fpsT += dt; fpsN++; if (fpsT >= .5) { elFps.textContent = Math.round(fpsN / fpsT) + ' FPS'; fpsT = 0; fpsN = 0; } }
 }
-dhEl.hud = $('#dhHud'); dhEl.time = $('#dhTime'); dhEl.air = $('#dhAir'); dhEl.jump = $('#dhJump'); dhEl.spd = $('#dhSpd'); dhEl.dist = $('#dhDist'); dhEl.arrow = $('#dhArrow'); dhEl.best = $('#dhBest'); dhEl.msg = $('#dhMsg'); dhEl.bestLab = $('#dhBestLab'); dhEl.gates = $('#dhGates'); dhEl.gatesLab = $('#dhGatesLab'); dhEl.pos = $('#dhPos'); dhEl.posLab = $('#dhPosLab');
+dhEl.hud = $('#dhHud'); dhEl.time = $('#dhTime'); dhEl.air = $('#dhAir'); dhEl.jump = $('#dhJump'); dhEl.spd = $('#dhSpd'); dhEl.dist = $('#dhDist'); dhEl.arrow = $('#dhArrow'); dhEl.best = $('#dhBest'); dhEl.msg = $('#dhMsg'); dhEl.bestLab = $('#dhBestLab'); dhEl.gates = $('#dhGates'); dhEl.gatesLab = $('#dhGatesLab'); dhEl.pos = $('#dhPos'); dhEl.dlt = $('#dhDlt'); dhEl.posLab = $('#dhPosLab');
 window.__dh = { DH, DHB, dhH, dhStep, keys, touch, input, game, GH, cx: dhCX, clearFx: () => smoke.forEach(p => { p.life = p.max; }) };   // test hook
 
 /* ================= TOKYO DRIFT: night, neon and lit zones you have to drift through ================= */

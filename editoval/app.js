@@ -94,9 +94,10 @@ var lid=0;function nid(){return 'L'+(++lid)+'_'+Date.now().toString(36);}
 function defFx(){return {dstyle:'dots',dscale:5,dthr:0,dden:12,pal:'phos',c1:'#000000',c2:'#ff0000',c3:'#ffffff',
   aset:'min',atext:'EDITOVAL ',acols:70,athr:0,afont:'mono',aink:'pal',atrans:false,
   lvar:'warm',lamt:70,lgrain:35,
-  mat:'steel',evol:65,eslope:35,erecess:60,erough:8,eshine:65,eangle:300,egoo:0,ithr:50,ibold:0,iinv:false,idrip:40,gamt:60,gseed:1};}
+  mat:'steel',evol:65,eslope:35,erecess:60,erough:8,eshine:65,eangle:300,egoo:0,ithr:50,ibold:0,iinv:false,idrip:40,gamt:60,gseed:1,edeb:false,ionly:false};}
+function defFin(){return {grain:0,gsize:1.2,gcol:false,dust:0,scr:0,scol:'dark',dis:0,dmode:'edges',dsz:6,dcol:'#15120a',dseed:1,riv:'none',rsz:22,sig:false};}
 function defAdj(){return {auto:false,bri:0,con:0,sat:0,blur:0,inv:false};}
-var D={fmt:'4x5',bg:{kind:'color',color:'#ffffff'},layers:[],mirror:'none'};
+var D={fmt:'4x5',bg:{kind:'color',color:'#ffffff'},layers:[],mirror:'none',fin:defFin()};
 var S={sel:null,tool:'move',color:'#000000',gesture:false,hist:[],fut:[],gx:false,gy:false,group:0};
 try{var sv=JSON.parse(localStorage.getItem('editoval2')||'null');if(sv&&FORMATS.some(function(f){return f.id===sv.fmt;}))D.fmt=sv.fmt;}catch(e){}
 function savePrefs(){try{localStorage.setItem('editoval2',JSON.stringify({fmt:D.fmt}));}catch(e){}}
@@ -115,10 +116,12 @@ function redo(){if(!S.fut.length)return;S.hist.push(lastSnap);lastSnap=S.fut.pop
 
 /* ================= textúry ================= */
 var TEX={};
-var MATN={steel:'Brúsená oceľ',polish:'Leštená oceľ',spun:'Sústružená',hammer:'Kovaná',chrome:'Zrkadlový chróm',titan:'Titán',holo:'Hologram',copper:'Meď',rose:'Ružové zlato',gold:'Mosadz',black:'Čierny lak',paper:'Biely papier'};
+var MATN={steel:'Brúsená oceľ',polish:'Leštená oceľ',spun:'Sústružená',hammer:'Kovaná',chrome:'Zrkadlový chróm',titan:'Titán',holo:'Hologram',copper:'Meď',rose:'Ružové zlato',gold:'Mosadz',black:'Čierny lak',paper:'Biely papier',cream:'Krémový papier',sand:'Piesok',navy:'Tmavý šum'};
+var NONMET=['paper','cream','sand','navy'];
+var SURF=['steel','polish','spun','hammer','chrome','titan','holo','copper','rose','gold','black'].concat(NONMET);
 var METALS=['steel','polish','spun','hammer','chrome','titan','holo','copper','rose','gold','black'];
 var ENVM={chrome:1,titan:1,holo:1};
-function isMetal(k){return METALS.indexOf(k)>=0;}
+function isMetal(k){return METALS.indexOf(k)>=0||k==='navy';}
 function hsl(h,s,l){h=((h%360)+360)%360/360;var q=l<.5?l*(1+s):l+s-l*s,p=2*l-q;var f=function(t){t=(t+1)%1;return t<1/6?p+(q-p)*6*t:t<.5?q:t<2/3?p+(q-p)*(2/3-t)*6:p;};return [f(h+1/3)*255,f(h)*255,f(h-1/3)*255];}
 var CHROME=[[0,[252,253,255]],[.3,[160,198,240]],[.46,[34,52,98]],[.5,[8,12,28]],[.54,[118,98,76]],[.72,[222,208,184]],[1,[255,255,255]]];
 function chromeEnv(t){t=clamp(t,0,1);for(var i=1;i<CHROME.length;i++)if(t<=CHROME[i][0]){var a=CHROME[i-1],b=CHROME[i],k=(t-a[0])/(b[0]-a[0]);return [a[1][0]+(b[1][0]-a[1][0])*k,a[1][1]+(b[1][1]-a[1][1])*k,a[1][2]+(b[1][2]-a[1][2])*k];}return CHROME[CHROME.length-1][1];}
@@ -132,11 +135,14 @@ function cellHash(i,j){var n=(i*374761393+j*668265263)>>>0;n=Math.imul(n^(n>>>13
 function texture(kind,W,H){
   var key=kind+W+'x'+H;if(TEX[key])return TEX[key];
   var c=mk(W,H),g=c.getContext('2d',{willReadFrequently:true}),im=g.createImageData(W,H),d=im.data,x,y,i,col;
-  var BASE={steel:[178,180,184],polish:[192,195,200],spun:[182,184,188],hammer:[172,174,178],copper:[192,112,72],rose:[226,168,148],gold:[214,170,88],black:[26,26,30],paper:[244,240,230]};
+  var BASE={steel:[178,180,184],polish:[192,195,200],spun:[182,184,188],hammer:[172,174,178],copper:[192,112,72],rose:[226,168,148],gold:[214,170,88],black:[26,26,30],paper:[244,240,230],cream:[236,230,212],sand:[200,198,192],navy:[34,40,70]};
   var base=BASE[kind]||BASE.steel,rowN=new Float32Array(Math.max(W,H)*2),cell=Math.max(8,Math.min(W,H)/14),cxm=W/2,cym=H/2;
   hashSeed=7;for(y=0;y<rowN.length;y++)rowN[y]=rnd();
   for(y=0;y<H;y++)for(x=0;x<W;x++){i=(y*W+x)*4;var u=x/W,v=1,fine=rnd()-.5;col=base;
     if(kind==='paper'){v=1+(rowN[y]-.5)*.012+fine*.05;}
+    else if(kind==='cream'){v=1+fine*.07+(rowN[(x+y*5)%rowN.length]-.5)*.03+.025*Math.sin(x*.006+Math.sin(y*.009)*2.1)+(rnd()<.004?-.1:0);}
+    else if(kind==='sand'){v=1+fine*.34+(rowN[(x*7+y*3)%rowN.length]-.5)*.1+.022*Math.sin(x*.011+Math.sin(y*.017)*2.3);if(rnd()<.012)v*=.62;}
+    else if(kind==='navy'){var tn=rnd();col=[base[0]+(rnd()-.5)*34+(tn<.05?70:0),base[1]+(rnd()-.5)*34+(tn<.05?52:0),base[2]+(rnd()-.5)*40+(tn>.95?40:0)];v=1+fine*.18;}
     else if(kind==='polish'){v=1+.38*Math.exp(-Math.pow((u*.8+y/H*.4-.6)*2.4,2))-.22*(y/H)+fine*.012;}
     else if(kind==='spun'){var dx=x-cxm,dy=y-cym,r=Math.sqrt(dx*dx+dy*dy),a=Math.atan2(dy,dx);v=1+.28*Math.cos(2*(a-.7))+(rowN[(r|0)%rowN.length]-.5)*.16+fine*.05;}
     else if(kind==='hammer'){var ci=Math.floor(x/cell),cj=Math.floor(y/cell),bd=1e9,bx=0,by=0;
@@ -303,7 +309,7 @@ function fxMetal(src,p,U){
 function gooify(A,w,h,r,lo){if(r<1)return A;lo=lo==null?.36:lo;var B=blur2(A,w,h,r);for(var i=0;i<B.length;i++){var v=(B[i]-lo)/.26;v=v<0?0:v>1?1:v;B[i]=v*v*(3-2*v);}return B;}
 function reliefA(d,matD,A,w,h,thick,p,alpha,metal){
   var r=Math.max(1,Math.round(thick*(.05+p.eslope/100*.4))),Hh=blur2(A,w,h,r),R=blur2(A,w,h,Math.max(2,Math.round(thick*.9)));
-  light(d,matD,Hh,Hh,R,w,h,p,p.evol/100*(2.2+r*2.2),alpha,metal);
+  light(d,matD,Hh,Hh,R,w,h,p,p.evol/100*(2.2+r*2.2)*(p.edeb?-1:1),alpha,metal);
 }
 function maskRegion(W,H,box,drawMask,pad){
   var x0=Math.max(0,Math.floor(box.x0-pad)),y0=Math.max(0,Math.floor(box.y0-pad)),x1=Math.min(W,Math.ceil(box.x1+pad)),y1=Math.min(H,Math.ceil(box.y1+pad)),w=x1-x0,h=y1-y0;
@@ -346,7 +352,12 @@ function fxInk(src,p,U){
   A=gooify(A,W,H,Math.round(p.egoo/100*10*U),.16);
   var out=mk(W,H),o=out.getContext('2d',{willReadFrequently:true});
   if(p.mat==='self'||p.mat==='below')o.drawImage(src,0,0);else o.drawImage(texture(p.mat,W,H),0,0);
-  var im=o.getImageData(0,0,W,H);reliefA(im.data,null,A,W,H,th,p,1,isMetal(p.mat));o.putImageData(im,0,0);
+  var im=o.getImageData(0,0,W,H);reliefA(im.data,null,A,W,H,th,p,1,isMetal(p.mat));
+  if(p.ionly){ /* len písmo: okolie je priehľadné, písmo leží na pozadí dokumentu */
+    var rr=Math.max(1,Math.round(th*(.05+p.eslope/100*.4))),Hm=blur2(A,W,H,rr),dd=im.data;
+    for(i=0;i<n;i++){var hv=Hm[i],m=hv<.02?0:hv>.55?1:(hv-.02)/.53;dd[i*4+3]=Math.round(m*m*(3-2*m)*255);}
+  }
+  o.putImageData(im,0,0);
   return out;
 }
 
@@ -489,6 +500,85 @@ function mirrorDoc(C,mode){
   g.restore();
 }
 
+
+/* ================= dokončenie: zrno, prach, škrabance, rozpad okrajov, skrutky ================= */
+function finOf(){if(!D.fin)D.fin=defFin();return D.fin;}
+function finActive(F){return F&&(F.grain>0||F.dust>0||F.scr>0||F.dis>0||(F.riv&&F.riv!=='none')||F.sig);}
+function applyFin(C){
+  var F=D.fin;if(!finActive(F))return;
+  var W=C.width,H=C.height,U=Math.min(W,H)/1080,g=C.getContext('2d',{willReadFrequently:true}),atop=D.bg.kind==='none',keep=hashSeed;
+  if(F.dis>0)finDissolve(g,W,H,U,F,atop);
+  if(F.dust>0||F.scr>0)finDust(g,W,H,U,F,atop);
+  if(F.riv&&F.riv!=='none')finRivets(g,W,H,U,F,atop);
+  if(F.grain>0)finGrain(g,W,H,U,F);
+  if(F.sig)finSig(g,W,H,U,atop);
+  hashSeed=keep;
+}
+/* dither prach, ktorý sa plazí z okrajov alebo rohov */
+function finDissolve(g,W,H,U,F,atop){
+  var bs=Math.max(2,Math.round(F.dsz*U)),cw=Math.ceil(W/bs),ch=Math.ceil(H/bs),B4=[0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5],mode=F.dmode,reach=Math.max(2,F.dis/100*Math.min(cw,ch)*.9);
+  var c=mk(cw,ch),cg=c.getContext('2d'),im=cg.createImageData(cw,ch),d=im.data,cc=hex(F.dcol),x,y;hashSeed=(F.dseed||1)*977+13;
+  for(y=0;y<ch;y++)for(x=0;x<cw;x++){
+    var dist;
+    if(mode==='corners')dist=Math.min(Math.hypot(x,y),Math.hypot(cw-1-x,y),Math.hypot(x,ch-1-y),Math.hypot(cw-1-x,ch-1-y));
+    else if(mode==='top')dist=y;else if(mode==='bottom')dist=ch-1-y;
+    else if(mode==='tl')dist=Math.hypot(x,y);else if(mode==='br')dist=Math.hypot(cw-1-x,ch-1-y);
+    else dist=Math.min(x,y,cw-1-x,ch-1-y);
+    var t=1-dist/reach;if(t<=0)continue;
+    var thr=(B4[(y&3)*4+(x&3)]+.5)/16*.55+rnd()*.45;
+    if(t*t*.95>thr){var j=(y*cw+x)*4;d[j]=cc[0];d[j+1]=cc[1];d[j+2]=cc[2];d[j+3]=255;}
+  }
+  cg.putImageData(im,0,0);g.save();if(atop)g.globalCompositeOperation='source-atop';g.imageSmoothingEnabled=false;g.drawImage(c,0,0,cw,ch,0,0,cw*bs,ch*bs);g.restore();
+}
+/* prach (bodky) a škrabance (tenké dlhé čiary) */
+function finDust(g,W,H,U,F,atop){
+  var dark=F.scol!=='light',sp=dark?'34,28,12':'255,252,240',sc=dark?'74,66,24':'255,255,255',i,n,k=W*H/1080/1080;hashSeed=(F.dseed||1)*131+7;
+  g.save();if(atop)g.globalCompositeOperation='source-atop';
+  n=Math.round(F.dust/100*k*1100);
+  for(i=0;i<n;i++){var x=rnd()*W,y=rnd()*H,r=(.5+rnd()*rnd()*2.8)*U;g.fillStyle='rgba('+sp+','+(.25+rnd()*.5).toFixed(2)+')';g.beginPath();g.arc(x,y,r,0,7);g.fill();}
+  n=Math.round(F.scr/100*k*40);g.lineCap='round';
+  for(i=0;i<n;i++){
+    var x0=rnd()*W,y0=rnd()*H,len=(50+rnd()*rnd()*560)*U,an=-Math.PI/2+(rnd()-.5)*1.15,bend=(rnd()-.5)*len*.08;
+    g.strokeStyle='rgba('+sc+','+(.12+rnd()*.36).toFixed(2)+')';g.lineWidth=Math.max(.6,(.5+rnd()*.9)*U);
+    g.beginPath();g.moveTo(x0,y0);g.quadraticCurveTo(x0+Math.cos(an)*len/2+bend,y0+Math.sin(an)*len/2,x0+Math.cos(an)*len,y0+Math.sin(an)*len);g.stroke();
+  }
+  g.restore();
+}
+/* kovové nity v rohoch; farbu preberajú z podkladu, takže na zlate sú zlaté a na oceli oceľové */
+function finRivets(g,W,H,U,F,atop){
+  var r=F.rsz*U,m=Math.max(r*2.1,Math.min(W,H)*.03),pts=[[m,m],[W-m,m],[m,H-m],[W-m,H-m]];
+  if(F.riv==='6')pts.push([W/2,m],[W/2,H-m]);
+  if(F.riv==='8')pts.push([W/2,m],[W/2,H-m],[m,H/2],[W-m,H/2]);
+  pts.forEach(function(q){
+    var px=Math.round(clamp(q[0],3,W-4)),py=Math.round(clamp(q[1],3,H-4)),id=g.getImageData(px-2,py-2,5,5).data,b=[0,0,0],i;
+    for(i=0;i<25;i++){b[0]+=id[i*4];b[1]+=id[i*4+1];b[2]+=id[i*4+2];}b=[b[0]/25,b[1]/25,b[2]/25];
+    var mix=function(c,w,t){return 'rgb('+Math.round(c[0]+(w-c[0])*t)+','+Math.round(c[1]+(w-c[1])*t)+','+Math.round(c[2]+(w-c[2])*t)+')';};
+    g.save();if(atop)g.globalCompositeOperation='source-atop';
+    g.shadowColor='rgba(0,0,0,.5)';g.shadowBlur=r*.55;g.shadowOffsetY=r*.22;g.fillStyle=mix(b,0,.5);g.beginPath();g.arc(q[0],q[1],r,0,7);g.fill();
+    g.shadowColor='transparent';
+    var gr=g.createRadialGradient(q[0]-r*.34,q[1]-r*.38,r*.05,q[0],q[1],r*1.05);
+    gr.addColorStop(0,mix(b,255,.86));gr.addColorStop(.3,mix(b,255,.28));gr.addColorStop(.7,mix(b,0,.28));gr.addColorStop(1,mix(b,0,.62));
+    g.fillStyle=gr;g.beginPath();g.arc(q[0],q[1],r,0,7);g.fill();
+    g.strokeStyle='rgba(0,0,0,.35)';g.lineWidth=Math.max(1,r*.1);g.beginPath();g.arc(q[0],q[1],r*.97,0,7);g.stroke();
+    g.restore();
+  });
+}
+/* zrno ako na filme, aj farebné */
+function finGrain(g,W,H,U,F){
+  var im=g.getImageData(0,0,W,H),d=im.data,bs=Math.max(1,Math.round(F.gsize*U)),bw=Math.ceil(W/bs),bh=Math.ceil(H/bs),amt=F.grain/100*84,i,x,y;hashSeed=4711;
+  var N=new Float32Array(bw*bh*3);
+  for(i=0;i<bw*bh;i++){var a=rnd()-.5;if(F.gcol){N[i*3]=(rnd()-.5)*.9+a*.4;N[i*3+1]=(rnd()-.5)*.9+a*.4;N[i*3+2]=(rnd()-.5)*.9+a*.4;}else{N[i*3]=N[i*3+1]=N[i*3+2]=a;}}
+  for(y=0;y<H;y++){var br=((y/bs)|0)*bw;for(x=0;x<W;x++){var j=(y*W+x)*4;if(d[j+3]===0)continue;var k=(br+((x/bs)|0))*3;
+    d[j]=clamp(d[j]+N[k]*amt,0,255);d[j+1]=clamp(d[j+1]+N[k+1]*amt,0,255);d[j+2]=clamp(d[j+2]+N[k+2]*amt,0,255);}}
+  g.putImageData(im,0,0);
+}
+/* malý podpis vpravo dole, farba sa vyberie podľa jasu podkladu */
+function finSig(g,W,H,U,atop){
+  var f=fontOf('mono');ensureFont(f);var px=Math.max(10,Math.round(24*U)),mx=Math.round(34*U),sx=clamp(W-mx-60*U,3,W-4),sy=clamp(H-mx-px*.4,3,H-4),p=g.getImageData(Math.round(sx),Math.round(sy),3,3).data;
+  var l=(p[0]*.2126+p[1]*.7152+p[2]*.0722);
+  g.save();if(atop)g.globalCompositeOperation='source-atop';g.font=fstr(f,px);g.textAlign='right';g.textBaseline='alphabetic';g.fillStyle=l>140?'rgba(20,18,14,.78)':'rgba(255,255,255,.82)';g.fillText('si/editoval.',W-mx,H-mx);g.restore();
+}
+
 /* ================= vykreslenie dokumentu ================= */
 function imgRaster(L,W,U,preview){
   var src=SRC[L.src],lw=Math.max(2,Math.round(L.s*W)),lh=Math.max(2,Math.round(lw*src.height/src.width));
@@ -525,6 +615,7 @@ function renderDoc(W,H,preview){
       else{g.save();g.globalAlpha=a;strokesPath(g,L,W,H,U);g.restore();}}
   });
   mirrorDoc(C,D.mirror);
+  applyFin(C);
   return C;
 }
 
@@ -718,8 +809,9 @@ function palChips(par,p){
   if(p.pal==='custom'){var r=el('div','colors');[['c1','pozadie'],['c2','farba'],['c3','tretia']].forEach(function(q){var l=el('label'),i=document.createElement('input');i.type='color';i.value=p[q[0]];i.oninput=function(){p[q[0]]=i.value;dirty();};i.onchange=commit;l.appendChild(i);l.appendChild(document.createTextNode(q[1]));r.appendChild(l);});par.appendChild(r);}
 }
 function reliefControls(par,p,below,o){
-  o=o||{};var mats=(o.mats||METALS.concat(['paper'])).map(function(k){return [k,MATN[k]];});if(o.self)mats.push(['self','Pôvodné farby']);if(below)mats=[['below','Do podkladu']].concat(mats);
+  o=o||{};var mats=(o.mats||SURF).map(function(k){return [k,MATN[k]];});if(o.self)mats.push(['self','Pôvodné farby']);if(below)mats=[['below','Do podkladu']].concat(mats);
   chips(par,'Materiál',p,'mat',mats,true);
+  check(par,'Vyryté dovnútra (gravír)',p,'edeb');
   btns(par,[['🎲 Náhodná oceľ',function(){p.mat=pick(METALS);p.evol=ri(45,100);p.eslope=ri(15,70);p.eshine=ri(40,100);p.erough=ri(0,25);p.eangle=ri(0,71)*5;commit();buildProps();buildLayers();dirty();msg('Materiál: '+MATN[p.mat]+'. Klikni znova pre ďalší.');}]]);
   if(o.goo)slider(par,'Tekutosť',p,'egoo',0,100,1);
   slider(par,'Objem',p,'evol',0,100,1);
@@ -735,15 +827,19 @@ function buildProps(){
   $('#propsT').textContent='Vlastnosti – '+(L?(L.type==='image'?L.name:L.type==='text'?'text':'kresba'):'pozadie');
   if(!L){
     g=grp('Pozadie');
-    chips(g,null,D.bg,'kind',[['color','Farba']].concat(METALS.concat(['paper']).map(function(k){return [k,MATN[k]];})).concat([['none','Priehľadné']]));
+    chips(g,null,D.bg,'kind',[['color','Farba']].concat(SURF.map(function(k){return [k,MATN[k]];})).concat([['none','Priehľadné']]));
     btns(g,[['🎲 Náhodná oceľ',function(){D.bg={kind:pick(METALS)};commit();buildProps();buildLayers();dirty();msg('Pozadie: '+MATN[D.bg.kind]+'.');}]]);
     hint(g,'Farbu pozadia vyberieš v palete pod obrázkom. Priehľadné sa uloží ako PNG bez pozadia.');
     g=grp('Zrkadlenie celého obrázka');
     if(!D.mirror)D.mirror='none';
     chips(g,null,D,'mirror',Object.keys(MIRN).map(function(k){return [k,MIRN[k],mirrorTool];}));
     hint(g,'Zrkadlí všetko naraz, aj texty a kresbu. Tlačidlo Zrkadlo hore prepína režimy dookola.');
+    g=grp('Hotové štýly');
+    btns(g,STYLES.map(function(st){return [st.n,function(){applyStyle(st);}];}));
+    hint(g,'Podľa obrázkov z Filipovho karuselu. Štýl nastaví pozadie, zrno a efekt na vrstvách. Najlepšie ide na fotku s ručným textom: Súbor → Tekutý text z fotky.');
+    buildFinish();
     g=grp('Začni tu');
-    btns(g,[['Tekutý text z fotky…',inkFromPhoto]]);
+    btns(g,[['Tekutý text z fotky…',inkFromPhoto],['Dávka: viac fotiek naraz…',batchPick]]);
     hint(g,'Pridaj <b>Fotku</b>, <b>Text</b> alebo kresli <b>Štetcom</b>. Štetec kreslí tekutý kovový ťah. Na obrázku ťahaj vrstvu prstom, rohom ju zväčšíš, krúžkom otočíš. Dvoma prstami naraz zväčšíš aj otočíš.');
     return;
   }
@@ -782,6 +878,7 @@ function buildProps(){
       slider(g,'Hrúbka písma',p,'ibold',-60,100,1,sgn);
       slider(g,'Kvapky a stekanie',p,'idrip',0,100,1);
       check(g,'Svetlé písmo na tmavom pozadí',p,'iinv');
+      check(g,'Len písmo, okolie priehľadné (leží na pozadí)',p,'ionly');
       reliefControls(g,p,false,{goo:true,self:true});
     }else hint(g,'Vyber efekt. Každá fotka môže mať iný a môžeš ich vrstviť cez seba. Fotku s textom zmeníš na tekutý reliéf efektom Tekutý.');
     g=grp('Poloha');
@@ -837,6 +934,93 @@ function buildProps(){
     slider(g,'Priehľadnosť',L,'o',0,100,1,function(v){return v+' %';});
   }
 }
+function buildFinish(){
+  var F=finOf(),det=el('details'),g;det.open=finActive(F);det.appendChild(el('summary','','Dokončenie (zrno, prach, skrutky…)'));
+  g=grp('Zrno',det);
+  slider(g,'Zrno ako na filme',F,'grain',0,100,1);
+  slider(g,'Hrubosť zrna',F,'gsize',.6,4,.1,function(v){return v.toFixed(1);});
+  check(g,'Farebné zrno',F,'gcol');
+  g=grp('Prach a škrabance',det);
+  slider(g,'Prach (škvrnky)',F,'dust',0,100,1);
+  slider(g,'Škrabance',F,'scr',0,100,1);
+  chips(g,'Farba',F,'scol',[['dark','Tmavé'],['light','Svetlé']]);
+  g=grp('Rozpad okrajov (dither prach)',det);
+  slider(g,'Ako ďaleko siaha',F,'dis',0,100,1);
+  chips(g,'Odkiaľ',F,'dmode',[['edges','Všetky okraje'],['corners','Rohy'],['top','Hore'],['bottom','Dole'],['tl','Roh vľavo hore'],['br','Roh vpravo dole']]);
+  slider(g,'Veľkosť bodov',F,'dsz',2,20,1);
+  var r=el('div','colors'),l=el('label'),i=document.createElement('input');i.type='color';i.value=F.dcol;i.oninput=function(){F.dcol=i.value;dirty();};i.onchange=commit;l.appendChild(i);l.appendChild(document.createTextNode('farba prachu'));r.appendChild(l);g.appendChild(r);
+  btns(g,[['🎲 Iné rozloženie',function(){F.dseed=(F.dseed||1)+1;commit();dirty();}]]);
+  g=grp('Skrutky a podpis',det);
+  chips(g,'Nity v rohoch',F,'riv',[['none','Žiadne'],['4','4 rohy'],['6','6 kusov'],['8','8 kusov']]);
+  slider(g,'Veľkosť nitov',F,'rsz',8,60,1);
+  check(g,'Malý podpis „si/editoval.“ vpravo dole',F,'sig');
+  btns(g,[['Vypnúť všetko',function(){D.fin=defFin();commit();buildProps();dirty();}]]);
+  PROPS.appendChild(det);
+}
+
+/* hotové štýly podľa obrázkov z Filipovho karuselu */
+var STYLES=[
+  {id:'chrome',n:'Chróm v tme',bg:{kind:'navy'},fin:{grain:48,gsize:1.2,gcol:true},rp:{mat:'chrome',evol:92,eslope:32,eshine:92,erough:10,egoo:40,idrip:35,edeb:false,ionly:true}},
+  {id:'sand',n:'Vyryté do piesku',bg:{kind:'sand'},fin:{grain:30,gsize:1,scr:30,dust:25,scol:'dark'},rp:{mat:'sand',evol:100,eslope:14,eshine:55,erough:20,egoo:5,idrip:0,edeb:true,ionly:true}},
+  {id:'paper',n:'Papier a modrá farba',bg:{kind:'cream'},fin:{grain:14,gsize:1},rp:{mat:'paper',evol:62,eslope:55,eshine:25,erough:6,egoo:35,idrip:25,edeb:false,ionly:true},draw:{mode:'paint',color:'#3f7fe8',liquid:90}},
+  {id:'pixel',n:'Pixel a prach',bg:{kind:'color',color:'#ece5cf'},fin:{dis:26,dmode:'edges',dsz:7,dcol:'#1a1710',scr:38,dust:30,scol:'dark'},img:{fx:'dither',p:{dstyle:'pixel',dscale:6,pal:'cream',dthr:0}},txt:{style:'plain',color:'#15120e'}},
+  {id:'gold',n:'Zlatá platňa so skrutkami',bg:{kind:'gold'},fin:{riv:'4',rsz:22,dis:38,dmode:'tl',dsz:6,dcol:'#2a2210',grain:18,gsize:1},rp:{mat:'gold',evol:95,eslope:18,eshine:85,erough:6,egoo:10,idrip:0,edeb:true,ionly:true}},
+  {id:'goo',n:'Tekutý lak na tmavej',bg:{kind:'navy'},fin:{grain:55,gsize:1.1,gcol:true},rp:{mat:'black',evol:100,eslope:42,eshine:100,erough:4,egoo:58,idrip:60,edeb:false,ionly:true}}
+];
+function applyStyle(st){
+  var sel=selLayer(),targets=(sel?[sel]:D.layers).filter(function(L){return !L.sample;}),cl=function(o){return JSON.parse(JSON.stringify(o));};
+  D.bg=cl(st.bg);D.fin=Object.assign(defFin(),cl(st.fin||{}));
+  targets.forEach(function(L){
+    if(L.type==='image'){if(st.img){L.fx=st.img.fx;Object.assign(L.p,cl(st.img.p));}else{L.fx='ink';Object.assign(L.p,cl(st.rp));}L._c=null;}
+    else if(L.type==='text'){if(st.txt)Object.assign(L,cl(st.txt));else{L.style='relief';Object.assign(L.p,cl(st.rp));}}
+    else if(L.type==='draw'){if(st.draw)Object.assign(L,cl(st.draw));else{L.mode='relief';Object.assign(L.p,cl(st.rp));}}
+  });
+  commit();refreshAll();msg('Štýl „'+st.n+'“. Najlepšie vyzerá na fotke s ručným textom. Nepáči sa? Späť.');
+}
+
+/* dávka: jeden štýl na viac fotiek naraz (napr. celý karusel), potom uložiť alebo zdieľať všetko */
+var BAT=null;
+function batchPick(){
+  var T=selLayer();if(!T||T.type!=='image')T=D.layers.filter(function(l){return l.type==='image'&&!l.sample;})[0]||D.layers.filter(function(l){return l.type==='image';})[0];
+  if(!T){msg('Najprv pridaj jednu fotku a nastav jej efekt. Ten sa potom použije na všetky.');return;}
+  S.batchT=T.id;$('#fileB').click();
+}
+function runBatch(list){
+  var files=Array.prototype.slice.call(list||[]).filter(function(f){return /^image\//.test(f.type);}).slice(0,20),T=byId(S.batchT);
+  if(!files.length||!T){return;}
+  var f=fmtOf(),out=[],i=0,stop=false,tmpl=snap();
+  dialog('Dávka','<p id="bp">Spracúvam 1 / '+files.length+'…</p><p class="hint">Každá fotka dostane rovnaký efekt, pozadie a dokončenie ako vybraná vrstva. Texty a kresby ostanú.</p>',[['Zrušiť',function(){stop=true;closeDlg();}]]);
+  (function next(){
+    if(stop)return;
+    if(i>=files.length){batchDone(out);return;}
+    var bp=$('#bp');if(bp)bp.textContent='Spracúvam '+(i+1)+' / '+files.length+'…';
+    loadFile(files[i],function(c){
+      setTimeout(function(){
+        var keep=D,id=addSrc(c),C=null;
+        try{D=JSON.parse(tmpl);var Lc=byId(T.id);Lc.src=id;Lc.sample=false;Lc._c=null;if(Lc.fit)fitLayer(Lc,Lc.fit);C=renderDoc(f.w,f.h,false);}
+        catch(e){console.error(e);}
+        D=keep;delete SRC[id];
+        if(!C){i++;next();return;}
+        C.toBlob(function(b){if(b)out.push({b:b,name:'editoval-'+String(out.length+1).padStart(2,'0')+'.png'});i++;next();},'image/png');
+      },30);
+    },function(){i++;next();});
+  })();
+}
+function batchDone(out){
+  if(!out.length){dialog('Dávka','<p>Nepodarilo sa spracovať žiadnu fotku.</p>');return;}
+  if(BAT)BAT.urls.forEach(function(u){URL.revokeObjectURL(u);});
+  var urls=out.map(function(o){return URL.createObjectURL(o.b);});BAT={out:out,urls:urls};
+  dialog('Dávka hotová','<p><b>'+out.length+'</b> obrázkov ('+fmtOf().w+' × '+fmtOf().h+' px)</p><div class="bgrid">'+urls.map(function(u,k){return '<img src="'+u+'" alt="Obrázok '+(k+1)+'">';}).join('')+'</div><p class="hint">Na iPhone: Uložiť všetko otvorí zdieľanie, vyber Uložiť do Fotiek. Jeden obrázok uložíš podržaním.</p>',
+    [['Zavrieť',closeDlg],['Uložiť všetky',function(){saveAll(out);},true]]);
+}
+function saveAll(out){
+  var files=[];try{files=out.map(function(o){return new File([o.b],o.name,{type:'image/png'});});}catch(e){}
+  if(files.length&&navigator.canShare&&navigator.canShare({files:files})){navigator.share({files:files,title:'si/editoval'}).catch(function(){});return;}
+  out.forEach(function(o,k){setTimeout(function(){var a=document.createElement('a');a.href=BAT.urls[k];a.download=o.name;document.body.appendChild(a);a.click();a.remove();},k*400);});
+  msg('Sťahujem '+out.length+' súborov. Ak prehliadač pýta povolenie na viac sťahovaní, povoľ ho.');
+}
+$('#fileB').addEventListener('change',function(e){runBatch(e.target.files);e.target.value='';});
+
 function buildFontsPreview(){} /* fonty v tlačidlách sa načítajú cez CSS samé */
 
 /* ================= formáty ================= */
@@ -865,7 +1049,8 @@ $('#tUndo').onclick=undo;
 $('#tSave').onclick=function(){save();};
 $('#tRnd').onclick=function(){
   var L=selLayer();
-  if(!L){D.bg=Math.random()<.25?{kind:'color',color:pick(W98)}:{kind:pick(METALS.concat(['paper']))};}
+  if(!L){D.bg=Math.random()<.25?{kind:'color',color:pick(W98)}:{kind:pick(SURF)};
+    D.fin=Object.assign(defFin(),{grain:Math.random()<.6?ri(10,60):0,gcol:Math.random()<.4,scr:Math.random()<.35?ri(10,50):0,dust:Math.random()<.35?ri(10,50):0,dis:Math.random()<.3?ri(20,60):0,dmode:pick(['edges','corners','top','bottom','tl','br']),dseed:ri(1,99),riv:Math.random()<.2?'4':'none'});}
   else if(L.type==='image'){var p=L.p;L.fx=pick(['dither','dither','ascii','look','relief','glitch','ink']);if(Math.random()<.3){L.warp=pick(['wave','ripple','twirl','bulge','melt']);L.wamt=ri(25,80);}else L.warp='none';p.gseed=ri(1,999);if(L.fx==='ink'&&!p.egoo)p.egoo=45;
     if(L.fx==='dither'){p.dstyle=pick(['bayer4','bayer8','fs','atk','noise','dots','wave','lines','pixel']);p.dscale=ri(2,10);p.dthr=ri(-25,25);p.dden=ri(4,30);p.pal=pick(PALS.filter(function(q){return q.id!=='custom';})).id;}
     else if(L.fx==='ascii'){p.aset=pick(['min','full','blocks','hearts','bin']);p.acols=ri(40,130);p.athr=ri(-20,20);p.afont=pick(['mono','serif','gothic']);p.aink=pick(['pal','color']);p.pal=pick(PALS.filter(function(q){return q.c;})).id;}
@@ -877,11 +1062,11 @@ $('#tRnd').onclick=function(){
 };
 
 /* fotky: tlačidlo, vloženie zo schránky, potiahnutie */
-function loadFile(f,cb){
-  if(!f||!/^image\//.test(f.type)){msg('Toto nie je obrázok.');return;}
+function loadFile(f,cb,err){
+  if(!f||!/^image\//.test(f.type)){msg('Toto nie je obrázok.');if(err)err();return;}
   var url=URL.createObjectURL(f),img=new Image();
   img.onload=function(){var sz=fitSize(img.naturalWidth,img.naturalHeight,MAXSRC),c=mk(sz[0],sz[1]);c.getContext('2d').drawImage(img,0,0,sz[0],sz[1]);URL.revokeObjectURL(url);cb(c);};
-  img.onerror=function(){URL.revokeObjectURL(url);msg('Tento obrázok sa nepodarilo otvoriť. Skús JPG alebo PNG.');};img.src=url;
+  img.onerror=function(){URL.revokeObjectURL(url);msg('Tento obrázok sa nepodarilo otvoriť. Skús JPG alebo PNG.');if(err)err();};img.src=url;
 }
 function takeFiles(list){
   Array.prototype.slice.call(list||[]).filter(function(f){return /^image\//.test(f.type);}).slice(0,6).forEach(function(f){
@@ -932,9 +1117,10 @@ $('#dlgX').onclick=closeDlg;
 modal.addEventListener('click',function(e){if(e.target===modal)closeDlg();});
 
 var MENUS={
-  file:function(){return [['Nový obrázok',newDoc],['Otvoriť fotku…',function(){$('#file').click();}],['Tekutý text z fotky…',inkFromPhoto],'-',['Uložiť ako PNG',function(){save('png');},'Ctrl+S'],['Uložiť ako JPG',function(){save('jpg');}]];},
+  file:function(){return [['Nový obrázok',newDoc],['Otvoriť fotku…',function(){$('#file').click();}],['Tekutý text z fotky…',inkFromPhoto],['Dávka: viac fotiek naraz…',batchPick],'-',['Uložiť ako PNG',function(){save('png');},'Ctrl+S'],['Uložiť ako JPG',function(){save('jpg');}]];},
   edit:function(){return [['Späť',undo,'Ctrl+Z'],['Znova',redo,'Ctrl+Y'],'-',['Pridať text',addText],['Duplikovať vrstvu',dupLayer],['Zmazať vrstvu',delLayer,'Del']];},
   img:function(){return FORMATS.map(function(f){return [f.n+' – '+f.d,function(){setFormat(f.id);},f.w+'×'+f.h,f.id===D.fmt];}).concat(['-'],MIRCYCLE.map(function(k){return ['Zrkadlo: '+MIRN[k],function(){D.mirror=k;mirrorTool();commit();dirty();buildProps();},'',(D.mirror||'none')===k];}),['-',['Vycentrovať vrstvu',function(){var L=selLayer();if(L&&L.x!=null){L.x=.5;L.y=.5;commit();dirty();}}]]);},
+  styles:function(){return STYLES.map(function(st){return [st.n,function(){applyStyle(st);}];}).concat(['-',['Zrušiť dokončenie (zrno, prach, nity)',function(){D.fin=defFin();commit();buildProps();dirty();msg('Dokončenie vypnuté.');}]]);},
   help:function(){return [['Ako na to',help],['O programe si/editoval',about]];}
 };
 var menu=$('#menu'),menuBtn=null;
@@ -949,13 +1135,13 @@ function closeMenu(){menu.hidden=true;if(menuBtn)menuBtn.setAttribute('aria-expa
 $$('#menubar button').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();if(menuBtn===b)closeMenu();else openMenu(b);});});
 document.addEventListener('click',function(e){if(!menu.hidden&&!menu.contains(e.target))closeMenu();});
 function about(){dialog('O programe si/editoval',$('#about .abody').outerHTML,[['OK',closeDlg,true]]);}
-function help(){dialog('Ako na to','<p><b>1.</b> Hore vyber formát (4:5 post, 9:16 story…).</p><p><b>2.</b> <b>Fotka</b> pridá obrázok ako novú vrstvu. Prvá fotka nahradí ukážku.</p><p><b>3.</b> Vpravo (na mobile nižšie) vyber efekt: Dither, ASCII, Look alebo Kov.</p><p><b>4.</b> <b>Text</b> pridá nápis. Vyber písmo a štýl, farbu klikni v palete.</p><p><b>5.</b> <b>Štetec</b> kreslí tekutý ťah: pomaly = hrubšie, robí kvapky a stekanie. Tekutosť nastavíš posuvníkom.</p><p><b>Tip:</b> Súbor → Tekutý text z fotky. Daj tam svoj post s bielym pozadím a textom a písmo sa zmení na tekutý kov.</p><p><b>6.</b> Vrstvy ťahaj prstom, roh zväčšuje, krúžok otáča. Poradie meníš v okne Vrstvy.</p><p><b>7.</b> Disketa = Uložiť.</p>');}
+function help(){dialog('Ako na to','<p><b>1.</b> Hore vyber formát (4:5 post, 9:16 story…).</p><p><b>2.</b> <b>Fotka</b> pridá obrázok ako novú vrstvu. Prvá fotka nahradí ukážku.</p><p><b>3.</b> Vpravo (na mobile nižšie) vyber efekt: Dither, ASCII, Look alebo Kov.</p><p><b>4.</b> <b>Text</b> pridá nápis. Vyber písmo a štýl, farbu klikni v palete.</p><p><b>5.</b> <b>Štetec</b> kreslí tekutý ťah: pomaly = hrubšie, robí kvapky a stekanie. Tekutosť nastavíš posuvníkom.</p><p><b>Tip:</b> Súbor → Tekutý text z fotky. Daj tam svoj post s bielym pozadím a textom a písmo sa zmení na tekutý kov.</p><p><b>6.</b> Vrstvy ťahaj prstom, roh zväčšuje, krúžok otáča. Poradie meníš v okne Vrstvy.</p><p><b>7.</b> Menu <b>Štýly</b>: jedným klikom hotový vzhľad (chróm, piesok, papier, pixel, zlato). Na pozadí nájdeš aj <b>Dokončenie</b>: zrno, prach, škrabance, rozpad okrajov a nity.</p><p><b>8.</b> Súbor → <b>Dávka</b>: nastav jednu fotku a efekt, potom vyber viac fotiek naraz. Dostaneš celý karusel v jednom štýle.</p><p><b>9.</b> Disketa = Uložiť.</p>');}
 function mirrorTool(){var on=D.mirror&&D.mirror!=='none';$('#tMirror').setAttribute('aria-pressed',on?'true':'false');}
 $('#tMirror').onclick=function(){var i=MIRCYCLE.indexOf(D.mirror||'none');D.mirror=MIRCYCLE[(i+1)%MIRCYCLE.length];mirrorTool();commit();dirty();if(!selLayer())buildProps();msg('Zrkadlo: '+MIRN[D.mirror]+'. Klikni znova pre ďalší režim.');};
 function mirrorCopy(L){var c=JSON.parse(JSON.stringify(L,function(k,v){return k.charAt(0)==='_'?undefined:v;}));c.id=nid();c.sample=false;c.name=L.name+' (zrkadlo)';c.fh=!L.fh;c.x=1-L.x;c.r=-L.r;
   if(Math.abs(c.x-L.x)<.02){c.x=Math.min(.95,L.x+.15);}D.layers.splice(D.layers.indexOf(L)+1,0,c);select(c.id);commit();msg('Zrkadlová kópia na druhej strane.');}
 function inkFromPhoto(){S.inkNext=true;$('#file').click();}
-function newDoc(){D.layers=[];D.bg={kind:'color',color:'#ffffff'};S.sel='bg';commit();refreshAll();msg('Nový prázdny obrázok. Pridaj fotku alebo text.');}
+function newDoc(){D.layers=[];D.bg={kind:'color',color:'#ffffff'};D.fin=defFin();S.sel='bg';commit();refreshAll();msg('Nový prázdny obrázok. Pridaj fotku alebo text.');}
 
 /* klávesy */
 document.addEventListener('keydown',function(e){
@@ -997,5 +1183,5 @@ refreshAll();
 window.addEventListener('resize',function(){dirty();});
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){dirty();});
 if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(function(){});
-window.__editoval={D:function(){return D;},S:S,save:save,select:select}; /* na testovanie */
+window.__editoval={D:function(){return D;},S:S,save:save,select:select,style:applyStyle,STYLES:STYLES,render:renderDoc,defFin:defFin}; /* na testovanie */
 })();

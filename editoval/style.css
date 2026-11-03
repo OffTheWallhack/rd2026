@@ -171,3 +171,8 @@ body.wait,body.wait *{cursor:wait!important}
 }
 .tool span{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 @media (max-width:420px){.toolbar{gap:2px}.tool{font-size:10.5px;padding:6px 1px 5px}.tool svg{width:24px;height:24px}}
+
+/* dávka: náhľad hotových obrázkov */
+.bgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:8px 0}
+.bgrid img{width:100%;aspect-ratio:1;object-fit:cover;border:1px solid var(--sh);display:block}
+@media (max-width:520px){.bgrid{grid-template-columns:repeat(3,1fr)}}

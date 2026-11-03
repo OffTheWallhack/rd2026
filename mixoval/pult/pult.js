@@ -72,6 +72,7 @@
     if (!ctx) {
       var AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) { toast('Tento prehliadač nepodporuje Web Audio.'); throw new Error('no audio'); }
+      try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e0) {}
       ctx = new AC({ latencyHint: 'interactive' });
       dryBus = ctx.createGain(); mixBus = ctx.createGain(); master = ctx.createGain();
       limiter = ctx.createDynamicsCompressor();
@@ -98,7 +99,10 @@
 
   // ------------------------------------------------------------------ ovládacie prvky (id → hodnota 0..1)
   var ctl = {};
-  var api = { onChange: null };
+  var api = { onChange: null, onLoad: null };
+  // zmeny, ktoré prišli od iných ľudí v izbe, sa neposielajú späť (applying = true)
+  var applying = false;
+  function mark(d) { if (!applying) d.dirty = true; }
   function defCtl(id, def, apply, always) { ctl[id] = { id: id, v: def, def: def, apply: apply, always: !!always, els: [] }; }
   function setCtl(id, v, src) {
     var c = ctl[id]; if (!c) return;
@@ -469,8 +473,8 @@
   };
 
   Deck.prototype.stopHard = function () { this.scanStop(); this._stopSrc(); this.playing = false; this.cuePrev = false; this.hotPrev = -1; };
-  Deck.prototype.setTrack = async function (buf, name) {
-    this.stopHard();
+  Deck.prototype.setTrack = async function (buf, name, known) {
+    this.stopHard(); this.shared = null;
     this.buf = buf; this.name = name; this.startPos = 0; this.cue = 0; this.loop = null; this.lastLoop = null; this.loopInT = null;
     this.sync = false; this.bend = 0; this.hot = [null, null, null, null]; this.bpm = 0; this.grid = 0; this.ov = null; this.range = 0.06;
     setCtl(this.id + '.tempo', 0.5, 'sys');
@@ -478,14 +482,70 @@
     this.pk = makePeaks(buf);
     this.status = 'Analyzujem tempo…'; await yieldUI();
     var r = null;
-    try { r = analyze(buf); } catch (e) { r = null; }
+    if (known && known.bpm) r = { bpm: known.bpm, grid: known.grid };
+    else { try { r = analyze(buf); } catch (e) { r = null; } }
     if (r) {
       this.bpm = r.bpm; this.grid = r.grid;
       var Tb = 60 / r.bpm; this.cue = Math.max(0, r.grid - Math.floor(r.grid / Tb) * Tb); this.startPos = this.cue;
-    } else toast('Tempo sa nepodarilo určiť. Zadaj BPM ručne.');
+    } else if (!known) toast('Tempo sa nepodarilo určiť. Zadaj BPM ručne.');
     this.status = '';
     var o = this.other(); if (o.sync) o.followTempo();
+    mark(this);
   };
+  Deck.prototype.unload = function () {
+    var was = applying; applying = true;
+    this.stopHard(); this.buf = null; this.pk = null; this.ov = null; this.name = ''; this.status = ''; this.shared = null; this.file = null;
+    this.bpm = 0; this.grid = 0; this.loop = null; this.lastLoop = null; this.loopInT = null; this.sync = false;
+    this.hot = [null, null, null, null]; this.startPos = 0; this.cue = 0;
+    applying = was;
+  };
+
+  // ------------------------------------------------------------------ stav decku pre spoločnú izbu
+  // snap() = čo práve deck robí (pozícia v čase "now" spoločných hodín), applySnap() = nastav sa podľa toho
+  function outLat() { return ctx ? (ctx.outputLatency || 0) + (ctx.baseLatency || 0) : 0; }
+  Deck.prototype.snap = function (now) {
+    return {
+      d: this.idx, tr: this.shared || null, pl: this.playing, pos: this.pos(), at: now, ol: outLat(),
+      tempo: this.tempo, bend: this.bend, range: this.range, loop: this.loop, last: this.lastLoop, li: this.loopInT,
+      cue: this.cue, hot: this.hot.slice(), sync: this.sync, sa: this.syncAt, ms: this.isMaster, bpm: this.bpm, grid: this.grid
+    };
+  };
+  function sameLoop(a, b) { return (!a && !b) || (a && b && Math.abs(a.s - b.s) < 1e-4 && Math.abs(a.e - b.e) < 1e-4); }
+  Deck.prototype.applySnap = function (s, now) {
+    var was = applying; applying = true;
+    try {
+      this.scanStop();
+      this.range = s.range; this.bpm = s.bpm; this.grid = s.grid; this.cue = s.cue; this.hot = s.hot.slice();
+      this.loopInT = s.li; this.sync = s.sync; this.syncAt = s.sa || 0; this.isMaster = s.ms; this.lastLoop = s.last;
+      this.cuePrev = false; this.hotPrev = -1;
+      if (this.playing) this.rebase();
+      this.tempo = s.tempo; this.bend = s.bend;
+      var c = ctl[this.id + '.tempo']; c.v = clamp(this.tempoNorm(s.tempo), 0, 1); c.els.forEach(function (e) { e.render(c.v); });
+      if (!this.buf || !ctx) { this.loop = s.loop; this.startPos = s.pos; return; }
+      if (s.pl) {
+        var rate = this.rate, t = s.pos + ((now - s.at) / 1000 + (outLat() - (s.ol || 0))) * rate, L = s.loop;
+        if (L && t >= L.e) t = L.s + ((t - L.s) % (L.e - L.s));
+        t = clamp(t, 0, this.buf.duration);
+        if (this.playing && this.src && sameLoop(L, this.loop) && Math.abs(this.pos() - t) < 0.025) {
+          this.src.playbackRate.value = rate;
+        } else {
+          this._stopSrc(); this.loop = L; this.startPos = t; this._start();
+        }
+      } else {
+        if (this.playing) { this._stopSrc(); this.playing = false; }
+        this.loop = s.loop; this.startPos = s.pos;
+      }
+    } finally { applying = was; this.dirty = false; }
+  };
+
+  // každá zmena stavu decku sa označí, aby ju izba mohla poslať ostatným
+  ['play', 'pause', 'seek', 'cueDown', 'cueUp', 'hotDown', 'hotUp', 'hotDelete', 'setBend', 'toggleSync', 'cycleRange',
+    'setLoop', 'loopOff', 'setBpm', 'loopInPress', 'onTempoCtl', 'followTempo'].forEach(function (n) {
+    var f = Deck.prototype[n];
+    Deck.prototype[n] = function () { var r = f.apply(this, arguments); mark(this); return r; };
+  });
+  var setMaster0 = Deck.prototype.setMaster;
+  Deck.prototype.setMaster = function () { var r = setMaster0.apply(this, arguments); decks.forEach(mark); return r; };
 
   // ------------------------------------------------------------------ kreslenie
   function sizeCanvas(c) {
@@ -928,7 +988,7 @@
       var a = ang(e), da = a - st.a; if (da > Math.PI) da -= 2 * Math.PI; if (da < -Math.PI) da += 2 * Math.PI;
       st.a = a; var now = performance.now(), dtm = Math.max(8, now - st.t); st.t = now;
       if (st.ring) { st.v = st.v * 0.6 + (da / (dtm / 1000)) * 0.4; d.setBend(clamp(st.v * 0.03, -0.14, 0.14)); d.jogBendT = now; d.jogAng += da; }
-      else { st.acc += da; d.jogAng += da; d.startPos = clamp(st.base + st.acc / (2 * Math.PI) * 1.8, 0, d.buf.duration); }
+      else { st.acc += da; d.jogAng += da; d.startPos = clamp(st.base + st.acc / (2 * Math.PI) * 1.8, 0, d.buf.duration); mark(d); }
     });
     function end() {
       if (!st) return;
@@ -1014,7 +1074,7 @@
     var d = decks[di];
     if (d.playing) { toast('Deck ' + d.id.toUpperCase() + ' práve hrá. Najprv ho zastav.'); return; }
     try { ensureCtx(); } catch (e) { return; }
-    d.status = 'Načítavam…'; d.buf = null; d.pk = null; d.ov = null;
+    d.status = 'Načítavam…'; d.buf = null; d.pk = null; d.ov = null; d.busy = true;
     try {
       var file = it.file || await it.handle.getFile();
       var ab = await file.arrayBuffer();
@@ -1022,10 +1082,13 @@
       if (buf.duration > 20 * 60) toast('Dlhá skladba (' + Math.round(buf.duration / 60) + ' min) berie veľa pamäte.');
       cur[di] = it;
       await d.setTrack(buf, it.name);
+      d.file = file;
+      if (api.onLoad) api.onLoad(d, file);
     } catch (e) {
       d.status = ''; d.name = ''; cur[di] = null;
       toast('Túto skladbu sa nepodarilo otvoriť (' + (it.ext || '?').toUpperCase() + '). Skús MP3, WAV, FLAC alebo M4A.');
     }
+    d.busy = false;
     renderLib();
   }
   $('#list').addEventListener('click', function (e) {
@@ -1104,6 +1167,10 @@
   renderLib(); setTarget(0);
   requestAnimationFrame(tick);
 
+  api.ensureCtx = function () { try { ensureCtx(); return true; } catch (e) { return false; } };
+  api.toast = toast; api.booth = boothEl;
+  api.remoteCtl = function (id, v) { var was = applying; applying = true; try { setCtl(id, v, 'remote'); } finally { applying = was; } };
+  api.decode = function (ab) { return new Promise(function (res, rej) { var p = ctx.decodeAudioData(ab, res, rej); if (p && p.catch) p.catch(rej); }); };
   api.decks = decks; api.setCtl = setCtl; api.ctl = ctl; api.analyze = analyze; api.addFiles = addFiles; api.loadInto = loadInto; api.lib = lib;
   Object.defineProperty(api, 'ctx', { get: function () { return ctx; } });
   window.MixPult = api;

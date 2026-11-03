@@ -151,3 +151,57 @@ body{overscroll-behavior:none;-webkit-touch-callout:none;-webkit-user-select:non
 .empty{margin:10px 0 0;color:#9aa6a0;font-size:15px}
 .more{padding:10px 12px;color:var(--muted);font-size:14px;background:#14181a;border-top:1px solid var(--edge)}
 body.drag::after{content:"Pusť sem skladby";position:fixed;inset:10px;z-index:60;display:flex;align-items:center;justify-content:center;border:3px dashed var(--a);border-radius:18px;background:rgba(12,14,15,.86);font:800 40px var(--fd);letter-spacing:.08em;text-transform:uppercase}
+
+/* ---------- izba (spoločný pult) ---------- */
+.izbtn{min-height:36px;display:flex;align-items:center;gap:8px;padding:0 12px;font:700 15px var(--fd);letter-spacing:.08em}
+.izbtn.in{border-color:#3b4247;background:#171b1e}
+.izdots{display:flex;gap:3px}
+.izdots i{width:9px;height:9px;border-radius:50%;background:#3a4246;border:1px solid rgba(0,0,0,.6)}
+#izCurs{position:absolute;left:0;top:0;width:0;height:0;z-index:35;pointer-events:none}
+.rcur{position:absolute;left:0;top:0;transition:opacity .25s;will-change:transform}
+.rcur svg{position:absolute;width:24px;height:24px;overflow:visible;filter:drop-shadow(0 1px 2px rgba(0,0,0,.7))}
+.rcur b{position:absolute;left:14px;top:16px;white-space:nowrap;font:700 12px var(--fd);letter-spacing:.05em;padding:2px 6px;border-radius:4px;background:var(--pc);color:#0b0d0e}
+.rcur.dn svg{transform:scale(.8)}
+.rcur.dn::after{content:"";position:absolute;left:-14px;top:-14px;width:28px;height:28px;border-radius:50%;border:2px solid currentColor;animation:izping .6s ease-out infinite}
+@keyframes izping{from{transform:scale(.5);opacity:1}to{transform:scale(1.4);opacity:0}}
+svg.spin{animation:izspin 1.8s linear infinite;transform-origin:50% 50%}
+@keyframes izspin{to{transform:rotate(360deg)}}
+.rt{outline:.6cqw solid var(--pc);outline-offset:.3cqw;transition:outline-color .2s}
+.unit.rt{outline-width:3px;outline-offset:2px}
+.iz-p{margin:6px 0 12px;color:var(--muted);font-size:14px;line-height:1.45}
+.iz-st{margin:6px 0;padding:8px 10px;border-radius:8px;background:#2a2213;color:#ffd37a;font-size:14px}
+.iz-l{display:block;font:600 13px var(--fd);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.iz-l .q{margin-top:6px;text-transform:none;letter-spacing:0}
+.iz-big{width:100%;min-height:50px;font:700 18px var(--fd);letter-spacing:.06em;background:var(--a);border-color:var(--a);color:#161005}
+.iz-or{margin:16px 0 4px;text-align:center;color:var(--muted);font-size:13px}
+.iz-row{display:flex;gap:8px;align-items:center}
+.iz-row .q{margin:0;flex:1}
+.iz-code{font:600 22px var(--fm)!important;letter-spacing:.3em;text-transform:uppercase;text-align:center}
+.iz-codebox{display:flex;align-items:center;gap:12px;margin:8px 0 6px;padding:10px 12px;border-radius:10px;background:#0c0f11;border:1px solid var(--edge2)}
+.iz-codebox span{font:600 12px var(--fd);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.iz-codebox b{flex:1;font:600 30px var(--fm);letter-spacing:.25em;color:#fff}
+.iz-h{margin:14px 0 6px;font:700 13px var(--fd);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.iz-h small{font:500 12px var(--fb);letter-spacing:0;text-transform:none;margin-left:6px}
+.iz-pl{display:grid;gap:6px}
+.iz-p1{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;background:#171b1e}
+.iz-p1 i{width:12px;height:12px;border-radius:50%}
+.iz-p1 b{flex:1;font-weight:600}
+.iz-p1 small{font-size:12px;color:var(--muted);border:1px solid var(--edge2);border-radius:20px;padding:1px 8px}
+.iz-cp{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.iz-c{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 2px;border-radius:8px;border:1px solid var(--edge2);background:#141719}
+.iz-c svg{width:28px;height:28px;overflow:visible}
+.iz-c span{font:600 12px var(--fd);letter-spacing:.04em;color:#cfd5d9}
+.iz-c small{font-size:10px;color:var(--muted)}
+.iz-c.on{border-color:currentColor;box-shadow:0 0 0 1px currentColor inset}
+.iz-c.lock{opacity:.45}
+.iz-c.lock svg{filter:grayscale(1)}
+.iz-leave{margin-top:16px;width:100%;color:#ff8a8a}
+@media (max-width:480px){
+  .bar{gap:4px 6px;padding:6px 8px}
+  .bar .back .bt{display:none}
+  .bar .back{font-size:22px;padding:4px 8px}
+  .izbtn,.recbtn{padding:0 10px;font-size:14px}
+  .rec{gap:6px}
+  .rec select{padding:0 2px}
+  .recinfo:empty{display:none}
+}

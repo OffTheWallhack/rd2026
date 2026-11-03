@@ -43,7 +43,7 @@ a.card:active{transform:translateY(0)}
 .card p{margin:0;color:#b2beb8;font-size:15.5px;flex:1}
 .chip{align-self:flex-start;padding:3px 9px;border-radius:99px;border:1px solid var(--c,var(--edge2));color:var(--c,var(--muted));font:600 12px var(--fd);letter-spacing:.12em;text-transform:uppercase}
 .card.soon{opacity:.55;border-style:dashed;--c:var(--muted)}
-.c1{--c:var(--a)} .c2{--c:var(--rec)} .c3{--c:var(--ok)}
+.c1{--c:var(--a)} .c2{--c:var(--rec)} .c3{--c:var(--ok)} .c4{--c:#ff4fa3}
 .how{margin-top:34px;padding:16px 18px;border-radius:12px;border:1px solid var(--edge);background:rgba(255,255,255,.02);color:#a9b5af;font-size:15px}
 .how b{color:var(--ink)}
 footer{margin-top:30px;color:var(--muted);font-size:14px}
@@ -53,7 +53,7 @@ footer{margin-top:30px;color:var(--muted);font-size:14px}
 <main class="wrap">
   <div class="brand"><a href="../">durica.si</a><span>/</span><span>mixoval</span></div>
   <h1>si/<span>mixoval</span></h1>
-  <p class="lead">DJ nástroje, ktoré bežia rovno v prehliadači. Nič sa neinštaluje a skladby sa nikam nenahrávajú, všetko ostáva u teba.</p>
+  <p class="lead">DJ nástroje, ktoré bežia rovno v prehliadači. Nič sa neinštaluje a skladby ostávajú u teba. Len v Izbe sa skladba, ktorú pustíš, pošle spoluhráčom a po 24 hodinách sa zmaže.</p>
   <div class="eq" aria-hidden="true"><i style="animation-delay:-.1s"></i><i style="animation-delay:-.7s"></i><i style="animation-delay:-.3s"></i><i style="animation-delay:-1s"></i><i style="animation-delay:-.5s"></i><i style="animation-delay:-.9s"></i><i style="animation-delay:-.2s"></i><i style="animation-delay:-.6s"></i><i style="animation-delay:-.4s"></i><i style="animation-delay:-.8s"></i></div>
 
   <div class="grid">
@@ -61,7 +61,7 @@ footer{margin-top:30px;color:var(--muted);font-size:14px}
       <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><circle cx="20" cy="26" r="14"/><circle cx="20" cy="26" r="3" fill="currentColor"/><circle cx="46" cy="26" r="14" stroke-opacity=".55"/><circle cx="46" cy="26" r="3" fill="currentColor" fill-opacity=".55"/><path d="M8 54h48" stroke-linecap="round"/><rect x="26" y="49" width="12" height="10" rx="2" fill="currentColor"/></svg>
       <span class="chip">beta</span>
       <h2>Pult</h2>
-      <p>Dva decky, crossfader, EQ, filter, sync tempa a nahrávanie mixu do MP3. Skladby si načítaš z telefónu, počítača alebo USB.</p>
+      <p>Klubové rozloženie: dva prehrávače a mixér. Hot cue, slučky, sync, EQ, filter, FX a nahrávanie mixu do MP3. Skladby si načítaš z telefónu, počítača alebo USB.</p>
     </a>
     <a class="card c2" href="rec/">
       <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><rect x="22" y="6" width="20" height="34" rx="10"/><path d="M12 30c0 11 9 20 20 20s20-9 20-20M32 50v9M22 59h20" stroke-linecap="round"/><circle cx="32" cy="22" r="4" fill="currentColor"/></svg>
@@ -75,12 +75,12 @@ footer{margin-top:30px;color:var(--muted);font-size:14px}
       <h2>Acid Box</h2>
       <p>303 bass a bubny v prehliadači. Naklikaj si pattern, otoč knoby a hraj.</p>
     </a>
-    <div class="card soon" aria-disabled="true">
+    <a class="card c4" href="pult/?izba">
       <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M10 8l14 38 7-15 15-7z" stroke-linejoin="round"/><path d="M40 34l12 18" stroke-linecap="round"/><path d="M48 12l4 6M54 24l-6 2" stroke-linecap="round" stroke-opacity=".6"/></svg>
-      <span class="chip">čoskoro</span>
+      <span class="chip">beta</span>
       <h2>Izba</h2>
-      <p>Spoločný pult pre 2 až 4 ľudí. Každý má svoj farebný kurzor a odomykajú sa ďalšie, čím viac odohráš.</p>
-    </div>
+      <p>Spoločný pult pre 2 až 4 ľudí na diaľku. Každý má svoj farebný kurzor a odomykajú sa ďalšie, čím viac odohráš.</p>
+    </a>
   </div>
 
   <div class="how"><b>Ako na to:</b> v Pulte pridaj skladby (tlačidlo Súbory alebo Priečinok, na počítači s Chromom vyberieš aj celé USB z rekordboxu), pošli ich do decku A a B a mixuj. REC hore nahráva výsledný mix.</div>

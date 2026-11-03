@@ -668,7 +668,9 @@ function sizeOf(L){return L.type==='image'?L.s:L.size;}
 function setSize(L,v){if(L.type==='image'){L.s=clamp(v,.03,6);L.fit=null;}else L.size=clamp(v,6,900);}
 function mirrors(q){var o=[q],s=selLayer().sym;if(s==='v'||s==='vh')o.push([1-q[0],q[1]]);if(s==='h'||s==='vh')o.push([q[0],1-q[1]]);if(s==='vh')o.push([1-q[0],1-q[1]]);return o;}
 ov.addEventListener('pointerdown',function(e){
-  e.preventDefault();closeMenu();try{ov.setPointerCapture(e.pointerId);}catch(x){}
+  e.preventDefault();closeMenu();
+  if(S.pick){pickAt(ptr(e));return;}
+  try{ov.setPointerCapture(e.pointerId);}catch(x){}
   var p=ptr(e);PT[e.pointerId]=p;var ids=Object.keys(PT),L=selLayer();
   if(ids.length===2&&L&&L.type!=='draw'&&(!G||G.t!=='draw')){var a=PT[ids[0]],b=PT[ids[1]];
     G={t:'pinch',L:L,d0:Math.hypot(a.x-b.x,a.y-b.y)||1,a0:Math.atan2(b.y-a.y,b.x-a.x),s0:sizeOf(L),r0:L.r,x0:L.x,y0:L.y,m0:{x:(a.x+b.x)/2,y:(a.y+b.y)/2}};S.gesture=true;return;}
@@ -693,6 +695,15 @@ ov.addEventListener('pointermove',function(e){
     var ms=mirrors([p.x/W,p.y/H]);G.st.forEach(function(st,i){ms[i].push(Math.round(G.w*100)/100);st.pts.push(ms[i]);});liveStroke();return;}
   dirty();
 });
+/* pipeta: farba z miesta, kam klikneš, sa použije ako aktuálna farba */
+function pickAt(p){
+  S.pick=false;toolState();
+  var x=clamp(Math.round(p.x),0,cv.width-1),y=clamp(Math.round(p.y),0,cv.height-1),d=cx.getImageData(x,y,1,1).data;
+  if(d[3]<8){msg('Tu je priehľadno, farba sa nedá vybrať.');return;}
+  var h='#'+[d[0],d[1],d[2]].map(function(v){return ('0'+v.toString(16)).slice(-2);}).join('');
+  applyColor(h);msg('Pipeta vybrala farbu '+h+'.');
+}
+$('#tPick').onclick=function(){S.pick=!S.pick;if(S.pick&&S.tool==='brush'){S.tool='move';}toolState();status();if(S.pick)msg('Pipeta: klikni na obrázok, odkiaľ chceš farbu.');};
 function snapR(r){r=((r+180)%360+360)%360-180;for(var a=-180;a<=180;a+=45)if(Math.abs(r-a)<3)return a===-180?180:a;return Math.round(r*10)/10;}
 function endPtr(e){
   delete PT[e.pointerId];if(!G)return;
@@ -729,7 +740,7 @@ function addText(){
   var ta=$('#props textarea');if(ta){ta.focus();ta.select();}
 }
 function brushLayer(){
-  var L=selLayer();
+  S.pick=false;var L=selLayer();
   if(S.tool==='brush'){S.tool='move';select('bg');return;}
   if(!L||L.type!=='draw'){L=null;for(var i=D.layers.length-1;i>=0;i--)if(D.layers[i].type==='draw'){L=D.layers[i];break;}}
   if(!L){var hasImg=D.layers.some(function(l){return l.type==='image'&&!l.hidden;});
@@ -745,7 +756,7 @@ function moveLayer(dir){var L=selLayer();if(!L)return;var i=D.layers.indexOf(L),
 function dupLayer(){var L=selLayer();if(!L)return;var c=JSON.parse(JSON.stringify(L,function(k,v){return k.charAt(0)==='_'?undefined:v;}));c.id=nid();c.sample=false;c.name=L.name+' (kópia)';if(c.x!=null){c.x+=.03;c.y+=.03;}D.layers.splice(D.layers.indexOf(L)+1,0,c);select(c.id);commit();}
 function delLayer(){var L=selLayer();if(!L)return;D.layers.splice(D.layers.indexOf(L),1);select('bg');commit();msg('Vrstva zmazaná. Späť ju vráti.');}
 function layerName(L){
-  if(L.type==='text')return '„'+(String(L.text).replace(/\n/g,' ').slice(0,22)||' ')+'“'+(L.style!=='plain'?' · '+STYLEN[L.style]:'');
+  if(L.type==='text'){var tx=String(L.text).replace(/\n/g,' ').trim();if(tx.length>22)tx=tx.slice(0,21).trim()+'…';return '„'+(tx||' ')+'“'+(L.style!=='plain'?' · '+STYLEN[L.style]:'');}
   if(L.type==='draw')return (L.name||'Kresba')+' · '+(L.mode==='relief'?'reliéf':'farba');
   return L.name+(L.fx!=='none'?' · '+FXN[L.fx]:'');
 }
@@ -963,12 +974,12 @@ var STYLES=[
   {id:'chrome',n:'Chróm v tme',bg:{kind:'navy'},fin:{grain:48,gsize:1.2,gcol:true},rp:{mat:'chrome',evol:92,eslope:32,eshine:92,erough:10,egoo:40,idrip:35,edeb:false,ionly:true}},
   {id:'sand',n:'Vyryté do piesku',bg:{kind:'sand'},fin:{grain:30,gsize:1,scr:30,dust:25,scol:'dark'},rp:{mat:'sand',evol:100,eslope:14,eshine:55,erough:20,egoo:5,idrip:0,edeb:true,ionly:true}},
   {id:'paper',n:'Papier a modrá farba',bg:{kind:'cream'},fin:{grain:14,gsize:1},rp:{mat:'paper',evol:62,eslope:55,eshine:25,erough:6,egoo:35,idrip:25,edeb:false,ionly:true},draw:{mode:'paint',color:'#3f7fe8',liquid:90}},
-  {id:'pixel',n:'Pixel a prach',bg:{kind:'color',color:'#ece5cf'},fin:{dis:26,dmode:'edges',dsz:7,dcol:'#1a1710',scr:38,dust:30,scol:'dark'},img:{fx:'dither',p:{dstyle:'pixel',dscale:6,pal:'cream',dthr:0}},txt:{style:'plain',color:'#15120e'}},
+  {id:'pixel',n:'Pixel a prach',bg:{kind:'color',color:'#ece5cf'},fin:{dis:26,dmode:'edges',dsz:7,dcol:'#1a1710',scr:38,dust:30,scol:'dark'},img:{fx:'dither',p:{dstyle:'pixel',dscale:6,pal:'cream',dthr:0}},txt:{style:'plain',color:'#15120e'},draw:{mode:'paint',color:'#15120e',liquid:35}},
   {id:'gold',n:'Zlatá platňa so skrutkami',bg:{kind:'gold'},fin:{riv:'4',rsz:22,dis:38,dmode:'tl',dsz:6,dcol:'#2a2210',grain:18,gsize:1},rp:{mat:'gold',evol:95,eslope:18,eshine:85,erough:6,egoo:10,idrip:0,edeb:true,ionly:true}},
   {id:'goo',n:'Tekutý lak na tmavej',bg:{kind:'navy'},fin:{grain:55,gsize:1.1,gcol:true},rp:{mat:'black',evol:100,eslope:42,eshine:100,erough:4,egoo:58,idrip:60,edeb:false,ionly:true}}
 ];
 function applyStyle(st){
-  var sel=selLayer(),targets=(sel?[sel]:D.layers).filter(function(L){return !L.sample;}),cl=function(o){return JSON.parse(JSON.stringify(o));};
+  var sel=selLayer(),targets=(sel?[sel]:D.layers).filter(function(L){return !L.sample;}),cl=function(o){return JSON.parse(JSON.stringify(o||{}));};
   D.bg=cl(st.bg);D.fin=Object.assign(defFin(),cl(st.fin||{}));
   targets.forEach(function(L){
     if(L.type==='image'){if(st.img){L.fx=st.img.fx;Object.assign(L.p,cl(st.img.p));}else{L.fx='ink';Object.assign(L.p,cl(st.rp));}L._c=null;}
@@ -1037,10 +1048,10 @@ function setFormat(id){
 }
 
 /* ================= nástroje ================= */
-function toolState(){$('#tBrush').setAttribute('aria-pressed',S.tool==='brush'?'true':'false');paperEl.classList.toggle('brush',S.tool==='brush');}
+function toolState(){$('#tBrush').setAttribute('aria-pressed',S.tool==='brush'?'true':'false');paperEl.classList.toggle('brush',S.tool==='brush');$('#tPick').setAttribute('aria-pressed',S.pick?'true':'false');paperEl.classList.toggle('pick',!!S.pick);}
 function status(){
   var f=fmtOf(),L=selLayer();
-  $('#st1').textContent=S.tool==='brush'?'Kresli prstom po obrázku. Štetec vypneš tlačidlom Štetec.':L?'Ťahaj vrstvu. Roh zväčší, krúžok otočí, dva prsty oboje.':'Pre Pomoc kliknite na Pomoc > O programe.';
+  $('#st1').textContent=S.pick?'Pipeta: klikni na obrázok, odkiaľ chceš farbu.':S.tool==='brush'?'Kresli prstom po obrázku. Štetec vypneš tlačidlom Štetec.':L?'Ťahaj vrstvu. Roh zväčší, krúžok otočí, dva prsty oboje.':'Pre Pomoc kliknite na Pomoc > O programe.';
   $('#st2').textContent=f.w+' × '+f.h+' px';
 }
 $('#tText').onclick=addText;
@@ -1120,6 +1131,7 @@ var MENUS={
   file:function(){return [['Nový obrázok',newDoc],['Otvoriť fotku…',function(){$('#file').click();}],['Tekutý text z fotky…',inkFromPhoto],['Dávka: viac fotiek naraz…',batchPick],'-',['Uložiť ako PNG',function(){save('png');},'Ctrl+S'],['Uložiť ako JPG',function(){save('jpg');}]];},
   edit:function(){return [['Späť',undo,'Ctrl+Z'],['Znova',redo,'Ctrl+Y'],'-',['Pridať text',addText],['Duplikovať vrstvu',dupLayer],['Zmazať vrstvu',delLayer,'Del']];},
   img:function(){return FORMATS.map(function(f){return [f.n+' – '+f.d,function(){setFormat(f.id);},f.w+'×'+f.h,f.id===D.fmt];}).concat(['-'],MIRCYCLE.map(function(k){return ['Zrkadlo: '+MIRN[k],function(){D.mirror=k;mirrorTool();commit();dirty();buildProps();},'',(D.mirror||'none')===k];}),['-',['Vycentrovať vrstvu',function(){var L=selLayer();if(L&&L.x!=null){L.x=.5;L.y=.5;commit();dirty();}}]]);},
+  start:function(){return [['Nový obrázok',newDoc],['Otvoriť fotku…',function(){$('#file').click();}],['Dávka: viac fotiek naraz…',batchPick],'-'].concat(STYLES.map(function(st){return ['Štýl: '+st.n,function(){applyStyle(st);}];}),['-',['Ako na to',help],['O programe si/editoval',about],'-',['durica.si',function(){location.href='../';}],['Ďalšie appky',function(){location.href='../appky/';}],['Linky',function(){location.href='../linky/';}],['Ukončiť (späť na durica.si)',function(){location.href='../';}]]);},
   styles:function(){return STYLES.map(function(st){return [st.n,function(){applyStyle(st);}];}).concat(['-',['Zrušiť dokončenie (zrno, prach, nity)',function(){D.fin=defFin();commit();buildProps();dirty();msg('Dokončenie vypnuté.');}]]);},
   help:function(){return [['Ako na to',help],['O programe si/editoval',about]];}
 };
@@ -1129,13 +1141,17 @@ function openMenu(btn){
   MENUS[btn.dataset.menu]().forEach(function(it){if(it==='-'){menu.appendChild(el('hr'));return;}
     var b=el('button','','<span>'+it[0]+'</span>'+(it[2]?'<kbd>'+it[2]+'</kbd>':''));b.type='button';b.setAttribute('role','menuitem');if(it[3])b.setAttribute('aria-checked','true');
     b.onclick=function(){closeMenu();it[1]();};menu.appendChild(b);});
-  var r=btn.getBoundingClientRect();menu.style.left=Math.min(r.left,innerWidth-240)+'px';menu.style.top=r.bottom+'px';menu.hidden=false;
+  menu.hidden=false;var r=btn.getBoundingClientRect();menu.style.left=Math.max(0,Math.min(r.left,innerWidth-menu.offsetWidth-4))+'px';
+  if(btn.dataset.up){menu.style.top='auto';menu.style.bottom=(innerHeight-r.top)+'px';}else{menu.style.bottom='auto';menu.style.top=r.bottom+'px';}
 }
 function closeMenu(){menu.hidden=true;if(menuBtn)menuBtn.setAttribute('aria-expanded','false');menuBtn=null;}
-$$('#menubar button').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();if(menuBtn===b)closeMenu();else openMenu(b);});});
+$$('#menubar button,#startBtn').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();if(menuBtn===b)closeMenu();else openMenu(b);});});
+/* hodiny v paneli úloh */
+function tick(){var d=new Date(),el=$('#clock');if(el)el.textContent=('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);}
+tick();setInterval(tick,15000);
 document.addEventListener('click',function(e){if(!menu.hidden&&!menu.contains(e.target))closeMenu();});
 function about(){dialog('O programe si/editoval',$('#about .abody').outerHTML,[['OK',closeDlg,true]]);}
-function help(){dialog('Ako na to','<p><b>1.</b> Hore vyber formát (4:5 post, 9:16 story…).</p><p><b>2.</b> <b>Fotka</b> pridá obrázok ako novú vrstvu. Prvá fotka nahradí ukážku.</p><p><b>3.</b> Vpravo (na mobile nižšie) vyber efekt: Dither, ASCII, Look alebo Kov.</p><p><b>4.</b> <b>Text</b> pridá nápis. Vyber písmo a štýl, farbu klikni v palete.</p><p><b>5.</b> <b>Štetec</b> kreslí tekutý ťah: pomaly = hrubšie, robí kvapky a stekanie. Tekutosť nastavíš posuvníkom.</p><p><b>Tip:</b> Súbor → Tekutý text z fotky. Daj tam svoj post s bielym pozadím a textom a písmo sa zmení na tekutý kov.</p><p><b>6.</b> Vrstvy ťahaj prstom, roh zväčšuje, krúžok otáča. Poradie meníš v okne Vrstvy.</p><p><b>7.</b> Menu <b>Štýly</b>: jedným klikom hotový vzhľad (chróm, piesok, papier, pixel, zlato). Na pozadí nájdeš aj <b>Dokončenie</b>: zrno, prach, škrabance, rozpad okrajov a nity.</p><p><b>8.</b> Súbor → <b>Dávka</b>: nastav jednu fotku a efekt, potom vyber viac fotiek naraz. Dostaneš celý karusel v jednom štýle.</p><p><b>9.</b> Disketa = Uložiť.</p>');}
+function help(){dialog('Ako na to','<p><b>1.</b> Hore vyber formát (4:5 post, 9:16 story…).</p><p><b>2.</b> <b>Fotka</b> pridá obrázok ako novú vrstvu. Prvá fotka nahradí ukážku.</p><p><b>3.</b> Vpravo (na mobile nižšie) vyber efekt: Dither, ASCII, Look alebo Kov.</p><p><b>4.</b> <b>Text</b> pridá nápis. Vyber písmo a štýl, farbu klikni v palete.</p><p><b>5.</b> <b>Štetec</b> kreslí tekutý ťah: pomaly = hrubšie, robí kvapky a stekanie. Tekutosť nastavíš posuvníkom.</p><p><b>Tip:</b> Súbor → Tekutý text z fotky. Daj tam svoj post s bielym pozadím a textom a písmo sa zmení na tekutý kov.</p><p><b>6.</b> Vrstvy ťahaj prstom, roh zväčšuje, krúžok otáča. Poradie meníš v okne Vrstvy.</p><p><b>7.</b> Menu <b>Štýly</b>: jedným klikom hotový vzhľad (chróm, piesok, papier, pixel, zlato). Na pozadí nájdeš aj <b>Dokončenie</b>: zrno, prach, škrabance, rozpad okrajov a nity.</p><p><b>8.</b> Súbor → <b>Dávka</b>: nastav jednu fotku a efekt, potom vyber viac fotiek naraz. Dostaneš celý karusel v jednom štýle.</p><p><b>9.</b> <b>Pipeta</b> vyberie farbu priamo z obrázka. <b>Štart</b> dole vľavo otvorí rýchle menu.</p><p><b>10.</b> Disketa = Uložiť.</p>');}
 function mirrorTool(){var on=D.mirror&&D.mirror!=='none';$('#tMirror').setAttribute('aria-pressed',on?'true':'false');}
 $('#tMirror').onclick=function(){var i=MIRCYCLE.indexOf(D.mirror||'none');D.mirror=MIRCYCLE[(i+1)%MIRCYCLE.length];mirrorTool();commit();dirty();if(!selLayer())buildProps();msg('Zrkadlo: '+MIRN[D.mirror]+'. Klikni znova pre ďalší režim.');};
 function mirrorCopy(L){var c=JSON.parse(JSON.stringify(L,function(k,v){return k.charAt(0)==='_'?undefined:v;}));c.id=nid();c.sample=false;c.name=L.name+' (zrkadlo)';c.fh=!L.fh;c.x=1-L.x;c.r=-L.r;
@@ -1147,7 +1163,7 @@ function newDoc(){D.layers=[];D.bg={kind:'color',color:'#ffffff'};D.fin=defFin()
 document.addEventListener('keydown',function(e){
   var t=e.target,typing=t&&(t.tagName==='INPUT'&&t.type==='text'||t.tagName==='TEXTAREA');
   var mod=e.ctrlKey||e.metaKey;
-  if(e.key==='Escape'){closeMenu();closeDlg();return;}
+  if(e.key==='Escape'){closeMenu();closeDlg();if(S.pick){S.pick=false;toolState();status();}return;}
   if(typing)return;
   if(mod&&e.key.toLowerCase()==='z'){e.preventDefault();if(e.shiftKey)redo();else undo();return;}
   if(mod&&e.key.toLowerCase()==='y'){e.preventDefault();redo();return;}

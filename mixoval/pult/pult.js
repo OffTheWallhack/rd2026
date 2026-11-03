@@ -1067,6 +1067,42 @@
     if (total > shown) { var m = document.createElement('div'); m.className = 'more'; m.textContent = 'Zobrazených ' + shown + ' z ' + total + '. Spresni hľadanie.'; list.appendChild(m); }
     $('#empty').hidden = lib.length > 0;
   }
+  // ------------------------------------------------------------------ rekordbox (export zbierky v XML)
+  // kľúč = názov súboru bez prípony; uložíme BPM, začiatok prvého úderu a hot cue body (A–D)
+  var rb = {};
+  function rbKey(n) { return String(n || '').replace(/\.[^.\/]+$/, '').trim().toLowerCase(); }
+  function rbLoad() { try { var j = localStorage.getItem('mx.rb'); if (j) rb = JSON.parse(j) || {}; } catch (e) { rb = {}; } }
+  function rbSave() { try { localStorage.setItem('mx.rb', JSON.stringify(rb)); return true; } catch (e) { return false; } }
+  function rbParse(text) {
+    var doc = new DOMParser().parseFromString(text, 'text/xml');
+    if (doc.querySelector('parsererror') || !doc.querySelector('DJ_PLAYLISTS')) return -1;
+    var out = {}, n = 0, tracks = doc.querySelectorAll('COLLECTION > TRACK');
+    Array.prototype.forEach.call(tracks, function (t) {
+      var loc = t.getAttribute('Location') || '', base = loc.split('/').pop();
+      try { base = decodeURIComponent(base); } catch (e) {}
+      var tempo = t.querySelector('TEMPO'), bpm = tempo ? parseFloat(tempo.getAttribute('Bpm')) : parseFloat(t.getAttribute('AverageBpm'));
+      if (!(bpm >= 40 && bpm <= 220)) return;
+      var grid = tempo ? parseFloat(tempo.getAttribute('Inizio')) : 0;
+      var hot = [null, null, null, null];
+      Array.prototype.forEach.call(t.querySelectorAll('POSITION_MARK'), function (m) {
+        var num = parseInt(m.getAttribute('Num'), 10), st = parseFloat(m.getAttribute('Start'));
+        if (num >= 0 && num < 4 && isFinite(st)) hot[num] = Math.round(st * 1000) / 1000;
+      });
+      var o = { b: bpm, g: isFinite(grid) ? Math.round(grid * 1000) / 1000 : 0, t: parseFloat(t.getAttribute('TotalTime')) || 0 };
+      if (hot.some(function (h) { return h != null; })) o.h = hot;
+      out[rbKey(base)] = o; n++;
+    });
+    rb = out; rbSave();
+    return n;
+  }
+  function rbFor(it, dur) {
+    var r = rb[rbKey(it.name)];
+    if (!r) return null;
+    if (r.t && Math.abs(r.t - dur) > 3) return null; // iná skladba s rovnakým názvom
+    return r;
+  }
+  rbLoad();
+
   function setTarget(i) { target = i; $$('#tgt button').forEach(function (b) { b.classList.toggle('on', +b.dataset.t === i); }); }
   function openSheet(i) { setTarget(i); $('#sheet').hidden = false; renderLib(); }
   function closeSheet() { $('#sheet').hidden = true; }
@@ -1081,7 +1117,10 @@
       var buf = await new Promise(function (res, rej) { var p = ctx.decodeAudioData(ab, res, rej); if (p && p.catch) p.catch(rej); });
       if (buf.duration > 20 * 60) toast('Dlhá skladba (' + Math.round(buf.duration / 60) + ' min) berie veľa pamäte.');
       cur[di] = it;
-      await d.setTrack(buf, it.name);
+      var r = rbFor(it, buf.duration);
+      await d.setTrack(buf, it.name, r ? { bpm: r.b, grid: r.g } : null);
+      if (r && r.h) { r.h.forEach(function (h, i) { if (h != null && h < buf.duration) d.hot[i] = h; }); mark(d); }
+      if (r) toast('rekordbox: BPM ' + r.b.toFixed(2) + (r.h ? ' a hot cue body načítané' : ' načítané') + '.');
       d.file = file;
       if (api.onLoad) api.onLoad(d, file);
     } catch (e) {
@@ -1102,6 +1141,16 @@
   $('#addFiles').addEventListener('click', function () { $('#fileIn').click(); });
   $('#fileIn').addEventListener('change', function (e) { addFiles(e.target.files); e.target.value = ''; });
   $('#dirIn').addEventListener('change', function (e) { addFiles(e.target.files); e.target.value = ''; });
+  $('#addRb').addEventListener('click', function () { $('#rbIn').click(); });
+  $('#rbIn').addEventListener('change', async function (e) {
+    var f = e.target.files[0]; e.target.value = ''; if (!f) return;
+    try {
+      var n = rbParse(await f.text());
+      if (n < 0) toast('To nie je export zbierky z rekordboxu (XML).');
+      else if (n === 0) toast('V súbore som nenašla žiadne skladby s tempom.');
+      else toast('rekordbox: načítaných ' + n + ' skladieb. Pri ich načítaní do decku sa použije ich BPM a cue body.');
+    } catch (err) { toast('Súbor sa nepodarilo prečítať.'); }
+  });
   $('#addDir').addEventListener('click', async function () {
     if (window.showDirectoryPicker) {
       try {

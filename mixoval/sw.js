@@ -1,5 +1,5 @@
 /* si/mixoval — offline cache (aby sa pult otvoril aj v klube bez signálu). Najprv sieť, potom cache. */
-var C = 'mixoval-v3';
+var C = 'mixoval-v4';
 var FILES = ['./', './index.html', './mx.css', './rec.js', './lame.min.js', './pult/', './pult/index.html', './pult/pult.css', './pult/pult.js', './pult/izba.js', './rec/', './rec/index.html', './manifest.webmanifest', './ikony/icon-192.png', './ikony/icon-512.png'];
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(C).then(function (c) { return Promise.all(FILES.map(function (f) { return c.add(f).catch(function () {}); })); }).then(function () { return self.skipWaiting(); }));

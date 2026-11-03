@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Nahrávač mixu · si/mixoval</title>
+<meta name="description" content="Nahrávač mixu: vyber USB zvukovú kartu mixpultu a nahraj čistý zvuk rovno do MP3. V prehliadači, bez masterovania.">
+<meta name="theme-color" content="#0c0e0f">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../ikony/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../ikony/icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../mx.css">
+<script data-goatcounter="https://durica.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<style>
+.wrap{max-width:640px;margin:0 auto;padding:18px 16px 48px}
+.back{display:inline-block;color:var(--muted);text-decoration:none;font:600 15px var(--fd);letter-spacing:.12em;text-transform:uppercase}
+h1{margin:6px 0 4px;font:800 44px/1 var(--fd);letter-spacing:.04em;text-transform:uppercase}
+.sub{color:#aab5af;margin:0 0 18px}
+.panel{border:1px solid var(--edge);background:linear-gradient(#1a2023,#14181a);border-radius:14px;padding:16px;margin-bottom:14px}
+label{display:block;margin-bottom:6px;color:var(--muted);font:600 13px var(--fd);letter-spacing:.14em;text-transform:uppercase}
+select{width:100%;min-height:46px;border-radius:8px;border:1px solid var(--edge2);background:#101315;padding:0 10px;font-size:16px}
+.row{display:flex;gap:10px;align-items:center}
+.row>*{flex:1}
+.lv{display:grid;gap:8px;margin-top:14px}
+.lv div{display:flex;align-items:center;gap:10px}
+.lv b{width:18px;font:700 16px var(--fd);color:var(--muted)}
+.bar{position:relative;flex:1;height:16px;border-radius:4px;overflow:hidden;background:linear-gradient(to right,#2fbf5b 0 62%,#ffc233 62% 86%,#ff4538 86%)}
+.bar i{position:absolute;right:0;top:0;bottom:0;width:100%;background:#0a0c0d}
+.clip{width:48px;text-align:center;padding:2px 0;border-radius:4px;border:1px solid var(--edge2);color:var(--muted);font:700 12px var(--fd);letter-spacing:.12em}
+.clip.on{background:var(--rec);border-color:var(--rec);color:#fff}
+.big{display:flex;gap:12px;align-items:center;margin-top:6px}
+.recbtn{flex:0 0 auto;min-width:150px;min-height:64px;font-size:22px;display:flex;align-items:center;justify-content:center;gap:12px}
+.recbtn .dot{width:16px;height:16px;border-radius:50%;background:var(--rec)}
+.recbtn.on{background:var(--rec);border-color:var(--rec);color:#fff}
+.recbtn.on .dot{background:#fff;border-radius:3px}
+.time{font:500 34px var(--fm);letter-spacing:.02em}
+.info{color:var(--muted);font-size:14px}
+.msg{padding:12px 14px;border-radius:10px;background:#2a1a18;border:1px solid #6b2b25;color:#ffd2cc;margin-bottom:14px}
+.msg.ok{background:#16271b;border-color:#2c5a38;color:#cdf0d6}
+.take{display:flex;flex-direction:column;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--edge)}
+.take a{color:var(--ok);font-weight:600}
+audio{width:100%}
+ul.tips{margin:0;padding-left:20px;color:#a9b5af;font-size:15px}
+ul.tips li{margin:5px 0}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <a class="back" href="../">‹ mixoval</a>
+  <h1>Nahrávač mixu</h1>
+  <p class="sub">Vyber vstup, ktorý ti ukazuje mixpult cez USB, a nahrávaj čistý zvuk do MP3. Bez úprav, bez masterovania.</p>
+
+  <div id="msg" class="msg" hidden></div>
+
+  <section class="panel">
+    <label for="dev">Vstup (zvuková karta)</label>
+    <select id="dev"><option>Načítavam…</option></select>
+    <div class="lv" aria-live="off">
+      <div><b>L</b><span class="bar"><i id="bl"></i></span><span class="clip" id="cl">CLIP</span></div>
+      <div><b>R</b><span class="bar"><i id="br"></i></span><span class="clip" id="cr">CLIP</span></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="row">
+      <div><label for="kbps">Kvalita MP3</label>
+        <select id="kbps"><option value="320">320 kbps (najlepšia)</option><option value="256">256 kbps</option><option value="192">192 kbps</option><option value="128">128 kbps</option></select></div>
+    </div>
+    <div class="big">
+      <button class="btn recbtn" id="rec" type="button"><span class="dot"></span><span id="recTxt">REC</span></button>
+      <div><div class="time" id="time">0:00</div><div class="info" id="size">0 MB</div></div>
+    </div>
+    <div id="out" class="take" hidden></div>
+  </section>
+
+  <section class="panel">
+    <label>Tipy</label>
+    <ul class="tips">
+      <li>Mixpult musí byť zapnutý a pripojený cez USB ešte pred otvorením tejto stránky. Pioneer sa zvykne volať „DJM“ alebo „USB Audio“.</li>
+      <li>Ak sa vstup na telefóne neukáže, použi počítač alebo lacnú USB zvukovku na výstup REC OUT.</li>
+      <li>Pozeraj na ukazovateľ: ak svieti CLIP, zníž hlasitosť na mixpulte.</li>
+      <li>Hodina pri 320 kbps zaberie asi 144 MB. Nahrávka ostáva len v prehliadači, kým ju nestiahneš.</li>
+    </ul>
+  </section>
+</main>
+<div class="toast" id="toast" role="status"></div>
+<script src="../lame.min.js"></script>
+<script src="../rec.js"></script>
+<script>
+(function(){
+'use strict';
+var $=function(s){return document.querySelector(s)};
+var ctx=null, stream=null, src=null, anL=null, anR=null, rec=null, clipT=[0,0], lvl=[0,0], url=null;
+var msg=$('#msg');
+function showMsg(t,ok){msg.hidden=!t;msg.textContent=t||'';msg.className='msg'+(ok?' ok':'');}
+function toast(t){var e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(function(){e.classList.remove('on')},2600);}
+
+if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){showMsg('Tento prehliadač nepodporuje nahrávanie zvuku (alebo stránka nebeží cez HTTPS).');}
+if(!window.MixRec||!MixRec.supported()){showMsg('Nepodarilo sa načítať MP3 kodér. Skús obnoviť stránku.');}
+
+async function listDevices(){
+  var devs=await navigator.mediaDevices.enumerateDevices();
+  var ins=devs.filter(function(d){return d.kind==='audioinput'});
+  var sel=$('#dev'); sel.innerHTML='';
+  if(!ins.length){var o=document.createElement('option');o.textContent='Žiadny vstup sa nenašiel';sel.appendChild(o);return;}
+  ins.forEach(function(d,i){var o=document.createElement('option');o.value=d.deviceId;o.textContent=d.label||('Vstup '+(i+1));sel.appendChild(o);});
+  // Pioneer / DJM / USB audio preferuj
+  var pref=ins.find(function(d){return /djm|pioneer|usb/i.test(d.label)});
+  if(pref) sel.value=pref.deviceId;
+}
+
+async function openStream(){
+  if(rec){return;}
+  if(stream){stream.getTracks().forEach(function(t){t.stop()});stream=null;}
+  var id=$('#dev').value;
+  var audio={echoCancellation:false,noiseSuppression:false,autoGainControl:false,channelCount:{ideal:2}};
+  if(id) audio.deviceId={exact:id};
+  try{ stream=await navigator.mediaDevices.getUserMedia({audio:audio}); }
+  catch(e){ showMsg('Vstup sa nepodarilo otvoriť: '+(e.name==='NotAllowedError'?'povoľ mikrofón v prehliadači.':e.message)); return; }
+  showMsg('');
+  if(!ctx){ var AC=window.AudioContext||window.webkitAudioContext; ctx=new AC({latencyHint:'interactive'}); }
+  if(ctx.state==='suspended') await ctx.resume();
+  if(src){try{src.disconnect()}catch(e){}}
+  src=ctx.createMediaStreamSource(stream);
+  var sp=ctx.createChannelSplitter(2); anL=ctx.createAnalyser(); anR=ctx.createAnalyser(); anL.fftSize=anR.fftSize=1024;
+  src.connect(sp); sp.connect(anL,0); sp.connect(anR,1);
+  var nCh=stream.getAudioTracks()[0].getSettings().channelCount;
+  if(nCh===1){ sp.disconnect(); sp.connect(anL,0); sp.connect(anR,0); }
+}
+
+var buf=new Float32Array(1024);
+function peak(an){ an.getFloatTimeDomainData(buf); var p=0; for(var i=0;i<buf.length;i++){var a=Math.abs(buf[i]); if(a>p)p=a;} return p; }
+function meters(){
+  if(anL){
+    var ps=[peak(anL),peak(anR)], now=performance.now();
+    for(var c=0;c<2;c++){
+      var db=ps[c]>0?20*Math.log10(ps[c]):-90, l=Math.max(0,Math.min(1,(db+60)/60));
+      lvl[c]=Math.max(l,lvl[c]-0.02);
+      $(c?'#br':'#bl').style.width=(100-lvl[c]*100)+'%';
+      if(ps[c]>=0.99) clipT[c]=now+2500;
+      $(c?'#cr':'#cl').classList.toggle('on',now<clipT[c]);
+    }
+  }
+  if(rec){
+    var s=rec.seconds(), m=Math.floor(s/60), r=Math.floor(s%60);
+    $('#time').textContent=m+':'+(r<10?'0':'')+r;
+    $('#size').textContent=(rec.bytes/1048576).toFixed(1)+' MB';
+  }
+  requestAnimationFrame(meters);
+}
+
+async function startRec(){
+  if(!stream){await openStream(); if(!stream)return;}
+  if(ctx.state==='suspended') await ctx.resume();
+  rec=new MixRec(ctx,src,parseInt($('#kbps').value,10));
+  try{ await rec.start(); }catch(e){ rec=null; showMsg('Nahrávanie sa nepodarilo spustiť: '+e.message); return; }
+  $('#rec').classList.add('on'); $('#recTxt').textContent='STOP'; $('#out').hidden=true;
+  $('#dev').disabled=true; $('#kbps').disabled=true;
+}
+async function stopRec(){
+  var r=rec; rec=null;
+  $('#rec').classList.remove('on'); $('#recTxt').textContent='REC'; $('#dev').disabled=false; $('#kbps').disabled=false;
+  var blob=await r.stop();
+  if(!blob||!blob.size){toast('Nahrávka je prázdna.');return;}
+  if(url) URL.revokeObjectURL(url);
+  url=URL.createObjectURL(blob);
+  var d=new Date(), p=function(n){return (n<10?'0':'')+n};
+  var name='mix-'+d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'-'+p(d.getHours())+p(d.getMinutes())+'.mp3';
+  var out=$('#out'); out.hidden=false; out.innerHTML='';
+  var a=document.createElement('a'); a.href=url; a.download=name; a.textContent='Stiahnuť '+name+' ('+(blob.size/1048576).toFixed(1)+' MB)';
+  var au=document.createElement('audio'); au.controls=true; au.src=url;
+  out.appendChild(a); out.appendChild(au);
+  a.click();
+}
+
+$('#rec').addEventListener('click',function(){ if(rec) stopRec(); else startRec(); });
+$('#dev').addEventListener('change',function(){ openStream(); });
+window.addEventListener('beforeunload',function(e){ if(rec){e.preventDefault();e.returnValue='';} });
+
+(async function init(){
+  if(!navigator.mediaDevices) return;
+  try{ var t=await navigator.mediaDevices.getUserMedia({audio:true}); t.getTracks().forEach(function(x){x.stop()}); }
+  catch(e){ showMsg(e.name==='NotAllowedError'?'Bez povolenia mikrofónu to nepôjde. Povoľ ho v nastaveniach stránky.':'Vstup sa nepodarilo otvoriť: '+e.message); }
+  await listDevices();
+  await openStream();
+  requestAnimationFrame(meters);
+})();
+if('serviceWorker' in navigator){navigator.serviceWorker.register('../sw.js').catch(function(){});}
+})();
+</script>
+</body>
+</html>

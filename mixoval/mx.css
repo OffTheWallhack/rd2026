@@ -1,0 +1,33 @@
+/* si/mixoval — spoločný základ (farby, písma, tlačidlá, toast). Tmavé, lebo sa to používa v klube. */
+:root{
+  color-scheme:dark;
+  --bg:#0c0e0f; --bg2:#121516; --panel:#171b1d; --panel2:#1e2427;
+  --edge:#2c3438; --edge2:#3b464c; --ink:#e9eeec; --muted:#8b9791;
+  --a:#ffb02e; --b:#34d1ff; --rec:#ff3b30; --ok:#79d98f;
+  --fd:'Barlow Condensed','Arial Narrow',system-ui,sans-serif;
+  --fb:'Barlow',system-ui,-apple-system,sans-serif;
+  --fm:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--fb);font-size:16px;line-height:1.35}
+body{min-height:100vh;min-height:100dvh;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);-webkit-text-size-adjust:100%}
+a{color:inherit}
+button,select,input{font:inherit;color:inherit}
+button{cursor:pointer;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.mono{font-family:var(--fm);font-variant-numeric:tabular-nums}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+.btn{min-height:44px;padding:0 14px;border-radius:8px;border:1px solid var(--edge2);
+  background:linear-gradient(#272e32,#1b2124);box-shadow:0 1px 0 rgba(255,255,255,.07) inset,0 2px 0 #000;
+  font:700 15px var(--fd);letter-spacing:.09em;text-transform:uppercase;color:var(--ink)}
+.btn:active{transform:translateY(1px);box-shadow:0 1px 0 rgba(255,255,255,.07) inset}
+.btn.on{background:var(--c,var(--ink));border-color:var(--c,var(--ink));color:#111}
+.btn[disabled]{opacity:.4;pointer-events:none}
+
+.toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translate(-50%,16px);
+  max-width:calc(100vw - 32px);padding:10px 16px;border-radius:10px;background:#f1f4f2;color:#111;
+  font:600 15px var(--fb);opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;z-index:50;text-align:center}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+:focus-visible{outline:2px solid var(--b);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}

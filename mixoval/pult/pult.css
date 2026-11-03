@@ -1,0 +1,148 @@
+/* si/mixoval · Pult. Decky A (jantárový) a B (azúrový). Pripravené tak, aby sa dali neskôr ovládať aj v spoločnej izbe. */
+body{overscroll-behavior:none;-webkit-touch-callout:none}
+.top{position:sticky;top:0;z-index:20;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:8px 14px;
+  border-bottom:1px solid var(--edge);background:linear-gradient(#181d1f,#111415)}
+.top .back{font:600 15px var(--fd);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;white-space:nowrap}
+.top h1{margin:0;font:800 24px var(--fd);letter-spacing:.1em;text-transform:uppercase}
+.sp{flex:1}
+.mst{display:flex;align-items:center;gap:8px}
+.mm{display:flex;flex-direction:column;gap:3px;width:56px}
+.mm span{position:relative;display:block;height:7px;border-radius:2px;overflow:hidden;background:linear-gradient(to right,#2fbf5b 0 62%,#ffc233 62% 86%,#ff4538 86%)}
+.mm i{position:absolute;right:0;top:0;bottom:0;width:100%;background:#0a0c0d}
+.cw{display:flex;flex-direction:column;align-items:center;gap:2px}
+.cw small,.knobs small{font:600 10.5px var(--fd);letter-spacing:.14em;color:var(--muted)}
+.rec{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:8px}
+.rec select{height:36px;border-radius:6px;border:1px solid var(--edge2);background:#101315;padding:0 6px;font:500 13px var(--fm)}
+.recbtn{min-height:40px;display:flex;align-items:center;gap:8px;padding:0 14px}
+.recbtn .dot{width:12px;height:12px;border-radius:50%;background:var(--rec)}
+.recbtn.on{background:var(--rec);border-color:var(--rec);color:#fff;animation:blink 1.2s steps(2) infinite}
+.recbtn.on .dot{background:#fff;border-radius:2px}
+@keyframes blink{50%{background:#a8211a}}
+.recinfo{font-size:13px;color:var(--muted);flex-basis:100%;text-align:right;margin-top:-2px}
+.recinfo:empty{display:none}
+.recout{display:flex;flex-direction:column;gap:8px;max-width:1100px;margin:10px auto 0;padding:12px 14px;border:1px solid #2c5a38;background:#16271b;border-radius:10px;width:calc(100% - 28px)}
+.recout[hidden]{display:none}
+.recout a{color:#9be8b0;font-weight:600}
+.recout audio{width:100%}
+
+/* ---- rozloženie ---- */
+.decks{display:grid;gap:12px 14px;max-width:1100px;margin:0 auto;padding:12px 14px 6px;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  grid-template-areas:"wa wa" "wb wb" "ca cb" "xf xf"}
+.deck{display:contents}
+.deck.a{--c:var(--a)} .deck.b{--c:var(--b)}
+.deck.a .wfw{grid-area:wa} .deck.b .wfw{grid-area:wb}
+.deck.a .ctrls{grid-area:ca} .deck.b .ctrls{grid-area:cb}
+.xfw{grid-area:xf}
+@media (min-width:760px){.decks{grid-template-areas:"wa wb" "ca cb" "xf xf"}}
+
+/* ---- vlny ---- */
+.wfw{min-width:0;padding:8px 10px 10px;border:1px solid var(--edge);border-top:3px solid var(--c);border-radius:12px;background:linear-gradient(#171c1e,#121618)}
+.dinfo{display:flex;align-items:baseline;gap:10px;margin-bottom:6px}
+.dl{flex:0 0 auto;width:28px;height:28px;border-radius:6px;background:var(--c);color:#111;font:800 20px/28px var(--fd);text-align:center}
+.tn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:600 17px var(--fb)}
+.tn.empty{color:var(--muted);font-weight:400}
+.tm{flex:0 0 auto;font-size:15px;color:#cfd8d3}
+canvas.zoom{display:block;width:100%;height:76px;border-radius:6px;background:#0a0c0d;touch-action:pan-y;cursor:grab}
+canvas.ov{display:block;width:100%;height:20px;margin-top:5px;border-radius:4px;background:#0a0c0d;touch-action:none;cursor:pointer}
+.binfo{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:7px}
+.bpm{display:flex;align-items:baseline;gap:4px}
+.bpm input{width:76px;height:34px;border-radius:6px;border:1px solid var(--edge2);background:#101315;padding:0 6px;font:500 17px var(--fm);text-align:right;-moz-appearance:textfield}
+.bpm input::-webkit-outer-spin-button,.bpm input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.bpm small{font:600 11px var(--fd);letter-spacing:.14em;color:var(--muted)}
+.mini{height:34px;min-width:36px;padding:0 9px;border-radius:6px;border:1px solid var(--edge2);background:#1b2124;font:700 13px var(--fd);letter-spacing:.08em;color:#cfd8d3}
+.mini:active{background:#2a3338}
+.eff{font-size:13px;color:var(--c);margin-left:auto}
+.trimv{font-size:11px;color:var(--muted)}
+
+/* ---- ovládanie decku ---- */
+.ctrls{min-width:0;display:flex;flex-direction:column;gap:10px;padding:10px;border:1px solid var(--edge);border-radius:12px;background:linear-gradient(#171b1d,#111415)}
+.trans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.trans .btn{min-height:54px;padding:0;font-size:16px;letter-spacing:.06em;display:flex;align-items:center;justify-content:center}
+.cue.held{background:#ffd9a0;color:#111}
+.play::before{content:"";width:18px;height:20px;background:currentColor;clip-path:polygon(0 0,100% 50%,0 100%)}
+.play.on::before{clip-path:polygon(0 0,36% 0,36% 100%,0 100%,0 0,64% 0,100% 0,100% 100%,64% 100%,64% 0)}
+.play.on{background:var(--c);border-color:var(--c);color:#111}
+.sync.on{background:var(--c);border-color:var(--c);color:#111}
+.loops{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.loops .btn{min-height:42px;padding:0;font-size:16px}
+.loops .btn.on{background:var(--c);border-color:var(--c);color:#111}
+.bends{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.bends .btn{min-height:38px;padding:0;font-size:13px;letter-spacing:.04em}
+.bends .btn:active{background:var(--c);border-color:var(--c);color:#111}
+.tempo{display:grid;grid-template-columns:1fr auto;gap:2px 8px;align-items:center}
+.tempo .hf{grid-column:1/-1}
+.tempo .tr{font-size:14px}
+.tempo .mini{height:34px;justify-self:end}
+.mixrow{--k:46px;--fw:46px;display:flex;gap:6px;align-items:stretch;justify-content:space-between}
+.knobs{display:grid;grid-template-columns:repeat(2,auto);gap:10px 6px;justify-content:space-around;flex:1;align-content:center;min-width:0}
+.kw{display:flex;flex-direction:column;align-items:center;gap:3px}
+.chan{display:flex;gap:4px;align-items:stretch}
+
+/* ---- potenciometre a fadery ---- */
+.knob{position:relative;width:var(--k,48px);height:var(--k,48px);border-radius:50%;touch-action:none;cursor:ns-resize;
+  background:radial-gradient(circle at 36% 28%,#56626a,#2a3236 58%,#14181a);
+  box-shadow:0 3px 0 #000,0 0 0 2px #0a0c0d,inset 0 1px 0 rgba(255,255,255,.14)}
+.knob.sm{width:38px;height:38px}
+.knob b{position:absolute;inset:0;transform:rotate(-135deg);pointer-events:none}
+.knob b::after{content:"";position:absolute;left:50%;top:4px;width:3px;height:30%;margin-left:-1.5px;border-radius:2px;background:var(--c,#e9eeec)}
+.knob.sm b::after{height:28%}
+.knob.mid::before{content:"";position:absolute;left:50%;top:-7px;width:2px;height:5px;margin-left:-1px;background:var(--muted)}
+.vf{position:relative;width:var(--fw,46px);height:150px;touch-action:none;cursor:ns-resize}
+.vf::before{content:"";position:absolute;left:50%;top:8px;bottom:8px;width:6px;margin-left:-3px;border-radius:3px;background:#06080a;box-shadow:inset 0 0 0 1px #2b3236}
+.vf b{position:absolute;left:3px;right:3px;height:30px;top:calc((1 - var(--p,1)) * (100% - 30px));border-radius:5px;pointer-events:none;
+  background:linear-gradient(#66737a,#2d363b 48%,#1a2024);box-shadow:0 3px 4px #000,inset 0 1px 0 rgba(255,255,255,.2)}
+.vf b::after{content:"";position:absolute;left:7px;right:7px;top:50%;height:3px;margin-top:-1.5px;background:var(--c,#fff);border-radius:2px}
+.hf{position:relative;height:46px;touch-action:none;cursor:ew-resize;min-width:0}
+.hf::before{content:"";position:absolute;left:8px;right:8px;top:50%;height:6px;margin-top:-3px;border-radius:3px;background:#06080a;box-shadow:inset 0 0 0 1px #2b3236}
+.hf::after{content:"";position:absolute;left:50%;top:9px;bottom:9px;width:2px;margin-left:-1px;background:#33403f}
+.hf b{position:absolute;top:3px;bottom:3px;width:40px;left:calc(var(--p,.5) * (100% - 40px));border-radius:6px;pointer-events:none;
+  background:linear-gradient(90deg,#66737a,#2d363b 48%,#1a2024);box-shadow:0 3px 4px #000,inset 0 1px 0 rgba(255,255,255,.2)}
+.hf b::after{content:"";position:absolute;top:7px;bottom:7px;left:50%;width:3px;margin-left:-1.5px;background:var(--c,#fff);border-radius:2px}
+.meter.v{position:relative;width:7px;border-radius:2px;overflow:hidden;background:linear-gradient(to top,#2fbf5b 0 60%,#ffc233 60% 85%,#ff4538 85%)}
+.meter.v i{position:absolute;left:0;right:0;top:0;height:100%;background:#0a0c0d}
+
+/* ---- crossfader ---- */
+.xfw{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:8px 14px;border:1px solid var(--edge);border-radius:12px;background:linear-gradient(#171b1d,#111415)}
+.xl{width:34px;height:34px;border-radius:7px;font:800 20px/34px var(--fd);text-align:center;color:#111}
+.xl.a{background:var(--a)} .xl.b{background:var(--b)}
+.xfw .hf{height:52px}
+.xfw .hf b{width:56px;left:calc(var(--p,.5) * (100% - 56px))}
+.xfw .hf b::after{background:#fff}
+
+/* ---- knižnica ---- */
+.lib{max-width:1100px;margin:14px auto 40px;padding:0 14px}
+.libh{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.libh h2{margin:0 auto 0 0;font:700 24px var(--fd);letter-spacing:.08em;text-transform:uppercase}
+.libh .btn{min-height:40px}
+.q{width:100%;height:44px;margin:10px 0 8px;border-radius:8px;border:1px solid var(--edge2);background:#101315;padding:0 12px;font-size:16px}
+.list{display:flex;flex-direction:column;border:1px solid var(--edge);border-radius:10px;overflow:hidden}
+.list:empty{display:none}
+.item{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:6px 8px 6px 12px;border-top:1px solid var(--edge);background:#14181a}
+.item:first-child{border-top:0}
+.item .nm{min-width:0}
+.item .nm b{display:block;font-weight:500;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item .nm small{color:var(--muted);font:400 12px var(--fm)}
+.item button{width:46px;height:40px;border-radius:7px;border:1px solid var(--edge2);background:#1b2124;font:800 17px var(--fd)}
+.item button.la{color:var(--a)} .item button.lb{color:var(--b)}
+.item button:active{background:#2a3338}
+.item.cur-a{box-shadow:inset 3px 0 0 var(--a)} .item.cur-b{box-shadow:inset 3px 0 0 var(--b)}
+.empty{margin:10px 0;color:#9aa6a0;font-size:15px}
+.more{padding:10px 12px;color:var(--muted);font-size:14px;background:#14181a;border-top:1px solid var(--edge)}
+body.drag::after{content:"Pusť sem skladby";position:fixed;inset:10px;z-index:60;display:flex;align-items:center;justify-content:center;border:3px dashed var(--a);border-radius:18px;background:rgba(12,14,15,.86);font:800 40px var(--fd);letter-spacing:.08em;text-transform:uppercase}
+
+@media (max-width:430px){
+  .top{padding:6px 10px;gap:6px 10px}
+  .top h1,.top .bt{display:none}
+  .top .back{font-size:26px;line-height:1;padding:0 6px}
+  .trans .btn{font-size:15px;letter-spacing:.03em}
+  .ctrls{padding:8px 7px;gap:8px}
+  .mixrow{--k:40px;--fw:34px}
+  .wfw{padding:8px}
+  .eff{margin-left:0}
+}
+
+@media (min-width:760px){
+  .knobs{grid-template-columns:repeat(4,auto);gap:10px 14px}
+  .mixrow{--k:50px}
+}

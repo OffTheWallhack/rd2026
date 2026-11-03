@@ -729,7 +729,7 @@ body.dh #hud .speed,body.dh #hud .score,body.dh #combo,body.dh #timer{display:no
 .dhr [hidden]{display:none}
 /* downhill: pick the run and the discipline */
 .dhpick{height:100%;min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:8px}
-.cards.dhtrk{grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:8px;min-height:0}
+.cards.dhtrk{grid-template-columns:repeat(5,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:8px;min-height:0}
 .dhtrk .card.mode em{font:700 10.5px/1.1 var(--hud);font-style:normal;letter-spacing:.06em;color:#ffd54a;text-shadow:0 1px 4px rgba(0,0,0,.9);z-index:1}
 #dhDiscInfo{flex:1;min-width:0;margin:0;padding:0;border:0;background:none;font-size:11.5px;color:var(--muted);text-align:right}
 .dhpick #dhDesc{margin:0;padding:6px 10px;font-size:12px;line-height:1.35}
@@ -835,7 +835,7 @@ body.dh #hud .speed,body.dh #hud .score,body.dh #combo,body.dh #timer{display:no
             <button class="card mode" type="button" data-mode="arena" style="--ac:#ffd23d"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="12" rx="9" ry="5.5"/><ellipse cx="12" cy="12" rx="4.2" ry="2"/><path d="M12 3v2.5M12 18.5V21"/></svg><b>DRIFT ARÉNA</b><small>3 okruhy · ľahký až peklo</small></button>
             <button class="card mode" type="button" data-mode="chase" style="--ac:#4d8dff"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 16h18M5 16l1.5-5h11L19 16M7 16a2 2 0 1 0 4 0a2 2 0 1 0-4 0M13 16a2 2 0 1 0 4 0a2 2 0 1 0-4 0M9 8h6M12 4v4M9 4h6"/></svg><b>NAHÁŇAČKA</b><small>Noc · polícia za tebou</small></button>
             <button class="card mode" type="button" data-mode="hwy" style="--ac:#4dd68c"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21L10 3M16 21L14 3M12 6v3M12 12v3M12 18v2"/></svg><b>DIAĽNICA</b><small>Z pohľadu vodiča</small></button>
-            <button class="card mode" type="button" data-mode="dh" style="--ac:#8fd8ff"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 20L9 7l3 4 2-3 8 12z"/><path d="M14 3l5 5M19 4v4h-4"/></svg><b>DOWNHILL</b><small>4 trate · 3 disciplíny</small></button>
+            <button class="card mode" type="button" data-mode="dh" style="--ac:#8fd8ff"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 20L9 7l3 4 2-3 8 12z"/><path d="M14 3l5 5M19 4v4h-4"/></svg><b>DOWNHILL</b><small>5 tratí · 3 disciplíny</small></button>
             </div>
             <p class="hint" id="modeDesc"></p>
           </div>
@@ -4799,7 +4799,7 @@ const INFO = {
   buggy: { desc: 'Bugina side-by-side. Ľahká, skáče a hádže sa. Na hrbole a do blata ideálna, na asfalte trochu nervózna.', speed: 56, accel: 74, slide: 72, agil: 90 }
 };
 const MODE_TXT = {
-  dh: () => 'Zjazd z kopca autom ako na snowboarde. Štyri slovenské trate: zasnežený Chopok, letná Kráľova hoľa so skokmi cez vlny, strmé Skalnaté pleso medzi skalami a Devín pri západe slnka. Tri disciplíny: rýchlosť, slalom a airtime. Trať a disciplínu vyberieš v treťom kroku.',
+  dh: () => 'Zjazd z kopca autom ako na snowboarde. Päť slovenských tratí: zasnežený Chopok, letná Kráľova hoľa so skokmi cez vlny, strmé Skalnaté pleso medzi skalami, Devín pri západe slnka a bonus Štrbské pleso: zo skokanského mostíka na zamrznuté pleso. Tri disciplíny: rýchlosť, slalom a airtime. Trať a disciplínu vyberieš v treťom kroku.',
   free: 'Bez času a bez tlaku. Jazdi, driftuj a zbieraj combo. Body dávajú aj kúsky: dve kolesá, otočka 360 a tesné obiehanie.',
   t60: () => 'Minúta na čo najvyššie skóre.' + (game.best ? ' Tvoj rekord: ' + fmt(game.best) + '.' : ''),
   job: () => 'Celá misia: nalož aparatúru, prejdi starým mestom, cez neónovú zónu a po snehu až na vrchol. Hodnotí sa čas aj škoda.' + (store.get('jobBest', 0) ? ' Rekord: ' + fmt(store.get('jobBest', 0)) + ' bodov.' : '') + (carKey === 'zubor' ? ' Na snehu drž plyn, Zubor má pomoc do kopca.' : ''),
@@ -6350,9 +6350,19 @@ const DH_WORLDS = {
     bend: [[70, 240, 1], [35, 95, .3]], wk: .0006, wall: 300, crag: 7, nz: [9, 3.2, 1.3, .22], surf: 'grass', tex: 'grass', sand: true,
     pal: { lit: 0xa9b65c, shade: 0x4f6638, rock: 0x9a8a6e, rockAt: .45, sand: 0xe0bd80, alt: 0xc9a24e },
     sky: { top: 0x34488e, bot: 0xf6a764, fog: 0xd6a283, near: 280, far: 1000, hemi: .8, sun: 2.5, sunCol: 0xffbd80, exp: 1.12, dir: [-90, 24, 28] },
-    trees: { kind: 'leaf', in: 72, out: 128, dens: .55 }, lift: null, poles: ['#e8322f', '#f4f4f4'], gate: 60, river: true }
+    trees: { kind: 'leaf', in: 72, out: 128, dens: .55 }, lift: null, poles: ['#e8322f', '#f4f4f4'], gate: 60, river: true },
+  strbske: { id: 'strbske', name: 'ŠTRBSKÉ PLESO', area: 'mostík a zamrznuté pleso', km: '1,0 km', tag: 'skokanský mostík · let · ľad', ac: '#bfe6ff',
+    start: 'ŠTART · MOSTÍK MS 1970', finish: 'CIEĽ · PLESO', L: 980, seed: 63,
+    // the inrun of the ski jump, a short flat lip, then the steep landing hill and the outrun onto the lake
+    slope: [[-700, -.3], [-140, -.2], [-30, -.02], [10, .05], [40, .5], [118, .56], [126, .1], [140, .1], [148, .7], [300, .62], [400, .38], [480, .12], [560, .01], [1100, 0], [1250, -.2], [1600, -.35]],
+    jumps: [], kick: [[620, 2.6, 18, 7, 30], [760, 3, 18, 7, 30]],
+    bend: [[25, 400, 1.2]], wk: .0011, wall: 150, crag: 8, nz: [6, 1.4, .4, .08], surf: 'snow', tex: 'snow',
+    pal: { lit: 0xf2f6fb, shade: 0x93a8cc, rock: 0x7a8088, rockAt: .52, ice: 0xa6d2ec },
+    lake: { dz: -170, dx: 0, r: 240 },
+    sky: { top: 0x3d7bd6, bot: 0xe6eef6, fog: 0xdbe6f1, near: 360, far: 1200, hemi: .66, sun: 2.6, sunCol: 0xfff3e2, exp: .92, dir: [-60, 40, 20] },
+    trees: { kind: 'pineSnow', in: 70, out: 140, dens: .55 }, lift: null, poles: ['#ff6a1a', '#141414'], gate: 55, jump: true }
 };
-const DH_ORDER = ['chopok', 'hola', 'lomnica', 'devin'];
+const DH_ORDER = ['chopok', 'hola', 'lomnica', 'devin', 'strbske'];
 const DH = { on: false, w: null, wid: 'chopok', disc: 'speed', jl: [], prof: null, Z0: -700, ZS: 2, g: null, chunks: new Map(), shown: new Set(), cc: '', trees: new Map(), saved: [], t: 0, run: 0, air: 0, jump: 0, maxV: 0, cd: 0, started: false, over: false, dq: false, hud: 0, msgT: 0, safe: [], flipT: 0, shake: 0, camDir: new THREE.Vector3(0, 0, 1), camY: 0, fin: null, gates: [], gi: 0, sun: new THREE.Vector3(-.62, .5, .6).normalize() };
 const dhQuint = t => t * t * t * (t * (t * 6 - 15) + 10);
 const dhSmooth = t => { t = clamp(t, 0, 1); return t * t * (3 - 2 * t); };
@@ -6623,6 +6633,19 @@ function dhDeco(W, g) {
     const maiden = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.4, 7, 8), wallM); maiden.position.set(nx, ry + 10.5, nz); g.add(maiden);
     const mRoof = new THREE.Mesh(new THREE.ConeGeometry(2.9, 3.2, 8), roofM); mRoof.position.set(nx, ry + 15.6, nz); g.add(mRoof);
     const river = new THREE.Mesh(new THREE.PlaneGeometry(5000, 900), new THREE.MeshLambertMaterial({ color: 0x3b5d78, emissive: 0x1a2b3d })); river.rotation.x = -Math.PI / 2; river.position.set(dhCX(W.L) , dhProf(W.L + 330) - 4, W.L + 760); g.add(river);
+  } else if (W.id === 'strbske') {
+    // the inrun: white boards on both sides; the judges' tower beside the landing hill; floodlight masts
+    const rail = dhLam(0xf4f6f8), rg = new THREE.BoxGeometry(.3, 1.1, 6.2);
+    for (let z = 6; z < 132; z += 6) for (const sd of [-1, 1]) { const x = dhCX(z) + sd * 11, y0 = dhH(x, z), y1 = dhH(x, z + 6); const b = new THREE.Mesh(rg, rail); b.position.set(x, (y0 + y1) / 2 + .5, z + 3); b.rotation.x = Math.atan2(y0 - y1, 6); g.add(b); dhObs({ x, y: y0, z: z + 3, r: .5, h: 1.3 }); }
+    const jx = dhCX(230) + 48, jz = 230, jy = dhMinAround(jx, jz, 5), tw = new THREE.Group(); tw.position.set(jx, jy, jz);
+    const t1 = new THREE.Mesh(new THREE.BoxGeometry(7, 20, 7), dhLam(0xd8dde3)); t1.position.y = 10; tw.add(t1);
+    const t2 = new THREE.Mesh(new THREE.BoxGeometry(9, 3.2, 9), new THREE.MeshLambertMaterial({ color: 0x2c4c6c, emissive: 0x0d1f33 })); t2.position.y = 21.6; tw.add(t2);
+    const t3 = new THREE.Mesh(new THREE.BoxGeometry(10, .8, 10), dhLam(0x5d6670)); t3.position.y = 23.6; tw.add(t3); g.add(sh(tw)); dhObs({ x: jx, y: jy, z: jz, r: 5.5, h: 24 });
+    [[-40, 60], [40, 200], [-44, 340], [42, 470]].forEach(([dx, z]) => { const x = dhCX(z) + dx, y = dhH(x, z); const m = new THREE.Mesh(new THREE.CylinderGeometry(.25, .4, 26, 6), dhLam(0x9aa1a8)); m.position.set(x, y + 13, z); g.add(m); const l = new THREE.Mesh(new THREE.BoxGeometry(3, 1.4, .6), new THREE.MeshBasicMaterial({ color: 0xfff6d8 })); l.position.set(x, y + 26, z); g.add(l); dhObs({ x, y, z, r: .6, h: 26 }); });
+    // hotel Patria on the shore: the stepped pyramid
+    const L = DH.lake, hx = L.x - L.r - 40, hz = L.z - 40, hy = dhMinAround(hx, hz, 22), ho = new THREE.Group(); ho.position.set(hx, hy, hz);
+    for (let i = 0; i < 9; i++) { const w = 46 - i * 4.6, b = new THREE.Mesh(new THREE.BoxGeometry(w, 3.6, 22 - i * 1.6), i % 2 ? dhLam(0xe9e4da) : new THREE.MeshLambertMaterial({ color: 0x40556c, emissive: 0x111c28 })); b.position.y = 1.8 + i * 3.6; ho.add(b); }
+    const roof = new THREE.Mesh(new THREE.BoxGeometry(6, 1.2, 8), dhLam(0x5d6670)); roof.position.y = 33; ho.add(roof); ho.rotation.y = .5; g.add(sh(ho)); dhObs({ x: hx, y: hy, z: hz, r: 22, h: 34 });
   }
 }
 

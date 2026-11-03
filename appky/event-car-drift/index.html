@@ -723,7 +723,8 @@ body.dh #hud .speed,body.dh #hud .score,body.dh #combo,body.dh #timer{display:no
 .dhmsg.rec{color:#74ff5e}
 .dhmsg small{display:block;margin-top:8px;font-size:.42em;color:#fff;letter-spacing:.08em}
 .dhmsg.dq{color:#ff3b30}
-.dhr b#dhGates{color:#74ff5e}
+.dhr b#dhGates,.dhr b#dhPos{color:#74ff5e}
+.dhr b#dhPos.bad{color:#ff5a4a}
 .dhr [hidden]{display:none}
 /* downhill: pick the run and the discipline */
 .dhpick{height:100%;min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:8px}
@@ -760,7 +761,7 @@ body.dh #hud .speed,body.dh #hud .score,body.dh #combo,body.dh #timer{display:no
 <div class="dhhud" id="dhHud" hidden>
   <div class="dhl"><small>ČAS JAZDY</small><b id="dhTime">00:00.00</b><small>VO VZDUCHU</small><b><span id="dhAir">00.00</span><i id="dhJump"></i></b><small>RÝCHLOSŤ (km/h)</small><b id="dhSpd">0</b></div>
   <div class="dhc"><svg id="dhArrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l8 19-8-5-8 5z" fill="currentColor"/></svg><b id="dhDist">0 m</b></div>
-  <div class="dhr"><small id="dhBestLab">REKORD TRATE</small><b id="dhBest">--:--.--</b><small id="dhGatesLab" hidden>BRÁNKY</small><b id="dhGates" hidden>0/0</b></div>
+  <div class="dhr"><small id="dhBestLab">REKORD TRATE</small><b id="dhBest">--:--.--</b><small id="dhGatesLab" hidden>BRÁNKY</small><b id="dhGates" hidden>0/0</b><small id="dhPosLab" hidden>POZÍCIA</small><b id="dhPos" hidden>–</b></div>
 </div>
 <div class="dhmsg" id="dhMsg" aria-live="polite"></div>
 <div class="job" id="jobHud" hidden>
@@ -935,6 +936,7 @@ body.dh #hud .speed,body.dh #hud .score,body.dh #combo,body.dh #timer{display:no
           <div class="col">
             <div class="sl"><label for="vSfx">ZVUKY (MOTOR, ŠMYK)</label><output id="vSfxO">100</output><input type="range" id="vSfx" min="0" max="100" step="1"></div>
             <div class="row" id="vibRow"><div><b>VIBRÁCIE</b><small>Pri náraze, ak to telefón vie.</small></div><button class="sw" id="swVib" type="button" role="switch" aria-checked="true" aria-label="Vibrácie"></button></div>
+            <div class="row"><div><b>DUCH V DOWNHILLE</b><small>Tvoja najlepšia jazda ako priesvitné auto.</small></div><button class="sw" id="swGhost" type="button" role="switch" aria-checked="true" aria-label="Duch v Downhille"></button></div>
             <div class="row"><div><b>UKAZOVATEĽ FPS</b><small>Pre ladenie výkonu.</small></div><button class="sw" id="swFps" type="button" role="switch" aria-checked="false" aria-label="Ukazovateľ FPS"></button></div>
             <button class="go alt danger" id="resetBtn" type="button">Vymazať rekordy a nastavenia</button>
           </div>
@@ -1052,7 +1054,7 @@ const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
 if (isTouch) document.body.classList.add('touch');
 const store = { get(k, d) { try { const v = localStorage.getItem('ecd.' + k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
                 set(k, v) { try { localStorage.setItem('ecd.' + k, JSON.stringify(v)); } catch (e) {} } };
-const settings = { sfx: clamp(store.get('sfx', 1), 0, 1), q: store.get('q', isTouch ? 1 : 2), vib: store.get('vib', true), fps: store.get('fps', false), cam: store.get('cam', 'chase'), wx: store.get('wx', 'auto'), dhCam: store.get('dhCam', 'chase'), hwCam: store.get('hwCam', 'cockpit') };
+const settings = { sfx: clamp(store.get('sfx', 1), 0, 1), q: store.get('q', isTouch ? 1 : 2), vib: store.get('vib', true), fps: store.get('fps', false), cam: store.get('cam', 'chase'), wx: store.get('wx', 'auto'), dhCam: store.get('dhCam', 'chase'), ghost: store.get('ghost', true), hwCam: store.get('hwCam', 'cockpit') };
 const stats = Object.assign({ dist: 0, time: 0, runs: 0, cones: 0, bestCombo: 0, banked: 0, total: 0, maxSpd: 0, mult5: false, badges: {} }, store.get('stats', {}));
 
 /* ================= renderer / scene ================= */
@@ -6658,6 +6660,12 @@ function dhBuild(id, disc) {
   DH.start = { x: sx, z: 4 };
 }
 /* ---------- slalom gates: two poles each, the colours alternate; the car has to pass between them ---------- */
+// the next gate to pass is bright yellow, passed ones green, the rest keep their red / blue
+function dhGateMark() {
+  if (!DH.gates.length) return; const G = DH.gates[DH.gi]; if (!G) return;
+  DH.gateNext = DH.gateNext || new THREE.MeshBasicMaterial({ color: 0xffe14a, side: THREE.DoubleSide });
+  G.parts.forEach((m, i) => { if (i % 2) m.material = DH.gateNext; });
+}
 function dhGatesBuild() {
   if (DH.gatesG) { DH.gatesG.parent && DH.gatesG.parent.remove(DH.gatesG); DH.gatesG = null; }
   DH.gates = []; DH.gi = 0; if (DH.disc !== 'slalom') return;
@@ -6912,6 +6920,46 @@ function dhLeave() {
   if (model && model.car) { model.car.quaternion.identity(); model.car.rotation.set(0, 0, 0); model.car.visible = true; }
   document.body.classList.remove('dh'); dhEl.hud.hidden = true; dhEl.msg.className = 'dhmsg';
   if (DH.gatesG) { DH.gatesG.parent && DH.gatesG.parent.remove(DH.gatesG); DH.gatesG = null; }
+  if (GH.mesh) { GH.mesh.parent && GH.mesh.parent.remove(GH.mesh); GH.mesh = null; } GH.play = null;
+}
+/* ---------- the ghost: your best run on this track and discipline drives beside you as a see-through car (instead of Pakoon's rivals) ---------- */
+const GH = { on: false, rec: [], recT: 0, play: null, mesh: null, mat: null };
+const ghKey = () => 'dhGhost.' + DH.w.id + '.' + DH.disc;
+function ghStart() {
+  GH.rec = []; GH.recT = 0; GH.play = null;
+  if (GH.mesh) { GH.mesh.parent && GH.mesh.parent.remove(GH.mesh); GH.mesh = null; }
+  let g = null; try { g = JSON.parse(localStorage.getItem('ecd.' + ghKey()) || 'null'); } catch (e) {}
+  if (!settings.ghost || !g || !g.d || g.d.length < 16) { dhEl.posLab.hidden = dhEl.pos.hidden = true; return; }
+  GH.play = g; ensureModel(g.car); const k = CARS[g.car] && CARS[g.car].ready ? g.car : carKey;   // the car of the record run, or yours while its model still loads
+  let built = null; try { built = (CARS[k] && CARS[k].build ? CARS[k] : CARS[carKey]).build(); } catch (e) { built = null; }
+  if (!built) { GH.play = null; return; }
+  GH.mat = GH.mat || new THREE.MeshBasicMaterial({ color: 0x2fb8ff, transparent: true, opacity: .42, depthWrite: false, fog: true });
+  built.car.traverse(o => { if (o.isMesh) { if (o.material && o.material.colorWrite === false) { o.visible = false; return; } o.material = GH.mat; o.castShadow = false; o.receiveShadow = false; } });   // the invisible shadow boxes stay invisible
+  GH.mesh = built.car; GH.mesh.visible = false; DH.g.add(GH.mesh);
+  dhEl.posLab.hidden = dhEl.pos.hidden = false; dhEl.pos.textContent = '–';
+}
+// every 0.1 s: run time, where the car model is and how it is turned
+function ghRecord(dt) {
+  if (!DH.started || DH.over) return; GH.recT -= dt; if (GH.recT > 0) return; GH.recT = .1;
+  const B = DHB; _t3.copy(B.p).sub(_a.copy(B.cl).applyQuaternion(B.q)); const r2 = v => Math.round(v * 100) / 100, r4 = v => Math.round(v * 1e4) / 1e4;
+  GH.rec.push(r2(DH.run), r2(_t3.x), r2(_t3.y), r2(_t3.z), r4(B.q.x), r4(B.q.y), r4(B.q.z), r4(B.q.w));
+}
+function ghSave() { if (GH.rec.length < 16 * 8) return; try { localStorage.setItem('ecd.' + ghKey(), JSON.stringify({ car: carKey, d: GH.rec })); } catch (e) {} }
+const _gq = new THREE.Quaternion(), _gq2 = new THREE.Quaternion();
+function ghUpdate() {
+  if (!GH.mesh || !GH.play) return; const d = GH.play.d, n = d.length / 8, t = DH.run;
+  if (!DH.started || t > d[(n - 1) * 8]) { GH.mesh.visible = !DH.started; if (!DH.started) ghPose(0, 0); return; }
+  let lo = 0, hi = n - 1; while (hi - lo > 1) { const m = (lo + hi) >> 1; if (d[m * 8] <= t) lo = m; else hi = m; }
+  const t0 = d[lo * 8], t1 = d[hi * 8], k = t1 > t0 ? clamp((t - t0) / (t1 - t0), 0, 1) : 0; ghPose(lo, k, hi);
+  GH.mesh.visible = true;
+  // race position like in Pakoon: ahead of or behind your best run
+  const gz = lerp(d[lo * 8 + 3], d[hi * 8 + 3], k), ahead = DHB.p.z >= gz;
+  dhEl.pos.textContent = (ahead ? '1' : '2') + '/2'; dhEl.pos.classList.toggle('bad', !ahead);
+}
+function ghPose(i, k, j) {
+  const d = GH.play.d, a = i * 8, b = (j === undefined ? i : j) * 8;
+  GH.mesh.position.set(lerp(d[a + 1], d[b + 1], k), lerp(d[a + 2], d[b + 2], k), lerp(d[a + 3], d[b + 3], k));
+  _gq.set(d[a + 4], d[a + 5], d[a + 6], d[a + 7]); _gq2.set(d[b + 4], d[b + 5], d[b + 6], d[b + 7]); GH.mesh.quaternion.copy(_gq).slerp(_gq2, k);
 }
 function dhStart() {
   DH.wid = dhSelW(); DH.disc = dhSelD();
@@ -6925,6 +6973,7 @@ function dhStart() {
   dhEl.best.textContent = dhRec(DH.w.id, DH.disc) ? dhRecTxt(DH.w.id, DH.disc) : (DH.disc === 'air' ? '--,-- s' : '--:--.--'); dhEl.bestLab.textContent = DH.disc === 'air' ? 'REKORD VO VZDUCHU' : 'REKORD TRATE';
   dhEl.gatesLab.hidden = dhEl.gates.hidden = DH.disc !== 'slalom'; dhEl.gates.textContent = '0/' + DH.gates.length;
   DH.px = DHB.p.x; DH.pz = DHB.p.z;
+  ghStart(); dhGateMark();
   dhEl.hud.hidden = false; dhMsg('');
   S.speed = 0; S.vF = 0;
   $('#hud').hidden = false; $('#resetBtn').hidden = false;
@@ -6946,7 +6995,7 @@ function dhStep(dt) {
     const G = DH.gates[DH.gi];
     if (B.p.z >= G.z) {
       const t = B.p.z - DH.pz > 1e-3 ? clamp((G.z - DH.pz) / (B.p.z - DH.pz), 0, 1) : 1, xc = DH.px + (B.p.x - DH.px) * t;
-      if (Math.abs(xc - G.x) <= G.half + .4) { DH.gi++; G.parts.forEach(m => { m.material = DH.gateOk || (DH.gateOk = new THREE.MeshBasicMaterial({ color: 0x35ff7a, side: THREE.DoubleSide })); }); sound.beep(); dhEl.gates.textContent = DH.gi + '/' + DH.gates.length; }
+      if (Math.abs(xc - G.x) <= G.half + .4) { DH.gi++; G.parts.forEach(m => { m.material = DH.gateOk || (DH.gateOk = new THREE.MeshBasicMaterial({ color: 0x35ff7a, side: THREE.DoubleSide })); }); sound.beep(); dhEl.gates.textContent = DH.gi + '/' + DH.gates.length; dhGateMark(); }
       else { DH.dqAt = { gx: G.x, xc, z: G.z, half: G.half, cx: dhCX(G.z) }; dhDisq(G.n + 1); return; }
     }
   }
@@ -6954,13 +7003,13 @@ function dhStep(dt) {
   // air time: all four wheels and the body off the ground
   dhCollideObs();
   if (airAll && DH.started) DH.jump += dt;
-  else if (DH.jump > 0) { if (DH.jump > .3 && !DH.over) DH.air += DH.jump; if (DH.jump > .9 && !DH.over) { DH.jumps++; popText('SKOK ' + DH.jump.toFixed(1).replace('.', ',') + ' s'); sound.bank(); } DH.bestJump = Math.max(DH.bestJump, DH.jump); DH.jump = 0; }
+  else if (DH.jump > 0) { if (DH.jump > .3 && !DH.over) DH.air += DH.jump; if (DH.jump > .9 && !DH.over) { DH.jumps++; if (Math.hypot(DH.fin.x - B.p.x, DH.fin.z - B.p.z) > 90) popText('SKOK ' + DH.jump.toFixed(1).replace('.', ',') + ' s'); sound.bank(); } DH.bestJump = Math.max(DH.bestJump, DH.jump); DH.jump = 0; }
   if (B.land > 3.5 || B.hit > 3.5) { const imp = Math.max(B.land * .6, B.hit); sound.thud(Math.min(1, imp / 14)); DH.shake = Math.min(1, DH.shake + imp / 22); if (imp > 6) buzz(Math.min(80, imp * 5)); if (!reduced) dhSpray(8, 1); }
   const sp = B.v.length(); if (sp > DH.maxV) DH.maxV = sp;
   _f.set(0, 0, 1).applyQuaternion(B.q); _u.set(0, 1, 0).applyQuaternion(B.q);
   S.x = B.p.x; S.z = B.p.z; S.speed = sp; S.vF = B.vF; S.th = Math.atan2(_f.x, _f.z); S.gy = B.p.y; S.drifting = B.slide > .2; S.slip = B.slide;
   if (B.nc >= 2 && sp > 10 && !reduced && Math.random() < .12 + B.slide * .5) dhSpray(1 + (B.slide > .4 ? 1 : 0), .35 + B.slide * .4);
-  dhSafeTick(dt);
+  dhSafeTick(dt); ghRecord(dt);
   // upside down or on the side and nearly stopped: back on the wheels after a moment
   dhNormal(B.p.x, B.p.z, _n);
   if (_u.dot(_n) < .35 && sp < 5) { DH.flipT += dt; if (DH.flipT > 1.6) fadeEl.style.opacity = clamp((DH.flipT - 1.6) / .4, 0, 1); if (DH.flipT > 2) dhRespawn(true); } else if (DH.flipT) { DH.flipT = 0; fadeEl.style.opacity = 0; }
@@ -6979,7 +7028,7 @@ function dhStep(dt) {
     DH.hud = .066;
     dhEl.time.textContent = dhFmt(DH.run); dhEl.air.textContent = dhFmtS(DH.air + (DH.jump > .3 ? DH.jump : 0)); dhEl.jump.textContent = DH.jump > .25 ? dhFmtS(DH.jump) : ''; dhEl.spd.textContent = Math.round(kmh);
     dhEl.dist.textContent = Math.round(fd) + ' m';
-    const camYaw = Math.atan2(DH.camDir.x, DH.camDir.z), bear = Math.atan2(fdx, fdz);
+    const NG = DH.disc === 'slalom' && !DH.over ? DH.gates[DH.gi] : null, camYaw = Math.atan2(DH.camDir.x, DH.camDir.z), bear = NG ? Math.atan2(NG.x - B.p.x, NG.z - B.p.z) : Math.atan2(fdx, fdz);   // in the slalom the arrow shows the next gate
     dhEl.arrow.style.transform = 'rotate(' + (-angDiff(camYaw, bear) * 180 / Math.PI).toFixed(1) + 'deg)';
   }
   if (DH.msgT > 0) { DH.msgT -= dt; if (DH.msgT <= 0) dhMsgOff(); }
@@ -6996,7 +7045,7 @@ function dhFinish() {
   if (DH.over) return; DH.over = true;
   if (DH.jump > .3) DH.air += DH.jump; DH.bestJump = Math.max(DH.bestJump, DH.jump); DH.jump = 0;
   const W = DH.w, d = DH.disc, t = DH.run, val = d === 'air' ? DH.air : t, best = dhRec(W.id, d), nb = d === 'air' ? val > best + 1e-6 : !best || val < best;
-  if (nb) store.set(dhRecKey(W.id, d), val);
+  if (nb) { store.set(dhRecKey(W.id, d), val); ghRecord(1); ghSave(); }
   stats.dh = (stats.dh || 0) + 1; saveStats();
   dhMsg(nb ? (d === 'air' ? 'NOVÝ REKORD VO VZDUCHU!' : 'NOVÝ REKORD TRATE!') : 'CIEĽ!', nb ? 'rec' : 'go'); sound.bank(); buzz([40, 30, 80]);
   if (nb) dhEl.best.textContent = dhRecTxt(W.id, d);
@@ -7048,6 +7097,7 @@ function dhRender(dt) {
   const B = DHB, car = model.car;
   // the car model: rigid body pose, minus where the centre of mass sits inside the model
   car.quaternion.copy(B.q); car.position.copy(B.p).sub(_t3.copy(B.cl).applyQuaternion(B.q)); car.scale.setScalar(1);
+  ghUpdate();
   model.body.rotation.set(0, 0, 0);
   for (const w of B.wh) {
     if (!w.w) continue;
@@ -7098,8 +7148,8 @@ function dhFrame(dt) {
   dhRender(dt); music.tick(dt); uiTick();
   if (settings.fps) { fpsT += dt; fpsN++; if (fpsT >= .5) { elFps.textContent = Math.round(fpsN / fpsT) + ' FPS'; fpsT = 0; fpsN = 0; } }
 }
-dhEl.hud = $('#dhHud'); dhEl.time = $('#dhTime'); dhEl.air = $('#dhAir'); dhEl.jump = $('#dhJump'); dhEl.spd = $('#dhSpd'); dhEl.dist = $('#dhDist'); dhEl.arrow = $('#dhArrow'); dhEl.best = $('#dhBest'); dhEl.msg = $('#dhMsg'); dhEl.bestLab = $('#dhBestLab'); dhEl.gates = $('#dhGates'); dhEl.gatesLab = $('#dhGatesLab');
-window.__dh = { DH, DHB, dhH, dhStep, keys, touch, input, game, cx: dhCX, clearFx: () => smoke.forEach(p => { p.life = p.max; }) };   // test hook
+dhEl.hud = $('#dhHud'); dhEl.time = $('#dhTime'); dhEl.air = $('#dhAir'); dhEl.jump = $('#dhJump'); dhEl.spd = $('#dhSpd'); dhEl.dist = $('#dhDist'); dhEl.arrow = $('#dhArrow'); dhEl.best = $('#dhBest'); dhEl.msg = $('#dhMsg'); dhEl.bestLab = $('#dhBestLab'); dhEl.gates = $('#dhGates'); dhEl.gatesLab = $('#dhGatesLab'); dhEl.pos = $('#dhPos'); dhEl.posLab = $('#dhPosLab');
+window.__dh = { DH, DHB, dhH, dhStep, keys, touch, input, game, GH, cx: dhCX, clearFx: () => smoke.forEach(p => { p.life = p.max; }) };   // test hook
 
 /* ================= TOKYO DRIFT: night, neon and lit zones you have to drift through ================= */
 const TK = { on: false, built: false, zones: [], i: 0, t: 0, hits: 0, saved: null };
@@ -7239,7 +7289,7 @@ function wireSwitch(id, key, after) {
   const b = $(id); b.setAttribute('aria-checked', settings[key]);
   b.addEventListener('click', () => { settings[key] = !settings[key]; store.set(key, settings[key]); b.setAttribute('aria-checked', settings[key]); if (after) after(); });
 }
-wireSwitch('#swVib', 'vib'); wireSwitch('#swFps', 'fps', () => { elFps.hidden = !settings.fps; });
+wireSwitch('#swVib', 'vib'); wireSwitch('#swGhost', 'ghost'); wireSwitch('#swFps', 'fps', () => { elFps.hidden = !settings.fps; });
 elFps.hidden = !settings.fps;
 if (!navigator.vibrate) $('#vibRow').hidden = true;
 let resetArm = 0;

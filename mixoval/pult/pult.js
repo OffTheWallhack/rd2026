@@ -573,6 +573,7 @@
   }
   Deck.prototype.drawLCD = function (t) {
     var c = this.el.lcd; sizeCanvas(c);
+    if (c.width < 120) return; // ešte nie je rozložené
     var g = c.getContext('2d'), s = c.width / 940, W = 940, H = c.height / s;
     g.setTransform(s, 0, 0, s, 0, 0);
     var bg = g.createLinearGradient(0, 0, 0, H); bg.addColorStop(0, '#07090d'); bg.addColorStop(1, '#030405');
@@ -610,7 +611,7 @@
     if (pk) {
       var key = c.width + 'x' + c.height;
       if (!this.ov || this.ov.k !== key) {
-        var oc = document.createElement('canvas'); oc.width = Math.round(ow * s); oc.height = Math.round(oh * s);
+        var oc = document.createElement('canvas'); oc.width = Math.max(1, Math.round(ow * s)); oc.height = Math.max(1, Math.round(oh * s));
         var og = oc.getContext('2d'), n = pk.n, sw = oc.width, sh = oc.height;
         for (var x = 0; x < sw; x++) {
           var i0 = Math.floor(x / sw * n), i1 = Math.max(i0 + 1, Math.floor((x + 1) / sw * n)), a = 0, b = 0, d = 0;
@@ -681,6 +682,7 @@
 
   Deck.prototype.drawJog = function (t, dt) {
     var c = this.el.jog; sizeCanvas(c);
+    if (c.width < 40) return;
     var g = c.getContext('2d'), S = c.width, R = S / 2;
     g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, S, S); g.translate(R, R);
     var col = RGB[this.id].join(',');

@@ -108,6 +108,7 @@ FOOT = """</main>
 </footer>
 """ + LB + """<script src="{rel}assets/common.js"></script>
 <script src="{rel}appky/robos.js" defer></script>
+<script src="/stats.js" defer></script>
 </body>
 </html>
 """

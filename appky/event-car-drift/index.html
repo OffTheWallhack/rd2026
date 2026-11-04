@@ -309,7 +309,7 @@ body.mplay .pp svg.i-play{display:none}
 .tb.play{overflow:hidden;padding:12px 16px 4px;display:block}
 .wz{height:100%;min-height:0;display:grid;gap:10px;align-content:stretch}
 .wz[hidden]{display:none}
-.wz[data-step="1"]{grid-template-rows:minmax(0,1fr) auto}
+.wz[data-step="1"]{grid-template-rows:auto minmax(0,1fr) auto}
 .wz[data-step="2"]{grid-template-rows:minmax(0,1fr) auto}
 .wz[data-step="3"]{grid-template-rows:minmax(0,1fr)}
 .wf{flex:none;display:flex;align-items:center;gap:12px;padding:8px 16px 12px;position:relative;z-index:1}
@@ -345,12 +345,24 @@ body.mplay .pp svg.i-play{display:none}
 #carStats .st{grid-template-columns:62px 1fr}
 #carStats .st span{font-size:9.5px;letter-spacing:.08em}
 /* step 2: the modes */
-.cards.modes{grid-template-columns:repeat(6,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:8px;min-height:0}
+.cards.modes{grid-template-columns:repeat(5,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:8px;min-height:0}
+.cards.modes[data-g="misie"]{grid-template-columns:repeat(3,minmax(0,1fr))}
+.cards.modes[data-g="cesta"]{grid-template-columns:repeat(2,minmax(0,1fr))}
+.cards.modes[data-g="dh"]{grid-template-columns:minmax(0,1fr)}
+.cards.modes .card.mode{display:none}
+.cards.modes[data-g="drift"] .card.mode[data-g="drift"],.cards.modes[data-g="misie"] .card.mode[data-g="misie"],.cards.modes[data-g="cesta"] .card.mode[data-g="cesta"],.cards.modes[data-g="dh"] .card.mode[data-g="dh"]{display:flex}
+.card.mode .chip{position:absolute;left:10px;right:auto;top:9px;width:max-content;z-index:1;padding:3px 7px;border-radius:999px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.35);color:#fff;font:700 9.5px/1 system-ui,sans-serif;letter-spacing:.12em;font-style:normal;backdrop-filter:blur(3px)}
+.mgrp{justify-content:center}
+.mgrp button{min-height:36px;padding:4px 20px;font-size:12.5px}
+.mgrp button[data-g="drift"].on{border-color:#ffb21a;background:rgba(255,178,26,.16)}
+.mgrp button[data-g="misie"].on{border-color:#7be05a;background:rgba(123,224,90,.16)}
+.mgrp button[data-g="cesta"].on{border-color:#4d8dff;background:rgba(77,141,255,.18)}
+.mgrp button[data-g="dh"].on{border-color:#8fd8ff;background:rgba(143,216,255,.18)}
 @media (max-height:430px){.card.mode{padding:6px 10px;gap:2px}.card.mode .mi{width:24px;height:24px}.card.mode b{font-size:clamp(13px,2vw,17px)}.card.mode small{font-size:10.5px}}
 .card.mode{position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:6px;padding:12px;overflow:hidden}
 .card.mode::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ac,var(--amber));opacity:.55;transition:opacity .15s,width .15s}
 .card.mode .mi{width:34px;height:34px;fill:none;stroke:var(--ac,var(--amber));stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.card.mode b{font-size:clamp(15px,2.2vw,20px)}
+.card.mode b{font-size:clamp(16px,2.4vw,22px)}
 .card.mode small{margin-top:0}
 .card.mode.on{border-color:var(--ac,var(--amber));background:color-mix(in srgb,var(--ac,#ffb21a) 16%,transparent);box-shadow:0 0 0 1px var(--ac,var(--amber)) inset,0 10px 26px -14px var(--ac,var(--amber))}
 .card.mode.on::before{opacity:1;width:5px}
@@ -824,18 +836,19 @@ body.dh #hud .speed,body.dh #hud .score,body.dh #combo,body.dh #timer{display:no
       <section class="tab" data-tab="play">
         <div class="tb play">
           <div class="wz" data-step="1">
-            <div class="cards modes" id="modeCards">
-            <button class="card mode on" type="button" data-mode="free" style="--ac:#ffb21a"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 12c0-2.5 2-4.5 4.5-4.5 4 0 5 9 9 9M4 16.5c4 0 5-9 9-9"/><circle cx="12" cy="12" r="0" /></svg><b>VOĽNÝ</b><small>Bez času</small></button>
-            <button class="card mode" type="button" data-mode="t60" style="--ac:#ff6a3d"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 9v5l3 2M9.5 3h5M12 3v3"/></svg><b>60 S</b><small>Na skóre</small></button>
-            <button class="card mode" type="button" data-mode="job" style="--ac:#ff4d6d"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17h2l1-6h9l3 3h3v3h-2M7 17a2 2 0 1 0 4 0a2 2 0 1 0-4 0M15 17a2 2 0 1 0 4 0a2 2 0 1 0-4 0M6 11V7h8v4"/></svg><b>MISIA DOVOZ</b><small>Mesto až na vrchol</small></button>
-            <button class="card mode" type="button" data-mode="off" style="--ac:#7be05a"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20l6-10 4 6 2-3 6 7zM14 6l2-3 2 3M16 3v6"/></svg><b>MISIA DIVOČINA</b><small>Lúka, ľad, vrchol</small></button>
-            <button class="card mode" type="button" data-mode="train" style="--ac:#3ddcff"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16M6 19V9l6-4 6 4v10M10 19v-5h4v5"/></svg><b>TRÉNING</b><small>Levely · krok za krokom</small></button>
-            <button class="card mode" type="button" data-mode="tokyo" style="--ac:#c58bff"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18c4-1 5-6 8-6s4 5 8 6M12 3v5M9 5l3-2 3 2"/></svg><b>TOKYO DRIFT</b><small>Noc · neón</small></button>
-            <button class="card mode" type="button" data-mode="drift" style="--ac:#ff8a3d"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 15c3 0 4-8 9-8s5 6 9 6M5 19h14"/><circle cx="17" cy="13" r="0"/></svg><b>RACING TRAŤ</b><small>Široká · sklonená</small></button>
-            <button class="card mode" type="button" data-mode="arena" style="--ac:#ffd23d"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="12" rx="9" ry="5.5"/><ellipse cx="12" cy="12" rx="4.2" ry="2"/><path d="M12 3v2.5M12 18.5V21"/></svg><b>DRIFT ARÉNA</b><small>3 okruhy · ľahký až peklo</small></button>
-            <button class="card mode" type="button" data-mode="chase" style="--ac:#4d8dff"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 16h18M5 16l1.5-5h11L19 16M7 16a2 2 0 1 0 4 0a2 2 0 1 0-4 0M13 16a2 2 0 1 0 4 0a2 2 0 1 0-4 0M9 8h6M12 4v4M9 4h6"/></svg><b>NAHÁŇAČKA</b><small>Noc · polícia za tebou</small></button>
-            <button class="card mode" type="button" data-mode="hwy" style="--ac:#4dd68c"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21L10 3M16 21L14 3M12 6v3M12 12v3M12 18v2"/></svg><b>DIAĽNICA</b><small>Z pohľadu vodiča</small></button>
-            <button class="card mode" type="button" data-mode="dh" style="--ac:#8fd8ff"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 20L9 7l3 4 2-3 8 12z"/><path d="M14 3l5 5M19 4v4h-4"/></svg><b>DOWNHILL</b><small>6 tratí · 3 disciplíny</small></button>
+            <div class="lvtabs mgrp" id="modeGrp"><button type="button" data-g="drift">DRIFT</button><button type="button" data-g="misie">MISIE</button><button type="button" data-g="cesta">CESTA</button><button type="button" data-g="dh">DOWNHILL</button></div>
+            <div class="cards modes" id="modeCards" data-g="drift">
+            <button class="card mode" type="button" data-g="drift" data-mode="free" style="--ac:#ffb21a"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 12c0-2.5 2-4.5 4.5-4.5 4 0 5 9 9 9M4 16.5c4 0 5-9 9-9"/><circle cx="12" cy="12" r="0" /></svg><b>VOĽNÝ</b><small>Bez času</small><i class="chip">DEŇ / NOC</i></button>
+            <button class="card mode" type="button" data-g="drift" data-mode="t60" style="--ac:#ff6a3d"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 9v5l3 2M9.5 3h5M12 3v3"/></svg><b>60 S</b><small>Na skóre</small><i class="chip">DEŇ / NOC</i></button>
+            <button class="card mode" type="button" data-g="drift" data-mode="drift" style="--ac:#ff8a3d"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 15c3 0 4-8 9-8s5 6 9 6M5 19h14"/><circle cx="17" cy="13" r="0"/></svg><b>RACING TRAŤ</b><small>Široká · sklonená</small><i class="chip">DEŇ</i></button>
+            <button class="card mode" type="button" data-g="drift" data-mode="arena" style="--ac:#ffd23d"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="12" rx="9" ry="5.5"/><ellipse cx="12" cy="12" rx="4.2" ry="2"/><path d="M12 3v2.5M12 18.5V21"/></svg><b>DRIFT ARÉNA</b><small>3 okruhy · ľahký až peklo</small><i class="chip">DEŇ</i></button>
+            <button class="card mode" type="button" data-g="drift" data-mode="tokyo" style="--ac:#c58bff"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18c4-1 5-6 8-6s4 5 8 6M12 3v5M9 5l3-2 3 2"/></svg><b>TOKYO DRIFT</b><small>Noc · neón</small><i class="chip">NOC</i></button>
+            <button class="card mode" type="button" data-g="misie" data-mode="job" style="--ac:#ff4d6d"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17h2l1-6h9l3 3h3v3h-2M7 17a2 2 0 1 0 4 0a2 2 0 1 0-4 0M15 17a2 2 0 1 0 4 0a2 2 0 1 0-4 0M6 11V7h8v4"/></svg><b>MISIA DOVOZ</b><small>Mesto až na vrchol</small><i class="chip">MESTO → VRCHOL</i></button>
+            <button class="card mode" type="button" data-g="misie" data-mode="off" style="--ac:#7be05a"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20l6-10 4 6 2-3 6 7zM14 6l2-3 2 3M16 3v6"/></svg><b>MISIA DIVOČINA</b><small>Lúka, ľad, vrchol</small><i class="chip">DIVOČINA</i></button>
+            <button class="card mode" type="button" data-g="misie" data-mode="train" style="--ac:#3ddcff"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16M6 19V9l6-4 6 4v10M10 19v-5h4v5"/></svg><b>TRÉNING</b><small>Levely · krok za krokom</small><i class="chip">LEVELY</i></button>
+            <button class="card mode" type="button" data-g="cesta" data-mode="chase" style="--ac:#4d8dff"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 16h18M5 16l1.5-5h11L19 16M7 16a2 2 0 1 0 4 0a2 2 0 1 0-4 0M13 16a2 2 0 1 0 4 0a2 2 0 1 0-4 0M9 8h6M12 4v4M9 4h6"/></svg><b>NAHÁŇAČKA</b><small>Noc · polícia za tebou</small><i class="chip">NOC</i></button>
+            <button class="card mode" type="button" data-g="cesta" data-mode="hwy" style="--ac:#4dd68c"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21L10 3M16 21L14 3M12 6v3M12 12v3M12 18v2"/></svg><b>DIAĽNICA</b><small>Z pohľadu vodiča</small><i class="chip">DEŇ</i></button>
+            <button class="card mode" type="button" data-g="dh" data-mode="dh" style="--ac:#8fd8ff"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 20L9 7l3 4 2-3 8 12z"/><path d="M14 3l5 5M19 4v4h-4"/></svg><b>DOWNHILL</b><small>6 tratí · 3 disciplíny</small><i class="chip">SNEH · 6 TRATÍ</i></button>
             </div>
             <p class="hint" id="modeDesc"></p>
           </div>
@@ -4801,7 +4814,7 @@ const INFO = {
   buggy: { desc: 'Bugina side-by-side. Ľahká, skáče a hádže sa. Na hrbole a do blata ideálna, na asfalte trochu nervózna.', speed: 56, accel: 74, slide: 72, agil: 90 }
 };
 const MODE_TXT = {
-  dh: () => 'Zjazd z kopca autom ako na snowboarde. Päť slovenských tratí: zasnežený Chopok, letná Kráľova hoľa so skokmi cez vlny, strmé Skalnaté pleso medzi skalami, Devín pri západe slnka, bonus Štrbské pleso zo skokanského mostíka na zamrznuté pleso a VEĽKÝ ZJAZD: dve minúty z Gerlachovského štítu do Popradu cez útes, kaňon, galériu, priepasť a mega rampu. Tri disciplíny: rýchlosť, slalom a airtime. Trať a disciplínu vyberieš v treťom kroku.',
+  dh: () => 'Zjazd z kopca autom ako na snowboarde. Šesť slovenských tratí: od zasneženého Chopku cez Kráľovu hoľu, Skalnaté pleso, Devín a Štrbské pleso až po VEĽKÝ ZJAZD, dve minúty z Gerlachu do Popradu. Tri disciplíny: rýchlosť, slalom a airtime. Trať a disciplínu vyberieš v treťom kroku.',
   free: 'Bez času a bez tlaku. Jazdi, driftuj a zbieraj combo. Body dávajú aj kúsky: dve kolesá, otočka 360 a tesné obiehanie.',
   t60: () => 'Minúta na čo najvyššie skóre.' + (game.best ? ' Tvoj rekord: ' + fmt(game.best) + '.' : ''),
   job: () => 'Celá misia: nalož aparatúru, prejdi starým mestom, cez neónovú zónu a po snehu až na vrchol. Hodnotí sa čas aj škoda.' + (store.get('jobBest', 0) ? ' Rekord: ' + fmt(store.get('jobBest', 0)) + ' bodov.' : '') + (carKey === 'zubor' ? ' Na snehu drž plyn, Zubor má pomoc do kopca.' : ''),
@@ -4953,8 +4966,16 @@ function renderDhPick() {
   $$('#dhTrk .card').forEach(b => { b.classList.toggle('on', b.dataset.w === w); b.querySelector('em').textContent = 'REKORD ' + dhRecTxt(b.dataset.w, d); });
   const W = DH_WORLDS[w]; $('#dhDesc').textContent = W.start.replace('ŠTART · ', '') + ' → ' + W.finish.replace('CIEĽ · ', '') + ' · ' + W.km + ' · ' + W.tag + '.';
 }
+const MODE_GRP = { free: 'drift', t60: 'drift', drift: 'drift', arena: 'drift', tokyo: 'drift', job: 'misie', off: 'misie', train: 'misie', chase: 'cesta', hwy: 'cesta', dh: 'dh' };
+const GRP_TXT = { drift: 'Drift na parkovisku a tratiach. Cez deň aj v noci.', misie: 'Jazdy s cieľom: dovoz, divočina a tréningové levely.', cesta: 'Diaľnica: útek pred políciou v noci alebo jazda z kokpitu cez deň.', dh: 'Zjazd z kopca v slovenských horách, tri disciplíny.' };
+let modeGrp = MODE_GRP[pendingMode] || 'drift';
+function renderModeGrp() {
+  $('#modeCards').dataset.g = modeGrp;
+  $$('#modeGrp button').forEach(b => b.classList.toggle('on', b.dataset.g === modeGrp));
+}
 function renderMode() {
   const tr = isLv(pendingMode);
+  modeGrp = MODE_GRP[pendingMode] || modeGrp; renderModeGrp();
   $$('#modeCards .card').forEach(c => { c.classList.toggle('on', c.dataset.mode === pendingMode); c.disabled = false; });
   const d = MODE_TXT[pendingMode]; $('#modeDesc').textContent = typeof d === 'function' ? d() : d;
   $('#steps [data-step="3"]').hidden = !tr && pendingMode !== 'dh';
@@ -7374,6 +7395,7 @@ $('#carCards').addEventListener('click', e => {
   if (isLv(pendingMode)) { const cur = LEVELS.find(x => x.id === LV.sel); if (!cur || (cur.world === 'off' && carKey === 'zubor')) { const n = LEVELS.find(x => x.world === 'lot' && !x.mission); LV.sel = n.id; store.set('lvSel', LV.sel); } }
   renderCar(); renderMode();
 });
+$('#modeGrp').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; modeGrp = b.dataset.g; renderModeGrp(); if (MODE_GRP[pendingMode] !== modeGrp) { const first = $('#modeCards .card[data-g="' + modeGrp + '"]'); if (first) { pendingMode = first.dataset.mode; store.set('mode', pendingMode); renderCar(); renderMode(); } } });
 $('#modeCards').addEventListener('click', e => { const c = e.target.closest('.card'); if (!c || c.disabled) return; pendingMode = c.dataset.mode; store.set('mode', pendingMode); renderCar(); renderMode(); });
 $('#steps').addEventListener('click', e => { const b = e.target.closest('button'); if (b && !b.hidden) setStep(+b.dataset.step); });
 $('#wBack').addEventListener('click', menuBack);

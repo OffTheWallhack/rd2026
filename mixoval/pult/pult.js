@@ -22,7 +22,8 @@
 
   // ------------------------------------------------------------------ zvukový reťazec
   var ctx = null, dryBus, mixBus, master, limiter, anL, anR, wake = null, fx = {};
-  var RGB = { a: [255, 176, 46], b: [52, 209, 255] };
+  var IDS = ['a', 'b', 'c', 'd'];
+  var RGB = { a: [255, 176, 46], b: [52, 209, 255], c: [255, 92, 164], d: [156, 240, 74] };
   var RANGES = [0.06, 0.10, 0.16, 0.5], RLAB = ['6', '10', '16', 'WIDE'];
   var HOTC = ['#29d36b', '#ff8a1f', '#ff3b5b', '#b266ff'], HOTR = ['41,211,107', '255,138,31', '255,59,91', '178,102,255'];
   var ZOOM_S = 8;
@@ -47,18 +48,19 @@
     fx.msend = c.createGain(); fx.msend.gain.value = 0; dryBus.connect(fx.msend); fx.msend.connect(fx.in);
   }
   function applyFxRouting() {
-    var on = ctl['fx.on'].v > 0.5, ch = ctl['fx.ch'].v, t = ctx.currentTime;
-    decks.forEach(function (d, i) {
-      var want = on && ((ch < 0.25 && i === 0) || (ch >= 0.25 && ch <= 0.75 && i === 1));
+    var on = ctl['fx.on'].v > 0.5, t = ctx.currentTime;
+    decks.forEach(function (d) {
+      var want = on && ctl[d.id + '.fxa'].v > 0.5;
       if (d.fxSend) d.fxSend.gain.setTargetAtTime(want ? 1 : 0, t, 0.01);
     });
-    fx.msend.gain.setTargetAtTime(on && ch > 0.75 ? 1 : 0, t, 0.01);
+    fx.msend.gain.setTargetAtTime(on && ctl['fx.mst'].v > 0.5 ? 1 : 0, t, 0.01);
   }
   function fxBpm() {
-    var ch = ctl['fx.ch'].v, pick = ch < 0.25 ? decks[0] : (ch <= 0.75 ? decks[1] : null);
-    var cand = [pick, decks[0].isMaster ? decks[0] : (decks[1].isMaster ? decks[1] : null), decks[0], decks[1]];
-    for (var i = 0; i < cand.length; i++) { var d = cand[i]; if (d && d.bpm > 0) return d.bpm * (1 + d.tempo); }
-    return 120;
+    var d = decks.filter(function (x) { return ctl[x.id + '.fxa'].v > 0.5 && x.bpm > 0; })[0] ||
+      decks.filter(function (x) { return x.isMaster && x.bpm > 0; })[0] ||
+      decks.filter(function (x) { return x.playing && x.bpm > 0; })[0] ||
+      decks.filter(function (x) { return x.bpm > 0; })[0];
+    return d ? d.bpm * (1 + d.tempo) : 120;
   }
   var FXDIV = [0.25, 0.5, 0.75, 1, 2], FXLAB = ['1/4', '1/2', '3/4', '1', '2'];
   function fxIdx() { return Math.min(4, Math.floor(ctl['fx.time'].v * 5)); }
@@ -106,7 +108,7 @@
   function defCtl(id, def, apply, always) { ctl[id] = { id: id, v: def, def: def, apply: apply, always: !!always, els: [] }; }
   function setCtl(id, v, src) {
     var c = ctl[id]; if (!c) return;
-    if (src === 'ui' && /\.tempo$/.test(id)) decks[id.charAt(0) === 'a' ? 0 : 1].sync = false;
+    if (src === 'ui' && /\.tempo$/.test(id)) decks[IDS.indexOf(id.charAt(0))].sync = false;
     c.v = clamp(v, 0, 1);
     if (ctx || c.always) c.apply(c.v);
     c.els.forEach(function (e) { e.render(c.v); });
@@ -238,7 +240,23 @@
     this.jogAng = 0; this.jogLast = performance.now(); this.jogBendT = 0; this.scanT = null; this.touch = false;
   }
   var SEQ = 0;
-  Deck.prototype.other = function () { return decks[1 - this.idx]; };
+  // referenčný deck pre sync: master, inak hrajúci deck, ktorý sám nenasleduje mladší sync (bez slučiek)
+  Deck.prototype.ref = function () {
+    var self = this, best = null;
+    if (this.isMaster) return null;
+    var m = decks.filter(function (d) { return d !== self && d.isMaster && d.bpm; })[0];
+    if (m) return m;
+    decks.forEach(function (d) {
+      if (d === self || !d.bpm || (d.sync && d.syncAt > self.syncAt)) return;
+      var sc = (d.playing ? 0 : 1000) + (d.sync ? d.syncAt : 0) + d.idx * 0.001;
+      if (!best || sc < best.sc) best = { d: d, sc: sc };
+    });
+    return best ? best.d : null;
+  };
+  Deck.prototype.followers = function () {
+    var self = this;
+    return decks.filter(function (d) { return d !== self && d.sync && d.ref() === self; });
+  };
   Object.defineProperty(Deck.prototype, 'rate', { get: function () { return (1 + this.tempo) * (1 + this.bend); } });
 
   Deck.prototype.attach = function () {
@@ -310,8 +328,8 @@
     if (!this.buf || this.playing) return;
     ensureCtx(); keepAwake();
     var p = this.startPos; if (p >= this.buf.duration - 0.05) p = 0;
-    var o = this.other();
-    if (this.sync && o.playing && o.bpm && this.bpm) p = this.alignPos(p, o);
+    var o = this.sync ? this.ref() : null;
+    if (o && o.playing && o.bpm && this.bpm) p = this.alignPos(p, o);
     this.startPos = p; this._start();
   };
   Deck.prototype.pause = function () {
@@ -360,20 +378,12 @@
   Deck.prototype.onTempoCtl = function (v) {
     this.rebase(); this.tempo = (0.5 - v) * 2 * this.range; // fader hore = pomalšie, dole = rýchlejšie (ako na hardvéri)
     if (this.src) this.src.playbackRate.value = this.rate;
-    var o = this.other();
-    if (o.sync && this.leads()) o.followTempo();
+    this.followers().forEach(function (f) { f.followTempo(); });
   };
   Deck.prototype.tempoNorm = function (t) { return 0.5 - t / (2 * this.range); };
-  Deck.prototype.leads = function () {
-    var o = this.other();
-    if (!this.sync) return true;
-    if (o.isMaster && !this.isMaster) return false;
-    if (this.isMaster && !o.isMaster) return true;
-    return this.syncAt < o.syncAt;
-  };
   Deck.prototype.followTempo = function () {
-    var o = this.other();
-    if (!o.bpm || !this.bpm) return false;
+    var o = this.ref();
+    if (!o || !o.bpm || !this.bpm) return false;
     var target = o.bpm * (1 + o.tempo), best = null;
     [1, 2, 0.5].forEach(function (k) {
       var t = (target * k) / this.bpm - 1;
@@ -387,10 +397,11 @@
   };
   Deck.prototype.toggleSync = function () {
     if (!this.buf) return;
-    var o = this.other();
     if (this.sync) { this.sync = false; return; }
-    if (!o.bpm || !this.bpm) { toast('Na sync treba poznať tempo oboch skladieb (BPM).'); return; }
+    var prev = this.syncAt;
     this.sync = true; this.syncAt = ++SEQ;
+    var o = this.ref();
+    if (!o || !this.bpm) { this.sync = false; this.syncAt = prev; toast('Na sync treba poznať tempo oboch skladieb (BPM).'); return; }
     this.followTempo();
     if (this.playing && o.playing) this.seek(this.alignPos(this.pos(), o));
   };
@@ -398,7 +409,7 @@
     var on = !this.isMaster;
     decks.forEach(function (d) { d.isMaster = false; });
     this.isMaster = on;
-    var o = this.other(); if (o.sync) o.followTempo();
+    decks.forEach(function (d) { if (d.sync) d.followTempo(); });
   };
   Deck.prototype.cycleRange = function () {
     var cur = this.tempo;
@@ -449,7 +460,7 @@
     this.bpm = Math.round(b * 100) / 100;
     this.loopOff();
     if (this.sync) this.followTempo();
-    var o = this.other(); if (o.sync) o.followTempo();
+    this.followers().forEach(function (f) { f.followTempo(); });
   };
 
   // hľadanie (podržané ◀◀ ▶▶) a skladby
@@ -489,7 +500,8 @@
       var Tb = 60 / r.bpm; this.cue = Math.max(0, r.grid - Math.floor(r.grid / Tb) * Tb); this.startPos = this.cue;
     } else if (!known) toast('Tempo sa nepodarilo určiť. Zadaj BPM ručne.');
     this.status = '';
-    var o = this.other(); if (o.sync) o.followTempo();
+    if (this.sync) this.followTempo();
+    this.followers().forEach(function (f) { f.followTempo(); });
     mark(this);
   };
   Deck.prototype.unload = function () {
@@ -582,7 +594,7 @@
     g.textBaseline = 'middle';
     // hlavička
     g.fillStyle = col; g.fillRect(14, 8, 34, 34);
-    g.fillStyle = '#05080a'; g.font = '800 28px "Barlow Condensed",sans-serif'; g.textAlign = 'center'; g.fillText(this.id.toUpperCase(), 31, 26);
+    g.fillStyle = '#05080a'; g.font = '800 28px "Barlow Condensed",sans-serif'; g.textAlign = 'center'; g.fillText(String(this.idx + 1), 31, 26);
     g.fillStyle = '#6d777d'; g.font = '600 15px "Barlow Condensed",sans-serif'; g.textAlign = 'left'; g.fillText('TRACK', 58, 12);
     g.fillStyle = this.buf ? '#f1f4f6' : '#59636a'; g.font = '600 27px "Barlow",sans-serif';
     var title = this.status || this.name || 'NO TRACK';
@@ -687,11 +699,24 @@
     g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, S, S); g.translate(R, R);
     var col = RGB[this.id].join(',');
     if (this.playing && !this.touch) this.jogAng += this.rate * 3.49 * dt;
-    // kovový obrus
+    // kovový prstenec + výstupky (predrenderované, otáčajú sa s kolesom)
     var ring = g.createRadialGradient(0, 0, R * 0.78, 0, 0, R);
-    ring.addColorStop(0, '#23262a'); ring.addColorStop(0.25, '#6f777d'); ring.addColorStop(0.5, '#cfd5d9'); ring.addColorStop(0.78, '#7d858b'); ring.addColorStop(1, '#17191c');
+    ring.addColorStop(0, '#0f1113'); ring.addColorStop(0.1, '#3b4045'); ring.addColorStop(0.45, '#2a2d31'); ring.addColorStop(0.88, '#454a50'); ring.addColorStop(1, '#0a0b0c');
     g.fillStyle = ring; g.beginPath(); g.arc(0, 0, R * 0.995, 0, 7); g.fill();
-    g.strokeStyle = 'rgba(0,0,0,.65)'; g.lineWidth = Math.max(1, S * 0.006); g.beginPath(); g.arc(0, 0, R * 0.8, 0, 7); g.stroke();
+    if (!this.jogBg || this.jogBg.S !== S) {
+      var bc = document.createElement('canvas'); bc.width = bc.height = S; var bg2 = bc.getContext('2d'); bg2.translate(R, R);
+      var N = 40, br = R * 0.047;
+      for (var k = 0; k < N; k++) {
+        var aa = k / N * Math.PI * 2, bx2 = Math.cos(aa) * R * 0.895, by2 = Math.sin(aa) * R * 0.895;
+        var gg = bg2.createRadialGradient(bx2 - br * 0.35, by2 - br * 0.4, br * 0.1, bx2, by2, br * 1.05);
+        gg.addColorStop(0, '#9aa1a8'); gg.addColorStop(0.55, '#4a4f55'); gg.addColorStop(1, '#17191c');
+        bg2.fillStyle = gg; bg2.beginPath(); bg2.arc(bx2, by2, br, 0, 7); bg2.fill();
+      }
+      this.jogBg = { c: bc, S: S };
+    }
+    g.save(); g.rotate(this.jogAng); g.drawImage(this.jogBg.c, -R, -R); g.restore();
+    g.strokeStyle = 'rgba(0,0,0,.75)'; g.lineWidth = Math.max(1, S * 0.008); g.beginPath(); g.arc(0, 0, R * 0.8, 0, 7); g.stroke();
+    g.strokeStyle = 'rgba(255,255,255,.07)'; g.lineWidth = 1; g.beginPath(); g.arc(0, 0, R * 0.812, 0, 7); g.stroke();
     // plocha
     var pl = g.createRadialGradient(0, 0, 0, 0, 0, R * 0.79);
     pl.addColorStop(0, '#1a1c1f'); pl.addColorStop(0.7, '#0f1012'); pl.addColorStop(1, '#08090a');
@@ -727,7 +752,7 @@
   var lastUi = performance.now();
   Deck.prototype.ui = function (now) {
     var e = this.el, t = this.pos(), dt = Math.min(0.1, (now - lastUi) / 1000);
-    this.drawLCD(t); this.drawJog(t, dt);
+    if (this.sec.offsetWidth > 0) { this.drawLCD(t); this.drawJog(t, dt); }
     var self = this;
     e.play.classList.toggle('on', this.playing && !this.cuePrev && this.hotPrev < 0);
     e.cue.classList.toggle('on', this.cuePrev || (!this.playing && Math.abs(this.startPos - this.cue) < 0.04 && !!this.buf));
@@ -748,7 +773,7 @@
       lv = pk > 0 ? clamp((20 * Math.log10(pk) + 54) / 54, 0, 1) : 0;
     }
     this.lvl = Math.max(lv, this.lvl - 0.03);
-    e.meter.firstChild.style.height = (100 - this.lvl * 100) + '%';
+    var mh = (100 - this.lvl * 100) + '%'; e.meter.forEach(function (m) { m.firstChild.style.height = mh; });
   };
 
   // ------------------------------------------------------------------ rozloženie (výkres v jednotkách cqw)
@@ -765,12 +790,12 @@
   };
   function brand(x, y, big) { return '<div class="brand' + (big ? ' big' : '') + '" style="' + P(x, y) + '"><i class="lg"></i><span>durica.si/</span><b>mixoval</b></div>'; }
 
-  function cdjHTML(id) {
-    var ID = id.toUpperCase(), h = '';
-    h += '<section class="unit cdj ' + id + '" data-deck="' + id + '"><div class="plate"></div>';
+  function cdjHTML(id, n) {
+    var h = '';
+    h += '<section class="unit cdj ' + id + '" data-deck="' + id + '" data-u="d' + (n - 1) + '"><div class="plate"></div>';
     h += brand(4, 3.1);
     h += BTN('browse', 56, 2.4, 22, 6.4, 'BROWSE', 'sm');
-    h += '<div class="badge" style="' + P(85, 2.2, 12, 6.8) + '">' + ID + '</div>';
+    h += '<div class="badge" style="' + P(85, 2.2, 12, 6.8) + '">' + n + '</div>';
     h += '<div class="lcdw" style="' + P(3, 10.5, 94, 50) + '"><canvas data-r="lcd"></canvas></div>';
     // slučky
     h += BTN('lin', 3, 62.5, 15, 7, 'IN / CUE', 'sm', 'data-r="loopIn"');
@@ -802,56 +827,101 @@
     h += '</section>';
     return h;
   }
-  function knob(id, cx, y, label, def) {
-    return '<div class="knob" data-ctl="' + id + '" data-def="' + (def == null ? 0.5 : def) + '" data-type="k" style="' + P(cx - 4.5, y) + '"><span class="tk"></span><i class="cap"><b></b></i></div>' + PR(cx - 8, y + 10.6, label, 16, 'c');
+  // knob: sz = priemer v cqw; popisok pod ním
+  function knob(id, cx, y, label, def, sz) {
+    sz = sz || 8;
+    return '<div class="knob" data-ctl="' + id + '" data-def="' + (def == null ? 0.5 : def) + '" data-type="k" style="' + P(cx - sz / 2, y, sz, sz) + '--kn:' + sz + 'cqw"><span class="tk"></span><i class="cap"><b></b></i></div>' +
+      PR(cx - 8, y + sz + 2.4, label, 16, 'c');
   }
+  function bx(x, y, w, h) { return '<i class="bx" style="' + P(x, y, w, h) + '"></i>'; }
   function seg(id, x, y, w, h, items) {
     return '<div class="seg" data-seg="' + id + '" style="' + P(x, y, w, h) + '">' + items.map(function (it) { return '<button type="button" data-v="' + it[1] + '">' + it[0] + '</button>'; }).join('') + '</div>';
   }
-  function mixerHTML() {
-    var h = '<section class="unit mixer"><div class="plate"></div>';
+  function tog(id, x, y, w, h, label, cls) { return '<button type="button" class="k sm ' + (cls || 'bl') + '" data-tog="' + id + '" style="' + P(x, y, w, h) + '">' + label + '</button>'; }
+
+  // 2-kanálový mixér (rozloženie 100 × 140)
+  function mixer2HTML() {
+    var h = '<section class="unit mixer m2" data-u="m2"><div class="plate"></div>';
     h += '<div class="brand big" style="left:0;top:3cqw;width:100cqw;justify-content:center"><i class="lg"></i><span>durica.si/</span><b>mixoval</b></div>';
-    [['a', 18.5], ['b', 81.5]].forEach(function (c) {
+    [['a', 18.5, 1], ['b', 81.5, 2]].forEach(function (c) {
       var id = c[0], cx = c[1];
-      h += '<div class="chip" style="' + P(cx - 9, 10.4, 18, 3.8) + 'background:var(--' + id + ')">CH ' + id.toUpperCase() + '</div>';
-      h += knob(id + '.trim', cx, 16, 'TRIM') + knob(id + '.hi', cx, 29, 'HI') + knob(id + '.mid', cx, 42, 'MID') + knob(id + '.lo', cx, 55, 'LOW') + knob(id + '.flt', cx, 68, 'FILTER');
-      h += PR(cx - 10, 81.6, 'ASSIGN', 20, 'c');
-      h += seg(id + '.asg', cx - 11, 84.2, 22, 4.6, [['A', 0], ['THRU', 0.5], ['B', 1]]);
-      h += '<div class="vf" data-ctl="' + id + '.vol" data-def="1" data-type="v" style="' + P(cx - 8.5, 91.5, 8, 33) + '"><b></b></div>';
-      h += '<div class="led" data-r="meter' + id + '" style="' + P(cx + 3.2, 92, 3.2, 32) + '"><i></i></div>';
+      h += bx(cx - 13.4, 9.2, 26.8, 117);
+      h += '<div class="chip" style="' + P(cx - 9, 10.6, 18, 3.8) + 'background:var(--c' + id + ')">CH ' + c[2] + '</div>';
+      h += knob(id + '.trim', cx, 16.4, 'TRIM') + knob(id + '.hi', cx, 30, 'HI') + knob(id + '.mid', cx, 43.6, 'MID') + knob(id + '.lo', cx, 57.2, 'LOW') + knob(id + '.flt', cx, 70.8, 'FILTER');
+      h += PR(cx - 10, 84.6, 'ASSIGN', 20, 'c');
+      h += seg(id + '.asg', cx - 11, 87.2, 22, 4.4, [['A', 0], ['THRU', 0.5], ['B', 1]]);
+      h += '<div class="vf" data-ctl="' + id + '.vol" data-def="1" data-type="v" style="' + P(cx - 8.5, 94.4, 8, 30.4) + '"><b></b></div>';
+      h += '<div class="led" data-r="meter' + id + '" style="' + P(cx + 3.6, 95, 3.2, 29.4) + '"><i></i></div>';
     });
     // stred: master + FX
-    h += knob('m.vol', 50, 16, 'MASTER', 0.8);
-    h += '<div class="led" data-r="mL" style="' + P(43.4, 31, 3.2, 38) + '"><i></i></div><div class="led" data-r="mR" style="' + P(53.4, 31, 3.2, 38) + '"><i></i></div>';
-    h += PR(41.8, 69.8, 'L', 6.4, 'c') + PR(51.8, 69.8, 'R', 6.4, 'c');
-    h += LN(37, 75, 26) + PR(37, 77, 'BEAT FX', 26, 'c');
-    h += seg('fx.type', 37.5, 81, 25, 4.6, [['ECHO', 0], ['REVERB', 1]]);
-    h += seg('fx.ch', 37.5, 87, 25, 4.6, [['A', 0], ['B', 0.5], ['MST', 1]]);
-    h += knob('fx.time', 43.6, 94, 'TIME', 0.6).replace('>TIME<', ' data-r="fxLab">TIME<') + knob('fx.lvl', 56.4, 94, 'LEVEL', 0.5);
-    h += '<button type="button" class="k sm bl" data-tog="fx.on" style="' + P(39, 110, 22, 6.4) + '">FX ON</button>';
-    h += PR(37, 118.2, 'CROSS FADER', 26, 'c');
-    h += seg('xf.curve', 39, 121.2, 22, 4.2, [['MIX', 0], ['CUT', 1]]);
+    h += bx(36, 9.2, 28, 117);
+    h += knob('m.vol', 50, 16.4, 'MASTER', 0.8);
+    h += '<div class="led" data-r="mL" style="' + P(43.4, 31.4, 3.2, 36) + '"><i></i></div><div class="led" data-r="mR" style="' + P(53.4, 31.4, 3.2, 36) + '"><i></i></div>';
+    h += PR(41.8, 68.2, 'L', 6.4, 'c') + PR(51.8, 68.2, 'R', 6.4, 'c');
+    h += LN(38, 73.4, 24) + PR(37, 75.2, 'BEAT FX', 26, 'c');
+    h += seg('fx.type', 38.5, 79.2, 23, 4.4, [['ECHO', 0], ['REVERB', 1]]);
+    h += tog('a.fxa', 38.5, 85.4, 7, 4.6, '1', 'rg') + tog('b.fxa', 46.5, 85.4, 7, 4.6, '2', 'rg') + tog('fx.mst', 54.5, 85.4, 7, 4.6, 'MST', 'rg');
+    h += knob('fx.time', 43.8, 92.6, 'TIME', 0.6).replace('>TIME<', ' data-r="fxLab">TIME<') + knob('fx.lvl', 56.2, 92.6, 'LEVEL', 0.5);
+    h += tog('fx.on', 39.5, 109, 21, 6, 'FX ON', 'bl');
+    h += PR(37, 116.4, 'CROSS FADER', 26, 'c');
+    h += seg('xf.curve', 39.5, 119.8, 21, 4, [['MIX', 0], ['CUT', 1]]);
     // crossfader
     h += '<div class="chip" style="' + P(4, 129.5, 9, 6.2) + 'background:var(--a)">A</div><div class="chip" style="' + P(87, 129.5, 9, 6.2) + 'background:var(--b)">B</div>';
     h += '<div class="hf" data-ctl="xf" data-def="0.5" data-type="h" style="' + P(16, 128, 68, 9.2) + '" aria-label="Crossfader"><b></b></div>';
-    h += LN(3, 126.8, 94);
+    h += LN(3, 127.4, 94);
     h += '</section>';
     return h;
   }
 
-  var decks = [new Deck('a', 0), new Deck('b', 1)];
+  // 4-kanálový mixér (rozloženie 100 × 107,7 = pomer 130 : 140, aby bol rovnako vysoký ako prehrávače)
+  function mixer4HTML() {
+    var h = '<section class="unit mixer m4" data-u="m4"><div class="plate"></div>';
+    h += '<div class="brand mid" style="' + P(3, 2.4) + '"><i class="lg"></i><span>durica.si/</span><b>mixoval</b></div>';
+    IDS.forEach(function (id, i) {
+      var cx = 11.5 + i * 19, K = 5.8;
+      h += bx(cx - 9.2, 7.4, 18.4, 91);
+      h += '<div class="chip" style="' + P(cx - 7.6, 8.4, 15.2, 3.4) + 'background:var(--c' + id + ')">CH ' + (i + 1) + '</div>';
+      h += knob(id + '.trim', cx, 13.4, 'TRIM', 0.5, K) + knob(id + '.hi', cx, 23.6, 'HI', 0.5, K) + knob(id + '.mid', cx, 33.8, 'MID', 0.5, K) +
+        knob(id + '.lo', cx, 44, 'LOW', 0.5, K) + knob(id + '.flt', cx, 54.2, 'FILTER', 0.5, K);
+      h += tog(id + '.fxa', cx - 6.4, 66.2, 12.8, 4.4, 'BEAT FX', 'rg');
+      h += seg(id + '.asg', cx - 8, 72.4, 16, 3.8, [['A', 0], ['THRU', 0.5], ['B', 1]]);
+      h += '<div class="vf" data-ctl="' + id + '.vol" data-def="1" data-type="v" style="' + P(cx - 6.4, 78.2, 7, 19.4) + '"><b></b></div>';
+      h += '<div class="led" data-r="meter' + id + '" style="' + P(cx + 2.4, 78.8, 2.4, 18.6) + '--seg:1.4cqw"><i></i></div>';
+    });
+    // pravý pás: master + FX
+    h += bx(80.4, 7.4, 17.8, 91);
+    h += knob('m.vol', 89.3, 9.6, 'MASTER', 0.8, 7);
+    h += '<div class="led" data-r="mL" style="' + P(84.6, 23.4, 2.6, 22) + '--seg:1.4cqw"><i></i></div><div class="led" data-r="mR" style="' + P(91.4, 23.4, 2.6, 22) + '--seg:1.4cqw"><i></i></div>';
+    h += PR(83.4, 46.2, 'L', 5, 'c') + PR(90.2, 46.2, 'R', 5, 'c');
+    h += LN(82, 51.4, 15.6) + PR(81.4, 52.8, 'BEAT FX', 16.4, 'c');
+    h += seg('fx.type', 82, 56.8, 15.4, 3.8, [['ECHO', 0], ['REVERB', 1]]);
+    h += knob('fx.time', 85.2, 62.8, 'TIME', 0.6, 5.8).replace('>TIME<', ' data-r="fxLab">TIME<') + knob('fx.lvl', 93.6, 62.8, 'LEVEL', 0.5, 5.8);
+    h += tog('fx.mst', 81.6, 77.2, 7.2, 4.4, 'MST', 'rg') + tog('fx.on', 89.6, 77.2, 7.6, 4.4, 'FX ON', 'bl');
+    h += PR(81.4, 84, 'XF CURVE', 16.4, 'c');
+    h += seg('xf.curve', 82, 87, 15.4, 3.8, [['MIX', 0], ['CUT', 1]]);
+    // crossfader
+    h += LN(3, 99.6, 94);
+    h += '<div class="chip" style="' + P(3.5, 101.4, 8, 5) + 'background:var(--a)">A</div><div class="chip" style="' + P(88.5, 101.4, 8, 5) + 'background:var(--b)">B</div>';
+    h += '<div class="hf" data-ctl="xf" data-def="0.5" data-type="h" style="' + P(14, 100.6, 72, 6.8) + '" aria-label="Crossfader"><b></b></div>';
+    h += '</section>';
+    return h;
+  }
+
+  var decks = IDS.map(function (id, i) { return new Deck(id, i); });
   var boothEl = $('#booth');
-  boothEl.innerHTML = cdjHTML('a') + mixerHTML() + cdjHTML('b');
+  boothEl.className = 'booth v2';
+  boothEl.innerHTML = cdjHTML('a', 1) + cdjHTML('b', 2) + mixer2HTML() + mixer4HTML() + cdjHTML('c', 3) + cdjHTML('d', 4);
   decks.forEach(function (d) {
     var sec = $('.cdj.' + d.id, boothEl); d.sec = sec;
     d.el = {
       lcd: $('[data-r=lcd]', sec), jog: $('[data-r=jog]', sec),
       play: $('[data-a=play]', sec), cue: $('[data-a=cue]', sec), sync: $('[data-a=sync]', sec), master: $('[data-a=master]', sec),
       timeBtn: $('[data-r=timeBtn]', sec), loop4: $('[data-r=loop4]', sec), reloop: $('[data-r=reloop]', sec), loopIn: $('[data-r=loopIn]', sec),
-      range: $('[data-r=range]', sec), hot: $$('[data-a=hot]', sec), meter: $('[data-r=meter' + d.id + ']', boothEl)
+      range: $('[data-r=range]', sec), hot: $$('[data-a=hot]', sec), meter: $$('[data-r=meter' + d.id + ']', boothEl)
     };
   });
-  var elML = $('[data-r=mL]', boothEl), elMR = $('[data-r=mR]', boothEl), elFxLab = $('[data-r=fxLab]', boothEl);
+  var elML = $$('[data-r=mL]', boothEl), elMR = $$('[data-r=mR]', boothEl), elFxLab = $$('[data-r=fxLab]', boothEl);
+
 
   // definície ovládacích prvkov
   decks.forEach(function (d, idx) {
@@ -862,7 +932,8 @@
     defCtl(i + '.lo', 0.5, function (v) { d.lo.gain.setTargetAtTime(eqDb(v), T(), 0.01); });
     defCtl(i + '.flt', 0.5, function (v) { d.setFilter(v); });
     defCtl(i + '.vol', 1, function (v) { d.fad.gain.setTargetAtTime(v * v, T(), 0.01); });
-    defCtl(i + '.asg', idx === 0 ? 0 : 1, function () { applyXf(); });
+    defCtl(i + '.asg', idx % 2, function () { applyXf(); });
+    defCtl(i + '.fxa', 0, function () { applyFxRouting(); updateFxTime(); });
     defCtl(i + '.tempo', 0.5, function (v) { d.onTempoCtl(v); }, true);
   });
   function applyXf() {
@@ -878,7 +949,15 @@
   defCtl('xf.curve', 0, applyXf);
   defCtl('m.vol', 0.8, function (v) { master.gain.setTargetAtTime(v, ctx.currentTime, 0.01); });
   defCtl('fx.type', 0, function (v) { var t = ctx.currentTime; fx.echoOut.gain.setTargetAtTime(v < 0.5 ? 1 : 0, t, 0.02); fx.revOut.gain.setTargetAtTime(v < 0.5 ? 0 : 1, t, 0.02); });
-  defCtl('fx.ch', 1, function () { applyFxRouting(); updateFxTime(); });
+  defCtl('fx.mst', 1, function () { applyFxRouting(); updateFxTime(); });
+  // 2 alebo 4 prehrávače (zdieľané v izbe)
+  var viewBtn = $('#viewBtn');
+  function applyView(four) {
+    boothEl.classList.toggle('v4', four); boothEl.classList.toggle('v2', !four); document.body.classList.toggle('v4', four);
+    if (viewBtn) viewBtn.textContent = four ? '4 DECKS' : '2 DECKS';
+  }
+  defCtl('view', 0, function (v) { applyView(v > 0.5); }, true);
+  if (viewBtn) viewBtn.addEventListener('click', function () { setCtl('view', ctl.view.v > 0.5 ? 0 : 1, 'ui'); });
   defCtl('fx.time', 0.6, function () { updateFxTime(); });
   defCtl('fx.lvl', 0.5, function (v) { fx.wet.gain.setTargetAtTime(v * v * 1.3, ctx.currentTime, 0.02); });
   defCtl('fx.on', 0, function () { applyFxRouting(); });
@@ -942,7 +1021,7 @@
   boothEl.addEventListener('pointerdown', function (e) {
     var b = e.target.closest('[data-a]'); if (!b) return;
     var sec = b.closest('.cdj'); if (!sec) return;
-    var d = decks[sec.dataset.deck === 'a' ? 0 : 1], a = b.dataset.a;
+    var d = decks[IDS.indexOf(sec.dataset.deck)], a = b.dataset.a;
     e.preventDefault();
     if (a === 'cue') { try { ensureCtx(); } catch (x) {} d.cueDown(); held = function () { d.cueUp(); }; }
     else if (a === 'play') { try { ensureCtx(); } catch (x) {} d.playPress(); }
@@ -1027,7 +1106,7 @@
 
   // ------------------------------------------------------------------ knižnica skladieb
   var lib = [], AUDIO_RE = /\.(mp3|wav|wave|aif|aiff|flac|m4a|aac|ogg|oga|opus|mp4)$/i, MAXROWS = 300;
-  var cur = [null, null], target = 0;
+  var cur = [null, null, null, null], target = 0;
   function extOf(n) { var m = n.match(/\.([^.]+)$/); return m ? m[1].toLowerCase() : ''; }
   function addItem(it) {
     var key = it.name + '|' + it.ext + '|' + (it.size || 0);
@@ -1060,7 +1139,7 @@
       if (q && it.name.toLowerCase().indexOf(q) < 0) return;
       total++; if (shown >= MAXROWS) return; shown++;
       var row = document.createElement('button'); row.type = 'button'; row.className = 'item'; row.dataset.i = idx;
-      if (cur[0] === it) row.classList.add('cur-a'); if (cur[1] === it) row.classList.add('cur-b');
+      cur.forEach(function (c, k) { if (c === it) row.classList.add('cur-' + k); });
       var b = document.createElement('b'); b.textContent = it.name;
       var s = document.createElement('small'); s.textContent = it.ext.toUpperCase() + (it.size ? ' · ' + (it.size / 1048576).toFixed(1) + ' MB' : '');
       row.appendChild(b); row.appendChild(s); frag.appendChild(row);
@@ -1110,8 +1189,9 @@
   function closeSheet() { $('#sheet').hidden = true; }
   async function loadInto(di, it) {
     var d = decks[di];
-    if (d.playing) { toast('Deck ' + d.id.toUpperCase() + ' práve hrá. Najprv ho zastav.'); return; }
+    if (d.playing) { toast('Deck ' + (d.idx + 1) + ' práve hrá. Najprv ho zastav.'); return; }
     try { ensureCtx(); } catch (e) { return; }
+    if (di >= 2 && ctl.view.v < 0.5) setCtl('view', 1, 'ui');
     d.status = 'Načítavam…'; d.buf = null; d.pk = null; d.ov = null; d.busy = true;
     try {
       var file = it.file || await it.handle.getFile();
@@ -1166,6 +1246,17 @@
   window.addEventListener('dragleave', function (e) { if (!e.relatedTarget) document.body.classList.remove('drag'); });
   window.addEventListener('drop', function (e) { e.preventDefault(); document.body.classList.remove('drag'); if (e.dataTransfer && e.dataTransfer.files.length) { addFiles(e.dataTransfer.files); } });
 
+  // vzhľad mixéra: tmavý alebo biely (uloží sa v prehliadači)
+  var skinBtn = $('#skinBtn');
+  function setSkin(k) {
+    document.body.dataset.skin = k;
+    if (skinBtn) skinBtn.textContent = k === 'light' ? '◑' : '◐';
+    try { localStorage.setItem('mx.skin', k); } catch (e) {}
+  }
+  var sk0 = 'dark'; try { sk0 = localStorage.getItem('mx.skin') === 'light' ? 'light' : 'dark'; } catch (e) {}
+  setSkin(sk0);
+  if (skinBtn) skinBtn.addEventListener('click', function () { setSkin(document.body.dataset.skin === 'light' ? 'dark' : 'light'); });
+
   // ------------------------------------------------------------------ nahrávanie mixu
   var rec = null, recBlobUrl = null;
   async function startRec() {
@@ -1204,11 +1295,11 @@
     if (anL) {
       [anL, anR].forEach(function (an, c) {
         var p = peakOf(an), db = p > 0 ? 20 * Math.log10(p) : -90, l = clamp((db + 54) / 54, 0, 1);
-        mLv[c] = Math.max(l, mLv[c] - 0.03); (c ? elMR : elML).firstChild.style.height = (100 - mLv[c] * 100) + '%';
+        mLv[c] = Math.max(l, mLv[c] - 0.03); var mh = (100 - mLv[c] * 100) + '%'; (c ? elMR : elML).forEach(function (m) { m.firstChild.style.height = mh; });
       });
       if (now - fxT > 150) { fxT = now; updateFxTime(); }
     }
-    TXT(elFxLab, 'TIME ' + FXLAB[fxIdx()]);
+    TXT(elFxLab[0], 'TIME ' + FXLAB[fxIdx()]); elFxLab.forEach(function (e) { if (e.textContent !== elFxLab[0]._v) e.textContent = elFxLab[0]._v; });
     if (rec) {
       var s = rec.seconds(), m = Math.floor(s / 60), sec = Math.floor(s % 60);
       $('#recInfo').textContent = m + ':' + (sec < 10 ? '0' : '') + sec + ' · ' + (rec.bytes / 1048576).toFixed(1) + ' MB';

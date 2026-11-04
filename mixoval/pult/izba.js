@@ -95,7 +95,8 @@
   var me = { id: rid(10), n: '', cs: ls('mx.izba.cur') || 'sipka', j: 0 };
   var room = null; // { code, T, players:[], host, ... }
   var offset = 0, pings = [], lastHost = null;
-  var deckVer = [{ v: 0, by: '' }, { v: 0, by: '' }], ctlVer = {}, outCtl = {}, pending = [null, null], loadingId = [null, null];
+  function newVers() { return [0, 1, 2, 3].map(function () { return { v: 0, by: '' }; }); }
+  var deckVer = newVers(), ctlVer = {}, outCtl = {}, pending = [null, null, null, null], loadingId = [null, null, null, null];
   var shareCache = {};
   function clock() { return performance.timeOrigin + performance.now(); }
   function now() { return clock() + offset; }
@@ -114,7 +115,7 @@
     if (!unlocked(curById(me.cs))) me.cs = 'sipka';
     me.j = Date.now();
     room = { code: code, players: [], host: null, up: false, local: !!local, joinedAt: Date.now() };
-    deckVer = [{ v: 0, by: '' }, { v: 0, by: '' }]; ctlVer = {}; outCtl = {}; pending = [null, null]; loadingId = [null, null];
+    deckVer = newVers(); ctlVer = {}; outCtl = {}; pending = [null, null, null, null]; loadingId = [null, null, null, null];
     P.decks.forEach(function (d) { d.dirty = false; });
     offset = 0; pings = []; lastHost = null;
     var h = { msg: onMsg, presence: onPresence, up: onUp, down: onDown };
@@ -321,8 +322,8 @@
   var units = function () { return Array.prototype.slice.call(P.booth.querySelectorAll('.unit')); };
   function track(e) {
     if (!room) return;
-    var u = e.target && e.target.closest ? e.target.closest('.unit') : null, list = units(), i = list.indexOf(u);
-    if (i < 0) { if (curOut) { curOut = null; curDirty = true; } return; }
+    var u = e.target && e.target.closest ? e.target.closest('.unit') : null, i = u ? u.dataset.u : null;
+    if (!i) { if (curOut) { curOut = null; curDirty = true; } return; }
     var r = u.getBoundingClientRect();
     curOut = { u: i, x: +((e.clientX - r.left) / r.width).toFixed(4), y: +((e.clientY - r.top) / r.width).toFixed(4), dn: e.buttons ? 1 : 0, t: e.pointerType === 'touch' ? 1 : 0 };
     curDirty = true;
@@ -349,11 +350,12 @@
     c.cur = cur; c.seen = performance.now();
   }
   function curFrame() {
-    var t = performance.now(), list = units();
+    var t = performance.now();
     Object.keys(remoteCur).forEach(function (id) {
       var c = remoteCur[id], cur = c.cur;
-      if (!cur || !list[cur.u]) { c.el.style.opacity = 0; c.fresh = true; return; }
-      var r = list[cur.u].getBoundingClientRect();
+      var un = cur ? P.booth.querySelector('[data-u="' + cur.u + '"]') : null;
+      if (!un || !un.offsetWidth) { c.el.style.opacity = 0; c.fresh = true; return; }
+      var r = un.getBoundingClientRect();
       c.tx = r.left + window.scrollX + cur.x * r.width; c.ty = r.top + window.scrollY + cur.y * r.width;
       if (c.fresh) { c.x = c.tx; c.y = c.ty; c.fresh = false; }
       c.x += (c.tx - c.x) * 0.35; c.y += (c.ty - c.y) * 0.35;

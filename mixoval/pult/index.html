@@ -27,6 +27,8 @@
 <header class="bar">
   <a class="back" href="../" aria-label="Späť na mixoval">‹<span class="bt"> mixoval</span></a>
   <span class="sp"></span>
+  <button class="btn skinbtn" id="skinBtn" type="button" aria-label="Vzhľad mixéra (tmavý alebo biely)">◐</button>
+  <button class="btn viewbtn" id="viewBtn" type="button" title="Počet prehrávačov">2 DECKS</button>
   <div class="rec">
     <select id="kbps" aria-label="Kvalita MP3"><option value="320">320</option><option value="256">256</option><option value="192">192</option></select>
     <button class="btn recbtn" id="recBtn" type="button"><span class="dot"></span><span id="recTxt">REC</span></button>
@@ -43,7 +45,7 @@
   <div class="sheetin" role="dialog" aria-label="Skladby">
     <div class="sh-h">
       <h2>Skladby</h2>
-      <div class="tgt" id="tgt" aria-label="Načítať do decku"><button type="button" data-t="0" class="ta">A</button><button type="button" data-t="1" class="tb">B</button></div>
+      <div class="tgt" id="tgt" aria-label="Načítať do decku"><button type="button" data-t="0" class="t0">1</button><button type="button" data-t="1" class="t1">2</button><button type="button" data-t="2" class="t2">3</button><button type="button" data-t="3" class="t3">4</button></div>
       <button class="x" id="sheetX" type="button" aria-label="Zavrieť">×</button>
     </div>
     <div class="sh-b">

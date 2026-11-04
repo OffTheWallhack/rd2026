@@ -24,6 +24,7 @@
     led: BASE + 'led-it-roll/',
     drift: BASE + 'event-car-drift/',
     acid: BASE + 'acid-box/',
+    gtu: BASE + 'grand-theft-usage/',
     wall: BASE + 'wallflash/',
     edit: ROOT + 'editoval/',
     me: ROOT + 'img/portrait.webp',
@@ -63,6 +64,7 @@
     led: ledIcon(),
     drift: '<img src="' + BASE + 'img/drift-192.png" alt="">',
     acid: '<img src="' + BASE + 'img/acid-192.png" alt="">',
+    gtu: '<img src="' + BASE + 'img/gtu-192.png" alt="">',
     wall: '<img src="' + BASE + 'img/wallflash-192.png" alt="">',
     edit: '<img src="' + BASE + 'img/editoval-192.png" alt="">',
     bg: '<svg viewBox="0 0 62 62"><defs><radialGradient id="roB1" cx=".2" cy=".2" r=".9"><stop offset="0" stop-color="#ff3dd8"/><stop offset="1" stop-color="#ff3dd8" stop-opacity="0"/></radialGradient><radialGradient id="roB2" cx=".9" cy=".9" r=".9"><stop offset="0" stop-color="#ffb21a"/><stop offset="1" stop-color="#ffb21a" stop-opacity="0"/></radialGradient><pattern id="roSt" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)"><rect width="2" height="6" fill="rgba(255,255,255,.12)"/></pattern></defs><rect width="62" height="62" fill="#2a1450"/><rect width="62" height="62" fill="url(#roB1)"/><rect width="62" height="62" fill="url(#roB2)"/><rect width="62" height="62" fill="url(#roSt)"/><rect x="17" y="17" width="28" height="28" rx="6" fill="none" stroke="#fff" stroke-width="2.6"/><path d="M21 39l7-8 5 5 4-4 5 7" fill="none" stroke="#fff" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/></svg>',
@@ -107,6 +109,7 @@
       '</div>' +
       '<div class="ro-grid">' +
        '<button class="ro-app" type="button" data-ro-open="led"><span class="ro-ic" data-ro-icon="led"></span><span>LED IT ROLL</span></button>' +
+       '<button class="ro-app" type="button" data-ro-open="gtu"><span class="ro-ic" data-ro-icon="gtu"></span><span>GT Usage</span></button>' +
        '<button class="ro-app" type="button" data-ro-open="drift"><span class="ro-ic" data-ro-icon="drift"></span><span>Car Game</span></button>' +
        '<button class="ro-app" type="button" data-ro-open="acid"><span class="ro-ic" data-ro-icon="acid"></span><span>Acid Box</span></button>' +
        '<button class="ro-app" type="button" data-ro-open="wall"><span class="ro-ic" data-ro-icon="wall"></span><span>Wallflash</span></button>' +
@@ -129,6 +132,7 @@
       '<section class="ro-win" data-ro-win="led" aria-label="LED IT ROLL"></section>' +
       '<section class="ro-win" data-ro-win="drift" aria-label="Event Car Game"></section>' +
       '<section class="ro-win" data-ro-win="acid" aria-label="Acid Box"></section>' +
+      '<section class="ro-win" data-ro-win="gtu" aria-label="Grand Theft Usage"></section>' +
       '<section class="ro-win" data-ro-win="wall" aria-label="Wallflash"></section>' +
       '<section class="ro-win" data-ro-win="bg" aria-label="BG Maker"><div class="ro-scroll">' +
        '<h2>BG Maker</h2><p class="ro-lead">Generátor pozadí pre Instagram a socials. Textúry, farby, slidery a export obrázkov aj loopov.</p>' +
@@ -354,7 +358,7 @@
 
   /* ---------- apps ---------- */
   var current = null, toastShown = false, frames = {};
-  var FRAMES = { led: { src: CFG.led, title: 'LED IT ROLL', allow: 'fullscreen; microphone; autoplay; screen-wake-lock' }, drift: { src: CFG.drift, title: 'Event Car Game', allow: 'fullscreen; autoplay; accelerometer; gyroscope' }, wall: { src: CFG.wall, title: 'Wallflash', allow: 'fullscreen; microphone; autoplay; screen-wake-lock' }, acid: { src: CFG.acid, title: 'Acid Box', allow: 'fullscreen; autoplay' }, edit: { src: CFG.edit, title: 'si/editoval', allow: 'fullscreen' } };
+  var FRAMES = { led: { src: CFG.led, title: 'LED IT ROLL', allow: 'fullscreen; microphone; autoplay; screen-wake-lock' }, drift: { src: CFG.drift, title: 'Event Car Game', allow: 'fullscreen; autoplay; accelerometer; gyroscope' }, wall: { src: CFG.wall, title: 'Wallflash', allow: 'fullscreen; microphone; autoplay; screen-wake-lock' }, acid: { src: CFG.acid, title: 'Acid Box', allow: 'fullscreen; autoplay' }, gtu: { src: CFG.gtu, title: 'Grand Theft Usage', allow: 'fullscreen; autoplay' }, edit: { src: CFG.edit, title: 'si/editoval', allow: 'fullscreen' } };
   function setHomebar() { homebar.setAttribute('aria-hidden', isOpen && lock.classList.contains('away') && current ? 'false' : 'true'); }
   function openApp(id, fromEl) {
     if (current) return;

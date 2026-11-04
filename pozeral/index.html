@@ -483,9 +483,10 @@ function cistyNazov(t, show){
   if (/^\d+$/.test(x)) x = x + '. díl';
   return x || String(t || '');
 }
+const ZDROJ = p => p.playlist || p.kanal || (p.hladaj ? 'hladaj:' + [].concat(p.hladaj).join('|') : '');
 function rozbal(p){
-  if (!p.playlist && !p.kanal) return [p];
-  return (PL[p.playlist || p.kanal] || []).map(x => {
+  if (!ZDROJ(p)) return [p];
+  return (PL[ZDROJ(p)] || []).map(x => {
     if (x.s > 0 && !(DLZKY[x.id] < 0) && !(DLZKY[x.id] > 0)) DLZKY[x.id] = x.s;
     return { id:x.id, show:p.show, ep:cistyNazov(x.nazov, p.show), lang:p.lang, min: x.s > 0 ? x.s / 60 : (p.min || 22) };
   });
@@ -1153,7 +1154,7 @@ Promise.race([
     if (!j || !j.videa) return;
     // poistka: keby skener omylom označil väčšinu videí ako nefunkčné, chyby ignorujeme
     const vsetky = new Set();
-    (O.kanaly || []).forEach(k => (k.program || []).forEach(p => { if (p.playlist || p.kanal) (PL[p.playlist || p.kanal] || []).forEach(x => vsetky.add(x.id)); else vsetky.add(KEY(p)); }));
+    (O.kanaly || []).forEach(k => (k.program || []).forEach(p => { if (ZDROJ(p)) (PL[ZDROJ(p)] || []).forEach(x => vsetky.add(x.id)); else vsetky.add(KEY(p)); }));
     [...(O.reklamy || []), ...(O.predely || [])].forEach(p => vsetky.add(KEY(p)));
     const zle = Object.values(j.videa).filter(x => x < 0).length;
     DLZKY = zle > vsetky.size / 2 ? Object.fromEntries(Object.entries(j.videa).filter(([, x]) => x > 0)) : j.videa;

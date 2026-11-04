@@ -33,8 +33,8 @@ function najdi(o, kluc, out = []){
 }
 const casNaSek = t => (t || '').split(':').reduce((a, x) => a * 60 + (+x || 0), 0);
 const textZ = t => t ? (t.simpleText || (t.runs || []).map(r => r.text).join('')) : '';
-async function innertube(telo){
-  const r = await fetch('https://www.youtube.com/youtubei/v1/browse?prettyPrint=false', {
+async function innertube(telo, kam = 'browse'){
+  const r = await fetch('https://www.youtube.com/youtubei/v1/' + kam + '?prettyPrint=false', {
     method:'POST', headers:{ 'Content-Type':'application/json', 'User-Agent':UA, Origin:'https://www.youtube.com' },
     body: JSON.stringify({ context:{ client:{ clientName:'WEB', clientVersion:'2.20250312.04.00', hl:'cs', gl:'CZ' } }, ...telo })
   });
@@ -99,18 +99,55 @@ async function kanalNaPlaylist(handle){
   ladenie.push(`kanál ${handle}: http ${r.status}, ${html.length} B, id ${m ? m[1] : '-'}`);
   return m ? 'UU' + m[1].slice(2) : null;
 }
+async function zOembed(id){
+  const r = await fetch(`https://www.youtube.com/oembed?format=json&url=${encodeURIComponent('https://www.youtube.com/watch?v=' + id)}`, { headers:{ 'User-Agent':UA } });
+  return r.status;   // 200 = existuje a dá sa vložiť, 401/403 = vkladanie zakázané, 400/404 = neexistuje alebo súkromné
+}
+
+// ---------- vyhľadávanie: { hladaj:['dotaz', …], obsahuje:'regex názvu seriálu' } ----------
+// Nájde diely cez vyhľadávanie YouTube. Prejde len video, ktoré má v názve seriál, značku CZ/SK
+// (alebo dabing) a dĺžku celého dielu, a dá sa vložiť na cudzí web (oEmbed 200).
+const oeOk = new Map();
+async function hladajVideo(dotaz, max){
+  let j = await innertube({ query: dotaz, params: 'EgIQAQ==' }, 'search'), vsetko = polozky(j), kolo = 0;
+  ladenie.push(`hľadaj "${dotaz}": ${vsetko.length} videí`);
+  while (vsetko.length < max && kolo++ < 3){
+    const tok = najdi(j, 'continuationCommand').map(c => c.token).find(Boolean);
+    if (!tok) break;
+    await sleep(600);
+    j = await innertube({ continuation: tok }, 'search');
+    const dalsie = polozky(j); if (!dalsie.length) break;
+    vsetko = vsetko.concat(dalsie);
+  }
+  return vsetko;
+}
+const JAZYK = /(^|[^a-z])(cz|sk|cze|česk|cesk|slovensk|dabing|dab)/i;
+const NIE_DIEL = /#shorts|\bshorts?\b|tiktok|reakc|reaction|edit\b|fan ?made|\bai\b|minecraft|roblox|fortnite|gameplay|hra\b|lets ?play|let's play|karaoke|cover|remix|meme|ytp|youtube poop|speedpaint|drawing|unboxing|hračk|toys?\b|top ?\d+|vs\.?\b|tier list|teorie|theory/i;
+const zdrojKluc = p => p.playlist || p.kanal || (p.hladaj ? 'hladaj:' + [].concat(p.hladaj).join('|') : '');
 const plVysledky = {};
 for (const k of O.kanaly) for (const p of k.program){
-  if (!p.playlist && !p.kanal) continue;
-  const kluc = p.playlist || p.kanal;
+  if (!p.playlist && !p.kanal && !p.hladaj) continue;
+  const kluc = zdrojKluc(p);
   try {
-    const pl = p.playlist || await kanalNaPlaylist(p.kanal);
-    const zoznam = pl ? await nacitajPlaylist(pl, p.max || 60) : [];
-    const unik = []; const videne = new Set();
+    let zoznam = [];
+    if (p.hladaj){ for (const q of [].concat(p.hladaj)){ zoznam = zoznam.concat(await hladajVideo(q, 60)); await sleep(800); } }
+    else { const pl = p.playlist || await kanalNaPlaylist(p.kanal); zoznam = pl ? await nacitajPlaylist(pl, p.max || 60) : []; }
+    const unik = []; const videne = new Set(), videneNazvy = new Set();
     const vlozit = p.obsahuje ? new RegExp(p.obsahuje, 'i') : null, vynechat = p.vynechaj ? new RegExp(p.vynechaj, 'i') : null;
-    const minS = p.minSek ?? 240, maxS = p.maxSek ?? 5400;   // bez krátkych klipov a dlhých kompilácií
+    const minS = p.minSek ?? (p.hladaj ? 300 : 240), maxS = p.maxSek ?? (p.hladaj ? 3600 : 5400);   // bez krátkych klipov a dlhých kompilácií
     for (const x of zoznam){
       if (videne.has(x.id)) continue;
+      if (p.hladaj){
+        if (!x.s) continue;                                         // pri hľadaní chceme presnú dĺžku
+        if (p.jazyk !== false && !JAZYK.test(x.nazov || '')) continue;
+        if (NIE_DIEL.test(x.nazov || '')) continue;
+        const n = (x.nazov || '').toLowerCase().normalize('NFD').replace(/[^a-z0-9]/g, '');
+        if (videneNazvy.has(n)) continue;                           // ten istý diel od viacerých ľudí
+        if (unik.length >= (p.max || 40)) break;
+        if (!oeOk.has(x.id)){ let st = 0; try { st = await zOembed(x.id); } catch {} oeOk.set(x.id, st); await sleep(200); }
+        if (oeOk.get(x.id) !== 200) continue;                      // nedá sa vložiť: vôbec ho nepridáme
+        videneNazvy.add(n);
+      }
       if (x.s && (x.s < minS || x.s > maxS)) continue;
       if (vlozit && !vlozit.test(x.nazov || '')) continue;      // voliteľné: názov musí obsahovať (obsahuje:'regex')
       if (vynechat && vynechat.test(x.nazov || '')) continue;   // voliteľné: názov nesmie obsahovať (vynechaj:'regex')
@@ -132,10 +169,6 @@ fs.writeFileSync(PLAYLISTY, JSON.stringify(plVysledky, null, 1) + '\n');
 let stare = { videa:{}, chyby:{} };
 try { stare = JSON.parse(fs.readFileSync(VYSTUP, 'utf8')); } catch {}
 
-async function zOembed(id){
-  const r = await fetch(`https://www.youtube.com/oembed?format=json&url=${encodeURIComponent('https://www.youtube.com/watch?v=' + id)}`, { headers:{ 'User-Agent':UA } });
-  return r.status;   // 200 = existuje a dá sa vložiť, 401/403 = vkladanie zakázané, 400/404 = neexistuje alebo súkromné
-}
 
 // Ak je v GitHube uložený kľúč YouTube Data API (secret YT_API_KEY), použijeme oficiálne API — najspoľahlivejšie.
 const KLUC = process.env.YT_API_KEY || '';
@@ -165,7 +198,7 @@ if (api){
 } else {
   // a) oEmbed: existuje video a dá sa vložiť? (YouTube ho z GitHubu neblokuje)
   const oe = {};
-  for (const id of ids){ try { oe[id] = await zOembed(id); } catch { oe[id] = 0; } await sleep(250); }
+  for (const id of ids){ if (oeOk.get(id) === 200){ oe[id] = 200; continue; } try { oe[id] = await zOembed(id); } catch { oe[id] = 0; } await sleep(250); }
   const dlzky = plDlzky;   // dĺžky máme len z playlistov; pri ostatných stránka použije odhady
   for (const id of ids){
     const o = oe[id];

@@ -1,29 +1,36 @@
-Sken 2026-11-04T18:21:24.586Z
+Sken 2026-11-04T18:35:39.132Z
 innertube PLXkA6SvogZFumCc1H0KgXGPdsRrzCcTHw: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 100 videí; alert: []
 innertube PL3SFGj27PTbfdUXNVv20TCjhbm8sriSH_: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 0 videí; alert: []
-html PL3SFGj27PTbfdUXNVv20TCjhbm8sriSH_: http 200, 884570 B, 0 videí
+html PL3SFGj27PTbfdUXNVv20TCjhbm8sriSH_: http 200, 882229 B, 0 videí
 rss PL3SFGj27PTbfdUXNVv20TCjhbm8sriSH_: http 200, 0 videí
 innertube PLXkA6SvogZFsro5cOPiQcy1CHMjSLOQq7: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 4 videí; alert: []
 innertube PL_c00IPCdRoGD0k6aG7725OaqHQQffcVf: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 7 videí; alert: []
-kanál @byljednoujedenzivot: http 200, 1065401 B, id UCg0IwNjbI490rs0g_cPGFXA
+kanál @byljednoujedenzivot: http 200, 1066954 B, id UCg0IwNjbI490rs0g_cPGFXA
 innertube UUg0IwNjbI490rs0g_cPGFXA: kľúče responseContext,contents,header,metadata,trackingParams,topbar,microformat,sidebar; 26 videí; alert: []
 innertube PLh4oNLWEP1pov-S4X2rwB3e1kKFFjecKe: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 37 videí; alert: []
 innertube PLQ7nXaicptSxRccybPZUBAPhSdxh1v9jI: kľúče responseContext,contents,header,metadata,trackingParams,topbar,microformat,sidebar; 72 videí; alert: []
 innertube PLwhLvPy7SFDEN8_qYEdv7LfbTdO3EQBBd: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 21 videí; alert: []
 innertube PLpNHzGK1cU90EcFXgbD0C3n9LiHwJokg4: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 52 videí; alert: []
-kanál @spionkycz-sk1054: http 200, 1060041 B, id UCWY2ygfhSISX-SF2YjGKhgw
+kanál @spionkycz-sk1054: http 200, 1056949 B, id UCWY2ygfhSISX-SF2YjGKhgw
 innertube UUWY2ygfhSISX-SF2YjGKhgw: kľúče responseContext,contents,header,metadata,trackingParams,topbar,microformat,sidebar; 25 videí; alert: []
-hľadaj "Totally Spies cz dabing": 20 videí
-hľadaj "Totally Spies česky celý díl": 20 videí
 hľadaj "Špiónky celý díl": 20 videí
+hľadaj "Totally Spies Špiónky": 20 videí
+hľadaj "Totally Spies Špiónky cz": 20 videí
 hľadaj "Robotboy cz": 20 videí
 hľadaj "Robotboy česky": 20 videí
+hľadaj "Robotboy cz dabing díl": 20 videí
 hľadaj "Život s Louiem": 20 videí
 hľadaj "Život s Louiem celý díl": 20 videí
+hľadaj "Život s Louiem S02": 20 videí
+hľadaj "Život s Louiem CZ dabing": 20 videí
 hľadaj "Klíšťák cz": 20 videí
 hľadaj "Klíšťák celý díl": 20 videí
+hľadaj "Klíšťák část 1/2": 20 videí
+hľadaj "Klíšťák S01": 20 videí
 hľadaj "Tři kamarádi a Jerry": 20 videí
 hľadaj "Tři kamarádi a Jerry celý díl": 20 videí
+hľadaj "Tři kamarádi a Jerry CZ": 20 videí
+hľadaj "Tři kamarádi a Jerry S2": 20 videí
 hľadaj "WITCH cz dabing": 20 videí
 hľadaj "W.I.T.C.H. česky": 20 videí
 hľadaj "Kim Possible cz": 20 videí
@@ -33,18 +40,21 @@ hľadaj "Martin Mystery česky": 20 videí
 hľadaj "Dennis postrach okolí": 19 videí
 hľadaj "Rychlá rota cz": 20 videí
 hľadaj "Rychlá rota celý díl": 20 videí
+hľadaj "Rychlá rota cz dabing": 20 videí
 hľadaj "Ed Edd a Eddy cz": 20 videí
 hľadaj "Ed Edd n Eddy cz dabing": 20 videí
 hľadaj "Totální drama cz": 20 videí
 hľadaj "Totální drama ostrov": 20 videí
-hľadaj "Garfield a přátelé cz": 20 videí
+hľadaj "Garfieldova show cz": 20 videí
+hľadaj "Garfieldova show celý díl": 20 videí
+hľadaj "Garfield show sk dabing": 20 videí
 hľadaj "Kačeří příběhy cz celý díl": 20 videí
-kanál @pokemonserialczsk6452: http 200, 880375 B, id UCEarul-dRmRW6dpUePG8xpA
+kanál @pokemonserialczsk6452: http 200, 875533 B, id UCEarul-dRmRW6dpUePG8xpA
 innertube UUEarul-dRmRW6dpUePG8xpA: kľúče responseContext,alerts,trackingParams,topbar,microformat; 0 videí; alert: [{"type":"ERROR","text":{"runs":[{"text":"Playlist neexistuje."}]}}]
-html UUEarul-dRmRW6dpUePG8xpA: http 200, 856185 B, 0 videí
+html UUEarul-dRmRW6dpUePG8xpA: http 200, 856767 B, 0 videí
 rss UUEarul-dRmRW6dpUePG8xpA: http 404, 0 videí
 innertube PLhr2MGr4OPNcEUNaI_aESmupie_m-Ppzr: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 0 videí; alert: []
-html PLhr2MGr4OPNcEUNaI_aESmupie_m-Ppzr: http 200, 883469 B, 0 videí
+html PLhr2MGr4OPNcEUNaI_aESmupie_m-Ppzr: http 200, 885743 B, 0 videí
 rss PLhr2MGr4OPNcEUNaI_aESmupie_m-Ppzr: http 200, 4 videí
 innertube PL3EEYr69JFOyn1EKmWZwkq6_cPL_LGxEY: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 45 videí; alert: []
 hľadaj "Pokémon cz dabing celý díl": 20 videí
@@ -67,16 +77,18 @@ hľadaj "Želvy ninja 2003 cz": 20 videí
 hľadaj "Želvy ninja cz dabing celý díl": 20 videí
 hľadaj "Power Rangers cz dabing": 20 videí
 hľadaj "Power Rangers česky": 20 videí
+hľadaj "Power Rangers Síla Strážců cz": 20 videí
+hľadaj "Mighty Morphin Power Rangers CZ": 20 videí
 hľadaj "Naruto cz dabing": 20 videí
 hľadaj "Naruto sk dabing": 20 videí
 hľadaj "Gormiti cz": 20 videí
 hľadaj "Huntik cz": 20 videí
-kanál @SpongeBobOfficial: http 200, 1768463 B, id UCf4nYHJi6V0_lil4uGX4HwQ
+kanál @SpongeBobOfficial: http 200, 1765037 B, id UCf4nYHJi6V0_lil4uGX4HwQ
 innertube UUf4nYHJi6V0_lil4uGX4HwQ: kľúče responseContext,contents,header,metadata,trackingParams,topbar,microformat,sidebar; 100 videí; alert: []
 innertube UUx27Pkk8plpiosF14qXq-VA: kľúče responseContext,contents,header,metadata,trackingParams,topbar,microformat,sidebar; 100 videí; alert: []
 innertube PLjScWr8bfGJPcWCgF_QNMQeRVyJQ9Q33W: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 95 videí; alert: []
 innertube PLCVuwQ1eXVCWVeSpX0khngqq_UIpX5hYU: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 72 videí; alert: []
-kanál johnnybravochannel: http 200, 896498 B, id UCW_cynN0NH7tVBdZP5LsMjQ
+kanál johnnybravochannel: http 200, 889039 B, id UCW_cynN0NH7tVBdZP5LsMjQ
 innertube UUW_cynN0NH7tVBdZP5LsMjQ: kľúče responseContext,contents,header,metadata,trackingParams,topbar,microformat,sidebar; 1 videí; alert: []
 ---
 wvDJPJLScqY  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
@@ -171,7 +183,7 @@ a98xtdBdlqU  oembed:404  =>  video neexistuje alebo je súkromné
 lWLpRq9TAU4  oembed:200  =>  612
 nXJXmtwVXUg  oembed:404  =>  video neexistuje alebo je súkromné
 DuZ3fcaIo-I  oembed:200  =>  2487
-SxyHoiyugis  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
+SxyHoiyugis  oembed:200  =>  2620
 ZSkIt43qlH4  oembed:404  =>  video neexistuje alebo je súkromné
 BanM6mxidgw  oembed:404  =>  video neexistuje alebo je súkromné
 ocj3I2WW4ag  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
@@ -186,27 +198,27 @@ Zovf3EyLbcc  oembed:404  =>  video neexistuje alebo je súkromné
 po90SMIxY6U  oembed:404  =>  video neexistuje alebo je súkromné
 Tu3umAwHS2g  oembed:200  =>  1344
 nosggszCwAE  oembed:200  =>  601
-CfknD0OmQEA  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
+CfknD0OmQEA  oembed:200  =>  610
 5ieHWwx7ZtY  oembed:404  =>  video neexistuje alebo je súkromné
 X2iLOt8WHCk  oembed:404  =>  video neexistuje alebo je súkromné
 omfMvI9w2eI  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 hTB8_HZCWaA  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 VESWf19ckIY  oembed:200  =>  1352
 TnC70DLMZGw  oembed:404  =>  video neexistuje alebo je súkromné
-fGT1X8XwagM  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
+fGT1X8XwagM  oembed:200  =>  421
 DgINE3MKem4  oembed:200  =>  1411
 206HF_GurW8  oembed:404  =>  video neexistuje alebo je súkromné
-eKcOw14HjZ4  oembed:200  =>  611
+eKcOw14HjZ4  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 hwMe-lLVWAM  oembed:200  =>  1410
 OhcFFFxzv2c  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 nrfheZPAbR4  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 VYYtmlgJjO8  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 D5ecUCYUoQA  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
-OlWiAglOCGc  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
+OlWiAglOCGc  oembed:200  =>  420
 MlrqMNysrgs  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 76RQmb-hhjc  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 rGABDba-FUM  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
-m7-xx__rSMo  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
+m7-xx__rSMo  oembed:200  =>  425
 CcqpZpvybP0  oembed:200  =>  1191
 Y-c4u3sQTNc  oembed:200  =>  601
 F2AwDKkWVnM  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
@@ -215,11 +227,11 @@ IzlLq3tr3UI  oembed:200  =>  737
 vgiIxzLsx-U  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 A_CSxmUkPew  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 jFDNPc8EgFo  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
-7eOEZq8ORlw  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
+7eOEZq8ORlw  oembed:200  =>  761
 aKChMtuiykE  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 KG20Le3mhUs  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 PU-CdSmSiaU  oembed:404  =>  video neexistuje alebo je súkromné
-XouTkwoTH8I  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
+XouTkwoTH8I  oembed:200  =>  733
 asb09scHGSM  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 C11GBYdAP7k  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 CJgcvSYN9YM  oembed:404  =>  video neexistuje alebo je súkromné
@@ -227,7 +239,7 @@ gc77arzV6HI  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 sosuGW5J8rM  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 YODEL-OWCEM  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 eIAr6xDJJXc  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
-lwhpvjQlxkw  oembed:200  =>  744
+lwhpvjQlxkw  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 8utmK8TkRSw  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 JhapP0DuETo  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 RVU2-KAQ1xU  oembed:403  =>  vkladanie zakázané
@@ -529,74 +541,144 @@ RvceU_c2yJ0  oembed:200  =>  1246
 WjBzpo9U2ew  oembed:200  =>  1271
 H64B2oERzGQ  oembed:200  =>  1272
 5dH6uC7g6Nw  oembed:200  =>  1271
-cTUwfCRc3Fg  oembed:200  =>  659
-NL1sZI3jyow  oembed:200  =>  1198
-4qQiKEWv0Jo  oembed:200  =>  1227
 MKYjyuvlQTg  oembed:200  =>  1225
-2XmH7t612Rc  oembed:200  =>  1171
-SXf9A-_fOS0  oembed:200  =>  1227
-dWCO9ucSSDU  oembed:200  =>  1212
-ubehFQC8YPY  oembed:200  =>  1161
-TE_wERFZ2JI  oembed:200  =>  1188
-S3a-usQ1zks  oembed:200  =>  1221
-Ap2UmFZCkKA  oembed:200  =>  1194
 Vw3Cxa2ydyQ  oembed:200  =>  1217
-6d7XAgcG7lw  oembed:200  =>  1227
-Zgci3gaNmW0  oembed:200  =>  1220
-swC3XnOn3eU  oembed:200  =>  1218
+4qQiKEWv0Jo  oembed:200  =>  1227
+ubehFQC8YPY  oembed:200  =>  1161
+2XmH7t612Rc  oembed:200  =>  1171
+TE_wERFZ2JI  oembed:200  =>  1188
+U1oRP0PUGBE  oembed:200  =>  1159
+dWCO9ucSSDU  oembed:200  =>  1212
+S3a-usQ1zks  oembed:200  =>  1221
 C2e1Lin_2rs  oembed:200  =>  1189
-Ta_J3tpMtEc  oembed:200  =>  1226
+swC3XnOn3eU  oembed:200  =>  1218
+15jZpo28iEo  oembed:200  =>  1221
+NL1sZI3jyow  oembed:200  =>  1198
+Ap2UmFZCkKA  oembed:200  =>  1194
+w6mH1u5vSvI  oembed:200  =>  1195
 8LYh7d_Z8c4  oembed:200  =>  1229
+48LQjbJ_XFE  oembed:200  =>  1157
+nyDXPTHi8fE  oembed:200  =>  1195
 G0vtW1UdqR0  oembed:200  =>  1223
-vq8hZVSEWVw  oembed:200  =>  1227
+qASqq7bdU-Q  oembed:200  =>  1220
+MRxje-PT7vM  oembed:200  =>  1210
+1zaZ04lXF04  oembed:200  =>  1217
+E-7LkrXPEsQ  oembed:200  =>  1224
 Z16M_jMm-D0  oembed:200  =>  1202
+GsTxB9q2c7c  oembed:200  =>  1227
+1JPqXuOMkn8  oembed:200  =>  566
+Oap5seCshDA  oembed:200  =>  1220
+Jow2T2djtZQ  oembed:200  =>  1228
+MyZF5xmDrsI  oembed:200  =>  616
+Hm4daRb2C1U  oembed:200  =>  339
+_KwJEtYdFXw  oembed:200  =>  1964
+fBAv7UUyUtY  oembed:200  =>  1189
+1-I4plfXwGY  oembed:200  =>  1188
+ze6UyW7idCI  oembed:200  =>  1189
+C57BqJKtu6o  oembed:200  =>  1190
+eHRGxeLLfw4  oembed:200  =>  1188
+P1c6Fsc0LPs  oembed:200  =>  1188
+wwqPVx4fGoc  oembed:200  =>  1191
+nRfxKHPmGUg  oembed:200  =>  1190
+Vn2Prt0vOZ8  oembed:200  =>  1190
+4eyO3Fo_VKE  oembed:200  =>  1190
+bS_J779_DM0  oembed:200  =>  1190
+xuUus4PZlF4  oembed:200  =>  1191
+2mhVQkn5Vdw  oembed:200  =>  1188
+DKOcYBQZRGs  oembed:200  =>  1190
+nv5YQ5NUHYU  oembed:200  =>  1188
+KCj0xBLh2Ys  oembed:200  =>  1190
+x0u2GpL42S4  oembed:200  =>  1188
+jEHB9UIiVqY  oembed:200  =>  1161
+uNLKWqGp6EM  oembed:200  =>  3482
 MrC4fC_9qGM  oembed:200  =>  601
-tX6rESMOZ1Q  oembed:200  =>  1035
 9W7ipLm5ai8  oembed:200  =>  601
+tX6rESMOZ1Q  oembed:200  =>  1035
 kLjG8vQG6_g  oembed:200  =>  601
-I7MDvDhM8cw  oembed:200  =>  437
 ArxDK7n-vKk  oembed:200  =>  444
 -RSfm4sZFmg  oembed:200  =>  601
-quwjvrW0NDs  oembed:200  =>  540
+I7MDvDhM8cw  oembed:200  =>  437
 3E9QpELnNv4  oembed:200  =>  550
-TR3Tps4BZ5Q  oembed:200  =>  536
-ki9lToS4ljc  oembed:200  =>  558
-Tvfj4LBsHxk  oembed:200  =>  601
+quwjvrW0NDs  oembed:200  =>  540
 mE7SwhGUH4M  oembed:200  =>  601
-XkRFOPUJeMw  oembed:200  =>  496
-jAj4INuqcQ4  oembed:200  =>  600
-HJfaC5n22Pw  oembed:200  =>  584
+Tvfj4LBsHxk  oembed:200  =>  601
 zFHxyP6puf4  oembed:200  =>  435
+HJfaC5n22Pw  oembed:200  =>  584
+TR3Tps4BZ5Q  oembed:200  =>  536
+XkRFOPUJeMw  oembed:200  =>  496
+Jnv1QXxbQd8  oembed:200  =>  1250
+ki9lToS4ljc  oembed:200  =>  558
+jAj4INuqcQ4  oembed:200  =>  600
 9Evru3JOrU4  oembed:200  =>  1231
 ImBIyqB40MI  oembed:200  =>  425
-ds84KHArKC4  oembed:200  =>  417
-Dq_2VhGRMJA  oembed:200  =>  612
-5nQQ_6r9GiM  oembed:200  =>  404
 Vxl5-wkOsOM  oembed:200  =>  422
-Wh7W1Dvddik  oembed:200  =>  409
-efW2XsgQO1g  oembed:200  =>  610
-k4rdNYVRcgc  oembed:200  =>  415
-Yk0O-KLas4w  oembed:200  =>  604
-eCjrDMAcUwA  oembed:200  =>  414
-82sjP05W0yc  oembed:200  =>  423
 smdgGOWv43U  oembed:200  =>  416
-jxvQHngr8Cs  oembed:200  =>  422
-KuEDN2wRTzw  oembed:200  =>  611
-pkwA_83BdiA  oembed:200  =>  412
-05XOKdvigAk  oembed:200  =>  611
-ku16YcCjGq4  oembed:200  =>  611
-ohqIRQuhTs8  oembed:200  =>  611
+6e_tDW6ViV0  oembed:200  =>  611
+82sjP05W0yc  oembed:200  =>  423
+eCjrDMAcUwA  oembed:200  =>  414
+Wh7W1Dvddik  oembed:200  =>  409
+ds84KHArKC4  oembed:200  =>  417
+2FT90Y0q1gQ  oembed:200  =>  620
+wzuAJBfkGSg  oembed:200  =>  421
+k4rdNYVRcgc  oembed:200  =>  415
 KuqrdQ9btHI  oembed:200  =>  611
-6a4J1ud-WtA  oembed:200  =>  611
-Eyi5-6RNoDA  oembed:200  =>  611
-04Vd927S6JA  oembed:200  =>  420
-0N-bJLoNnCU  oembed:200  =>  417
-7FGQpN6m_0M  oembed:200  =>  419
-P4-xCUmYe6g  oembed:200  =>  3053
-RQqecH6yGZU  oembed:200  =>  612
 9NygmgBBrDg  oembed:200  =>  611
+5nQQ_6r9GiM  oembed:200  =>  404
+04Vd927S6JA  oembed:200  =>  420
+kAJ87eX6W0s  oembed:200  =>  2485
+YhintJy99UQ  oembed:200  =>  611
+P4-xCUmYe6g  oembed:200  =>  3053
+jxvQHngr8Cs  oembed:200  =>  422
+0N-bJLoNnCU  oembed:200  =>  417
+T9ZHNSr0JTc  oembed:200  =>  412
+5pybbNxCbu8  oembed:200  =>  619
+Eyi5-6RNoDA  oembed:200  =>  611
+m66puecuN4c  oembed:200  =>  427
+B7ouAxH4hRc  oembed:200  =>  611
+KuEDN2wRTzw  oembed:200  =>  611
+7FGQpN6m_0M  oembed:200  =>  419
+YPGiLd7bklQ  oembed:200  =>  427
+ycFRKraDJCo  oembed:200  =>  611
+Uobc9r1FsJM  oembed:200  =>  612
+RQqecH6yGZU  oembed:200  =>  612
+zJNhfvWBA3Y  oembed:200  =>  611
+8ckphYZiCkA  oembed:200  =>  409
+Pjoin_bkpd0  oembed:200  =>  611
+he5d9h0bReo  oembed:200  =>  611
+USSPaJRfsUs  oembed:200  =>  611
+48P34DNjFR8  oembed:200  =>  611
+zpn9gYDpQB8  oembed:200  =>  610
+1Ze-beN3y7k  oembed:200  =>  427
+xWzwe6qY4ZU  oembed:200  =>  398
+9D_R9P0yvzU  oembed:200  =>  425
+NrW6kgwE-hY  oembed:200  =>  409
+t3w4CqOHoUA  oembed:200  =>  611
+MzYox5E-lzI  oembed:200  =>  425
+dFg1qUjADRQ  oembed:200  =>  422
+V7EjZwRF_rw  oembed:200  =>  428
+09nFn30G4sY  oembed:200  =>  428
+p2onBQB--J0  oembed:200  =>  422
+JaB8DaY6Hvk  oembed:200  =>  552
+hJTkSBcK3dQ  oembed:200  =>  611
+Yk0O-KLas4w  oembed:200  =>  604
+efW2XsgQO1g  oembed:200  =>  610
+ku16YcCjGq4  oembed:200  =>  611
+q9zIBVvLL8M  oembed:200  =>  1304
+jaund8GhlJw  oembed:200  =>  1304
+GpmJIduGuok  oembed:200  =>  1305
+LpZGISR2dFc  oembed:200  =>  1305
+-YMBquzifUE  oembed:200  =>  1305
+j-2sUSX1ef8  oembed:200  =>  1305
+fz8Hrmx2ThE  oembed:200  =>  1305
+H98Ss1kFbNo  oembed:200  =>  1305
 EnMxfCqrISg  oembed:200  =>  659
-HjgWfOnEkDE  oembed:200  =>  3376
+bhIEVNIwdc4  oembed:200  =>  1305
+vl1Gjg6WMFo  oembed:200  =>  1305
+WpgEzhJgzek  oembed:200  =>  1305
+NTMpnwo5XTg  oembed:200  =>  1305
+2V8WbzCTIfE  oembed:200  =>  1306
+A6-xhszRdoI  oembed:200  =>  658
+L1nonaIeoc8  oembed:200  =>  1371
 gUuBfnIFfeI  oembed:200  =>  1561
 1NoDtqtmE4k  oembed:200  =>  366
 WEO3BmHeIRM  oembed:200  =>  1308
@@ -608,9 +690,19 @@ djsVTG13FB4  oembed:200  =>  2137
 TPK-24jdM0E  oembed:200  =>  1800
 zyLNZwZaZv4  oembed:200  =>  2064
 NgGf9eOh0Jc  oembed:200  =>  1913
-WuTERvcnxo4  oembed:200  =>  725
-zVCvDTUm4m4  oembed:200  =>  734
-iqGsqusqCjI  oembed:200  =>  732
+2i_dutN-jRE  oembed:200  =>  737
+UL-GbwDKwww  oembed:200  =>  701
+E-S1u5UWNRs  oembed:200  =>  785
+6-WRnagnZQo  oembed:200  =>  796
+FufPgCA4dLY  oembed:200  =>  752
+1gc7MAXJinA  oembed:200  =>  789
+M22g0fSpElE  oembed:200  =>  731
+EL_o0EdXQ-s  oembed:200  =>  729
+lkQ48FrpgHg  oembed:200  =>  788
+b0dBfoyFKdw  oembed:200  =>  742
+DfTRo2ePiJo  oembed:200  =>  769
+ZFl5jyHszm8  oembed:200  =>  740
+7gKklF3thmU  oembed:200  =>  1312
 QKLxhpZa1Sw  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 yeggavGSMzE  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 Y3Xh2_E9aqY  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
@@ -655,61 +747,75 @@ DWFD0nYjXAg  oembed:200  =>  1293
 otQ5wvaMD3g  oembed:200  =>  1292
 pLBQlQs5yIE  oembed:200  =>  1292
 pfxMHAxRM_Y  oembed:200  =>  1294
-7AMmzt3FDzk  oembed:200  =>  3320
-NopM6bPK9uQ  oembed:200  =>  2927
+1CZOMUkgB9M  oembed:200  =>  439
 7DXO1yIe2Xw  oembed:200  =>  609
 ZIZ8txyC8iM  oembed:200  =>  1234
-Cs5HVyDIZ1k  oembed:200  =>  1787
-FzVkg5XYNEg  oembed:200  =>  960
-cci6CNtERpI  oembed:200  =>  1935
-nzdp7_HS04U  oembed:200  =>  1385
+pKEW6soK2lY  oembed:200  =>  1562
+T5oM8MCLIzc  oembed:200  =>  3598
+qhq-DcTdI4E  oembed:200  =>  3499
 G9oHXlZHK0A  oembed:200  =>  1237
-Om82Iiu_vrI  oembed:200  =>  900
-kWoPsRtR2iA  oembed:200  =>  506
+EGj1vrSnAg4  oembed:200  =>  371
 AC04_ZiMKGM  oembed:200  =>  1314
 2-VV1DC6K9Y  oembed:200  =>  932
 LOXk5yWZn6U  oembed:200  =>  1224
-pIhpp-0uZsw  oembed:200  =>  407
-4GW74n3Y0eU  oembed:200  =>  835
-fjCX3MYnxAw  oembed:200  =>  1166
+TxACC5vR8Tc  oembed:200  =>  761
+WXZoIsvBK2k  oembed:200  =>  468
+GasX78vgIlk  oembed:200  =>  569
+OpHXhEoYIEQ  oembed:200  =>  907
 ZHBi60frWoc  oembed:200  =>  637
-vmVOOlRvoAQ  oembed:200  =>  1139
-RRPAi9lhcwo  oembed:200  =>  1289
-ztkdbdX5oBY  oembed:200  =>  3489
+8el_wljrybI  oembed:200  =>  1360
+Gnxy5mAo3Gs  oembed:200  =>  1357
+YeMj36mBdrk  oembed:200  =>  1287
 uci5Mto80HA  oembed:200  =>  1298
+fT7tFA8BnYI  oembed:200  =>  1297
+ydDE1HIpprA  oembed:200  =>  1296
+RYq4P5ar9sY  oembed:200  =>  1297
+3J2WUEtoZ_I  oembed:200  =>  1125
+mmunNNi0h6U  oembed:200  =>  1217
+20TFoN6R8ao  oembed:200  =>  1296
+ZmPRVALfA-M  oembed:200  =>  1300
+PZUystYZe9c  oembed:200  =>  1353
+73GHAw1w-jQ  oembed:200  =>  1297
+vmVOOlRvoAQ  oembed:200  =>  1139
 vff2mn5ayhQ  oembed:200  =>  1082
 -5DI_FXSM1U  oembed:200  =>  1123
-mmunNNi0h6U  oembed:200  =>  1217
-8el_wljrybI  oembed:200  =>  1360
-x3T2tk8dPUc  oembed:200  =>  1220
-evrtrDXhMwo  oembed:200  =>  1083
 0HYoAisg6OQ  oembed:200  =>  1181
-62r0VkBsgQo  oembed:200  =>  1351
-fT7tFA8BnYI  oembed:200  =>  1297
-I7-3BDmSuDs  oembed:200  =>  1136
-IcrQhcPTLfk  oembed:200  =>  1296
-ZT05b33hFjs  oembed:200  =>  1148
+evrtrDXhMwo  oembed:200  =>  1083
+RRPAi9lhcwo  oembed:200  =>  1289
 6wzA9oolf60  oembed:200  =>  1217
-ydDE1HIpprA  oembed:200  =>  1296
-KTUFFyzI_PI  oembed:200  =>  1357
+I7-3BDmSuDs  oembed:200  =>  1136
 q1pt_sH9zKI  oembed:200  =>  1296
--iOJnC7iM2c  oembed:200  =>  1296
-20TFoN6R8ao  oembed:200  =>  1296
-ujiKAzN-yt8  oembed:200  =>  1354
-NeAph3PWalc  oembed:200  =>  1296
-7jQDCaVYLyE  oembed:200  =>  1354
+IcrQhcPTLfk  oembed:200  =>  1296
 -rTfX1gme5o  oembed:200  =>  1158
-oxo1z-H0wsY  oembed:200  =>  882
-ZmPRVALfA-M  oembed:200  =>  1300
+x3T2tk8dPUc  oembed:200  =>  1220
+f44E1rPu3GA  oembed:200  =>  1200
 yCcTtgtwuKQ  oembed:200  =>  1157
+J8Re-5u4o-w  oembed:200  =>  1179
+7k1sVqHJFlI  oembed:200  =>  1160
+ujiKAzN-yt8  oembed:200  =>  1354
+4CPy8SNqFTU  oembed:200  =>  1296
+7jQDCaVYLyE  oembed:200  =>  1354
+dCIPuVrqkQA  oembed:200  =>  1295
+9O70x1bRfHI  oembed:200  =>  1354
+ZO7ZQd78LZY  oembed:200  =>  1297
+62r0VkBsgQo  oembed:200  =>  1351
+Mf6-5xl0msY  oembed:200  =>  1291
+2yhKz6E2GLA  oembed:200  =>  1299
+4YhN-260rPg  oembed:200  =>  1357
+3taCIXc-NPQ  oembed:200  =>  1191
+nEsjzxDwj6U  oembed:200  =>  1206
+W3uKl-GH2ZQ  oembed:200  =>  1151
+WxsEjAus5Lk  oembed:200  =>  1218
+ra1w--F742E  oembed:200  =>  1196
+wfKw_k1BmkA  oembed:200  =>  1200
+ZT05b33hFjs  oembed:200  =>  1148
 Oz6BfffvRnA  oembed:200  =>  1175
-z0c3c3ErQvs  oembed:200  =>  1192
-N-FR2SunT6s  oembed:200  =>  973
-cd6WRCzDbz4  oembed:200  =>  339
-7_lO12TpxkU  oembed:200  =>  2818
-fdfQYYCRNAo  oembed:200  =>  1050
-nHGc48thM3o  oembed:200  =>  344
-sccG1FB_PwU  oembed:200  =>  903
+xhpHGLboPRw  oembed:200  =>  724
+KddE32XxZ0k  oembed:200  =>  904
+7uZasBe4iD4  oembed:200  =>  1308
+UD2fTQ6OX68  oembed:200  =>  1308
+SSQ1TPoyLsU  oembed:200  =>  1308
+lciABANeK6I  oembed:200  =>  533
 -dItT2j5ZJk  oembed:200  =>  2999
 jPzOW2aLYnM  oembed:200  =>  4522
 ruuUrulIOgI  oembed:200  =>  5439

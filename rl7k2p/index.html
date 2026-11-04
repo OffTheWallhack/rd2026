@@ -1595,7 +1595,7 @@ $('#mebtn').onclick=()=>{
 };
 
 /* ---------- credits: daily bonus + healthy tasks ---------- */
-const TASKS=[['squat','20 drepov',20,0],['push','15 klikov (aj z kolien)',20,0],['plank','Plank 1 minúta',20,60],['walk','Prechádzka vonku aspoň 20 minút',25,0],['water','Veľký pohár vody',5,0],['read','10 minút čítania',15,0],['tidy','10 minút upratovania',15,0],['breath','Pokojné dýchanie 3 minúty',15,180],['stretch','Strečing 5 minút',15,300]];
+const TASKS=[['squat','20 drepov',20,0],['push','15 klikov (aj z kolien)',20,0],['plank','Plank 1 minúta',20,60],['walk','Prechádzka vonku aspoň 20 minút',25,0],['walk10','Prechádzka vonku 10 minút',15,0],['water','Veľký pohár vody',5,0],['read','10 minút čítania',15,0],['tidy','10 minút upratovania',15,0],['breath','Pokojné dýchanie 3 minúty',15,180],['stretch','Strečing 5 minút',15,300]];
 const TASKMAX=TASKS.reduce((a,t)=>a+t[2],0);
 function earnT(){const d=today();if(!S.earn||S.earn.d!==d)S.earn={d,done:[],cr:0};return S.earn}
 const yday=()=>{const d=new Date();d.setDate(d.getDate()-1);return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()};
@@ -1642,6 +1642,7 @@ function awardTask(t){const E2=earnT();if(E2.done.includes(t[0]))return;E2.done.
 function runHTML(){const br=RUN.id==='breath';return `<div class="runp"><div class="runh"><b>${esc(RUN.name)}</b><span class="money" id="runtime">${mmss(Math.max(0,Math.ceil((RUN.end-Date.now())/1000)))}</span></div>${br?`<div class="brz"><div class="brc" id="brc"></div><div class="brt"><b id="brw">Nadýchni sa</b><span id="brs">${BR.in}</span></div></div>`:''}<div class="runbar"><i id="runbar"></i></div><div class="betrow" style="justify-content:space-between"><span class="lab">${br?`nádych ${BR.in} s · zadržať ${BR.hold} s · výdych ${BR.out} s`:'môžeš medzitým splniť aj iné veci'}</span><button class="btn sm ghost" id="runx">Zrušiť</button></div></div>`}
 function runStart(t){if(RUN)return;RUN={id:t[0],name:t[1],total:t[3],start:Date.now(),end:Date.now()+t[3]*1000,ph:'',beep:0};runT=setInterval(runTick,100);openCredits()}
 function runStop(){clearInterval(runT);runT=null;RUN=null}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&RUN){if(!runT)runT=setInterval(runTick,100);runTick()}});
 function runTick(){if(!RUN)return;const ms=RUN.end-Date.now(),left=Math.ceil(ms/1000);
   if(ms<=0){const t=TASKS.find(x=>x[0]===RUN.id);runStop();awardTask(t);if($('#ctab'))openCredits();return}
   const rt=$('#runtime');if(rt)rt.textContent=mmss(left);const rb=$('#runbar');if(rb)rb.style.width=((Date.now()-RUN.start)/(RUN.total*1000)*100)+'%';

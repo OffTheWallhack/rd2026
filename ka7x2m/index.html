@@ -89,6 +89,7 @@ textarea{width:100%;box-sizing:border-box;height:140px;font:11px/1.45 var(--mono
 #eggs .badge{padding:8px 4px;cursor:pointer}
 #eggs .face{width:34px;height:34px;font-size:11px}
 .q.auto{cursor:default}
+a.btnlink{display:inline-block;font:500 14px var(--display);border:1px solid var(--line);border-radius:12px;padding:10px 14px;color:var(--fg);text-decoration:none}
 .q .rr{margin-left:auto;background:transparent;color:var(--muted);border:1px solid var(--line);padding:2px 9px;font-size:14px;border-radius:9px}
 .modal{position:fixed;inset:0;background:rgba(8,12,20,.78);display:grid;place-items:center;z-index:30;padding:24px max(16px,env(safe-area-inset-right,0px)) 24px max(16px,env(safe-area-inset-left,0px))}
 .card{background:var(--panel);border:2px solid var(--mint);border-radius:24px;padding:24px;max-width:340px;width:100%;max-height:calc(100vh - 48px);overflow:auto;display:flex;flex-direction:column;gap:12px;text-align:center}
@@ -150,18 +151,10 @@ button:disabled{opacity:.4;cursor:default}
     <div class="eyebrow">Rastlina</div>
     <canvas id="plant" width="160" height="160" aria-label="Rastlina, ktorá rastie s každým čistým dňom"></canvas>
     <div class="small" id="plantNote"></div>
-    <div class="eyebrow" style="margin-top:8px">Dnešné questy · +5 XP každý</div>
-    <div class="quests" id="quests"></div>
-    <div class="eyebrow" style="margin-top:12px">Bonus dňa · +8 XP · ↻ vymení</div>
-    <div class="quests" id="bonusQ"></div>
-    <div class="small" id="qStreak" style="margin-top:6px"></div>
-  </div>
-
-  <div class="tile" id="weekCard">
-    <div class="eyebrow">Týždenné úlohy · +20 XP · celé +20</div>
-    <div class="quests" id="weekList"></div>
-    <div class="bar mint" style="margin-top:8px"><i id="weekBar"></i></div>
-    <div class="small" id="weekNote"></div>
+    <div class="eyebrow" style="margin-top:8px">Dnešné úlohy · z Lounge · +5 XP každá</div>
+    <div class="quests" id="rlList"></div>
+    <div class="small" id="rlNote" style="margin-top:6px"></div>
+    <div class="btns"><a class="btnlink" id="rlOpen" href="https://durica.si/rl7k2p/" target="_blank" rel="noopener">Otvoriť Lounge</a></div>
   </div>
 
   <div class="tile" id="startCard" hidden>
@@ -487,11 +480,11 @@ function load(){let raw=null;try{raw=JSON.parse(localStorage.getItem("ts"))}catc
  else{const old=raw||{};let os,op;
   const c=newCounter({id:"c1",start:old.start||os,per:old.per!=null?Number(old.per):(op?Number(op):undefined),prevMs:old.prevMs,resets:old.resets,waves:old.waves,waveEnd:old.waveEnd,waveLog:old.waveLog,goalName:old.goalName,goal:old.goal,seen:old.seen,eggSeen:old.eggSeen,plantMode:old.plantMode});
   R={active:"c1",font:old.font,reasons:old.reasons,log:old.log||{},counters:[c]}}
- R.bq=(raw&&raw.bq)||{};R.wk=(raw&&raw.wk)||{};
+ R.bq=(raw&&raw.bq)||{};R.wk=(raw&&raw.wk)||{};R.rl=(raw&&raw.rl)||{};
  if(!R.counters.some(c=>c.id===R.active))R.active=R.counters[0].id;
  R.counters.forEach(c=>{c.log=R.log});return R}
 const ROOT=load();let S=ROOT.counters.find(c=>c.id===ROOT.active);
-function exportObj(){return{v:2,active:ROOT.active,font:ROOT.font,reasons:ROOT.reasons,log:ROOT.log,bq:ROOT.bq,wk:ROOT.wk,counters:ROOT.counters.map(c=>{const r=Object.assign({},c);delete r.log;return r})}}
+function exportObj(){return{v:2,active:ROOT.active,font:ROOT.font,reasons:ROOT.reasons,log:ROOT.log,bq:ROOT.bq,wk:ROOT.wk,rl:ROOT.rl,counters:ROOT.counters.map(c=>{const r=Object.assign({},c);delete r.log;return r})}}
 function save(){try{localStorage.setItem("ts",JSON.stringify(exportObj()));return true}catch(e){return false}}
 function keyOf(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}
 function todayKey(){return keyOf(new Date())}
@@ -560,15 +553,12 @@ function weekItems(wk){const days=[];for(let i=0;i<7;i++)days.push(S.log[addDays
   else out.push({id:x.id,t:typeof x.t==="function"?x.t(S):x.t,done:dn.includes(x.id)})});
  out.push({id:"w_ch",t:"Výzva týždňa: "+CH[weekNo(wk)%CH.length],done:dn.includes("w_ch")});
  return out}
-function bonusToday(){const k=todayKey();let b=ROOT.bq[k];
- if(!b){const g=shuffled(BONUS.filter(x=>x[2]==="g").map(x=>x[0]),seedOf(k+"g")),e=shuffled(BONUS.filter(x=>x[2]==="e").map(x=>x[0]),seedOf(k+"e"));b=ROOT.bq[k]={p:[g[0],e[0]],g:1,e:1,rr:0,done:[]}}
- return b}
-function reroll(i){const k=todayKey(),b=bonusToday();if((b.rr||0)>=2||b.done.includes(b.p[i]))return;
- const t=i===0?"g":"e",arr=shuffled(BONUS.filter(x=>x[2]===t).map(x=>x[0]),seedOf(k+t));b[t]=b[t]||1;b.p[i]=arr[b[t]%arr.length];b[t]++;b.rr=(b.rr||0)+1;save();renderQuests()}
-function fullStreak(){const full=k=>{const a=S.log[k];return !!a&&a.length===QUESTS.length&&a.every(Boolean)};let n=0,d=new Date();d.setHours(12,0,0,0);if(!full(keyOf(d)))d.setDate(d.getDate()-1);while(full(keyOf(d))&&n<3000){n++;d.setDate(d.getDate()-1)}return n}
+const RL_FULL=3;
+function dayFull(k){const a=S.log[k];return (!!a&&a.length===QUESTS.length&&a.every(Boolean))||(ROOT.rl[k]||0)>=RL_FULL}
 function stats(){
  const now=Date.now(),start=new Date(S.start).getTime(),curMs=Math.max(0,now-start),totalMs=S.prevMs+curMs;
  let questsDone=0,fullDays=0;const sk=S.start.slice(0,10),from=S.born&&S.born<sk?S.born:sk;for(const k in S.log){if(k<from)continue;const n=S.log[k].filter(Boolean).length;questsDone+=n;if(n===QUESTS.length)fullDays++}
+ let rlTotal=0;for(const k in ROOT.rl){if(k<from)continue;const n=ROOT.rl[k]||0;rlTotal+=n;if(n>=RL_FULL){const a=S.log[k];if(!(a&&a.length===QUESTS.length&&a.every(Boolean)))fullDays++}}questsDone+=rlTotal;
  let bonusDone=0;for(const k in ROOT.bq){if(k<from)continue;bonusDone+=(ROOT.bq[k].done||[]).filter(id=>BONUS.some(x=>x[0]===id)).length}
  let weekDone=0,weeksFull=0;for(let wk=weekKey(from+"T12:00:00"),cur=weekKey(),g=0;wk<=cur&&g<700;wk=addDays(wk,7),g++){const it=weekItems(wk),d=it.filter(x=>x.done).length;weekDone+=d;if(d===it.length)weeksFull++}
  const xp=Math.floor(totalMs/HOUR)+S.waves*25+questsDone*5+(S.s72||[]).filter(Boolean).length*5+bonusDone*8+weekDone*20+weeksFull*20;
@@ -585,10 +575,8 @@ const TRACKS=[
  {id:"days",name:"Čisté dni",lv:[1,3,7,14,30,90,365],val:s=>s.curDays,short:v=>v+"d",u:" d",txt:v=>"Čisto "+v+" "+dayWord(v)+" v kuse",at:(v,s)=>s.start+v*DAY},
  {id:"money",name:"Ušetrené",lv:[50,100,250,500,1000,2500,5000],val:s=>s.money,short:v=>v>=1000?(v/1000)+"k":v+"€",u:" €",txt:v=>"Ušetrených "+v+" €",hide:()=>!(S.per>0),at:(v,s)=>s.start+(v/S.per*DAY-S.prevMs)},
  {id:"waves",name:"Vlny",lv:[1,5,10,25,50,100,200],val:()=>S.waves,short:v=>"×"+v,u:"",txt:v=>v+" "+plural(v,"prečkaná vlna","prečkané vlny","prečkaných vĺn"),at:v=>(S.waveLog||[])[v-1]},
- {id:"full",name:"Plné dni",lv:[1,3,7,14,30,60,100],val:s=>s.fullDays,short:v=>v+"×",u:"",txt:v=>v+" "+dayWord(v)+" so všetkými 4 questami"},
- {id:"quests",name:"Questy",lv:[10,50,100,250,500,1000,2000],val:s=>s.questsDone,short:v=>String(v),u:"",txt:v=>v+" splnených denných questov"},
- {id:"bonus",name:"Bonusy",lv:[5,25,50,100,250,500,1000],val:s=>s.bonusDone,short:v=>String(v),u:"",txt:v=>v+" splnených bonusov dňa"},
- {id:"weeks",name:"Týždne",lv:[1,2,4,8,13,26,52],val:s=>s.weeksFull,short:v=>v+"t",u:"",txt:v=>v+" "+plural(v,"týždeň","týždne","týždňov")+" so všetkými týždennými úlohami"}
+ {id:"full",name:"Dobré dni",lv:[1,3,7,14,30,60,100],val:s=>s.fullDays,short:v=>v+"×",u:"",txt:v=>v+" "+dayWord(v)+" s aspoň 3 úlohami z Lounge"},
+ {id:"quests",name:"Úlohy",lv:[10,50,100,250,500,1000,2000],val:s=>s.questsDone,short:v=>String(v),u:"",txt:v=>v+" splnených úloh"}
 ];
 function fmtAt(ts){return ts?new Date(ts).toLocaleString("sk-SK",{weekday:"short",day:"numeric",month:"numeric",year:"numeric",hour:"2-digit",minute:"2-digit"}):"dátum neznámy"}
 function leftTxt(t,th,v){const d=th-v;return "chýba "+(t.id==="days"?(d<1?Math.ceil(d*24)+" h":(Math.ceil(d*10)/10).toString().replace(".",",")+" d"):Math.ceil(d)+t.u)}
@@ -636,31 +624,26 @@ function renderEggs(s){if(!Array.isArray(S.eggSeen))S.eggSeen=[];if(!S.eggAt)S.e
 }
 function showEgg(){if(!$("modal").hidden)return;const e=eggQ.shift();if(!e)return;openInfo("Tajný odznak"+(eggQ.length?" · ďalšie: "+eggQ.length:""),e.t,e.b)}
 $("mOk").addEventListener("click",()=>{$("modal").hidden=true;showEgg()});
+const RLT=[["squat","20 drepov"],["push","15 klikov"],["plank","Plank 1 minúta"],["walk","Prechádzka 20 minút"],["walk10","Prechádzka 10 minút"],["water","Veľký pohár vody"],["read","10 minút čítania"],["tidy","10 minút upratovania"],["breath","Pokojné dýchanie 3 minúty"],["stretch","Strečing 5 minút"]];
+function rlRead(){try{const raw=localStorage.getItem("caselounge");if(!raw)return null;const l=JSON.parse(raw);if(!l||typeof l!=="object")return null;
+ const d=new Date(),t=d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+ return{done:(l.earn&&l.earn.d===t&&Array.isArray(l.earn.done))?l.earn.done:[]}}catch(e){return null}}
+let rlSig="";
 function renderQuests(){
- const k=todayKey(),done=S.log[k]||QUESTS.map(()=>false),box=$("quests");box.innerHTML="";
- QUESTS.forEach(([id,label],i)=>{const l=document.createElement("label");l.className="q"+(done[i]?" done":"");l.htmlFor="q-"+id;l.style.marginTop="0";
-  l.innerHTML='<input type="checkbox" id="q-'+id+'"'+(done[i]?" checked":"")+'><span>'+label+'</span>';
-  l.querySelector("input").addEventListener("change",e=>{const arr=S.log[k]||QUESTS.map(()=>false);arr[i]=e.target.checked;S.log[k]=arr;save();
-   if(e.target.checked)toast("+5 XP");if(arr.every(Boolean))toast("Plný deň. Rastlina je poliata.");renderQuests();tick()});
-  box.appendChild(l)});
- const b=bonusToday(),bb=$("bonusQ");bb.innerHTML="";
- b.p.forEach((id,i)=>{const it=BONUS.find(x=>x[0]===id);if(!it)return;const ok=b.done.includes(id);
-  const l=document.createElement("label");l.className="q"+(ok?" done":"");l.style.marginTop="0";
-  l.innerHTML='<input type="checkbox"'+(ok?" checked":"")+'><span></span>';l.querySelector("span").textContent=it[1];
-  l.querySelector("input").addEventListener("change",e=>{if(e.target.checked){if(!b.done.includes(id))b.done.push(id);toast("+8 XP")}else b.done=b.done.filter(x=>x!==id);ROOT.bq[k]=b;save();renderQuests();tick()});
-  if(!ok&&(b.rr||0)<2){const r=document.createElement("button");r.type="button";r.className="rr";r.textContent="↻";r.setAttribute("aria-label","Iný bonus");r.addEventListener("click",ev=>{ev.preventDefault();reroll(i)});l.appendChild(r)}
-  bb.appendChild(l)});
- const fs=fullStreak();$("qStreak").textContent=fs>0?"Séria plných dní: "+fs:"Splň všetky 4 hlavné questy a rastlina sa polieva.";
- const n=done.filter(Boolean).length;$("plantNote").textContent=n===QUESTS.length?"Dnes poliata. Na 30. deň dozrie.":"Rastie s každým čistým dňom. Questy ju polievajú ("+n+"/"+QUESTS.length+").";
- renderCal();renderWeek();
+ const k=todayKey(),r=rlRead(),box=$("rlList");box.innerHTML="";
+ if(r){const n=r.done.length;if(n>(ROOT.rl[k]||0)){ROOT.rl[k]=n;save()}
+  RLT.forEach(([id,label])=>{const ok=r.done.includes(id),l=document.createElement("label");l.className="q auto"+(ok?" done":"");l.style.marginTop="0";
+   l.innerHTML='<input type="checkbox" disabled'+(ok?" checked":"")+'><span></span>';l.querySelector("span").textContent=label;box.appendChild(l)});
+  $("rlNote").textContent=n+" z "+RLT.length+" hotových. Odškrtávaš ich v Lounge, tu sa len ukazujú."}
+ else $("rlNote").textContent="Úlohy odškrtávaš v Lounge. Tu sa ukážu, keď túto appku otvoríš z durica.si.";
+ rlSig=r?r.done.join(","):"-";
+ const n=ROOT.rl[k]||0,full=dayFull(k);
+ $("plantNote").textContent=full?"Dnes poliata. Na 30. deň dozrie.":"Rastie s každým čistým dňom. Polievajú ju "+RL_FULL+" úlohy z Lounge ("+Math.min(n,RL_FULL)+"/"+RL_FULL+").";
+ renderCal()
 }
-function renderWeek(){const wk=weekKey(),items=weekItems(wk),box=$("weekList");box.innerHTML="";
- items.forEach(it=>{const l=document.createElement("label");l.className="q"+(it.done?" done":"")+(it.auto?" auto":"");l.style.marginTop="0";
-  l.innerHTML='<input type="checkbox"'+(it.done?" checked":"")+(it.auto?" disabled":"")+'><span></span>';l.querySelector("span").textContent=it.t+(it.auto?" ("+Math.min(it.n,it.goal)+"/"+it.goal+")":"");
-  if(!it.auto)l.querySelector("input").addEventListener("change",e=>{const w=(ROOT.wk[wk]=ROOT.wk[wk]||{done:[]});if(e.target.checked){if(!w.done.includes(it.id))w.done.push(it.id);toast("+20 XP")}else w.done=w.done.filter(x=>x!==it.id);save();renderWeek();tick();if(weekItems(wk).every(x=>x.done))toast("Týždeň hotový. +20 XP navyše")});
-  box.appendChild(l)});
- const n=items.filter(x=>x.done).length,left=7-((new Date().getDay()+6)%7);$("weekBar").style.width=Math.round(n/items.length*100)+"%";
- $("weekNote").textContent=n+" z "+items.length+" · "+(left===1?"nový týždeň zajtra":"nový týždeň o "+left+" "+dayWord(left))}
+function rlWatch(){const r=rlRead(),sig=r?r.done.join(","):"-";if(sig!==rlSig){renderQuests();tick()}}
+window.addEventListener("storage",e=>{if(e.key==="caselounge")rlWatch()});
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)rlWatch()});
 /*SCENE*/
 function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
 function drawPlantTo(cv,days,watered){
@@ -828,7 +811,7 @@ function tick(){
  $("mbar").style.width=Math.min(100,(s.curDays-base)/(m[0]-base)*100)+"%";
  $("nextnote").textContent=prev?(prev[0]<1?"Prvá noc zvládnutá.":prev[1]):"Prvá noc je najbližší cieľ.";
  $("waveCount").textContent=S.waves?"Porazených vĺn: "+S.waves:"";
- const k=todayKey(),wv=(S.log[k]||[]).length&&(S.log[k]||[]).every(Boolean)?1:0;if(prevWatered===0&&wv===1)rain(mainScene,4);prevWatered=wv;setScene(mainScene,s.curDays,wv);
+ const wv=dayFull(todayKey())?1:0;if(prevWatered===0&&wv===1)rain(mainScene,4);prevWatered=wv;setScene(mainScene,s.curDays,wv);
  renderBadges(s);renderStart(s);
 }
 const DEF_REASONS="Spať v noci a mať energiu\nPeniaze na moje projekty\nSlobodná hlava";
@@ -897,7 +880,7 @@ function renderCal(){
  const first=new Date(calY,calM,1),off=(first.getDay()+6)%7,dim=new Date(calY,calM+1,0).getDate(),tk=todayKey(),rg=cleanRanges(),slips=S.slips||[];
  let h=["Po","Ut","St","Št","Pi","So","Ne"].map(d=>'<i class="dow">'+d+'</i>').join(""),clean=0,full=0;
  for(let i=0;i<off;i++)h+="<i></i>";
- for(let d=1;d<=dim;d++){const k=calY+"-"+pad(calM+1)+"-"+pad(d),fut=k>tk,ok=!fut&&rg.some(([a,b])=>k>=a&&k<=b),lg=S.log[k],fl=ok&&lg&&lg.length&&lg.every(Boolean);
+ for(let d=1;d<=dim;d++){const k=calY+"-"+pad(calM+1)+"-"+pad(d),fut=k>tk,ok=!fut&&rg.some(([a,b])=>k>=a&&k<=b),fl=ok&&dayFull(k);
   if(ok)clean++;if(fl)full++;
   h+='<i class="'+(ok?"ok ":"")+(fl?"full ":"")+(k===tk?"today ":"")+(slips.includes(k)?"slip ":"")+(fut?"fut":"")+'" title="'+k+'">'+d+"</i>"}
  $("cal").innerHTML=h;
@@ -931,7 +914,7 @@ $("bakRestore").addEventListener("click",()=>{const txt=$("bakIn").value.trim();
  if(!o||!Array.isArray(o.counters)||!o.counters.length||!o.counters.every(c=>c&&typeof c.start==="string")){$("restoreMsg").textContent="Toto nevyzerá ako záloha.";return}
  if(!bakArmed){bakArmed=true;$("bakRestore").textContent="Áno, prepísať";$("restoreMsg").textContent="Ťukni ešte raz. Terajšie dáta sa prepíšu.";return}
  try{localStorage.setItem("ts",txt)}catch(e){$("restoreMsg").textContent="Nepodarilo sa uložiť.";return}
- const R=load();ROOT.counters=R.counters;ROOT.active=R.active;ROOT.font=R.font;ROOT.reasons=R.reasons;ROOT.log=R.log;ROOT.bq=R.bq;ROOT.wk=R.wk;S=ROOT.counters.find(c=>c.id===ROOT.active);
+ const R=load();ROOT.counters=R.counters;ROOT.active=R.active;ROOT.font=R.font;ROOT.reasons=R.reasons;ROOT.log=R.log;ROOT.bq=R.bq;ROOT.wk=R.wk;ROOT.rl=R.rl;S=ROOT.counters.find(c=>c.id===ROOT.active);
  applyFont(ROOT.font||"bricolage");bakArmed=false;$("bakRestore").textContent="Obnoviť";$("bakIn").value="";switchTo(ROOT.active);$("restoreMsg").textContent="Obnovené.";toast("Záloha obnovená")});
 const FONTS=[
  ["bricolage","Bricolage",'"Bricolage Grotesque",system-ui,sans-serif',1],
@@ -953,7 +936,8 @@ FONTS.forEach(([id,name,fam,sc])=>{const b=document.createElement("button");b.ty
 applyFont(ROOT.font||"bricolage");
 fillPlantSelect($("plantMode"));fillPlantSelect($("addPlant"));renderTabs();fill();renderQuests();tick();waveUI();waveTick();renderHours();startScenes();
 let lastDay=todayKey();
-setInterval(()=>{waveTick();if(todayKey()!==lastDay){lastDay=todayKey();renderQuests()}tick()},1000);
+let rlN=0;
+setInterval(()=>{waveTick();if(todayKey()!==lastDay){lastDay=todayKey();renderQuests()}if(++rlN%5===0)rlWatch();tick()},1000);
 </script>
 </body>
 </html>

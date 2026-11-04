@@ -121,8 +121,9 @@ async function hladajVideo(dotaz, max){
   }
   return vsetko;
 }
-const JAZYK = /(^|[^a-z])(cz|sk|cze|česk|cesk|slovensk|dabing|dab)/i;
-const NIE_DIEL = /#shorts|\bshorts?\b|tiktok|reakc|reaction|edit\b|fan ?made|\bai\b|minecraft|roblox|fortnite|gameplay|hra\b|lets ?play|let's play|karaoke|cover|remix|meme|ytp|youtube poop|speedpaint|drawing|unboxing|hračk|toys?\b|top ?\d+|vs\.?\b|tier list|teorie|theory/i;
+const JAZYK = /(^|[^a-z])(cz|sk|cze|česk|cesk|slovensk|dabing|dab)|[ěřůľôäĺŕ]/i;
+const DIEL = /s\d+\s?e\d+|\d+\s?x\s?\d+|d[ií]l|epizod|ep\.?\s?\d|část|časť|\(\d+\)|#\d|(^|[^\d])\d{1,3}([^\d]|$)/i;
+const NIE_DIEL = /retro hry|twitch|živě|hrajeme|\bps[1-5]\b|\btcg\b|soundtrack|\bfilm\b|movie|titulk|tiulk|\btit\b|fandub|po polsku|polsk|\bcz\.\s?\d|speedrun|nejtemn|momenty|teori|skvěl|licens|audio only|walkthrough|longplay|recenz|#shorts|\bshorts?\b|tiktok|reakc|reaction|edit\b|fan ?made|\bai\b|minecraft|roblox|fortnite|gameplay|hra\b|lets ?play|let's play|karaoke|cover|remix|meme|ytp|youtube poop|speedpaint|drawing|unboxing|hračk|toys?\b|top ?\d+|vs\.?\b|tier list|teorie|theory/i;
 const zdrojKluc = p => p.playlist || p.kanal || (p.hladaj ? 'hladaj:' + [].concat(p.hladaj).join('|') : '');
 const plVysledky = {};
 for (const k of O.kanaly) for (const p of k.program){
@@ -141,6 +142,7 @@ for (const k of O.kanaly) for (const p of k.program){
         if (!x.s) continue;                                         // pri hľadaní chceme presnú dĺžku
         if (p.jazyk !== false && !JAZYK.test(x.nazov || '')) continue;
         if (NIE_DIEL.test(x.nazov || '')) continue;
+        if ((p.diel ?? p.jazyk !== false) && !DIEL.test((x.nazov || '').replace(new RegExp(p.obsahuje || '^$', 'ig'), ''))) continue;   // musí vyzerať ako diel (číslo, epizóda…)
         const n = (x.nazov || '').toLowerCase().normalize('NFD').replace(/[^a-z0-9]/g, '');
         if (videneNazvy.has(n)) continue;                           // ten istý diel od viacerých ľudí
         if (unik.length >= (p.max || 40)) break;

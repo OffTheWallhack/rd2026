@@ -115,7 +115,7 @@ window.POZERAL = {
         { playlist:'PLXkA6SvogZFsro5cOPiQcy1CHMjSLOQq7', show:'Byl jednou jeden… život', lang:'CZ', min:25, max:26 },
         { playlist:'PL_c00IPCdRoGD0k6aG7725OaqHQQffcVf', show:'Byl jednou jeden… život', lang:'CZ', min:25, max:26 },
         { kanal:'@byljednoujedenzivot', show:'Byl jednou jeden… život', lang:'CZ', min:25, max:20 },
-        { playlist:'PLh4oNLWEP1pov-S4X2rwB3e1kKFFjecKe', show:'Bob a Bobek', lang:'CZ', min:8, max:30 },
+        { playlist:'PLh4oNLWEP1pov-S4X2rwB3e1kKFFjecKe', show:'Bob a Bobek', lang:'CZ', min:8, max:30 }
       ]
     },
     {
@@ -228,14 +228,9 @@ window.POZERAL = {
         { hladaj:['Klíšťák cz', 'Klíšťák celý díl', 'Klíšťák část 1/2', 'Klíšťák S01'], obsahuje:'klíšťák|klistak|klíšťak', show:'Klíšťák', lang:'CZ', min:10, max:60, jazyk:false },
         { hladaj:['Tři kamarádi a Jerry', 'Tři kamarádi a Jerry celý díl', 'Tři kamarádi a Jerry CZ', 'Tři kamarádi a Jerry S2'], obsahuje:'kamarádi a jerry|kamaradi a jerry', show:'Tři kamarádi a Jerry', lang:'CZ', min:7, max:60, jazyk:false },
         { hladaj:['WITCH cz dabing', 'W.I.T.C.H. česky'], obsahuje:'w\\.?i\\.?t\\.?c\\.?h', show:'W.I.T.C.H.', lang:'CZ', min:22, max:30 },
-        { hladaj:['Kim Possible cz', 'Kim Possible česky'], obsahuje:'kim possible', show:'Kim Possible', lang:'CZ', min:22, max:30 },
-        { hladaj:['Martin Mystery cz', 'Martin Mystery česky'], obsahuje:'martin myster', show:'Martin Mystery', lang:'CZ', min:22, max:30 },
-        { hladaj:['Dennis postrach okolí'], obsahuje:'postrach okol', show:'Dennis postrach okolí', lang:'CZ', min:22, max:30, jazyk:false },
         { hladaj:['Rychlá rota cz', 'Rychlá rota celý díl', 'Rychlá rota cz dabing'], obsahuje:'rychl[áa] rota', show:'Rychlá rota', lang:'CZ', min:22, max:30, jazyk:false },
-        { hladaj:['Ed Edd a Eddy cz', 'Ed Edd n Eddy cz dabing'], obsahuje:'ed,? edd', show:'Ed, Edd a Eddy', lang:'CZ', min:22, max:30 },
         { hladaj:['Totální drama cz', 'Totální drama ostrov'], obsahuje:'tot[áa]ln[íi] drama', show:'Totální drama', lang:'CZ', min:22, max:30, jazyk:false },
-        { hladaj:['Garfieldova show cz', 'Garfieldova show celý díl', 'Garfield show sk dabing'], obsahuje:'garfield', show:'Garfieldova show', lang:'CZ', min:12, max:40 },
-        { hladaj:['Kačeří příběhy cz celý díl'], obsahuje:'kače[řr][íi] p[řr][íi]b[ěe]hy', show:'Kačeří příběhy', lang:'CZ', min:22, max:30, jazyk:false }
+        { hladaj:['Garfieldova show cz', 'Garfieldova show celý díl', 'Garfield show sk dabing'], obsahuje:'garfield', show:'Garfieldova show', lang:'CZ', min:12, max:40 }
       ]
     },
     {
@@ -276,18 +271,9 @@ window.POZERAL = {
         { playlist:'PLhr2MGr4OPNcEUNaI_aESmupie_m-Ppzr', show:'Král šamanů', lang:'CZ', min:22, max:40 },
         { playlist:'PL3EEYr69JFOyn1EKmWZwkq6_cPL_LGxEY', show:'Beyblade Metal Masters', lang:'CZ', min:22, max:40 },
         { hladaj:['Pokémon cz dabing celý díl', 'Pokémon česky epizoda', 'Pokémon sk dabing'], obsahuje:'pok[eé]mon', show:'Pokémon', lang:'CZ', min:22, max:30, vynechaj:'karty|cards?\\b|booster|pack|balíč|\\bgo\\b|scarlet|violet|legends|film|soundtrack|movie' },
-        { hladaj:['Digimon cz', 'Digimon česky'], obsahuje:'digimon', show:'Digimon', lang:'CZ', min:22, max:30 },
-        { hladaj:['Yu-Gi-Oh cz dabing', 'Yu-Gi-Oh česky'], obsahuje:'yu-?gi-?oh', show:'Yu-Gi-Oh!', lang:'CZ', min:22, max:30, vynechaj:'karty|cards?\\b|booster|pack|deck|duel links|master duel' },
         { hladaj:['Ben 10 cz dabing', 'Ben 10 česky celý díl'], obsahuje:'ben ?10', show:'Ben 10', lang:'CZ', min:22, max:30, vynechaj:'omnitrix|hračk|toy' },
-        { hladaj:['Sonic X cz'], obsahuje:'sonic', show:'Sonic X', lang:'CZ', min:22, max:30 },
-        { hladaj:['Spider-Man animovaný seriál cz', 'Spiderman 1994 cz dabing'], obsahuje:'spider-?man', show:'Spider-Man', lang:'CZ', min:22, max:30, vynechaj:'film|movie|trailer|ps4|ps5|game' },
-        { hladaj:['X-Men animovaný seriál cz', 'X-Men 1992 cz'], obsahuje:'x-?men', show:'X-Men', lang:'CZ', min:22, max:30, vynechaj:'film|movie|trailer|game|97' },
-        { hladaj:['Jackie Chan dobrodružství cz', 'Jackieho Chanova dobrodružství'], obsahuje:'jackie', show:'Jackie Chan', lang:'CZ', min:22, max:30, vynechaj:'film|movie' },
-        { hladaj:['Želvy ninja 2003 cz', 'Želvy ninja cz dabing celý díl'], obsahuje:'želvy|zelvy|ninja turtles', show:'Želvy Ninja', lang:'CZ', min:22, max:30, vynechaj:'film|movie|trailer|game' },
         { hladaj:['Power Rangers cz dabing', 'Power Rangers česky', 'Power Rangers Síla Strážců cz', 'Mighty Morphin Power Rangers CZ'], obsahuje:'power rangers', show:'Power Rangers', lang:'CZ', min:22, max:50, vynechaj:'film|movie|trailer|game|toy' },
-        { hladaj:['Naruto cz dabing', 'Naruto sk dabing'], obsahuje:'naruto', show:'Naruto', lang:'CZ', min:22, max:30, vynechaj:'shippuden|boruto|film|movie|amv' },
-        { hladaj:['Gormiti cz'], obsahuje:'gormiti', show:'Gormiti', lang:'CZ', min:22, max:30 },
-        { hladaj:['Huntik cz'], obsahuje:'huntik', show:'Huntik', lang:'CZ', min:22, max:30 }
+        { hladaj:['Gormiti cz'], obsahuje:'gormiti', show:'Gormiti', vynechaj:'apk|sběratel|kolekc', lang:'CZ', min:22, max:30 }
       ]
     },
     {

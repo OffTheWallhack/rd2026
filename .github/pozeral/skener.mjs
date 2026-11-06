@@ -123,7 +123,7 @@ async function hladajVideo(dotaz, max){
 }
 const JAZYK = /(^|[^a-z])(cz|sk|cze|česk|cesk|slovensk|dabing|dab)|[ěřůľôäĺŕ]/i;
 const DIEL = /s\d+\s?e\d+|\d+\s?x\s?\d+|d[ií]l|epizod|ep\.?\s?\d|část|časť|\(\d+\)|#\d|(^|[^\d])\d{1,3}([^\d]|$)/i;
-const NIE_DIEL = /retro hry|twitch|živě|hrajeme|\bps[1-5]\b|\btcg\b|soundtrack|\bfilm\b|movie|titulk|tiulk|\btit\b|fandub|po polsku|polsk|\bcz\.\s?\d|speedrun|nejtemn|momenty|teori|skvěl|licens|audio only|walkthrough|longplay|recenz|#shorts|\bshorts?\b|tiktok|reakc|reaction|edit\b|fan ?made|\bai\b|minecraft|roblox|fortnite|gameplay|hra\b|lets ?play|let's play|karaoke|cover|remix|meme|ytp|youtube poop|speedpaint|drawing|unboxing|hračk|toys?\b|top ?\d+|vs\.?\b|tier list|teorie|theory/i;
+const NIE_DIEL = /fakt[ůuy]?\b|proč|zrušen|jak m[ěe]l|dopadl|report|championship|úvod do|zradil|vánoční|nikdo neměl|retro hry|twitch|živě|hrajeme|\bps[1-5]\b|\btcg\b|soundtrack|\bfilm\b|movie|titulk|tiulk|\btit\b|fandub|po polsku|polsk|\bcz\.\s?\d|speedrun|nejtemn|momenty|teori|skvěl|licens|audio only|walkthrough|longplay|recenz|#shorts|\bshorts?\b|tiktok|reakc|reaction|edit\b|fan ?made|\bai\b|minecraft|roblox|fortnite|gameplay|hra\b|lets ?play|let's play|karaoke|cover|remix|meme|ytp|youtube poop|speedpaint|drawing|unboxing|hračk|toys?\b|top ?\d+|vs\.?\b|tier list|teorie|theory/i;
 const zdrojKluc = p => p.playlist || p.kanal || (p.hladaj ? 'hladaj:' + [].concat(p.hladaj).join('|') : '');
 const plVysledky = {};
 for (const k of O.kanaly) for (const p of k.program){
@@ -136,27 +136,31 @@ for (const k of O.kanaly) for (const p of k.program){
     const unik = []; const videne = new Set(), videneNazvy = new Set();
     const vlozit = p.obsahuje ? new RegExp(p.obsahuje, 'i') : null, vynechat = p.vynechaj ? new RegExp(p.vynechaj, 'i') : null;
     const minS = p.minSek ?? (p.hladaj ? 300 : 240), maxS = p.maxSek ?? (p.hladaj ? 3600 : 5400);   // bez krátkych klipov a dlhých kompilácií
+    const odmietnute = [];
+    const zamietni = (x, d) => { if (p.hladaj && odmietnute.length < 12) odmietnute.push(d + ': ' + (x.nazov || '').slice(0, 70)); };
     for (const x of zoznam){
       if (videne.has(x.id)) continue;
       if (p.hladaj){
-        if (!x.s) continue;                                         // pri hľadaní chceme presnú dĺžku
-        if (p.jazyk !== false && !JAZYK.test(x.nazov || '')) continue;
-        if (NIE_DIEL.test(x.nazov || '')) continue;
-        if ((p.diel ?? p.jazyk !== false) && !DIEL.test((x.nazov || '').replace(new RegExp(p.obsahuje || '^$', 'ig'), ''))) continue;   // musí vyzerať ako diel (číslo, epizóda…)
+        if (!x.s){ zamietni(x, 'bez dĺžky'); continue; }             // pri hľadaní chceme presnú dĺžku
+        if (vlozit && !vlozit.test(x.nazov || '')){ zamietni(x, 'iný seriál'); continue; }
+        if (p.jazyk !== false && !JAZYK.test(x.nazov || '')){ zamietni(x, 'bez CZ/SK'); continue; }
+        if (NIE_DIEL.test(x.nazov || '')){ zamietni(x, 'nie diel'); continue; }
+        if ((p.diel ?? p.jazyk !== false) && !DIEL.test((x.nazov || '').replace(new RegExp(p.obsahuje || '^$', 'ig'), ''))){ zamietni(x, 'bez čísla dielu'); continue; }
         const n = (x.nazov || '').toLowerCase().normalize('NFD').replace(/[^a-z0-9]/g, '');
         if (videneNazvy.has(n)) continue;                           // ten istý diel od viacerých ľudí
         if (unik.length >= (p.max || 40)) break;
         if (!oeOk.has(x.id)){ let st = 0; try { st = await zOembed(x.id); } catch {} oeOk.set(x.id, st); await sleep(200); }
-        if (oeOk.get(x.id) !== 200) continue;                      // nedá sa vložiť: vôbec ho nepridáme
+        if (oeOk.get(x.id) !== 200){ zamietni(x, 'nedá sa vložiť ' + oeOk.get(x.id)); continue; }   // nedá sa vložiť: vôbec ho nepridáme
         videneNazvy.add(n);
       }
-      if (x.s && (x.s < minS || x.s > maxS)) continue;
+      if (x.s && (x.s < minS || x.s > maxS)){ zamietni(x, 'dĺžka ' + x.s); continue; }
       if (vlozit && !vlozit.test(x.nazov || '')) continue;      // voliteľné: názov musí obsahovať (obsahuje:'regex')
       if (vynechat && vynechat.test(x.nazov || '')) continue;   // voliteľné: názov nesmie obsahovať (vynechaj:'regex')
       if (/porovnání|porovnanie|trailer|upoutávka|upútavka|unboxing|ukážka|ukázka|intro\b|znělka|znelka|opening|reakce|recenze|parodie|AMV/i.test(x.nazov || '')) continue;
       videne.add(x.id); unik.push(x);
     }
-    if (unik.length){ plVysledky[kluc] = unik.slice(0, p.max || 60); console.log('Playlist', kluc, '→', plVysledky[kluc].length, 'videí'); }
+    if (p.hladaj) ladenie.push(`výsledok ${kluc}: ${zoznam.length} nájdených, ${unik.length} prijatých\n    ` + odmietnute.join('\n    '));
+    if (unik.length || (p.hladaj && zoznam.length)){ plVysledky[kluc] = unik.slice(0, p.max || 60); console.log('Playlist', kluc, '→', plVysledky[kluc].length, 'videí'); }   // pri hľadaní platí nový výsledok, aj keď je prázdny
     else if (starePl[kluc]){ plVysledky[kluc] = starePl[kluc]; console.log('Playlist', kluc, 'sa nepodarilo načítať, nechávam starý zoznam'); }
     else console.log('Playlist', kluc, 'je prázdny alebo sa nedá načítať');
   } catch (e) {

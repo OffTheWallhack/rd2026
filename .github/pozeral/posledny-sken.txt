@@ -1,94 +1,239 @@
-Sken 2026-11-06T09:39:55.077Z
+Sken 2026-11-06T13:39:11.075Z
 innertube PLXkA6SvogZFumCc1H0KgXGPdsRrzCcTHw: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 100 videí; alert: []
 innertube PL3SFGj27PTbfdUXNVv20TCjhbm8sriSH_: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 0 videí; alert: []
-html PL3SFGj27PTbfdUXNVv20TCjhbm8sriSH_: http 200, 893427 B, 0 videí
+html PL3SFGj27PTbfdUXNVv20TCjhbm8sriSH_: http 200, 885998 B, 0 videí
 rss PL3SFGj27PTbfdUXNVv20TCjhbm8sriSH_: http 200, 0 videí
 innertube PLXkA6SvogZFsro5cOPiQcy1CHMjSLOQq7: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 4 videí; alert: []
 innertube PL_c00IPCdRoGD0k6aG7725OaqHQQffcVf: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 7 videí; alert: []
-kanál @byljednoujedenzivot: http 200, 1066050 B, id UCg0IwNjbI490rs0g_cPGFXA
+kanál @byljednoujedenzivot: http 200, 1062798 B, id UCg0IwNjbI490rs0g_cPGFXA
 innertube UUg0IwNjbI490rs0g_cPGFXA: kľúče responseContext,contents,header,metadata,trackingParams,topbar,microformat,sidebar; 26 videí; alert: []
 innertube PLh4oNLWEP1pov-S4X2rwB3e1kKFFjecKe: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 37 videí; alert: []
 innertube PLQ7nXaicptSxRccybPZUBAPhSdxh1v9jI: kľúče responseContext,contents,header,metadata,trackingParams,topbar,microformat,sidebar; 72 videí; alert: []
 innertube PLwhLvPy7SFDEN8_qYEdv7LfbTdO3EQBBd: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 21 videí; alert: []
 innertube PLpNHzGK1cU90EcFXgbD0C3n9LiHwJokg4: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 52 videí; alert: []
-kanál @spionkycz-sk1054: http 200, 1064664 B, id UCWY2ygfhSISX-SF2YjGKhgw
+kanál @spionkycz-sk1054: http 200, 1062435 B, id UCWY2ygfhSISX-SF2YjGKhgw
 innertube UUWY2ygfhSISX-SF2YjGKhgw: kľúče responseContext,contents,header,metadata,trackingParams,topbar,microformat,sidebar; 25 videí; alert: []
 hľadaj "Špiónky celý díl": 20 videí
 hľadaj "Totally Spies Špiónky": 20 videí
 hľadaj "Totally Spies Špiónky cz": 20 videí
+výsledok hladaj:Špiónky celý díl|Totally Spies Špiónky|Totally Spies Špiónky cz: 217 nájdených, 20 prijatých
+    iný seriál: Totally Spies   Špionky S05E06
+    iný seriál: Totally Spies Špionky S1E09
+    iný seriál: Totally Spies   Špionky S2E05
+    iný seriál: Totally Spies   Špionky S2E06
+    iný seriál: Totally Spies   Špionky S03E24
+    iný seriál: Totally Spies   Špionky S2E22
+    iný seriál: Totally Spies   Špionky S03E17
+    iný seriál: Totally Spies   Špionky S03E19
+    iný seriál: CELÁ EPIZODA | Tajní superpadouši | Totally Spies! | Karikatury pro dě
+    iný seriál: Totally Spies Špionky S1E04
+    iný seriál: Totally Spies   Špionky S03E21
+    iný seriál: Totally spies   Špionky S04E14
 hľadaj "Robotboy cz": 20 videí
 hľadaj "Robotboy česky": 20 videí
 hľadaj "Robotboy cz dabing díl": 20 videí
+výsledok hladaj:Robotboy cz|Robotboy česky|Robotboy cz dabing díl: 149 nájdených, 0 prijatých
+    bez čísla dielu: Robotboy chytání mrdky CZ parodie
+    bez CZ/SK: Linkin Park- Robot Boy
+    bez CZ/SK: Linkin Park - Robot Boy [2015 Short Instrumental Version]
+    iný seriál: Cartoon Network UK - February 25th, 2006 reklamy i promos 
+    bez CZ/SK: Robot Boy
+    iný seriál: A.I.: Artificial Intelligence (2001) - Dinner Malfunction | Movieclips
+    iný seriál: Trouble! - Cuphead Animation
+    iný seriál: Astroboy in robotland. clip 1.
+    iný seriál: NEW | The Last Campfire BREAKDOWN Announcement | Hello Games 2019
+    iný seriál: Astro boy (2009). Episode 2
+    bez CZ/SK: Vir : The Robot Boy | Vir Action Collection - 36 | Action series | Wow
+    bez CZ/SK: LINKIN PARK - Robot Boy [official song] 06
 hľadaj "Život s Louiem": 20 videí
 hľadaj "Život s Louiem celý díl": 20 videí
 hľadaj "Život s Louiem S02": 20 videí
 hľadaj "Život s Louiem CZ dabing": 20 videí
+výsledok hladaj:Život s Louiem|Život s Louiem celý díl|Život s Louiem S02|Život s Louiem CZ dabing: 188 nájdených, 60 prijatých
+    dĺžka 15: zivot s Louie-JÁ TEĎ JDU SPÁT
+    iný seriál: Zivot s Loiem 1x03 Oslava den matek part 1.wmv
+    dĺžka 108: Zivot s louiem  (zahudruj nam louicku)  :D
+    dĺžka 132: Life With Louie And TF2 Part 3
+    nie diel: Život s Louiem S01E01 , vánoční překvapení pro paní Stilmanovou
+    dĺžka 102: Život s Louiem (v armádě)
+    iný seriál: Tři hodiny Šmoulů na prázdniny! 🎄• Šmoulové
+    iný seriál: Gargamelův pejsek • Šmoulové
+    iný seriál: Totally Spies   Špionky S2E06
+    iný seriál: BibiBum  - Když jsem já sloužil - Písničky pro děti (Kids Nursery Rhym
+    iný seriál: Tři kamarádi a Jerry - 01x03 -  Mraveniště
+    iný seriál: Vražedné pobřeží - Letošní model avi cz dabing
 hľadaj "Klíšťák cz": 20 videí
 hľadaj "Klíšťák celý díl": 20 videí
 hľadaj "Klíšťák část 1/2": 20 videí
 hľadaj "Klíšťák S01": 20 videí
+výsledok hladaj:Klíšťák cz|Klíšťák celý díl|Klíšťák část 1/2|Klíšťák S01: 160 nájdených, 22 prijatých
+    dĺžka 189: Klíšťák   chůva z apocalypsy část 2/2 CZ
+    iný seriál: Ixodes ricinus / Klíšťata útočí (1) - FullHD
+    iný seriál: Mýdlo, pinzety, oleje, ani různé spreje nejsou bez rizika při odstraňo
+    iný seriál: 100 děsivých archeologických nálezů, ze kterých vám bude běhat mráz po
+    dĺžka 29: Klíšťák - jak vyndat klíště.
+    iný seriál: Oldřích Kaiser,Jiří Lábus - Kliště
+    iný seriál: První pomoc pro děti - Klíště
+    dĺžka 32: Klíšťák na to máš štempl!
+    iný seriál: Klíšťata – jak velké představují riziko?
+    iný seriál: Kíšťák a hipnotizér část 1/2
+    iný seriál: Reportáž TV Nova: kliste.cz
+    nie diel: Hrobník  - Klíšťák Fet (Pošťák Pat Parodie) YTP
 hľadaj "Tři kamarádi a Jerry": 20 videí
 hľadaj "Tři kamarádi a Jerry celý díl": 20 videí
 hľadaj "Tři kamarádi a Jerry CZ": 20 videí
 hľadaj "Tři kamarádi a Jerry S2": 20 videí
+výsledok hladaj:Tři kamarádi a Jerry|Tři kamarádi a Jerry celý díl|Tři kamarádi a Jerry CZ|Tři kamarádi a Jerry S2: 217 nájdených, 60 prijatých
+    dĺžka 3663: Tři kamarádi a Jerry časť 21-25  (JETIX)
+    iný seriál: Legendární pouliční utkání | Tom a Jerry speciální 1hodinová kompilace
+    iný seriál: Tom & Jerry | Summer Olympics | Classic Cartoon Compilation | WB Kids
+    iný seriál: Kamarádi 01 - Jak to začalo
+    iný seriál: Život s Louiem   Máma trenérem S1E08
+    iný seriál: Pirát divoký Jack CZ Všechny díly
+    iný seriál: Kamarádi 03 - Máme psa
+    iný seriál: Nejsmradlavější ovoce | Tom a Jerry speciální 1hodinová kompilace| Car
+    iný seriál: Život s Louiem   Bolesti a alergie S1E12
+    iný seriál: Pepek námořník komplet
+    iný seriál: Večerníček - O hajném Robátkovi a jelenu Větrníkovi (komplet)
+    iný seriál: Hello kitty - Dobrodružství v Pařízkově 1 | CZ |
 hľadaj "WITCH cz dabing": 20 videí
 hľadaj "W.I.T.C.H. česky": 20 videí
-hľadaj "Kim Possible cz": 20 videí
-hľadaj "Kim Possible česky": 20 videí
-hľadaj "Martin Mystery cz": 20 videí
-hľadaj "Martin Mystery česky": 20 videí
-hľadaj "Dennis postrach okolí": 19 videí
+výsledok hladaj:WITCH cz dabing|W.I.T.C.H. česky: 114 nájdených, 14 prijatých
+    bez CZ/SK: W.I.T.C.H. série1 díl.5 Pomáháme bližním
+    bez čísla dielu: W.I.T.C.H. - Znělka
+    bez CZ/SK: W.I.T.C.H. 1x01 - Začátek (1/2)
+    bez CZ/SK: W.I.T.C.H. série.2 díl.13 Slitování
+    bez CZ/SK: W.I.T.C.H. série.1 díl.1 Začátek
+    bez CZ/SK: W.I.T.C.H. série.2 díl.23 Halloween
+    bez CZ/SK: W.I.T.C.H. série.1 díl.23 Bitva na plánich Meridianu
+    dĺžka 58: W.I.T.C.H. | Čeština | Czech | Season 2 | Opening Theme (HD) ORIGINAL
+    bez CZ/SK: W.I.T.C.H. série.2 díl.14 Narcizmus
+    bez CZ/SK: W.I.T.C.H. série.2 díl.4 Ničitelé
+    dĺžka 59: W.I.T.C.H. série.2 opening cz
+    bez CZ/SK: The Chronicles of Narnia: The Lion, the Witch and the Wardrobe (2005) 
 hľadaj "Rychlá rota cz": 20 videí
 hľadaj "Rychlá rota celý díl": 20 videí
 hľadaj "Rychlá rota cz dabing": 20 videí
-hľadaj "Ed Edd a Eddy cz": 20 videí
-hľadaj "Ed Edd n Eddy cz dabing": 20 videí
+výsledok hladaj:Rychlá rota cz|Rychlá rota celý díl|Rychlá rota cz dabing: 230 nájdených, 3 prijatých
+    iný seriál: S02E27 - Počasí nebo život
+    iný seriál: S02E42 - Rybolov pod hvězdami
+    dĺžka 65: Rychlá Rota - první česká znělka TOP HD Stereo (czech)
+    iný seriál: S03E02 - Pufalíci
+    iný seriál: Ras baskervilský
+    dĺžka 31: Rychlá Rota - upoutávka Déčko 04/2017 (česky)
+    dĺžka 163: Rychlá Rota na pláži ! 🌊☀️ První český dabing 1991
+    dĺžka 145: Rychlá rota - Oficiální Trailer | CZ DABING | Chip 'n Dale: Rescue Ran
+    dĺžka 74: Rychlá Rota - Prohozená těla! (HD) První český dabing (1991)
+    nie diel: Chip a Dale | Rychlá rota🎸 | Rock Cover | ČESKÉ COVERY
+    dĺžka 60: Rychlá rota (Chip a Dale) znělka
+    iný seriál: Chip a Dale (česky, slova ve videu)
 hľadaj "Totální drama cz": 20 videí
 hľadaj "Totální drama ostrov": 20 videí
+výsledok hladaj:Totální drama cz|Totální drama ostrov: 80 nájdených, 0 prijatých
+    dĺžka 202: Totální Dramarama | Pegasovo duhové Latté | Cartoon Network
+    dĺžka 249: Totální Dramarama | Hasič | Cartoon Network
+    iný seriál: Total Drama Island Complete season 1
+    dĺžka 243: Totální Dramarama | Kuřecí láska | Cartoon Network
+    iný seriál: Drama (2026) CZ HD trailer #A24 #Zendaya #RobertPattinson
+    iný seriál: Total Drama: A Half World Tour - Episodio 17 (FINAL)
+    iný seriál: ZRADIL JSEM KAMARÁDA! 👍 ROBLOX TOTAL DRAMA
+    iný seriál: total drama island part 1
+    iný seriál: Total Drama Island PL odcinek 1 cz.1/2
+    iný seriál: Total Drama All Stars odc.1 Heroes vs Villains cz.1 Napisy PL
+    iný seriál: Total Drama Island PL odcinek 4 cz. 2/2
+    iný seriál: Total Drama Island-Camp TV Promo
 hľadaj "Garfieldova show cz": 20 videí
 hľadaj "Garfieldova show celý díl": 20 videí
 hľadaj "Garfield show sk dabing": 20 videí
-hľadaj "Kačeří příběhy cz celý díl": 20 videí
-kanál @pokemonserialczsk6452: http 200, 878934 B, id UCEarul-dRmRW6dpUePG8xpA
+výsledok hladaj:Garfieldova show cz|Garfieldova show celý díl|Garfield show sk dabing: 225 nájdených, 13 prijatých
+    bez CZ/SK: Garfieldova Show- Spoura hlodavcú Ratzova odplata
+    bez čísla dielu: Garfieldova show - Sýrový svět
+    bez CZ/SK: Garfieldova Show- Umazlený mazlík
+    bez CZ/SK: Garfieldova show- Dlouhý spánek
+    bez čísla dielu: Garfieldova Show-  John je hvězda aniž by chtel
+    bez čísla dielu: Garfieldova show CZ- Rybožrout
+    bez CZ/SK: Garfieldova show- Garfield a zlaté lázne
+    bez čísla dielu: Garfieldova show -  Kocour dělá zákon
+    bez CZ/SK: Garfieldova show: Roztomilá rodinka
+    bez CZ/SK: Garfieldova Show Zamilovaný Odie
+    bez čísla dielu: Garfieldova show CZ- Hvezdný Osud
+    bez čísla dielu: Garfieldova show: Farmářské fígle
+kanál @pokemonserialczsk6452: http 200, 880130 B, id UCEarul-dRmRW6dpUePG8xpA
 innertube UUEarul-dRmRW6dpUePG8xpA: kľúče responseContext,alerts,trackingParams,topbar,microformat; 0 videí; alert: [{"type":"ERROR","text":{"runs":[{"text":"Playlist neexistuje."}]}}]
-html UUEarul-dRmRW6dpUePG8xpA: http 200, 859652 B, 0 videí
+html UUEarul-dRmRW6dpUePG8xpA: http 200, 857624 B, 0 videí
 rss UUEarul-dRmRW6dpUePG8xpA: http 404, 0 videí
 innertube PLhr2MGr4OPNcEUNaI_aESmupie_m-Ppzr: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 0 videí; alert: []
-html PLhr2MGr4OPNcEUNaI_aESmupie_m-Ppzr: http 200, 887407 B, 0 videí
+html PLhr2MGr4OPNcEUNaI_aESmupie_m-Ppzr: http 200, 884488 B, 0 videí
 rss PLhr2MGr4OPNcEUNaI_aESmupie_m-Ppzr: http 200, 4 videí
 innertube PL3EEYr69JFOyn1EKmWZwkq6_cPL_LGxEY: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 45 videí; alert: []
 hľadaj "Pokémon cz dabing celý díl": 20 videí
 hľadaj "Pokémon česky epizoda": 20 videí
 hľadaj "Pokémon sk dabing": 20 videí
-hľadaj "Digimon cz": 20 videí
-hľadaj "Digimon česky": 20 videí
-hľadaj "Yu-Gi-Oh cz dabing": 20 videí
-hľadaj "Yu-Gi-Oh česky": 20 videí
+výsledok hladaj:Pokémon cz dabing celý díl|Pokémon česky epizoda|Pokémon sk dabing: 226 nájdených, 0 prijatých
+    bez CZ/SK: Pokémon - I Choose You! | FULL EPISODE 1 | Season 1
+    nie diel: Pokémon První film český dabing
+    bez čísla dielu: Pokémon Seriál: Vrcholné Cesty | Zahájení České
+    bez čísla dielu: Pokemon - uvodni znělka
+    bez CZ/SK: The Battling Eevee Brothers | POKÉMON FULL EPISODE 37 | Season 1
+    iný seriál: CELÝ PŘÍBĚH ASHOVA GENGARA!
+    bez CZ/SK: Pokémon Emergency | FULL EPISODE 2 | Season 1
+    dĺžka 31: Pokémon 22 Série: Slunce a Měsíc – Ultra Legendy (Czech Opening) (HD)
+    bez CZ/SK: Volcanic Panic  | POKÉMON FULL EPISODE 4 | Season 2
+    dĺžka 31: Pokémon 16x03 (CZ dabing) - odkaz v popisku
+    nie diel: 20 FAKTŮ - Pokémon
+    iný seriál: SRDCERVOUCÍ PŘÍBĚH ASHOVA CHARIZARDA!
 hľadaj "Ben 10 cz dabing": 20 videí
 hľadaj "Ben 10 česky celý díl": 20 videí
-hľadaj "Sonic X cz": 20 videí
-hľadaj "Spider-Man animovaný seriál cz": 20 videí
-hľadaj "Spiderman 1994 cz dabing": 20 videí
-hľadaj "X-Men animovaný seriál cz": 20 videí
-hľadaj "X-Men 1992 cz": 20 videí
-hľadaj "Jackie Chan dobrodružství cz": 20 videí
-hľadaj "Jackieho Chanova dobrodružství": 1 videí
-hľadaj "Želvy ninja 2003 cz": 20 videí
-hľadaj "Želvy ninja cz dabing celý díl": 20 videí
+výsledok hladaj:Ben 10 cz dabing|Ben 10 česky celý díl: 156 nájdených, 0 prijatých
+    bez čísla dielu: Ben 10 | Můžu si ho nechat? | Cartoon Network
+    bez CZ/SK: BEN 10 | Nejrychlejší auto | Cartoon Network
+    bez CZ/SK: Ben 10 | Síla 10: Obrosaurus a Rejnotrysk | Cartoon Network
+    bez čísla dielu: Ben 10: Classic Theme Song - (Czech/čeština)
+    bez CZ/SK: Ben 10 | Nebezpečí ve vodním parku | Cartoon Network
+    bez CZ/SK: Ben 10 I Pomoc z jiných dimenzí I Cartoon Network
+    bez CZ/SK: Ben 10 | Ben 10,010 | Cartoon Network
+    bez CZ/SK: Ben 10 | Ben 10,010 | Cartoon Network
+    bez čísla dielu: Ben 10 I Sběratel Omnitrixu I Cartoon Network
+    bez CZ/SK: Ben 10 | Bentuice část 1 | Cartoon Network
+    bez čísla dielu: Ben 10 | Kovová paže potká čtyřhnáta | Cartoon Network
+    bez čísla dielu: Ben 10 | Nejhledanější zloduši | Cartoon Network
 hľadaj "Power Rangers cz dabing": 20 videí
 hľadaj "Power Rangers česky": 20 videí
 hľadaj "Power Rangers Síla Strážců cz": 20 videí
 hľadaj "Mighty Morphin Power Rangers CZ": 20 videí
-hľadaj "Naruto cz dabing": 20 videí
-hľadaj "Naruto sk dabing": 20 videí
+výsledok hladaj:Power Rangers cz dabing|Power Rangers česky|Power Rangers Síla Strážců cz|Mighty Morphin Power Rangers CZ: 278 nájdených, 44 prijatých
+    bez čísla dielu: Power Rangers: Strážci Vesmíru (CZ dabing)
+    nie diel: Power Rangers: Film (CZ dabing)
+    bez čísla dielu: Power rangers Strazci vesmiru cesky
+    iný seriál: Strážci Vesmíru S01E02 - Velká Pětka (CZ dabing)
+    bez CZ/SK: Strážci vesmíru: Power Rangers TURBO (1997) Full HD
+    dĺžka 146: Power Rangers (2017) CZ dabing hlavní trailer HD
+    iný seriál: Strážci Vesmíru S02E18 - Bílé Světlo, část 2 (CZ dabing)
+    iný seriál: Strážci Vesmíru S01E01 - Den Zrození (CZ dabing)
+    bez čísla dielu: Power rangers Strazci vesmiru cesky
+    iný seriál: Strážci Vesmíru S02E17 - Bílé Světlo, část 1 (CZ dabing)
+    iný seriál: Strážci Vesmíru S02E03 - Vzpoura, část 3 (CZ dabing)
+    bez čísla dielu: Power Rangers: Strážci vesmíru -  trailer s českým dabingem
 hľadaj "Gormiti cz": 20 videí
-hľadaj "Huntik cz": 20 videí
-kanál @SpongeBobOfficial: http 200, 1780432 B, id UCf4nYHJi6V0_lil4uGX4HwQ
+výsledok hladaj:Gormiti cz: 40 nájdených, 4 prijatých
+    bez CZ/SK: Gormiti - série 3
+    dĺžka 46: Gormiti (2018) - Znělka
+    bez čísla dielu: gormiti - cz
+    bez CZ/SK: Gormiti #1 - Let snežného orla
+    bez čísla dielu: Z ničeho ovládli svět… a pak úplně zmizeli- GORMITI
+    bez čísla dielu: Gormiti - jogurt s překvapením
+    bez CZ/SK: CO SE STALO S GORMITI ?
+    bez CZ/SK: Gormiti Cartoon - reklama EP Line
+    bez CZ/SK: Gormiti: The Evil Strikes the Gormiti
+    bez CZ/SK: Gormiti Mythos - reklama EP Line
+    dĺžka 31: EP Line Gormiti Final Evolution sáček 1+1 od Maxikovy-hracky.cz
+    bez CZ/SK: GORMITI - The Legend Begins
+kanál @SpongeBobOfficial: http 200, 1773684 B, id UCf4nYHJi6V0_lil4uGX4HwQ
 innertube UUf4nYHJi6V0_lil4uGX4HwQ: kľúče responseContext,contents,header,metadata,trackingParams,topbar,microformat,sidebar; 100 videí; alert: []
 innertube UUx27Pkk8plpiosF14qXq-VA: kľúče responseContext,contents,header,metadata,trackingParams,topbar,microformat,sidebar; 100 videí; alert: []
 innertube PLjScWr8bfGJPcWCgF_QNMQeRVyJQ9Q33W: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 95 videí; alert: []
 innertube PLCVuwQ1eXVCWVeSpX0khngqq_UIpX5hYU: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 68 videí; alert: []
-kanál johnnybravochannel: http 200, 894048 B, id UCW_cynN0NH7tVBdZP5LsMjQ
+kanál johnnybravochannel: http 200, 896961 B, id UCW_cynN0NH7tVBdZP5LsMjQ
 innertube UUW_cynN0NH7tVBdZP5LsMjQ: kľúče responseContext,contents,header,metadata,trackingParams,topbar,microformat,sidebar; 1 videí; alert: []
 ---
 wvDJPJLScqY  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
@@ -202,7 +347,7 @@ CfknD0OmQEA  oembed:200  =>  610
 5ieHWwx7ZtY  oembed:404  =>  video neexistuje alebo je súkromné
 X2iLOt8WHCk  oembed:404  =>  video neexistuje alebo je súkromné
 omfMvI9w2eI  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
-hTB8_HZCWaA  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
+hTB8_HZCWaA  oembed:200  =>  611
 VESWf19ckIY  oembed:200  =>  1352
 TnC70DLMZGw  oembed:404  =>  video neexistuje alebo je súkromné
 fGT1X8XwagM  oembed:200  =>  421
@@ -216,12 +361,12 @@ VYYtmlgJjO8  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 D5ecUCYUoQA  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 OlWiAglOCGc  oembed:200  =>  420
 MlrqMNysrgs  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
-76RQmb-hhjc  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
+76RQmb-hhjc  oembed:200  =>  421
 rGABDba-FUM  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 m7-xx__rSMo  oembed:200  =>  425
 CcqpZpvybP0  oembed:200  =>  1191
 Y-c4u3sQTNc  oembed:200  =>  601
-F2AwDKkWVnM  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
+F2AwDKkWVnM  oembed:200  =>  1278
 bg3JzT7WsN8  oembed:404  =>  video neexistuje alebo je súkromné
 IzlLq3tr3UI  oembed:200  =>  737
 vgiIxzLsx-U  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
@@ -231,7 +376,7 @@ jFDNPc8EgFo  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 aKChMtuiykE  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 KG20Le3mhUs  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 PU-CdSmSiaU  oembed:404  =>  video neexistuje alebo je súkromné
-XouTkwoTH8I  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
+XouTkwoTH8I  oembed:200  =>  733
 asb09scHGSM  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 C11GBYdAP7k  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 CJgcvSYN9YM  oembed:404  =>  video neexistuje alebo je súkromné
@@ -541,170 +686,151 @@ RvceU_c2yJ0  oembed:200  =>  1246
 WjBzpo9U2ew  oembed:200  =>  1271
 H64B2oERzGQ  oembed:200  =>  1272
 5dH6uC7g6Nw  oembed:200  =>  1271
-o0a2v4FOzuI  oembed:200  =>  724
-15jZpo28iEo  oembed:200  =>  1221
-MRxje-PT7vM  oembed:200  =>  1210
-JeqB3quI-ag  oembed:200  =>  1160
-IhswOmJCN7w  oembed:200  =>  1188
-ceXzUNa9t08  oembed:200  =>  1210
-vq8hZVSEWVw  oembed:200  =>  1227
+cTUwfCRc3Fg  oembed:200  =>  659
 MyZF5xmDrsI  oembed:200  =>  616
 1JPqXuOMkn8  oembed:200  =>  566
+ceXzUNa9t08  oembed:200  =>  1210
 upLLXWQ3ftc  oembed:200  =>  594
-KpNtUI_ilKI  oembed:200  =>  613
+IhswOmJCN7w  oembed:200  =>  1188
 t5P9wwbgEtc  oembed:200  =>  567
+KpNtUI_ilKI  oembed:200  =>  613
 pc4JdxL4hM4  oembed:200  =>  2315
-k0kiXGKjWnI  oembed:200  =>  842
-UwaETVLlAHI  oembed:200  =>  1419
-Ap2UmFZCkKA  oembed:200  =>  1194
-TE_wERFZ2JI  oembed:200  =>  1188
-1zaZ04lXF04  oembed:200  =>  1217
-Jow2T2djtZQ  oembed:200  =>  1228
-G0vtW1UdqR0  oembed:200  =>  1223
-Zgci3gaNmW0  oembed:200  =>  1220
-mh4wOTOnZdI  oembed:200  =>  1222
-6d7XAgcG7lw  oembed:200  =>  1227
-C2e1Lin_2rs  oembed:200  =>  1189
-SXf9A-_fOS0  oembed:200  =>  1227
-swC3XnOn3eU  oembed:200  =>  1218
-48LQjbJ_XFE  oembed:200  =>  1157
-jQ3Tk1Qc-Es  oembed:200  =>  1222
-xyD1A8UooG4  oembed:200  =>  1223
-E-7LkrXPEsQ  oembed:200  =>  1224
-8LYh7d_Z8c4  oembed:200  =>  1229
-4qQiKEWv0Jo  oembed:200  =>  1227
 MKYjyuvlQTg  oembed:200  =>  1225
-NL1sZI3jyow  oembed:200  =>  1198
-S3a-usQ1zks  oembed:200  =>  1221
-2XmH7t612Rc  oembed:200  =>  1171
-U1oRP0PUGBE  oembed:200  =>  1159
-6MovtHjwzfc  oembed:200  =>  1226
+UwaETVLlAHI  oembed:200  =>  1419
+LLh6U1RfvQ8  oembed:200  =>  598
+k0kiXGKjWnI  oembed:200  =>  842
+MafbBq-_oug  oembed:200  =>  741
+SXf9A-_fOS0  oembed:200  =>  1227
+WREZSjXleHE  oembed:200  =>  1228
+C2e1Lin_2rs  oembed:200  =>  1189
 GsTxB9q2c7c  oembed:200  =>  1227
-_KwJEtYdFXw  oembed:200  =>  1964
-fBAv7UUyUtY  oembed:200  =>  1189
-nRfxKHPmGUg  oembed:200  =>  1190
-1-I4plfXwGY  oembed:200  =>  1188
+48LQjbJ_XFE  oembed:200  =>  1157
+Ta_J3tpMtEc  oembed:200  =>  1226
+8LYh7d_Z8c4  oembed:200  =>  1229
+Zgci3gaNmW0  oembed:200  =>  1220
+TE_wERFZ2JI  oembed:200  =>  1188
+JeqB3quI-ag  oembed:200  =>  1160
+9iSQSNe9IiA  oembed:200  =>  1193
+Vw3Cxa2ydyQ  oembed:200  =>  1217
+MRxje-PT7vM  oembed:200  =>  1210
+4qQiKEWv0Jo  oembed:200  =>  1227
+NL1sZI3jyow  oembed:200  =>  1198
+2XmH7t612Rc  oembed:200  =>  1171
+S3a-usQ1zks  oembed:200  =>  1221
+swC3XnOn3eU  oembed:200  =>  1218
+U1oRP0PUGBE  oembed:200  =>  1159
+15jZpo28iEo  oembed:200  =>  1221
+Ap2UmFZCkKA  oembed:200  =>  1194
+6MovtHjwzfc  oembed:200  =>  1226
+Hm4daRb2C1U  oembed:200  =>  339
+TcVrLHT2x-Y  oembed:200  =>  1189
 2mhVQkn5Vdw  oembed:200  =>  1188
+1-I4plfXwGY  oembed:200  =>  1188
+nRfxKHPmGUg  oembed:200  =>  1190
+_KwJEtYdFXw  oembed:200  =>  1964
 ze6UyW7idCI  oembed:200  =>  1189
-C57BqJKtu6o  oembed:200  =>  1190
-bS_J779_DM0  oembed:200  =>  1190
-P1c6Fsc0LPs  oembed:200  =>  1188
 Vn2Prt0vOZ8  oembed:200  =>  1190
-4eyO3Fo_VKE  oembed:200  =>  1190
-jEHB9UIiVqY  oembed:200  =>  1161
+eHRGxeLLfw4  oembed:200  =>  1188
+C57BqJKtu6o  oembed:200  =>  1190
+P1c6Fsc0LPs  oembed:200  =>  1188
+KCj0xBLh2Ys  oembed:200  =>  1190
 MrC4fC_9qGM  oembed:200  =>  601
-tX6rESMOZ1Q  oembed:200  =>  1035
 9W7ipLm5ai8  oembed:200  =>  601
-kLjG8vQG6_g  oembed:200  =>  601
+TR3Tps4BZ5Q  oembed:200  =>  536
 I7MDvDhM8cw  oembed:200  =>  437
 ArxDK7n-vKk  oembed:200  =>  444
+kLjG8vQG6_g  oembed:200  =>  601
 -RSfm4sZFmg  oembed:200  =>  601
-3E9QpELnNv4  oembed:200  =>  550
-quwjvrW0NDs  oembed:200  =>  540
-Tvfj4LBsHxk  oembed:200  =>  601
-mE7SwhGUH4M  oembed:200  =>  601
-TR3Tps4BZ5Q  oembed:200  =>  536
-ki9lToS4ljc  oembed:200  =>  558
-HJfaC5n22Pw  oembed:200  =>  584
-XkRFOPUJeMw  oembed:200  =>  496
 jAj4INuqcQ4  oembed:200  =>  600
+Tvfj4LBsHxk  oembed:200  =>  601
+XkRFOPUJeMw  oembed:200  =>  496
+quwjvrW0NDs  oembed:200  =>  540
+mE7SwhGUH4M  oembed:200  =>  601
+HJfaC5n22Pw  oembed:200  =>  584
 zFHxyP6puf4  oembed:200  =>  435
 9Evru3JOrU4  oembed:200  =>  1231
-ImBIyqB40MI  oembed:200  =>  425
-Vxl5-wkOsOM  oembed:200  =>  422
-eCjrDMAcUwA  oembed:200  =>  414
+3E9QpELnNv4  oembed:200  =>  550
+tX6rESMOZ1Q  oembed:200  =>  1035
+Jnv1QXxbQd8  oembed:200  =>  1250
+ki9lToS4ljc  oembed:200  =>  558
 5nQQ_6r9GiM  oembed:200  =>  404
-KuqrdQ9btHI  oembed:200  =>  611
-smdgGOWv43U  oembed:200  =>  416
-ds84KHArKC4  oembed:200  =>  417
-Pjoin_bkpd0  oembed:200  =>  611
-2FT90Y0q1gQ  oembed:200  =>  620
-04Vd927S6JA  oembed:200  =>  420
-wzuAJBfkGSg  oembed:200  =>  421
-jxvQHngr8Cs  oembed:200  =>  422
-k4rdNYVRcgc  oembed:200  =>  415
-82sjP05W0yc  oembed:200  =>  423
-6e_tDW6ViV0  oembed:200  =>  611
-KuEDN2wRTzw  oembed:200  =>  611
-efW2XsgQO1g  oembed:200  =>  610
-sF2q4Zf4uZw  oembed:200  =>  611
-pkwA_83BdiA  oembed:200  =>  412
-ku16YcCjGq4  oembed:200  =>  611
-9NygmgBBrDg  oembed:200  =>  611
-Yk0O-KLas4w  oembed:200  =>  604
-Eyi5-6RNoDA  oembed:200  =>  611
-kAJ87eX6W0s  oembed:200  =>  2485
-Wh7W1Dvddik  oembed:200  =>  409
-m66puecuN4c  oembed:200  =>  427
-CaCDXPd2yJw  oembed:200  =>  611
 RQqecH6yGZU  oembed:200  =>  612
-B7ouAxH4hRc  oembed:200  =>  611
+Yk0O-KLas4w  oembed:200  =>  604
+ImBIyqB40MI  oembed:200  =>  425
+ku16YcCjGq4  oembed:200  =>  611
+jxvQHngr8Cs  oembed:200  =>  422
+Dq_2VhGRMJA  oembed:200  =>  612
+k4rdNYVRcgc  oembed:200  =>  415
+Vxl5-wkOsOM  oembed:200  =>  422
+efW2XsgQO1g  oembed:200  =>  610
 5pybbNxCbu8  oembed:200  =>  619
-YPGiLd7bklQ  oembed:200  =>  427
-YhintJy99UQ  oembed:200  =>  611
-he5d9h0bReo  oembed:200  =>  611
-7FGQpN6m_0M  oembed:200  =>  419
+eCjrDMAcUwA  oembed:200  =>  414
+KuqrdQ9btHI  oembed:200  =>  611
+ds84KHArKC4  oembed:200  =>  417
+smdgGOWv43U  oembed:200  =>  416
 P4-xCUmYe6g  oembed:200  =>  3053
+CaCDXPd2yJw  oembed:200  =>  611
+82sjP05W0yc  oembed:200  =>  423
+9NygmgBBrDg  oembed:200  =>  611
+pkwA_83BdiA  oembed:200  =>  412
+YhintJy99UQ  oembed:200  =>  611
+0N-bJLoNnCU  oembed:200  =>  417
+Pjoin_bkpd0  oembed:200  =>  611
+zJNhfvWBA3Y  oembed:200  =>  611
+kAJ87eX6W0s  oembed:200  =>  2485
+he5d9h0bReo  oembed:200  =>  611
+2FT90Y0q1gQ  oembed:200  =>  620
+ycFRKraDJCo  oembed:200  =>  611
+6rPju40WJnM  oembed:200  =>  611
+m66puecuN4c  oembed:200  =>  427
+B7ouAxH4hRc  oembed:200  =>  611
+K_nW0JLgo3o  oembed:200  =>  610
+RO1UEAwktR4  oembed:200  =>  426
+Eyi5-6RNoDA  oembed:200  =>  611
+KuEDN2wRTzw  oembed:200  =>  611
 Uobc9r1FsJM  oembed:200  =>  612
 1Ze-beN3y7k  oembed:200  =>  427
-48P34DNjFR8  oembed:200  =>  611
-xWzwe6qY4ZU  oembed:200  =>  398
-MzYox5E-lzI  oembed:200  =>  425
 9D_R9P0yvzU  oembed:200  =>  425
-NrW6kgwE-hY  oembed:200  =>  409
+MzYox5E-lzI  oembed:200  =>  425
+48P34DNjFR8  oembed:200  =>  611
 t3w4CqOHoUA  oembed:200  =>  611
+NrW6kgwE-hY  oembed:200  =>  409
 zpn9gYDpQB8  oembed:200  =>  610
+xWzwe6qY4ZU  oembed:200  =>  398
 dFg1qUjADRQ  oembed:200  =>  422
-JaB8DaY6Hvk  oembed:200  =>  552
+V7EjZwRF_rw  oembed:200  =>  428
 09nFn30G4sY  oembed:200  =>  428
 p2onBQB--J0  oembed:200  =>  422
 hJTkSBcK3dQ  oembed:200  =>  611
-zHZDqEduSDQ  oembed:200  =>  1397
-NrweVXEk8AI  oembed:200  =>  380
-3Gufewrn1hU  oembed:200  =>  1440
-0N-bJLoNnCU  oembed:200  =>  417
--YMBquzifUE  oembed:200  =>  1305
-GpmJIduGuok  oembed:200  =>  1305
-fz8Hrmx2ThE  oembed:200  =>  1305
-q9zIBVvLL8M  oembed:200  =>  1304
-j-2sUSX1ef8  oembed:200  =>  1305
-jaund8GhlJw  oembed:200  =>  1304
-EnMxfCqrISg  oembed:200  =>  659
-WpgEzhJgzek  oembed:200  =>  1305
-bhIEVNIwdc4  oembed:200  =>  1305
+JaB8DaY6Hvk  oembed:200  =>  552
+SNhJN-wALIM  oembed:200  =>  611
 H98Ss1kFbNo  oembed:200  =>  1305
-NTMpnwo5XTg  oembed:200  =>  1305
-vl1Gjg6WMFo  oembed:200  =>  1305
-LpZGISR2dFc  oembed:200  =>  1305
+GpmJIduGuok  oembed:200  =>  1305
 2V8WbzCTIfE  oembed:200  =>  1306
-bxaTk0QXtAs  oembed:200  =>  1305
-A6-xhszRdoI  oembed:200  =>  658
-L1nonaIeoc8  oembed:200  =>  1371
-gUuBfnIFfeI  oembed:200  =>  1561
-1NoDtqtmE4k  oembed:200  =>  366
+-YMBquzifUE  oembed:200  =>  1305
+fz8Hrmx2ThE  oembed:200  =>  1305
+LpZGISR2dFc  oembed:200  =>  1305
+q9zIBVvLL8M  oembed:200  =>  1304
+EnMxfCqrISg  oembed:200  =>  659
+j-2sUSX1ef8  oembed:200  =>  1305
+bhIEVNIwdc4  oembed:200  =>  1305
+PMQEHdE1gHQ  oembed:200  =>  2246
+WpgEzhJgzek  oembed:200  =>  1305
+q75RGfCtOtU  oembed:200  =>  1305
+jaund8GhlJw  oembed:200  =>  1304
 WEO3BmHeIRM  oembed:200  =>  1308
 -q-aWoLhcw0  oembed:200  =>  1308
 BpwvS8raYrw  oembed:200  =>  1359
-mStiBLydIts  oembed:200  =>  498
-Z_K2Qyt-T7k  oembed:200  =>  367
-djsVTG13FB4  oembed:200  =>  2137
-TPK-24jdM0E  oembed:200  =>  1800
-zyLNZwZaZv4  oembed:200  =>  2064
-NgGf9eOh0Jc  oembed:200  =>  1913
 2i_dutN-jRE  oembed:200  =>  737
 DfTRo2ePiJo  oembed:200  =>  769
-6-WRnagnZQo  oembed:200  =>  796
-gpwm9T_wm_s  oembed:200  =>  789
-FufPgCA4dLY  oembed:200  =>  752
-UL-GbwDKwww  oembed:200  =>  701
-esew7EULL0A  oembed:200  =>  765
 E-S1u5UWNRs  oembed:200  =>  785
-M22g0fSpElE  oembed:200  =>  731
-lkQ48FrpgHg  oembed:200  =>  788
+UL-GbwDKwww  oembed:200  =>  701
+FufPgCA4dLY  oembed:200  =>  752
 b0dBfoyFKdw  oembed:200  =>  742
 EL_o0EdXQ-s  oembed:200  =>  729
-7gKklF3thmU  oembed:200  =>  1312
-XcOWOLX1z14  oembed:200  =>  2636
+M22g0fSpElE  oembed:200  =>  731
+gpwm9T_wm_s  oembed:200  =>  789
+lkQ48FrpgHg  oembed:200  =>  788
 QKLxhpZa1Sw  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 yeggavGSMzE  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 Y3Xh2_E9aqY  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
@@ -749,71 +875,53 @@ DWFD0nYjXAg  oembed:200  =>  1293
 otQ5wvaMD3g  oembed:200  =>  1292
 pLBQlQs5yIE  oembed:200  =>  1292
 pfxMHAxRM_Y  oembed:200  =>  1294
-1CZOMUkgB9M  oembed:200  =>  439
--ytCQyb44eE  oembed:200  =>  1272
-C4qvik-17Wg  oembed:200  =>  484
-ZIZ8txyC8iM  oembed:200  =>  1234
-pKEW6soK2lY  oembed:200  =>  1562
-T5oM8MCLIzc  oembed:200  =>  3598
-qhq-DcTdI4E  oembed:200  =>  3499
-G9oHXlZHK0A  oembed:200  =>  1237
-AC04_ZiMKGM  oembed:200  =>  1314
-2-VV1DC6K9Y  oembed:200  =>  932
-LOXk5yWZn6U  oembed:200  =>  1224
-aeNJXy0FDmc  oembed:200  =>  770
-OpHXhEoYIEQ  oembed:200  =>  907
-ZHBi60frWoc  oembed:200  =>  637
-vmVOOlRvoAQ  oembed:200  =>  1139
--5DI_FXSM1U  oembed:200  =>  1123
-RRPAi9lhcwo  oembed:200  =>  1289
-vff2mn5ayhQ  oembed:200  =>  1082
-3J2WUEtoZ_I  oembed:200  =>  1125
-PZUystYZe9c  oembed:200  =>  1353
-8el_wljrybI  oembed:200  =>  1360
-evrtrDXhMwo  oembed:200  =>  1083
-uci5Mto80HA  oembed:200  =>  1298
-W3uKl-GH2ZQ  oembed:200  =>  1151
-IcrQhcPTLfk  oembed:200  =>  1296
 fT7tFA8BnYI  oembed:200  =>  1297
 62r0VkBsgQo  oembed:200  =>  1351
+vmVOOlRvoAQ  oembed:200  =>  1139
+PZUystYZe9c  oembed:200  =>  1353
+uci5Mto80HA  oembed:200  =>  1298
+-5DI_FXSM1U  oembed:200  =>  1123
 mmunNNi0h6U  oembed:200  =>  1217
-7jQDCaVYLyE  oembed:200  =>  1354
+vff2mn5ayhQ  oembed:200  =>  1082
+8el_wljrybI  oembed:200  =>  1360
 0HYoAisg6OQ  oembed:200  =>  1181
-Cqf4gjD_xHY  oembed:200  =>  1296
-I7-3BDmSuDs  oembed:200  =>  1136
-ZT05b33hFjs  oembed:200  =>  1148
-6wzA9oolf60  oembed:200  =>  1217
+evrtrDXhMwo  oembed:200  =>  1083
+E3T33hoTJEY  oembed:200  =>  1351
+Gnxy5mAo3Gs  oembed:200  =>  1357
 20TFoN6R8ao  oembed:200  =>  1296
-x3T2tk8dPUc  oembed:200  =>  1220
-yCcTtgtwuKQ  oembed:200  =>  1157
-NeAph3PWalc  oembed:200  =>  1296
-ydDE1HIpprA  oembed:200  =>  1296
-f44E1rPu3GA  oembed:200  =>  1200
-J8Re-5u4o-w  oembed:200  =>  1179
-7k1sVqHJFlI  oembed:200  =>  1160
+I7-3BDmSuDs  oembed:200  =>  1136
+ICTprPkDz-o  oembed:200  =>  1297
+ZT05b33hFjs  oembed:200  =>  1148
+7jQDCaVYLyE  oembed:200  =>  1354
 ZmPRVALfA-M  oembed:200  =>  1300
-dk5X8hRxeA8  oembed:200  =>  1297
--rTfX1gme5o  oembed:200  =>  1158
+-iOJnC7iM2c  oembed:200  =>  1296
 4CPy8SNqFTU  oembed:200  =>  1296
 ujiKAzN-yt8  oembed:200  =>  1354
-E3T33hoTJEY  oembed:200  =>  1351
-9O70x1bRfHI  oembed:200  =>  1354
 8OO2f1h-Ebs  oembed:200  =>  1298
 q1pt_sH9zKI  oembed:200  =>  1296
 ZO7ZQd78LZY  oembed:200  =>  1297
+RRPAi9lhcwo  oembed:200  =>  1289
 RYq4P5ar9sY  oembed:200  =>  1297
-Mf6-5xl0msY  oembed:200  =>  1291
+9O70x1bRfHI  oembed:200  =>  1354
+4YhN-260rPg  oembed:200  =>  1357
+-rTfX1gme5o  oembed:200  =>  1158
 3taCIXc-NPQ  oembed:200  =>  1191
-nEsjzxDwj6U  oembed:200  =>  1206
+J8Re-5u4o-w  oembed:200  =>  1179
+x3T2tk8dPUc  oembed:200  =>  1220
+6wzA9oolf60  oembed:200  =>  1217
+7k1sVqHJFlI  oembed:200  =>  1160
+yCcTtgtwuKQ  oembed:200  =>  1157
+3J2WUEtoZ_I  oembed:200  =>  1125
+W3uKl-GH2ZQ  oembed:200  =>  1151
 wfKw_k1BmkA  oembed:200  =>  1200
-Oz6BfffvRnA  oembed:200  =>  1175
-xhpHGLboPRw  oembed:200  =>  724
-KddE32XxZ0k  oembed:200  =>  904
-k7kpvh7wbgo  oembed:200  =>  824
+ra1w--F742E  oembed:200  =>  1196
+f44E1rPu3GA  oembed:200  =>  1200
+nEsjzxDwj6U  oembed:200  =>  1206
+WxsEjAus5Lk  oembed:200  =>  1218
 7uZasBe4iD4  oembed:200  =>  1308
 SSQ1TPoyLsU  oembed:200  =>  1308
 UD2fTQ6OX68  oembed:200  =>  1308
--dItT2j5ZJk  oembed:200  =>  2999
+sccG1FB_PwU  oembed:200  =>  903
 jPzOW2aLYnM  oembed:200  =>  4522
 ruuUrulIOgI  oembed:200  =>  5439
 Qg7lpDZikhc  oembed:200  =>  918

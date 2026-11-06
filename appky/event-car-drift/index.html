@@ -1878,7 +1878,7 @@ const CARS = {
   zubor: { engine: 'zubor', build: buildZubor, name: 'ZUBOR',
     L: 3.7, pw: 110, aMax: 3.4, top: 27, rev: 4.5, raMax: 2.2, brake: 9.4, brakeRamp: 8, coast: .8,
     steerMax: .68, steerFall: 9, steerLag: 6.5, yawLag: 3.8, ayMax: 7.0, grip: 6.0, drift: 1.9, hbGrip: .7, kick: .6,
-    rollGain: .16, rollW: 3.8, rollZ: .26, tip: .215, over: .262, pitGain: .13, pitW: 6.3, pitZ: .5,
+    rollGain: .16, rock: 1.05, rollW: 3.0, rollZ: .16, tip: .215, over: .25, pitGain: .13, pitW: 6.3, pitZ: .5,   // rock: the tall body can be rocked onto two wheels (and over) by sawing at the wheel at speed
     power: 1, hitK: 1.5, bounce: 1.15 },
   sugga: { engine: 'diesel', build: buildSugga, name: 'SUGGA',
     L: 2.9, pw: 52, aMax: 2.7, top: 22, rev: 4, raMax: 2, brake: 8.4, brakeRamp: 7, coast: .9,
@@ -2156,7 +2156,7 @@ function carCore(dt, env) {
   // --- body roll (spring, underdamped) and pitch ---
   if (!rolled) {
     // slow manoeuvres only lean the body; it takes real speed to put enough energy into the roll to lift the wheels
-    const rT = P.rollGain * (env.rollK || 1) * ay * (.6 + .4 * clamp((speed - 6) / 10, 0, 1)) / 9.8, w0 = P.rollW, k = 1 - .55 * Math.min(1, (S.roll / P.tip) * (S.roll / P.tip));   // the higher the body leans, the less it wants to come back
+    const rT = P.rollGain * (P.rock || 1) * (env.rollK || 1) * ay * (.6 + .4 * clamp((speed - 6) / 10, 0, 1)) / 9.8, w0 = P.rollW, k = 1 - .55 * Math.min(1, (S.roll / P.tip) * (S.roll / P.tip));   // the higher the body leans, the less it wants to come back
     S.rollV += (w0 * w0 * (rT - S.roll * k) - 2 * P.rollZ * w0 * S.rollV) * dt; S.roll += S.rollV * dt;
     const two = Math.abs(S.roll) > P.tip;
     if (two && !S.two) { S.two = 1; onTwoWheels(); } else if (!two && S.two) S.two = 0;
@@ -4820,8 +4820,8 @@ const MODE_TXT = {
   job: () => 'Celá misia: nalož aparatúru, prejdi starým mestom, cez neónovú zónu a po snehu až na vrchol. Hodnotí sa čas aj škoda.' + (store.get('jobBest', 0) ? ' Rekord: ' + fmt(store.get('jobBest', 0)) + ' bodov.' : '') + (carKey === 'zubor' ? ' Na snehu drž plyn, Zubor má pomoc do kopca.' : ''),
   off: () => 'Celá divočina: lúka, hrbole, bažina, jazero, ľad a vrchol. Zubor sa tu prepne na Suggu.' + (store.get('offBest', 0) ? ' Rekord: ' + fmt(store.get('offBest', 0)) + ' bodov.' : ''),
   train: () => 'Levely krok za krokom, všetky otvorené. Tri hviezdy sú za rýchly a čistý prejazd. Sugga a odomknuté autá zvládnu parkovisko, mesto aj divočinu, Zubor len parkovisko a mesto.',
-  arena: () => 'Drift aréna: päť okruhov vedľa seba, ľahký, ťažší, najťažší, komplikovaný a jeden so skokmi. Len Mini a Zubor. Klipni svetlá v drifte, ťažší okruh dáva viac bodov, za skok sú body za čas vo vzduchu. 150 sekúnd.' + (store.get('bestAr', 0) ? ' Tvoj rekord: ' + fmt(store.get('bestAr', 0)) + '.' : ''),
-  drift: () => 'Racing trať so širokými, sklonenými zákrutami, 120 sekúnd. Dva layouty: dlhý okruh a technická. Len Mini a Zubor. Klipni svetlá v zákrutách v drifte, zbieraj kolá. Mini je tu doma.' + (store.get('bestDr', 0) ? ' Tvoj rekord: ' + fmt(store.get('bestDr', 0)) + '.' : ''),
+  arena: () => 'Drift aréna: päť okruhov vedľa seba, ľahký, ťažší, najťažší, komplikovaný a jeden so skokmi. Zatiaľ len Zubor, Mini príde s 3D modelom. Klipni svetlá v drifte, ťažší okruh dáva viac bodov, za skok sú body za čas vo vzduchu. 150 sekúnd.' + (store.get('bestAr', 0) ? ' Tvoj rekord: ' + fmt(store.get('bestAr', 0)) + '.' : ''),
+  drift: () => 'Racing trať so širokými, sklonenými zákrutami, 120 sekúnd. Dva layouty: dlhý okruh a technická. Zatiaľ len Zubor, Mini príde s 3D modelom. Klipni svetlá v zákrutách v drifte, zbieraj kolá. Mini je tu doma.' + (store.get('bestDr', 0) ? ' Tvoj rekord: ' + fmt(store.get('bestDr', 0)) + '.' : ''),
   tokyo: () => 'Noc, neón a svetelné zóny. Prejdi cez každú v drifte, zóny idú po kruhu. 90 sekúnd.' + (store.get('bestTk', 0) ? ' Tvoj rekord: ' + fmt(store.get('bestTk', 0)) + '.' : ''),
   chase: () => 'Nočná diaľnica a polícia za tebou. Policajti ťa doháňajú a vytláčajú, keď sa pri tebe udržia, zadržia ťa. Ujdi 8 km, policajtov môžeš aj vybúrať.' + (store.get('chaseBest', 0) ? ' Rekord: ' + fmt(store.get('chaseBest', 0)) + '.' : ''),
   hwy: () => 'Prvá osoba, 8 km diaľnice, automat. Predbiehaj, drž sa cesty a nenabúraj, každý náraz je −40. Občas ťa vyzve tajné Red Bull auto: predbehni ho alebo ho vybúraj a odomkne sa ti. Je ich šesť.' + (store.get('hwyBest', 0) ? ' Rekord: ' + fmt(store.get('hwyBest', 0)) + '.' : '')
@@ -4886,7 +4886,7 @@ $('#tuneBtn').addEventListener('click', () => { renderTune(); $('#tuneMenu').hid
 $('#tuneClose').addEventListener('click', () => { $('#tuneMenu').hidden = true; });
 function renderCar() {
   if (isDrM(pendingMode) && DR_CARS.indexOf(carKey) < 0) { const nc = hwUnlocked('mini') ? 'mini' : 'zubor'; stageShow(nc); store.set('car', nc); }
-  $$('#carCards .card').forEach(c => { const chip = c.querySelector('.chip'); if (chip && !chip.dataset.c0) chip.dataset.c0 = chip.textContent; const nomode = isDrM(pendingMode) && DR_CARS.indexOf(c.dataset.car) < 0; c.classList.toggle('nomode', nomode); if (nomode) { c.disabled = true; if (chip) chip.textContent = 'LEN MINI · ZUBOR'; return; } if (chip) chip.textContent = chip.dataset.c0; const ok = hwUnlocked(c.dataset.car); c.classList.toggle('lock', !ok); c.disabled = !ok; if (!ok) { c.querySelector('.chip').textContent = 'ZAMKNUTÉ'; c.querySelector('small').textContent = 'Tajný pretek na diaľnici'; } });
+  $$('#carCards .card').forEach(c => { const chip = c.querySelector('.chip'); if (chip && !chip.dataset.c0) chip.dataset.c0 = chip.textContent; const nomode = isDrM(pendingMode) && DR_CARS.indexOf(c.dataset.car) < 0; c.classList.toggle('nomode', nomode); if (nomode) { c.disabled = true; if (chip) chip.textContent = 'LEN ' + DR_CARS.filter(hwUnlocked).map(k => k.toUpperCase()).join(' · '); return; } if (chip) chip.textContent = chip.dataset.c0; const ok = hwUnlocked(c.dataset.car); c.classList.toggle('lock', !ok); c.disabled = !ok; if (!ok) { const nm = !hasModel(c.dataset.car); c.querySelector('.chip').textContent = nm ? 'PRIPRAVUJEME' : 'ZAMKNUTÉ'; c.querySelector('small').textContent = nm ? (hwWon(c.dataset.car) ? 'Vyhrané · čaká na 3D model' : 'Čaká na 3D model') : 'Tajný pretek na diaľnici'; } });
   { const on = $('#carCards .card[data-car="' + carKey + '"]'); if (on && on.scrollIntoView) try { on.scrollIntoView({ block: 'nearest', inline: 'nearest' }); } catch (e) {} }
   const I = INFO[carKey], box = $('#carStats');
   $$('#carCards .card').forEach(c => c.classList.toggle('on', c.dataset.car === carKey));
@@ -5523,16 +5523,28 @@ function hwMkSpecial(id) {
   return { g: m.car, m, tail: dummy, bm: [{ visible: false }, { visible: false }], len: m.len, w: m.wid, kind: 'sp' };
 }
 const OPEN_CARS = ['zubor', 'sugga', 'gt', 'f1'];   // always available; gt and f1 will get locked behind something later
-function hwUnlocked(id) { return OPEN_CARS.indexOf(id) >= 0 || store.get('unl', []).indexOf(id) >= 0; }
+const NO_MODEL = ['mini', 'jeep', 'buggy', 'truck', 'unimog', 'xbow'];   // only a placeholder body so far: not playable until the real 3D model is in (a highway win is still remembered)
+const hasModel = id => NO_MODEL.indexOf(id) < 0;
+const hwWon = id => OPEN_CARS.indexOf(id) >= 0 || store.get('unl', []).indexOf(id) >= 0;
+function hwUnlocked(id) { return hasModel(id) && hwWon(id); }
 function hwUnlock(id) {
-  if (hwUnlocked(id)) return; const u = store.get('unl', []); u.push(id); store.set('unl', u);
+  if (hwWon(id)) return; const u = store.get('unl', []); u.push(id); store.set('unl', u);
   const sp = HW_SPECIALS.find(s => s.id === id) || { name: id.toUpperCase(), img: '' }, t = $('#unlockT');
-  t.innerHTML = (sp.img ? '<img src="' + sp.img + '" alt="">' : '') + '<span><small>ODOMKNUTÉ AUTO</small><b>' + sp.name + '</b></span>'; HW.newCar = sp.name;
+  t.innerHTML = (sp.img ? '<img src="' + sp.img + '" alt="">' : '') + '<span><small>' + (hasModel(id) ? 'ODOMKNUTÉ AUTO' : 'ODOMKNUTÉ · PRÍDE S 3D MODELOM') + '</small><b>' + sp.name + '</b></span>'; HW.newCar = sp.name;
   t.hidden = false; t.style.animation = 'none'; void t.offsetWidth; t.style.animation = ''; clearTimeout(hwUnlock.t); hwUnlock.t = setTimeout(() => { t.hidden = true; }, 3200);
   if (navigator.vibrate && settings.vib) { try { navigator.vibrate([30, 40, 60]); } catch (e) {} }
   renderCar();
 }
-const HGV = [0, 48, 82, 118, 155, 195, 240];            // top speed (km/h) of every gear
+const HGV = [0, 48, 82, 118, 155, 195, 240];            // top speed (km/h) of every gear (the Zubor); other cars scale it
+// highway feel per car: pw = engine pull, top = gear speeds, brk = brake, grip = cornering limit, drag = air resistance
+const HW_CAR = {
+  zubor: { pw: 1, top: 1, brk: .82, grip: 1, drag: 1 },         // 3.4 t van, 400 hp: honest pull, long braking, ~0.8 g
+  sugga: { pw: .74, top: .7, brk: .88, grip: .92, drag: 1.4 },  // old 200 hp diesel, tops out around 130 km/h
+  gt: { pw: 1.7, top: 1.28, brk: 1.45, grip: 1.3, drag: .7 },   // GT3: hard pull, big brakes, sticks to the road, ~300 km/h
+  f1: { pw: 2.4, top: 1.42, brk: 1.9, grip: 1.65, drag: .55 }   // F1: brutal in every direction, ~340 km/h
+};
+const hwCar = () => HW_CAR[carKey] || HW_CAR.zubor;
+const hGear = g => HGV[g] * hwCar().top;
 const HRADAR = [1500, 3100, 4800, 6600], HLIMIT = 130;
 // three road layouts: the valley (the original), serpentines with big swings, and an S-bend road with a straight in the middle
 const HWX = [
@@ -5963,7 +5975,7 @@ function cabCluster(kmh, rpm, gl, gn, auto) {
   };
   small(250, 44, 33, .5); small(390, 44, 33, .55);
   dial(146, 128, 104, rpm / 1000, 7, 1, v => v, 5.5);
-  dial(494, 128, 104, kmh, 200, 20, v => v % 40 === 0 ? v : '', 0);
+  { const mx = hwCar().top > 1.35 ? 360 : hwCar().top > 1.15 ? 320 : 200, st = mx > 200 ? 40 : 20; dial(494, 128, 104, Math.min(kmh, mx), mx, st, v => v % (st * 2) === 0 ? v : '', 0); }
   small(66, 206, 30, .62); small(574, 206, 30, .45);
   // the middle screen
   x.fillStyle = '#081019'; x.fillRect(262, 92, 116, 120); x.strokeStyle = '#1b2633'; x.lineWidth = 2; x.strokeRect(262, 92, 116, 120);
@@ -6089,7 +6101,7 @@ function hwHit(c, pd, ps, ds) {
 /* ---------- secret races: a special car dares you, pass it or knock it off and it is yours ---------- */
 function hwRaceUi(on, txt) { const e = $('#hwRace'); e.hidden = !on; if (txt !== undefined) e.textContent = txt; }
 function hwRaceStart() {
-  const P = HW.p, pool = HW_SPECIALS.filter(s => !hwUnlocked(s.id)), list = pool.length ? pool : HW_SPECIALS, sp = list[Math.floor(Math.random() * list.length)];
+  const P = HW.p, pool = HW_SPECIALS.filter(s => !hwWon(s.id)), list = pool.length ? pool : HW_SPECIALS, sp = list[Math.floor(Math.random() * list.length)];
   let c = HW.cars.find(o => o.s < -1e5 && !o.sp) || HW.cars.filter(o => !o.sp && !(o.ko > 0)).sort((a, b) => Math.abs(b.s - P.s) - Math.abs(a.s - P.s))[0];
   if (!c) { HW.rcT = 3; return; }
   for (let tries = 0; tries < 10; tries++) {
@@ -6104,7 +6116,7 @@ function hwRaceStart() {
 }
 function hwRaceEnd() { HW.race = null; HW.rcT = 38 + Math.random() * 30; hwRaceUi(false); }
 function hwRaceWin(how) {
-  const R = HW.race; if (!R) return; const P = HW.p, was = hwUnlocked(R.id); R.c.sp = 0; hwRaceEnd();
+  const R = HW.race; if (!R) return; const P = HW.p, was = hwWon(R.id); R.c.sp = 0; hwRaceEnd();
   P.score += was ? 300 : 800; P.races = (P.races || 0) + 1;
   popText(how === 'ko' ? 'VYBÚRANÝ! PRETEK VYHRATÝ' : 'PREDBEHNUTÝ! PRETEK VYHRATÝ', true);
   if (!was) hwUnlock(R.id);
@@ -6199,7 +6211,7 @@ function hwyStep(dt) {
   const stIn = input.steer, kb = keys.arrowleft || keys.arrowright || keys.a || keys.d;
   P.st += (stIn - P.st) * (1 - Math.exp(-dt * (kb ? 5 : 16)));
   // ---- engine and gearbox
-  const kmh = P.v * 3.6, gas = input.gas, vt = HGV[P.g];
+  const kmh = P.v * 3.6, gas = input.gas, vt = hGear(P.g);
   const fr = kmh / vt; P.rpm = 900 + clamp(fr, 0, 1.12) * 5700;
   if (P.cut > 0) P.cut -= dt;
   if (P.auto) {
@@ -6209,11 +6221,11 @@ function hwyStep(dt) {
       else if (P.g > 1 && (P.rpm < 1700 || (gas > .5 && P.rpm < 2800 + gas * 600))) { P.g--; P.cut = .18; P.shiftT = .6; hwUi(); } }
   }
   let a = 0;
-  if (P.cut <= 0 && P.rpm < 6350) a = 7.2 * gas * hTq(P.rpm) * Math.pow(HGV[1] / vt, .9);
+  if (P.cut <= 0 && P.rpm < 6350) a = 7.2 * hwCar().pw * gas * hTq(P.rpm) * Math.pow(hGear(1) / vt, .9);
   if (gas > .6 && fr < .13 && P.g > 2 && P.v > 2) { P.bogT += dt; if (P.bogT > 2.5) { P.bogT = 0; popText('PRIDAJ, NIŽŠÍ STUPEŇ', true); } } else P.bogT = Math.max(0, P.bogT - dt);
-  a -= .00055 * P.v * P.v + .15;
+  a -= .00055 * hwCar().drag * P.v * P.v + .15;
   if (gas < .05) a -= .2 + (P.rpm - 900) / 5700 * 1.5;
-  a -= input.brake * 9.2;
+  a -= input.brake * 9.2 * hwCar().brk;
   if (P.rollT > 0) a = -10;                                         // on its side or roof the car just slides to a stop
   const vOld = P.v; P.v = Math.max(0, P.v + a * dt); P.ax = (P.v - vOld) / dt;
   // ---- steering: a front-wheel angle that shrinks with speed; the tyres give at most ~0.95 g, the tall body leans (hwLean)
@@ -6223,7 +6235,7 @@ function hwyStep(dt) {
   // then one curve for everyone: fine control around the middle, the full lock really turns (and at speed, rolls)
   const lin = isTouch && !kb ? Math.sign(P.st) * Math.pow(Math.abs(P.st), 1 / 1.35) : P.st;
   const stE = Math.sign(lin) * Math.pow(Math.abs(lin), 1.7), dMax = .36 / (1 + Math.pow(P.v / 9, 1.6));
-  let yaw = P.v * stE * dMax / 3.5, aLat = P.v * yaw; const grip = 7.85 * (P.lift > 0 ? .9 : 1);                       // ~0.8 g on the road
+  let yaw = P.v * stE * dMax / 3.5, aLat = P.v * yaw; const grip = 7.85 * hwCar().grip * (P.lift > 0 ? .9 : 1);                       // ~0.8 g on the road
   P.skid = 0; if (Math.abs(aLat) > grip) { P.skid = Math.min(1, (Math.abs(aLat) - grip) / grip); aLat = Math.sign(aLat) * grip * (1 - .08 * Math.min(1, P.skid * 4)); yaw = aLat / Math.max(P.v, .5); }   // past the limit the tyres slide and hold a bit less
   if (P.rollT > 0) { yaw = 0; aLat = 0; }
   P.aLat = aLat;

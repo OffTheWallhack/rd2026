@@ -1,0 +1,1957 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>Si stvoril</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600&display=swap">
+<style>
+/* Layout: celá obrazovka je svet (canvas), hore tenká lišta s názvom, dole lišta s elementmi */
+:root{
+  --bg:#0b0c16;
+  --panel:rgba(14,15,30,.88);
+  --panel-solid:#12132a;
+  --line:#2a2b4a;
+  --ink:#ece6d2;
+  --muted:#9893ad;
+  --accent:#f4a63b;
+  --water:#5b9df0;
+  --display:"Pixelify Sans", ui-monospace, "SF Mono", Menlo, monospace;
+  --body:"Pixelify Sans", ui-monospace, "SF Mono", Menlo, monospace;
+  color-scheme:dark;
+}
+[hidden]{display:none!important}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);overflow:hidden;overscroll-behavior:none}
+body{font-family:var(--body);-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+#world{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:crosshair;background:var(--bg)}
+#world.pan{cursor:grab}
+button{font-family:var(--body);color:var(--ink)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.top{position:fixed;left:0;right:0;top:0;z-index:5;display:flex;align-items:center;gap:8px;
+  padding:calc(env(safe-area-inset-top,0px) + 8px) calc(env(safe-area-inset-right,0px) + 10px) 8px calc(env(safe-area-inset-left,0px) + 12px);
+  background:linear-gradient(var(--panel),rgba(14,15,30,0));pointer-events:none}
+.top > *{pointer-events:auto}
+.brand{display:flex;flex-direction:column;line-height:1;margin-right:auto;pointer-events:none;white-space:nowrap;min-width:0}
+.brand b{font-family:var(--display);font-weight:600;font-size:20px;letter-spacing:.02em}
+.brand b span{color:var(--accent)}
+.brand small{font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:3px}
+.btn{background:var(--panel-solid);border:1px solid var(--line);border-radius:6px;height:34px;min-width:34px;padding:0 10px;font-size:13px;display:inline-flex;align-items:center;justify-content:center;gap:6px;cursor:pointer}
+.btn:active{transform:translateY(1px)}
+.btn.on{border-color:var(--accent);color:var(--accent)}
+.grav{width:34px;padding:0}
+.grav svg{transition:transform .25s}
+.tilt svg{display:none}
+@media (max-width:480px){.tilt{width:34px;padding:0}.tilt span{display:none}.tilt svg{display:block}.brand b{font-size:18px}.top{gap:6px}}
+
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:5;
+  padding:8px calc(env(safe-area-inset-right,0px) + 8px) calc(env(safe-area-inset-bottom,0px) + 8px) calc(env(safe-area-inset-left,0px) + 8px);
+  background:linear-gradient(rgba(14,15,30,0),var(--panel) 30%);display:flex;align-items:center;gap:8px}
+.tools{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;flex:1;min-width:0;padding:2px}
+.tools::-webkit-scrollbar{display:none}
+.tool{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:4px;background:var(--panel-solid);border:1px solid var(--line);border-radius:6px;padding:6px 8px 5px;min-width:54px;cursor:pointer;font-size:12px}
+.tool i{width:22px;height:14px;display:block;image-rendering:pixelated;border-radius:2px}
+.tool.sel{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.tool kbd{display:none}
+@media (hover:hover) and (pointer:fine){ .tool kbd{display:block;position:absolute;font:10px var(--body);color:var(--muted);transform:translate(20px,-6px)} .tool{position:relative} }
+.size{flex:0 0 auto;display:flex;align-items:center;gap:4px;background:var(--panel-solid);border:1px solid var(--line);border-radius:6px;padding:4px}
+.size button{background:none;border:0;width:28px;height:28px;font-size:18px;cursor:pointer}
+.size output{width:20px;text-align:center;font-size:13px;font-variant-numeric:tabular-nums}
+
+.menu{position:fixed;z-index:6;right:calc(env(safe-area-inset-right,0px) + 10px);top:calc(env(safe-area-inset-top,0px) + 50px);width:min(300px,calc(100vw - 20px));
+  background:var(--panel-solid);border:1px solid var(--line);border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:10px;box-shadow:0 10px 30px rgba(0,0,0,.5);max-height:calc(100% - 130px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));overflow-y:auto;overscroll-behavior:contain}
+.menu h3{margin:0;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:400}
+.row{display:flex;gap:6px;flex-wrap:wrap}
+.row .btn{flex:1 1 28%;min-width:0;padding:0 6px}
+.menu p{margin:0;font-size:13px;line-height:1.45;color:var(--muted)}
+.menu p b{color:var(--ink);font-weight:400}
+.confirm{display:flex;gap:6px;align-items:center;font-size:13px}
+.found{display:flex;flex-direction:column;gap:4px;font-size:13px}
+.found span{color:var(--muted)}
+.found span.got{color:var(--ink)}
+.found span.got::before{content:"■ ";color:var(--accent)}
+.found span:not(.got)::before{content:"□ "}
+
+.toast{position:fixed;z-index:7;left:50%;top:calc(env(safe-area-inset-top,0px) + 58px);transform:translateX(-50%);background:var(--panel-solid);border:1px solid var(--accent);color:var(--ink);
+  border-radius:6px;padding:8px 12px;font-size:14px;max-width:calc(100vw - 32px);text-align:center;transition:opacity .3s}
+.toast.hide{opacity:0;pointer-events:none}
+.mini{flex:0 0 auto;display:flex;gap:4px}
+.mini button{background:var(--panel-solid);border:1px solid var(--line);border-radius:6px;min-width:40px;height:44px;font-size:14px;cursor:pointer;font-variant-numeric:tabular-nums}
+.mini button:disabled{opacity:.35;cursor:default}
+.mini button.on{border-color:var(--accent);color:var(--accent)}
+body.kino .top,body.kino .bar,body.kino .paused{display:none}
+.kinoExit{position:fixed;z-index:8;top:calc(env(safe-area-inset-top,0px) + 10px);right:calc(env(safe-area-inset-right,0px) + 10px);background:rgba(14,15,30,.55);border:1px solid var(--line);color:var(--ink);border-radius:6px;height:34px;padding:0 12px;font:13px var(--body);cursor:pointer}
+.rec{position:fixed;z-index:8;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 12px);background:rgba(14,15,30,.75);border:1px solid #e5484d;color:#ffb3b5;border-radius:6px;height:32px;padding:0 12px;font:13px var(--body);letter-spacing:.06em;cursor:pointer}
+.rec::before{content:"● ";color:#e5484d}
+.paused{position:fixed;z-index:4;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 86px);font-size:13px;color:var(--accent);letter-spacing:.1em;text-transform:uppercase}
+.minimap{position:fixed;z-index:4;left:calc(env(safe-area-inset-left,0px) + 10px);top:calc(env(safe-area-inset-top,0px) + 54px);width:72px;border:1px solid var(--line);background:#07070e;touch-action:none;cursor:pointer;border-radius:4px;opacity:.93;box-shadow:0 2px 10px rgba(0,0,0,.4)}
+@media (min-width:700px){.minimap{width:100px}}
+body.kino .minimap{display:none}
+@media (max-width:520px){
+  .bar{flex-wrap:wrap;gap:6px}
+  .tools{flex:1 1 100%}
+  .size{margin-right:auto}
+  .menu{max-height:calc(100% - 190px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
+  .paused{bottom:calc(env(safe-area-inset-bottom,0px) + 134px)}
+}
+@media (prefers-reduced-motion:reduce){.grav svg,.toast{transition:none}}
+</style>
+</head>
+<body>
+<canvas id="world" aria-label="Pixelový svet"></canvas>
+
+<header class="top">
+  <div class="brand"><b>Si <span>stvoril</span></b><small>pixelové terárko</small></div>
+  <button class="btn grav" id="gravBtn" title="Smer gravitácie" aria-label="Smer gravitácie">
+    <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M7 1h2v9h3l-4 5-4-5h3z" fill="currentColor"/></svg>
+  </button>
+  <button class="btn tilt" id="tiltBtn" title="Naklápanie telefónu" aria-label="Naklápanie telefónu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><g transform="rotate(-20 9 9)"><rect x="5" y="2" width="8" height="14" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="8" y="13" width="2" height="1.4" fill="currentColor"/></g></svg><span>Naklápanie</span></button>
+  <button class="btn" id="modeBtn" title="Veľkosť pixelov">Retro</button>
+  <button class="btn" id="pauseBtn" title="Pauza (medzerník)" aria-label="Pauza">❚❚</button>
+  <button class="btn" id="menuBtn" aria-label="Menu" aria-expanded="false">⋯</button>
+</header>
+
+<div class="menu" id="menu" hidden>
+  <h3>Gravitácia</h3>
+  <div class="row">
+    <button class="btn" id="rotL">↺ Otočiť</button>
+    <button class="btn" id="rotR">Otočiť ↻</button>
+    <button class="btn" id="shakeBtn">Zatriasť</button>
+  </div>
+  <h3>Svet</h3>
+  <div class="row">
+    <button class="btn" id="newBtn">Jaskyňa</button>
+    <button class="btn" id="aquaBtn">Akvárko</button>
+    <button class="btn" id="winterBtn">Zima</button>
+    <button class="btn" id="volcanoBtn">Sopka</button>
+    <button class="btn" id="forestBtn">Les</button>
+    <button class="btn" id="desertBtn">Púšť</button>
+    <button class="btn" id="beachBtn">Pláž</button>
+    <button class="btn" id="islandsBtn">Ostrovy</button>
+    <button class="btn" id="emptyBtn">Prázdny</button>
+  </div>
+  <div class="row"><button class="btn" id="fileSaveBtn">Uložiť do súboru</button><button class="btn" id="fileLoadBtn">Načítať zo súboru</button></div>
+  <input type="file" id="fileIn" accept=".json,application/json" hidden>
+  <div class="confirm" id="confirm" hidden><span id="confirmText">Zmazať tento svet?</span><button class="btn" id="yesBtn">Áno</button><button class="btn" id="noBtn">Nie</button></div>
+  <h3>Bytosti</h3>
+  <div class="row"><button class="btn" id="gentleBtn">Jemný</button><button class="btn" id="naturalBtn">Prirodzený</button></div>
+  <p id="lifeHelp"></p>
+  <h3>Mapa a fotka</h3>
+  <div class="row"><button class="btn" id="mapBtn">Mapa sveta</button></div>
+  <div class="row"><button class="btn" id="photoBtn">Fotka sveta</button><button class="btn" id="photoViewBtn">Fotka pohľadu</button></div>
+  <div class="row"><button class="btn" id="shareBtn">Zdieľať fotku</button><button class="btn" id="shareWorldBtn">Zdieľať svet</button></div>
+  <h3>Stavanie</h3>
+  <p><b>Plán</b> (tlačidlo vedľa Späť, kláves P): kresli tehlou, drevom, kameňom, sklom, zemou alebo fakľou. Namiesto pixelov sa objaví obrys a robot ho postaví. Funguje aj po <b>Výber → Vložiť</b>. Roboty postav ťuknutím na Robot.</p>
+  <div class="row"><button class="btn" id="planClearBtn">Zrušiť celý plán</button></div>
+  <h3>Video a zvuk</h3>
+  <div class="row"><button class="btn" id="recBtn">Nahrať 15 s</button><button class="btn" id="kinoBtn">Kino režim</button></div>
+  <div class="row"><button class="btn" id="soundBtn">Zvuk: vypnutý</button></div>
+  <h3>Deň a noc</h3>
+  <div class="row"><button class="btn" id="dayBtn">Striedanie dňa a noci</button></div>
+  <h3>Ročné obdobia</h3>
+  <div class="row"><button class="btn" id="seasonBtn">Ročné obdobia: vypnuté</button><button class="btn" id="seasonNext">Ďalšie obdobie ▸</button></div>
+  <h3>Výzvy</h3>
+  <div class="found" id="chal"></div>
+  <h3>Objavy</h3>
+  <div class="found" id="found"></div>
+  <h3>Ovládanie</h3>
+  <p id="helpTouch"><b>Prst</b> kreslí, podržaný sype ďalej. <b>Dva prsty</b> posúvajú a zoomujú. <b>Ruka</b> posúva jedným prstom. <b>Výber</b> označí oblasť, <b>Vložiť</b> ju potiahni a pusť. <b>Plán</b> = roboti postavia, čo nakreslíš.</p>
+  <p id="helpMouse"><b>Myš</b> kreslí, pravé tlačidlo posúva, koliesko zoomuje. Klávesy <b>1–0</b> elementy, <b>R</b> ruda, <b>M</b> mravce, <b>B</b> baník, <b>O</b> robot, <b>L</b> blesk, <b>F</b> ryby, <b>Z</b> späť, <b>X</b> rýchlosť, <b>K</b> kino, <b>G</b> guma, <b>H</b> ruka, <b>C</b> výber, <b>V</b> vložiť, <b>P</b> plán, <b>N</b> včely, <b>D</b> dážďovky, <b>Q / E</b> gravitácia, <b>T</b> zatriasť, <b>[ ]</b> štetec, <b>medzerník</b> pauza.</p>
+</div>
+
+<div class="paused" id="pausedLbl" hidden>Pauza</div>
+<button class="kinoExit" id="kinoExit" hidden>Ukončiť kino</button>
+<button class="rec" id="recLbl" hidden>REC 15</button>
+<div class="toast hide" id="toast" role="status"></div>
+<canvas class="minimap" id="minimap" aria-label="Mapa sveta" hidden></canvas>
+
+<nav class="bar">
+  <div class="tools" id="tools"></div>
+  <div class="size" aria-label="Veľkosť štetca">
+    <button id="szMinus" aria-label="Menší štetec">−</button><output id="szOut">3</output><button id="szPlus" aria-label="Väčší štetec">+</button>
+  </div>
+  <div class="mini">
+    <button id="planBtn" title="Plán pre robotov (P)" aria-label="Plán pre robotov">Plán</button>
+    <button id="undoBtn" title="Späť (Z)" aria-label="Späť" disabled>↶</button>
+    <button id="speedBtn" title="Rýchlosť času (X)" aria-label="Rýchlosť času">1×</button>
+  </div>
+</nav>
+
+<script>
+(()=>{
+"use strict";
+// ---------- elementy ----------
+const E={EMPTY:0,SAND:1,WATER:2,STONE:3,DIRT:4,LAVA:5,STEAM:6,OBSID:7,GLASS:8,SOURCE:9,BEDROCK:10,
+  SEED:11,WOOD:12,LEAF:13,FIRE:14,SMOKE:15,ASH:16,TIP:17,EMBER:18,FLOWER:19,TORCH:20,ORE:21,BRICK:22,ICE:23,SNOW:24,OIL:25,ACID:26,ALGAE:27,BUBBLE:28,CLOUD:29,SPONGE:30,CLONER:31,HOLE:32,SALT:33,POWDER:34,LN2:35,CACTUS:36};
+// kind: 0 prázdno, 1 sypké, 2 tekuté, 3 plyn, 4 pevné
+const KIND=[0,1,2,4,1,2,3,4,4,4,4, 1,4,4,3,3,1,4,4,4, 4,4,4, 4,1,2,2,4,2, 3,4,4,4, 1,1,2,4];
+const DENS=[0,5,2,99,5,3,0.5,99,99,99,99, 4,99,99,.3,.4,3,99,99,99, 99,99,99, 99,3,1.5,2.2,99,.2, .1,99,99,99, 4.5,4,1.8,99];
+const EMIT=new Float32Array(64);EMIT[32]=.4;EMIT[5]=1;EMIT[14]=1.3;EMIT[18]=.8;EMIT[9]=.15;EMIT[20]=2.2;EMIT[26]=.25;
+const WET=1,GRASS=2,FIXED=4,FALL=8;
+const BASE_W=200,BASE_H=300;
+
+// ---------- stav ----------
+let mode='retro';             // 'retro' | 'detail'
+let W=BASE_W,H=BASE_H;
+let type,data,cvar,ticks,plan,planN=0;
+let tick=1,frame=0,paused=false;
+let g=2,windDir=1;                      // index gravitácie, 2 = dole
+const DIRS=[[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1],[0,-1],[1,-1]];
+let particles=[];
+
+// rýchle náhodné čísla
+let rs=(Math.random()*2**31)|0||1;
+function rnd(){rs^=rs<<13;rs^=rs>>>17;rs^=rs<<5;return (rs>>>0)/4294967296}
+
+function alloc(w,h){W=w;H=h;type=new Uint8Array(w*h);data=new Uint8Array(w*h);cvar=new Uint8Array(w*h);ticks=new Uint8Array(w*h);plan=new Uint8Array(w*h);planN=0;
+  for(let i=0;i<w*h;i++)cvar[i]=(rnd()*256)|0; buildBG();}
+
+// ---------- farby ----------
+const pack=(r,g,b)=>(255<<24)|(b<<16)|(g<<8)|r;
+function hex(h){return [parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)]}
+function pal(h,spread){const [r,g,b]=hex(h);const out=new Uint32Array(16);
+  for(let k=0;k<16;k++){const f=1+((k/15)-.5)*spread;out[k]=pack(Math.min(255,r*f)|0,Math.min(255,g*f)|0,Math.min(255,b*f)|0)}return out}
+const P={
+  sand:pal('#d8b46c',.18), dirt:pal('#9a6234',.16), dirtEdge:pal('#6e4423',.14), wet:pal('#6f4526',.14), wetEdge:pal('#523319',.12),
+  grass:pal('#5fae35',.25), tuft:pal('#4d9a2c',.3), stone:pal('#6c7080',.2), stoneEdge:pal('#4b4e5c',.15),
+  water:pal('#2f68c8',.12), waterMid:pal('#295cb4',.12), waterDeep:pal('#224d9a',.12), wsurf:pal('#5d9cf0',.12), wfall:pal('#bcdcff',.25),
+  lava:pal('#ff7a1c',.35), lavaTop:pal('#ffc24a',.2), steam:pal('#7d8597',.25),
+  obsid:pal('#2c2140',.3), glass:pal('#9fd2e4',.2), bed:pal('#22232f',.2), spray:pack(224,238,255), source:pal('#e8f4ff',.1),
+  seed:pal('#a07a36',.3), wood:pal('#6b4424',.22), woodEdge:pal('#4f311a',.15), leaf:pal('#3d8c36',.35), leafHi:pal('#62b548',.2),
+  fire:grad(['#7a1408','#c8300c','#f06a12','#ffa21e','#ffd35a','#fff1b0']), ember:grad(['#6a1a0a','#b9380f','#ff6a18','#b9380f']),
+  smoke:pal('#34353f',.25), ash:pal('#a19c93',.2),
+  ice:pal('#a6d8f0',.14), iceHi:pal('#dff2fb',.06), snow:pal('#eef2f7',.05), oil:pal('#3a2915',.3), oilTop:pal('#6e5430',.2),
+  acid:pal('#86e23a',.25), acidTop:pal('#c4ff6a',.15), algae:pal('#2f9a4a',.35), algaeHi:pal('#58c25e',.25), bubble:pal('#d6ecff',.08),
+  cloud:pal('#cfd4de',.08), cloudDark:pal('#7f8596',.12), sponge:pal('#e3c94f',.2), spongeWet:pal('#9c8a2a',.2), spongePore:pal('#8a7420',.15),
+  cloner:grad(['#7a2a86','#c050c8','#f08cf4','#c050c8']), hole:grad(['#05030a','#1a0a2e','#05030a','#000000']), bolt:pack(255,250,210),
+  torch:grad(['#c8501a','#ff9a2a','#ffd76a','#ff9a2a']), ore:pal('#e9b53c',.3), brick:pal('#a8472f',.18), mortar:pal('#6e3a2c',.12), dust:pack(150,140,125),
+  salt:pal('#eeeae0',.12), saltHi:pal('#ffffff',.05), powder:pal('#463f3e',.35), ln2:pal('#7fdcf5',.2), ln2Top:pal('#dffaff',.12), cactus:pal('#3c9a4c',.25), spine:pack(226,238,196),
+  grassAut:pal('#a3a23a',.25), tuftAut:pal('#8e8a2c',.3), grassWin:pal('#9db5a8',.2), tuftWin:pal('#7f9a8e',.25),
+  leafSpr:pal('#58c24a',.3), leafSprHi:pal('#8ee06a',.2), leafAutO:pal('#e8821e',.3), leafAutR:pal('#c4402a',.3), leafAutY:pal('#e8c232',.25), leafWinFrost:pal('#b6cfd2',.15), leafWinDark:pal('#4a5c58',.3),
+  flower:[pack(240,110,160),pack(250,214,70),pack(240,240,236),pack(170,120,235)]
+};
+function grad(cs){const out=new Uint32Array(16);for(let k=0;k<16;k++){const t=k/15*(cs.length-1),a=Math.floor(t),b=Math.min(cs.length-1,a+1),f=t-a;
+  const A=hex(cs[a]),B=hex(cs[b]);out[k]=pack(A[0]+(B[0]-A[0])*f|0,A[1]+(B[1]-A[1])*f|0,A[2]+(B[2]-A[2])*f|0)}return out}
+let BG,WT;
+function buildBG(){WT=new Uint32Array(H*16);const wa=hex('#3070d2'),wb=hex('#1c4389');
+  for(let y=0;y<H;y++){const t=Math.min(1,y/H*1.2);for(let k=0;k<16;k++){const f=1+((k/15)-.5)*.12;
+    WT[y*16+k]=pack((wa[0]+(wb[0]-wa[0])*t)*f|0,(wa[1]+(wb[1]-wa[1])*t)*f|0,(wa[2]+(wb[2]-wa[2])*t)*f|0)}}BG=new Uint32Array(H*4);const a=hex('#1a1b31'),b=hex('#0b0c17');
+  for(let y=0;y<H;y++){const t=y/H;for(let k=0;k<4;k++){const f=1+(k-1.5)*0.035;
+    BG[y*4+k]=pack((a[0]+(b[0]-a[0])*t)*f|0,(a[1]+(b[1]-a[1])*t)*f|0,(a[2]+(b[2]-a[2])*t)*f|0)}}}
+
+// ---------- šum na generovanie jaskyne ----------
+function makeNoise(){const N=64,v=new Float32Array(N*N);for(let i=0;i<N*N;i++)v[i]=rnd();
+  const sm=t=>t*t*(3-2*t);
+  const n=(x,y)=>{const xi=Math.floor(x),yi=Math.floor(y),xf=sm(x-xi),yf=sm(y-yi);
+    const g=(a,b)=>v[((b&63)*N)+(a&63)];
+    const a=g(xi,yi),b=g(xi+1,yi),c=g(xi,yi+1),d=g(xi+1,yi+1);
+    return a+(b-a)*xf+(c-a)*yf+(a-b-c+d)*xf*yf};
+  return (x,y)=>{let s=0,amp=.5,f=1;for(let o=0;o<4;o++){s+=n(x*f,y*f)*amp;amp*=.5;f*=2.03}return s/.9375}}
+
+function setCell(i,t,d){type[i]=t;data[i]=d||0;cvar[i]=(rnd()*256)|0}
+
+let worldKind='cave';
+function generate(kind){
+  if(kind===true)kind='empty';if(!kind||kind===false||kind==='new')kind='cave';
+  worldKind=kind;const empty=kind==='empty';seasonT=0;seasonIdx=0;seasonLabel();
+  if(mode==='detail'){mode='retro';}
+  alloc(BASE_W,BASE_H);
+  const n1=makeNoise(),n2=makeNoise(),n3=makeNoise();agents=[];colonies=[];fireflies=[];
+  if(kind==='aqua'){genAqua(n1,n2);g=2;particles=[];return}
+  if(kind==='desert'){genDesert(n1,n2,n3);g=2;particles=[];return}
+  if(kind==='beach'){genBeach(n1,n2,n3);g=2;particles=[];tideBase=null;return}
+  if(kind==='islands'){genIslands(n1,n2,n3);g=2;particles=[];return}
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){const i=y*W+x;
+    if(x<2||y<2||x>=W-2||y>=H-2){type[i]=E.BEDROCK;continue}
+    if(empty)continue;
+    if(kind==='forest'){const fl=46+Math.floor(n3(x/38,1.3)*16);if(y>=fl&&y<fl+22){type[i]=E.DIRT;data[i]=FIXED;continue}}
+    const thr=.56-(y/H)*.08;
+    const v=n1(x/26,y/9);
+    if(y>16&&v>thr){ if(n2(x/16,y/16)>.66&&v>thr+.05) type[i]=E.STONE; else {type[i]=E.DIRT;data[i]=FIXED} }
+    if(type[i]===E.STONE&&n3(x/7,y/7)>.68)type[i]=E.ORE;
+    else if(type[i]===E.DIRT&&y>H*.45&&n3(x/6,y/6)>.8){type[i]=E.ORE;data[i]=0}
+  }
+  if(!empty){
+    // jazierko hore vľavo a priestor pre prameň
+    const lx=48+((rnd()*10)|0),ly=46,lrx=32,lry=11;
+    for(let y=2;y<ly;y++)for(let x=lx-lrx;x<lx+lrx;x++)if(x>1&&x<W-2)type[y*W+x]=E.EMPTY;
+    bowl(lx,ly,lrx,lry,E.WATER,.15);
+    // lávové jazero dole
+    const vx=90+((rnd()*30)|0),vy=H-30;
+        bowl(vx,vy,34,13,E.LAVA,0);
+    if(kind==='volcano')volcanoize();
+    // prameň
+    const si=10*W+lx-18;setCell(si,E.SOURCE,E.WATER);
+    // tráva a vlhkosť na povrchu
+    for(let y=3;y<H-2;y++)for(let x=2;x<W-2;x++){const i=y*W+x;
+      if(type[i]===E.DIRT&&type[i-W]===E.EMPTY){ if(rnd()<.8)data[i]|=GRASS; if(rnd()<.5)data[i]|=WET; if((data[i]&GRASS)&&rnd()<.04)setCell(i-W,E.FLOWER,0)}}
+    // pár stromov, ktoré začnú rásť hneď na začiatku
+    const treeN=kind==='forest'?24:8,treeGap=kind==='forest'?6:9;let planted=0;for(let tries=0;tries<(kind==='forest'?1200:400)&&planted<treeN;tries++){const x=6+((rnd()*(W-12))|0);
+      for(let y=14;y<H-4;y++){const i=y*W+x;if(type[i]===E.DIRT&&(data[i]&GRASS)&&type[i-W]===E.EMPTY){
+        if(clearUp(x,y-1,14)&&!woodNear(x,y-1,treeGap)){setCell(i-W,E.TIP,14+((rnd()*16)|0));data[i]|=WET;planted++}break}
+        if(type[i]!==E.EMPTY)break}}
+    // mravenisko a tábor baníkov na povrchu
+    const spots=[];for(let tries=0;tries<600&&spots.length<2;tries++){const x=20+((rnd()*(W-40))|0);
+      for(let y=20;y<H-60;y++){const i=y*W+x;if(type[i]===E.DIRT&&type[i-W]===0){
+        let flat=true;for(let dx=-3;dx<=3;dx++){const u=type[i+dx],o=type[i-W+dx];if((u!==E.DIRT&&u!==E.STONE)||(o!==0&&o!==E.FLOWER))flat=false}
+        if(flat&&clearUp(x,y-1,6)&&!nearWater(x,y+10,22)&&!spots.some(p=>Math.abs(p.x-x)<40))spots.push({x,y:y-1});break}
+        if(type[i]!==0&&type[i]!==E.FLOWER)break}}
+    for(let tries=0;tries<800&&spots.length<2;tries++){const x=20+((rnd()*(W-40))|0);
+      for(let y=20;y<H-40;y++){const i=y*W+x;const u=type[i];if((u===E.DIRT||u===E.STONE)&&(type[i-W]===0||type[i-W]===E.FLOWER)){
+        if(clearUp(x,y-1,4)&&!spots.some(p=>Math.abs(p.x-x)<30))spots.push({x,y:y-1});break}
+        if(u!==0&&u!==E.FLOWER)break}}
+    if(spots[0])spawnColony(0,spots[0].x,spots[0].y);
+    if(spots[1])spawnColony(1,spots[1].x,spots[1].y);
+  }
+  if(kind==='winter'){winterize();for(let i=0;i<W*H;i++)if(type[i]===E.SOURCE)type[i]=E.ICE}
+  g=2;particles=[];
+  if(mode==='detail')toDetail();
+}
+function surfaceY(x){for(let y=3;y<H-3;y++){const t=type[y*W+x];if(t!==0&&t!==E.CLOUD&&t!==E.STEAM&&t!==E.SMOKE&&t!==E.LEAF&&t!==E.FLOWER)return y}return -1}
+function plantTree(x,y,gap){if(x<4||x>=W-4||y<12)return false;const i=y*W+x;if(type[i]!==0||type[i+W]!==E.DIRT)return false;
+  if(!clearUp(x,y,14)||woodNear(x,y,gap))return false;setCell(i,E.TIP,14+((rnd()*16)|0));data[i+W]|=WET;return true}
+function genDesert(n1,n2,n3){
+  const base=Math.floor(H*.42);const hs=new Int16Array(W);
+  for(let x=0;x<W;x++)hs[x]=base+Math.floor(n1(x/48,2.3)*30)-Math.floor(n2(x/15,5)*6);
+  const ox=70+((rnd()*(W-140))|0),orx=34;const px=ox<W/2?Math.floor(W*.8):Math.floor(W*.2);
+  let h0=0;for(let x=ox-orx;x<=ox+orx;x++)h0+=hs[x];h0=Math.round(h0/(2*orx+1));
+  for(let x=ox-orx-6;x<=ox+orx+6;x++){const d=Math.abs(x-ox);
+    if(d<=orx)hs[x]=h0+Math.round(11*(1-(d/orx)**2));else{const t=(d-orx)/6;hs[x]=Math.round(h0*(1-t)+hs[x]*t)}}
+  const hp=hs[px];for(let x=px-26;x<=px+26;x++)hs[x]=hp;
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){const i=y*W+x;
+    if(x<2||y<2||x>=W-2||y>=H-2){type[i]=E.BEDROCK;continue}
+    const f=hs[x];if(y>=f+16+((n2(x/12,3)*10)|0))type[i]=E.STONE;else if(y>=f)type[i]=E.SAND}
+  for(let y=Math.floor(H*.55);y<H-3;y++)for(let x=3;x<W-3;x++){const i=y*W+x;if(type[i]===E.STONE&&n3(x/6,y/6)>.78)type[i]=E.ORE}
+  for(let y=Math.floor(H*.5);y<H-12;y++)for(let x=4;x<W-4;x++){const i=y*W+x;if(type[i]===E.STONE&&y>hs[x]+26&&n3(x/15,y/9)>.7)type[i]=0}
+  // oáza
+  const L=h0+3;
+  for(let x=ox-orx;x<=ox+orx;x++){const d=Math.abs(x-ox)/orx;
+    if(d>.52)for(let k=0;k<4;k++){const i=(hs[x]+k)*W+x;if(type[i]===E.SAND){type[i]=E.DIRT;data[i]=FIXED|WET|(k===0?GRASS:0)}}
+    for(let y=L;y<hs[x];y++){const i=y*W+x;if(type[i]===0)setCell(i,E.WATER,0)}}
+  let pl=0;for(let tries=0;tries<80&&pl<7;tries++){const x=ox+(((rnd()*2-1)*orx*1.0)|0);const y=hs[x]-1;if(Math.abs(x-ox)>orx*.55&&plantTree(x,y,7))pl++}
+  for(let x=ox-orx;x<=ox+orx;x++){const y=hs[x]-1;if(type[y*W+x]===0&&type[(y+1)*W+x]===E.DIRT&&rnd()<.07)setCell(y*W+x,E.FLOWER,0)}
+  // kaktusy
+  for(let k=0,n=0;k<200&&n<16;k++){const x=6+((rnd()*(W-12))|0);if(Math.abs(x-ox)<orx+5||Math.abs(x-px)<24)continue;
+    const y0=hs[x]-1;if(type[y0*W+x]!==0)continue;const h=4+((rnd()*6)|0);
+    for(let q=0;q<h;q++){setCell((y0-q)*W+x,E.CACTUS,0);if(type[(y0-q)*W+x+1]===0&&type[(y0-q+1)*W+x+1]!==0)setCell((y0-q)*W+x+1,E.CACTUS,0)}
+    const side=rnd()<.5?-1:1,ah2=2+((rnd()*(h-3))|0);for(let q=0;q<3;q++)setCell((y0-ah2-q)*W+x+side,E.CACTUS,0);
+    n++}
+  // pyramída s komorou, fakľou a pokladom
+  const half=24;
+  for(let k=0;k<half;k++){const y=hp-1-k;for(let x=px-half+k;x<=px+half-k;x++){const i=y*W+x;type[i]=E.BRICK;data[i]=0;cvar[i]=(rnd()*256)|0}}
+  for(let y=hp-11;y<=hp-2;y++)for(let x=px-9;x<=px+9;x++)type[y*W+x]=0;
+  for(let y=hp-3;y<=hp-1;y++)for(let x=px-half;x<=px-9;x++)type[y*W+x]=0;
+  setCell((hp-11)*W+px,E.TORCH,0);setCell((hp-4)*W+px-8,E.TORCH,0);for(let k=0;k<5;k++)setCell((hp-2-(k>2?1:0))*W+px+3+k,E.ORE,0);setCell((hp-2)*W+px-2,E.GLASS,0);setCell((hp-2)*W+px-3,E.GLASS,0);
+  // mravce pri oáze
+  const ax=ox+(rnd()<.5?1:-1)*Math.round(orx*.8);spawnColony(0,ax,hs[ax]-1);
+}
+function genBeach(n1,n2,n3){
+  const shore=Math.floor(W*.56),wl=Math.floor(H*.40),floorMax=Math.floor(H*.80);const gy=new Int16Array(W);
+  for(let x=0;x<W;x++){let y;
+    if(x<shore)y=Math.min(floorMax,Math.round(wl+(shore-x)*.34+n1(x/22,4)*7));
+    else y=Math.round(wl-1-(x-shore)*.10-n1(x/26,1.2)*6);
+    gy[x]=Math.max(Math.floor(H*.2),y)}
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){const i=y*W+x;
+    if(x<2||y<2||x>=W-2||y>=H-2){type[i]=E.BEDROCK;continue}
+    const f=gy[x];
+    if(y>=f+9+((n2(x/14,3)*6)|0))type[i]=E.STONE;
+    else if(y>=f){if(x>shore+26&&y<f+7){type[i]=E.DIRT;data[i]=FIXED|WET|(y===f?GRASS:0)}else type[i]=E.SAND}
+    else if(y>=wl)type[i]=E.WATER}
+  for(let y=Math.floor(H*.55);y<H-12;y++)for(let x=shore+14;x<W-4;x++){const i=y*W+x;if(type[i]===E.STONE&&y>gy[x]+24&&n3(x/15,y/9)>.7)type[i]=0}
+  for(let k=0;k<5;k++){const cx=14+((rnd()*(shore-40))|0),cy=gy[cx]-1,r=3+((rnd()*6)|0);
+    for(let dy=-r;dy<=r;dy++)for(let dx=-r*1.4;dx<=r*1.4;dx++){const x=(cx+dx)|0,y=cy+dy;if(x<3||x>W-4||y<3||y>H-4)continue;
+      if((dx*dx)/(r*r*1.96)+(dy*dy)/(r*r)<1&&rnd()<.97)setCell(y*W+x,E.STONE,0)}}
+  for(let k=0;k<45;k++){const x=5+((rnd()*(shore-30))|0);let y=wl;while(y<H-3&&type[y*W+x]===E.WATER)y++;y--;
+    if(y<wl+6||type[y*W+x]!==E.WATER||type[(y+1)*W+x]!==E.SAND)continue;const base=cvar[y*W+x];const hh=3+((rnd()*9)|0);
+    for(let h=0;h<hh;h++){const j=(y-h)*W+x;if(type[j]!==E.WATER)break;type[j]=E.ALGAE;data[j]=h;cvar[j]=base}}
+  // móla
+  for(let x=shore-28;x<=shore+3;x++){if(type[(wl-2)*W+x]===0)setCell((wl-2)*W+x,E.WOOD,0)}
+  for(let x=shore-28;x<=shore-3;x+=6){for(let y=wl-1;y<H-3;y++){const j=y*W+x;if(type[j]!==E.WATER&&type[j]!==0)break;setCell(j,E.WOOD,0)}}
+  for(let x=shore+4;x<W-4;x++){const y=gy[x];const i=y*W+x;if(type[i]===E.DIRT&&type[i-W]===0&&rnd()<.06)setCell(i-W,E.FLOWER,0)}
+  let pl=0;for(let tries=0;tries<200&&pl<8;tries++){const x=shore+30+((rnd()*(W-shore-38))|0);if(plantTree(x,gy[x]-1,7))pl++}
+  const ax=Math.min(W-12,shore+36);spawnColony(0,ax,gy[ax]-1);
+  for(let s2=0;s2<5;s2++){const col=s2%FISHC.length;const cx=14+((rnd()*(shore-50))|0),cy=wl+10+((rnd()*35)|0);
+    for(let k=0;k<6;k++){const x=cx+((rnd()*10-5)|0),y=cy+((rnd()*8-4)|0);if(at(x,y)===E.WATER)agents.push(mkFish(x,y,col))}}
+}
+let seasonOn=false,seasonT=0,seasonIdx=0;const SLEN=60*130,SNAMES=['Jar','Leto','Jeseň','Zima'];
+const brandSmall=document.querySelector('.brand small');
+function seasonLabel(){brandSmall.textContent=seasonOn?'pixelové terárko · '+SNAMES[seasonIdx]:'pixelové terárko'}
+function seasonTick(){
+  if(!seasonOn)return;
+  seasonT++;const idx=Math.floor(seasonT/SLEN)%4;
+  if(idx!==seasonIdx){seasonIdx=idx;seasonLabel();toast(['Prišla jar: sneh sa topí, všetko rastie','Prišlo leto: teplo, občas prehánka','Prišla jeseň: lístie mení farby a opadáva','Prišla zima: sneží a voda zamŕza'][idx]);discover('season');if(seasonT>=SLEN*4)discover('year')}
+  const ph=(seasonT%SLEN)/SLEN,s2=sc(),N=26*s2;
+  if(seasonIdx===3){
+    if(ph<.88&&rnd()<.3*s2){const x=3+((rnd()*(W-6))|0);if(type[3*W+x]===0)setCell(3*W+x,E.SNOW,0)}
+    if(ph>.08||rnd()<ph*8)for(let q=0;q<5;q++){const x=3+((rnd()*(W-6))|0),y=surfaceY(x);
+      if(y>3&&type[y*W+x]===E.WATER&&!fishNear(x,y,3)){type[y*W+x]=E.ICE;data[y*W+x]=0;discover('ice')}
+      else if(y>3&&ph>.45&&type[y*W+x]===E.ICE&&type[(y+1)*W+x]===E.WATER&&type[(y+2)*W+x]===E.WATER&&!fishNear(x,y+1,3)&&rnd()<.5){type[(y+1)*W+x]=E.ICE;data[(y+1)*W+x]=0}}
+  }else if(seasonIdx===2){
+    if(rnd()<1/300)windDir=rnd()<.5?-1:1;
+  }else if(seasonIdx===1&&ph>.4&&rnd()<1/2600){
+    const cx=20+((rnd()*(W-40))|0),cy=6+((rnd()*14)|0);
+    for(let dy=-2;dy<=2;dy++)for(let dx=-6;dx<=6;dx++){if(dx*dx/36+dy*dy/5<1&&rnd()<.85&&type[(cy+dy)*W+cx+dx]===0)setCell((cy+dy)*W+cx+dx,E.CLOUD,100)}
+  }
+  for(let k=0;k<N;k++){const i=(rnd()*W*H)|0;const t=type[i];if(!t)continue;const x=i%W,y=(i/W)|0;
+    if(seasonIdx===3){
+      if(t===E.WATER&&y>3&&(ph>.12||rnd()<ph*5)){const a=type[i-W],a2=y>4?type[i-2*W]:E.STONE;
+        if((a===0||a===E.SNOW||(a===E.ICE&&(a2===0||a2===E.SNOW)))&&rnd()<.6&&!fishNear(x,y,3)){type[i]=E.ICE;data[i]=0;discover('ice')}}
+      else if(t===E.FLOWER&&rnd()<.3){type[i]=0}
+    }else if(seasonIdx===2){
+      if(t===E.LEAF&&y+1<H&&type[i+W]===0&&particles.length<420&&rnd()<.18){const q=(cvar[i]>>4)%3;particles.push({x:x+.5,y:y+1,vx:0,vy:.1,life:90+((rnd()*80)|0),c:2,col:(q===0?P.leafAutO:q===1?P.leafAutR:P.leafAutY)[8]})}
+      else if(t===E.FLOWER&&rnd()<.12){type[i]=0}
+    }else{
+      if(t===E.SNOW&&rnd()<(seasonIdx===1?.85:.6)){type[i]=E.WATER;data[i]=0;discover('melt')}
+      else if(t===E.ICE&&rnd()<(seasonIdx===1?.5:.3)){type[i]=E.WATER;data[i]=0;discover('melt')}
+      else if(t===E.DIRT&&(data[i]&GRASS)&&(data[i]&WET)&&rnd()<.5)dirtLife(i,x,y,data[i]);
+    }}
+}
+function fishNear(x,y,r){for(const a of agents)if(a.k===2&&Math.abs(a.x-x)<=r&&Math.abs(a.y-y)<=r)return true;return false}
+let tideBase=null,tideT=0,tideMode='';
+function tideTick(){
+  if(worldKind!=='beach')return;tideT++;
+  if(tideMode!==mode){tideMode=mode;tideBase=null}
+  if(tideT&7)return;
+  const x=3;let y=3;while(y<H-3&&type[y*W+x]===0)y++;
+  if(type[y*W+x]!==E.WATER)return;
+  if(tideBase===null)tideBase=y;
+  const A=3*sc();const want=Math.round(tideBase-A*Math.sin(tideT/1100));
+  if(tideT%480===0){for(let k=1;k<=6*sc();k++)for(let xx=3;xx<=4+sc();xx++)if(type[(y-k)*W+xx]===0)setCell((y-k)*W+xx,E.WATER,FALL)}
+  else if(y>want){for(let xx=3;xx<=3+sc();xx++)if(type[(y-1)*W+xx]===0)setCell((y-1)*W+xx,E.WATER,FALL)}
+  else if(y<want-1){for(let xx=3;xx<=3+sc();xx++)if(type[y*W+xx]===E.WATER){type[y*W+xx]=0;data[y*W+xx]=0}}
+}
+function genIslands(n1,n2,n3){
+  const defs=[[.5,.4,48,17],[.17,.26,22,9],[.85,.24,24,10],[.27,.6,26,10],[.76,.58,28,11]];
+  const isl=defs.map(d=>({cx:Math.floor(W*d[0]),cy:Math.floor(H*d[1]),rx:d[2],ry:d[3]}));
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(x<2||y<2||x>=W-2||y>=H-2)type[y*W+x]=E.BEDROCK;
+  // oceán dole
+  const sea=H-34;for(let y=sea;y<H-2;y++)for(let x=2;x<W-2;x++){type[y*W+x]=y>H-12?E.SAND:E.WATER}
+  for(let x=2;x<W-2;x++){const f=H-12-Math.floor(n1(x/30,6)*6);for(let y=f;y<H-2;y++)setCell(y*W+x,E.SAND,0)}
+  for(let y=H-8;y<H-2;y++)for(let x=2;x<W-2;x++)if(type[y*W+x]===E.SAND&&y>H-6)type[y*W+x]=E.STONE;
+  for(const s of isl){
+    for(let x=s.cx-s.rx;x<=s.cx+s.rx;x++){if(x<3||x>=W-3)continue;const t=(x-s.cx)/s.rx;const top=s.cy-Math.round(3*(1-t*t));
+      const bot=s.cy+Math.round(s.ry*Math.pow(1-Math.pow(Math.abs(t),1.5),1)*(0.8+n1(x/9,s.cy/9)*.5));
+      for(let y=top;y<=bot;y++){const i=y*W+x;if(y<top+4){type[i]=E.DIRT;data[i]=FIXED|WET|(y===top?GRASS:0)}else{type[i]=E.STONE;if(n3(x/5,y/5)>.8)type[i]=E.ORE}}}}
+  // jazierko na hlavnom ostrove
+  {const s=isl[0];const lx=s.cx+14,lw=11;
+    for(let x=lx-lw;x<=lx+lw;x++){const t=(x-s.cx)/s.rx;const top=s.cy-Math.round(3*(1-t*t));
+      for(let y=top;y<=top+6;y++){const dx=(x-lx)/lw,dy=(y-(top+1))/6;if(dy>=0&&dx*dx+dy*dy<1){setCell(y*W+x,E.WATER,0)}else if(y===top&&Math.abs(dx)<.9)type[y*W+x]=0}}}
+  // stromy, kvety
+  for(const s of isl){let n=0;const want=Math.max(2,Math.floor(s.rx/12));
+    for(let tries=0;tries<80&&n<want;tries++){const x=s.cx-s.rx+4+((rnd()*(s.rx*2-8))|0);const y=surfaceY(x);if(y>0&&plantTree(x,y-1,7))n++}
+    for(let x=s.cx-s.rx;x<=s.cx+s.rx;x++){const y=surfaceY(x);if(y>0&&type[y*W+x]===E.DIRT&&(data[y*W+x]&GRASS)&&type[(y-1)*W+x]===0&&rnd()<.07)setCell((y-1)*W+x,E.FLOWER,0)}}
+  // mraky
+  for(let k=0;k<5;k++){const cx=20+((rnd()*(W-40))|0),cy=8+((rnd()*30)|0);
+    for(let dy=-2;dy<=2;dy++)for(let dx=-7;dx<=7;dx++){if(dx*dx/49+dy*dy/5<1&&rnd()<.85)setCell((cy+dy)*W+cx+dx,E.CLOUD,70)}}
+  // mravce na hlavnom ostrove
+  {const s=isl[0];const x=s.cx-24;const y=surfaceY(x);if(y>0)spawnColony(0,x,y-1)}
+  // ryby v mori
+  for(let s2=0;s2<3;s2++){const col=s2%FISHC.length;const cx=20+((rnd()*(W-40))|0),cy=sea+10;
+    for(let k=0;k<5;k++){const x=cx+((rnd()*10-5)|0),y=cy+((rnd()*6-3)|0);if(at(x,y)===E.WATER)agents.push(mkFish(x,y,col))}}
+}
+function genAqua(n1,n2){
+  const top=Math.floor(H*.14);const floorY=new Int16Array(W);
+  for(let x=0;x<W;x++)floorY[x]=H-16-Math.floor(n1(x/34,1.7)*46);
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){const i=y*W+x;
+    if(x<2||y<2||x>=W-2||y>=H-2){type[i]=E.BEDROCK;continue}
+    const f=floorY[x];
+    if(y>=f+10+((n2(x/14,3)*8)|0))type[i]=E.STONE;else if(y>=f)type[i]=E.SAND;else if(y>=top)type[i]=E.WATER}
+  // skaly na dne
+  for(let k=0;k<6;k++){const cx=10+((rnd()*(W-20))|0),cy=floorY[cx]-2,r=4+((rnd()*8)|0);
+    for(let dy=-r;dy<=r;dy++)for(let dx=-r*1.4;dx<=r*1.4;dx++){const x=(cx+dx)|0,y=cy+dy;if(x<3||x>W-4||y<3||y>H-4)continue;
+      if((dx*dx)/(r*r*1.96)+(dy*dy)/(r*r)<1&&rnd()<.97)setCell(y*W+x,E.STONE,0)}
+    if(k===0)for(let dx=-2;dx<=2;dx++)setCell((cy-r)*W+cx+dx,E.ORE,0)}
+  // riasy
+  for(let k=0;k<70;k++){const x=4+((rnd()*(W-8))|0);let y=top+2;while(y<H-3&&type[y*W+x]===E.WATER)y++;y--;
+    if(type[y*W+x]!==E.WATER)continue;const base=cvar[y*W+x];const hh=3+((rnd()*10)|0);
+    for(let h=0;h<hh;h++){const j=(y-h)*W+x;if(type[j]!==E.WATER)break;type[j]=E.ALGAE;data[j]=h;cvar[j]=base}}
+  // bublinkové pramene
+  for(let k=0;k<3;k++){const x=20+((rnd()*(W-40))|0);const y=floorY[x];if(type[y*W+x]===E.SAND)setCell(y*W+x,E.SOURCE,E.BUBBLE)}
+  // ryby v hejnách
+  for(let s2=0;s2<4;s2++){const col=s2%FISHC.length;const cx=20+((rnd()*(W-40))|0),cy=top+20+((rnd()*(H*.45))|0);
+    for(let k=0;k<6;k++){const x=cx+((rnd()*10-5)|0),y=cy+((rnd()*8-4)|0);if(at(x,y)===E.WATER)agents.push(mkFish(x,y,col))}}
+}
+function volcanoize(){
+  const cx=W>>1,peak=Math.floor(H*.34),base=H-3;
+  for(let y=peak;y<base;y++){const hw=Math.floor((y-peak)*.38)+4;
+    for(let x=cx-hw;x<=cx+hw;x++){if(x<2||x>=W-2)continue;const i=y*W+x;
+      if(type[i]===E.ORE)continue;type[i]=rnd()<.03?E.ORE:E.STONE;data[i]=0}}
+  for(let y=2;y<peak;y++)for(let x=cx-10;x<=cx+10;x++)if(x>1&&x<W-2){type[y*W+x]=0;data[y*W+x]=0}
+  for(let y=peak;y<peak+3;y++)for(let x=cx-3;x<=cx+3;x++)type[y*W+x]=0;
+  for(let y=peak+3;y<peak+28;y++)for(let x=cx-1;x<=cx+1;x++)type[y*W+x]=0;
+  setCell((peak+3)*W+cx,E.SOURCE,E.LAVA);
+  for(let y=H-42;y<H-8;y++)for(let x=cx-22;x<=cx+22;x++){const dx=(x-cx)/22,dy=(y-(H-25))/13;if(dx*dx+dy*dy<1)setCell(y*W+x,E.LAVA,0)}
+}
+function winterize(){
+  for(let x=2;x<W-2;x++)for(let y=3;y<H-3;y++){const i=y*W+x;const t=type[i];
+    if(t===E.WATER&&type[i-W]===0){for(let k=0;k<2;k++)if(type[i+k*W]===E.WATER)type[i+k*W]=E.ICE}
+    if(t===E.FLOWER&&y<H*.6)type[i]=0;
+    if((t===E.DIRT||t===E.STONE)&&type[i-W]===0&&y<H*.6){data[i]&=~GRASS;const n=1+((rnd()*3)|0);for(let k=1;k<=n;k++)if(type[i-k*W]===0)setCell(i-k*W,E.SNOW,0)}}
+}
+function clearUp(x,y,n){for(let k=0;k<n;k++){const yy=y-k;if(yy<2)return false;const u=type[yy*W+x];if(u!==0&&u!==E.FLOWER)return false}return true}
+function woodNear(x,y,r){for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){const xx=x+dx,yy=y+dy;if(xx<0||yy<0||xx>=W||yy>=H)continue;const u=type[yy*W+xx];if(u===E.WOOD||u===E.TIP||u===E.LEAF)return true}return false}
+function bowl(cx,cy,rx,ry,fill,fillFrom){
+  for(let y=cy-ry*2;y<=cy+ry+4;y++)for(let x=cx-rx-4;x<=cx+rx+4;x++){
+    if(x<2||y<2||x>=W-2||y>=H-2)continue;const i=y*W+x;
+    const dx=(x-cx)/rx,dy=(y-cy)/ry,d=dx*dx+dy*dy;
+    if(d<1){ if(dy>fillFrom){setCell(i,fill,0)} else type[i]=E.EMPTY }
+    else if(dy>-.2){const rx2=(x-cx)/(rx+4),ry2=(y-cy)/(ry+4);if(rx2*rx2+ry2*ry2<1){type[i]=E.DIRT;data[i]=FIXED}}
+    else if(dy<=-.2&&dy>-2&&Math.abs(dx)<1)type[i]=E.EMPTY;
+  }
+}
+
+// ---------- prepínanie Retro / Detail ----------
+function countPlan(){planN=0;for(let i=0;i<plan.length;i++)if(plan[i])planN++}
+function toDetail(){const ot=type,od=data,op=plan,ow=W,oh=H;alloc(ow*2,oh*2);
+  for(let y=0;y<oh;y++)for(let x=0;x<ow;x++){const s=y*ow+x;for(let k=0;k<4;k++){const i=(y*2+(k>>1))*W+x*2+(k&1);type[i]=ot[s];data[i]=od[s];plan[i]=op[s]}}countPlan()}
+function toRetro(){const ot=type,od=data,op=plan,ow=W,oh=H;alloc(ow>>1,oh>>1);
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){const i=y*W+x;let pick=-1;const st=(rnd()*4)|0;
+    for(let k=0;k<4;k++){const kk=(k+st)&3;const s=(y*2+(kk>>1))*ow+x*2+(kk&1);if(ot[s]!==0){pick=s;break}}
+    if(pick>=0){type[i]=ot[pick];data[i]=od[pick]}
+    for(let k=0;k<4;k++){const s=(y*2+(k>>1))*ow+x*2+(k&1);if(op[s]){plan[i]=op[s];break}}}countPlan()}
+
+// ---------- simulácia ----------
+const inb=(x,y)=>x>=0&&y>=0&&x<W&&y<H;
+const isStatic=(j)=>{const u=type[j];return KIND[u]===4||(u===E.DIRT&&(data[j]&FIXED))};
+function moveTo(i,j){const t=type[j],d=data[j],c=cvar[j];type[j]=type[i];data[j]=data[i];cvar[j]=cvar[i];type[i]=t;data[i]=d;cvar[i]=c;ticks[j]=tick;ticks[i]=tick}
+function tryGo(i,t,x,y,sink){if(!inb(x,y))return false;const j=y*W+x,u=type[j];
+  if(u===0){moveTo(i,j);return true}
+  if(isStatic(j))return false;
+  if(DENS[u]<DENS[t]&&(KIND[u]===2||KIND[u]===3)){ if(KIND[u]===3||rnd()<sink){moveTo(i,j);return true} }
+  return false}
+let D,DL,DR,SL,SR,UP,UL,UR;
+const AX=[0,2,4,6];
+function nb(x,y){const a=DIRS[AX[(rnd()*4)|0]];const nx=x+a[0],ny=y+a[1];return inb(nx,ny)?ny*W+nx:-1}
+
+function powder(i,x,y,t,slide){
+  if(tryGo(i,t,x+D[0],y+D[1],.55))return;
+  if(rnd()<slide){const a=rnd()<.5?DL:DR,b=a===DL?DR:DL;
+    if(tryGo(i,t,x+a[0],y+a[1],.3))return;tryGo(i,t,x+b[0],y+b[1],.3)}}
+
+function freeish(j){const u=type[j];return u===0||KIND[u]===3}
+function liquid(i,x,y,t,disp){
+  const fx=x+D[0],fy=y+D[1];
+  if(inb(fx,fy)){const j=fy*W+fx;if(freeish(j)||(!isStatic(j)&&DENS[type[j]]<DENS[t])){moveTo(i,j);if(t===E.WATER)data[j]|=FALL;return}}
+  if(t===E.WATER&&(data[i]&FALL)){data[i]&=~FALL;if(rnd()<.45)spray(x,y,2)}
+  const a=rnd()<.5?DL:DR,b=a===DL?DR:DL;
+  for(const q of [a,b]){const nx=x+q[0],ny=y+q[1];if(inb(nx,ny)&&freeish(ny*W+nx)){moveTo(i,ny*W+nx);return}}
+  const s1=rnd()<.5?SL:SR,s2=s1===SL?SR:SL;
+  for(const s of [s1,s2]){let best=-1;
+    for(let k=1;k<=disp;k++){const nx=x+s[0]*k,ny=y+s[1]*k;if(!inb(nx,ny))break;const j=ny*W+nx;if(!freeish(j))break;best=j;
+      const bx=nx+D[0],by=ny+D[1];if(inb(bx,by)&&freeish(by*W+bx))break}
+    if(best>=0){moveTo(i,best);return}}
+}
+function gas(i,x,y,cond){
+  let life=data[i];
+  if(cond){const ux=x+UP[0],uy=y+UP[1];if(inb(ux,uy)&&type[uy*W+ux]===E.CLOUD){const j=uy*W+ux;data[j]=Math.min(250,data[j]+12);type[i]=0;data[i]=0;ticks[i]=tick;return}}
+  if(life===0){ if(cond&&y<H*.3&&rnd()<.5){type[i]=E.CLOUD;data[i]=30;ticks[i]=tick;discover('cloud');return}
+    if(cond&&rnd()<.45){type[i]=E.WATER;data[i]=FALL;discover('rain')} else type[i]=E.EMPTY; ticks[i]=tick; return }
+  data[i]=life-1;
+  if(rnd()<.6){const nx=x+UP[0],ny=y+UP[1];if(inb(nx,ny)&&type[ny*W+nx]===0){moveTo(i,ny*W+nx);return}}
+  const opts=rnd()<.5?[UL,UR,SL,SR]:[UR,UL,SR,SL];
+  for(const q of opts){const nx=x+q[0],ny=y+q[1];if(inb(nx,ny)&&type[ny*W+nx]===0){moveTo(i,ny*W+nx);return}}
+  if(life>3)data[i]=life-3; // pri strope sa rýchlejšie zráža
+}
+function steamLife(){return 90+((rnd()*160)|0)}
+
+function updateCell(x,y){
+  const i=y*W+x;const t=type[i];
+  if(t===0||ticks[i]===tick)return;
+  switch(t){
+    case E.SAND: powder(i,x,y,t,1); break;
+    case E.DIRT:{
+      const d=data[i];
+      if(d&FIXED){ if(rnd()<.03)dirtLife(i,x,y,d); return }
+      if(rnd()<.03)dirtLife(i,x,y,d);
+      powder(i,x,y,t,(d&WET)?.04:.25); break}
+    case E.WATER:{
+      // voda uprostred vody sa nemá kam pohnúť: väčšinou ju preskočíme (rýchlosť)
+      if(g===2&&y<H-1&&x>0&&x<W-1&&type[i+W]===E.WATER&&type[i-1]===E.WATER&&type[i+1]===E.WATER&&!(data[i]&FALL)&&rnd()<.96)break;
+      const j=nb(x,y);
+      if(j>=0&&type[j]===E.DIRT&&!(data[j]&WET)&&rnd()<.3){data[j]|=WET; if(rnd()<.12){type[i]=E.EMPTY;return}}
+      if(j>=0&&type[j]===E.ICE&&rnd()<.004&&y>0&&type[i-W]===0){type[i]=E.ICE;data[i]=0;discover('ice');return}
+      liquid(i,x,y,t,5); break}
+    case E.LAVA:{
+      const j=nb(x,y);
+      if(j>=0){const u=type[j];
+        if(u===E.WATER){sndSizzle++;type[i]=E.OBSID;data[i]=0;type[j]=E.STEAM;data[j]=steamLife();ticks[j]=tick;ticks[i]=tick;
+          const jx=j%W,jy=(j/W)|0;spray(jx,jy,4);discover('obsid');return}
+        if(u===E.SAND&&rnd()<.04){type[j]=E.GLASS;data[j]=0;discover('glass')}
+        if(u===E.DIRT&&(data[j]&GRASS)){data[j]&=~(GRASS|WET)}
+        else ignite(j);
+        if(u===0&&rnd()<.002){const jy=(j/W)|0;if(jy<y){type[j]=E.STEAM;data[j]=40;ticks[j]=tick}}
+      }
+      if(rnd()<.05){let n=0;for(let k=0;k<8;k++){const q=DIRS[k];if(at(x+q[0],y+q[1])===E.LAVA)n++}if(n<=3&&rnd()<.04){type[i]=E.STONE;data[i]=0;discover('basalt');break}}
+      if(rnd()<.45)liquid(i,x,y,t,2);
+      break}
+    case E.STEAM: gas(i,x,y,true); break;
+    case E.CLOUD:{
+      if(rnd()>.25)break;
+      const d=data[i];
+      if(rnd()<.25){const nx=x+windDir;if(inb(nx,y)&&nx>1&&nx<W-2&&type[y*W+nx]===0){moveTo(i,y*W+nx);break}}
+      if(d>0&&rnd()<.04*(d/80+.3)){const by=y+1;if(by<H-2&&type[by*W+x]===0){setCell(by*W+x,E.WATER,FALL);ticks[by*W+x]=tick;data[i]=d-1;discover('cloud')}}
+      if(d>180&&rnd()<.0002)strike(x,y+1);
+      if(d===0&&rnd()<.03){type[i]=0}
+      break}
+    case E.SPONGE:{
+      if(rnd()>.3)break;
+      const d=data[i];
+      if(d<24){for(let k=0;k<2;k++){const j=nb8(x,y);if(j>=0&&type[j]===E.WATER){type[j]=0;data[j]=0;data[i]=Math.min(24,data[i]+1);discover('sponge')}}}
+      else if(rnd()<.04&&y+1<H&&type[i+W]===0){setCell(i+W,E.WATER,FALL);data[i]=d-1}
+      if(d>0){const j=nb8(x,y);if(j>=0){const u=type[j];if(u===E.SPONGE&&data[j]+1<d){data[j]++;data[i]--}else if((u===E.LAVA||u===E.FIRE||u===E.EMBER)&&rnd()<.3){data[i]--;if(y>2&&type[i-W]===0){type[i-W]=E.STEAM;data[i-W]=60}}}}
+      break}
+    case E.CLONER:{
+      const d=data[i];
+      if(!d){const j=nb8(x,y);if(j>=0){const u=type[j];if(u!==0&&u!==E.CLONER&&u!==E.BEDROCK&&u!==E.SOURCE&&u!==E.HOLE&&u!==E.TIP&&u!==E.EMBER){data[i]=u;discover('clone')}}break}
+      if(rnd()<.2){const q=DIRS[(rnd()*8)|0];const nx=x+q[0],ny=y+q[1];
+        if(inb(nx,ny)&&nx>1&&ny>1&&nx<W-2&&ny<H-2&&type[ny*W+nx]===0){const j=ny*W+nx;setCell(j,d,d===E.STEAM?steamLife():d===E.SMOKE?40:d===E.FIRE?18:d===E.CLOUD?60:d===E.WATER?FALL:0);ticks[j]=tick}}
+      break}
+    case E.HOLE:{
+      const r=7*sc();
+      for(let k=0;k<14;k++){const dx=((rnd()*2-1)*r)|0,dy=((rnd()*2-1)*r)|0;if(!dx&&!dy)continue;
+        const xx=x+dx,yy=y+dy;if(xx<2||yy<2||xx>=W-2||yy>=H-2)continue;const j=yy*W+xx,u=type[j];
+        if(u===0||u===E.HOLE||u===E.BEDROCK)continue;
+        if(Math.abs(dx)<=1&&Math.abs(dy)<=1){type[j]=0;data[j]=0;data[i]=Math.min(255,data[i]+1);
+          if(data[i]>=250){type[i]=0;data[i]=0;spray(x,y,18);flash=Math.max(flash,4);discover('hole');return}continue}
+        const sx=xx-Math.sign(dx),sy=yy-Math.sign(dy);if(sx>1&&sy>1&&sx<W-2&&sy<H-2&&type[sy*W+sx]===0)moveTo(j,sy*W+sx)}
+      break}
+    case E.SNOW:{
+      if(rnd()<.03){const j=nb8(x,y);if(j>=0){const u=type[j];if(u===E.WATER&&rnd()<.3){type[i]=E.WATER;data[i]=0;break}
+        if(u===E.LAVA||u===E.FIRE||u===E.EMBER||u===E.TORCH){type[i]=E.WATER;data[i]=FALL;discover('melt');break}}}
+      if(rnd()<.55)powder(i,x,y,t,.5);break}
+    case E.ICE:{
+      if(rnd()<.05){const j=nb8(x,y);if(j>=0){const u=type[j];if(u===E.LAVA||u===E.FIRE||u===E.EMBER||u===E.TORCH){type[i]=E.WATER;data[i]=0;discover('melt')}}}
+      break}
+    case E.OIL: liquid(i,x,y,t,3); break;
+    case E.SALT:{
+      if(rnd()<.06){const j=nb8(x,y);if(j>=0){const u=type[j];
+        if(u===E.WATER){if(rnd()<.12){type[i]=0;data[i]=0;discover('salt');break}}
+        else if(u===E.ICE||u===E.SNOW){type[j]=E.WATER;data[j]=0;discover('salt');if(rnd()<.4){type[i]=0;data[i]=0;break}}
+        else if(u===E.DIRT&&(data[j]&GRASS)){data[j]&=~(GRASS|WET);discover('saltkill')}}}
+      powder(i,x,y,t,1);break}
+    case E.POWDER:{
+      if(rnd()<.25){const j=nb8(x,y);if(j>=0){const u=type[j];if(u===E.FIRE||u===E.EMBER||u===E.LAVA||u===E.TORCH){boom(x,y);return}}}
+      powder(i,x,y,t,.6);break}
+    case E.LN2:{
+      const j=nb8(x,y);
+      if(j>=0){const u=type[j];
+        if(u===E.WATER){type[j]=E.ICE;data[j]=0;discover('freeze');if(rnd()<.3){type[i]=E.SMOKE;data[i]=14;ticks[i]=tick;return}}
+        else if(u===E.LAVA){type[j]=E.OBSID;data[j]=0;type[i]=E.SMOKE;data[i]=14;ticks[i]=tick;sndSizzle++;discover('freeze');return}
+        else if(u===E.FIRE){type[j]=E.SMOKE;data[j]=10;if(rnd()<.5){type[i]=0;data[i]=0;return}}
+        else if(u===E.EMBER){type[j]=E.WOOD;data[j]=0;if(rnd()<.5){type[i]=0;data[i]=0;return}}
+        else if((u===E.LEAF||u===E.FLOWER||u===E.ALGAE)&&rnd()<.5){type[j]=E.ICE;data[j]=0;discover('freeze');if(rnd()<.5){type[i]=0;data[i]=0;return}}}
+      if(rnd()<.0012){type[i]=E.SMOKE;data[i]=10;ticks[i]=tick;return}
+      liquid(i,x,y,t,4);break}
+    case E.ACID:{
+      const j=nb8(x,y);
+      if(j>=0){const u=type[j];
+        if(u===E.WATER){if(rnd()<.015){type[i]=E.WATER;data[i]=0;break}}
+        else if(u!==0&&u!==E.ACID&&u!==E.GLASS&&u!==E.BEDROCK&&u!==E.SOURCE&&u!==E.HOLE&&KIND[u]!==3&&rnd()<.16){
+          const sm=rnd()<.3;type[j]=sm?E.SMOKE:0;data[j]=sm?25:0;discover('acid');if(rnd()<.3){type[i]=0;data[i]=0;break}}}
+      liquid(i,x,y,t,3);break}
+    case E.ALGAE:{
+      if(rnd()>.03)break;
+      const ab=y>0?type[i-W]:0;const h=data[i]&31;
+      if(ab===E.WATER){const max=6+((cvar[i]>>3)%9);if(h<max*sc()&&rnd()<.3*(1-nightF)){setCell(i-W,E.ALGAE,h+1);cvar[i-W]=cvar[i];ticks[i-W]=tick}}
+      else if(ab===0){let wet=false;for(let k=0;k<4;k++){const q=DIRS[k*2];if(at(x+q[0],y+q[1])===E.WATER)wet=true}if(!wet&&rnd()<.08){type[i]=0;data[i]=0;break}}
+      if(h===0&&rnd()<.015){const d=rnd()<.5?1:-1;const nx=x+d*(2+((rnd()*3)|0));
+        if(inb(nx,y+1)&&type[y*W+nx]===E.WATER){const b=type[(y+1)*W+nx];if(b===E.SAND||b===E.STONE){setCell(y*W+nx,E.ALGAE,0);discover('algae')}}}
+      break}
+    case E.BUBBLE:{
+      let wet=false;for(let k=0;k<4;k++){const q=DIRS[k*2];if(at(x+q[0],y+q[1])===E.WATER)wet=true}
+      const ux=x+UP[0],uy=y+UP[1];
+      if(!inb(ux,uy)){type[i]=E.WATER;break}
+      const u=type[uy*W+ux];
+      if(u===E.WATER||u===E.OIL){if(rnd()<.8)moveTo(i,uy*W+ux);else{const q=rnd()<.5?UL:UR;const nx=x+q[0],ny=y+q[1];if(inb(nx,ny)&&type[ny*W+nx]===E.WATER)moveTo(i,ny*W+nx)}break}
+      if(u===0||KIND[u]===3){type[i]=wet?E.WATER:0;data[i]=0;if(wet){spray(x,y-1,2);sndPop++;discover('bubble')}break}
+      if(!wet){type[i]=0;break}
+      {const q=rnd()<.5?SL:SR;const nx=x+q[0],ny=y+q[1];if(inb(nx,ny)&&type[ny*W+nx]===E.WATER)moveTo(i,ny*W+nx);else if(rnd()<.01)type[i]=E.WATER}
+      break}
+    case E.SMOKE: gas(i,x,y,false); break;
+    case E.SEED:{
+      const bx=x+D[0],by=y+D[1];
+      if(inb(bx,by)&&freeish(by*W+bx)){powder(i,x,y,t,.6);break}
+      if(rnd()<.03&&D[1]===1&&by<H){const j=by*W+bx;
+        if(type[j]===E.DIRT&&(data[j]&(WET|GRASS))&&clearUp(x,y-1,8*sc())&&!woodNear(x,y,5*sc())){setCell(i,E.TIP,(12+((rnd()*18)|0))*sc());discover('tree');break}}
+      powder(i,x,y,t,.6);break}
+    case E.ASH:{
+      if(rnd()<.5)powder(i,x,y,t,.8);
+      else if(rnd()<.004){const bx=x+D[0],by=y+D[1];if(inb(bx,by)&&type[by*W+bx]===E.DIRT){data[by*W+bx]|=WET;type[i]=0}}
+      break}
+    case E.TIP: grow(i,x,y); break;
+    case E.LEAF:{
+      if(rnd()<.00025&&y+1<H&&type[i+W]===0){setCell(i+W,E.SEED,0);ticks[i+W]=tick}
+      break}
+    case E.FIRE:{
+      let l=data[i];
+      for(let k=0;k<2;k++){const j=nb8(x,y);if(j<0)continue;const u=type[j];
+        if(u===E.WATER){type[i]=E.STEAM;data[i]=60;type[j]=E.STEAM;data[j]=steamLife();ticks[j]=tick;discover('douse');return}
+        ignite(j)}
+      l-=1+(rnd()<.4?1:0);
+      if(l<=0){if(rnd()<.45){type[i]=E.SMOKE;data[i]=30+((rnd()*60)|0)}else{type[i]=E.EMPTY;data[i]=0}ticks[i]=tick;break}
+      data[i]=l;
+      if(rnd()<.7){const opts=rnd()<.5?[UP,UL,UR]:[UP,UR,UL];for(const q of opts){const nx=x+q[0],ny=y+q[1];if(inb(nx,ny)&&type[ny*W+nx]===0){moveTo(i,ny*W+nx);break}}}
+      break}
+    case E.EMBER:{
+      let l=data[i];
+      const j=nb8(x,y);
+      if(j>=0){const u=type[j];
+        if(u===E.WATER){type[i]=E.WOOD;data[i]=0;type[j]=E.STEAM;data[j]=steamLife();ticks[j]=tick;spray(x,y,2);discover('douse');break}
+        if(u===0&&rnd()<.35){const jy=(j/W)|0;if(jy<=y||rnd()<.2){setCell(j,E.FIRE,8+((rnd()*14)|0));ticks[j]=tick}}
+        else ignite(j)}
+      if(rnd()<.5)l--;
+      if(l<=0){if(rnd()<.7){setCell(i,E.ASH,0)}else{type[i]=0;data[i]=0}discover('ash');ticks[i]=tick;break}
+      data[i]=l;break}
+    case E.FLOWER:{
+      if(y+1<H){const b=type[i+W];if(b===0||KIND[b]===3)moveTo(i,i+W)}
+      break}
+    case E.SOURCE:{
+      if(data[i]===E.LAVA&&rnd()<.08&&y>2&&type[i-W]===0){setCell(i-W,E.SMOKE,50+((rnd()*40)|0));ticks[i-W]=tick}
+      if(rnd()<(data[i]===E.LAVA?.12:.55)){const order=[D,DL,DR,SL,SR];for(const q of order){const nx=x+q[0],ny=y+q[1];
+        const em=data[i]||E.WATER;if(inb(nx,ny)&&(type[ny*W+nx]===0||(em===E.BUBBLE&&type[ny*W+nx]===E.WATER&&rnd()<.25))){const j=ny*W+nx;setCell(j,em,em===E.WATER?FALL:0);ticks[j]=tick;break}}}
+      break}
+  }
+}
+function dirtLife(i,x,y,d){
+  if(y<1)return;const up=type[i-W];
+  if(d&GRASS){
+    if(up!==0&&up!==E.WATER&&up!==E.STEAM){ if(rnd()<.2)data[i]&=~GRASS; return }
+    // tráva sa šíri
+    const q=DIRS[(rnd()*8)|0];const nx=x+q[0],ny=y+q[1];
+    if(inb(nx,ny)&&ny>0){const j=ny*W+nx;if(type[j]===E.DIRT&&!(data[j]&GRASS)&&type[j-W]===0&&((data[j]&WET)||rnd()<.25))data[j]|=GRASS}
+    if(up===0&&(d&WET)&&rnd()<.012){const x0=x-2,x1=x+2;let near=false;for(let xx=x0;xx<=x1;xx++)if(xx>=0&&xx<W&&type[i-W+xx-x]===E.FLOWER)near=true;
+      if(!near){setCell(i-W,E.FLOWER,0);discover('flower')}}
+  } else if((d&WET)&&up===0&&rnd()<.25){data[i]|=GRASS;discover('grass')}
+  // vlhkosť sa pomaly šíri zemou
+  if(d&WET){const j=nb(x,y);if(j>=0&&type[j]===E.DIRT&&rnd()<.15)data[j]|=WET}
+}
+
+const sc=()=>mode==='detail'?2:1;
+function nb8(x,y){const a=DIRS[(rnd()*8)|0];const nx=x+a[0],ny=y+a[1];return inb(nx,ny)?ny*W+nx:-1}
+let sndBoom=0;
+function boom(cx,cy){
+  const r=Math.round(3.4*sc());sndBoom++;
+  for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){const d2=dx*dx+dy*dy;if(d2>r*r+1)continue;
+    const xx=cx+dx,yy=cy+dy;if(xx<2||yy<2||xx>=W-2||yy>=H-2)continue;const j=yy*W+xx,u=type[j];
+    const near=d2<=(r*.55)*(r*.55);
+    if(u===0||KIND[u]===3){if(rnd()<.5)setCell(j,E.FIRE,6+((rnd()*10)|0));ticks[j]=tick;continue}
+    if(u===E.BEDROCK||u===E.SOURCE||u===E.HOLE)continue;
+    if(u===E.POWDER){setCell(j,E.FIRE,3);ticks[j]=tick;continue}
+    if(u===E.WATER){if(rnd()<.55){type[j]=E.STEAM;data[j]=steamLife()}ticks[j]=tick;continue}
+    if(u===E.LAVA||u===E.OBSID||u===E.GLASS){if(rnd()<.3){type[j]=0;data[j]=0}continue}
+    const hard=u===E.STONE||u===E.ORE||u===E.BRICK||u===E.CACTUS;
+    if(rnd()<(hard?(near?.8:.3):(near?1:.65))){
+      if(u===E.WOOD||u===E.TIP||u===E.LEAF||u===E.FLOWER||u===E.SEED||u===E.OIL)setCell(j,E.FIRE,12+((rnd()*14)|0));
+      else if(rnd()<.18)setCell(j,E.SMOKE,25);
+      else{type[j]=0;data[j]=0}
+      ticks[j]=tick}}
+  spray(cx,cy-1,26);flash=Math.max(flash,5);discover('boom');
+  for(const a of agents){if(a.dead||a.k===2||a.k===3)continue;if(Math.abs(a.x-cx)<=r*1.8&&Math.abs(a.y-cy)<=r*1.8)hurt(a,'fire')}
+}
+function ignite(j){const u=type[j];
+  if(u===E.POWDER){boom(j%W,(j/W)|0);return}
+  if(u===E.OIL){if(rnd()<.5){setCell(j,E.FIRE,26+((rnd()*22)|0));ticks[j]=tick;discover('oil')}return}
+  if(u===E.ICE||u===E.SNOW){if(rnd()<.12){type[j]=E.WATER;data[j]=0;discover('melt')}return}
+  if(u===E.LEAF){if(rnd()<.3){setCell(j,E.FIRE,16+((rnd()*20)|0));ticks[j]=tick}}
+  else if(u===E.WOOD||u===E.TIP){if(rnd()<.04){type[j]=E.EMBER;data[j]=70+((rnd()*150)|0);discover('fire')}}
+  else if(u===E.SEED||u===E.FLOWER){if(rnd()<.3){setCell(j,E.FIRE,10+((rnd()*12)|0));ticks[j]=tick}}
+  else if(u===E.DIRT&&(data[j]&GRASS)){if(rnd()<.08){data[j]&=~GRASS;const jy=(j/W)|0;if(jy>0&&type[j-W]===0){setCell(j-W,E.FIRE,8+((rnd()*10)|0));ticks[j-W]=tick}}}
+}
+// rast stromu: TIP je rastúci koniec kmeňa alebo vetvy. data: bity 0-5 energia, bit 6 smer vetvy, bit 7 vetva
+function grow(i,x,y){
+  if(rnd()>.14)return;
+  const d=data[i],e=d&63,br=d&128,right=d&64;
+  if(e===0){type[i]=E.WOOD;data[i]=0;crown(x,y,(br?2:3)*sc()+((rnd()*2)|0));return}
+  let dx,dy;
+  if(br){dx=right?1:-1;dy=rnd()<.55?-1:0}
+  else{dx=rnd()<.12?(rnd()<.5?-1:1):0;dy=-1}
+  const nx=x+dx,ny=y+dy;
+  if(!inb(nx,ny)||ny<3){data[i]=d&~63;return}
+  const j=ny*W+nx,u=type[j];
+  if(u!==0&&u!==E.LEAF&&u!==E.FLOWER&&KIND[u]!==3){data[i]=d&~63;return}
+  type[i]=E.WOOD;data[i]=0;setCell(j,E.TIP,(d&~63)|(e-1));ticks[j]=tick;
+  // vetva zo strany kmeňa
+  if(!br&&e>3&&e<28*sc()&&rnd()<.16){const side=rnd()<.5?1:-1;const bx=x+side;if(inb(bx,y)&&type[y*W+bx]===0){
+    setCell(y*W+bx,E.TIP,128|(side>0?64:0)|Math.max(2,Math.min(63,(e>>1)+((rnd()*3)|0))));ticks[y*W+bx]=tick}}
+  // v detaile hrubší kmeň
+  if(!br&&sc()===2&&inb(x+1,y)&&type[y*W+x+1]===0)setCell(y*W+x+1,E.WOOD,0);
+}
+function crown(x,y,r){
+  for(let dy=-r-1;dy<=r-1;dy++)for(let dx=-r-1;dx<=r+1;dx++){const nx=x+dx,ny=y+dy;if(!inb(nx,ny)||nx<2||ny<2||nx>=W-2)continue;
+    const q=(dx*dx)/((r+1)*(r+1))+((dy+1)*(dy+1))/(r*r);if(q>1||rnd()<.18)continue;const j=ny*W+nx;if(type[j]===0)setCell(j,E.LEAF,0)}}
+
+function step(){
+  tick=tick%255+1;
+  D=DIRS[g];DL=DIRS[(g+1)&7];DR=DIRS[(g+7)&7];SL=DIRS[(g+2)&7];SR=DIRS[(g+6)&7];UP=DIRS[(g+4)&7];UL=DIRS[(g+3)&7];UR=DIRS[(g+5)&7];
+  const flip=tick&1;
+  if(D[1]!==0){
+    const ys=D[1]>0?-1:1,y0=D[1]>0?H-1:0,y1=D[1]>0?-1:H;
+    const xs=D[0]>0?-1:D[0]<0?1:(flip?1:-1),x0=xs>0?0:W-1,x1=xs>0?W:-1;
+    for(let y=y0;y!==y1;y+=ys)for(let x=x0;x!==x1;x+=xs)updateCell(x,y);
+  } else {
+    const xs=D[0]>0?-1:1,x0=D[0]>0?W-1:0,x1=D[0]>0?-1:W;
+    const ys=flip?1:-1,y0=ys>0?0:H-1,y1=ys>0?H:-1;
+    for(let x=x0;x!==x1;x+=xs)for(let y=y0;y!==y1;y+=ys)updateCell(x,y);
+  }
+  stepParticles();
+}
+
+// ---------- kvapky (strek) ----------
+function spray(x,y,n){if(particles.length>600)return;
+  for(let k=0;k<n;k++){const sp=.35+rnd()*.6,side=(rnd()-.5)*1.1;
+    particles.push({x:x+.5,y:y+.5,vx:UP[0]*sp+(-UP[1])*side,vy:UP[1]*sp+UP[0]*side,life:18+((rnd()*26)|0)})}}
+function stepParticles(){const ax=D[0]*.05,ay=D[1]*.05;
+  for(let k=particles.length-1;k>=0;k--){const p=particles[k];if(p.c===2){p.vx=Math.sin(p.life*.17+p.x*.5)*.16+windDir*.04;p.vy=.1}else{p.vx+=ax;p.vy+=ay}p.x+=p.vx;p.y+=p.vy;p.life--;
+    const cx=p.x|0,cy=p.y|0;
+    if(p.life<=0||!inb(cx,cy)||(type[cy*W+cx]!==0&&type[cy*W+cx]!==E.STEAM)){particles[k]=particles[particles.length-1];particles.pop()}}}
+
+// ---------- kreslenie ----------
+const cvs=document.getElementById('world');const ctx=cvs.getContext('2d');
+const off=document.createElement('canvas');const octx=off.getContext('2d');
+let img,buf;
+function sizeOff(){off.width=W;off.height=H;img=octx.createImageData(W,H);buf=new Uint32Array(img.data.buffer)}
+// svetlo z lávy a ohňa: malá mapa svetla, rozmazaná a pridaná navrch
+const lcv=document.createElement('canvas'),lctx=lcv.getContext('2d');let LS=2,LW=0,LH=0,LC,LT,limg,lbuf;
+function sizeLight(){LS=mode==='detail'?3:2;LW=(W>>LS)+1;LH=(H>>LS)+1;LC=new Float32Array(LW*LH);LT=new Float32Array(LW*LH);lcv.width=LW;lcv.height=LH;limg=lctx.createImageData(LW,LH);lbuf=new Uint32Array(limg.data.buffer)}
+function buildLight(){
+  for(let pass=0;pass<2;pass++){for(let y=0;y<LH;y++)for(let x=0;x<LW;x++){let s=0,n=0;
+      for(let dy=-1;dy<=1;dy++){const yy=y+dy;if(yy<0||yy>=LH)continue;for(let dx=-1;dx<=1;dx++){const xx=x+dx;if(xx<0||xx>=LW)continue;s+=LC[yy*LW+xx];n++}}
+      LT[y*LW+x]=s/n}
+    const t=LC;LC=LT;LT=t}
+  const area=(1<<LS)*(1<<LS);
+  for(let k=0;k<LW*LH;k++){const a=Math.min(1,LC[k]/area*2.2);lbuf[k]=a<.01?0:pack(255*a*.55|0,110*a*.55|0,30*a*.55|0);LC[k]=0}
+  lctx.putImageData(limg,0,0)}
+const GH={[E.BRICK]:pack(190,100,84),[E.WOOD]:pack(150,108,66),[E.STONE]:pack(150,160,182),[E.GLASS]:pack(170,226,244),[E.DIRT]:pack(160,112,70),[E.TORCH]:pack(255,206,96),[E.OBSID]:pack(120,90,170)};
+let sndFall=0,sndFire=0,sndSizzle=0,sndPop=0;const holesR=[];let bolts=[],flash=0;
+function render(){
+  if(off.width!==W||off.height!==H)sizeOff();
+  let fallN=0,fireN=0;holesR.length=0;
+  if(LW!==(W>>LS)+1||LS!==(mode==='detail'?3:2)||!LC)sizeLight();
+  const fl=frame>>3;
+  const sv=seasonOn?seasonIdx:-1;const gP=sv===2?P.grassAut:sv===3?P.grassWin:P.grass,tP=sv===2?P.tuftAut:sv===3?P.tuftWin:P.tuft;
+  for(let y=0;y<H;y++){const row=y*W;for(let x=0;x<W;x++){const i=row+x;const t=type[i];const v=cvar[i]&15;let c;
+    switch(t){
+      case 0:{c=BG[y*4+(cvar[i]&3)];
+        if(y+1<H){const b=i+W;if(type[b]===E.DIRT&&(data[b]&GRASS)&&(cvar[b]&3)===0)c=tP[cvar[b]>>4]}
+        break}
+      case E.SAND:c=P.sand[v];break;
+      case E.DIRT:{const d=data[i];
+        const air=(y>0&&type[i-W]===0);
+        if((d&GRASS)&&air){c=gP[v];break}
+        const edge=(x>0&&type[i-1]===0)||(x<W-1&&type[i+1]===0)||(y<H-1&&type[i+W]===0)||air;
+        c=(d&WET)?(edge?P.wetEdge[v]:P.wet[v]):(edge?P.dirtEdge[v]:P.dirt[v]);break}
+      case E.WATER:{const d=data[i];
+        if(d&FALL){fallN++;c=(cvar[i]&3)===0?P.wfall[v]:P.wsurf[v]}
+        else if(y>0&&type[i-W]!==E.WATER&&type[i-W]!==E.SAND)c=P.wsurf[v];
+        else c=WT[y*16+v];break}
+      case E.LAVA:{const top=y>0&&type[i-W]!==E.LAVA;c=top?P.lavaTop[(v+fl)&15]:P.lava[(v+fl)&15];break}
+      case E.STEAM:c=P.steam[v];break;
+      case E.STONE:{const edge=(y>0&&type[i-W]===0)||(y<H-1&&type[i+W]===0)||(x>0&&type[i-1]===0)||(x<W-1&&type[i+1]===0);c=edge?P.stoneEdge[v]:P.stone[v];break}
+      case E.OBSID:c=P.obsid[v];break;
+      case E.GLASS:c=P.glass[v];break;
+      case E.SOURCE:c=P.source[(v+(frame>>2))&15];break;
+      case E.SEED:c=P.seed[v];break;
+      case E.WOOD:case E.TIP:{const edge=(x>0&&type[i-1]===0)||(x<W-1&&type[i+1]===0);c=edge?P.woodEdge[v]:P.wood[v];break}
+      case E.LEAF:{const top=y>0&&type[i-W]===0&&(cvar[i]&1);
+        if(sv<0||sv===1)c=top?P.leafHi[v]:P.leaf[v];
+        else if(sv===0)c=top?P.leafSprHi[v]:P.leafSpr[v];
+        else if(sv===2){const q=(cvar[i]>>4)%3;c=(q===0?P.leafAutO:q===1?P.leafAutR:P.leafAutY)[v]}
+        else c=(cvar[i]&3)?P.leafWinFrost[v]:P.leafWinDark[v];
+        break}
+      case E.FIRE:{fireN++;const l=data[i];c=P.fire[Math.max(0,Math.min(15,(l>>1)+((cvar[i]+frame)&3)-1))];break}
+      case E.EMBER:fireN++;c=P.ember[(v+(frame>>1))&15];break;
+      case E.SMOKE:c=P.smoke[v];break;
+      case E.ASH:c=P.ash[v];break;
+      case E.ICE:c=((x+y+(cvar[i]&7))%9===0)?P.iceHi[v]:P.ice[v];break;
+      case E.SNOW:c=P.snow[v];break;
+      case E.OIL:c=(y>0&&type[i-W]!==E.OIL)?P.oilTop[v]:P.oil[v];break;
+      case E.ACID:c=(y>0&&type[i-W]!==E.ACID)?P.acidTop[v]:P.acid[v];break;
+      case E.ALGAE:c=(((y+(frame>>4)+(cvar[i]&3))&7)<2)?P.algaeHi[v]:P.algae[v];break;
+      case E.BUBBLE:c=P.bubble[v];break;
+      case E.CLOUD:c=data[i]>140?P.cloudDark[v]:P.cloud[v];break;
+      case E.SPONGE:c=((x*7+y*3+(cvar[i]&3))&7)===0?P.spongePore[v]:data[i]>12?P.spongeWet[v]:P.sponge[v];break;
+      case E.CLONER:c=P.cloner[(v+(frame>>2))&15];break;
+      case E.HOLE:c=P.hole[(frame>>2)&15];holesR.push(x,y);break;
+      case E.TORCH:c=P.torch[(v+(frame>>1))&15];break;
+      case E.ORE:c=(v&3)===0||(v&7)===5?P.ore[v]:P.stone[v];break;
+      case E.BRICK:c=((y%2===0)||((x+((y>>1)&1)*2)%4===0))?P.mortar[v]:P.brick[v];break;
+      case E.SALT:c=(v&7)===0?P.saltHi[v]:P.salt[v];break;
+      case E.POWDER:c=P.powder[v];break;
+      case E.LN2:c=(y>0&&type[i-W]!==E.LN2)?P.ln2Top[(v+fl)&15]:P.ln2[(v+(fl>>1))&15];break;
+      case E.CACTUS:c=(((x*5+y*3+(cvar[i]&3))&7)===0)?P.spine:P.cactus[v];break;
+      case E.FLOWER:c=(y+1<H&&type[i+W]===E.FLOWER)?P.tuft[v]:P.flower[cvar[i]>>6];break;
+      default:c=P.bed[v];
+    }
+    buf[i]=c;
+    const em=EMIT[t];if(em){LC[((y>>LS)*LW)+(x>>LS)]+=em}}}
+  if(planN>0){const par=(frame>>4)&1;for(let i=0;i<W*H;i++){const m=plan[i];if(!m)continue;const t=type[i];
+    if(t===m){plan[i]=0;planN--;continue}
+    if(t===0&&(((i%W)+((i/W)|0)+par)&1)===0)buf[i]=GH[m]||P.bed[8]}}
+  for(const p of particles){const cx=p.x|0,cy=p.y|0;if(inb(cx,cy))buf[cy*W+cx]=p.c===2?p.col:p.c?P.dust:P.spray}
+  for(let k=bolts.length-1;k>=0;k--){const b=bolts[k];const pth=b.p;for(let q=0;q<pth.length;q+=2){const x=pth[q],y=pth[q+1];px(x,y,P.bolt);if(b.life>5&&sc()===2)px(x+1,y,P.bolt);if((q&7)===0)LC[(y>>LS)*LW+(x>>LS)]+=3}
+    if(--b.life<=0)bolts.splice(k,1)}
+  drawAgents();
+  octx.putImageData(img,0,0);
+  buildLight();
+  const dpr=Math.min(window.devicePixelRatio||1,2);
+  ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle='#07070e';ctx.fillRect(0,0,cvs.width,cvs.height);
+  ctx.imageSmoothingEnabled=false;
+  ctx.setTransform(dpr*cam.s,0,0,dpr*cam.s,-cam.x*cam.s*dpr,-cam.y*cam.s*dpr);
+  ctx.drawImage(off,0,0);
+  if(nightF>0){ctx.fillStyle=`rgba(4,6,24,${nightF.toFixed(3)})`;ctx.fillRect(0,0,W,H)}
+  if(sv===1||sv===2||sv===3){ctx.fillStyle=sv===1?'rgba(255,206,90,.05)':sv===2?'rgba(255,120,30,.06)':'rgba(150,190,255,.09)';ctx.fillRect(0,0,W,H)}
+  ctx.save();ctx.globalCompositeOperation='lighter';ctx.imageSmoothingEnabled=true;ctx.drawImage(lcv,0,0,LW<<LS,LH<<LS);ctx.restore();
+  for(let k=0;k<holesR.length;k+=2){const hx=holesR[k]+.5,hy=holesR[k+1]+.5,r0=7*sc();
+    ctx.strokeStyle='rgba(170,110,255,.6)';ctx.lineWidth=.8*sc();ctx.beginPath();ctx.arc(hx,hy,1.6*sc()+Math.sin(frame*.15)*.4,0,Math.PI*2);ctx.stroke();
+    ctx.strokeStyle='rgba(170,110,255,.12)';ctx.lineWidth=.5;ctx.beginPath();ctx.arc(hx,hy,r0,0,Math.PI*2);ctx.stroke()}
+  if(flash>0){ctx.fillStyle=`rgba(255,252,235,${(flash/24).toFixed(3)})`;ctx.fillRect(0,0,W,H);flash--}
+  if(tool==='select'&&selecting&&selA&&selB){const x0=Math.min(selA.x,selB.x),y0=Math.min(selA.y,selB.y),w2=Math.abs(selA.x-selB.x)+1,h2=Math.abs(selA.y-selB.y)+1;
+    ctx.fillStyle='rgba(244,166,59,.14)';ctx.fillRect(x0,y0,w2,h2);ctx.strokeStyle='rgba(244,166,59,.95)';ctx.lineWidth=1.6/cam.s;ctx.setLineDash([3/cam.s*1.6,2/cam.s*1.6]);ctx.strokeRect(x0,y0,w2,h2);ctx.setLineDash([])}
+  if(tool==='paste'&&clip){const pos=pasting?pastePos:hover;if(pos){const ox=pos.x-(clip.w>>1),oy=pos.y-clip.h+1;
+    ctx.save();ctx.globalAlpha=.65;ctx.imageSmoothingEnabled=false;ctx.drawImage(clip.cv,ox,oy);ctx.restore();
+    ctx.strokeStyle=planMode?'rgba(90,200,255,.95)':'rgba(244,166,59,.95)';ctx.lineWidth=1.4/cam.s;ctx.setLineDash([3/cam.s*1.6,2/cam.s*1.6]);ctx.strokeRect(ox,oy,clip.w,clip.h);ctx.setLineDash([])}}
+  if(hover&&!drawing&&tool!=='hand'&&tool!=='select'&&tool!=='paste'){ctx.strokeStyle='rgba(244,166,59,.7)';ctx.lineWidth=1/cam.s;
+    ctx.beginPath();ctx.arc(hover.x+.5,hover.y+.5,brushR()+.5,0,Math.PI*2);ctx.stroke()}
+  drawBubbles(dpr);
+  sndFall=fallN;sndFire=fireN;
+  if(recording){ctx.setTransform(dpr,0,0,dpr,0,0);ctx.font='600 13px "Pixelify Sans", ui-monospace, monospace';ctx.textAlign='right';
+    ctx.fillStyle='rgba(0,0,0,.45)';ctx.fillText('durica.si/stvoril',vw-13,vh-13);ctx.fillStyle='rgba(236,230,210,.85)';ctx.fillText('durica.si/stvoril',vw-14,vh-14)}
+}
+
+// ---------- kamera ----------
+const cam={x:0,y:0,s:5};
+let vw=innerWidth,vh=innerHeight;
+function resize(){vw=innerWidth;vh=innerHeight;const dpr=Math.min(window.devicePixelRatio||1,2);cvs.width=Math.round(vw*dpr);cvs.height=Math.round(vh*dpr);clampCam()}
+function minS(){return Math.min(vw/W,vh/H)}
+function maxS(){return (mode==='retro'?36:18)}
+function clampCam(){cam.s=Math.max(minS(),Math.min(maxS(),cam.s));
+  const vwc=vw/cam.s,vhc=vh/cam.s;
+  cam.x=vwc>=W?(W-vwc)/2:Math.max(0,Math.min(W-vwc,cam.x));
+  cam.y=vhc>=H?(H-vhc)/2:Math.max(-60/cam.s,Math.min(H-vhc+90/cam.s,cam.y))}
+function initCam(){cam.s=Math.max(vh/140,vw/W)*(mode==='detail'?.5:1);let sx=-1;for(let i=0;i<W*H;i++)if(type[i]===E.SOURCE){sx=i%W;break}
+  if(sx>=0&&(worldKind==='cave'||worldKind==='winter'||worldKind==='volcano'||worldKind==='forest')){cam.x=sx+(mode==='detail'?20:10)-vw/2/cam.s;cam.y=-50/cam.s;clampCam();return}
+  const cx=W>>1;let fy=surfaceY(cx);if(fy<0)fy=H>>1;cam.x=cx-vw/2/cam.s;cam.y=fy-vh*.42/cam.s;clampCam()}
+
+// ---------- nástroje ----------
+const TOOLS=[
+  {id:E.SAND,n:'Piesok',c:'#d8b46c'},{id:E.WATER,n:'Voda',c:'#3f7fe0'},{id:E.DIRT,n:'Zem',c:'#9a6234'},{id:E.SEED,n:'Semienka',c:'#a07a36'},
+  {id:E.STONE,n:'Kameň',c:'#6c7080'},{id:E.WOOD,n:'Drevo',c:'#6b4424'},{id:E.LAVA,n:'Láva',c:'#ff8a24'},{id:E.FIRE,n:'Oheň',c:'#ffa21e'},
+  {id:E.SOURCE,n:'Prameň',c:'#e8f4ff'},{id:E.STEAM,n:'Para',c:'#a6aec0'},{id:E.ORE,n:'Ruda',c:'#e9b53c'},
+  {id:E.ICE,n:'Ľad',c:'#a6d8f0'},{id:E.SNOW,n:'Sneh',c:'#eef2f7'},{id:E.OIL,n:'Olej',c:'#5a4224'},{id:E.ACID,n:'Kyselina',c:'#86e23a'},
+  {id:E.ALGAE,n:'Riasy',c:'#2f9a4a'},{id:E.BUBBLE,n:'Bublinky',c:'#d6ecff'},
+  {id:E.CLOUD,n:'Mrak',c:'#cfd4de'},{id:E.SPONGE,n:'Hubka',c:'#e3c94f'},{id:E.CLONER,n:'Klonovač',c:'#c050c8'},
+  {id:E.SALT,n:'Soľ',c:'#eeeae0'},{id:E.POWDER,n:'Prach',c:'#463f3e'},{id:E.LN2,n:'Dusík',c:'#7fdcf5'},
+  {id:E.BRICK,n:'Tehla',c:'#a8472f'},{id:E.GLASS,n:'Sklo',c:'#9fd2e4'},{id:E.TORCH,n:'Fakľa',c:'#ff9a2a'},
+  {id:E.HOLE,n:'Čierna diera',c:null,svg:'<svg width="22" height="14" viewBox="0 0 22 14"><circle cx="11" cy="7" r="6" fill="none" stroke="#aa6eff" stroke-width="1.5"/><circle cx="11" cy="7" r="3.5" fill="#05030a"/></svg>'},
+  {id:'bolt',n:'Blesk',c:null,svg:'<svg width="22" height="14" viewBox="0 0 22 14"><path d="M13 0L7 7h4l-2 7 6-8h-4z" fill="#fff6c8"/></svg>'},
+  {id:'ant',n:'Mravce',c:null,svg:'<svg width="22" height="14" viewBox="0 0 22 14"><rect x="4" y="7" width="4" height="3" fill="#3a1c14"/><rect x="9" y="6" width="4" height="4" fill="#4a2418"/><rect x="14" y="6" width="3" height="3" fill="#5a2c1c"/><path d="M5 10l-2 3M10 10l-1 3M12 10l1 3M15 9l3 2M16 6l2-3" stroke="#ece6d2" stroke-width="1"/></svg>'},
+  {id:'miner',n:'Baník',c:null,svg:'<svg width="22" height="14" viewBox="0 0 22 14"><rect x="8" y="0" width="6" height="3" fill="#f2c14e"/><rect x="13" y="1" width="2" height="2" fill="#fff6c8"/><rect x="8" y="3" width="6" height="3" fill="#e9b98d"/><rect x="8" y="6" width="6" height="4" fill="#3b6fb6"/><rect x="8" y="10" width="6" height="4" fill="#2e2e3e"/></svg>'},
+  {id:'robot',n:'Robot',c:null,svg:'<svg width="22" height="14" viewBox="0 0 22 14"><rect x="10" y="0" width="2" height="2" fill="#ff6060"/><rect x="7" y="2" width="8" height="5" fill="#b2becc"/><rect x="12" y="3" width="2" height="2" fill="#78ffaa"/><rect x="7" y="7" width="8" height="4" fill="#707c8e"/><rect x="7" y="11" width="8" height="3" fill="#282a34"/></svg>'},
+  {id:'bee',n:'Včely',c:null,svg:'<svg width="22" height="14" viewBox="0 0 22 14"><rect x="5" y="1" width="5" height="4" fill="#eaf4ff"/><rect x="11" y="1" width="5" height="4" fill="#eaf4ff"/><rect x="6" y="5" width="3" height="5" fill="#ffcf2e"/><rect x="9" y="5" width="2" height="5" fill="#1b1b22"/><rect x="11" y="5" width="3" height="5" fill="#ffcf2e"/><rect x="14" y="6" width="3" height="3" fill="#1b1b22"/></svg>'},
+  {id:'worm',n:'Dážďovky',c:null,svg:'<svg width="22" height="14" viewBox="0 0 22 14"><rect x="2" y="9" width="3" height="3" fill="#e8909a"/><rect x="5" y="7" width="3" height="3" fill="#d97e8a"/><rect x="8" y="6" width="3" height="3" fill="#e8909a"/><rect x="11" y="7" width="3" height="3" fill="#d97e8a"/><rect x="14" y="9" width="4" height="3" fill="#f2a6ae"/></svg>'},
+  {id:'fish',n:'Ryby',c:null,svg:'<svg width="22" height="14" viewBox="0 0 22 14"><rect x="7" y="4" width="9" height="6" fill="#ff8a3a"/><rect x="3" y="3" width="4" height="8" fill="#ffc482"/><rect x="13" y="5" width="2" height="2" fill="#141828"/></svg>'},
+  {id:'select',n:'Výber',c:null,svg:'<svg width="22" height="14" viewBox="0 0 22 14"><rect x="3" y="2" width="16" height="10" fill="none" stroke="#ece6d2" stroke-width="1.5" stroke-dasharray="3 2"/></svg>'},
+  {id:'paste',n:'Vložiť',c:null,svg:'<svg width="22" height="14" viewBox="0 0 22 14"><rect x="5" y="3" width="12" height="10" fill="#3a3b55" stroke="#ece6d2" stroke-width="1.2"/><rect x="8" y="1" width="6" height="3" fill="#ece6d2"/></svg>'},
+  {id:'erase',n:'Guma',c:'#26273a'},{id:'hand',n:'Ruka',c:null}];
+const KEYBY={[E.SAND]:'1',[E.WATER]:'2',[E.DIRT]:'3',[E.SEED]:'4',[E.STONE]:'5',[E.WOOD]:'6',[E.LAVA]:'7',[E.FIRE]:'8',[E.SOURCE]:'9',[E.STEAM]:'0',[E.ORE]:'R',bolt:'L',ant:'M',miner:'B',robot:'O',fish:'F',erase:'G',hand:'H',select:'C',paste:'V',bee:'N',worm:'D'};
+const KEYS=TOOLS.map(t=>KEYBY[t.id]||'');
+let tool=E.SAND,brush=3;
+let clip=null,selA=null,selB=null,selecting=false,pasting=false,pastePos=null,planMode=false;
+const PLANOK=new Set([E.BRICK,E.WOOD,E.STONE,E.GLASS,E.DIRT,E.TORCH,E.OBSID]);
+const badPlan=new Map();
+let built=0;try{built=+localStorage.getItem('stvoril.built')||0}catch(_){}
+const toolsEl=document.getElementById('tools');
+TOOLS.forEach((t,k)=>{const b=document.createElement('button');b.className='tool';b.dataset.k=k;
+  const sw=document.createElement('i');
+  if(t.c){sw.style.background=t.id==='erase'?'repeating-linear-gradient(45deg,#3a3b55 0 3px,#1c1d2e 3px 6px)':`linear-gradient(90deg,${t.c} 0 33%,${shade(t.c,.85)} 33% 66%,${shade(t.c,1.1)} 66%)`}
+  else if(t.svg){sw.innerHTML=t.svg}
+  else{sw.innerHTML='<svg width="22" height="14" viewBox="0 0 22 14"><path d="M11 1l3 3h-2v2h2V4l3 3-3 3V8h-2v2h2l-3 3-3-3h2V8H8v2L5 7l3-3v2h2V4H8z" fill="#ece6d2"/></svg>'}
+  b.append(sw,document.createTextNode(t.n));const kb=document.createElement('kbd');kb.textContent=KEYS[k];b.append(kb);
+  b.onclick=()=>selectTool(k);toolsEl.append(b)});
+function shade(h,f){const [r,g,b]=hex(h);return `rgb(${Math.min(255,r*f)|0},${Math.min(255,g*f)|0},${Math.min(255,b*f)|0})`}
+function selectToolById(id){const k=TOOLS.findIndex(t=>t.id===id);if(k>=0)selectTool(k)}
+function selectTool(k){if(TOOLS[k].id==='paste'&&!clip){toast('Najprv označ oblasť nástrojom Výber (C)');k=TOOLS.findIndex(t=>t.id==='select')}
+  tool=TOOLS[k].id;[...toolsEl.children].forEach((b,j)=>b.classList.toggle('sel',j===k));cvs.classList.toggle('pan',tool==='hand')}
+selectTool(0);
+const szOut=document.getElementById('szOut');
+function setBrush(v){brush=Math.max(1,Math.min(9,v));szOut.textContent=brush}
+document.getElementById('szMinus').onclick=()=>setBrush(brush-1);
+document.getElementById('szPlus').onclick=()=>setBrush(brush+1);
+const brushR=()=>tool===E.SOURCE||tool===E.HOLE||tool==='bolt'?0:(mode==='detail'?brush*2:brush)-1;
+
+function setPlanCell(i,m){if(!plan[i])planN++;plan[i]=m}
+function paintPlan(cx,cy){const r=brushR();
+  for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){if(dx*dx+dy*dy>r*r+r)continue;const x=cx+dx,y=cy+dy;if(x<2||y<2||x>=W-2||y>=H-2)continue;const i=y*W+x;if(type[i]===tool)continue;setPlanCell(i,tool)}}
+function paint(cx,cy){
+  if(planMode&&typeof tool==='number'){paintPlan(cx,cy);return}
+  const r=brushR();
+  for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){if(dx*dx+dy*dy>r*r+r)continue;
+    const x=cx+dx,y=cy+dy;if(x<2||y<2||x>=W-2||y>=H-2)continue;const i=y*W+x;
+    if(tool==='erase'){type[i]=0;data[i]=0;if(plan[i]){plan[i]=0;planN--}continue}
+    const u=type[i];
+    if(tool===E.FIRE&&u!==0){const f=type[i];if(f===E.WOOD||f===E.TIP){type[i]=E.EMBER;data[i]=90+((rnd()*120)|0)}else if(f===E.LEAF||f===E.SEED||f===E.FLOWER){setCell(i,E.FIRE,20)}else if(f===E.DIRT&&(data[i]&GRASS)){data[i]&=~GRASS}continue}
+    const intoWater=u===E.WATER&&(tool===E.ALGAE||tool===E.BUBBLE||tool===E.OIL||tool===E.ACID||tool===E.ICE||tool===E.SNOW||tool===E.SAND||tool===E.STONE||tool===E.SALT||tool===E.LN2);
+    if(u!==0&&u!==E.STEAM&&!intoWater)continue;
+    const t=tool;
+    if(t===E.FIRE&&u!==0){continue}
+    if((KIND[t]===1||KIND[t]===2||KIND[t]===3)&&rnd()<(t===E.SEED?.96:t===E.CLOUD?.2:.45))continue;
+    setCell(i,t,t===E.STEAM?steamLife():t===E.SOURCE?E.WATER:t===E.FIRE?14+((rnd()*20)|0):t===E.CLOUD?60:0)}
+}
+function paintLine(a,b){const dx=b.x-a.x,dy=b.y-a.y,n=Math.max(1,Math.abs(dx),Math.abs(dy));
+  const stepN=Math.max(1,Math.floor(brushR()/2)||1);
+  for(let k=0;k<=n;k+=stepN)paint(Math.round(a.x+dx*k/n),Math.round(a.y+dy*k/n));paint(b.x,b.y)}
+
+// ---------- ovládanie prstom / myšou ----------
+const ptrs=new Map();let drawing=false,last=null,hover=null,panning=false,pinch=null,panStart=null,lockDraw=false;
+const cellAt=(px,py)=>({x:Math.floor(cam.x+px/cam.s),y:Math.floor(cam.y+py/cam.s)});
+cvs.addEventListener('contextmenu',e=>e.preventDefault());
+cvs.addEventListener('pointerdown',e=>{
+  cvs.setPointerCapture(e.pointerId);ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});closeMenu();
+  if(ptrs.size===1){
+    if(e.pointerType==='mouse'&&e.button!==0||tool==='hand'){panning=true;panStart={x:e.clientX,y:e.clientY,cx:cam.x,cy:cam.y};drawing=false}
+    else if(!lockDraw&&tool==='bolt'){pushUndo();const c=cellAt(e.clientX,e.clientY);strikeAt(c.x,c.y)}
+    else if(!lockDraw&&(tool==='ant'||tool==='miner'||tool==='fish'||tool==='robot'||tool==='bee'||tool==='worm')){const c=cellAt(e.clientX,e.clientY);spawnCreature(tool,c.x,c.y)}
+    else if(!lockDraw&&tool==='select'){selecting=true;selA=cellAt(e.clientX,e.clientY);selB=selA}
+    else if(!lockDraw&&tool==='paste'){pasting=true;pastePos=cellAt(e.clientX,e.clientY)}
+    else if(!lockDraw&&planMode&&typeof tool==='number'&&!PLANOK.has(tool)){toast('Plán zvládne tehlu, drevo, kameň, sklo, zem a fakľu')}
+    else if(!lockDraw){pushUndo();drawing=true;last=cellAt(e.clientX,e.clientY);paint(last.x,last.y)}
+  } else if(ptrs.size===2){drawing=false;panning=false;selecting=false;pasting=false;lockDraw=true;startPinch()}
+});
+cvs.addEventListener('pointermove',e=>{
+  if(e.pointerType==='mouse')hover=cellAt(e.clientX,e.clientY);
+  if(e.pointerType==='mouse'||ptrs.has(e.pointerId))fleePt=cellAt(e.clientX,e.clientY);
+  if(!ptrs.has(e.pointerId))return;ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(pinch&&ptrs.size>=2)movePinch();
+  else if(panning){cam.x=panStart.cx-(e.clientX-panStart.x)/cam.s;cam.y=panStart.cy-(e.clientY-panStart.y)/cam.s;clampCam()}
+  else if(selecting){selB=cellAt(e.clientX,e.clientY)}
+  else if(pasting){pastePos=cellAt(e.clientX,e.clientY)}
+  else if(drawing){const c=cellAt(e.clientX,e.clientY);paintLine(last,c);last=c}
+});
+function endPtr(e){ptrs.delete(e.pointerId);
+  if(ptrs.size<2)pinch=null;
+  if(ptrs.size===0){if(e.type==='pointerup'){if(selecting)finishSelect();if(pasting)doPaste()}selecting=false;pasting=false;drawing=false;panning=false;lockDraw=false;if(e.pointerType!=='mouse')fleePt=null}
+  else if(ptrs.size===1&&lockDraw){const p=[...ptrs.values()][0];panning=true;panStart={x:p.x,y:p.y,cx:cam.x,cy:cam.y}}}
+cvs.addEventListener('pointerup',endPtr);cvs.addEventListener('pointercancel',endPtr);
+cvs.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'){hover=null;fleePt=null}});
+function startPinch(){const [a,b]=[...ptrs.values()];const mx=(a.x+b.x)/2,my=(a.y+b.y)/2;
+  pinch={d:Math.hypot(a.x-b.x,a.y-b.y)||1,s:cam.s,wx:cam.x+mx/cam.s,wy:cam.y+my/cam.s}}
+function movePinch(){const [a,b]=[...ptrs.values()];const mx=(a.x+b.x)/2,my=(a.y+b.y)/2;
+  cam.s=pinch.s*(Math.hypot(a.x-b.x,a.y-b.y)/pinch.d);clampCam();cam.x=pinch.wx-mx/cam.s;cam.y=pinch.wy-my/cam.s;clampCam()}
+cvs.addEventListener('wheel',e=>{e.preventDefault();const wx=cam.x+e.clientX/cam.s,wy=cam.y+e.clientY/cam.s;
+  cam.s*=Math.exp(-e.deltaY*.0015);clampCam();cam.x=wx-e.clientX/cam.s;cam.y=wy-e.clientY/cam.s;clampCam()},{passive:false});
+
+function finishSelect(){
+  if(!selA||!selB)return;const x0=Math.max(2,Math.min(selA.x,selB.x)),x1=Math.min(W-3,Math.max(selA.x,selB.x)),y0=Math.max(2,Math.min(selA.y,selB.y)),y1=Math.min(H-3,Math.max(selA.y,selB.y));
+  const w=x1-x0+1,h=y1-y0+1;if(w<3||h<3){toast('Ťukni a ťahaj, aby si označil oblasť');return}
+  const c={w,h,t:new Uint8Array(w*h),d:new Uint8Array(w*h),c:new Uint8Array(w*h)};const cv=document.createElement('canvas');cv.width=w;cv.height=h;const cx=cv.getContext('2d'),im=cx.createImageData(w,h),b32=new Uint32Array(im.data.buffer);let n=0;
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=(y0+y)*W+x0+x,k=y*w+x,t=type[i];if(t===0||t===E.BEDROCK)continue;c.t[k]=t;c.d[k]=data[i];c.c[k]=cvar[i];b32[k]=buf?buf[i]:0;n++}
+  if(!n){toast('V označenej oblasti nič nie je');return}
+  cx.putImageData(im,0,0);c.cv=cv;clip=c;discover('copy');
+  toast('Skopírované '+w+'×'+h+'. Ťukni, ťahaj a pusť tam, kam to chceš vložiť');selectToolById('paste')}
+function doPaste(){
+  if(!clip||!pastePos)return;const ox=pastePos.x-(clip.w>>1),oy=pastePos.y-clip.h+1;
+  if(planMode){let n=0;
+    for(let y=0;y<clip.h;y++)for(let x=0;x<clip.w;x++){const m=clip.t[y*clip.w+x];if(!PLANOK.has(m))continue;const xx=ox+x,yy=oy+y;if(xx<2||yy<2||xx>=W-2||yy>=H-2)continue;const i=yy*W+xx;if(type[i]===m)continue;setPlanCell(i,m);n++}
+    toast(n?'Plán: '+n+' blokov čaká na robotov. Postav robota (O).':'V kópii nie je nič, čo roboti vedia stavať');return}
+  pushUndo();
+  for(let y=0;y<clip.h;y++)for(let x=0;x<clip.w;x++){const k=y*clip.w+x,m=clip.t[k];if(!m)continue;const xx=ox+x,yy=oy+y;if(xx<2||yy<2||xx>=W-2||yy>=H-2)continue;const i=yy*W+xx;if(type[i]===E.BEDROCK)continue;
+    type[i]=m;data[i]=clip.d[k];cvar[i]=clip.c[k]}}
+function spawnCreature(k,x,y){
+  if(k==='bee'){if(!inb(x,y)||!pass(x,y)||at(x,y)===E.WATER){toast('Včely potrebujú voľný vzduch');return}
+    if(countKind(4)>=BEE_CAP()){toast('Včiel a motýľov je už dosť');return}
+    for(let j=0;j<3;j++)agents.push(mkBee(x+((rnd()*4-2)|0),y+((rnd()*3-1)|0)));toast('Včely a motýle hľadajú kvety');return}
+  if(k==='worm'){if(at(x,y)!==E.DIRT){toast('Dážďovky žijú v zemi, ťukni do hliny');return}
+    if(countKind(5)>=WORM_CAP()){toast('Dážďoviek je už dosť');return}
+    let n=0;for(let t=0;t<30&&n<3;t++){const xx=x+((rnd()*6-3)|0),yy=y+((rnd()*6-3)|0);if(at(xx,yy)===E.DIRT){agents.push(mkWorm(xx,yy));n++}}
+    toast(n?'Dážďovky zrýchlia rast trávy':'Ťukni do väčšej kopy zeme');return}
+  if(k==='robot'){if(!boxFree(x,y,sc(),2*sc())){toast('Robot sa sem nezmestí');return}
+    if(countKind(3)>=ROBOT_CAP){toast('Robotov je už dosť');return}
+    agents.push(mkRobot(x,y));toast('Robot záhradník: polieva, sadí a hasí');return}
+  if(k==='fish'){if(at(x,y)!==E.WATER){toast('Ryby potrebujú vodu, ťukni do vody');return}
+    if(countKind(2)>=FISH_CAP){toast('Rýb je už dosť');return}
+    const col=(rnd()*FISHC.length)|0;for(let j=0;j<4;j++)agents.push(mkFish(x+((rnd()*4-2)|0),y,col));toast('Hejno rýb');return}
+  if(!inb(x,y)||!pass(x,y)){toast('Sem sa nezmestia, ťukni do voľného miesta');return}
+  const kind=k==='ant'?0:1;
+  if(countKind(kind)>=(kind===0?ANT_CAP:MINER_CAP)){toast(kind===0?'Mravcov je už dosť':'Baníkov je už dosť');return}
+  // blízko existujúcej kolónie sa pridajú k nej
+  let ci=-1;for(let k2=0;k2<colonies.length;k2++){const c=colonies[k2];if(c.kind===kind&&Math.abs(c.x-x)<25*sc()&&Math.abs(c.y-y)<25*sc())ci=k2}
+  if(ci<0)spawnColony(kind,x,y);else{const n=kind===0?4:1;for(let j=0;j<n;j++)agents.push(mk(kind,x,y,ci))}
+  toast(kind===0?'Mravce si hľadajú miesto na mravenisko':'Baník si postaví tábor tam, kde dopadne')}
+// ---------- blesk ----------
+function strike(x,y0){
+  if(!type)return;const path=[];let y=Math.max(3,y0),cx=Math.max(3,Math.min(W-4,x));
+  while(y<H-3){const t=type[y*W+cx];if(t!==0&&KIND[t]!==3&&t!==E.LEAF&&t!==E.FLOWER)break;path.push(cx,y);y++;if(rnd()<.45)cx=Math.max(3,Math.min(W-4,cx+(rnd()<.5?-1:1)))}
+  bolts.push({p:path,life:12});flash=8;
+  const r=3*sc();
+  for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){if(dx*dx+dy*dy>r*r+1)continue;const xx=cx+dx,yy=y+dy;if(xx<2||yy<2||xx>=W-2||yy>=H-2)continue;const j=yy*W+xx,u=type[j];
+    if(u===E.SAND&&rnd()<.6){type[j]=E.GLASS;data[j]=0;discover('lightning')}
+    else if(u===E.WATER&&rnd()<.12){type[j]=E.STEAM;data[j]=steamLife()}
+    else if(u===E.LEAF||u===E.FLOWER||u===E.SEED||u===E.OIL){setCell(j,E.FIRE,22)}
+    else if(u===E.WOOD||u===E.TIP){type[j]=E.EMBER;data[j]=120;discover('lightning')}
+    else if(u===E.POWDER){boom(xx,yy)}
+    else if(u===E.DIRT&&(data[j]&GRASS)){data[j]&=~GRASS}
+    else if(u===E.ICE||u===E.SNOW){type[j]=E.WATER;data[j]=0}}
+  spray(cx,y-1,14);
+  for(const a of agents){if(a.dead||Math.abs(a.x-cx)>r*2||Math.abs(a.y-y)>r*2)continue;if(a.k===2)continue;if(a.k===3){a.energy=100;a.think='sun';discover('robotcharge');continue}hurt(a,'fire')}
+  thunder()}
+function strikeAt(x,y){let y0=y;while(y0>3){const t=at(x,y0-1);if(t!==0&&KIND[t]!==3&&t!==E.LEAF)break;y0--}strike(x,y0)}
+function thunder(){if(!audio||!soundOn)return;const ac=audio.ac,t=ac.currentTime;const src=ac.createBufferSource();src.buffer=audio.buf;const fl=ac.createBiquadFilter();fl.type='lowpass';fl.frequency.value=380;const g=ac.createGain();
+  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.6,t+.05);g.gain.exponentialRampToValueAtTime(.0001,t+1.6);src.connect(fl);fl.connect(g);g.connect(audio.master);src.start(t,Math.random());src.stop(t+1.7)}
+// ---------- výzvy ----------
+const CHAL=[
+  {id:'trees',n:'Les: 12 stromov',goal:12,f:c=>c.trees},
+  {id:'obsid',n:'Obsidián: 60 pixelov',goal:60,f:c=>c.h[E.OBSID]},
+  {id:'glass',n:'Sklo: 40 pixelov',goal:40,f:c=>c.h[E.GLASS]},
+  {id:'ants',n:'Mravenisko: 20 mravcov',goal:20,f:()=>countKind(0)},
+  {id:'houses',n:'Baníci: 3 domčeky',goal:3,f:()=>colonies.reduce((s2,c)=>s2+(c.houses||0),0)},
+  {id:'fish',n:'Akvárko: 40 rýb',goal:40,f:()=>countKind(2)},
+  {id:'ice',n:'Zamrznuté jazero: 300 pixelov ľadu',goal:300,f:c=>c.h[E.ICE]},
+  {id:'rain',n:'Vlastný dážď: mrak z pary',goal:1,f:()=>found.cloud?1:0},
+  {id:'robot',n:'Robot zahasí oheň',goal:1,f:()=>found.robotfire?1:0},
+  {id:'hole',n:'Čierna diera sa naje a zmizne',goal:1,f:()=>found.hole?1:0},
+  {id:'build',n:'Stavba: roboti postavia 60 blokov',goal:60,f:()=>built},
+  {id:'boom',n:'Výbuch: zapáľ prach',goal:1,f:()=>found.boom?1:0},
+  {id:'year',n:'Celý rok: prežiť všetky 4 obdobia',goal:1,f:()=>found.year?1:0},
+  {id:'pollen',n:'Včely opelia 10 kvetov',goal:10,f:()=>pollinated}];
+let chalDone={},chalVal={};
+try{chalDone=JSON.parse(localStorage.getItem('stvoril.chal')||'{}')||{}}catch(_){chalDone={}}
+const HIST=new Uint32Array(64);
+function checkChallenges(){
+  if(!type)return;HIST.fill(0);let trees=0;
+  for(let i=W;i<W*H-W;i++){const t=type[i];HIST[t]++;if(t===E.WOOD&&type[i+W]===E.DIRT&&type[i-1]!==E.WOOD&&(type[i-W]===E.WOOD||type[i-W]===E.TIP))trees++}
+  const c={h:HIST,trees};
+  for(const ch of CHAL){const v=ch.f(c);chalVal[ch.id]=v;
+    if(!chalDone[ch.id]&&v>=ch.goal){chalDone[ch.id]=1;toast('Výzva splnená: '+ch.n);try{localStorage.setItem('stvoril.chal',JSON.stringify(chalDone))}catch(_){}}}
+  if(!menu.hidden)renderChal()}
+function renderChal(){const el=document.getElementById('chal');el.textContent='';
+  for(const ch of CHAL){const s2=document.createElement('span');const v=Math.min(ch.goal,chalVal[ch.id]||0);
+    s2.textContent=ch.n+(chalDone[ch.id]?'':ch.goal>1?'  '+v+'/'+ch.goal:'');if(chalDone[ch.id])s2.className='got';el.append(s2)}}
+// ---------- svet do súboru ----------
+async function saveBlob(name,blob,okMsg){
+  let dl=null;try{if(window.claude&&window.claude.use)dl=await window.claude.use('downloads')}catch(_){dl=null}
+  if(dl){try{await dl.save({filename:name,data:blob});toast(okMsg);return}catch(e){if(e&&e.code==='declined'){toast('Neuložené');return}}}
+  try{const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),5000);toast(okMsg)}catch(_){toast('Nepodarilo sa uložiť')}}
+// ---------- späť ----------
+let undoStack=[];const undoBtn=document.getElementById('undoBtn');
+function pushUndo(){if(!type)return;undoStack.push({W,H,t:type.slice(),d:data.slice()});if(undoStack.length>6)undoStack.shift();undoBtn.disabled=false}
+function undo(){const u=undoStack.pop();if(!u){return}if(u.W===W&&u.H===H){type.set(u.t);data.set(u.d);toast('Späť')}undoBtn.disabled=!undoStack.length}
+undoBtn.onclick=undo;
+const planBtn=document.getElementById('planBtn');
+document.getElementById('planClearBtn').onclick=()=>{plan.fill(0);planN=0;badPlan.clear();closeMenu();toast('Plán zrušený')};
+function togglePlan(){planMode=!planMode;planBtn.classList.toggle('on',planMode);toast(planMode?'Plán zapnutý: kresli obrys, roboti ho postavia (tehla, drevo, kameň, sklo, zem, fakľa)':'Plán vypnutý: kreslíš naozaj')}
+planBtn.onclick=togglePlan;
+// ---------- rýchlosť času ----------
+let speed=1;const speedBtn=document.getElementById('speedBtn');
+function cycleSpeed(){speed=speed===1?2:speed===2?4:1;speedBtn.textContent=speed+'×';speedBtn.classList.toggle('on',speed>1)}
+speedBtn.onclick=cycleSpeed;
+// ---------- kino režim ----------
+let kino=false,kinoT=0,kinoTarget=null;const kinoExit=document.getElementById('kinoExit');
+function setKino(on){kino=on;document.body.classList.toggle('kino',on);kinoExit.hidden=!on;kinoT=0;kinoTarget=null;closeMenu();if(on)toast('Kino: kamera sleduje, čo sa deje')}
+kinoExit.onclick=()=>setKino(false);
+document.getElementById('kinoBtn').onclick=()=>setKino(true);
+function kinoPick(){
+  if(agents.length&&rnd()<.6){const a=agents[(rnd()*agents.length)|0];return {x:a.x,y:a.y}}
+  for(let k=0;k<400;k++){const i=(rnd()*W*H)|0;const t=type[i];if(t===E.FIRE||t===E.EMBER||t===E.LAVA||t===E.BUBBLE||(t===E.WATER&&(data[i]&FALL))||t===E.TIP)return {x:i%W,y:(i/W)|0}}
+  return {x:W/2,y:H/2}}
+function kinoCam(){if(!kino)return;
+  if(--kinoT<=0||!kinoTarget){kinoTarget=kinoPick();kinoT=60*7}
+  const zs=(mode==='detail'?.5:1)*Math.max(vh/120,vw/160);cam.s+=(zs-cam.s)*.01;
+  const tx=kinoTarget.x-vw/2/cam.s,ty=kinoTarget.y-vh/2/cam.s;cam.x+=(tx-cam.x)*.012;cam.y+=(ty-cam.y)*.012;clampCam()}
+// ---------- zvuk ----------
+let audio=null,soundOn=false;const soundBtn=document.getElementById('soundBtn');
+function initAudio(){try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;const ac=new AC();
+  const len=ac.sampleRate*2,buf=ac.createBuffer(1,len,ac.sampleRate),d=buf.getChannelData(0);let b=0;for(let k=0;k<len;k++){const wn=Math.random()*2-1;b=(b+.02*wn)/1.02;d[k]=wn*.5+b*3}
+  const master=ac.createGain();master.gain.value=.6;master.connect(ac.destination);
+  const mk2=(type,f,q)=>{const src=ac.createBufferSource();src.buffer=buf;src.loop=true;const fl=ac.createBiquadFilter();fl.type=type;fl.frequency.value=f;fl.Q.value=q;const g=ac.createGain();g.gain.value=0;src.connect(fl);fl.connect(g);g.connect(master);src.start();return g};
+  return {ac,master,buf,water:mk2('lowpass',700,.6),fire:mk2('bandpass',1800,.8)}}catch(_){return null}}
+function blip(f0,f1,dur,vol){if(!audio)return;const ac=audio.ac,t=ac.currentTime;const o=ac.createOscillator(),g=ac.createGain();o.frequency.setValueAtTime(f0,t);o.frequency.exponentialRampToValueAtTime(f1,t+dur);
+  g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(g);g.connect(audio.master);o.start(t);o.stop(t+dur+.02)}
+function hiss(dur,vol){if(!audio)return;const ac=audio.ac,t=ac.currentTime;const src=ac.createBufferSource();src.buffer=audio.buf;const fl=ac.createBiquadFilter();fl.type='highpass';fl.frequency.value=3200;const g=ac.createGain();
+  g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.0001,t+dur);src.connect(fl);fl.connect(g);g.connect(audio.master);src.start(t,Math.random());src.stop(t+dur+.02)}
+let sndCool=0;
+let boomCool=0;
+function updateAudio(){
+  if(boomCool>0)boomCool--;
+  if(!audio||!soundOn){sndSizzle=0;sndPop=0;sndBoom=0;return}
+  if(sndBoom>0&&boomCool<=0){thunder();boomCool=12}sndBoom=0;
+  const t=audio.ac.currentTime;
+  audio.water.gain.setTargetAtTime(Math.min(.32,Math.sqrt(sndFall)/40),t,.25);
+  audio.fire.gain.setTargetAtTime(Math.min(.18,Math.sqrt(sndFire)/60),t,.25);
+  if(sndFire>0&&Math.random()<Math.min(.25,sndFire/300))blip(900+Math.random()*900,300,.03,.05);
+  if(--sndCool<=0){if(sndSizzle>0){hiss(.35,.12);sndCool=8}else if(sndPop>0){blip(700+Math.random()*300,240,.07,.06);sndCool=5}}
+  sndSizzle=0;sndPop=0}
+soundBtn.onclick=()=>{if(!audio)audio=initAudio();if(!audio){toast('Zvuk tu nejde');return}
+  soundOn=!soundOn;if(soundOn&&audio.ac.state==='suspended')audio.ac.resume();
+  audio.master.gain.setTargetAtTime(soundOn?.6:0,audio.ac.currentTime,.05);
+  soundBtn.textContent=soundOn?'Zvuk: zapnutý':'Zvuk: vypnutý';soundBtn.classList.toggle('on',soundOn)};
+// ---------- nahrávanie videa ----------
+let recording=false,recorder=null;const recLbl=document.getElementById('recLbl');
+function pickMime(){const list=['video/mp4;codecs=avc1','video/mp4','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'];
+  for(const m of list)if(window.MediaRecorder&&MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(m))return m;return ''}
+async function saveVideo(blob,ext){
+  const name='si-stvoril-'+new Date().toISOString().slice(0,16).replace(/[:T]/g,'-')+'.'+ext;
+  let dl=null;try{if(window.claude&&window.claude.use)dl=await window.claude.use('downloads')}catch(_){dl=null}
+  if(dl){try{await dl.save({filename:name,data:blob});toast('Video uložené');return}catch(e){if(e&&e.code==='declined'){toast('Video sa neuložilo');return}}}
+  try{const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),5000);toast('Video pripravené')}catch(_){toast('Video sa nepodarilo uložiť')}}
+function startRec(){
+  closeMenu();
+  if(recording){recorder&&recorder.stop();return}
+  if(!cvs.captureStream||!window.MediaRecorder){toast('Nahrávanie v tomto prehliadači nejde');return}
+  const mime=pickMime();let stream;try{stream=cvs.captureStream(30)}catch(_){toast('Nahrávanie tu nejde');return}
+  try{recorder=mime?new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:6e6}):new MediaRecorder(stream)}catch(_){toast('Nahrávanie tu nejde');return}
+  const chunks=[];recorder.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
+  const ext=(recorder.mimeType||mime).includes('mp4')?'mp4':'webm';
+  recorder.onstop=()=>{recording=false;recLbl.hidden=true;clearInterval(recTimer);stream.getTracks().forEach(t=>t.stop());
+    const blob=new Blob(chunks,{type:recorder.mimeType||('video/'+ext)});if(blob.size)saveVideo(blob,ext);else toast('Video je prázdne')};
+  recording=true;let left=15;recLbl.textContent='REC '+left;recLbl.hidden=false;recorder.start(500);
+  const recTimer=setInterval(()=>{left--;recLbl.textContent='REC '+left;if(left<=0&&recorder.state!=='inactive')recorder.stop()},1000);
+}
+document.getElementById('recBtn').onclick=startRec;
+recLbl.onclick=()=>{if(recorder&&recorder.state!=='inactive')recorder.stop()};
+// ---------- gravitácia, naklápanie, zatrasenie ----------
+const gravSvg=document.querySelector('#gravBtn svg');
+function setGrav(k){g=(k+8)&7;gravSvg.style.transform=`rotate(${(g-2)*45}deg)`}
+document.getElementById('gravBtn').onclick=()=>{if(!tiltOn)setGrav(2)};
+document.getElementById('rotL').onclick=()=>setGrav(g+1);
+document.getElementById('rotR').onclick=()=>setGrav(g-1);
+let tiltOn=false,gotOri=false;
+const tiltBtn=document.getElementById('tiltBtn');
+function onOri(e){if(e.beta==null||e.gamma==null)return;gotOri=true;
+  const b=e.beta*Math.PI/180,gm=e.gamma*Math.PI/180;
+  const gx=Math.sin(gm)*Math.cos(b),gy=-Math.sin(b);       // gravitácia v osiach telefónu (y hore)
+  if(Math.hypot(gx,gy)<.3)return;                          // telefón leží na stole, necháme posledný smer
+  const ang=((screen.orientation&&screen.orientation.angle)||window.orientation||0)*Math.PI/180;
+  const p1=gx,p2=-gy;const sx=p1*Math.cos(ang)+p2*Math.sin(ang),sy=-p1*Math.sin(ang)+p2*Math.cos(ang);
+  const a=Math.atan2(sy,sx);const cur=g*Math.PI/4;let diff=Math.atan2(Math.sin(a-cur),Math.cos(a-cur));
+  if(Math.abs(diff)>Math.PI*0.16){setGrav(Math.round(a/(Math.PI/4)))}}
+let lastShake=0;
+function onMotion(e){const a=e.acceleration;if(!a||a.x==null)return;const m=Math.hypot(a.x,a.y,a.z||0);
+  if(m>16&&performance.now()-lastShake>450){lastShake=performance.now();shake()}}
+async function enableTilt(){
+  if(tiltOn){tiltOn=false;tiltBtn.classList.remove('on');removeEventListener('deviceorientation',onOri);removeEventListener('devicemotion',onMotion);setGrav(2);toast('Naklápanie vypnuté');return}
+  try{
+    if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){
+      const r=await DeviceOrientationEvent.requestPermission();if(r!=='granted')throw new Error('denied')}
+    if(typeof DeviceMotionEvent!=='undefined'&&typeof DeviceMotionEvent.requestPermission==='function'){
+      try{await DeviceMotionEvent.requestPermission()}catch(_){}}
+  }catch(_){tiltFail();return}
+  tiltOn=true;gotOri=false;tiltBtn.classList.add('on');
+  addEventListener('deviceorientation',onOri);addEventListener('devicemotion',onMotion);
+  setTimeout(()=>{if(tiltOn&&!gotOri){tiltOn=false;tiltBtn.classList.remove('on');removeEventListener('deviceorientation',onOri);tiltFail()}},1600);
+  toast('Nakloň telefón');
+}
+function tiltFail(){const fine=matchMedia('(pointer:fine)').matches;
+  toast(fine?'Na počítači otáčaj gravitáciu klávesmi Q a E.':'Naklápanie tu nejde. Na durica.si/stvoril pôjde, zatiaľ otáčaj gravitáciu v menu ⋯')}
+tiltBtn.onclick=enableTilt;
+function shake(){if(!type)return;
+  const U=DIRS[(g+4)&7];
+  for(let i=0;i<W*H;i++){const t=type[i];if((KIND[t]===1||KIND[t]===2)&&!(t===E.DIRT&&(data[i]&FIXED))&&rnd()<.22){
+    const x=i%W,y=(i/W)|0;const h=1+((rnd()*3)|0);const nx=x+U[0]*h+((rnd()*3)|0)-1,ny=y+U[1]*h;
+    if(inb(nx,ny)&&type[ny*W+nx]===0){moveTo(i,ny*W+nx);if(t===E.WATER&&rnd()<.05)spray(nx,ny,1)}}}}
+document.getElementById('shakeBtn').onclick=()=>{shake();closeMenu()};
+
+// ---------- tlačidlá ----------
+const pauseBtn=document.getElementById('pauseBtn'),pausedLbl=document.getElementById('pausedLbl');
+function setPause(p){paused=p;pauseBtn.textContent=p?'▶':'❚❚';pauseBtn.classList.toggle('on',p);pausedLbl.hidden=!p}
+pauseBtn.onclick=()=>setPause(!paused);
+const modeBtn=document.getElementById('modeBtn');
+function setMode(m,convert){if(m===mode)return;undoStack=[];undoBtn.disabled=true;clip=null;badPlan.clear();if(tool==='paste')selectToolById('select');
+  const cxw=cam.x+vw/2/cam.s,cyw=cam.y+vh/2/cam.s;
+  if(convert){if(m==='detail')toDetail();else toRetro()}
+  const f=m==='detail'?2:.5;mode=m;cam.s/=f;particles=[];
+  const sx=v=>Math.max(2,Math.min((m==='detail'?W:W)-3,Math.round(v*f)));
+  for(const a of agents){a.x=Math.round(a.x*f);a.y=Math.round(a.y*f)+(f>1?1:0);a.tx=Math.round(a.tx*f);a.ty=Math.round(a.ty*f);a.hit=0;if(a.tr)a.tr=[];if(a.k===4){a.vx=0;a.vy=0;a.tgt=null}if(a.prev){a.prev.tx=Math.round(a.prev.tx*f);a.prev.ty=Math.round(a.prev.ty*f)}}
+  for(const c of colonies){c.x=Math.round(c.x*f);c.y=Math.round(c.y*f)+(f>1?1:0);if(c.build){c.build=null;}}
+  for(const a of agents)if(a.s==='build')a.s='seek';
+  fireflies=[];
+  cam.x=cxw*f-vw/2/cam.s;cam.y=cyw*f-vh/2/cam.s;clampCam();
+  modeBtn.textContent=m==='detail'?'Detail':'Retro';modeBtn.classList.toggle('on',m==='detail')}
+modeBtn.onclick=()=>{setMode(mode==='retro'?'detail':'retro',true);toast(mode==='detail'?'Detail: menšie pixely, viac miesta':'Retro: veľké pixely');save()};
+
+const menu=document.getElementById('menu'),menuBtn=document.getElementById('menuBtn');
+function closeMenu(){menu.hidden=true;menuBtn.setAttribute('aria-expanded','false');confirmEl.hidden=true}
+menuBtn.onclick=()=>{renderSeason();const open=menu.hidden;menu.hidden=!open;menuBtn.setAttribute('aria-expanded',String(open));renderFound();if(open){checkChallenges();renderChal()}};
+const confirmEl=document.getElementById('confirm');let pending=null;
+const WNAMES={cave:'Nová jaskyňa',aqua:'Akvárko',winter:'Zimný svet',volcano:'Sopka',forest:'Les',desert:'Púšť',beach:'Pláž',islands:'Ostrovy',empty:'Prázdny svet'};
+for(const [id,k] of [['newBtn','cave'],['aquaBtn','aqua'],['winterBtn','winter'],['volcanoBtn','volcano'],['forestBtn','forest'],['desertBtn','desert'],['beachBtn','beach'],['islandsBtn','islands'],['emptyBtn','empty']])
+  document.getElementById(id).onclick=()=>{pending=k;document.getElementById('confirmText').textContent=WNAMES[k]+' zmaže tento svet?';confirmEl.hidden=false};
+document.getElementById('noBtn').onclick=()=>{confirmEl.hidden=true};
+document.getElementById('yesBtn').onclick=()=>{const keep=mode;mode='retro';generate(pending);if(keep==='detail'){mode='retro';setMode('detail',true)};initCam();closeMenu();save()};
+const fine=matchMedia('(pointer:fine)').matches;
+document.getElementById(fine?'helpTouch':'helpMouse').hidden=true;
+const gentleBtn=document.getElementById('gentleBtn'),naturalBtn=document.getElementById('naturalBtn'),dayBtn=document.getElementById('dayBtn');
+function renderLife(){gentleBtn.classList.toggle('on',!natural);naturalBtn.classList.toggle('on',natural);dayBtn.classList.toggle('on',dayNight);
+  dayBtn.textContent=dayNight?'Deň a noc: zapnuté':'Deň a noc: vypnuté';
+  document.getElementById('lifeHelp').textContent=natural?'Bytosti starnú, môžu sa utopiť alebo zhorieť. Nové sa rodia zo zásob.':'Bytosti neumierajú. Pred vodou, ohňom a lávou utečú.'}
+const seasonBtn=document.getElementById('seasonBtn'),seasonNext=document.getElementById('seasonNext');
+function renderSeason(){seasonBtn.classList.toggle('on',seasonOn);seasonBtn.textContent=seasonOn?'Ročné obdobia: '+SNAMES[seasonIdx]:'Ročné obdobia: vypnuté';seasonNext.hidden=!seasonOn;seasonLabel()}
+seasonBtn.onclick=()=>{seasonOn=!seasonOn;saveSettings();renderSeason();toast(seasonOn?'Ročné obdobia bežia: '+SNAMES[seasonIdx]:'Ročné obdobia vypnuté')};
+seasonNext.onclick=()=>{seasonT=(Math.floor(seasonT/SLEN)+1)*SLEN+1;renderSeason()};
+gentleBtn.onclick=()=>{natural=false;saveSettings();renderLife()};
+naturalBtn.onclick=()=>{natural=true;for(const a of agents)if(a.life>1e8)a.life=a.age+((3+rnd()*4)*3600|0);saveSettings();renderLife()};
+dayBtn.onclick=()=>{dayNight=!dayNight;saveSettings();renderLife()};
+
+addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;
+  if((e.metaKey||e.ctrlKey)&&(e.key==='z'||e.key==='Z')){e.preventDefault();undo();return}
+  const ki=KEYS.indexOf(e.key.toUpperCase());if(ki>=0&&!e.metaKey&&!e.ctrlKey){selectTool(ki);return}
+  if(e.key===' '){e.preventDefault();setPause(!paused)}
+  else if(e.key==='q'||e.key==='Q')setGrav(g+1);
+  else if(e.key==='e'||e.key==='E')setGrav(g-1);
+  else if(e.key==='t'||e.key==='T')shake();
+  else if(e.key==='p'||e.key==='P')togglePlan();
+  else if(e.key==='[')setBrush(brush-1);
+  else if(e.key===']')setBrush(brush+1);
+  else if(e.key==='z'||e.key==='Z'){if(e.metaKey||e.ctrlKey)e.preventDefault();undo()}
+  else if(e.key==='x'||e.key==='X')cycleSpeed();
+  else if(e.key==='k'||e.key==='K')setKino(!kino);
+  else if(e.key==='Escape'){closeMenu();if(kino)setKino(false)}});
+
+// ---------- objavy ----------
+const FOUND=[['grass','Zem + voda = tráva'],['flower','Mokrá tráva = kvety'],['tree','Semienko + mokrá zem = strom'],['obsid','Láva + voda = obsidián'],['glass','Láva + piesok = sklo'],
+  ['rain','Para sa zrazí na dážď'],['fire','Oheň + drevo = žeravé drevo'],['ash','Žeravé drevo zhorí na popol'],['douse','Voda zahasí oheň'],
+  ['ants','Mravce si kopú tunely'],['torch','Baník si zavesil fakľu'],['bridge','Baník vylial vodu na lávu = most'],['house','Baníci si postavili domček'],['night','Prvá noc: svetlušky'],
+  ['fish','Ryby jedia riasy a množia sa'],['algae','Riasy sa šíria po dne'],['bubble','Bublinky praskajú na hladine'],['ice','Voda pri ľade zamŕza'],
+  ['melt','Teplo roztopí ľad a sneh'],['oil','Olej pláva na vode a horí'],['acid','Kyselina zje skoro všetko, sklo nie'],
+  ['robotwater','Robot polial suchú zem'],['robotseed','Robot zasadil semienko'],['robotfire','Robot zahasil oheň'],
+  ['cloud','Para hore vytvorí mrak, z mraku prší'],['sponge','Hubka nasaje vodu'],['clone','Klonovač skopíruje, čoho sa dotkne'],['hole','Čierna diera sa naje a zmizne'],
+  ['lightning','Blesk: z piesku sklo, drevo horí'],['robotcharge','Blesk nabije robota'],['basalt','Tenký prúd lávy stuhne na kameň'],
+  ['salt','Soľ topí ľad a sneh'],['saltkill','Soľ zabije trávu'],['boom','Prach vybuchne a robí krátery'],['freeze','Dusík zmrazí vodu a rastliny'],
+  ['build','Roboti stavajú podľa plánu'],['copy','Označ oblasť a vlož ju inde'],['season','Ročné obdobia sa striedajú'],['year','Prežili sme celý rok'],['pollen','Včela opelila kvet a vyrástol nový'],['worm','Dážďovka premenila popol na zem']];
+let found={};
+try{found=JSON.parse(localStorage.getItem('stvoril.found')||'{}')||{}}catch(_){found={}}
+function discover(k){if(found[k])return;found[k]=1;const f=FOUND.find(x=>x[0]===k);if(f)toast('Objav: '+f[1]);
+  try{localStorage.setItem('stvoril.found',JSON.stringify(found))}catch(_){}}
+function renderFound(){const el=document.getElementById('found');el.textContent='';
+  for(const [k,n] of FOUND){const s=document.createElement('span');s.textContent=found[k]?n:'???';if(found[k])s.className='got';el.append(s)}}
+
+const toastEl=document.getElementById('toast');let toastT;
+function toast(m){toastEl.textContent=m;toastEl.classList.remove('hide');clearTimeout(toastT);toastT=setTimeout(()=>toastEl.classList.add('hide'),2600)}
+
+// ---------- mapa sveta ----------
+const mmEl=document.getElementById('minimap'),mmc=mmEl.getContext('2d');let mmDrag=false;
+function drawMap(){
+  if(!mapOn||kino){mmEl.hidden=true;return}
+  mmEl.hidden=false;const cw=mmEl.clientWidth||72,ch=Math.round(cw*H/W),bw=cw*2,bh=ch*2;
+  if(mmEl.width!==bw||mmEl.height!==bh){mmEl.width=bw;mmEl.height=bh;mmEl.style.height=ch+'px'}
+  mmc.imageSmoothingEnabled=true;mmc.drawImage(off,0,0,bw,bh);
+  if(nightF>0){mmc.fillStyle=`rgba(4,6,24,${nightF.toFixed(2)})`;mmc.fillRect(0,0,bw,bh)}
+  const k=bw/W;mmc.strokeStyle='#f4a63b';mmc.lineWidth=2;
+  const x0=Math.max(1,cam.x*k),y0=Math.max(1,cam.y*k),x1=Math.min(bw-1,(cam.x+vw/cam.s)*k),y1=Math.min(bh-1,(cam.y+vh/cam.s)*k);
+  mmc.strokeRect(x0,y0,Math.max(4,x1-x0),Math.max(4,y1-y0))}
+function mapGo(e){const r=mmEl.getBoundingClientRect();const x=(e.clientX-r.left)/r.width*W,y=(e.clientY-r.top)/r.height*H;cam.x=x-vw/2/cam.s;cam.y=y-vh/2/cam.s;clampCam()}
+mmEl.addEventListener('pointerdown',e=>{e.preventDefault();mmEl.setPointerCapture(e.pointerId);mmDrag=true;mapGo(e)});
+mmEl.addEventListener('pointermove',e=>{if(mmDrag)mapGo(e)});
+mmEl.addEventListener('pointerup',()=>{mmDrag=false});mmEl.addEventListener('pointercancel',()=>{mmDrag=false});
+// ---------- fotka a zdieľanie ----------
+function photoCanvas(){
+  const k=Math.max(2,Math.round(1200/W));const c=document.createElement('canvas');c.width=W*k;c.height=H*k;const x=c.getContext('2d');
+  x.imageSmoothingEnabled=false;x.drawImage(off,0,0,W*k,H*k);
+  if(nightF>0){x.fillStyle=`rgba(4,6,24,${nightF.toFixed(3)})`;x.fillRect(0,0,c.width,c.height)}
+  if(seasonOn&&seasonIdx>0)x.fillStyle=seasonIdx===1?'rgba(255,206,90,.05)':seasonIdx===2?'rgba(255,120,30,.06)':'rgba(150,190,255,.09)',x.fillRect(0,0,c.width,c.height);
+  x.save();x.globalCompositeOperation='lighter';x.imageSmoothingEnabled=true;x.drawImage(lcv,0,0,(LW<<LS)*k,(LH<<LS)*k);x.restore();
+  const fs=Math.round(2.6*k);x.font='600 '+fs+'px "Pixelify Sans", ui-monospace, monospace';x.textAlign='right';
+  x.fillStyle='rgba(0,0,0,.5)';x.fillText('durica.si/stvoril',c.width-k*2+1,c.height-k*2+1);x.fillStyle='rgba(236,230,210,.9)';x.fillText('durica.si/stvoril',c.width-k*2,c.height-k*2);
+  return c}
+const toBlobP=c=>new Promise(r=>c.toBlob(r,'image/png'));
+const stamp=()=>new Date().toISOString().slice(0,16).replace(/[:T]/g,'-');
+document.getElementById('photoBtn').onclick=async()=>{closeMenu();const b=await toBlobP(photoCanvas());if(b)saveBlob('si-stvoril-'+stamp()+'.png',b,'Fotka sveta uložená');else toast('Fotka sa nepodarila')};
+document.getElementById('photoViewBtn').onclick=async()=>{closeMenu();await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));const b=await toBlobP(cvs);if(b)saveBlob('si-stvoril-pohlad-'+stamp()+'.png',b,'Fotka pohľadu uložená');else toast('Fotka sa nepodarila')};
+async function shareFile(blob,name,type,title){
+  const file=new File([blob],name,{type});
+  if(navigator.canShare&&navigator.canShare({files:[file]})&&navigator.share){try{await navigator.share({files:[file],title:'Si stvoril',text:title});return}catch(e){if(e&&e.name==='AbortError')return}}
+  saveBlob(name,blob,'Zdieľanie tu nejde, súbor sa uložil')}
+document.getElementById('shareBtn').onclick=async()=>{closeMenu();const b=await toBlobP(photoCanvas());if(b)shareFile(b,'si-stvoril.png','image/png','Môj svet v Si stvoril: durica.si/stvoril');else toast('Fotka sa nepodarila')};
+document.getElementById('shareWorldBtn').onclick=()=>{closeMenu();shareFile(new Blob([worldJSON()],{type:'application/json'}),'si-stvoril-svet.json','application/json','Môj svet v Si stvoril. Otvoríš ho cez Načítať zo súboru na durica.si/stvoril')};
+const mapBtn=document.getElementById('mapBtn');
+function renderMapBtn(){mapBtn.classList.toggle('on',mapOn);mapBtn.textContent=mapOn?'Mapa sveta: zapnutá':'Mapa sveta: vypnutá'}
+mapBtn.onclick=()=>{mapOn=!mapOn;saveSettings();renderMapBtn();drawMap()};
+// ---------- ukladanie ----------
+function rle(a){const out=[];let k=0;while(k<a.length){const v=a[k];let n=1;while(k+n<a.length&&a[k+n]===v&&n<255)n++;out.push(v,n);k+=n}return b64(new Uint8Array(out))}
+function unrle(s,len){const b=ub64(s),a=new Uint8Array(len);let p=0;for(let k=0;k<b.length;k+=2){a.fill(b[k],p,p+b[k+1]);p+=b[k+1]}return a}
+function b64(u){let s='';for(let k=0;k<u.length;k+=0x8000)s+=String.fromCharCode.apply(null,u.subarray(k,k+0x8000));return btoa(s)}
+function ub64(s){const t=atob(s),u=new Uint8Array(t.length);for(let k=0;k<t.length;k++)u[k]=t.charCodeAt(k);return u}
+function worldJSON(){return JSON.stringify({v:1,mode,W,H,g,t:rle(type),d:rle(data),pl:rle(plan),wk:worldKind,se:seasonT,ag:agents,co:colonies.map(c=>Object.assign({},c,{build:null})),dt:dayT})}
+function save(){try{localStorage.setItem('stvoril.world',worldJSON())}catch(_){}}
+function load(){try{return applyWorld(JSON.parse(localStorage.getItem('stvoril.world')))}catch(_){return false}}
+function applyWorld(s){try{if(!s||s.v!==1||!s.t||!s.d||!(s.W>0&&s.H>0)||s.W*s.H>1e6)return false;
+  mode=s.mode;alloc(s.W,s.H);type=unrle(s.t,W*H);data=unrle(s.d,W*H);if(s.pl){plan=unrle(s.pl,W*H);countPlan()}setGrav(s.g||2);
+  agents=Array.isArray(s.ag)?s.ag:[];colonies=Array.isArray(s.co)?s.co:[];dayT=s.dt||0;worldKind=s.wk||'cave';seasonT=s.se||0;seasonIdx=Math.floor(seasonT/SLEN)%4;seasonLabel();for(const a of agents)if(a.s==='build')a.s='seek';
+  modeBtn.textContent=mode==='detail'?'Detail':'Retro';modeBtn.classList.toggle('on',mode==='detail');particles=[];fireflies=[];return true}catch(_){return false}}
+document.getElementById('fileSaveBtn').onclick=()=>{closeMenu();const name='si-stvoril-svet-'+new Date().toISOString().slice(0,10)+'.json';saveBlob(name,new Blob([worldJSON()],{type:'application/json'}),'Svet uložený do súboru')};
+const fileIn=document.getElementById('fileIn');
+document.getElementById('fileLoadBtn').onclick=()=>fileIn.click();
+fileIn.onchange=()=>{const f=fileIn.files&&fileIn.files[0];if(!f)return;const rd=new FileReader();
+  rd.onload=()=>{let ok=false;try{ok=applyWorld(JSON.parse(rd.result))}catch(_){ok=false}
+    if(ok){undoStack=[];undoBtn.disabled=true;initCam();closeMenu();save();toast('Svet načítaný')}else toast('Tento súbor nie je svet zo Si stvoril');fileIn.value=''};
+  rd.readAsText(f)};
+setInterval(()=>{if(!paused)save()},12000);
+addEventListener('pagehide',save);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)save()});
+
+// ---------- bytosti: mravce a baníci ----------
+// Bytosti nie sú pixely sveta, ale postavičky nad ním. Čítajú mriežku a menia ju (kopú, nosia, stavajú).
+let agents=[],colonies=[],fireflies=[];
+let natural=false,dayNight=true,dayT=0,nightF=0;
+let mapOn=matchMedia('(pointer:fine)').matches;
+try{const st=JSON.parse(localStorage.getItem('stvoril.settings')||'{}');natural=!!st.natural;dayNight=st.dayNight!==false;seasonOn=!!st.seasonOn;if(st.mapOn!==undefined)mapOn=!!st.mapOn}catch(_){}
+function saveSettings(){try{localStorage.setItem('stvoril.settings',JSON.stringify({natural,dayNight,seasonOn,mapOn}))}catch(_){}}
+const ANT_CAP=45,MINER_CAP=10;
+const THINK={sun:'#ffd24a',[E.ORE]:'#e9b53c',[E.WATER]:'#4a8ae8',[E.BRICK]:'#b4523a',[E.FIRE]:'#ffa21e',[E.SEED]:'#c39a4a',[E.DIRT]:'#9a6234',[E.SAND]:'#d8b46c',[E.TORCH]:'#ffd36a',[E.WOOD]:'#7a5230',[E.STONE]:'#8a8e9e',[E.GLASS]:'#9fd2e4',[E.OBSID]:'#5a4a8a'};
+const HARD=new Uint8Array(64);HARD[30]=1;HARD[E.DIRT]=1;HARD[E.SAND]=1;HARD[E.ASH]=1;HARD[E.SEED]=1;HARD[E.LEAF]=1;HARD[E.FLOWER]=1;
+HARD[E.STONE]=4;HARD[E.ORE]=3;HARD[E.WOOD]=2;HARD[E.TIP]=2;HARD[E.GLASS]=2;HARD[E.OBSID]=7;HARD[E.EMBER]=1;
+const at=(x,y)=>inb(x,y)?type[y*W+x]:E.BEDROCK;
+function pass(x,y){if(!inb(x,y))return false;const t=type[y*W+x];return t===0||KIND[t]===3||t===E.FLOWER||t===E.LEAF||t===E.WATER||t===E.TORCH}
+function boxFree(x,y,w,h){for(let yy=y-h+1;yy<=y;yy++)for(let xx=x;xx<x+w;xx++)if(!pass(xx,yy))return false;return true}
+function boxHas(x,y,w,h,t){for(let yy=y-h+1;yy<=y;yy++)for(let xx=x;xx<x+w;xx++)if(at(xx,yy)===t)return true;return false}
+const aw=a=>a.k===1||a.k===3?sc():1;
+const ah=a=>a.k===1||a.k===3?2*sc():1;
+function mk(k,x,y,c){return {k,x,y,c,dir:rnd()<.5?1:-1,s:k===1?'seek':'w',t:0,cd:(rnd()*4)|0,carry:0,bucket:0,think:0,hit:0,dug:0,climb:0,breath:240,age:0,life:(natural?(3+rnd()*4)*3600:1e9)|0,tx:0,ty:0,stuck:0,falling:true}}
+
+function spawnColony(kind,x,y){
+  const c={kind,x,y,food:0,ore:0,houses:0,settled:false,timer:0,build:null};colonies.push(c);const ci=colonies.length-1;
+  const n=kind===0?7:2;
+  for(let k=0;k<n;k++){if(countKind(kind)>=(kind===0?ANT_CAP:MINER_CAP))break;
+    const a=mk(kind,x+((rnd()*5)|0)-2,y,ci);agents.push(a)}
+  return ci}
+function countKind(k){let n=0;for(const a of agents)if(a.k===k)n++;return n}
+function colonyCount(ci){let n=0;for(const a of agents)if(a.c===ci)n++;return n}
+
+function skyAbove(x,y,n){for(let k=1;k<=n;k++){const yy=y-k;if(yy<2)return true;const t=at(x,yy);if(!(t===0||KIND[t]===3||t===E.LEAF||t===E.FLOWER))return false}return true}
+function nearWater(x,y,r){for(let dy=-r;dy<=r;dy+=2)for(let dx=-r;dx<=r;dx+=2)if(at(x+dx,y+dy)===E.WATER)return true;return false}
+function findNear(a,t,r,dry){let best=null,bd=1e12;
+  const x0=Math.max(2,a.x-r),x1=Math.min(W-3,a.x+r),y0=Math.max(2,a.y-r),y1=Math.min(H-3,a.y+r);
+  for(let y=y0;y<=y1;y+=2)for(let x=x0+((y>>1)&1);x<=x1;x+=2){if(type[y*W+x]===t){const d=(x-a.x)*(x-a.x)+(y-a.y)*(y-a.y)*1.3;if(d<bd){
+    if(dry&&(nearWater(x,y,8*sc())||(a.avoid&&Math.abs(a.avoid.x-x)<18*sc()&&Math.abs(a.avoid.y-y)<18*sc())))continue;bd=d;best={x,y}}}}
+  return best}
+function hurt(a,kind){ // kind: 'fire'|'lava'|'drown'
+  if(!natural){a.flee=40;a.dir=-a.dir;return false}
+  a.dead=true;const i=a.y*W+a.x;if(inb(a.x,a.y-1)&&type[i-W]===0){setCell(i-W,E.SMOKE,40)}return true}
+
+// spoločná fyzika: pád, plávanie, vytlačenie zo zasypania
+function physics(a){
+  const w=aw(a),h=ah(a);
+  // zasypaný? vyhrabe sa hore
+  if(!boxFree(a.x,a.y,w,h)){for(let k=1;k<=4*sc();k++){if(boxFree(a.x,a.y-k,w,h)){a.y-=k;return true}}
+    // nedá sa: vykope si miesto (jemne)
+    for(let yy=a.y-h+1;yy<=a.y;yy++)for(let xx=a.x;xx<a.x+w;xx++){const t=at(xx,yy);if(HARD[t]&&HARD[t]<5){type[yy*W+xx]=0;data[yy*W+xx]=0}}
+    return true}
+  const head=at(a.x,a.y-h+1),feet=at(a.x,a.y);
+  // nebezpečenstvo
+  const hot=boxHas(a.x-1,a.y+1,w+2,h+2,E.LAVA)?'lava':(boxHas(a.x,a.y,w,h,E.FIRE)||boxHas(a.x-1,a.y,w+2,h,E.EMBER))?'fire':null;
+  if(a.k===3){if(hot==='lava'&&!a.flee){a.flee=30;a.dir=-a.dir}}
+  else if(hot&&!a.flee){if(hurt(a,hot))return true}
+  if(head===E.WATER&&a.k!==3){a.breath--;if(a.breath<=0){if(hurt(a,'drown'))return true;a.breath=120}
+    if(rnd()<.55&&boxFree(a.x,a.y-1,w,h)){a.y--;return true}
+    return false}
+  a.breath=Math.min(240,a.breath+2);
+  if(feet===E.WATER){if(rnd()<.3&&boxFree(a.x,a.y-1,w,h)){a.y--;return true}return false}
+  if(a.climb>0){a.climb--;return false}
+  // mravce sa držia stien aj stropu
+  if(a.k===0&&(!pass(a.x-1,a.y)||!pass(a.x+w,a.y)||!pass(a.x,a.y-1)||!pass(a.x,a.y+1))){a.falling=false;return false}
+  const fx=a.x+D[0],fy=a.y+D[1];
+  if(boxFree(fx,fy,w,h)&&(fx!==a.x||fy!==a.y)){a.x=fx;a.y=fy;a.falling=true;return true}
+  a.falling=false;return false}
+
+function stepSide(a,dir){const w=aw(a),h=ah(a);const nx=a.x+dir;
+  if(boxFree(nx,a.y,w,h)){a.x=nx;return true}
+  for(let up=1;up<=sc();up++)if(boxFree(nx,a.y-up,w,h)&&boxFree(a.x,a.y-up,w,h)){a.x=nx;a.y-=up;return true}
+  return false}
+
+// ---------- mravec ----------
+function antWalk(a,dir,careful){const nx=a.x+dir;
+  if(pass(nx,a.y)&&at(nx,a.y)!==E.WATER){
+    if(careful&&pass(nx,a.y+1)&&pass(nx+dir,a.y)&&pass(nx,a.y-1)){ // na hrane: radšej sa otočí, než by spadol
+      if(!pass(nx,a.y+2)){a.x=nx;a.y++;return true}return false}
+    a.x=nx;return true}
+  if(pass(nx,a.y-1)&&pass(a.x,a.y-1)){a.x=nx;a.y--;return true}
+  if(!pass(nx,a.y)&&pass(a.x,a.y-1)&&at(a.x,a.y-1)!==E.WATER){a.y--;a.climb=2;return true}
+  return false}
+function antDrop(a){
+  const spots=[[a.dir,0],[-a.dir,0],[0,-1],[a.dir,-1]];
+  for(const s of spots){const x=a.x+s[0],y=a.y+s[1];if(inb(x,y)&&type[y*W+x]===0){setCell(y*W+x,a.carry,a.carryWet?WET:0);break}}
+  a.carry=0;a.think=0}
+function antHome(a,c){const dir=Math.sign(c.x-a.x)||a.dir;a.dir=dir;
+  if(a.y>c.y+1&&rnd()<.5&&pass(a.x,a.y-1)&&at(a.x,a.y-1)!==E.WATER&&(!pass(a.x+dir,a.y)||!pass(a.x-dir,a.y))){a.y--;a.climb=2;return}
+  if(antWalk(a,dir,false))return;
+  // prehryzie sa hlinou
+  for(const [x,y] of [[a.x+dir,a.y],[a.x+dir,a.y-1],[a.x,a.y-1]]){const t=at(x,y);if(t===E.DIRT||t===E.SAND||t===E.ASH||t===E.LEAF){type[y*W+x]=0;data[y*W+x]=0;return}}
+  a.dir=-a.dir}
+function antTick(a){
+  const c=colonies[a.c];if(!c){a.c=spawnColony(0,a.x,a.y);return}
+  if(!c.settled&&!a.falling){c.x=a.x;c.y=a.y;c.settled=true}
+  a.t++;
+  if(a.flee>0){a.flee--;antWalk(a,a.dir)||(a.dir=-a.dir);return}
+  const s=sc();
+  switch(a.s){
+    case 'w':{
+      if(!a.carry){for(let k=0;k<4;k++){const q=DIRS[k*2];const x=a.x+q[0],y=a.y+q[1];if(at(x,y)===E.SEED){type[y*W+x]=0;a.carry=E.SEED;a.s='store';a.t=0;a.think=E.SEED;return}}}
+      if(Math.abs(a.x-c.x)>16*s||a.y-c.y>5*s||c.y-a.y>8*s){antHome(a,c);return}
+      if(Math.abs(a.x-c.x)<4*s&&rnd()<.06){a.s='d';a.t=0;a.dir=rnd()<.5?1:-1;return}
+      const hd=c.x-a.x;
+      if(Math.abs(hd)>=4*s&&rnd()<.5){a.dir=Math.sign(hd);if(!antWalk(a,a.dir,true)&&!antWalk(a,a.dir,false))antHome(a,c);return}
+      if(rnd()<.02)a.dir=-a.dir;
+      if(!antWalk(a,a.dir,true))a.dir=-a.dir;
+      break}
+    case 'd':{ // kope tunel dole pri mravenisku
+      const depth=a.y-c.y;
+      const opts=depth>38*s?[[a.dir,0],[a.dir,0],[a.dir,1]]:[[a.dir,1],[0,1],[a.dir,0],[a.dir,1],[0,1]];
+      // najprv prejde existujúcim tunelom až na jeho koniec
+      if(rnd()<.8){const open=opts.filter(o=>pass(a.x+o[0],a.y+o[1])&&at(a.x+o[0],a.y+o[1])!==E.WATER&&(a.y+o[1]-c.y)<44*s);
+        if(open.length){const o=open[(rnd()*open.length)|0];a.x+=o[0];a.y+=o[1];if(a.t>160)a.s='h';return}}
+      const o=opts[(rnd()*opts.length)|0];const nx=a.x+o[0],ny=a.y+o[1];
+      if(!inb(nx,ny)||nx<3||nx>W-4||ny>H-4){a.dir=-a.dir;return}
+      const t=at(nx,ny);
+      if(pass(nx,ny)&&t!==E.WATER){a.x=nx;a.y=ny;if(a.t>140)a.s='h';return}
+      if((t===E.DIRT||t===E.SAND||t===E.ASH)&&a.t>2){const j=ny*W+nx;a.carry=t;a.carryWet=data[j]&WET;type[j]=0;data[j]=0;a.x=nx;a.y=ny;a.s='h';a.t=0;a.think=t;discover('ants');return}
+      if(t===E.WATER){a.s='h';return}
+      a.dir=-a.dir;if(a.t>260)a.s='h';
+      break}
+    case 'h':{ // nesie hlinu von na povrch
+      if(skyAbove(a.x,a.y,4*s)){
+        if(Math.abs(a.x-c.x)<3*s){antWalk(a,a.x>=c.x?1:-1)||antWalk(a,a.x>=c.x?-1:1);return}
+        antDrop(a);a.s='w';a.dir=Math.sign(c.x-a.x)||1;a.t=0;return}
+      const moves=[[0,-1],[a.dir,-1],[-a.dir,-1],[a.dir,0],[-a.dir,0]];
+      for(const m of moves){const nx=a.x+m[0],ny=a.y+m[1];if(pass(nx,ny)&&at(nx,ny)!==E.WATER){a.x=nx;a.y=ny;if(m[1]<0)a.climb=2;if(m[0])a.dir=m[0];break}}
+      if(a.t>600){antDrop(a);a.s='w';a.t=0}
+      break}
+    case 'store':{ // semienko do zásobárne pod zemou
+      if(Math.abs(a.x-c.x)>1&&a.t<400){if(!antWalk(a,Math.sign(c.x-a.x)||1)){a.y--;a.climb=2}return}
+      const down=[[0,1],[a.dir,1],[-a.dir,1],[a.dir,0]];let moved=false;
+      for(const m of down){const nx=a.x+m[0],ny=a.y+m[1];if(pass(nx,ny)&&at(nx,ny)!==E.WATER&&ny<c.y+44*s){a.x=nx;a.y=ny;moved=true;break}}
+      if(!moved||a.t>500){c.food++;a.carry=0;a.think=0;a.s='h';a.t=0}
+      break}
+  }
+}
+
+// ---------- baník ----------
+function minerDigCell(a,x,y){ // vráti 'ok' | 'hard' | 'lava'
+  const t=at(x,y);if(pass(x,y))return 'ok';
+  if(t===E.LAVA)return 'lava';
+  const hd=HARD[t];if(!hd)return 'hard';
+  a.hit++;if(rnd()<.5)dust(x,y,t);
+  if(a.hit<hd*sc())return 'busy';
+  a.hit=0;const j=y*W+x;
+  if(t===E.ORE&&!a.carry){a.carry=E.ORE;a.think=E.ORE}
+  type[j]=0;data[j]=0;a.dug++;
+  return 'busy'}
+function digColumn(a,x,y0,y1){for(let y=y1;y>=y0;y--){const r=minerDigCell(a,x,y);if(r!=='ok')return r}return 'ok'}
+function digRow(a,x0,x1,y){for(let x=x0;x<=x1;x++){const r=minerDigCell(a,x,y);if(r!=='ok')return r}return 'ok'}
+function pourOnLava(a,x,y){
+  let n=0;const r=3*sc();
+  for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){const xx=x+dx,yy=y+dy;if(at(xx,yy)===E.LAVA&&rnd()<.8){const j=yy*W+xx;type[j]=E.OBSID;data[j]=0;n++;
+    if(inb(xx,yy-1)&&type[j-W]===0){type[j-W]=E.STEAM;data[j-W]=steamLife()}}}
+  spray(x,y-1,8);a.bucket=0;discover('bridge');return n}
+function wallSideAt(a,x,y){const w=aw(a),h=ah(a);for(let yy=y-h+1;yy<=y;yy++){if(!pass(x-1,yy))return -1;if(!pass(x+w,yy))return 1}return 0}
+function nearestWallDir(a,maxd){const w=aw(a);for(let d=1;d<=maxd;d++){if(wallSideAt(a,a.x-d,a.y)&&boxFree(a.x-d,a.y,w,ah(a)))return -1;if(wallSideAt(a,a.x+d,a.y)&&boxFree(a.x+d,a.y,w,ah(a)))return 1}return 0}
+function nav(a,tx,ty,loose){ // krok k cieľu, kope keď treba. true = je na mieste
+  const w=aw(a),h=ah(a);const dx=tx-a.x,dy=ty-a.y;
+  if(loose?(Math.abs(dx)<=w+1&&Math.abs(dy)<=h+1):(dx>=0&&dx<w&&dy<=0&&dy>-h))return true;
+  const horiz=Math.abs(dx)>Math.abs(dy)*.7||a.vert>10*sc();
+  let res='ok';
+  const wdir=Math.sign(dx)||a.dir;
+  if(horiz&&dx!==0&&boxHas(a.x+wdir*w,a.y,w,h,E.WATER)){ // voda pred ním: nejde dnu, radšej dole alebo iný cieľ
+    if(dy>0&&!boxHas(a.x,a.y+h,w,h,E.WATER)){a.vert=30*sc()}else{a.s='seek';a.t=0;return false}}
+  if(horiz&&dx!==0&&a.vert<30*sc()){const dir=Math.sign(dx);a.dir=dir;a.vert=0;
+    if(stepSide(a,dir)){a.stuck=0;placeTorch(a);return false}
+    const fx=dir>0?a.x+w:a.x-1;
+    res=digColumn(a,fx,a.y-h+1,a.y);
+    if(res==='ok'&&!stepSide(a,dir))res=digColumn(a,fx,a.y-h,a.y-h);
+  } else if(dy>0){a.vert=(a.vert||0)+1;
+    if(boxFree(a.x,a.y+1,w,h)){a.y++;return false}
+    res=digRow(a,a.x,a.x+w-1,a.y+1);
+  } else {a.vert=(a.vert||0)+1;
+    // hore sa dá len po stene (šplhá s krompáčom), nie vzduchom
+    const up=boxFree(a.x,a.y-1,w,h);
+    const ws=up?wallSideAt(a,a.x,a.y-1):wallSideAt(a,a.x,a.y);
+    if(up&&ws){a.y--;a.climb=3;a.dir=ws;return false}
+    if(!up&&ws){res=digRow(a,a.x,a.x+w-1,a.y-h);a.climb=3;a.dir=ws}
+    else{ // pri stene nie je: ide k najbližšej stene (alebo do svahu)
+      const d=nearestWallDir(a,14*sc());
+      if(d&&stepSide(a,d)){a.dir=d;return false}
+      if(!d){const sd=a.dir||1;if(!stepSide(a,sd)){a.dir=-sd;a.stuck++}if(a.stuck>30){a.s='seek';a.stuck=0}return false}
+      a.stuck++;if(a.stuck>30){a.s='seek';a.stuck=0}return false}
+  }
+  if(res==='lava'){
+    if(a.bucket){pourOnLava(a,a.x+(a.dir>0?w:-1),a.y);return false}
+    a.prev={s:a.s,tx:a.tx,ty:a.ty};const wt=findNear(a,E.WATER,80*sc());
+    if(wt){a.s='water';a.tx=wt.x;a.ty=wt.y;a.think=E.WATER;a.t=0}else{a.s='seek';a.t=0;a.vert=0}
+    return false}
+  if(res==='hard'){a.stuck++;a.vert=horiz?20*sc():0;if(a.stuck>40){a.s='seek';a.stuck=0}}
+  return false}
+function placeTorch(a){
+  if(a.dug<16*sc())return;const w=aw(a),h=ah(a);
+  const bx=a.dir>0?a.x-1:a.x+w,by=a.y-h+1;
+  if(inb(bx,by)&&type[by*W+bx]===0&&(!pass(bx,by-1)||!pass(bx-a.dir,by))){
+    for(let dy=-8;dy<=8;dy++)for(let dx=-8;dx<=8;dx++)if(at(bx+dx,by+dy)===E.TORCH){a.dug=0;return}
+    setCell(by*W+bx,E.TORCH,0);a.dug=0;discover('torch')}}
+function houseCells(){ // domček v jednotkách Retro: [dx,dy,typ], dy záporné = hore od zeme
+  const out=[];const Wd=9,Hw=4;
+  for(let x=0;x<Wd;x++)for(let y=1;y<=Hw;y++){
+    const wall=x===0||x===Wd-1||y===Hw;
+    const door=(x===2||x===3)&&y<=2;const win=x===6&&y===2;
+    if(win)out.push([x,-y,E.GLASS]);else if(wall&&!door)out.push([x,-y,E.BRICK])}
+  for(let r=0;r<4;r++)for(let x=r-1;x<=Wd-r;x++)out.push([x,-(Hw+1+r),E.WOOD]);
+  return out}
+function startBuild(a,c){
+  const s=sc();let hx=c.x+(c.houses%2?-(12+((c.houses>>1)*11)):3+((c.houses>>1)*11))*s;
+  hx=Math.max(4,Math.min(W-14*s,hx));
+  let gy=c.y;for(let k=0;k<20*s&&gy>4&&!pass(hx+4*s,gy);k++)gy--;
+  for(let k=0;k<20*s&&gy<H-3&&pass(hx+4*s,gy+1);k++)gy++;
+  const list=[];for(const [dx,dy,t] of houseCells())for(let yy=0;yy<s;yy++)for(let xx=0;xx<s;xx++)list.push([hx+dx*s+xx,gy+1+dy*s+yy,t]);
+  list.sort((p,q)=>q[1]-p[1]);
+  c.build={list,i:0};a.s='build';a.think=E.BRICK}
+function minerTick(a){
+  const c=colonies[a.c];if(!c){a.c=spawnColony(1,a.x,a.y);return}
+  if(!c.settled&&!a.falling){c.x=a.x;c.y=a.y;c.settled=true}
+  a.t++;
+  if(a.flee>0){a.flee--;if(!stepSide(a,a.dir))a.dir=-a.dir;return}
+  // v bani je voda: uteká hore
+  const w=aw(a),h=ah(a);
+  if(at(a.x,a.y-h+1)===E.WATER&&a.s!=='flee'){a.prevFlee=a.s;a.s='flee';a.t=0}
+  switch(a.s){
+    case 'seek':{
+      a.think=E.ORE;
+      if(a.carry){a.s='ret';break}
+      const o=findNear(a,E.ORE,110*sc(),true);
+      if(o){a.tx=o.x;a.ty=o.y;a.s='dig';a.t=0;a.think=E.ORE}
+      else{for(let k=0;k<8;k++){a.tx=Math.max(4,Math.min(W-5,c.x+((rnd()*80-40)*sc())|0));a.ty=Math.max(4,Math.min(H-6,c.y+((20+rnd()*70)*sc())|0));if(!nearWater(a.tx,a.ty,10*sc()))break}a.s='dig';a.t=0;a.think=0}
+      break}
+    case 'dig':{
+      if(a.carry){a.s='ret';a.t=0;break}
+      const w2=aw(a),h2=ah(a);
+      if(a.tx>=a.x-1&&a.tx<=a.x+w2&&a.ty>=a.y-h2&&a.ty<=a.y+1&&!(a.tx>=a.x&&a.tx<a.x+w2&&a.ty>a.y-h2&&a.ty<=a.y)){
+        if(pass(a.tx,a.ty)){a.s='seek';break}
+        const r=minerDigCell(a,a.tx,a.ty);if(r==='lava'||r==='hard')a.s='seek';break}
+      if(nav(a,a.tx,a.ty)||a.t>1800){a.s='seek'}
+      break}
+    case 'ret':{
+      a.think=E.ORE;
+      if(nav(a,c.x,c.y,true)||a.t>900){a.carry=0;c.ore++;a.t=0;
+        if(c.ore>=4&&!c.build&&c.houses<6){c.ore-=4;startBuild(a,c)}else{a.s='seek';a.think=0}}
+      break}
+    case 'water':{
+      if(boxHas(a.x-1,a.y+1,w+2,h+2,E.WATER)){a.bucket=1;const p=a.prev||{s:'seek'};a.s=p.s;a.tx=p.tx;a.ty=p.ty;a.think=0;a.t=0;break}
+      if(nav(a,a.tx,a.ty,true)||a.t>1500){a.s='seek';a.think=0}
+      break}
+    case 'build':{
+      const b=c.build;if(!b){a.s='seek';break}
+      for(let k=0;k<sc();k++){
+        if(b.i>=b.list.length){c.build=null;c.houses++;discover('house');a.think=0;a.s='seek';
+          if(countKind(1)<MINER_CAP){agents.push(mk(1,a.x,a.y-1,a.c))}return}
+        const [x,y,t]=b.list[b.i++];if(inb(x,y)&&x>2&&x<W-3&&y>2&&type[y*W+x]===0)setCell(y*W+x,t,0)}
+      break}
+    case 'flee':{
+      a.think=E.WATER;
+      if(at(a.x,a.y-h+1)!==E.WATER&&a.t>20){a.avoid={x:a.tx,y:a.ty};a.s='seek';a.think=0;a.carry&&(a.s='ret');break}
+      nav(a,a.x,a.y-30);
+      break}
+  }
+}
+function dust(x,y,t){if(particles.length>600)return;particles.push({x:x+.5,y:y+.5,vx:(rnd()-.5)*.6,vy:-rnd()*.4,life:10+((rnd()*10)|0),c:t})}
+
+const FISHC=[[pack(255,138,58),pack(255,196,130)],[pack(90,176,255),pack(176,220,255)],[pack(255,212,74),pack(255,238,164)],[pack(240,110,170),pack(255,176,208)]];
+const FISH_CAP=70;let fleePt=null;
+function mkFish(x,y,col){return {k:2,x:x+.5,y:y+.5,vx:(rnd()-.5)*.3,vy:0,dir:rnd()<.5?1:-1,col,c:-1,food:0,age:0,life:natural?((4+rnd()*4)*3600)|0:1e9,out:0,s:'swim',cd:0,think:0,carry:0,tx:0,ty:0}}
+const isW=(x,y)=>{const t=at(x|0,y|0);return t===E.WATER||t===E.BUBBLE||t===E.ALGAE};
+function fishTick(a){
+  const s=sc(),L=2*s;const cx=a.x|0,cy=a.y|0;
+  if(!isW(cx,cy)){a.out++;
+    if(natural&&a.out>420){a.dead=true;return}
+    if(pass(cx,cy+1)){a.y+=.5;return}
+    if(frame%18===0){const w=findNear({x:cx,y:cy},E.WATER,24*s);const d=w?Math.sign(w.x-cx)||1:(rnd()<.5?1:-1);if(pass(cx+d,cy-1)){a.x+=d;a.y-=1;a.dir=d}}
+    return}
+  a.out=0;
+  if(rnd()<.03){a.vx+=(rnd()-.5)*.22;a.vy+=(rnd()-.5)*.1}
+  // hejno: zarovnajú sa so susedmi rovnakej farby
+  let ax=0,ay=0,mx=0,my=0,n=0;
+  for(let k=0;k<6;k++){const b=agents[(rnd()*agents.length)|0];if(!b||b===a||b.k!==2||b.col!==a.col)continue;const dx=b.x-a.x,dy=b.y-a.y;if(dx*dx+dy*dy>(16*s)*(16*s))continue;ax+=b.vx;ay+=b.vy;mx+=dx;my+=dy;n++}
+  if(n){a.vx+=(ax/n-a.vx)*.05+mx/n*.0015;a.vy+=(ay/n-a.vy)*.05+my/n*.0015}
+  if(fleePt){const dx=a.x-fleePt.x,dy=a.y-fleePt.y,d2=dx*dx+dy*dy,r=14*s;if(d2<r*r){const d=Math.sqrt(d2)+.5;a.vx+=dx/d*.12;a.vy+=dy/d*.12}}
+  const sp=Math.hypot(a.vx,a.vy),mxs=.3*s;if(sp>mxs){a.vx*=mxs/sp;a.vy*=mxs/sp}
+  if(!a.ty||rnd()<.003)a.ty=Math.max(4,Math.min(H-4,a.y+(rnd()-.5)*40*s));
+  a.vy+=(a.ty-a.y)*.0006;
+  a.vx*=.995;a.vy*=.97;if(Math.abs(a.vx)<.04)a.vx+=a.dir*.015;
+  if(!isW(a.x+Math.sign(a.vx)*(L+1),a.y))a.vx=-a.vx*.8;
+  if(!isW(a.x,a.y+Math.sign(a.vy)*2))a.vy=-a.vy*.5;
+  if(!isW(a.x,a.y-2*s))a.vy+=.015;
+  const nx=a.x+a.vx,ny=a.y+a.vy;
+  if(isW(nx,ny)){a.x=nx;a.y=ny}else{a.vx*=-.5;a.vy*=-.5}
+  if(Math.abs(a.vx)>.02)a.dir=a.vx>0?1:-1;
+  if(rnd()<.008){for(let k=0;k<4;k++){const q=DIRS[k*2];const xx=(a.x|0)+q[0]*2,yy=(a.y|0)+q[1]*2;if(at(xx,yy)===E.ALGAE){type[yy*W+xx]=E.WATER;data[yy*W+xx]=0;a.food++;discover('fish');break}}}
+  if(a.food>=3&&countKind(2)<FISH_CAP){a.food=0;agents.push(mkFish(a.x|0,a.y|0,a.col))}
+}
+// ---------- robot záhradník: polieva, sadí, hasí; nabíja sa zo slnka ----------
+const ROBOT_CAP=8;
+function mkRobot(x,y){const a=mk(3,x,y,-1);a.life=1e9;a.energy=80;a.tank=3;a.hop=0;a.s='idle';return a}
+function findDry(a,r){let best=null,bd=1e12;const x0=Math.max(3,a.x-r),x1=Math.min(W-4,a.x+r),y0=Math.max(3,a.y-r),y1=Math.min(H-4,a.y+r);
+  for(let y=y0;y<=y1;y+=2)for(let x=x0;x<=x1;x+=2){const i=y*W+x;if(type[i]===E.DIRT&&!(data[i]&WET)&&type[i-W]===0){const d=(x-a.x)**2+(y-a.y)**2*2;if(d<bd){bd=d;best={x,y:y-1}}}}
+  return best}
+function planSupported(x,y){for(let k=0;k<4;k++){const q=DIRS[k*2];const nx=x+q[0],ny=y+q[1];if(!inb(nx,ny))continue;const u=type[ny*W+nx];if(KIND[u]===4||u===E.DIRT||u===E.SAND)return true}return false}
+function findPlan(a){if(planN<=0)return null;const s=sc(),w=aw(a),h=ah(a);let best=null,bd=1e12;
+  const x0=Math.max(2,a.x-70*s),x1=Math.min(W-3,a.x+70*s),y0=Math.max(2,a.y-40*s),y1=Math.min(H-3,a.y+25*s);
+  for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){const i=y*W+x;if(!plan[i]||type[i]!==0)continue;
+    if(x>=a.x-1&&x<=a.x+w&&y>a.y-h-1&&y<=a.y)continue;
+    const bp=badPlan.get(i);if(bp&&bp>frame)continue;if(plan[i]!==E.TORCH&&!planSupported(x,y))continue;
+    const d=Math.abs(x-a.x)+Math.abs(y-a.y)*2;if(d<bd){bd=d;best={x,y,m:plan[i]}}}
+  return best}
+function walkTo(a,tx){ // robot chodí po povrchu a preskakuje prekážky (malý tryskový skok)
+  const w=aw(a),h=ah(a);const dir=Math.sign(tx-a.x);if(!dir)return true;a.dir=dir;
+  if(stepSide(a,dir)){a.stuck=0;return false}
+  if(boxFree(a.x,a.y-1,w,h)&&a.hop<6*sc()){a.y--;a.climb=6;a.hop++;return false}
+  a.stuck++;return false}
+function robotTick(a){
+  a.t++;const s=sc(),w=aw(a),h=ah(a);
+  if(!a.falling&&!a.climb)a.hop=0;
+  if(a.flee>0){a.flee--;if(!stepSide(a,a.dir))a.dir=-a.dir;return}
+  // energia: cez deň zo slnka
+  if(skyAbove(a.x,a.y-h+1,12*s))a.energy=Math.min(100,a.energy+.35*(1-nightF*1.4));
+  a.energy=Math.max(0,a.energy-.04);
+  if(boxHas(a.x-1,a.y+1,w+2,h+2,E.WATER))a.tank=Math.min(5,a.tank+1);
+  if(a.energy<12&&a.s!=='charge'){a.s='charge';a.think='sun'}
+  switch(a.s){
+    case 'charge':{a.think='sun';if(a.energy>55){a.s='idle';a.think=0}
+      else if(!skyAbove(a.x,a.y-h+1,12*s)&&a.t%3===0)walkTo(a,a.x+a.dir*5);break}
+    case 'idle':{a.think=0;
+      if(a.t%8!==0){if(!stepSide(a,a.dir))a.dir=-a.dir;break}
+      const f=findNear(a,E.FIRE,45*s)||findNear(a,E.EMBER,45*s);
+      if(f){if(a.tank>0){a.s='fire';a.tx=f.x;a.ty=f.y;a.t=0;a.think=E.FIRE}else{const wt=findNear(a,E.WATER,80*s);if(wt){a.s='fill';a.tx=wt.x;a.ty=wt.y;a.t=0;a.think=E.WATER}}break}
+      if(a.tank===0){const wt=findNear(a,E.WATER,80*s);if(wt){a.s='fill';a.tx=wt.x;a.ty=wt.y;a.t=0;a.think=E.WATER;break}}
+      if(planN>0&&a.energy>28){const b=findPlan(a);if(b){a.s='construct';a.tx=b.x;a.ty=b.y;a.t=0;a.think=b.m;a.stuck=0;break}}
+      const d=a.tank>0?findDry(a,40*s):null;
+      if(d){a.s='water';a.tx=d.x;a.ty=d.y;a.t=0;a.think=E.WATER;break}
+      if(a.energy>50&&rnd()<.3){a.s='plant';a.tx=a.x+((rnd()*40-20)*s|0);a.t=0;a.think=E.SEED;break}
+      if(!stepSide(a,a.dir))a.dir=-a.dir;break}
+    case 'construct':{
+      const i=a.ty*W+a.tx;
+      if(!plan[i]||type[i]!==0||a.energy<14){const b=a.energy>=14?findPlan(a):null;if(b){a.tx=b.x;a.ty=b.y;a.t=0;a.think=b.m;a.stuck=0}else{a.s='idle';a.think=0}break}
+      const m=plan[i];a.think=m;const dx=a.tx-(a.x+(w-1)/2),dy=a.ty-a.y;
+      if(Math.abs(dx)<=3.2*s&&dy<=4*s&&dy>=-9*s){
+        if(a.bt>0){a.bt--;break}
+        setCell(i,m,m===E.DIRT?FIXED:0);ticks[i]=tick;plan[i]=0;planN--;spray(a.tx,a.ty,3);a.energy-=.3;a.bt=1;a.t=0;a.dir=dx>=0?1:-1;
+        built++;if(built%10===0){try{localStorage.setItem('stvoril.built',String(built))}catch(_){}}discover('build');break}
+      if(Math.abs(dx)<=3.2*s&&dy<-9*s){badPlan.set(i,frame+1800);a.s='idle';break}
+      walkTo(a,a.tx);if(a.stuck>25||a.t>500){badPlan.set(i,frame+1800);a.s='idle';a.stuck=0}break}
+    case 'fill':{if(a.tank>=5||a.t>500){a.s='idle';break}walkTo(a,a.tx);if(a.stuck>25){a.s='idle';a.stuck=0}break}
+    case 'fire':{
+      if(Math.abs(a.tx-a.x)<=5*s&&Math.abs(a.ty-a.y)<=8*s){ // striekne vodu
+        const r=5*s;let n=0;for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){const xx=a.tx+dx,yy=a.ty+dy;if(!inb(xx,yy))continue;const j=yy*W+xx,u=type[j];
+          if(u===E.FIRE){type[j]=E.STEAM;data[j]=40;n++}else if(u===E.EMBER){type[j]=E.WOOD;data[j]=0;n++}}
+        spray(a.tx,a.ty,10);a.tank--;a.energy-=4;if(n)discover('robotfire');a.s='idle';break}
+      walkTo(a,a.tx);if(a.stuck>25||a.t>600){a.s='idle';a.stuck=0}break}
+    case 'water':{
+      if(Math.abs(a.tx-a.x)<=2*s){const r=3*s;for(let dy=-1;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){const xx=a.tx+dx,yy=a.ty+dy;if(at(xx,yy)===E.DIRT)data[yy*W+xx]|=WET}
+        spray(a.tx,a.ty,5);a.tank--;a.energy-=2;discover('robotwater');a.s='idle';break}
+      walkTo(a,a.tx);if(a.stuck>25||a.t>500){a.s='idle';a.stuck=0}break}
+    case 'plant':{
+      if(Math.abs(a.tx-a.x)<=1||a.t>300||a.stuck>25){a.stuck=0;
+        const bx=a.x+(a.dir>0?w:-1),by=a.y;const below=at(bx,by+1);
+        if(below===E.DIRT&&(data[(by+1)*W+bx]&(WET|GRASS))&&at(bx,by)===0&&!woodNear(bx,by,6*s)&&clearUp(bx,by,8*s)){setCell(by*W+bx,E.SEED,0);a.energy-=6;discover('robotseed')}
+        a.s='idle';break}
+      walkTo(a,a.tx);break}
+  }
+}
+const BEE_CAP=()=>12*sc(),WORM_CAP=()=>12*sc();
+let pollinated=0;try{pollinated=+localStorage.getItem('stvoril.pollen')||0}catch(_){}
+const BF=[[pack(255,120,170),pack(255,190,215)],[pack(110,170,255),pack(180,215,255)],[pack(255,170,60),pack(255,220,140)],[pack(190,130,255),pack(225,190,255)]];
+function mkBee(x,y){const bf=rnd()<.45;return {k:4,x:x+.5,y:y+.5,vx:(rnd()-.5)*.2,vy:(rnd()-.5)*.1,dir:rnd()<.5?1:-1,bf,col:(rnd()*BF.length)|0,s:'fly',t:0,cd:0,tgt:null,pollen:0,rest:0,h:0,age:0,life:natural?((5+rnd()*4)*3600)|0:1e9,c:-1,think:0,carry:0,tx:0,ty:0,flee:0}}
+function mkWorm(x,y){return {k:5,x,y,dir:1,cd:(rnd()*6)|0,food:0,tr:[],age:0,life:natural?((6+rnd()*6)*3600)|0:1e9,c:-1,s:'w',think:0,carry:0,tx:0,ty:0,flee:0,t:0}}
+const flyNoGo=u=>u===E.FIRE||u===E.EMBER||u===E.LAVA||u===E.STEAM||u===E.SMOKE;
+function findFlower(a){const s=sc();for(let k=0;k<90;k++){const x=(a.x+(rnd()*2-1)*36*s)|0,y=(a.y+(rnd()*2-1)*20*s)|0;if(at(x,y)===E.FLOWER)return {x,y}}return null}
+function pollinate(fx,fy){const s=sc();
+  for(let k=0;k<24;k++){const x=fx+((rnd()*2-1)*10*s)|0;
+    for(let y=Math.max(2,fy-4*s);y<=fy+6*s;y++){if(!inb(x,y+1))break;const i=y*W+x;
+      if(type[i]===0&&type[i+W]===E.DIRT&&(data[i+W]&GRASS)){let near=false;for(let q=-2*s;q<=2*s;q++)if(at(x+q,y)===E.FLOWER)near=true;
+        if(!near){setCell(i,E.FLOWER,0);ticks[i]=tick;pollinated++;if(pollinated%5===0){try{localStorage.setItem('stvoril.pollen',String(pollinated))}catch(_){}}discover('pollen');return true}break}}}
+  return false}
+function flyTick(a){
+  const s=sc();a.t++;const cx=a.x|0,cy=a.y|0;
+  // nebezpečenstvo: oheň, láva, para, dym
+  let hot=false;for(let dy=-1;dy<=1&&!hot;dy++)for(let dx=-1;dx<=1;dx++)if(flyNoGo(at(cx+dx,cy+dy))){hot=true;break}
+  if(hot){if(natural&&(at(cx,cy)===E.FIRE||at(cx,cy)===E.LAVA)){a.dead=true;return}a.vy=-.3*s;a.vx+=(rnd()-.5)*.3;a.tgt=null;a.s='fly'}
+  // vo vode alebo v zemi: vytlačiť nahor
+  if(!pass(cx,cy)||at(cx,cy)===E.WATER){for(let k=1;k<=8*s;k++)if(pass(cx,cy-k)&&at(cx,cy-k)!==E.WATER){a.y-=k;a.vy=0;return}
+    if(natural)a.dead=true;return}
+  const night=nightF>.4||(seasonOn&&seasonIdx===3);
+  if(night){ // v noci a v zime odpočívajú na zemi alebo kvete
+    a.vx*=.7;const below=at(cx,cy+1);
+    if(!pass(cx,cy+1)||below===E.FLOWER||below===E.LEAF){a.rest=1;a.vy=0;return}
+    a.rest=0;a.vy=Math.min(.18,a.vy+.02);
+  }else a.rest=0;
+  const sp=(a.bf?.2:.34)*s;
+  if(!night){
+    if(a.s==='fly'){
+      a.vx+=(rnd()-.5)*.07*s;a.vy+=(rnd()-.5)*.05*s+(a.bf?Math.sin(a.t*.35)*.012:0);
+      if(a.t%22===0&&!a.cool){const f=findFlower(a);if(f){a.tgt=f;a.s='visit'}}
+      if(a.cool>0)a.cool--;
+    }else if(a.s==='visit'){
+      const f=a.tgt;if(!f||at(f.x,f.y)!==E.FLOWER){a.s='fly';a.tgt=null}
+      else{const dx=f.x+.5-a.x,dy=f.y-a.y;const d=Math.hypot(dx,dy)||1;a.vx+=dx/d*.04*s;a.vy+=dy/d*.04*s;
+        if(d<1.6*s){a.s='hover';a.h=40+((rnd()*40)|0);a.vx=0;a.vy=0}}
+    }else if(a.s==='hover'){
+      a.vx*=.5;a.vy*=.5;a.h--;
+      if(a.h<=0){const f=a.tgt;
+        if(f){if(a.pollen){if(pollinate(f.x,f.y))a.pollen=0}else a.pollen=1}
+        a.s='fly';a.tgt=null;a.cool=50;a.vy=-.15*s;a.vx=(rnd()-.5)*.3}
+    }
+    // drží sa pri zemi: pritiahne ju späť, ak je príliš vysoko
+    let free=0;for(let k=1;k<=22*s;k++){if(pass(cx,cy+k)&&at(cx,cy+k)!==E.WATER)free++;else break}
+    if(free>=18*s&&a.s==='fly')a.vy+=.012;
+  }
+  const m=Math.hypot(a.vx,a.vy);if(m>sp){a.vx*=sp/m;a.vy*=sp/m}
+  if(a.s!=='hover'||a.vx||a.vy){const nx=a.x+a.vx,ny=a.y+a.vy,u=at(nx|0,ny|0);
+    if(pass(nx|0,ny|0)&&u!==E.WATER&&!flyNoGo(u)){a.x=nx;a.y=ny}else{a.vx=-a.vx*.6+(rnd()-.5)*.1;a.vy=-a.vy*.6+(rnd()-.5)*.1;if(a.s==='visit'&&rnd()<.3){a.s='fly';a.tgt=null}}}
+  if(Math.abs(a.vx)>.03)a.dir=a.vx>0?1:-1;
+  if(a.x<3)a.x=3;if(a.y<3)a.y=3;if(a.x>W-4)a.x=W-4;if(a.y>H-4)a.y=H-4;
+}
+function wormTick(a){
+  if(--a.cd>0)return;a.cd=4+((rnd()*5)|0);
+  let i=a.y*W+a.x;
+  if(!inb(a.x,a.y)||type[i]!==E.DIRT){ // zem pod ňou zmizla: nájde susednú, inak zmizne
+    let ok=false;for(let k=0;k<4&&!ok;k++){const q=DIRS[k*2],nx=a.x+q[0],ny=a.y+q[1];if(inb(nx,ny)&&type[ny*W+nx]===E.DIRT){a.x=nx;a.y=ny;ok=true}}
+    if(!ok){a.dead=true}return}
+  data[i]|=WET;
+  // zjedla popol z okolia: z popola je úrodná zem
+  for(let k=0;k<4;k++){const q=DIRS[k*2],nx=a.x+q[0],ny=a.y+q[1];if(!inb(nx,ny))continue;const j=ny*W+nx;
+    if(type[j]===E.ASH){type[j]=E.DIRT;data[j]=WET;a.food++;discover('worm');break}}
+  // hrabe hore-dole a vlhčí zem; tráva nad ňou sa šíri rýchlejšie
+  if(rnd()<.35){const j=nb(a.x,a.y);if(j>=0&&type[j]===E.DIRT){data[j]|=WET;dirtLife(j,j%W,(j/W)|0,data[j])}}
+  if(a.food>=2&&countKind(5)<WORM_CAP()){a.food=0;agents.push(mkWorm(a.x,a.y))}
+  const opts=[];for(let k=0;k<4;k++){const q=DIRS[k*2],nx=a.x+q[0],ny=a.y+q[1];if(!inb(nx,ny)||type[ny*W+nx]!==E.DIRT)continue;
+    if(q[1]<0&&(ny<2||type[(ny-1)*W+nx]===0))continue; // nevyleziem na povrch
+    opts.push([nx,ny])}
+  if(!opts.length)return;
+  // radšej pokračuje rovnakým smerom
+  let pick=opts[(rnd()*opts.length)|0];const fw=opts.find(o=>o[0]-a.x===a.dir&&o[1]===a.y);if(fw&&rnd()<.6)pick=fw;
+  if(pick[0]!==a.x)a.dir=pick[0]>a.x?1:-1;
+  a.tr.unshift({x:a.x,y:a.y});if(a.tr.length>3*sc())a.tr.pop();
+  a.x=pick[0];a.y=pick[1]}
+// príchod včiel a dážďoviek do sveta samo
+function lifeArrivals(){
+  if(frame%90!==0)return;
+  if(countKind(5)<Math.min(8*sc(),WORM_CAP())){for(let t=0;t<120;t++){const x=3+((rnd()*(W-6))|0),y=8+((rnd()*(H-14))|0),i=y*W+x;
+    if(type[i]===E.DIRT&&(data[i]&WET)&&type[i-W]===E.DIRT&&type[i+W]===E.DIRT&&type[i-1]===E.DIRT&&type[i+1]===E.DIRT){agents.push(mkWorm(x,y));break}}}
+  const winter=seasonOn&&seasonIdx===3;
+  if(!winter&&nightF<.25&&countKind(4)<Math.min(8*sc(),BEE_CAP())){for(let t=0;t<500;t++){const x=3+((rnd()*(W-6))|0),y=4+((rnd()*(H-10))|0);
+    if(type[y*W+x]===E.FLOWER){agents.push(mkBee(x,y-3));break}}}
+}
+function updateAgents(){
+  lifeArrivals();
+  const s=sc();
+  for(const a of agents){
+    if(a.dead)continue;
+    a.age++;if(natural&&a.age>a.life){a.dead=true;continue}
+    if(a.k===2){fishTick(a);continue}
+    if(a.k===4){flyTick(a);continue}
+    if(a.k===5){wormTick(a);continue}
+    if(physics(a))continue;
+    if(--a.cd>0)continue;
+    a.cd=a.k===0?2:a.k===3?(s===2?3:4):(s===2?3:5);
+    if(a.k===0)antTick(a);else if(a.k===3)robotTick(a);else minerTick(a);
+  }
+  if(agents.some(a=>a.dead))agents=agents.filter(a=>!a.dead);
+  // mravenisko rastie, keď má zásoby
+  for(let ci=0;ci<colonies.length;ci++){const c=colonies[ci];if(c.kind!==0||!c.settled)continue;c.timer++;
+    const n=colonyCount(ci);
+    if(c.food>=2&&countKind(0)<ANT_CAP){c.food-=2;agents.push(mk(0,c.x,c.y-1,ci))}
+    else if(!natural&&n<6&&c.timer>3600&&countKind(0)<ANT_CAP){c.timer=0;agents.push(mk(0,c.x,c.y-1,ci))}}
+}
+
+// ---------- deň a noc, svetlušky ----------
+function updateSky(){
+  if(rnd()<1/1200)windDir=rnd()<.5?-1:1;
+  tideTick();seasonTick();
+  if(worldKind==='winter'&&rnd()<.35*sc()){const x=3+((rnd()*(W-6))|0);if(type[3*W+x]===0)setCell(3*W+x,E.SNOW,0)}
+  if(!dayNight){nightF=Math.max(0,nightF-.01);return}
+  dayT++;const ph=(dayT%(60*200))/(60*200);
+  nightF=Math.max(0,-Math.cos(ph*Math.PI*2))*.66;
+  if(nightF>.3&&fireflies.length<28*sc()&&rnd()<.2){const x=3+((rnd()*(W-6))|0);
+    for(let y=4;y<H-3;y++){const t=type[y*W+x];if(t===0||t===E.FLOWER)continue;
+      if(t===E.DIRT&&(data[y*W+x]&GRASS))fireflies.push({x:x+.5,y:y-2-rnd()*4*sc(),vx:0,vy:0,life:400+((rnd()*500)|0),p:rnd()*6});break}}
+  if(nightF>.3)discoverOnce('night');
+  for(let k=fireflies.length-1;k>=0;k--){const f=fireflies[k];f.vx=(f.vx+(rnd()-.5)*.08)*.96;f.vy=(f.vy+(rnd()-.5)*.08)*.96;
+    const nx=f.x+f.vx,ny=f.y+f.vy;if(pass(nx|0,ny|0)&&at(nx|0,ny|0)!==E.WATER){f.x=nx;f.y=ny}else{f.vx=-f.vx;f.vy=-f.vy}
+    f.life-=nightF<.2?4:1;if(f.life<=0){fireflies[k]=fireflies[fireflies.length-1];fireflies.pop()}}
+}
+let nightToasted=false;function discoverOnce(k){if(!nightToasted){nightToasted=true;discover(k)}}
+
+// ---------- kreslenie bytostí do obrázka sveta ----------
+const CA={robHead:pack(178,190,204),robBody:pack(112,124,142),robWheel:pack(40,42,52),robEye:pack(120,255,170),robLow:pack(255,90,80),robAnt:pack(255,96,96),ant:pack(196,74,44),antHead:pack(120,40,26),helm:pack(242,193,78),lamp:pack(255,246,200),skin:pack(233,185,141),shirt:pack(59,111,182),pants:pack(46,46,62),bucket:pack(150,156,170),bucketFull:pack(80,140,235),ff:pack(214,255,120)};
+function px(x,y,c){if(x>=0&&y>=0&&x<W&&y<H)buf[y*W+x]=c}
+function drawAgents(){
+  const s=sc();
+  for(const a of agents){
+    if(a.k===5){const C1=pack(236,150,160),C2=pack(212,110,124);
+      const inD=(x,y)=>inb(x,y)&&type[y*W+x]===E.DIRT;
+      if(inD(a.x,a.y))px(a.x,a.y,C1);
+      for(let k=0;k<a.tr.length;k++){const t=a.tr[k];if(inD(t.x,t.y))px(t.x,t.y,k&1?C1:C2)}
+      continue}
+    if(a.k===4){const x=a.x|0,y=a.y|0,flap=((frame>>(a.bf?2:1))&1)&&!a.rest;
+      if(a.bf){const C=BF[a.col]||BF[0];if(s===1){px(x,y,pack(40,30,40));if(flap){px(x-1,y-1,C[0]);px(x+1,y-1,C[0])}else{px(x-1,y,C[1]);px(x+1,y,C[1])}}
+        else{px(x,y,pack(40,30,40));px(x,y+1,pack(40,30,40));if(flap){px(x-1,y-1,C[0]);px(x-2,y-1,C[1]);px(x+1,y-1,C[0]);px(x+2,y-1,C[1])}else{px(x-1,y,C[0]);px(x-2,y,C[1]);px(x+1,y,C[0]);px(x+2,y,C[1])}}}
+      else{const Y=pack(255,207,46),B=pack(27,27,34),Wg=pack(232,244,255);
+        if(s===1){px(x,y,Y);px(x-a.dir,y,B);if(flap)px(x,y-1,Wg)}
+        else{px(x,y,Y);px(x+1,y,Y);px(x-a.dir*1+ (a.dir>0?0:1),y,B);px(x,y+1,B);px(x+1,y+1,Y);if(flap){px(x,y-1,Wg);px(x+1,y-1,Wg)}}}
+      continue}
+    if(a.k===3){const h=2*s;
+      if(s===1){px(a.x,a.y-1,CA.robHead);px(a.x,a.y,CA.robBody);px(a.x,a.y-2,a.s==='construct'?CA.helm:CA.robAnt)}
+      else{for(let xx=0;xx<2;xx++){px(a.x+xx,a.y-3,CA.robHead);px(a.x+xx,a.y-2,CA.robHead);px(a.x+xx,a.y-1,CA.robBody);px(a.x+xx,a.y,CA.robWheel)}
+        px(a.dir>0?a.x+1:a.x,a.y-3,a.energy<15?CA.robLow:CA.robEye);px(a.x,a.y-4,a.s==='construct'?CA.helm:CA.robAnt)}
+      if(a.tank>0)px(a.dir>0?a.x-1:a.x+s,a.y-(s===2?1:0),CA.bucketFull);
+      LC[((a.y-h+1)>>LS)*LW+(a.x>>LS)]+=.25;continue}
+    if(a.k===2){const x=a.x|0,y=a.y|0,d=a.dir,C=FISHC[a.col]||FISHC[0];
+      if(s===1){px(x,y,C[0]);px(x-d,y,C[0]);px(x-2*d,y,C[0]);px(x-3*d,y,C[1]);px(x-d,y-1,C[1])}
+      else{for(let k=0;k<4;k++){px(x-k*d,y,C[0]);px(x-k*d,y+1,C[0])}px(x-4*d,y-1,C[1]);px(x-4*d,y+2,C[1]);px(x-4*d,y,C[1]);px(x-4*d,y+1,C[1]);px(x,y,pack(20,24,40))}
+      continue}
+    if(a.k===0){px(a.x,a.y,CA.ant);if(s===2)px(a.x+(a.dir>0?1:-1),a.y,CA.antHead);
+      if(a.carry)px(a.x,a.y-1,carryColor(a.carry))}
+    else{const w=s,h=2*s;
+      if(s===1){px(a.x,a.y-1,CA.helm);px(a.x,a.y,CA.shirt)}
+      else{for(let xx=0;xx<2;xx++){px(a.x+xx,a.y-3,CA.helm);px(a.x+xx,a.y-2,CA.skin);px(a.x+xx,a.y-1,CA.shirt);px(a.x+xx,a.y,CA.pants)}
+        px(a.dir>0?a.x+1:a.x,a.y-3,CA.lamp)}
+      if(a.carry)px(a.x,a.y-h,carryColor(a.carry));
+      px(a.dir>0?a.x-1:a.x+w,a.y-(s===2?1:0),a.bucket?CA.bucketFull:CA.bucket);
+      LC[((a.y-h+1)>>LS)*LW+(a.x>>LS)]+=.7}
+  }
+  for(const f of fireflies){const on=Math.sin(frame*.08+f.p)>-.2;if(!on)continue;const x=f.x|0,y=f.y|0;if(inb(x,y)){px(x,y,CA.ff);LC[(y>>LS)*LW+(x>>LS)]+=.35}}
+}
+function carryColor(t){const p={[E.ORE]:P.ore[12],[E.SEED]:P.seed[8],[E.DIRT]:P.dirt[8],[E.SAND]:P.sand[8],[E.ASH]:P.ash[8]}[t];return p||P.dirt[8]}
+// bublinky s myšlienkou nad baníkmi (v súradniciach obrazovky)
+function drawBubbles(dpr){
+  if(cam.s*sc()<3.2)return;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  for(const a of agents){if((a.k!==1&&a.k!==3)||!a.think)continue;const col=THINK[a.think];if(!col)continue;
+    const h=ah(a);const sx=(a.x+aw(a)/2-cam.x)*cam.s,sy=(a.y-h+1-cam.y)*cam.s-8;
+    if(sx<-20||sy<-20||sx>vw+20||sy>vh+20)continue;
+    ctx.fillStyle='rgba(236,230,210,.92)';ctx.fillRect(sx-7,sy-16,14,13);ctx.fillRect(sx-2,sy-3,3,2);
+    ctx.fillStyle=col;ctx.fillRect(sx-4,sy-13,8,7)}
+}
+
+// ---------- štart ----------
+renderLife();renderSeason();renderMapBtn();
+addEventListener('resize',resize);
+resize();
+if(!load())generate(false);
+setGrav(g);
+initCam();
+let lastStep=0;
+function loop(now){
+  frame++;
+  if(!paused){
+    if(drawing&&last&&(typeof tool==='number')&&KIND[tool]!==4)paint(last.x,last.y);
+    const t0=performance.now();
+    const base=mode==='detail'&&lastStep<5.5?2:1;
+    let done=0;
+    for(let r=0;r<speed;r++){for(let k=0;k<base;k++){step();done++}updateAgents();updateSky();if(performance.now()-t0>15)break}
+    lastStep=(performance.now()-t0)/Math.max(1,done);
+  }
+  kinoCam();updateAudio();
+  if((frame%150)===0)checkChallenges();
+  render();if((frame%3)===0)drawMap();requestAnimationFrame(loop)}
+requestAnimationFrame(loop);
+setTimeout(()=>toast(fine?'Kresli myšou, koliesko zoomuje':'Kresli prstom, dvoma prstami posúvaš a zoomuješ'),600);
+})();
+</script>
+
+</body>
+</html>

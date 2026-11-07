@@ -4,16 +4,20 @@
   <url><loc>https://durica.si/kto-som/</loc><lastmod>2026-10-23</lastmod><priority>0.8</priority></url>
   <url><loc>https://durica.si/na-stiahnutie/</loc><lastmod>2026-10-23</lastmod><priority>0.7</priority></url>
   <url><loc>https://durica.si/appky/</loc><lastmod>2026-10-23</lastmod><priority>0.6</priority></url>
-  <url><loc>https://durica.si/appky/led-it-roll/</loc><lastmod>2026-10-18</lastmod><priority>0.5</priority></url>
+  <!--apps:start-->
   <url><loc>https://durica.si/appky/event-car-drift/</loc><lastmod>2026-10-24</lastmod><priority>0.5</priority></url>
   <url><loc>https://durica.si/appky/grand-theft-usage/</loc><lastmod>2026-11-04</lastmod><priority>0.5</priority></url>
   <url><loc>https://durica.si/appky/acid-box/</loc><lastmod>2026-10-23</lastmod><priority>0.5</priority></url>
-  <url><loc>https://durica.si/appky/wallflash/</loc><lastmod>2026-10-28</lastmod><priority>0.5</priority></url>
   <url><loc>https://durica.si/mixoval/</loc><lastmod>2026-11-03</lastmod><priority>0.6</priority></url>
   <url><loc>https://durica.si/mixoval/pult/</loc><lastmod>2026-11-03</lastmod><priority>0.5</priority></url>
   <url><loc>https://durica.si/mixoval/rec/</loc><lastmod>2026-11-03</lastmod><priority>0.4</priority></url>
-  <url><loc>https://durica.si/editoval/</loc><lastmod>2026-11-02</lastmod><priority>0.6</priority></url>
+  <url><loc>https://durica.si/hlasoval/</loc><lastmod>2026-11-07</lastmod><priority>0.4</priority></url>
   <url><loc>https://durica.si/pozeral/</loc><lastmod>2026-11-02</lastmod><priority>0.6</priority></url>
+  <url><loc>https://durica.si/editoval/</loc><lastmod>2026-11-02</lastmod><priority>0.6</priority></url>
+  <url><loc>https://durica.si/appky/led-it-roll/</loc><lastmod>2026-10-18</lastmod><priority>0.5</priority></url>
+  <url><loc>https://durica.si/appky/wallflash/</loc><lastmod>2026-10-28</lastmod><priority>0.5</priority></url>
+  <url><loc>https://durica.si/stvoril/</loc><lastmod>2026-11-07</lastmod><priority>0.5</priority></url>
+  <!--apps:end-->
   <url><loc>https://durica.si/ochrana-udajov/</loc><lastmod>2026-10-23</lastmod><priority>0.2</priority></url>
   <url><loc>https://durica.si/linky/</loc><lastmod>2026-10-23</lastmod><priority>0.5</priority></url>
   <url><loc>https://durica.si/blog/</loc><lastmod>2026-10-24</lastmod><priority>0.7</priority></url>

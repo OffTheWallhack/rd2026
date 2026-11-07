@@ -1,0 +1,44 @@
+name: robOS – prepísať z apps.json
+
+# Keď upravíš apps.json (alebo ikonu v appky/img/), tento krok sám prepíše
+# karty na /linky, projekty na titulke, sitemap a pixel ikony pre plochu.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps.json'
+      - 'tools/build_apps.py'
+      - 'appky/img/**'
+      - '.github/workflows/apps.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: robos-apps
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Nainštalovať Pillow
+        run: pip install pillow
+      - name: Prepísať stránky z apps.json
+        run: python3 tools/build_apps.py
+      - name: Uložiť, ak sa niečo zmenilo
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then echo "Bez zmeny"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "robOS: prepísané z apps.json"
+          git pull --rebase origin main
+          git push

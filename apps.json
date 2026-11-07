@@ -1,0 +1,515 @@
+{
+  "_poznamka": "JEDINÝ ZOZNAM APPIEK. Z tohto súboru sa berie robOS (telefón, iPad, plocha Win95), linky, titulka a sitemap. Po úprave spusti: python3 tools/build_apps.py (alebo to spraví GitHub Action sám). Návod: appky/PRIDAJ-APPKU.md",
+  "version": 1,
+  "contact": {
+    "whatsapp": "https://wa.me/421908109541",
+    "mail": "rdurica1995@gmail.com",
+    "instagram": "https://instagram.com/duriica",
+    "x": "https://x.com/moat_wanted"
+  },
+  "linkySections": [
+    {
+      "id": "nove",
+      "title": "01 — NOVÉ",
+      "note": "telka, DJ pult, fotoeditor, terárko"
+    },
+    {
+      "id": "hry",
+      "title": "02 — HRY",
+      "note": "hrateľné v prehliadači"
+    },
+    {
+      "id": "nastroje",
+      "title": "03 — NÁSTROJE",
+      "note": "malé appky",
+      "robosLink": true
+    }
+  ],
+  "groups": [
+    {
+      "id": "hry",
+      "name": "Hry",
+      "en": "Games"
+    },
+    {
+      "id": "dj",
+      "name": "Hudba a DJ",
+      "en": "Music and DJ"
+    },
+    {
+      "id": "nastroje",
+      "name": "Nástroje",
+      "en": "Tools"
+    },
+    {
+      "id": "media",
+      "name": "Médiá",
+      "en": "Media"
+    }
+  ],
+  "apps": [
+    {
+      "id": "drift",
+      "name": "Event Car Game",
+      "short": "Car Game",
+      "group": "hry",
+      "url": "appky/event-car-drift/",
+      "icon": "appky/img/drift-192.png",
+      "desc": {
+        "sk": "3D hra s event autami Zubor a Sugga.",
+        "en": "3D game with the Red Bull event cars."
+      },
+      "visibility": "public",
+      "embed": true,
+      "away": false,
+      "allow": "fullscreen; autoplay; accelerometer; gyroscope",
+      "win": [
+        1040,
+        700
+      ],
+      "sitemap": {
+        "priority": 0.5
+      },
+      "linky": {
+        "section": "hry",
+        "order": 40,
+        "banner": "g-car.webp",
+        "h": 176,
+        "dark": false,
+        "shade": "linear-gradient(180deg,rgba(18,19,18,.25) 0%,rgba(18,19,18,0) 40%,rgba(18,19,18,.88) 100%)",
+        "kicker": "3D · WEB HRA",
+        "title": "Event Car Game",
+        "line": "jazdi event autami Red Bull",
+        "gc": "drift"
+      },
+      "titulka": {
+        "order": 20,
+        "img": "appky/event-car-drift/img/car-zubor.webp",
+        "w": 512,
+        "h": 512,
+        "alt": "Event Car Game",
+        "sk": "Neoficiálna 3D hra s Red Bull event autami. Hráš v prehliadači.",
+        "en": "Unofficial 3D game with the Red Bull event cars. Play it in your browser."
+      }
+    },
+    {
+      "id": "gtu",
+      "name": "Grand Theft Usage",
+      "short": "GT Usage",
+      "group": "hry",
+      "url": "appky/grand-theft-usage/",
+      "icon": "appky/img/gtu-192.png",
+      "desc": {
+        "sk": "ASCII GTA v nočnej Bratislave podľa skutočnej mapy.",
+        "en": "ASCII GTA in Bratislava at night, built from the real map."
+      },
+      "visibility": "public",
+      "embed": true,
+      "away": false,
+      "allow": "fullscreen; autoplay",
+      "win": [
+        980,
+        680
+      ],
+      "sitemap": {
+        "priority": 0.5
+      },
+      "linky": {
+        "section": "hry",
+        "order": 10,
+        "banner": "g-gtu.webp",
+        "h": 150,
+        "dark": false,
+        "shade": "side",
+        "kicker": "ASCII · BRATISLAVA",
+        "title": "Grand Theft Usage",
+        "line": "ASCII GTA v nočnej Bratislave",
+        "gc": "gtu"
+      },
+      "titulka": {
+        "order": 10,
+        "img": "appky/grand-theft-usage/thumb.webp",
+        "w": 512,
+        "h": 512,
+        "alt": "Grand Theft Usage",
+        "sk": "ASCII GTA v nočnej Bratislave podľa skutočnej mapy. Hráš v prehliadači.",
+        "en": "ASCII GTA in Bratislava at night, built from the real map. Play it in your browser."
+      }
+    },
+    {
+      "id": "uoe",
+      "name": "Usage of Empires",
+      "short": "Empires",
+      "group": "hry",
+      "url": "https://offthewallhack.github.io/usage-of-empires/",
+      "icon": "appky/img/uoe-192.png",
+      "desc": {
+        "sk": "RTS paródia na limity AI.",
+        "en": "RTS parody about AI usage limits."
+      },
+      "visibility": "public",
+      "embed": false,
+      "away": true,
+      "sitemap": false,
+      "linky": {
+        "section": "hry",
+        "order": 20,
+        "banner": "g-uoe1.webp",
+        "h": 150,
+        "dark": false,
+        "shade": "side",
+        "kicker": "RTS · PARÓDIA",
+        "title": "Usage of Empires",
+        "line": "RTS paródia na limity",
+        "gc": "uoe1"
+      },
+      "titulka": {
+        "order": 30,
+        "img": "img/blog/usage-of-empires-sm.webp",
+        "w": 800,
+        "h": 450,
+        "alt": "Usage of Empires",
+        "name": "Usage of Empires 1 a 2",
+        "sk": "Dve hry o dedine, stavané len cez AI. V príprave.",
+        "en": "Two village games built only with AI. In the making."
+      }
+    },
+    {
+      "id": "uoe2",
+      "name": "Usage of Empires II",
+      "short": "Empires II",
+      "group": "hry",
+      "url": "https://offthewallhack.github.io/uoe2/",
+      "icon": "appky/img/uoe2-192.png",
+      "desc": {
+        "sk": "Cozy idle dedina, kde villageri žijú sami.",
+        "en": "Cozy idle village where the villagers live on their own."
+      },
+      "visibility": "public",
+      "embed": false,
+      "away": true,
+      "sitemap": false,
+      "linky": {
+        "section": "hry",
+        "order": 30,
+        "banner": "g-uoe2.webp",
+        "h": 150,
+        "dark": true,
+        "shade": "side",
+        "kicker": "IDLE · DEDINA",
+        "title": "Usage of Empires II",
+        "line": "cozy idle dedina",
+        "gc": "uoe2"
+      }
+    },
+    {
+      "id": "acid",
+      "name": "Acid Box",
+      "short": "Acid Box",
+      "group": "dj",
+      "url": "appky/acid-box/",
+      "icon": "appky/img/acid-192.png",
+      "desc": {
+        "sk": "Acid bass synth a bubnový stroj v prehliadači.",
+        "en": "Acid bass synth and drum machine in the browser."
+      },
+      "visibility": "public",
+      "embed": true,
+      "away": false,
+      "allow": "fullscreen; autoplay",
+      "win": [
+        900,
+        640
+      ],
+      "sitemap": {
+        "priority": 0.5
+      },
+      "linky": {
+        "section": "hry",
+        "order": 50,
+        "banner": "g-acid.webp",
+        "h": 104,
+        "dark": true,
+        "shade": "side",
+        "kicker": "",
+        "title": "Acid Box",
+        "line": "acid bass a bicie v prehliadači",
+        "gc": "acidbox"
+      }
+    },
+    {
+      "id": "mixoval",
+      "name": "si/mixoval",
+      "short": "si/mixoval",
+      "group": "dj",
+      "url": "mixoval/",
+      "icon": "mixoval/ikony/icon-192.png",
+      "desc": {
+        "sk": "DJ pult s 2 alebo 4 deckami, aj spolu na diaľku.",
+        "en": "DJ console with 2 or 4 decks, also together over the internet."
+      },
+      "visibility": "public",
+      "embed": true,
+      "away": true,
+      "allow": "fullscreen; microphone; autoplay; midi; clipboard-write",
+      "win": [
+        1100,
+        720
+      ],
+      "sitemap": {
+        "priority": 0.6,
+        "extra": [
+          {
+            "url": "mixoval/pult/",
+            "priority": 0.5
+          },
+          {
+            "url": "mixoval/rec/",
+            "priority": 0.4
+          }
+        ]
+      },
+      "status": "new",
+      "linky": {
+        "section": "nove",
+        "order": 10,
+        "banner": "g-mixoval.webp",
+        "h": 176,
+        "dark": true,
+        "pulse": true,
+        "shade": "linear-gradient(180deg,rgba(6,8,10,.8) 0%,rgba(6,8,10,.1) 28%,rgba(6,8,10,0) 45%,rgba(6,8,10,.9) 100%)",
+        "kicker": "DJ PULT · 4 DECKY · IZBA PRE 4 ĽUDÍ",
+        "title": "si/mixoval",
+        "line": "mixuj v prehliadači, aj spolu na diaľku",
+        "gc": "mixoval"
+      }
+    },
+    {
+      "id": "hlasoval",
+      "name": "Hlasoval",
+      "short": "Hlasoval",
+      "group": "dj",
+      "url": "hlasoval/",
+      "icon": "hlasoval/ikony/icon-192.png",
+      "desc": {
+        "sk": "Ťukni na štýl hudby, ktorý chceš počuť. DJ to vidí naživo.",
+        "en": "Tap the music style you want to hear. The DJ sees it live."
+      },
+      "visibility": "public",
+      "embed": true,
+      "away": true,
+      "allow": "fullscreen",
+      "win": [
+        520,
+        700
+      ],
+      "sitemap": {
+        "priority": 0.4
+      },
+      "status": "new"
+    },
+    {
+      "id": "pozeral",
+      "name": "si/pozeral",
+      "short": "si/pozeral",
+      "group": "media",
+      "url": "pozeral/",
+      "icon": "pozeral/ikony/icon-192.png",
+      "desc": {
+        "sk": "Retro telka s rozprávkami a večerníčkami v CZ/SK dabingu.",
+        "en": "Retro TV with cartoons in Czech and Slovak dubbing."
+      },
+      "visibility": "public",
+      "embed": true,
+      "away": true,
+      "allow": "fullscreen; autoplay; encrypted-media; picture-in-picture",
+      "win": [
+        1040,
+        700
+      ],
+      "sitemap": {
+        "priority": 0.6
+      },
+      "status": "new",
+      "linky": {
+        "section": "nove",
+        "order": 20,
+        "banner": "g-pozeral.webp",
+        "h": 176,
+        "dark": true,
+        "shade": "linear-gradient(180deg,rgba(18,19,18,.2) 0%,rgba(18,19,18,0) 40%,rgba(18,19,18,.85) 100%)",
+        "kicker": "TELKA · 3 KANÁLY · CZ/SK DABING",
+        "title": "si/pozeral",
+        "line": "Fox Kids, Jetix a večerníčky, nonstop",
+        "gc": "pozeral"
+      }
+    },
+    {
+      "id": "edit",
+      "name": "si/editoval",
+      "short": "si/editoval",
+      "group": "nastroje",
+      "url": "editoval/",
+      "icon": "editoval/ikony/icon-192.png",
+      "desc": {
+        "sk": "Post aj story z tvojej fotky, s efektami a fontami.",
+        "en": "Make a post or story from your photo with effects and fonts."
+      },
+      "visibility": "public",
+      "embed": true,
+      "away": true,
+      "allow": "fullscreen",
+      "win": [
+        1000,
+        700
+      ],
+      "sitemap": {
+        "priority": 0.6
+      },
+      "status": "new",
+      "linky": {
+        "section": "nove",
+        "order": 30,
+        "banner": "g-editoval.webp",
+        "h": 176,
+        "dark": true,
+        "shade": "linear-gradient(180deg,rgba(6,18,7,.1) 0%,rgba(6,18,7,0) 40%,rgba(6,18,7,.88) 100%)",
+        "kicker": "SKICÁR · VRSTVY · TEXTY · DITHER · RELIÉF",
+        "title": "si/editoval",
+        "line": "post aj story z tvojej fotky, s efektami a fontami",
+        "gc": "editoval"
+      }
+    },
+    {
+      "id": "led",
+      "name": "LED IT ROLL",
+      "short": "LED IT ROLL",
+      "group": "nastroje",
+      "url": "appky/led-it-roll/",
+      "icon": "appky/img/led-192.png",
+      "desc": {
+        "sk": "Scrollujúci LED banner na celú obrazovku, tancuje do hudby.",
+        "en": "Full-screen scrolling LED banner that dances to the music."
+      },
+      "visibility": "public",
+      "embed": true,
+      "away": true,
+      "allow": "fullscreen; microphone; autoplay; screen-wake-lock",
+      "win": [
+        900,
+        560
+      ],
+      "sitemap": {
+        "priority": 0.5
+      },
+      "linky": {
+        "section": "nastroje",
+        "order": 10,
+        "banner": "g-ledroll.webp",
+        "h": 104,
+        "dark": true,
+        "shade": "side",
+        "kicker": "",
+        "title": "LED It Roll",
+        "line": "scrollujúci LED banner do hudby",
+        "gc": "ledroll"
+      }
+    },
+    {
+      "id": "wall",
+      "name": "Wallflash",
+      "short": "Wallflash",
+      "group": "nastroje",
+      "url": "appky/wallflash/",
+      "icon": "appky/img/wallflash-192.png",
+      "desc": {
+        "sk": "Tekuté pozadie na celú obrazovku.",
+        "en": "Flowing full-screen background."
+      },
+      "visibility": "public",
+      "embed": true,
+      "away": true,
+      "allow": "fullscreen; microphone; autoplay; screen-wake-lock",
+      "win": [
+        900,
+        560
+      ],
+      "sitemap": {
+        "priority": 0.5
+      },
+      "linky": {
+        "section": "nastroje",
+        "order": 20,
+        "banner": "g-wallflash.webp",
+        "h": 104,
+        "dark": true,
+        "shade": "side",
+        "kicker": "",
+        "title": "Wallflash",
+        "line": "tekuté pozadie na celú obrazovku",
+        "gc": "wallflash"
+      }
+    },
+    {
+      "id": "bg",
+      "name": "BG Maker",
+      "short": "BG Maker",
+      "group": "nastroje",
+      "url": "https://bg-maker-gamma.vercel.app",
+      "icon": "appky/img/bg-192.png",
+      "desc": {
+        "sk": "Generátor pozadí pre Instagram a socials.",
+        "en": "Background generator for Instagram and socials."
+      },
+      "visibility": "public",
+      "embed": false,
+      "away": true,
+      "sitemap": false
+    },
+    {
+      "id": "stvoril",
+      "name": "Si stvoril",
+      "short": "Si stvoril",
+      "group": "hry",
+      "url": "stvoril/",
+      "icon": "appky/img/stvoril-192.png",
+      "desc": {
+        "sk": "Pixelové terárko: sypaj piesok, vodu a lávu, nechaj rásť stromy a pozeraj, čo sa stane.",
+        "en": "A pixel terrarium: pour sand, water and lava, grow trees and watch what happens."
+      },
+      "visibility": "public",
+      "embed": true,
+      "away": false,
+      "allow": "fullscreen; accelerometer; gyroscope",
+      "win": [
+        1000,
+        680
+      ],
+      "sitemap": {
+        "priority": 0.5
+      },
+      "status": "new",
+      "linky": {
+        "section": "nove",
+        "order": 40,
+        "banner": "g-stvoril.webp",
+        "h": 176,
+        "dark": true,
+        "shade": "linear-gradient(180deg,rgba(6,8,14,.75) 0%,rgba(6,8,14,.05) 30%,rgba(6,8,14,0) 45%,rgba(6,8,14,.88) 100%)",
+        "kicker": "PIXELOVÉ TERÁRKO · SANDBOX",
+        "title": "Si stvoril",
+        "line": "sypaj, polievaj, podpaľuj a pozeraj",
+        "gc": "stvoril"
+      },
+      "titulka": {
+        "order": 40,
+        "img": "stvoril/thumb.webp",
+        "w": 512,
+        "h": 512,
+        "alt": "Si stvoril",
+        "sk": "Pixelové terárko v prehliadači. Sypeš piesok, vodu a lávu a pozeráš, čo sa stane.",
+        "en": "A pixel terrarium in your browser. Pour sand, water and lava and watch what happens."
+      }
+    }
+  ]
+}

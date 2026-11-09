@@ -1,7 +1,7 @@
 /* robOS: telefón a iPad s mojimi appkami (shell). Spúšťa ho appky/robos.js, ktorý rozhodne, či ide o telefón,
    iPad alebo plochu Win95 (desktop.js). Zoznam appiek je v /apps.json: tu sa žiadna appka nepíše ručne.
-   Na webe sa telefón (iPad) vysunie zospodu po ťuknutí na "Moje appky" / záložku "Appky". Appky, ktoré sú
-   samostatné weby alebo potrebujú celú obrazovku (away: true), sa na webe otvoria v novej karte.
+   Na webe sa telefón (iPad) vysunie zospodu po ťuknutí na "Moje appky" / záložku "Appky". Každá appka
+   sa z telefónu (iPadu) otvorí v novej karte na celú obrazovku.
    Na /appky/ (html data-robos="page") je telefón (iPad) celou stránkou.
    Eventy sú v appky/events.json, takže ich zmena je úprava jedného súboru. */
 (function () {
@@ -53,8 +53,8 @@
   var PER = TABLET ? 24 : 12;                                    // apps per home page (like iOS pages)
   function appHtml(a) {
     var ic = '<span class="ro-ic"><img src="' + esc(R.url(a.icon)) + '" alt="" loading="lazy"></span>', lb = '<span>' + esc(a.short || a.name) + '</span>';
-    if (!a.embed) return '<a class="ro-app" href="' + esc(R.url(a.url)) + '" target="_blank" rel="noopener" aria-label="' + esc(a.name) + '. Otvoriť v novej karte.">' + ic + lb + '</a>';
-    return '<button class="ro-app" type="button" data-ro-open="' + esc(a.id) + '" aria-label="' + esc(a.name) + '">' + ic + lb + '</button>';
+    // v telefóne a iPade sa každá appka otvorí v novej karte (hry potrebujú celú obrazovku), nie v okne v telefóne
+    return '<a class="ro-app" href="' + esc(R.url(a.url)) + '" target="_blank" rel="noopener" aria-label="' + esc(a.name) + '. Otvoriť v novej karte.">' + ic + lb + '</a>';
   }
   var SYS = [
     '<button class="ro-app" type="button" data-ro-open="eventy"><span class="ro-ic" data-ro-icon="cal"></span><span>Eventy</span></button>',
@@ -67,9 +67,7 @@
       return '<div class="ro-page">' + (n === 0 ? widgets : '') + '<div class="ro-grid">' + pg.join('') + '</div>' + (n === pages.length - 1 ? save : '') + '</div>';
     }).join('');
   }
-  function winsHtml() {
-    return APPS.filter(function (a) { return a.embed; }).map(function (a) { return '<section class="ro-win" data-ro-win="' + esc(a.id) + '" aria-label="' + esc(a.name) + '"></section>'; }).join('');
-  }
+  function winsHtml() { return ''; }                            // appky sa už neotvárajú v okne v telefóne, ale v novej karte
 
   /* ---------- markup ---------- */
   var html =
@@ -322,7 +320,7 @@
   /* ---------- apps ---------- */
   var current = null, toastShown = false, frames = {};
   var FRAMES = {}, BYID = {};
-  APPS.forEach(function (a) { BYID[a.id] = a; if (a.embed) FRAMES[a.id] = { src: R.url(a.url), title: a.name, allow: a.allow || 'fullscreen' }; });
+  APPS.forEach(function (a) { BYID[a.id] = a; });
   function setHomebar() { homebar.setAttribute('aria-hidden', isOpen && lock.classList.contains('away') && current ? 'false' : 'true'); }
   function openApp(id, fromEl) {
     if (current) return;

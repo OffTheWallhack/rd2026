@@ -21,8 +21,8 @@ robOS má **jeden zoznam appiek: `apps.json`** (v koreni repa). Z neho sa samo r
    - `icon` – cesta k ikone z kroku 2
    - `desc.sk`, `desc.en` – jedna veta, čo appka robí
    - `win` – veľkosť okna na počítači `[šírka, výška]`
-   - `embed: false` – appka sa nedá vložiť do okna, otvorí sa v novej karte
-   - `away: true` – na telefóne sa otvorí v novej karte (vhodné pre appky s mikrofónom, kamerou alebo veľkou grafikou)
+   - `embed: false` – na počítači (plocha Win95) sa appka nedá vložiť do okna, otvorí sa v novej karte
+   - na telefóne a iPade sa každá appka otvára v novej karte na celú obrazovku (`embed` ani `away` tam nehrajú rolu)
    - `visibility: "public"` – bez toho sa appka nezobrazí nikde
 4. Spusti `python3 tools/build_apps.py` (alebo nechaj na GitHub Action `robOS – prepísať z apps.json`, ktorá to urobí po každom pushi do `apps.json`).
 5. Skontroluj `python3 tools/build_apps.py --check`. Ak vypíše „Všetko sedí.“, je hotovo.

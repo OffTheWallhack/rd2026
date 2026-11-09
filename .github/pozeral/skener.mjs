@@ -140,6 +140,7 @@ for (const k of O.kanaly) for (const p of k.program){
     const zamietni = (x, d) => { if (p.hladaj && odmietnute.length < 12) odmietnute.push(d + ': ' + (x.nazov || '').slice(0, 70)); };
     for (const x of zoznam){
       if (videne.has(x.id)) continue;
+      if (/[\u0900-\u0DFF\u0E00-\u0E7F\u0600-\u06FF\u3040-\u30FF\u4E00-\u9FFF]|^full episode \d+$|watch full episode/i.test(x.nazov || '')){ zamietni(x, 'cudzie video'); continue; }   // hindčina, thajčina, arabčina… a anonymné „Full Episode N“
       if (p.hladaj){
         if (!x.s){ zamietni(x, 'bez dĺžky'); continue; }             // pri hľadaní chceme presnú dĺžku
         if (vlozit && !vlozit.test(x.nazov || '')){ zamietni(x, 'iný seriál'); continue; }

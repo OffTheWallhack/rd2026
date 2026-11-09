@@ -17,7 +17,9 @@ window.POZERAL = {
 
   // Ručne vyradené videá (napr. keď vieš, že na YouTube už nie sú). Skener tento zoznam nemení.
   nefunguje: [
-    'pwOIfrUEA8M'   // Naruto 1. díl, 1. časť (Jetix dabing) – na YouTube nejde
+    'pwOIfrUEA8M',  // Naruto 1. díl, 1. časť (Jetix dabing) – na YouTube nejde
+    // 9. 11.: cudzie videá (návody) a anglický Louie na CZ kanáli
+    '1-I4plfXwGY', '2mhVQkn5Vdw', '4eyO3Fo_VKE', '9dDNoJOiavw', 'C57BqJKtu6o', 'NR1pbgjnutc', 'P1c6Fsc0LPs', 'PJFKb759QR0', 'Qg7lpDZikhc', 'RRNxhuXi-uo', 'Vn2Prt0vOZ8', 'W03Aoa2KMdE', 'XqUrfKQUkN4', '_BjXI-9hsnE', 'bS_J779_DM0', 'c_uU2Dg020I', 'dDOETyclPaQ', 'eHRGxeLLfw4', 'eJoqrmnfbV0', 'fBAv7UUyUtY', 'nRfxKHPmGUg', 'nv5YQ5NUHYU', 'qyxhglThTwo', 'wwqPVx4fGoc', 'xuUus4PZlF4', 'ze6UyW7idCI'
   ],
 
   kanaly: [
@@ -224,7 +226,7 @@ window.POZERAL = {
         { kanal:'@spionkycz-sk1054', show:'Totally Spies – Špiónky', lang:'CZ', min:22, max:40 },
         { hladaj:['Špiónky celý díl', 'Totally Spies Špiónky', 'Totally Spies Špiónky cz'], obsahuje:'špiónky|spionky', show:'Totally Spies – Špiónky', lang:'CZ', min:22, max:60, jazyk:false },
         { hladaj:['Robotboy cz', 'Robotboy česky', 'Robotboy cz dabing díl'], obsahuje:'robot ?boy', show:'Robotboy', lang:'CZ', min:22, max:30 },
-        { hladaj:['Život s Louiem', 'Život s Louiem celý díl', 'Život s Louiem S02', 'Život s Louiem CZ dabing'], obsahuje:'louie', show:'Život s Louiem', lang:'CZ', min:22, max:60, jazyk:false },
+        { hladaj:['Život s Louiem', 'Život s Louiem celý díl', 'Život s Louiem S02', 'Život s Louiem CZ dabing'], obsahuje:'louiem', vynechaj:'life with', show:'Život s Louiem', lang:'CZ', min:22, max:60, jazyk:false },
         { hladaj:['Klíšťák cz', 'Klíšťák celý díl', 'Klíšťák část 1/2', 'Klíšťák S01'], obsahuje:'klíšťák|klistak|klíšťak', show:'Klíšťák', lang:'CZ', min:10, max:60, jazyk:false },
         { hladaj:['Tři kamarádi a Jerry', 'Tři kamarádi a Jerry celý díl', 'Tři kamarádi a Jerry CZ', 'Tři kamarádi a Jerry S2'], obsahuje:'kamarádi a jerry|kamaradi a jerry', show:'Tři kamarádi a Jerry', lang:'CZ', min:7, max:60, jazyk:false },
         { hladaj:['WITCH cz dabing', 'W.I.T.C.H. česky'], obsahuje:'w\\.?i\\.?t\\.?c\\.?h', show:'W.I.T.C.H.', lang:'CZ', min:22, max:30 },
@@ -297,12 +299,11 @@ window.POZERAL = {
           obsahuje:'episodes?|marathon|full\\s+ep', vynechaj:'moment|scene|recreation|IRL|in \\d+ minutes?|minute from|clip|reaction|tutorial|how to|game|trailer|LIVE|español|latino|capítulo|hindi|tamil|telugu|urdu|bahasa|indonesia|português|dublado|deutsch|français|русск' },
 
         // Johnny Bravo: celé diely po anglicky
-        { playlist:'PLjScWr8bfGJPcWCgF_QNMQeRVyJQ9Q33W', show:'Johnny Bravo', lang:'EN', min:16, max:150, minSek:420, maxSek:3000,
-          obsahuje:'Bravo|^Full Episode \\d+$', vynechaj:'español|latino|capítulo|hindi|tamil|telugu|urdu|bahasa|indonesia|português|dublado|deutsch|français|русск|dias|enamorados|jhonny|best of|best moments|top 10|compilation|Johnny Test' },
+        // (playlist PLjScWr8… vyhodený 9. 11.: „Full Episode N“ boli cudzie videá, nie Johnny Bravo)
         { playlist:'PLCVuwQ1eXVCWVeSpX0khngqq_UIpX5hYU', show:'Johnny Bravo', lang:'EN', min:11, max:150, minSek:420, maxSek:3000,
-          obsahuje:'Bravo', vynechaj:'español|latino|capítulo|hindi|tamil|telugu|urdu|bahasa|indonesia|português|dublado|deutsch|français|русск|best of|best moments|top 10|compilation|Johnny Test' },
+          obsahuje:'Bravo', vynechaj:'new episode|watch full|johny|español|latino|capítulo|hindi|tamil|telugu|urdu|bahasa|indonesia|português|dublado|deutsch|français|русск|best of|best moments|top 10|compilation|Johnny Test' },
         { kanal:'johnnybravochannel', show:'Johnny Bravo', lang:'EN', min:22, max:300, minSek:420, maxSek:3000,
-          obsahuje:'Johnny Bravo', vynechaj:'español|latino|capítulo|hindi|tamil|telugu|urdu|bahasa|indonesia|português|dublado|deutsch|français|русск|best of|best moments|top 10|compilation|theme|intro|Johnny Test' }
+          obsahuje:'Johnny Bravo', vynechaj:'new episode|watch full|johny|español|latino|capítulo|hindi|tamil|telugu|urdu|bahasa|indonesia|português|dublado|deutsch|français|русск|best of|best moments|top 10|compilation|theme|intro|Johnny Test' }
       ]
     }
   ],

@@ -93,23 +93,23 @@
       }
     },
     {
-      "id": "gtu",
-      "name": "Grand Theft Usage",
-      "short": "GT Usage",
+      "id": "gtb",
+      "name": "Grand Theft Bratislava",
+      "short": "GT Bratislava",
       "group": "hry",
-      "url": "appky/grand-theft-usage/",
-      "icon": "appky/img/gtu-192.png",
+      "url": "appky/grand-theft-bratislava/",
+      "icon": "appky/img/gtb-192.png",
       "desc": {
-        "sk": "ASCII GTA v nočnej Bratislave podľa skutočnej mapy.",
-        "en": "ASCII GTA in Bratislava at night, built from the real map."
+        "sk": "Staré Mesto ako 3D hra zo znakov ASCII. Skutočná mapa a terén.",
+        "en": "Bratislava Old Town as a 3D ASCII game. Real map and terrain."
       },
       "visibility": "public",
       "embed": true,
       "away": false,
       "allow": "fullscreen; autoplay",
       "win": [
-        980,
-        680
+        1100,
+        720
       ],
       "sitemap": {
         "priority": 0.5
@@ -117,23 +117,23 @@
       "linky": {
         "section": "hry",
         "order": 10,
-        "banner": "g-gtu.webp",
+        "banner": "g-gtb.webp",
         "h": 150,
         "dark": false,
         "shade": "side",
-        "kicker": "ASCII · BRATISLAVA",
-        "title": "Grand Theft Usage",
-        "line": "ASCII GTA v nočnej Bratislave",
-        "gc": "gtu"
+        "kicker": "3D ASCII · STARÉ MESTO",
+        "title": "Grand Theft Bratislava",
+        "line": "ukradni auto v Starom Meste",
+        "gc": "gtb"
       },
       "titulka": {
         "order": 10,
-        "img": "appky/grand-theft-usage/thumb.webp",
+        "img": "appky/grand-theft-bratislava/thumb.webp",
         "w": 512,
         "h": 512,
-        "alt": "Grand Theft Usage",
-        "sk": "ASCII GTA v nočnej Bratislave podľa skutočnej mapy. Hráš v prehliadači.",
-        "en": "ASCII GTA in Bratislava at night, built from the real map. Play it in your browser."
+        "alt": "Grand Theft Bratislava",
+        "sk": "Staré Mesto ako 3D hra zo znakov ASCII. Skutočná mapa, autá, ľudia, polícia.",
+        "en": "Bratislava Old Town as a 3D ASCII game. Real map, cars, people, police."
       }
     },
     {

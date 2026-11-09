@@ -81,6 +81,8 @@ for a in apps:
         known.add(e['url'].strip('/'))
 for p in sorted((ROOT / 'appky').iterdir()):
     if p.is_dir() and (p / 'index.html').is_file() and f'appky/{p.name}' not in known:
+        if 'http-equiv="refresh"' in (p / 'index.html').read_text(encoding='utf-8')[:2000]:
+            continue  # starý priečinok, ktorý len presmeruje na novú adresu
         errors.append(f'appky/{p.name}/ má index.html, ale nie je v apps.json (appka sa nikde nezobrazí)')
 
 # ---------------------------------------------------------------- pixel ikony

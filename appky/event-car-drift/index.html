@@ -1897,12 +1897,12 @@ function buildBuggy() {
 const CARS = {
   zubor: { engine: 'zubor', build: buildZubor, name: 'ZUBOR',
     L: 3.7, pw: 110, aMax: 3.4, top: 27, rev: 4.5, raMax: 2.2, brake: 9.4, brakeRamp: 8, coast: .8,
-    steerMax: .68, steerFall: 9, steerLag: 6.5, yawLag: 3.8, ayMax: 7.0, grip: 6.0, drift: 1.9, hbGrip: .7, kick: .6,
+    steerMax: .68, steerFall: 9, steerLag: 6.5, yawLag: 3.8, ayMax: 7.0, grip: 6.0, drift: 1.9, hbGrip: .7, kick: .6, maxSlip: .66,
     rollGain: .16, rock: 1.05, rollW: 3.0, rollZ: .16, tip: .215, over: .25, pitGain: .13, pitW: 6.3, pitZ: .5,   // rock: the tall body can be rocked onto two wheels (and over) by sawing at the wheel at speed
     power: 1, hitK: 1.5, bounce: 1.15 },
   sugga: { engine: 'diesel', build: buildSugga, name: 'SUGGA',
     L: 2.9, pw: 52, aMax: 2.7, top: 22, rev: 4, raMax: 2, brake: 8.4, brakeRamp: 7, coast: .9,
-    steerMax: .62, steerFall: 8, steerLag: 8, yawLag: 5, ayMax: 7.4, grip: 7, drift: 2.1, hbGrip: .8, kick: .7,
+    steerMax: .62, steerFall: 8, steerLag: 8, yawLag: 5, ayMax: 7.4, grip: 7, drift: 2.1, hbGrip: .8, kick: .7, maxSlip: .6,
     rollGain: .15, rollW: 6.9, rollZ: .45, tip: .24, over: .38, pitGain: .09, pitW: 7.5, pitZ: .5,
     power: 0, hitK: 1, bounce: 1.4 },
   mini: { engine: 'i4', build: buildMini, name: 'MINI',
@@ -1938,13 +1938,13 @@ const CARS = {
   // Red Bull GT (AMG-style GT3): fast, planted, stiff
   gt: { engine: 'v8gt', build: () => PLACEHOLDER(), name: 'RB GT',
     L: 2.65, pw: 118, aMax: 5.0, top: 36, rev: 4.5, raMax: 2.4, brake: 12.0, brakeRamp: 10, coast: .7,
-    steerMax: .6, steerFall: 14, steerLag: 12, yawLag: 6.0, ayMax: 10.4, grip: 9.6, drift: 3.1, hbGrip: .88, kick: .75,
+    steerMax: .6, steerFall: 14, steerLag: 12, yawLag: 6.0, ayMax: 10.4, grip: 9.6, drift: 3.1, hbGrip: .88, kick: .75, maxSlip: .78,
     rollGain: .045, rollW: 10, rollZ: .5, tip: .48, over: .68, pitGain: .05, pitW: 8.5, pitZ: .5,
     power: 1, hitK: 1.0, bounce: 1.1 },
   // Red Bull F1: huge downforce, brutal acceleration, very precise
   f1: { engine: 'v6', build: () => PLACEHOLDER(), name: 'RB F1',
     L: 3.2, pw: 150, aMax: 6.6, top: 44, rev: 4.5, raMax: 2.4, brake: 15.0, brakeRamp: 12, coast: .6,
-    steerMax: .5, steerFall: 19, steerLag: 15, yawLag: 7.2, ayMax: 14.0, grip: 13.0, drift: 3.6, hbGrip: .92, kick: .8,
+    steerMax: .5, steerFall: 19, steerLag: 15, yawLag: 7.2, ayMax: 14.0, grip: 13.0, drift: 3.6, hbGrip: .92, kick: .8, maxSlip: .7,
     rollGain: .02, rollW: 12, rollZ: .5, tip: .6, over: .8, pitGain: .04, pitW: 10, pitZ: .5,
     power: 1, hitK: .8, bounce: .9 }
 };
@@ -2160,15 +2160,22 @@ function carCore(dt, env) {
   if (!S.drifting) {
     if (Math.abs(wT) > wCap * 1.1) { vF -= (Math.abs(wT) - wCap) * Math.abs(vF) * .05 * dt * Math.sign(vF || 1); wT = clamp(wT, -wCap * 1.1, wCap * 1.1); }   // nose pushes wide, scrubs speed
   } else {
-    wT += Math.sin(slipAng) * P.kick * clamp(speed / 12, 0, 1) * (S.thr > .3 ? 1 : .4) * (vF >= 0 ? 1 : -1);   // the rear keeps coming round
-    if (hb) wT *= 1.15;
+    // assisted drift (what CarX / Horizon call counter-steer assist): the rear comes round until the car holds its angle,
+    // past maxSlip the assist counter-steers for the player, so a drift settles at 35-45 degrees and never turns into a spin
+    const maxSlip = P.maxSlip || .7, k = a / maxSlip;
+    wT += Math.sin(slipAng) * P.kick * clamp(speed / 12, 0, 1) * (S.thr > .3 ? 1 : .35) * (1 - k * k) * (vF >= 0 ? 1 : -1);
+    if (hb) wT *= 1.1;
+    const wCapD = lim * 1.35 / Math.max(Math.abs(vF), 3) + .4;                               // the angle builds quickly but never swings through
+    wT = clamp(wT, -wCapD, wCapD);
+    if (k > 1) wT -= Math.sign(slipAng) * (k - 1) * 2.2 * (vF >= 0 ? 1 : -1);                 // past the limit: firm pull back toward the limit
   }
   if (rolled) wT = 0;
   // yaw inertia only matters once there is speed: at a crawl the nose follows the wheels, at speed the 3.5 t take their time
   const yawK = (S.drifting ? P.yawLag * 1.6 : P.yawLag) / clamp(Math.abs(vF) / 12, .2, 1.6) * (S.two ? .5 : 1);   // below ~40 km/h the nose follows the wheels quickly, above it the van takes its time to change direction
   S.w = lerp(S.w, wT, 1 - Math.exp(-dt * yawK));
   const vR2 = vR + aSide * dt;
-  if (vR * vR2 < 0 || Math.abs(vR2) < .02) { vF += Math.abs(vR) * .3 * Math.sign(vF || 1); vR = 0; } else { vF += Math.abs(vR - vR2) * .3 * Math.sign(vF || 1); vR = vR2; }
+  const keep = S.drifting && S.thr > .5 ? .62 : .3;                                      // on the throttle a drift carries its speed through the corner (arcade), coasting it scrubs
+  if (vR * vR2 < 0 || Math.abs(vR2) < .02) { vF += Math.abs(vR) * keep * Math.sign(vF || 1); vR = 0; } else { vF += Math.abs(vR - vR2) * keep * Math.sign(vF || 1); vR = vR2; }
   vR += -env.slR * env.G * dt;                                                              // sliding down a side slope
   // what tips the body sideways (positive = leans to the right): the push of the tyres in a left turn, gravity on a slope rising to the right
   const ay = -aSide + (-env.slR * env.G);

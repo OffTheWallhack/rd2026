@@ -1354,6 +1354,26 @@ function lmVolcano(R, H) {
   lmAnim(() => { puffs.forEach((p, i) => { const k = ((LM.t * .05 + i / puffs.length) % 1); p.position.set(Math.sin(i * 2.1) * R * .08 + k * R * .55, H * .93 + k * H * .9, Math.cos(i * 1.7) * R * .06); p.scale.setScalar(R * (.07 + k * .22)); p.material.opacity = .62 * (1 - k); }); });
   return g;
 }
+// a range of mountains on the horizon: a few cones with meadows, rock and snow on top (the Tatras, not a volcano)
+function lmMountain(R, H, seed) {
+  const pr = [[R, 0], [R * .8, H * .18], [R * .55, H * .45], [R * .3, H * .75], [R * .1, H * .95], [.01, H]], pts = pr.map(p => new THREE.Vector2(p[0], p[1]));
+  const geo = new THREE.LatheGeometry(pts, 28), pos = geo.attributes.position, col = [];
+  for (let i = 0; i < pos.count; i++) {
+    const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i), a = Math.atan2(z, x), j = 1 + .1 * Math.sin(a * 4 + seed) + .06 * Math.sin(a * 9 + y * .04 + seed * 2);
+    pos.setX(i, x * j); pos.setZ(i, z * j);
+    const k = y / H, c = k < .3 ? [.3, .42, .26] : k < .62 ? [.36, .34, .3] : k < .78 ? [.5, .48, .46] : [.93, .95, .98];
+    col.push(c[0] + .04 * Math.sin(a * 6 + seed), c[1] + .02 * Math.sin(a * 3), c[2]);
+  }
+  geo.setAttribute('color', new THREE.Float32BufferAttribute(col, 3)); geo.computeVertexNormals();
+  return new THREE.Mesh(geo, new THREE.MeshLambertMaterial({ vertexColors: true, fog: false }));
+}
+function lmMountains(R, H) {
+  const g = new THREE.Group();
+  [[0, 0, 1, 1], [-R * .9, R * .3, .8, .72], [R * .95, R * .2, .85, .8], [-R * 1.7, R * .7, .7, .55], [R * 1.8, R * .6, .75, .62]].forEach(([x, z, sr, sh], i) => {
+    const m = lmMountain(R * sr, H * sh, i * 1.9); m.position.set(x, 0, z); g.add(m);
+  });
+  return g;
+}
 // a wind turbine, the rotor turns
 function lmTurbine(H, ph) {
   const g = new THREE.Group(), wh = lmM(0xeceeee), tw = new THREE.Mesh(new THREE.CylinderGeometry(H * .016, H * .03, H, 8), wh); tw.position.y = H * .5; g.add(tw);
@@ -1399,11 +1419,11 @@ function lmDecorArena(g) {
 }
 const lmGround = (g, col) => { const gp = new THREE.Mesh(new THREE.PlaneGeometry(3000, 3000), new THREE.MeshStandardMaterial({ color: col || 0x3d5236, roughness: 1 })); gp.rotation.x = -Math.PI / 2; gp.position.y = -.5; g.add(gp); };
 function lmDecorOff(g) {
-  lmGround(g, 0x4a6a3c); lmAdd(g, lmVolcano(190, 230), -50, -14, 450, 0); lmAdd(g, lmTurbines(6, 78, 52), 210, 0, 300, .2);
+  lmGround(g, 0x4a6a3c); lmAdd(g, lmMountains(190, 230), -50, -14, 450, 0); lmAdd(g, lmTurbines(6, 78, 52), 210, 0, 300, .2);
   lmAdd(g, lmTurbines(4, 70, 50), -330, 0, 140, .4); lmAdd(g, lmTower(140), 300, 0, -150, 0);
 }
 function lmDecorDovoz(g) {
-  lmGround(g, 0x3d5a31); lmAdd(g, lmVolcano(180, 220), 40, -14, 520, 0); lmAdd(g, lmTower(160), -240, 0, 60, 0); lmAdd(g, lmFerris(36), 250, 0, -70, -.5);
+  lmGround(g, 0x3d5a31); lmAdd(g, lmMountains(180, 220), 40, -14, 520, 0); lmAdd(g, lmTower(160), -240, 0, 60, 0); lmAdd(g, lmFerris(36), 250, 0, -70, -.5);
   lmAdd(g, lmCan(66), -250, 0, 250, 0); lmAdd(g, lmTurbines(5, 72, 48), 270, 0, 200, .3);
 }
 { const g = new THREE.Group(), gp = new THREE.Mesh(new THREE.PlaneGeometry(2600, 2600), new THREE.MeshStandardMaterial({ color: 0x3d5236, roughness: 1 })); gp.rotation.x = -Math.PI / 2; gp.position.y = -.4; g.add(gp); lmDecorLot(g); scene.add(g); }
@@ -2274,11 +2294,11 @@ const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t
 // walkable rectangles [x0, x1, z0, z1, edge style, ground colour, ground texture]; they only touch, never overlap
 const WALK = [
   [-26, 26, -82, -46, 'f', [.50, .50, .50], 'a'],      // 0 loading yard (start)
-  [-2.6, 2.6, -46, -30.5, 'b', [.58, .54, .50], 'c'],  // 1 alley
-  [-3.8, 3.8, -30.5, -22.5, 'b', [.58, .54, .50], 'c'],// 2 crossing
-  [-13, -3.8, -28.3, -23.7, 'b', [.58, .54, .50], 'c'],// 3 dead-end alley
+  [-3.6, 3.6, -46, -30.5, 'b', [.58, .54, .50], 'c'],  // 1 alley (7.2 m between the houses: a real one-way street)
+  [-4.8, 4.8, -30.5, -22.5, 'b', [.58, .54, .50], 'c'],// 2 crossing
+  [-13, -4.8, -29.3, -22.7, 'b', [.58, .54, .50], 'c'],// 3 dead-end alley
   [-32, -13, -39, -17, 'b', [.62, .58, .54], 'c'],     // 4 turning pocket
-  [-2.1, 2.1, -22.5, -4, 'b', [.58, .54, .50], 'c'],   // 5 narrow alley with the arch
+  [-3.2, 3.2, -22.5, -4, 'b', [.58, .54, .50], 'c'],   // 5 narrow alley with the arch (6.4 m)
   [-30, 30, -4, 38, 'b', [.68, .64, .58], 'c'],        // 6 town square
   [30, 40, 6, 16, 'b', [.40, .40, .42], 'a'],          // 7 street to the car park
   [40, 96, -14, 34, 'f', [.30, .30, .32], 'a'],        // 8 car park
@@ -2287,13 +2307,13 @@ const WALK = [
   [6, 34, 52, 64, 'f', [.40, .40, .42], 'a'],          // 11 road to the bike park
   [-76, -30, 42, 102, 'f', [.74, .74, .72], 'k'],      // 12 skate park
   [34, 100, 50, 190, 't', null, null],                 // 13 hill: bike park, snow slope, summit
-  [55, 61, -24, -14, 'f', [.14, .09, .22], 'a'],       // 14 gate to zone X (gap in the car park)
-  [73, 77, -24, -14, 'f', [.14, .09, .22], 'a'],       // 15 way back from zone X
-  [53, 63, -77, -24, 'f', [.14, .09, .22], 'a'],       // 16 X: neon slalom
-  [53, 97, -87, -77, 'f', [.14, .09, .22], 'a'],       // 17 X: rings and pendulums
-  [87, 97, -77, -39, 'f', [.14, .09, .22], 'a'],       // 18 X: crack field
-  [75, 87, -51, -39, 'f', [.14, .09, .22], 'a'],       // 19 X: UFO parking
-  [70, 80, -39, -24, 'f', [.14, .09, .22], 'a']        // 20 X: way out
+  [55, 61, -24, -14, 'f', [.30, .30, .32], 'a'],       // 14 gate to the industrial zone (gap in the car park)
+  [73, 77, -24, -14, 'f', [.30, .30, .32], 'a'],       // 15 way back from the zone
+  [53, 63, -77, -24, 'f', [.30, .30, .32], 'a'],       // 16 Z: road works, cone slalom
+  [53, 97, -87, -77, 'f', [.30, .30, .32], 'a'],       // 17 Z: warehouse street with forklifts
+  [87, 97, -77, -39, 'f', [.30, .30, .32], 'a'],       // 18 Z: dug-up road
+  [75, 87, -51, -39, 'f', [.30, .30, .32], 'a'],       // 19 Z: loading dock
+  [70, 80, -39, -24, 'f', [.30, .30, .32], 'a']        // 20 Z: way out
 ];
 const WORLD = { x0: -110, x1: 110, z0: -96, z1: 200 };
 function walkIdx(x, z) { for (let i = 0; i < WALK.length; i++) { const r = WALK[i]; if (x >= r[0] && x <= r[1] && z >= r[2] && z <= r[3]) return i; } return -1; }
@@ -2506,7 +2526,7 @@ function camClear(x0, y0, z0, x1, y1, z1) {
 }
 
 /* ---------- DOVOZ world: obstacles + instanced visuals ---------- */
-const HIDE_TOP = [];                       // things hanging over the road (mushroom caps, UFOs) that are hidden in the top-down camera
+const HIDE_TOP = [];                       // things hanging over the road (mushroom caps, canopies, pipe racks) that are hidden in the top-down camera
 const JW = { g: new THREE.Group(), built: false, minimap: null };
 scene.add(JW.g); JW.g.visible = false;
 const jrnd = (() => { let s = 20261020; return () => (s = (s * 16807) % 2147483647) / 2147483647; })();
@@ -2528,7 +2548,7 @@ function parkedCar(x, z, rot, ci) {
 
 function genWalls() {
   const wStyle = { 0: { c: ['#2e6bb0', '#c4472b', '#3f7f4f', '#d99a2b', '#6b7a86'], h: 2.6, t: 1.3 }, 8: { c: ['#8c8f93'], h: 1.1, t: .6 }, 10: { c: ['#3d5c33'], h: 1.8, t: 1.2 }, 11: { c: ['#3d5c33'], h: 1.8, t: 1.2 }, 12: { c: ['#a1a3a7'], h: 1.5, t: .7 } };
-  for (let q = 14; q <= 20; q++) wStyle[q] = { c: ['#ff2fd2'], h: 1.5, t: .7 };
+  for (let q = 14; q <= 20; q++) wStyle[q] = { c: ['#9c9ea2'], h: .85, t: .6 };   // concrete road barriers
   WALK.forEach((r, ri) => {
     const [x0, x1, z0, z1, style] = r;
     const sides = [
@@ -2577,7 +2597,7 @@ function genWalls() {
         } else {
           pbox(cx, cz, sd.hz ? len : th, hh, sd.hz ? th : len, ws.c[0], 0, 0);
           if (ri === 12) pbox(cx, cz, sd.hz ? len : th * .5, .08, sd.hz ? th * .5 : len, '#4a4d52', 0, hh);
-          if (ri >= 14) pbox(cx, cz, sd.hz ? len : th * .5, .1, sd.hz ? th * .5 : len, '#27f0ff', 0, hh);
+          if (ri >= 14) pbox(cx, cz, sd.hz ? len : th * .5, .06, sd.hz ? th * .5 : len, '#e8c21a', 0, hh);   // yellow top edge
         }
       });
     });
@@ -2595,16 +2615,16 @@ function populate() {
   scyl(-21, -52, .75, 1.2, '#121214'); scyl(-22.4, -53.2, .75, 1.2, '#121214'); scyl(-21.7, -52.6, .7, 1.2, '#121214', 1.2);
   sbox(-14, -50, 3, 1, .9, '#e8e8e4', 0); sbox(5, -72, 1, 3, 1, '#e8e8e4', .1);
   // ---- alley, crossing ----
-  scyl(-1.9, -43, .55, 1.1, '#2d6a3a'); sbox(1.95, -39.5, .9, 1.7, 1.0, '#8a6a45'); scyl(-2.0, -35, .5, 1.1, '#555a60');
+  scyl(-3.05, -43, .5, 1.1, '#2d6a3a'); sbox(3.0, -39.5, .9, 1.7, 1.0, '#8a6a45'); scyl(-3.1, -35, .45, 1.1, '#555a60');   // bins and a post hug the house walls
   // ---- dead end and the turning pocket ----
   scyl(-8.4, -27.9, .45, 1.0, '#2d6a3a');
   parkedCar(-27.6, -18.7, 0, 0); parkedCar(-24.6, -18.7, 0, 3); parkedCar(-18.2, -18.7, 0, 6);
   sbox(-30.7, -31, 2.0, 5.0, 2.2, '#e8e8e8'); sbox(-19, -37.7, 2.4, 1.4, 1.5, '#2e5e3a');
   scyl(-14.2, -17.8, .5, 1.1, '#555a60'); scyl(-14.2, -37.4, .5, 1.1, '#555a60');
   // ---- arch alley ----
-  scyl(-1.8, -20, .45, 1.0, '#b5651d'); sbox(1.75, -12.2, .7, 1.6, 1.1, '#7a8a99'); scyl(-1.8, -6.8, .45, 1.0, '#b5651d');
-  pbox(0, -16, 6.4, 5, 3.4, '#cdb99b', 0, 3.7);                                // the arch
-  addBoxObs(0, -16, 3.2, 1.7, 0, 8.7, { cam: true, y0: 3.7 });
+  scyl(-2.85, -20, .4, 1.0, '#b5651d'); sbox(2.8, -12.2, .7, 1.6, 1.1, '#7a8a99'); scyl(-2.85, -6.8, .4, 1.0, '#b5651d');
+  pbox(0, -16, 8.6, 5, 3.4, '#cdb99b', 0, 3.7);                                // the arch
+  addBoxObs(0, -16, 4.3, 1.7, 0, 8.7, { cam: true, y0: 3.7 });
   // ---- town square ----
   scyl(0, 17, 3.7, .7, '#a3a39f'); pcyl(0, 17, 3.2, .6, '#4d8fc7', .1); pcyl(0, 17, .6, 2.6, '#b2b2ae'); pcyl(0, 17, 1.4, .3, '#b2b2ae', 2.1);
   [[-12, 8], [12, 9], [-12, 26], [12, 26], [0, 29.5], [-6, 2.2]].forEach(p => stree(p[0], p[1], 1.05, 1));
@@ -2777,61 +2797,111 @@ function buildScenery(g, W) {
   }
 }
 
-/* ================= DOVOZ: ZÓNA X, a crazy neon track south of the car park ================= */
+/* ================= DOVOZ: PRIEMYSELNÁ ZÓNA, warehouses and road works south of the car park ================= */
 const DV = { movers: [], anim: [], dome: [] };
-function buildCrazy() {
+function buildIndustry() {
   const g = JW.g, mat = (c, o) => new THREE.MeshStandardMaterial(Object.assign({ color: c, roughness: .6 }, o || {}));
   const add = (m, x, y, z) => { m.position.set(x, y, z); m.castShadow = true; g.add(m); return m; };
-  const dome = (x, y, z, r, h, c) => DV.dome.push({ x, y, z, r, h, c });
-  // A: neon slalom (x 53..63, z -24..-77): low bollards you can see over, nothing tall
-  for (let k = 0; k < 5; k++) { scyl(k % 2 ? 59 : 57, -33 - 10 * k, .6, 1.2, '#ff2fd2'); }
-  for (let z = -28; z > -76; z -= 5) pbox(58, z, .25, .03, 2.4, '#27f0ff', 0, .012);
-  // B: neon rings over the road (x 63..97, z -77..-87)
-  [67, 72, 77].forEach((x, i) => { const ring = new THREE.Mesh(new THREE.TorusGeometry(4.6, .45, 10, 40), new THREE.MeshBasicMaterial({ color: 0x00e5ff, fog: false })); ring.position.set(x, 4.6, -82); ring.rotation.y = Math.PI / 2; g.add(ring); DV.anim.push(t => ring.material.color.setHSL((t * .25 + i * .18) % 1, 1, .55)); });
-  for (let x = 64; x < 96; x += 5) pbox(x, -82, 2.4, .03, .25, '#27f0ff', 0, .012);
-  // B: two pendulum cubes swinging across the road
-  [[81, 0], [84.6, 2.3]].forEach(([x, ph]) => {
-    const z0 = -82, amp = 3.2, o = addBoxObs(x, z0, 1.3, 1.3, 0, 3.2, { sweep: [x - 3, x + 3, z0 - amp - 3, z0 + amp + 3] });
-    const mesh = new THREE.Mesh(new THREE.BoxGeometry(2.6, 3.2, 2.6), mat('#e23d8f', { emissive: new THREE.Color(.25, .02, .12) })); mesh.castShadow = true; g.add(mesh);
-    const rail = new THREE.Mesh(new THREE.BoxGeometry(.25, .25, amp * 2 + 3), mat('#ff2fd2')); rail.position.set(x, 6.5, z0); g.add(rail);
-    DV.movers.push({ o, mesh, x0: x, z0, ex: 0, ez: 1, amp, w: .95, ph, y: 1.6 });
+  const box = (w, h, d, c, o) => new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat(c, o));
+  const lamp = (x, z) => { scyl(x, z, .22, 7, '#4a4d52'); pbox(x, z, 1.4, .2, .3, '#4a4d52', 0, 6.8); pbox(x, z, .6, .14, .5, '#fff2c4', 0, 6.6); };
+  const sign = (x, z, c, ry) => { scyl(x, z, .08, 2.2, '#8c8f93'); pbox(x, z, .9, .9, .08, c, ry || 0, 1.6); pbox(x, z, .7, .7, .06, '#111', ry || 0, 1.7); };
+  const barrier = (x, z, len, ry) => {                        // red-white road-works barrier on two feet
+    pbox(x, z, len, .22, .1, '#e8392b', ry, .65); pbox(x, z, len, .22, .1, '#ffffff', ry, .87);
+    [-1, 1].forEach(e => { const dx = Math.cos(ry || 0) * e * (len / 2 - .3), dz = -Math.sin(ry || 0) * e * (len / 2 - .3); pbox(x + dx, z + dz, .12, 1.1, .12, '#333', ry, 0); pbox(x + dx, z + dz, .5, .06, .5, '#333', ry, 0); });
+  };
+  // A: road works (x 53..63, z -24..-77): a lane closed with cones you slalom through, dashed centre line, signs
+  for (let z = -27; z > -76; z -= 4) pbox(58, z, .15, .02, 1.8, '#e9e9e2', 0, .012);                       // centre line
+  for (let k = 0; k < 5; k++) { const x = k % 2 ? 59.6 : 56.4, z = -33 - 10 * k; scyl(x, z, .3, .72, '#ff6a1a'); pbox(x, z, .7, .04, .7, '#ff6a1a', 0, 0); pbox(x, z, .36, .12, .36, '#ffffff', 0, .36); }   // cones with a white band
+  [[54.1, -30], [61.9, -40], [54.1, -50], [61.9, -60], [54.1, -70]].forEach(([x, z]) => barrier(x, z, 2.2, 0));
+  sign(53.6, -27, '#e8392b', 0); sign(62.4, -27, '#ffd21f', 0); sign(53.6, -74, '#ffd21f', Math.PI);
+  pbox(55.6, -28, 1.2, .9, .9, '#ff6a1a', 0, 0); pbox(55.6, -28, .9, .9, .6, '#111', 0, .3);                  // a compressor, by the sign
+  for (let z = -31; z > -75; z -= 3.5) { pbox(62.6, z, .5, .04, 3.2, '#8d8d88', 0, .012); }                    // pavement edge
+  // B: warehouse street (x 63..97, z -77..-87): pipe racks over the road, a hall with roller doors, two forklifts crossing
+  [68, 71].forEach((x, i) => {
+    const grp = new THREE.Group();
+    [-88.6, -75.4].forEach(z => { const post = box(.5, 6.2, .5, '#5a5e66'); post.position.set(0, 3.1, z + 82); grp.add(post); });
+    const beam = box(.5, .4, 14.4, '#5a5e66'); beam.position.y = 6.0; grp.add(beam);
+    [[-.0, 5.5, '#a7adb5'], [.0, 4.9, '#c7772a'], [0, 4.4, '#a7adb5']].forEach(([dx, y, c], k) => { const pipe = new THREE.Mesh(new THREE.CylinderGeometry(.18 + k * .04, .18 + k * .04, 14.4, 10), mat(c, { metalness: .5, roughness: .35 })); pipe.rotation.x = Math.PI / 2; pipe.position.set(dx + (k - 1) * .35 * (i ? -1 : 1), y, 0); grp.add(pipe); });
+    grp.position.set(x, 0, -82); grp.traverse(m => { if (m.isMesh) m.castShadow = true; }); g.add(grp); HIDE_TOP.push(grp);
   });
-  // C: crack field (x 87..97, z -77..-39): every row covers most of the road, the gap switches sides
-  [[-72, 87, 92.4], [-63, 91.6, 97], [-54, 87, 92.4]].forEach(([z, a, b]) => {
+  addBoxObs(69.5, -82, 2.3, 7.2, 0, 6.4, { cam: true, y0: 4.1 });                                                                      // the camera ducks under the pipes
+  pbox(78, -95.2, 40, 7.2, 13.6, '#c9ccd1', 0, 0); pbox(78, -95.2, 40.4, .4, 14, '#4a5f82', 0, 7.2); pbox(78, -95.2, 40.6, .9, 14.2, '#3b4150', 0, 7.6);   // the hall
+  pbox(78, -88.25, 40, .5, .3, '#4a5f82', 0, 3.4); pbox(63, -88.3, 6, 1.2, .2, '#1b3a6b', 0, 5.2);                                             // blue stripe, company board
+  [66, 76, 86, 92].forEach(x => { pbox(x, -88.3, 3.6, 3.2, .18, '#5f6771', 0, 0); for (let y = .5; y < 3.2; y += .6) pbox(x, -88.2, 3.6, .05, .22, '#3f454d', 0, y); });   // roller doors
+  [[57, -88.4], [100.2, -88.4], [64, -75.6], [80, -75.6], [98.4, -76.4]].forEach(([x, z]) => lamp(x, z));
+  [[73.0, -86.3], [74.3, -86.3], [73.65, -86.3, 1.1]].forEach(([x, z, y]) => { if (y) pbox(x, z, 1.2, .9, 1.0, '#2e8b57', 0, y); else sbox(x, z, 1.2, 1.0, 1.1, '#2e8b57'); });   // pallets of goods stacked by the first door
+  const forklift = () => {
+    const grp = new THREE.Group(), yel = mat('#f2b61b'), dk = mat('#2a2c30');
+    const body = new THREE.Mesh(new THREE.BoxGeometry(1.25, .8, 1.9), yel); body.position.set(0, .75, -.25); grp.add(body);
+    const cw = new THREE.Mesh(new THREE.BoxGeometry(1.25, .6, .5), dk); cw.position.set(0, .9, -1.3); grp.add(cw);
+    const seat = new THREE.Mesh(new THREE.BoxGeometry(.6, .5, .5), dk); seat.position.set(0, 1.35, -.5); grp.add(seat);
+    [[-.55, .95], [.55, .95], [-.55, -.7], [.55, -.7]].forEach(([x, z]) => { const p = new THREE.Mesh(new THREE.BoxGeometry(.08, 1.1, .08), dk); p.position.set(x, 1.7, z); grp.add(p); });
+    const roof = new THREE.Mesh(new THREE.BoxGeometry(1.3, .08, 1.8), dk); roof.position.set(0, 2.25, .1); grp.add(roof);
+    [-.42, .42].forEach(x => { const m = new THREE.Mesh(new THREE.BoxGeometry(.12, 2.6, .14), dk); m.position.set(x, 1.4, 1.0); grp.add(m); });
+    [-.3, .3].forEach(x => { const f = new THREE.Mesh(new THREE.BoxGeometry(.12, .06, 1.1), mat('#9aa0a8', { metalness: .6, roughness: .35 })); f.position.set(x, .18, 1.6); grp.add(f); });
+    [[-.7, .9], [.7, .9], [-.7, -.9], [.7, -.9]].forEach(([x, z]) => { const w = new THREE.Mesh(new THREE.CylinderGeometry(.32, .32, .3, 12), dk); w.rotation.z = Math.PI / 2; w.position.set(x, .32, z); grp.add(w); });
+    const lt = new THREE.Mesh(new THREE.SphereGeometry(.12, 8, 6), new THREE.MeshBasicMaterial({ color: 0xff8a1a })); lt.position.set(0, 2.38, -.5); grp.add(lt);
+    grp.traverse(m => { if (m.isMesh) m.castShadow = true; }); g.add(grp); return grp;
+  };
+  [[80, 0], [86, Math.PI]].forEach(([x, ph]) => {                  // each one drives slowly across the whole road and back: at the ends the lane is free
+    const z0 = -82, amp = 3.9, o = addBoxObs(x, z0, .7, 1.25, 0, 2.3, { sweep: [x - 1.2, x + 1.2, z0 - amp - 1.8, z0 + amp + 1.8] });
+    const mesh = forklift();
+    DV.movers.push({ o, mesh, x0: x, z0, ex: 0, ez: 1, amp, w: .55, ph, y: 0 });
+  });
+  pbox(83, -89.4, 8, .18, 2, '#ffd21f', 0, 0); for (let x = 77; x <= 89; x += 1.6) pbox(x, -76.8, .4, .04, 1.6, '#ffd21f', 0, .012);   // yellow floor marking of the forklift crossing on both sides
+  sign(76.2, -76.6, '#ffd21f', Math.PI); sign(90.4, -87.4, '#ffd21f', 0);
+  // C: dug-up road (x 87..97, z -77..-39): every trench covers most of the road, a steel plate bridges the gap, the gap switches sides
+  [[-72, 87, 91.8], [-63, 92.2, 97], [-54, 87, 91.8]].forEach(([z, a, b]) => {
     HOLES.push({ k: 'r', x: (a + b) / 2, z, hx: (b - a) / 2, hz: 1.2, c: 1, s: 0, ty: 'crack', fm: 1, hc: 0 });
-    pbox((a + b) / 2, z, b - a + .8, .03, 2.4 + .8, '#9a4fe0', 0, .02); pbox((a + b) / 2, z, b - a, .03, 2.4, '#03050a', 0, .05);
+    pbox((a + b) / 2, z, b - a, .03, 2.4, '#2a221b', 0, .05);                                               // the open trench
+    pbox((a + b) / 2, z - 1.75, b - a, .5, .9, '#6b5a46', 0, 0); pbox((a + b) / 2, z + 1.75, b - a, .5, .9, '#6b5a46', 0, 0);   // piles of dug earth
+    [z - 1.5, z + 1.5].forEach(zz => barrier((a + b) / 2, zz, b - a - .4, 0));
+    const gx = a === 87 ? (91.8 + 97) / 2 : (87 + 92.2) / 2;                                               // the free side gets a steel plate
+    pbox(gx, z, 5.0, .05, 3.2, '#7d8086', 0, .012); pbox(gx, z, 4.6, .02, 2.8, '#8c9096', 0, .07);
   });
-  // D: UFO parking slot (against the south wall z=-51), two neon posts, a back-in bay
-  [78.6, 83.4].forEach(x => { sbox(x, -48.5, .5, 5, 1.1, '#ff2fd2'); pbox(x, -48.5, .56, .1, 5.06, '#27f0ff', 0, 1.1); });
-  { const y = 12, cx = 81, cz = -47.5, grp = new THREE.Group();
-    const disc = new THREE.Mesh(new THREE.SphereGeometry(5, 28, 12), mat('#b8bec8', { metalness: .6, roughness: .3 })); disc.scale.set(1, .26, 1); grp.add(disc);
-    const dm = new THREE.Mesh(new THREE.SphereGeometry(2.2, 20, 10, 0, 6.3, 0, 1.6), mat('#6af0ff', { emissive: new THREE.Color(.05, .3, .35), transparent: true, opacity: .8 })); dm.position.y = .7; grp.add(dm);
-    const lights = []; for (let k = 0; k < 10; k++) { const l = new THREE.Mesh(new THREE.SphereGeometry(.32, 8, 6), new THREE.MeshBasicMaterial({ color: 0xffe066 })); const a = k / 10 * 6.283; l.position.set(Math.cos(a) * 4.7, -.15, Math.sin(a) * 4.7); grp.add(l); lights.push(l); }
-    grp.position.set(cx, y, cz); g.add(grp); HIDE_TOP.push(grp);
-    const beam = new THREE.Mesh(new THREE.CylinderGeometry(1.8, 3.3, y - .6, 24, 1, true), new THREE.MeshBasicMaterial({ color: 0x9dffb0, transparent: true, opacity: .18, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending, fog: false }));
-    beam.position.set(cx, (y + .6) / 2 - .3, cz); g.add(beam); HIDE_TOP.push(beam);
-    DV.anim.push(t => { grp.rotation.y = t * .7; grp.position.y = y + Math.sin(t * 1.3) * .6; lights.forEach((l, k) => l.material.color.setHSL(((t * .5 + k / 10) % 1), .9, .6)); }); }
-  // the block of land between the track bends: a giant rubber duck and a disco tower
-  { const x = 74, z = -62, grp = new THREE.Group(), yel = mat('#ffd21f', { roughness: .4 });
-    const body = new THREE.Mesh(new THREE.SphereGeometry(5.2, 20, 14), yel); body.scale.set(1.15, .9, 1.5); body.position.y = 4.4; grp.add(body);
-    const head = new THREE.Mesh(new THREE.SphereGeometry(3, 16, 12), yel); head.position.set(0, 9.6, 3); grp.add(head);
-    const beak = new THREE.Mesh(new THREE.ConeGeometry(1.2, 2.6, 10), mat('#ff8a1f')); beak.rotation.x = Math.PI / 2; beak.position.set(0, 9.2, 6.4); grp.add(beak);
-    [-1.1, 1.1].forEach(e => { const eye = new THREE.Mesh(new THREE.SphereGeometry(.45, 8, 6), mat('#111')); eye.position.set(e, 10.4, 5); grp.add(eye); });
-    grp.position.set(x, 0, z); grp.rotation.y = -.6; grp.traverse(m => { if (m.isMesh) m.castShadow = true; }); g.add(grp);
-    DV.anim.push(t => { grp.rotation.z = Math.sin(t * 1.2) * .04; grp.position.y = Math.sin(t * 1.5) * .15; }); }
-  { const x = 78, z = -43.5; const tw = new THREE.Mesh(new THREE.CylinderGeometry(.5, .5, 14, 8), mat('#44484f')); add(tw, x, 7, z);
-    const ball = new THREE.Mesh(new THREE.IcosahedronGeometry(2.6, 1), new THREE.MeshStandardMaterial({ color: 0xdddddd, metalness: .9, roughness: .15, flatShading: true, emissive: new THREE.Color(.2, .2, .25) })); add(ball, x, 15.4, z);
-    DV.anim.push(t => { ball.rotation.y = t * .6; ball.material.emissive.setHSL((t * .3) % 1, .8, .25); }); }
-  // neon pines around the zone
-  for (let i = 0; i < 20; i++) { const side = i % 4, t = (i * 37 % 100) / 100; const x = side < 2 ? 44 + t * 60 : (side === 2 ? 38 - 4 * jrnd() : 108 + 4 * jrnd()), z = side < 2 ? (side ? -96 : -27) - jrnd() * 3 : -30 - t * 58; vtree(x, z, .7 + jrnd() * .45, 3); }
-  // floating islands over the zone (decor only)
-  [[50, -45], [96, -50], [70, -90], [92, -30], [58, -90], [104, -85]].forEach(([x, z], i) => {
-    const y = 18 + (i % 4) * 5, grp = new THREE.Group(), r = 3.5 + (i % 3) * 1.4;
-    const cone = new THREE.Mesh(new THREE.ConeGeometry(r, r * 1.5, 7), mat('#8f7a9a', { flatShading: true })); cone.rotation.x = Math.PI; cone.position.y = -r * .75; grp.add(cone);
-    const top = new THREE.Mesh(new THREE.CylinderGeometry(r, r, .5, 12), mat('#4fd0b0')); top.position.y = .25; grp.add(top);
-    const tr = new THREE.Mesh(new THREE.ConeGeometry(1.1, 3, 8), mat('#c45cf0')); tr.position.y = 2; grp.add(tr);
-    grp.position.set(x, y, z); grp.traverse(m => { if (m.isMesh) m.castShadow = true; }); g.add(grp);
-    DV.anim.push(t => { grp.position.y = y + Math.sin(t * .8 + i * 1.7) * .9; grp.rotation.y = t * .1 + i; }); });
+  sign(97.4, -76, '#e8392b', Math.PI); pbox(96.4, -75.4, 1.0, .5, .9, '#ff6a1a', 0, 0);
+  { const grp = new THREE.Group(), yl = mat('#e9a21a'), dk = mat('#2a2c30');          // a small excavator parked by the trenches
+    const tr = new THREE.Mesh(new THREE.BoxGeometry(2.4, .7, 3.2), dk); tr.position.y = .5; grp.add(tr);
+    const cab = new THREE.Mesh(new THREE.BoxGeometry(2.2, 1.3, 2.4), yl); cab.position.set(0, 1.55, -.2); grp.add(cab);
+    const win = new THREE.Mesh(new THREE.BoxGeometry(1.0, .9, 1.0), mat('#1d2a3a', { roughness: .2 })); win.position.set(-.5, 1.95, -.6); grp.add(win);
+    const boom = new THREE.Mesh(new THREE.BoxGeometry(.45, .5, 3.4), yl); boom.position.set(.5, 2.6, 1.6); boom.rotation.x = -.5; grp.add(boom);
+    const arm = new THREE.Mesh(new THREE.BoxGeometry(.4, .4, 2.6), yl); arm.position.set(.5, 2.1, 3.6); arm.rotation.x = .9; grp.add(arm);
+    const bucket = new THREE.Mesh(new THREE.BoxGeometry(.9, .7, .8), dk); bucket.position.set(.5, .9, 4.4); grp.add(bucket);
+    grp.position.set(99.5, 0, -66); grp.rotation.y = -1.2; grp.traverse(m => { if (m.isMesh) m.castShadow = true; }); g.add(grp); }
+  // D: loading dock (against the south wall z=-51): concrete curbs, a dock with a roller door, a canopy over the bay
+  [78.6, 83.4].forEach(x => { sbox(x, -48.5, .5, 5, .55, '#b8b8b4'); pbox(x, -48.5, .54, .06, 5.04, '#e8c21a', 0, .55); });
+  pbox(78.2, -57.5, 16.4, 6.5, 12, '#c9ccd1', 0, 0); pbox(78.2, -57.5, 16.8, .4, 12.4, '#4a5f82', 0, 6.5);     // the dock building
+  pbox(81, -51.6, 10, 1.2, .7, '#8a8d92', 0, 0); pbox(81, -51.6, 10, .12, .75, '#e8c21a', 0, 1.2);            // dock face with a yellow edge
+  pbox(81, -51.35, 3.6, 3.0, .18, '#5f6771', 0, 1.2); for (let y = 1.6; y < 4.2; y += .6) pbox(81, -51.3, 3.6, .05, .22, '#3f454d', 0, y);
+  [[76.5, -51.4], [85.5, -51.4]].forEach(([x, z]) => { pbox(x, z, 1.0, .9, .6, '#2a2c30', 0, 1.2); });          // rubber bumpers
+  { const can = box(10, .25, 6.5, '#55606e'); can.position.set(81, 4.3, -48.2); g.add(can); HIDE_TOP.push(can); addBoxObs(81, -48.2, 5, 3.25, 0, 4.6, { cam: true, y0: 4.2 });
+    [[76.6, -45.4], [85.4, -45.4]].forEach(([x, z]) => { const post = box(.3, 4.3, .3, '#55606e'); post.position.set(x, 2.15, z); g.add(post); addCircObs(x, z, .25, 4.3); });
+    const lt = new THREE.Mesh(new THREE.BoxGeometry(2.2, .08, .4), new THREE.MeshBasicMaterial({ color: 0xfff1c0 })); lt.position.set(81, 4.15, -48); g.add(lt); HIDE_TOP.push(lt); }
+  pbox(81, -48.5, 4.3, .02, 4.9, '#e8c21a', 0, .012); pbox(81, -48.5, 3.9, .02, 4.5, '#4d4f55', 0, .02);         // yellow bay marking
+  lamp(74.2, -39.8); lamp(88.4, -38.3);
+  // the block between the roads: silos, an office container, a yard with trailers and a radio mast
+  [[66, -60], [66, -65]].forEach(([x, z]) => { pcyl(x, z, 2.2, 9, '#c4c8ce'); pcyl(x, z, .5, 2.4, '#c4c8ce', 9); pcyl(x, z, 2.3, .3, '#4a5f82', 5); });
+  pbox(75, -69, 6.1, 2.6, 2.5, '#eef0f2', 0, 0); pbox(75, -69, 6.3, .2, 2.7, '#4a5f82', 0, 2.6); [[73.5, -67.7], [76.5, -67.7]].forEach(([x, z]) => pbox(x, z, 1.1, 1.0, .06, '#1d2a3a', 0, 1.0));   // office container
+  [[83, -70]].forEach(([x, z]) => { pbox(x, z, 2.5, 2.7, 12, '#e4e6ea', 0, 1.1); pbox(x, z - 2, 2.4, .6, 7, '#2a2c30', 0, .5); pbox(x, z - 5.2, 1.6, .5, 1.2, '#2a2c30', 0, .5); });   // a parked trailer
+  { const grp = new THREE.Group(); const m = new THREE.Mesh(new THREE.CylinderGeometry(.22, .5, 18, 8), mat('#8c8f93', { metalness: .4 })); m.position.y = 9; grp.add(m);
+    [5, 10, 15].forEach(y => { const r = new THREE.Mesh(new THREE.TorusGeometry(.6 + (18 - y) * .04, .05, 6, 14), mat('#8c8f93')); r.rotation.x = Math.PI / 2; r.position.y = y; grp.add(r); });
+    const lt = new THREE.Mesh(new THREE.SphereGeometry(.22, 8, 6), new THREE.MeshBasicMaterial({ color: 0xff2a2a })); lt.position.y = 18.2; grp.add(lt);
+    grp.position.set(66.5, 0, -55); grp.traverse(q => { if (q.isMesh) q.castShadow = true; }); g.add(grp);
+    DV.anim.push(t => { lt.material.color.setHex(Math.sin(t * 3) > 0 ? 0xff2a2a : 0x3a0808); }); }
+  { const grp = new THREE.Group(), yl = mat('#f2b61b'), top = new THREE.Group();                 // a tower crane turning slowly over the yard
+    const mast = new THREE.Mesh(new THREE.BoxGeometry(1.1, 24, 1.1), yl); mast.position.y = 12; grp.add(mast);
+    const jib = new THREE.Mesh(new THREE.BoxGeometry(.7, .7, 26), yl); jib.position.set(0, .35, 7); top.add(jib);
+    const cj = new THREE.Mesh(new THREE.BoxGeometry(.7, .7, 8), yl); cj.position.set(0, .35, -4); top.add(cj);
+    const cw = new THREE.Mesh(new THREE.BoxGeometry(1.6, 1.4, 1.6), mat('#6b6e75')); cw.position.set(0, -.5, -7.4); top.add(cw);
+    const cab = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.4, 1.6), mat('#2a2c30')); cab.position.set(0, -.6, 1.2); top.add(cab);
+    const apex = new THREE.Mesh(new THREE.ConeGeometry(.6, 4, 4), yl); apex.position.set(0, 2.7, 0); top.add(apex);
+    const cable = new THREE.Mesh(new THREE.CylinderGeometry(.03, .03, 9, 4), mat('#333')); cable.position.set(0, -4.5, 15); top.add(cable);
+    const load = new THREE.Mesh(new THREE.BoxGeometry(1.6, 1.0, 1.6), mat('#8a5a32')); load.position.set(0, -9.2, 15); top.add(load);
+    top.position.y = 24.3; grp.add(top); grp.position.set(86, 0, -64); grp.traverse(q => { if (q.isMesh) q.castShadow = true; }); g.add(grp);
+    DV.anim.push(t => { top.rotation.y = 2.2 + Math.sin(t * .07) * 1.1; }); }
+  // trees and bushes around the zone, a fence of young trees along the outer edge
+  for (let i = 0; i < 20; i++) { const side = i % 4, t = (i * 37 % 100) / 100; const x = side < 2 ? 44 + t * 60 : (side === 2 ? 38 - 4 * jrnd() : 108 + 4 * jrnd()), z = side < 2 ? (side ? -96 : -27) - jrnd() * 3 : -30 - t * 58; if (z < -89 && x > 56 && x < 100) continue; vtree(x, z, .8 + jrnd() * .4, i % 3 ? 1 : 0); }
+  [[69, -53], [72, -74], [78, -74], [68.5, -72]].forEach(([x, z]) => vtree(x, z, .7 + jrnd() * .3, 1));
 }
 function dvUpdate() {
   const t = job.t;
@@ -2840,7 +2910,7 @@ function dvUpdate() {
 }
 function buildJobWorld() {
   if (JW.built) return; JW.built = true;
-  genWalls(); populate(); buildCrazy(); buildObsGrid();
+  genWalls(); populate(); buildIndustry(); buildObsGrid();
   const g = JW.g;
   // --- ground: a big grass plane + a decal per walkable rectangle ---
   const base = new THREE.Mesh(new THREE.PlaneGeometry(520, 560), new THREE.MeshStandardMaterial({ color: 0x3d5a31, roughness: 1 }));
@@ -2890,18 +2960,18 @@ const JOB_START = [10, -54, -Math.PI / 2];
 const tg = (s, name, hint, from) => { const p = trailAt(s); return { id: 'tr' + s, name, hint, type: 'gate', x: p.x, z: p.z, r: 5, from: from || (() => { const q = trailAt(s - 14); return [q.x, q.z, q.th]; })() }; };
 const TASKS_DOVOZ = [
   { id: 'bay', name: 'NAKLADACIA RAMPA', hint: 'Zacúvaj do boxu medzi kontajnermi', type: 'park', x: -12, z: -78.5, r: 1.7, th: 0, tol: .3, from: JOB_START },
-  { id: 'alley', name: 'STARÉ MESTO', hint: 'Prejdi úzkou uličkou bez škrabancov', type: 'gate', x: 0, z: -26.5, r: 3.4, from: [-10, -60, .3] },
+  { id: 'alley', name: 'STARÉ MESTO', hint: 'Prejdi uličkou medzi domami bez škrabancov', type: 'gate', x: 0, z: -26.5, r: 3.4, from: [-10, -60, .3] },
   { id: 'dead', name: 'SLEPÁ ULIČKA', hint: 'Zajdi až na koniec, tam je miesto na otočenie', type: 'gate', x: -23, z: -28, r: 4, from: [0, -26.5, -Math.PI / 2] },
   { id: 'turn', name: 'OTOČ SA', hint: 'Otoč auto a vyjdi von nosom k ulici', type: 'gate', x: -9.5, z: -26, r: 2.4, th: Math.PI / 2, tol: .75, from: [-23, -28, -Math.PI / 2] },
-  { id: 'arch', name: 'OBLÚK', hint: 'Prejdi pod oblúkom, ulička je len o málo širšia než auto', type: 'gate', x: 0, z: -6, r: 3, from: [0, -26.5, 0] },
+  { id: 'arch', name: 'OBLÚK', hint: 'Prejdi pod oblúkom, pozor na smetiaky pri stenách', type: 'gate', x: 0, z: -6, r: 3, from: [0, -26.5, 0] },
   { id: 'square', name: 'NÁMESTIE', hint: 'Obíď fontánu, stromy a lavičky, vyjdi na východ', type: 'gate', x: 36, z: 11, r: 4, from: [0, -1, 0] },
   { id: 'park', name: 'PARKOVISKO', hint: 'Zacúvaj do voľného státia medzi autami', type: 'park', x: 78, z: 30.5, r: 1.7, th: Math.PI, tol: .3, from: [36, 11, Math.PI / 2] },
-  { id: 'x1', name: 'BRÁNA DO INÉHO SVETA', hint: 'Prejdi škárou medzi parkovanými autami na juh', type: 'gate', x: 58, z: -19, r: 3.2, from: [58, 2, Math.PI] },
-  { id: 'x2', name: 'NEÓNOVÝ SLALOM', hint: 'Slalom medzi neónovými stĺpikmi, nič sa nedotkni', type: 'gate', x: 58, z: -81, r: 4, from: [58, -26, Math.PI] },
-  { id: 'x3', name: 'NEÓNOVÉ KRUHY', hint: 'Prejdi cez svietiace kruhy a vyhni sa kyvadlám', type: 'gate', x: 91, z: -82, r: 4, from: [58, -75, Math.PI / 2] },
-  { id: 'x4', name: 'POLE PRASKLÍN', hint: 'Ľad praská. Drž sa v škáre, inak sa prepadneš', type: 'gate', x: 92, z: -45, r: 3.6, from: [92, -80, 0] },
-  { id: 'x5', name: 'UFO PARKOVISKO', hint: 'Zacúvaj do státia pod UFO medzi neónovými stĺpikmi', type: 'park', x: 81, z: -47.5, r: 1.7, th: 0, tol: .3, from: [90, -43, -Math.PI / 2] },
-  { id: 'x6', name: 'SPÄŤ DO SVETA', hint: 'Prejdi škárou späť na parkovisko', type: 'gate', x: 75, z: -19, r: 3.2, from: [75, -33, 0] },
+  { id: 'x1', name: 'PRIEMYSELNÁ ZÓNA', hint: 'Prejdi škárou medzi parkovanými autami na juh, k skladom', type: 'gate', x: 58, z: -19, r: 3.2, from: [58, 2, Math.PI] },
+  { id: 'x2', name: 'KUŽELE', hint: 'Cesta sa opravuje. Slalom medzi kuželmi, nič nezhoď', type: 'gate', x: 58, z: -81, r: 4, from: [58, -26, Math.PI] },
+  { id: 'x3', name: 'SKLADY', hint: 'Popod potrubia a pomedzi vysokozdvižné vozíky, ktoré križujú cestu', type: 'gate', x: 91, z: -82, r: 4, from: [58, -75, Math.PI / 2] },
+  { id: 'x4', name: 'ROZKOPANÁ CESTA', hint: 'Výkopy striedajú strany. Drž sa na oceľových platniach, inak spadneš', type: 'gate', x: 92, z: -45, r: 3.6, from: [92, -80, 0] },
+  { id: 'x5', name: 'RAMPA SKLADU', hint: 'Zacúvaj k rampe skladu medzi betónové obrubníky', type: 'park', x: 81, z: -47.5, r: 1.7, th: 0, tol: .3, from: [90, -43, -Math.PI / 2] },
+  { id: 'x6', name: 'SPÄŤ NA PARKOVISKO', hint: 'Prejdi škárou späť na parkovisko', type: 'gate', x: 75, z: -19, r: 3.2, from: [75, -33, 0] },
   { id: 'skate', name: 'SKATE PARK', hint: 'Prejdi cez skate park až dozadu', type: 'gate', x: -40, z: 88, r: 4.5, from: [0, 47, 0] },
   { id: 'skate2', name: 'SKATE PARK', hint: 'Otoč sa a vyjdi von', type: 'gate', x: -33, z: 58, r: 3.2, th: Math.PI / 2, tol: .9, from: [-37, 84, Math.PI] },
   tg(40, 'BIKE PARK', 'Hore po hline, valčeky a zákruty', [-31, 58, Math.PI / 2]),
@@ -3399,15 +3469,15 @@ const LEVELS = [
     tasks: [dv('bay'), { id: 'unl', name: 'VYLOŽ', hint: 'Stoj v ráme a počkaj, kým sa vyloží aparatúra', type: 'unload', x: -12, z: -78.5, r: 2.4, secs: 3, from: [-12, -70, 0], sign: 'VYKLADÁM' }, { id: 'ext', name: 'VYJDI Z RAMPY', hint: 'Vyjdi dopredu na ulicu', type: 'gate', x: -10, z: -60, r: 3.6, from: [-12, -70, 0] }], par: 55 },
   { id: 'dr', name: 'DLHÉ CÚVANIE', car: 'zubor', world: 'dovoz', start: [-21, -28, -Math.PI / 2], lesson: 'Vycúvaj celú slepú uličku na ulicu. Pozeraj na mapu hore, kamera ide zhora, kým cúvaš.',
     tasks: [{ id: 'r1', name: 'CÚVAJ', hint: 'Cúvaj stredom uličky', type: 'gate', x: -14, z: -27.4, r: 3, rev: true, from: [-21, -28, -Math.PI / 2], sign: 'CÚVAJ ▶' }, { id: 'r2', name: 'CÚVAJ', hint: 'Drž stred, nedotkni sa stien', type: 'gate', x: -7, z: -27, r: 3, rev: true, from: [-14, -27.4, -Math.PI / 2], sign: 'CÚVAJ ▶' }, { id: 'r3', name: 'VYCÚVAJ NA ULICU', hint: 'Cúvaj až na ulicu', type: 'gate', x: 1, z: -26.5, r: 3.4, rev: true, from: [-7, -27, -Math.PI / 2], sign: 'ULICA' }], par: 40 },
-  { id: 'd2', name: 'STARÉ MESTO', car: 'zubor', world: 'dovoz', start: dvFrom('alley'), lesson: 'Ulička je len o kúsok širšia než auto. Drž stred.', tasks: [dv('alley')], par: 28 },
+  { id: 'd2', name: 'STARÉ MESTO', car: 'zubor', world: 'dovoz', start: dvFrom('alley'), lesson: 'Jednosmerka medzi domami. Drž stred, pri stenách sú smetiaky.', tasks: [dv('alley')], par: 28 },
   { id: 'd3', name: 'SLEPÁ ULIČKA', car: 'zubor', world: 'dovoz', start: dvFrom('dead'), lesson: 'Zájdi na koniec a otoč sa na tri razy. Cúvanie s citom.', tasks: [dv('dead'), dv('turn')], par: 55 },
-  { id: 'd4', name: 'OBLÚK', car: 'zubor', world: 'dovoz', start: dvFrom('arch'), lesson: 'Pod oblúkom je miesto len na centimetre.', tasks: [dv('arch')], par: 30 },
+  { id: 'd4', name: 'OBLÚK', car: 'zubor', world: 'dovoz', start: dvFrom('arch'), lesson: 'Pod oblúkom je miesto, ale nie na chyby. Rovno a pokojne.', tasks: [dv('arch')], par: 30 },
   { id: 'd5', name: 'NÁMESTIE', car: 'zubor', world: 'dovoz', start: dvFrom('square'), lesson: 'Fontána, stromy a lavičky. Nájdi si cestu a nezrýchľuj.', tasks: [dv('square')], par: 35 },
   { id: 'd6', name: 'PARKOVISKO', car: 'zubor', world: 'dovoz', start: dvFrom('park'), lesson: 'Zacúvaj medzi dve zaparkované autá.', tasks: [dv('park')], par: 60 },
   { id: 'd7', name: 'SKATE PARK', car: 'zubor', world: 'dovoz', start: dvFrom('skate'), lesson: 'Rampy a bazény hádžu autom. Nedovoľ mu rozkývať sa.', tasks: [dv('skate'), dv('skate2')], par: 70 },
   { id: 'd8', name: 'KOPEC', car: 'zubor', world: 'dovoz', start: dvFrom('tr40'), lesson: 'Hlina, sneh a serpentíny až k pódiu. Na snehu zabúda zatáčať aj brzdiť.', tasks: [dv('tr40'), dv('tr100'), dv('tr150'), dv('top')], par: 150 },
-  { id: 'd9', name: 'TESNÉ CÚVANIE', car: 'zubor', world: 'dovoz', start: [0, -27, SS], lesson: 'Vycúvaj celou uličkou a popod oblúk na námestie. Je to o pár centimetrov, pozeraj zhora na steny.',
-    tasks: [{ id: 'tc1', name: 'CÚVAJ', hint: 'Cúvaj stredom uličky', type: 'gate', x: 0, z: -17, r: 2.4, rev: true, from: [0, -27, SS], sign: 'CÚVAJ ▲' }, { id: 'tc2', name: 'POD OBLÚK', hint: 'Cúvaj pod oblúkom, je len o málo širší než auto', type: 'gate', x: 0, z: -6, r: 2.2, rev: true, from: [0, -17, SS], sign: 'OBLÚK' }, { id: 'tc3', name: 'VYCÚVAJ NA NÁMESTIE', hint: 'Cúvaj ešte kúsok, až kým si von', type: 'gate', x: 0, z: 3, r: 3.4, rev: true, from: [0, -6, SS], sign: 'VON' }], par: 40 },
+  { id: 'd9', name: 'TESNÉ CÚVANIE', car: 'zubor', world: 'dovoz', start: [0, -27, SS], lesson: 'Vycúvaj celou uličkou a popod oblúk na námestie. Pozeraj zhora na steny a smetiaky.',
+    tasks: [{ id: 'tc1', name: 'CÚVAJ', hint: 'Cúvaj stredom uličky', type: 'gate', x: 0, z: -17, r: 2.4, rev: true, from: [0, -27, SS], sign: 'CÚVAJ ▲' }, { id: 'tc2', name: 'POD OBLÚK', hint: 'Cúvaj pod oblúkom, drž stred', type: 'gate', x: 0, z: -6, r: 2.2, rev: true, from: [0, -17, SS], sign: 'OBLÚK' }, { id: 'tc3', name: 'VYCÚVAJ NA NÁMESTIE', hint: 'Cúvaj ešte kúsok, až kým si von', type: 'gate', x: 0, z: 3, r: 3.4, rev: true, from: [0, -6, SS], sign: 'VON' }], par: 40 },
   { id: 'd10', name: 'PRIEJAZD MESTOM', car: 'zubor', world: 'dovoz', start: dvFrom('alley'), lesson: 'Celé mesto jedným ťahom: ulička, oblúk, námestie a cúvanie na parkovisko. Nezabúdaj, že Zubor je široký.',
     tasks: [dv('alley'), dv('arch'), dv('square'), dv('park')], par: 110 },
   // --- wilderness, Sugga ---
@@ -3430,7 +3500,7 @@ const LEVELS = [
   (() => { const L = [ofGate(25.4, 0, 'ZJAZD 1', 'Dolu hrebeňom, brzdi včas', 4.5), ofGate(24.8, -2, 'ZJAZD 2', '', 4.5), ofGate(24.2, 2, 'ZJAZD 3', '', 4.5), ofGate(23.6, -2, 'ZJAZD 4', '', 4.5), ofGate(23.0, 0, 'DOLE', 'Dolu na terase zastav', 5)], c = ofChain(L, 25.9, 0);
     return { id: 'o12', name: 'STRMÝ ZJAZD', car: 'sugga', world: 'off', start: c.start, lesson: 'Zo hrebeňa dole svahom. Sugga je ľahká, preto brzdi pred stupňami a drž smer, bokom ťa to schytí.', tasks: c.tasks, par: 40 }; })(),
   // --- the full missions ---
-  { id: 'm1', name: 'MISIA: DOVOZ', car: 'zubor', world: 'dovoz', start: JOB_START, lesson: 'Celá cesta mestom až na vrchol. Vrátane neónovej zóny.', tasks: TASKS_DOVOZ, par: 480, mission: 'job' },
+  { id: 'm1', name: 'MISIA: DOVOZ', car: 'zubor', world: 'dovoz', start: JOB_START, lesson: 'Celá cesta mestom až na vrchol. Vrátane priemyselnej zóny so skladmi.', tasks: TASKS_DOVOZ, par: 480, mission: 'job' },
   { id: 'm2', name: 'MISIA: DIVOČINA', car: 'sugga', world: 'off', start: OFF_START, lesson: 'Celá divočina od lúky po vrchol.', tasks: TASKS_OFF, par: 420, mission: 'off' }
 ];
 { const cnt = {}; LEVELS.forEach(L => { cnt[L.world] = (cnt[L.world] || 0) + (L.mission ? 0 : 1); L.n = L.mission ? 0 : cnt[L.world]; }); }   // numbered inside each section; the full missions are unnumbered
@@ -4817,7 +4887,7 @@ const MODE_TXT = {
   dh: () => 'Zjazd z kopca autom ako na snowboarde. Šesť slovenských tratí: od zasneženého Chopku cez Kráľovu hoľu, Skalnaté pleso, Devín a Štrbské pleso až po VEĽKÝ ZJAZD, dve minúty z Gerlachu do Popradu. Tri disciplíny: rýchlosť, slalom a airtime. Trať a disciplínu vyberieš v treťom kroku.',
   free: 'Bez času a bez tlaku. Jazdi, driftuj a zbieraj combo. Body dávajú aj kúsky: dve kolesá, otočka 360 a tesné obiehanie.',
   t60: () => 'Minúta na čo najvyššie skóre.' + (game.best ? ' Tvoj rekord: ' + fmt(game.best) + '.' : ''),
-  job: () => 'Celá misia: nalož aparatúru, prejdi starým mestom, cez neónovú zónu a po snehu až na vrchol. Hodnotí sa čas aj škoda.' + (store.get('jobBest', 0) ? ' Rekord: ' + fmt(store.get('jobBest', 0)) + ' bodov.' : '') + (carKey === 'zubor' ? ' Na snehu drž plyn, Zubor má pomoc do kopca.' : ''),
+  job: () => 'Celá misia: nalož aparatúru, prejdi starým mestom, cez priemyselnú zónu a po snehu až na vrchol. Hodnotí sa čas aj škoda.' + (store.get('jobBest', 0) ? ' Rekord: ' + fmt(store.get('jobBest', 0)) + ' bodov.' : '') + (carKey === 'zubor' ? ' Na snehu drž plyn, Zubor má pomoc do kopca.' : ''),
   off: () => 'Celá divočina: lúka, hrbole, bažina, jazero, ľad a vrchol. Zubor sa tu prepne na Suggu.' + (store.get('offBest', 0) ? ' Rekord: ' + fmt(store.get('offBest', 0)) + ' bodov.' : ''),
   train: () => 'Levely krok za krokom, všetky otvorené. Tri hviezdy sú za rýchly a čistý prejazd. Sugga a odomknuté autá zvládnu parkovisko, mesto aj divočinu, Zubor len parkovisko a mesto.',
   arena: () => 'Drift aréna: päť okruhov vedľa seba, ľahký, ťažší, najťažší, komplikovaný a jeden so skokmi. Zatiaľ len Zubor, Mini príde s 3D modelom. Klipni svetlá v drifte, ťažší okruh dáva viac bodov, za skok sú body za čas vo vzduchu. 150 sekúnd.' + (store.get('bestAr', 0) ? ' Tvoj rekord: ' + fmt(store.get('bestAr', 0)) + '.' : ''),

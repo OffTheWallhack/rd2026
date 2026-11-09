@@ -338,9 +338,9 @@
         "h": 176,
         "dark": true,
         "shade": "linear-gradient(180deg,rgba(18,19,18,.2) 0%,rgba(18,19,18,0) 40%,rgba(18,19,18,.85) 100%)",
-        "kicker": "TELKA · 3 KANÁLY · CZ/SK DABING",
+        "kicker": "TELKA · 4 KANÁLY · CZ/SK DABING",
         "title": "si/pozeral",
-        "line": "Fox Kids, Jetix a večerníčky, nonstop",
+        "line": "rozprávky, čo si pozeral po škole, nonstop",
         "gc": "pozeral"
       }
     },

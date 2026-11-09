@@ -11,7 +11,7 @@
     {
       "id": "nove",
       "title": "01 — NOVÉ",
-      "note": "telka, DJ pult, fotoeditor, terárko"
+      "note": "USB pre CDJ, telka, DJ pult, fotoeditor, terárko"
     },
     {
       "id": "hry",
@@ -282,6 +282,42 @@
         "title": "si/mixoval",
         "line": "mixuj v prehliadači, aj spolu na diaľku",
         "gc": "mixoval"
+      }
+    },
+    {
+      "id": "exportoval",
+      "name": "si/exportoval",
+      "short": "si/exportoval",
+      "group": "dj",
+      "url": "exportoval/",
+      "icon": "exportoval/ikony/icon-192.png",
+      "desc": {
+        "sk": "USB pre Pioneer CDJ bez rekordboxu: BPM, beatgrid, tónina a waveformy.",
+        "en": "Pioneer CDJ USB export without rekordbox: BPM, beat grid, key and waveforms."
+      },
+      "visibility": "public",
+      "embed": true,
+      "away": true,
+      "allow": "fullscreen",
+      "win": [
+        1000,
+        760
+      ],
+      "sitemap": {
+        "priority": 0.6
+      },
+      "status": "new",
+      "linky": {
+        "section": "nove",
+        "order": 5,
+        "banner": "g-exportoval.webp",
+        "h": 176,
+        "dark": true,
+        "shade": "linear-gradient(180deg,rgba(9,11,12,.2) 0%,rgba(9,11,12,0) 40%,rgba(9,11,12,.88) 100%)",
+        "kicker": "USB PRE CDJ · BEZ REKORDBOXU",
+        "title": "si/exportoval",
+        "line": "BPM, grid, tónina a waveformy na USB",
+        "gc": "exportoval"
       }
     },
     {

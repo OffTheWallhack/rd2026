@@ -129,6 +129,7 @@ body.kino .minimap{display:none}
     <button class="btn" id="desertBtn">Púšť</button>
     <button class="btn" id="beachBtn">Pláž</button>
     <button class="btn" id="islandsBtn">Ostrovy</button>
+    <button class="btn" id="landBtn">Krajina</button>
     <button class="btn" id="swampBtn">Močiar</button>
     <button class="btn" id="emptyBtn">Prázdny</button>
   </div>
@@ -191,11 +192,18 @@ const DENS=[0,5,2,99,5,3,0.5,99,99,99,99, 4,99,99,.3,.4,3,99,99,99, 99,99,99, 99
 const EMIT=new Float32Array(64);EMIT[32]=.4;EMIT[5]=1;EMIT[14]=1.3;EMIT[18]=.8;EMIT[9]=.15;EMIT[20]=2.2;EMIT[26]=.25;
 const EMITC=new Float32Array(64);EMITC[38]=2.4;
 const WET=1,GRASS=2,FIXED=4,FALL=8;
-const BASE_W=200,BASE_H=300;
+let baseW=200,baseH=300,sizePref='auto';
+const desk=()=>matchMedia('(pointer:fine)').matches&&innerWidth>=900;
+function pickSize(){
+  if(!desk()||sizePref==='small'){baseW=200;baseH=300;return}
+  const asp=innerWidth/innerHeight;
+  if(sizePref==='huge'){baseH=380;baseW=Math.max(320,Math.min(620,Math.round(baseH*asp/4)*4));return}
+  baseH=300;baseW=Math.max(240,Math.min(520,Math.round(baseH*asp/4)*4));
+}
 
 // ---------- stav ----------
 let mode='retro';             // 'retro' | 'detail'
-let W=BASE_W,H=BASE_H;
+let W=200,H=300;
 let type,data,cvar,ticks,plan,planN=0;
 let tick=1,frame=0,paused=false;
 let g=2,windDir=1;                      // index gravitácie, 2 = dole
@@ -259,8 +267,9 @@ function generate(kind){
   if(kind===true)kind='empty';if(!kind||kind===false||kind==='new')kind='cave';
   worldKind=kind;const empty=kind==='empty';seasonT=0;seasonIdx=0;seasonLabel();
   if(mode==='detail'){mode='retro';}
-  alloc(BASE_W,BASE_H);
+  pickSize();alloc(baseW,baseH);rainAcc=0;rainbowA=0;
   const n1=makeNoise(),n2=makeNoise(),n3=makeNoise();agents=[];colonies=[];fireflies=[];
+  if(kind==='land'){genLand(n1,n2,n3);g=2;particles=[];return}
   if(kind==='aqua'){genAqua(n1,n2);g=2;particles=[];return}
   if(kind==='desert'){genDesert(n1,n2,n3);g=2;particles=[];return}
   if(kind==='swamp'){genSwamp(n1,n2,n3);g=2;particles=[];return}
@@ -281,32 +290,37 @@ function generate(kind){
     const lx=48+((rnd()*10)|0),ly=46,lrx=32,lry=11;
     for(let y=2;y<ly;y++)for(let x=lx-lrx;x<lx+lrx;x++)if(x>1&&x<W-2)type[y*W+x]=E.EMPTY;
     bowl(lx,ly,lrx,lry,E.WATER,.15);
+    const big=W>=300;let lx2=-1;
+    if(big){lx2=W-50-((rnd()*10)|0);for(let y=2;y<ly;y++)for(let x=lx2-lrx;x<lx2+lrx;x++)if(x>1&&x<W-2)type[y*W+x]=E.EMPTY;bowl(lx2,ly,lrx,lry,E.WATER,.15)}
     // lávové jazero dole
-    const vx=90+((rnd()*30)|0),vy=H-30;
+    const vx=Math.floor(W*.45)+((rnd()*W*.15)|0),vy=H-30;
         bowl(vx,vy,34,13,E.LAVA,0);
+    if(big){bowl(Math.floor(W*.16),vy,30,12,E.LAVA,0);bowl(Math.floor(W*.86),vy,28,12,E.LAVA,0)}
     if(kind==='volcano')volcanoize();
     // prameň
-    const si=10*W+lx-18;setCell(si,E.SOURCE,E.WATER);
+    const si=10*W+lx-18;setCell(si,E.SOURCE,E.WATER);if(lx2>0)setCell(10*W+lx2+18,E.SOURCE,E.WATER);
     // tráva a vlhkosť na povrchu
     for(let y=3;y<H-2;y++)for(let x=2;x<W-2;x++){const i=y*W+x;
       if(type[i]===E.DIRT&&type[i-W]===E.EMPTY){ if(rnd()<.8)data[i]|=GRASS; if(rnd()<.5)data[i]|=WET; if((data[i]&GRASS)&&rnd()<.04)setCell(i-W,E.FLOWER,0)}}
     // pár stromov, ktoré začnú rásť hneď na začiatku
-    const treeN=kind==='forest'?24:8,treeGap=kind==='forest'?6:9;let planted=0;for(let tries=0;tries<(kind==='forest'?1200:400)&&planted<treeN;tries++){const x=6+((rnd()*(W-12))|0);
+    const wsc=W/200,treeN=Math.round((kind==='forest'?24:8)*wsc),treeGap=kind==='forest'?6:9;let planted=0;for(let tries=0;tries<(kind==='forest'?1200:400)*wsc&&planted<treeN;tries++){const x=6+((rnd()*(W-12))|0);
       for(let y=14;y<H-4;y++){const i=y*W+x;if(type[i]===E.DIRT&&(data[i]&GRASS)&&type[i-W]===E.EMPTY){
         if(clearUp(x,y-1,14)&&!woodNear(x,y-1,treeGap)){setCell(i-W,E.TIP,14+((rnd()*16)|0));data[i]|=WET;planted++}break}
         if(type[i]!==E.EMPTY)break}}
     // mravenisko a tábor baníkov na povrchu
-    const spots=[];for(let tries=0;tries<600&&spots.length<2;tries++){const x=20+((rnd()*(W-40))|0);
+    const nCol=W>=300?3:2,spots=[];for(let tries=0;tries<600&&spots.length<nCol;tries++){const x=20+((rnd()*(W-40))|0);
       for(let y=20;y<H-60;y++){const i=y*W+x;if(type[i]===E.DIRT&&type[i-W]===0){
         let flat=true;for(let dx=-3;dx<=3;dx++){const u=type[i+dx],o=type[i-W+dx];if((u!==E.DIRT&&u!==E.STONE)||(o!==0&&o!==E.FLOWER))flat=false}
         if(flat&&clearUp(x,y-1,6)&&!nearWater(x,y+10,22)&&!spots.some(p=>Math.abs(p.x-x)<40))spots.push({x,y:y-1});break}
         if(type[i]!==0&&type[i]!==E.FLOWER)break}}
-    for(let tries=0;tries<800&&spots.length<2;tries++){const x=20+((rnd()*(W-40))|0);
+    for(let tries=0;tries<800&&spots.length<nCol;tries++){const x=20+((rnd()*(W-40))|0);
       for(let y=20;y<H-40;y++){const i=y*W+x;const u=type[i];if((u===E.DIRT||u===E.STONE)&&(type[i-W]===0||type[i-W]===E.FLOWER)){
         if(clearUp(x,y-1,4)&&!spots.some(p=>Math.abs(p.x-x)<30))spots.push({x,y:y-1});break}
         if(u!==0&&u!==E.FLOWER)break}}
     if(spots[0])spawnColony(0,spots[0].x,spots[0].y);
     if(spots[1])spawnColony(1,spots[1].x,spots[1].y);
+    if(spots[2])spawnColony(0,spots[2].x,spots[2].y);
+    /*GEN_EXTRAS*/
   }
   if(kind==='winter'){winterize();for(let i=0;i<W*H;i++)if(type[i]===E.SOURCE)type[i]=E.ICE}
   g=2;particles=[];
@@ -315,6 +329,62 @@ function generate(kind){
 function surfaceY(x){for(let y=3;y<H-3;y++){const t=type[y*W+x];if(t!==0&&t!==E.CLOUD&&t!==E.STEAM&&t!==E.SMOKE&&t!==E.LEAF&&t!==E.FLOWER)return y}return -1}
 function plantTree(x,y,gap){if(x<4||x>=W-4||y<12)return false;const i=y*W+x;if(type[i]!==0||type[i+W]!==E.DIRT)return false;
   if(!clearUp(x,y,14)||woodNear(x,y,gap))return false;setCell(i,E.TIP,14+((rnd()*16)|0));data[i+W]|=WET;return true}
+
+function genLand(n1,n2,n3){
+  const ws=W/200,base=Math.floor(H*.40),mtn=Math.floor(W*.30);
+  const hs=new Int16Array(W),lv=new Int16Array(W);
+  for(let x=0;x<W;x++){
+    let h=base+Math.floor(n1(x/54,2.1)*14)-Math.floor(n2(x/17,5)*4);
+    if(x<mtn+36){const t=(mtn+36-x)/(mtn+36);h-=Math.round(Math.pow(t,1.3)*H*.28*(.8+n2(x/10,9)*.4))}
+    hs[x]=Math.max(12,h)}
+  const lc=Math.floor(W*.79),lr=Math.max(22,Math.floor(W*.115));
+  let h0=0,cnt=0;for(let x=lc-lr;x<=lc+lr;x++){h0+=hs[x];cnt++}h0=Math.round(h0/cnt);
+  for(let x=lc-lr-6;x<=lc+lr+6;x++){const d=Math.abs(x-lc)/lr;
+    if(d<=1){hs[x]=h0+Math.round(15*(1-d*d));lv[x]=h0+2}
+    else{const t=(d-1)*lr/6;hs[x]=Math.round(h0*(1-t)+hs[x]*t)}}
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){const i=y*W+x;
+    if(x<2||y<2||x>=W-2||y>=H-2){type[i]=E.BEDROCK;continue}
+    const f=hs[x];
+    if(y<f){if(lv[x]&&y>=lv[x])setCell(i,E.WATER,0);continue}
+    const dep=y-f,rocky=f<base-12;
+    if(rocky)type[i]=E.STONE;
+    else{const th=6+Math.floor(n2(x/9,2)*6);
+      if(dep<th){if(lv[x]&&dep<3)setCell(i,E.SAND,0);else{type[i]=E.DIRT;data[i]=FIXED|WET}}else type[i]=E.STONE}
+    if(type[i]===E.STONE){
+      if(y>f+18&&y<H-14&&n3(x/16,y/9)>.63)type[i]=0;
+      else if(y>H*.5&&n3(x/6,y/6)>.78)type[i]=E.ORE;
+      else if(rocky&&n3(x/5,y/5)>.84)type[i]=E.ORE}}
+  // snehové čiapky na vrcholoch
+  const snowLine=base-Math.floor(H*.15);
+  for(let x=3;x<W-3;x++){const f=hs[x];if(f<snowLine){const th=Math.min(5,1+Math.floor((snowLine-f)/10)+(rnd()<.4?1:0));
+    for(let k=0;k<th;k++){const i=(f+k)*W+x;if(type[i]===E.STONE||type[i]===E.ORE)type[i]=E.ICE}}}
+  // tráva a kvety
+  for(let y=3;y<H-2;y++)for(let x=2;x<W-2;x++){const i=y*W+x;
+    if(type[i]===E.DIRT&&type[i-W]===0){if(rnd()<.85)data[i]|=GRASS;data[i]|=WET;if((data[i]&GRASS)&&rnd()<.06)setCell(i-W,E.FLOWER,0)}}
+  // stromy
+  let pl=0;for(let t=0;t<900&&pl<Math.round(14*ws);t++){const x=6+((rnd()*(W-12))|0);if(plantTree(x,hs[x]-1,8))pl++}
+  // lávové jazero v hĺbke
+  bowl(Math.floor(W*.5)+((rnd()*W*.08)|0),H-30,34,13,E.LAVA,0);
+  // riasy a ryby v jazere
+  for(let k=0;k<Math.round(14*ws);k++){const x=lc-lr+3+((rnd()*(2*lr-6))|0);if(!lv[x])continue;let y=lv[x];
+    while(y<H-3&&type[y*W+x]===E.WATER)y++;y--;
+    if(type[y*W+x]!==E.WATER||type[(y+1)*W+x]!==E.SAND)continue;const b2=cvar[y*W+x],hh=3+((rnd()*6)|0);
+    for(let h=0;h<hh;h++){const j=(y-h)*W+x;if(type[j]!==E.WATER)break;type[j]=E.ALGAE;data[j]=h;cvar[j]=b2}}
+  for(let s2=0;s2<2;s2++){const col=s2%FISHC.length,cx=lc+((rnd()*lr*.8-lr*.4)|0),cy=h0+6;
+    for(let k=0;k<5;k++){const x=cx+((rnd()*10-5)|0),y=cy+((rnd()*5-2)|0);if(at(x,y)===E.WATER)agents.push(mkFish(x,y,col))}}
+  // huby v jaskyniach
+  for(let t=0,m=0;t<4000*ws&&m<Math.round(30*ws);t++){const x=6+((rnd()*(W-12))|0),y=hs[x]+8+((rnd()*(H-hs[x]-22))|0);
+    if(y>=H-6)continue;if(type[y*W+x]===0&&roofed(x,y,10)&&plantMush(x,y))m++}
+  // mravce a slimáky na lúke
+  for(let k=0,n=0;k<500&&n<Math.max(2,Math.round(2*ws));k++){const x=mtn+20+((rnd()*(lc-lr-mtn-40))|0),y=hs[x]-1;
+    if(type[y*W+x]===0&&type[(y+1)*W+x]===E.DIRT&&clearUp(x,y,5)){spawnColony(n&1?1:0,x,y);n++}}
+  for(let t=0,n=0;t<600&&n<Math.round(5*ws);t++){const x=mtn+10+((rnd()*(lc-lr-mtn-20))|0),y=hs[x]-1;
+    if(type[y*W+x]===0&&type[(y+1)*W+x]===E.DIRT&&(data[(y+1)*W+x]&GRASS)){agents.push(mkSnail(x,y));n++}}
+  // mraky
+  for(let k=0;k<Math.max(3,Math.round(3*ws));k++){const cx=30+((rnd()*(W-60))|0),cy=7+((rnd()*14)|0);
+    for(let dy=-2;dy<=2;dy++)for(let dx=-7;dx<=7;dx++){if(dx*dx/49+dy*dy/5<1&&rnd()<.85&&type[(cy+dy)*W+cx+dx]===0)setCell((cy+dy)*W+cx+dx,E.CLOUD,70)}}
+  /*LAND_EXTRAS*/
+}
 function genDesert(n1,n2,n3){
   const base=Math.floor(H*.42);const hs=new Int16Array(W);
   for(let x=0;x<W;x++)hs[x]=base+Math.floor(n1(x/48,2.3)*30)-Math.floor(n2(x/15,5)*6);
@@ -336,7 +406,7 @@ function genDesert(n1,n2,n3){
   let pl=0;for(let tries=0;tries<80&&pl<7;tries++){const x=ox+(((rnd()*2-1)*orx*1.0)|0);const y=hs[x]-1;if(Math.abs(x-ox)>orx*.55&&plantTree(x,y,7))pl++}
   for(let x=ox-orx;x<=ox+orx;x++){const y=hs[x]-1;if(type[y*W+x]===0&&type[(y+1)*W+x]===E.DIRT&&rnd()<.07)setCell(y*W+x,E.FLOWER,0)}
   // kaktusy
-  for(let k=0,n=0;k<200&&n<16;k++){const x=6+((rnd()*(W-12))|0);if(Math.abs(x-ox)<orx+5||Math.abs(x-px)<24)continue;
+  for(let k=0,n=0;k<200*(W/200)&&n<Math.round(16*W/200);k++){const x=6+((rnd()*(W-12))|0);if(Math.abs(x-ox)<orx+5||Math.abs(x-px)<24)continue;
     const y0=hs[x]-1;if(type[y0*W+x]!==0)continue;const h=4+((rnd()*6)|0);
     for(let q=0;q<h;q++){setCell((y0-q)*W+x,E.CACTUS,0);if(type[(y0-q)*W+x+1]===0&&type[(y0-q+1)*W+x+1]!==0)setCell((y0-q)*W+x+1,E.CACTUS,0)}
     const side=rnd()<.5?-1:1,ah2=2+((rnd()*(h-3))|0);for(let q=0;q<3;q++)setCell((y0-ah2-q)*W+x+side,E.CACTUS,0);
@@ -353,7 +423,7 @@ function genDesert(n1,n2,n3){
 function genSwamp(n1,n2,n3){
   const base=Math.floor(H*.33);const hs=new Int16Array(W),lv=new Int16Array(W);
   for(let x=0;x<W;x++)hs[x]=base+Math.floor(n1(x/44,2.7)*16)+Math.floor(n2(x/13,6)*3);
-  const ponds=[];for(let k=0;k<3;k++)ponds.push({ox:30+Math.floor((k+.15+rnd()*.7)*(W-60)/3),orx:14+((rnd()*10)|0)});
+  const np=Math.max(3,Math.round(W/75)),ponds=[];for(let k=0;k<np;k++)ponds.push({ox:30+Math.floor((k+.15+rnd()*.7)*(W-60)/np),orx:14+((rnd()*10)|0)});
   for(const p of ponds){let h0=0,n=0;for(let x=p.ox-p.orx;x<=p.ox+p.orx;x++){h0+=hs[x];n++}h0=Math.round(h0/n);
     for(let x=p.ox-p.orx;x<=p.ox+p.orx;x++){const d=Math.abs(x-p.ox)/p.orx,dep=Math.round(7*(1-d*d));hs[x]=Math.max(hs[x],h0+dep);lv[x]=h0}}
   for(let y=0;y<H;y++)for(let x=0;x<W;x++){const i=y*W+x;
@@ -371,12 +441,12 @@ function genSwamp(n1,n2,n3){
   // tráva, vlhkosť, kvety
   for(let y=3;y<H-2;y++)for(let x=2;x<W-2;x++){const i=y*W+x;
     if(type[i]===E.DIRT&&type[i-W]===0){if(rnd()<.85)data[i]|=GRASS;data[i]|=WET;if((data[i]&GRASS)&&rnd()<.05)setCell(i-W,E.FLOWER,0)}}
-  let pl=0;for(let t=0;t<500&&pl<10;t++){const x=6+((rnd()*(W-12))|0);if(plantTree(x,hs[x]-1,8))pl++}
+  let pl=0;for(let t=0;t<500*W/200&&pl<Math.round(10*W/200);t++){const x=6+((rnd()*(W-12))|0);if(plantTree(x,hs[x]-1,8))pl++}
   // huby v jaskyniach
-  for(let t=0,m=0;t<4000&&m<36;t++){const x=6+((rnd()*(W-12))|0),y=hs[x]+8+((rnd()*(H-hs[x]-22))|0);
+  for(let t=0,m=0;t<4000*W/200&&m<Math.round(36*W/200);t++){const x=6+((rnd()*(W-12))|0),y=hs[x]+8+((rnd()*(H-hs[x]-22))|0);
     if(y>=H-6)continue;if(type[y*W+x]===0&&roofed(x,y,10)&&plantMush(x,y))m++}
   // slimáky na povrchu
-  for(let t=0,n=0;t<600&&n<5;t++){const x=6+((rnd()*(W-12))|0),y=hs[x]-1;
+  for(let t=0,n=0;t<600&&n<Math.round(5*W/200);t++){const x=6+((rnd()*(W-12))|0),y=hs[x]-1;
     if(type[y*W+x]===0&&type[(y+1)*W+x]===E.DIRT&&(data[(y+1)*W+x]&GRASS)){agents.push(mkSnail(x,y));n++}}
 }
 function genBeach(n1,n2,n3){
@@ -402,7 +472,7 @@ function genBeach(n1,n2,n3){
   for(let x=shore-28;x<=shore+3;x++){if(type[(wl-2)*W+x]===0)setCell((wl-2)*W+x,E.WOOD,0)}
   for(let x=shore-28;x<=shore-3;x+=6){for(let y=wl-1;y<H-3;y++){const j=y*W+x;if(type[j]!==E.WATER&&type[j]!==0)break;setCell(j,E.WOOD,0)}}
   for(let x=shore+4;x<W-4;x++){const y=gy[x];const i=y*W+x;if(type[i]===E.DIRT&&type[i-W]===0&&rnd()<.06)setCell(i-W,E.FLOWER,0)}
-  let pl=0;for(let tries=0;tries<200&&pl<8;tries++){const x=shore+30+((rnd()*(W-shore-38))|0);if(plantTree(x,gy[x]-1,7))pl++}
+  let pl=0;for(let tries=0;tries<200&&pl<Math.round(8*W/200);tries++){const x=shore+30+((rnd()*(W-shore-38))|0);if(plantTree(x,gy[x]-1,7))pl++}
   const ax=Math.min(W-12,shore+36);spawnColony(0,ax,gy[ax]-1);
   for(let s2=0;s2<5;s2++){const col=s2%FISHC.length;const cx=14+((rnd()*(shore-50))|0),cy=wl+10+((rnd()*35)|0);
     for(let k=0;k<6;k++){const x=cx+((rnd()*10-5)|0),y=cy+((rnd()*8-4)|0);if(at(x,y)===E.WATER)agents.push(mkFish(x,y,col))}}
@@ -456,7 +526,7 @@ function tideTick(){
 }
 function genIslands(n1,n2,n3){
   const defs=[[.5,.4,48,17],[.17,.26,22,9],[.85,.24,24,10],[.27,.6,26,10],[.76,.58,28,11]];
-  const isl=defs.map(d=>({cx:Math.floor(W*d[0]),cy:Math.floor(H*d[1]),rx:d[2],ry:d[3]}));
+  const isw=Math.min(1.7,W/200),isl=defs.map(d=>({cx:Math.floor(W*d[0]),cy:Math.floor(H*d[1]),rx:Math.round(d[2]*isw),ry:d[3]}));
   for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(x<2||y<2||x>=W-2||y>=H-2)type[y*W+x]=E.BEDROCK;
   // oceán dole
   const sea=H-34;for(let y=sea;y<H-2;y++)for(let x=2;x<W-2;x++){type[y*W+x]=y>H-12?E.SAND:E.WATER}
@@ -475,7 +545,7 @@ function genIslands(n1,n2,n3){
     for(let tries=0;tries<80&&n<want;tries++){const x=s.cx-s.rx+4+((rnd()*(s.rx*2-8))|0);const y=surfaceY(x);if(y>0&&plantTree(x,y-1,7))n++}
     for(let x=s.cx-s.rx;x<=s.cx+s.rx;x++){const y=surfaceY(x);if(y>0&&type[y*W+x]===E.DIRT&&(data[y*W+x]&GRASS)&&type[(y-1)*W+x]===0&&rnd()<.07)setCell((y-1)*W+x,E.FLOWER,0)}}
   // mraky
-  for(let k=0;k<5;k++){const cx=20+((rnd()*(W-40))|0),cy=8+((rnd()*30)|0);
+  for(let k=0;k<Math.round(5*W/200);k++){const cx=20+((rnd()*(W-40))|0),cy=8+((rnd()*30)|0);
     for(let dy=-2;dy<=2;dy++)for(let dx=-7;dx<=7;dx++){if(dx*dx/49+dy*dy/5<1&&rnd()<.85)setCell((cy+dy)*W+cx+dx,E.CLOUD,70)}}
   // mravce na hlavnom ostrove
   {const s=isl[0];const x=s.cx-24;const y=surfaceY(x);if(y>0)spawnColony(0,x,y-1)}
@@ -491,18 +561,18 @@ function genAqua(n1,n2){
     const f=floorY[x];
     if(y>=f+10+((n2(x/14,3)*8)|0))type[i]=E.STONE;else if(y>=f)type[i]=E.SAND;else if(y>=top)type[i]=E.WATER}
   // skaly na dne
-  for(let k=0;k<6;k++){const cx=10+((rnd()*(W-20))|0),cy=floorY[cx]-2,r=4+((rnd()*8)|0);
+  for(let k=0;k<Math.round(6*W/200);k++){const cx=10+((rnd()*(W-20))|0),cy=floorY[cx]-2,r=4+((rnd()*8)|0);
     for(let dy=-r;dy<=r;dy++)for(let dx=-r*1.4;dx<=r*1.4;dx++){const x=(cx+dx)|0,y=cy+dy;if(x<3||x>W-4||y<3||y>H-4)continue;
       if((dx*dx)/(r*r*1.96)+(dy*dy)/(r*r)<1&&rnd()<.97)setCell(y*W+x,E.STONE,0)}
     if(k===0)for(let dx=-2;dx<=2;dx++)setCell((cy-r)*W+cx+dx,E.ORE,0)}
   // riasy
-  for(let k=0;k<70;k++){const x=4+((rnd()*(W-8))|0);let y=top+2;while(y<H-3&&type[y*W+x]===E.WATER)y++;y--;
+  for(let k=0;k<Math.round(70*W/200);k++){const x=4+((rnd()*(W-8))|0);let y=top+2;while(y<H-3&&type[y*W+x]===E.WATER)y++;y--;
     if(type[y*W+x]!==E.WATER)continue;const base=cvar[y*W+x];const hh=3+((rnd()*10)|0);
     for(let h=0;h<hh;h++){const j=(y-h)*W+x;if(type[j]!==E.WATER)break;type[j]=E.ALGAE;data[j]=h;cvar[j]=base}}
   // bublinkové pramene
   for(let k=0;k<3;k++){const x=20+((rnd()*(W-40))|0);const y=floorY[x];if(type[y*W+x]===E.SAND)setCell(y*W+x,E.SOURCE,E.BUBBLE)}
   // ryby v hejnách
-  for(let s2=0;s2<4;s2++){const col=s2%FISHC.length;const cx=20+((rnd()*(W-40))|0),cy=top+20+((rnd()*(H*.45))|0);
+  for(let s2=0;s2<Math.round(4*W/200);s2++){const col=s2%FISHC.length;const cx=20+((rnd()*(W-40))|0),cy=top+20+((rnd()*(H*.45))|0);
     for(let k=0;k<6;k++){const x=cx+((rnd()*10-5)|0),y=cy+((rnd()*8-4)|0);if(at(x,y)===E.WATER)agents.push(mkFish(x,y,col))}}
 }
 function volcanoize(){
@@ -623,7 +693,7 @@ function updateCell(x,y){
       if(rnd()>.25)break;
       const d=data[i];
       if(rnd()<.25){const nx=x+windDir;if(inb(nx,y)&&nx>1&&nx<W-2&&type[y*W+nx]===0){moveTo(i,y*W+nx);break}}
-      if(d>0&&rnd()<.04*(d/80+.3)){const by=y+1;if(by<H-2&&type[by*W+x]===0){setCell(by*W+x,E.WATER,FALL);ticks[by*W+x]=tick;data[i]=d-1;discover('cloud')}}
+      if(d>0&&rnd()<.04*(d/80+.3)){const by=y+1;if(by<H-2&&type[by*W+x]===0){setCell(by*W+x,E.WATER,FALL);ticks[by*W+x]=tick;data[i]=d-1;discover('cloud');rainAcc=Math.min(260,rainAcc+1);lastRain=frame}}
       if(d>180&&rnd()<.0002)strike(x,y+1);
       if(d===0&&rnd()<.03){type[i]=0}
       break}
@@ -896,11 +966,12 @@ function render(){
   if(off.width!==W||off.height!==H)sizeOff();
   let fallN=0,fireN=0;holesR.length=0;
   if(LW!==(W>>LS)+1||LS!==(mode==='detail'?3:2)||!LC)sizeLight();
+  if(skyM.length!==W*H||(frame%12)===0)calcSky();
   const fl=frame>>3;
   const sv=seasonOn?seasonIdx:-1;const gP=sv===2?P.grassAut:sv===3?P.grassWin:P.grass,tP=sv===2?P.tuftAut:sv===3?P.tuftWin:P.tuft;
   for(let y=0;y<H;y++){const row=y*W;for(let x=0;x<W;x++){const i=row+x;const t=type[i];const v=cvar[i]&15;let c;
     switch(t){
-      case 0:{c=BG[y*4+(cvar[i]&3)];
+      case 0:{c=(y<skyTop[x]||skyM[i])?0:BG[y*4+(cvar[i]&3)];
         if(y+1<H){const b=i+W;if(type[b]===E.DIRT&&(data[b]&GRASS)&&(cvar[b]&3)===0)c=tP[cvar[b]>>4]}
         break}
       case E.SAND:c=P.sand[v];break;
@@ -963,14 +1034,17 @@ function render(){
     if(--b.life<=0)bolts.splice(k,1)}
   drawAgents();
   octx.putImageData(img,0,0);
+  if(nightF>0||sv>0){octx.globalCompositeOperation='source-atop';
+    if(nightF>0){octx.fillStyle=`rgba(4,6,24,${nightF.toFixed(3)})`;octx.fillRect(0,0,W,H)}
+    if(sv>0){octx.fillStyle=sv===1?'rgba(255,206,90,.05)':sv===2?'rgba(255,120,30,.06)':'rgba(150,190,255,.09)';octx.fillRect(0,0,W,H)}
+    octx.globalCompositeOperation='source-over'}
   buildLight();
   const dpr=Math.min(window.devicePixelRatio||1,2);
   ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle='#07070e';ctx.fillRect(0,0,cvs.width,cvs.height);
   ctx.imageSmoothingEnabled=false;
   ctx.setTransform(dpr*cam.s,0,0,dpr*cam.s,-cam.x*cam.s*dpr,-cam.y*cam.s*dpr);
+  drawSky(ctx,W,H);
   ctx.drawImage(off,0,0);
-  if(nightF>0){ctx.fillStyle=`rgba(4,6,24,${nightF.toFixed(3)})`;ctx.fillRect(0,0,W,H)}
-  if(sv===1||sv===2||sv===3){ctx.fillStyle=sv===1?'rgba(255,206,90,.05)':sv===2?'rgba(255,120,30,.06)':'rgba(150,190,255,.09)';ctx.fillRect(0,0,W,H)}
   ctx.save();ctx.globalCompositeOperation='lighter';ctx.imageSmoothingEnabled=true;ctx.drawImage(lcv,0,0,LW<<LS,LH<<LS);ctx.restore();
   for(let k=0;k<holesR.length;k+=2){const hx=holesR[k]+.5,hy=holesR[k+1]+.5,r0=7*sc();
     ctx.strokeStyle='rgba(170,110,255,.6)';ctx.lineWidth=.8*sc();ctx.beginPath();ctx.arc(hx,hy,1.6*sc()+Math.sin(frame*.15)*.4,0,Math.PI*2);ctx.stroke();
@@ -989,17 +1063,110 @@ function render(){
     ctx.fillStyle='rgba(0,0,0,.45)';ctx.fillText('durica.si/stvoril',vw-13,vh-13);ctx.fillStyle='rgba(236,230,210,.85)';ctx.fillText('durica.si/stvoril',vw-14,vh-14)}
 }
 
+
+// ---------- obloha ----------
+const BLK=new Uint8Array(64).fill(1);
+for(const t of [0,E.STEAM,E.SMOKE,E.FIRE,E.EMBER,E.ASH,E.BUBBLE,E.CLOUD,E.FLOWER,E.LEAF,E.WOOD,E.TIP,E.SEED,E.SNOW,E.TORCH,E.MUSH,E.CACTUS])BLK[t]=0;
+let skyTop=new Int16Array(0),skyM=new Uint8Array(0),skyW=new Uint8Array(0),skyStk=new Int32Array(0);
+function calcSky(){
+  if(skyTop.length!==W)skyTop=new Int16Array(W);
+  if(skyM.length!==W*H){skyM=new Uint8Array(W*H);skyW=new Uint8Array(W*H);skyStk=new Int32Array(W*H)}
+  const y0=2*sc();
+  for(let x=0;x<W;x++){let y=y0;
+    for(;y<H-y0;y++){const i=y*W+x,t=type[i];if(!BLK[t])continue;
+      if(KIND[t]===4)break;
+      if(t===E.WATER&&(data[i]&FALL))continue;
+      if(BLK[type[i+W]]&&BLK[type[i+2*W]]&&BLK[type[i+3*W]]&&(BLK[type[i-1]]||BLK[type[i+1]]))break}
+    skyTop[x]=y}
+  // otvorený vzduch: široké prázdne pásy spojené s vrchom (ostrovy, previsy), úzke tunely a jaskyne ostávajú tmavé
+  const minW=Math.max(20*sc(),Math.round(W*.08));skyW.fill(0);skyM.fill(0);
+  for(let y=y0;y<H-y0;y++){const row=y*W;let x=0;
+    while(x<W){let t=type[row+x];
+      if(BLK[t]&&(KIND[t]===4||(!(data[row+x]&FALL)&&BLK[type[row+x+W]]&&BLK[type[row+x+2*W]]))){x++;continue}
+      const st=x;x++;
+      while(x<W){t=type[row+x];if(BLK[t]&&(KIND[t]===4||(!(data[row+x]&FALL)&&BLK[type[row+x+W]]&&BLK[type[row+x+2*W]])))break;x++}
+      if(x-st>=minW)for(let k=st;k<x;k++)skyW[row+k]=1}}
+  let sp=0;const r2=y0*W;for(let x=0;x<W;x++)if(skyW[r2+x]){skyM[r2+x]=1;skyStk[sp++]=r2+x}
+  while(sp>0){const i=skyStk[--sp],x=i%W,y=(i/W)|0;
+    if(y>y0){const n=i-W;if(skyW[n]&&!skyM[n]){skyM[n]=1;skyStk[sp++]=n}}
+    if(y<H-y0-1){const n=i+W;if(skyW[n]&&!skyM[n]){skyM[n]=1;skyStk[sp++]=n}}
+    if(x>0){const n=i-1;if(skyW[n]&&!skyM[n]){skyM[n]=1;skyStk[sp++]=n}}
+    if(x<W-1){const n=i+1;if(skyW[n]&&!skyM[n]){skyM[n]=1;skyStk[sp++]=n}}}
+}
+const STARS=[];for(let i=0;i<220;i++)STARS.push({x:Math.random(),y:Math.pow(Math.random(),1.3)*.72,b:.35+Math.random()*.65,p:Math.random()*6.28,s:Math.random()<.12?2:1});
+const SCL=[];for(let i=0;i<9;i++)SCL.push({x:Math.random()*1.3-.15,y:.04+Math.random()*.28,w:.05+Math.random()*.07,sp:.00003+Math.random()*.00005});
+let shoot=null,rainAcc=0,rainbowA=0,lastRain=-9999;
+const mix3=(a,b,t)=>[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t];
+const SKYC={dT:hex('#3f8ff0'),dB:hex('#aedcff'),tT:hex('#3c3f8c'),tB:hex('#ff9a5c'),nT:hex('#04051a'),nB:hex('#16204a')};
+const rgb3=c=>'rgb('+(c[0]|0)+','+(c[1]|0)+','+(c[2]|0)+')';
+function skyPh(){return dayNight?(dayT%(60*200))/(60*200):.0}
+function skyUpdate(){
+  for(const cl of SCL){cl.x+=cl.sp*windDir*(cl.w>.08?1:.7);if(cl.x>1.15)cl.x=-.15;else if(cl.x<-.15)cl.x=1.15}
+  rainAcc=Math.max(0,rainAcc-.02);
+  const e=Math.cos(skyPh()*Math.PI*2);
+  const want=(e>.25&&frame-lastRain>120&&frame-lastRain<2600&&rainAcc>30)?1:0;
+  rainbowA+=(want-rainbowA)*.012;if(rainbowA>.45)discover('rainbow');
+  if(shoot){shoot.l++;if(shoot.l>34)shoot=null}
+  else if(e<-.3&&rnd()<.0016)shoot={x:.15+rnd()*.7,y:.04+rnd()*.2,l:0,d:rnd()<.5?1:-1};
+}
+function drawSky(c,cw,ch){
+  c.save();
+  const u=sc(),a=skyPh()*Math.PI*2,e=Math.cos(a);
+  const dk=Math.max(0,Math.min(1,.5+e/.5)),tw=Math.max(0,1-Math.abs(e+.04)/.3),na=Math.max(0,Math.min(1,-e*2+.2));
+  let top=mix3(SKYC.nT,SKYC.dT,dk),bot=mix3(SKYC.nB,SKYC.dB,dk);
+  top=mix3(top,SKYC.tT,tw*.8);bot=mix3(bot,SKYC.tB,tw*.9);
+  if(seasonOn){if(seasonIdx===3){top=mix3(top,[150,165,190],.35);bot=mix3(bot,[222,232,242],.3)}else if(seasonIdx===2){bot=mix3(bot,[255,172,92],.2)}}
+  const gr=c.createLinearGradient(0,0,0,ch*.62);gr.addColorStop(0,rgb3(top));gr.addColorStop(1,rgb3(bot));
+  c.fillStyle=gr;c.fillRect(0,0,cw,ch);
+  const hor=ch*.40;
+  c.save();c.beginPath();c.rect(0,0,cw,hor+2*u);c.clip();
+  if(na>.02){for(const s of STARS){const al=na*s.b*(.65+.35*Math.sin(frame*.04+s.p));
+    c.fillStyle='rgba(255,250,235,'+al.toFixed(2)+')';c.fillRect(Math.floor(s.x*cw),Math.floor(s.y*ch),s.s*u,s.s*u)}}
+  if(shoot){const sx=shoot.x*cw+shoot.d*shoot.l*2.6*u,sy=shoot.y*ch+shoot.l*1.2*u;
+    for(let k=0;k<12;k++){c.fillStyle='rgba(255,255,240,'+(Math.max(0,1-k/12)*Math.min(1,(34-shoot.l)/10)).toFixed(2)+')';
+      c.fillRect(Math.round(sx-shoot.d*k*2.6*u),Math.round(sy-k*1.2*u),Math.max(1,u),Math.max(1,u))}}
+  // slnko a mesiac
+  const R=Math.max(4,Math.round(cw*.022));
+  const sx=cw*(.5+.44*Math.sin(a)),sy=hor-Math.cos(a)*hor*.86;
+  if(sy<hor+R){
+    const gl=c.createRadialGradient(sx,sy,R*.5,sx,sy,R*5);gl.addColorStop(0,'rgba(255,225,130,'+(.4*Math.max(.25,dk)).toFixed(2)+')');gl.addColorStop(1,'rgba(255,225,130,0)');
+    c.fillStyle=gl;c.fillRect(sx-R*5,sy-R*5,R*10,R*10);
+    const sc1=mix3([255,216,74],[255,120,48],tw*.8),sc2=mix3([255,244,184],[255,190,110],tw*.8);
+    for(let q=0;q<2;q++){const rr=q?R-Math.max(2,R*.28):R;c.fillStyle=rgb3(q?sc2:sc1);
+      for(let dy=-rr;dy<=rr;dy++){const hw=Math.floor(Math.sqrt(rr*rr-dy*dy));c.fillRect(Math.round(sx-hw),Math.round(sy+dy),hw*2+1,1)}}}
+  const mx=cw*(.5-.44*Math.sin(a)),my=hor+Math.cos(a)*hor*.86,MR=Math.round(R*.8);
+  if(my<hor+MR){
+    const gl=c.createRadialGradient(mx,my,MR*.5,mx,my,MR*4);gl.addColorStop(0,'rgba(190,205,255,'+(.3*na).toFixed(2)+')');gl.addColorStop(1,'rgba(190,205,255,0)');
+    c.fillStyle=gl;c.fillRect(mx-MR*4,my-MR*4,MR*8,MR*8);
+    c.fillStyle='#e6ebff';for(let dy=-MR;dy<=MR;dy++){const hw=Math.floor(Math.sqrt(MR*MR-dy*dy));c.fillRect(Math.round(mx-hw),Math.round(my+dy),hw*2+1,1)}
+    c.fillStyle='#c4cce6';c.fillRect(Math.round(mx-MR*.4),Math.round(my-MR*.5),Math.max(2,MR*.3),Math.max(2,MR*.3));c.fillRect(Math.round(mx+MR*.1),Math.round(my+MR*.1),Math.max(2,MR*.4),Math.max(2,MR*.35));c.fillRect(Math.round(mx-MR*.5),Math.round(my+MR*.3),Math.max(1,MR*.2),Math.max(1,MR*.2))}
+  c.restore();
+  // mraky v pozadí
+  let cc=mix3([86,96,140],[255,255,255],dk);cc=mix3(cc,[255,186,140],tw*.5);
+  c.fillStyle=rgb3(cc);c.globalAlpha=.55+.3*dk;
+  for(const cl of SCL){const wp=Math.max(10,Math.round(cw*cl.w)),hh=Math.max(3,Math.round(wp*.22)),x0=Math.round(cl.x*cw)-wp,y0=Math.round(cl.y*ch);
+    c.fillRect(x0+Math.round(wp*.15),y0+Math.round(hh*.4),Math.round(wp*.7),Math.round(hh*.6));c.fillRect(x0,y0+Math.round(hh*.7),wp,Math.max(1,Math.round(hh*.3)));
+    c.fillRect(x0+Math.round(wp*.25),y0,Math.round(wp*.25),Math.round(hh*.5));c.fillRect(x0+Math.round(wp*.5),y0+Math.round(hh*.15),Math.round(wp*.2),Math.round(hh*.4))}
+  c.globalAlpha=1;
+  // dúha
+  if(rainbowA>.02){c.globalAlpha=rainbowA*.5*Math.max(.35,dk);const bx=cw*.58,by=hor*1.25,R0=hor*.95;
+    const cols=['#ff4a4a','#ff9a3a','#ffe14a','#52d65c','#3aa0ff','#8a5cff'];
+    for(let k=0;k<6;k++){c.strokeStyle=cols[k];c.lineWidth=2.2*u;c.beginPath();c.arc(bx,by,R0-k*2.2*u,Math.PI*1.05,Math.PI*1.95);c.stroke()}}
+  c.restore();
+}
+
 // ---------- kamera ----------
 const cam={x:0,y:0,s:5};
 let vw=innerWidth,vh=innerHeight;
 function resize(){vw=innerWidth;vh=innerHeight;const dpr=Math.min(window.devicePixelRatio||1,2);cvs.width=Math.round(vw*dpr);cvs.height=Math.round(vh*dpr);clampCam()}
-function minS(){return Math.min(vw/W,vh/H)}
+function minS(){return desk()?Math.max(vw/W,vh/H):Math.min(vw/W,vh/H)}
 function maxS(){return (mode==='retro'?36:18)}
 function clampCam(){cam.s=Math.max(minS(),Math.min(maxS(),cam.s));
   const vwc=vw/cam.s,vhc=vh/cam.s;
   cam.x=vwc>=W?(W-vwc)/2:Math.max(0,Math.min(W-vwc,cam.x));
   cam.y=vhc>=H?(H-vhc)/2:Math.max(-60/cam.s,Math.min(H-vhc+90/cam.s,cam.y))}
-function initCam(){cam.s=Math.max(vh/140,vw/W)*(mode==='detail'?.5:1);let sx=-1;for(let i=0;i<W*H;i++)if(type[i]===E.SOURCE){sx=i%W;break}
+function initCam(){if(desk()){cam.s=minS();cam.x=0;cam.y=(H-vh/cam.s)*.35;clampCam();return}
+  cam.s=Math.max(vh/140,vw/W)*(mode==='detail'?.5:1);let sx=-1;for(let i=0;i<W*H;i++)if(type[i]===E.SOURCE){sx=i%W;break}
   if(sx>=0&&(worldKind==='cave'||worldKind==='winter'||worldKind==='volcano'||worldKind==='forest')){cam.x=sx+(mode==='detail'?20:10)-vw/2/cam.s;cam.y=-50/cam.s;clampCam();return}
   const cx=W>>1;let fy=surfaceY(cx);if(fy<0)fy=H>>1;cam.x=cx-vw/2/cam.s;cam.y=fy-vh*.42/cam.s;clampCam()}
 
@@ -1354,8 +1521,8 @@ const menu=document.getElementById('menu'),menuBtn=document.getElementById('menu
 function closeMenu(){menu.hidden=true;menuBtn.setAttribute('aria-expanded','false');confirmEl.hidden=true}
 menuBtn.onclick=()=>{renderSeason();const open=menu.hidden;menu.hidden=!open;menuBtn.setAttribute('aria-expanded',String(open));renderFound();if(open){checkChallenges();renderChal()}};
 const confirmEl=document.getElementById('confirm');let pending=null;
-const WNAMES={cave:'Nová jaskyňa',aqua:'Akvárko',winter:'Zimný svet',volcano:'Sopka',forest:'Les',desert:'Púšť',beach:'Pláž',islands:'Ostrovy',swamp:'Močiar',empty:'Prázdny svet'};
-for(const [id,k] of [['newBtn','cave'],['aquaBtn','aqua'],['winterBtn','winter'],['volcanoBtn','volcano'],['forestBtn','forest'],['desertBtn','desert'],['beachBtn','beach'],['islandsBtn','islands'],['swampBtn','swamp'],['emptyBtn','empty']])
+const WNAMES={cave:'Nová jaskyňa',aqua:'Akvárko',winter:'Zimný svet',volcano:'Sopka',forest:'Les',desert:'Púšť',beach:'Pláž',islands:'Ostrovy',swamp:'Močiar',land:'Krajina',empty:'Prázdny svet'};
+for(const [id,k] of [['newBtn','cave'],['aquaBtn','aqua'],['winterBtn','winter'],['volcanoBtn','volcano'],['forestBtn','forest'],['desertBtn','desert'],['beachBtn','beach'],['islandsBtn','islands'],['landBtn','land'],['swampBtn','swamp'],['emptyBtn','empty']])
   document.getElementById(id).onclick=()=>{pending=k;document.getElementById('confirmText').textContent=WNAMES[k]+' zmaže tento svet?';confirmEl.hidden=false};
 document.getElementById('noBtn').onclick=()=>{confirmEl.hidden=true};
 document.getElementById('yesBtn').onclick=()=>{const keep=mode;mode='retro';generate(pending);if(keep==='detail'){mode='retro';setMode('detail',true)};initCam();closeMenu();save()};
@@ -1389,7 +1556,7 @@ addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;
   else if(e.key==='Escape'){closeMenu();if(kino)setKino(false)}});
 
 // ---------- objavy ----------
-const FOUND=[['grass','Zem + voda = tráva'],['flower','Mokrá tráva = kvety'],['tree','Semienko + mokrá zem = strom'],['obsid','Láva + voda = obsidián'],['glass','Láva + piesok = sklo'],
+const FOUND=[['rainbow','Dúha'],['grass','Zem + voda = tráva'],['flower','Mokrá tráva = kvety'],['tree','Semienko + mokrá zem = strom'],['obsid','Láva + voda = obsidián'],['glass','Láva + piesok = sklo'],
   ['rain','Para sa zrazí na dážď'],['fire','Oheň + drevo = žeravé drevo'],['ash','Žeravé drevo zhorí na popol'],['douse','Voda zahasí oheň'],
   ['ants','Mravce si kopú tunely'],['torch','Baník si zavesil fakľu'],['bridge','Baník vylial vodu na lávu = most'],['house','Baníci si postavili domček'],['night','Prvá noc: svetlušky'],
   ['fish','Ryby jedia riasy a množia sa'],['algae','Riasy sa šíria po dne'],['bubble','Bublinky praskajú na hladine'],['ice','Voda pri ľade zamŕza'],
@@ -1416,8 +1583,7 @@ function drawMap(){
   if(!mapOn||kino){mmEl.hidden=true;return}
   mmEl.hidden=false;const cw=mmEl.clientWidth||72,ch=Math.round(cw*H/W),bw=cw*2,bh=ch*2;
   if(mmEl.width!==bw||mmEl.height!==bh){mmEl.width=bw;mmEl.height=bh;mmEl.style.height=ch+'px'}
-  mmc.imageSmoothingEnabled=true;mmc.drawImage(off,0,0,bw,bh);
-  if(nightF>0){mmc.fillStyle=`rgba(4,6,24,${nightF.toFixed(2)})`;mmc.fillRect(0,0,bw,bh)}
+  mmc.imageSmoothingEnabled=true;mmc.setTransform(1,0,0,1,0,0);mmc.clearRect(0,0,bw,bh);mmc.save();mmc.scale(bw/W,bw/W);drawSky(mmc,W,H);mmc.restore();mmc.drawImage(off,0,0,bw,bh);
   const k=bw/W;mmc.strokeStyle='#f4a63b';mmc.lineWidth=2;
   const x0=Math.max(1,cam.x*k),y0=Math.max(1,cam.y*k),x1=Math.min(bw-1,(cam.x+vw/cam.s)*k),y1=Math.min(bh-1,(cam.y+vh/cam.s)*k);
   mmc.strokeRect(x0,y0,Math.max(4,x1-x0),Math.max(4,y1-y0))}
@@ -1428,9 +1594,7 @@ mmEl.addEventListener('pointerup',()=>{mmDrag=false});mmEl.addEventListener('poi
 // ---------- fotka a zdieľanie ----------
 function photoCanvas(){
   const k=Math.max(2,Math.round(1200/W));const c=document.createElement('canvas');c.width=W*k;c.height=H*k;const x=c.getContext('2d');
-  x.imageSmoothingEnabled=false;x.drawImage(off,0,0,W*k,H*k);
-  if(nightF>0){x.fillStyle=`rgba(4,6,24,${nightF.toFixed(3)})`;x.fillRect(0,0,c.width,c.height)}
-  if(seasonOn&&seasonIdx>0)x.fillStyle=seasonIdx===1?'rgba(255,206,90,.05)':seasonIdx===2?'rgba(255,120,30,.06)':'rgba(150,190,255,.09)',x.fillRect(0,0,c.width,c.height);
+  x.imageSmoothingEnabled=false;x.save();x.scale(k,k);drawSky(x,W,H);x.restore();x.drawImage(off,0,0,W*k,H*k);
   x.save();x.globalCompositeOperation='lighter';x.imageSmoothingEnabled=true;x.drawImage(lcv,0,0,(LW<<LS)*k,(LH<<LS)*k);x.restore();
   const fs=Math.round(2.6*k);x.font='600 '+fs+'px "Pixelify Sans", ui-monospace, monospace';x.textAlign='right';
   x.fillStyle='rgba(0,0,0,.5)';x.fillText('durica.si/stvoril',c.width-k*2+1,c.height-k*2+1);x.fillStyle='rgba(236,230,210,.9)';x.fillText('durica.si/stvoril',c.width-k*2,c.height-k*2);
@@ -1990,7 +2154,7 @@ function updateAgents(){
 // ---------- deň a noc, svetlušky ----------
 function updateSky(){
   if(rnd()<1/1200)windDir=rnd()<.5?-1:1;
-  tideTick();seasonTick();
+  tideTick();seasonTick();skyUpdate();
   if(worldKind==='winter'&&rnd()<.35*sc()){const x=3+((rnd()*(W-6))|0);if(type[3*W+x]===0)setCell(3*W+x,E.SNOW,0)}
   if(!dayNight){nightF=Math.max(0,nightF-.01);return}
   dayT++;const ph=(dayT%(60*200))/(60*200);
@@ -2066,7 +2230,7 @@ function drawBubbles(dpr){
 renderLife();renderSeason();renderMapBtn();
 addEventListener('resize',resize);
 resize();
-if(!load())generate(false);
+if(!load())generate(desk()?'land':false);
 setGrav(g);
 initCam();
 let lastStep=0;

@@ -143,7 +143,7 @@ for (const k of O.kanaly) for (const p of k.program){
     const autorMusi = p.autor ? new RegExp(p.autor, 'i') : null;   // voliteľné: len od týchto nahrávateľov
     const minS = p.minSek ?? (p.hladaj ? 300 : 240), maxS = p.maxSek ?? (p.hladaj ? 3600 : 5400);   // bez krátkych klipov a dlhých kompilácií
     const odmietnute = [];
-    const zamietni = (x, d) => { if (p.hladaj && odmietnute.length < 12) odmietnute.push(d + ': ' + (x.nazov || '').slice(0, 70)); };
+    const zamietni = (x, d) => { if (odmietnute.length < (p.hladaj ? 12 : 25)) odmietnute.push(d + ': ' + (x.nazov || '').slice(0, 70) + (x.s ? ' [' + Math.round(x.s / 60) + ' min]' : '')); };
     for (const x of zoznam){
       if (videne.has(x.id)) continue;
       if (BLOK.has(x.id)){ zamietni(x, 'zablokované'); continue; }
@@ -164,12 +164,12 @@ for (const k of O.kanaly) for (const p of k.program){
         videneNazvy.add(n);
       }
       if (x.s && (x.s < minS || x.s > maxS)){ zamietni(x, 'dĺžka ' + x.s); continue; }
-      if (vlozit && !vlozit.test(x.nazov || '')) continue;      // voliteľné: názov musí obsahovať (obsahuje:'regex')
-      if (vynechat && vynechat.test(x.nazov || '')) continue;   // voliteľné: názov nesmie obsahovať (vynechaj:'regex')
+      if (vlozit && !vlozit.test(x.nazov || '')){ zamietni(x, 'nesedí názov'); continue; }      // voliteľné: názov musí obsahovať (obsahuje:'regex')
+      if (vynechat && vynechat.test(x.nazov || '')){ zamietni(x, 'vynechané'); continue; }   // voliteľné: názov nesmie obsahovať (vynechaj:'regex')
       if (/porovnání|porovnanie|trailer|upoutávka|upútavka|unboxing|ukážka|ukázka|intro\b|znělka|znelka|opening|reakce|recenze|parodie|AMV/i.test(x.nazov || '')) continue;
       videne.add(x.id); unik.push(x);
     }
-    if (p.hladaj) ladenie.push(`výsledok ${kluc}: ${zoznam.length} nájdených, ${unik.length} prijatých\n    ` + odmietnute.join('\n    '));
+    ladenie.push(`výsledok ${kluc}: ${zoznam.length} nájdených, ${unik.length} prijatých\n    ` + odmietnute.join('\n    '));
     if (unik.length || (p.hladaj && zoznam.length)){ plVysledky[kluc] = unik.slice(0, p.max || 60); console.log('Playlist', kluc, '→', plVysledky[kluc].length, 'videí'); }   // pri hľadaní platí nový výsledok, aj keď je prázdny
     else if (starePl[kluc]){ plVysledky[kluc] = starePl[kluc]; console.log('Playlist', kluc, 'sa nepodarilo načítať, nechávam starý zoznam'); }
     else console.log('Playlist', kluc, 'je prázdny alebo sa nedá načítať');

@@ -16,7 +16,55 @@
 window.POZERAL = {
 
   // Ručne vyradené videá (napr. keď vieš, že na YouTube už nie sú). Skener tento zoznam nemení.
+  // nahrávatelia, ktorých videá nikdy nepúšťame (herné let's play, audioknihy, cudzie dabingy, fanúšikovské kompilácie)
+  zakazaniAutori: ["AUDIOKNIHY PRO DĚTI", "Amálie Hučíková", "Barevný Svět zábavy Pejska a Kočičky", "Camille Santana", "Chronicles from the Cathode Tube", "Danovo DVD", "Dobré Pohádky", "Gellnerka Brno", "MATRIXXXL007", "Neywa Games", "PS Mláďata Chotěboř", "Radek Klaudis", "ShortStoryTime", "Studio Lyra - Klasické pohádky a příběhy", "Untilia", "Vetus", "ViolentNiceGuy", "czech bodybuilding", "interbubakcz", "nasuke159", "tyronejoseph senasi", "Bajki po Polsku", "Medojed", "Česká LP pařba"],
   nefunguje: [
+    'r_eIKpRktvw',  // Danovo DVD – krtek a kalhotky (celý film)
+    '6Iw3CbQ6j1Y',  // ShortStoryTime – Krtek o Vánocích - The Little Mole and C
+    'a2ZeGyt4tv8',  // Zuzana Nováková – Maxipes Fík    zmoudření Maxipsa Fíka
+    'FcplaEMyAjs',  // TV Mix TV na přání – Maxipes Fík - mluvená pohádka
+    'yI_DGd5NFdI',  // AUDIOKNIHY PRO DĚTI – Maxipes Fík - LP nahrávka - Strana B
+    'QnzlK0y3xdE',  // AUDIOKNIHY PRO DĚTI – Maxipes Fík - LP nahrávka - Strana A
+    'PTuMXXyQLJ4',  // Vojtěch Kopta – Maxipes Fík ve škole
+    'FUcMf1vEsp8',  // Vojtěch Kopta – Maxipes Fík na lodi
+    'bwcRz79q--w',  // Danovo DVD – Menu k DVD Maxipes fík 1 (15. listopadu 
+    'MJtvbjNFzcM',  // Danovo DVD – DVD Pohádky z mechu a kapradí 1/2 (Země 
+    'UHDO4mPv774',  // Chronicles from the  – Krtek / The Little Mole  Episode 012  Kr
+    'FkGauEYpU-M',  // Camille Santana – Krtek♥️
+    '1YwWjen2-w4',  // Chronicles from the  – Krtek / The Little Mole  Episode 037  Kr
+    'zaJozAY3Mrg',  // ShortStoryTime – Krtek a medicína - The Little Mole and M
+    '-CBWadpy95w',  // ShortStoryTime – Krtek a orel - The Little Mole and the E
+    '0kdXKzpaRFE',  // ShortStoryTime – Krtek v ZOO - The Little Mole at the ZOO
+    'A7P6IDxcdzo',  // Chronicles from the  – Krtek / The Little Mole  Episode 040  Kr
+    'Ts8w6M9RZUc',  // Chronicles from the  – Krtek / The Little Mole  Episode 041  Kr
+    'LcN1uG6i2gM',  // Chronicles from the  – Krtek / The Little Mole  Episode 006  Kr
+    'AfBwe30yOiU',  // Chronicles from the  – Krtek / The Little Mole  Episode 039  Kr
+    'kC1zjw7dmJc',  // czech bodybuilding – Bořek stavitel 2010
+    'dYdlyQujL6M',  // tyronejoseph senasi – barbapapa s2 voice cz
+    'UZxQPFRL9zA',  // interbubakcz – O pejskovi, kočičce a napraveném vlkovi 
+    'yTeMiL_Ojvg',  // Radek Klaudis – Karel Höger vypráví nejlepší pohádky - P
+    '-k0HKjAstgk',  // Gellnerka Brno – O pejskovi a kočičce  - Jak dělali dort
+    'mO2lSPx2NTM',  // Dobré Pohádky – O pejskovi a kočičce – Jak to bylo na Vá
+    'qAJlpSFT83o',  // Amálie Hučíková – O pejskovi a kočičce - O klucích z Domaž
+    'DYs15S0JRXY',  // Studio Lyra - Klasic – Jak Pejska ofouklo - pohádka na dobrou n
+    'SEWbJC9hYrg',  // PS Mláďata Chotěboř – Povídání o pejskovi a kočičce
+    'iURXwE0f1CQ',  // Barevný Svět zábavy  – O pejskovi a kočičce - O klucích z Domaž
+    'TcVrLHT2x-Y',  // ViolentNiceGuy – Život s Louiem 2x02 Léto mé nespokojenos
+    'WrwuSgHOHBg',  // MATRIXXXL007 – Diablo 3 český Let´s play Witch Doctor (
+    'gFrpwDo3hNk',  // MATRIXXXL007 – Diablo 3 český Let´s play Witch Doctor (
+    'KWirTl0vnU0',  // Untilia – BLAIR WITCH game (part_06) česky
+    'ForN7dkOKik',  // Neywa Games – SKUTEČNÝ DUCH? - Scooby Doo: Počátky str
+    'XO8QwISMhuQ',  // Neywa Games – PO STOPÁCH VLKODLAKŮ - Scooby Doo: Počát
+    '2iYgX0BvzMg',  // Neywa Games – ROBOKRABÍ VÝVAR - Scooby Doo: Počátky st
+    '0v8OLYjIrPg',  // Neywa Games – AAA... SAKRA! - Scooby Doo: Počátky stra
+    '6LZkkUJdy2Q',  // Neywa Games – VELMA VÁLÍ - Scooby Doo: Počátky strachu
+    'Q8OmGK83DZk',  // Neywa Games – PTÁCI NA CIMBUŘÍ, VLKODLACI NA DVORKU - 
+    '0s9afsgW2D8',  // Neywa Games – Roboboss - Scooby Doo: Počátky strachu -
+    'KEOCbn94mmE',  // Vetus – 23 Zajímavostí o Seriálu Scooby-Doo, kte
+    '4oSkyKa4UOE',  // Česká LP pařba – CZ LP : Dark Souls - Bell Gargoyle ! (Pa
+    'sccG1FB_PwU',  // Bajki po Polsku – gormiti-Final evolution cz 3/3 Pl
+    'PQtLftk_8bY',  // Medojed – Avatar: Legenda o Aangovi od Netflixu Je
+    'CiywEQOQkzI',  // nasuke159 – Naruto Manga 410 (dabing)
     'pwOIfrUEA8M',  // Naruto 1. díl, 1. časť (Jetix dabing) – na YouTube nejde
     // 9. 11.: cudzie videá (návody) a anglický Louie na CZ kanáli
     '1-I4plfXwGY', '2mhVQkn5Vdw', '4eyO3Fo_VKE', '9dDNoJOiavw', 'C57BqJKtu6o', 'NR1pbgjnutc', 'P1c6Fsc0LPs', 'PJFKb759QR0', 'Qg7lpDZikhc', 'RRNxhuXi-uo', 'Vn2Prt0vOZ8', 'W03Aoa2KMdE', 'XqUrfKQUkN4', '_BjXI-9hsnE', 'bS_J779_DM0', 'c_uU2Dg020I', 'dDOETyclPaQ', 'eHRGxeLLfw4', 'eJoqrmnfbV0', 'fBAv7UUyUtY', 'nRfxKHPmGUg', 'nv5YQ5NUHYU', 'qyxhglThTwo', 'wwqPVx4fGoc', 'xuUus4PZlF4', 'ze6UyW7idCI'
@@ -119,7 +167,6 @@ window.POZERAL = {
         { kanal:'@byljednoujedenzivot', show:'Byl jednou jeden… život', lang:'CZ', min:25, max:20 },
         { playlist:'PLh4oNLWEP1pov-S4X2rwB3e1kKFFjecKe', show:'Bob a Bobek', lang:'CZ', min:8, max:30 },
         { hladaj:['Bolek a Lolek', 'Bolek a Lolek celý díl', 'Bolek a Lolek cz'], obsahuje:'bolek a lolek', show:'Bolek a Lolek', lang:'CZ', min:9, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke', minSek:240, maxSek:1800 },
-        { hladaj:['Maxipes Fík', 'Maxipes Fík celý díl'], obsahuje:'maxipes', show:'Maxipes Fík', lang:'CZ', min:8, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke', minSek:240, maxSek:1800 },
         { hladaj:['Pohádky z mechu a kapradí', 'Křemílek a Vochomůrka'], obsahuje:'mechu a kaprad|křemílek|vochomůrk', show:'Pohádky z mechu a kapradí', lang:'CZ', min:8, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke', minSek:240, maxSek:1800 },
         { hladaj:['O loupežníku Rumcajsovi', 'Rumcajs večerníček'], obsahuje:'rumcajs', show:'Rumcajs', lang:'CZ', min:8, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film', minSek:240, maxSek:1800 },
         { hladaj:['Krtek večerníček', 'Krteček celý díl', 'Krtek a kalhotky'], obsahuje:'krte(k|ček)', show:'Krtek', lang:'bez slov', min:7, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|na dobrou noc|zábava|vyrábí|kreslen|kreslí', minSek:240, maxSek:1800 },
@@ -129,11 +176,10 @@ window.POZERAL = {
         { hladaj:['Mumínci', 'Mumínci celý díl'], obsahuje:'mumín', show:'Mumínci', lang:'CZ', min:22, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie|trailer', minSek:300, maxSek:1800 },
         { hladaj:['Bořek stavitel cz', 'Bořek stavitel celý díl'], obsahuje:'bo[řr]ek stavitel', show:'Bořek stavitel', lang:'CZ', min:10, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|toys?|stavebnic|unbox', minSek:240, maxSek:1800 },
         { hladaj:['Mašinka Tomáš cz', 'Mašinka Tomáš a jeho přátelé'], obsahuje:'ma[šs]inka tom[áa][šs]', show:'Mašinka Tomáš', lang:'CZ', min:10, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|toys?|vláčk|trackmaster|unbox|koleje|dráha|vlaky', minSek:240, maxSek:1800 },
-        { hladaj:['Barbapapa cz', 'Barbapapa česky'], obsahuje:'barbapapa', show:'Barbapapa', lang:'CZ', min:5, max:30, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke', minSek:180, maxSek:1800 },
         { hladaj:['Šmoulové cz', 'Šmoulové celý díl'], obsahuje:'šmoul', show:'Šmoulové', lang:'CZ', min:12, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie|trailer', minSek:300, maxSek:1800 },
         { hladaj:['Šmolkovia sk dabing', 'Šmolkovia celý diel'], obsahuje:'šmolkov', show:'Šmolkovia', lang:'SK', min:12, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie|trailer', minSek:300, maxSek:1800 },
         { hladaj:['Maťko a Kubko'], obsahuje:'ma[ťt]ko a kubko', show:'Maťko a Kubko', lang:'SK', min:8, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke', minSek:180, maxSek:1800 },
-        { hladaj:['O pejskovi a kočičce', 'Povídání o pejskovi a kočičce'], obsahuje:'pejsk', show:'O pejskovi a kočičce', lang:'CZ', min:8, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film', minSek:240, maxSek:1800 },
+        { hladaj:['O pejskovi a kočičce', 'Povídání o pejskovi a kočičce'], obsahuje:'pejsk', autor:'^(Emil Zak|Filmy - cz dabing|bodomil17)$', show:'O pejskovi a kočičce', lang:'CZ', min:8, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film', minSek:240, maxSek:1800 },
         { hladaj:['Jája a Pája'], obsahuje:'jája a pája', show:'Jája a Pája', lang:'CZ', min:8, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke', minSek:180, maxSek:1800 },
         { hladaj:['Ferda Mravenec večerníček', 'Ferda Mravenec celý díl'], obsahuje:'ferda', show:'Ferda Mravenec', lang:'CZ', min:8, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|hra', minSek:240, maxSek:1800 }
       ]
@@ -246,15 +292,14 @@ window.POZERAL = {
         { hladaj:['Robotboy cz', 'Robotboy česky', 'Robotboy cz dabing díl'], obsahuje:'robot ?boy', show:'Robotboy', lang:'CZ', min:22, max:30 },
         { hladaj:['Život s Louiem', 'Život s Louiem celý díl', 'Život s Louiem S02', 'Život s Louiem CZ dabing'], obsahuje:'louiem', vynechaj:'life with', show:'Život s Louiem', lang:'CZ', min:22, max:60, jazyk:false },
         { hladaj:['Klíšťák cz', 'Klíšťák celý díl', 'Klíšťák část 1/2', 'Klíšťák S01'], obsahuje:'klíšťák|klistak|klíšťak', show:'Klíšťák', lang:'CZ', min:10, max:60, jazyk:false },
-        { hladaj:['Tři kamarádi a Jerry', 'Tři kamarádi a Jerry celý díl', 'Tři kamarádi a Jerry CZ', 'Tři kamarádi a Jerry S2'], obsahuje:'kamarádi a jerry|kamaradi a jerry', show:'Tři kamarádi a Jerry', lang:'CZ', min:7, max:60, jazyk:false },
-        { hladaj:['WITCH cz dabing', 'W.I.T.C.H. česky'], obsahuje:'w\\.?i\\.?t\\.?c\\.?h', show:'W.I.T.C.H.', lang:'CZ', min:22, max:30 },
+        { hladaj:['Tři kamarádi a Jerry', 'Tři kamarádi a Jerry celý díl', 'Tři kamarádi a Jerry CZ', 'Tři kamarádi a Jerry S2'], obsahuje:'kamarádi a jerry|kamaradi a jerry', vynechaj:'EN\\.dab|\\(EN', show:'Tři kamarádi a Jerry', lang:'CZ', min:7, max:60, jazyk:false },
+        { hladaj:['WITCH cz dabing', 'W.I.T.C.H. česky'], obsahuje:'w\\.?i\\.?t\\.?c\\.?h', autor:'W\\.I\\.T\\.C\\.H CZ|CTENO95', show:'W.I.T.C.H.', lang:'CZ', min:22, max:30 },
         { hladaj:['Rychlá rota cz', 'Rychlá rota celý díl', 'Rychlá rota cz dabing'], obsahuje:'rychl[áa] rota', show:'Rychlá rota', lang:'CZ', min:22, max:30, jazyk:false },
         { hladaj:['Totální drama cz', 'Totální drama ostrov'], obsahuje:'tot[áa]ln[íi] drama', show:'Totální drama', lang:'CZ', min:22, max:30, jazyk:false },
         { hladaj:['Garfieldova show cz', 'Garfieldova show celý díl', 'Garfield show sk dabing'], obsahuje:'garfield', show:'Garfieldova show', lang:'CZ', min:12, max:40 },
         { hladaj:['Gumídci', 'Gumídci celý díl', 'Gumídci cz'], obsahuje:'gumídci|gumidci', show:'Gumídci', lang:'CZ', min:22, max:30, jazyk:false, minSek:600, maxSek:1800 },
         { hladaj:['Darkwing Duck cz', 'Darkwing Duck česky'], obsahuje:'darkwing', show:'Darkwing Duck', lang:'CZ', min:22, max:30, minSek:600, maxSek:1800 },
         { hladaj:['Timon a Pumbaa cz', 'Timon a Pumbaa celý díl'], obsahuje:'timon a pumb', show:'Timon a Pumbaa', lang:'CZ', min:11, max:30, jazyk:false, minSek:300, maxSek:1800 },
-        { hladaj:['Scooby Doo cz dabing', 'Scooby-Doo česky celý díl'], obsahuje:'scooby', show:'Scooby-Doo', lang:'CZ', min:22, max:30, vynechaj:'film|movie|trailer|hra|game|lego|hračk', minSek:600, maxSek:1800 },
         { hladaj:['Pepek námořník', 'Pepek námořník cz'], obsahuje:'pepek', show:'Pepek námořník', lang:'CZ', min:7, max:30, jazyk:false, minSek:240, maxSek:1800 },
         { hladaj:['Animáci cz', 'Animáci celý díl'], obsahuje:'animáci', show:'Animáci', lang:'CZ', min:22, max:30, jazyk:false, minSek:600, maxSek:1800 },
         { hladaj:['Pinky a Brain cz', 'Pinky a Brain česky'], obsahuje:'pinky a brain', show:'Pinky a Brain', lang:'CZ', min:22, max:30, jazyk:false, minSek:300, maxSek:1800 },
@@ -270,7 +315,6 @@ window.POZERAL = {
         { hladaj:['SpongeBob v nohaviciach', 'SpongeBob v nohaviciach sk'], obsahuje:'v nohavic', show:'SpongeBob v nohaviciach', lang:'SK', min:11, max:30, jazyk:false, vynechaj:'film|movie|hra|game|lego|hračk|minecraft|roblox', minSek:300, maxSek:1800 },
         { hladaj:['Inspektor Gadget cz', 'Inspektor Gadget česky'], obsahuje:'inspektor gadget', show:'Inspektor Gadget', lang:'CZ', min:22, max:30, vynechaj:'film|movie|2015', minSek:600, maxSek:1800 },
         { hladaj:['Kim Possible cz dabing díl'], obsahuje:'kim possible', show:'Kim Possible', lang:'CZ', min:22, max:30, vynechaj:'film|movie|ps2|gba|hra|game', minSek:600, maxSek:1800 },
-        { hladaj:['Gargoyles cz dabing'], obsahuje:'gargoyl', show:'Gargoyles', lang:'CZ', min:22, max:30, minSek:600, maxSek:1800 }
       ]
     },
     {
@@ -314,9 +358,8 @@ window.POZERAL = {
         { hladaj:['Ben 10 cz dabing', 'Ben 10 česky celý díl'], obsahuje:'ben ?10', show:'Ben 10', lang:'CZ', min:22, max:30, vynechaj:'omnitrix|hračk|toy' },
         { hladaj:['Power Rangers cz dabing', 'Power Rangers česky', 'Power Rangers Síla Strážců cz', 'Mighty Morphin Power Rangers CZ'], obsahuje:'power rangers', show:'Power Rangers', lang:'CZ', min:22, max:50, vynechaj:'film|movie|trailer|game|toy' },
         { hladaj:['Gormiti cz'], obsahuje:'gormiti', show:'Gormiti', vynechaj:'apk|sběratel|kolekc', lang:'CZ', min:22, max:30 },
-        { hladaj:['Avatar Legenda o Aangovi cz', 'Legenda o Aangovi díl'], obsahuje:'aangovi', show:'Avatar: Legenda o Aangovi', lang:'CZ', min:22, max:30, jazyk:false, vynechaj:'film|movie|hra|game|korr', minSek:600, maxSek:1800 },
         { hladaj:['Bakugan cz dabing', 'Bakugan bitevní planeta cz'], obsahuje:'bakugan', show:'Bakugan', lang:'CZ', min:22, max:30, vynechaj:'hračk|toys?|unbox|recenz|game|hra', minSek:600, maxSek:1800 },
-        { hladaj:['Naruto cz dabing díl', 'Naruto český dabing'], obsahuje:'naruto', show:'Naruto', lang:'CZ', min:22, max:30, vynechaj:'shippuden|boruto|film|movie|amv|titulk|\\btit\\b|\\bsub|game|hra|storm|reakc', minSek:600, maxSek:1800 },
+        { hladaj:['Naruto cz dabing díl', 'Naruto český dabing'], obsahuje:'naruto', autor:'^Naruto cz$', show:'Naruto', lang:'CZ', min:22, max:30, vynechaj:'shippuden|boruto|film|movie|amv|titulk|\\btit\\b|\\bsub|game|hra|storm|reakc', minSek:600, maxSek:1800 },
         { hladaj:['Yu-Gi-Oh cz dabing díl'], obsahuje:'yu-?gi-?oh', show:'Yu-Gi-Oh!', lang:'CZ', min:22, max:30, vynechaj:'karty|cards?|booster|pack|deck|duel links|master duel|game|hra|ps\\d', minSek:600, maxSek:1800 },
         { hladaj:['Želvy ninja cz dabing díl', 'Želvy ninja 2003 cz'], obsahuje:'[žz]elvy ninja', show:'Želvy Ninja', lang:'CZ', min:22, max:30, jazyk:false, diel:true, vynechaj:'film|movie|trailer|hra|game|lego|hračk|figur', minSek:600, maxSek:1800 },
         { hladaj:['Beyblade Metal Fusion cz', 'Beyblade Metal Fury cz', 'Beyblade cz dabing díl'], obsahuje:'beyblade', show:'Beyblade', lang:'CZ', min:22, max:30, vynechaj:'hračk|toys?|unbox|souboj|arena|launcher|recenz|test|stadium', minSek:600, maxSek:1800 },
@@ -339,17 +382,22 @@ window.POZERAL = {
         { id:'iDchyEK-l5Q', show:'SpongeBob SquarePants', ep:'3 hodiny najlepších dielov', lang:'EN', min:165 },
         { id:'uoMvv03mm4E', show:'SpongeBob SquarePants', ep:'120 minút nových dielov', lang:'EN', min:110 },
         // SpongeBob: oficiálne kanály, len diely a maratóny (nie krátke klipy a "momenty")
-        { kanal:'@SpongeBobOfficial', show:'SpongeBob SquarePants', lang:'EN', min:44, max:600, minSek:1200, maxSek:14400,
-          obsahuje:'episodes?|marathon|full\\s+ep', vynechaj:'moment|scene|recreation|IRL|in \\d+ minutes?|minute from|clip|reaction|tutorial|how to|game|trailer|LIVE|español|latino|capítulo|hindi|tamil|telugu|urdu|bahasa|indonesia|português|dublado|deutsch|français|русск' },
-        { playlist:'UUx27Pkk8plpiosF14qXq-VA', show:'SpongeBob SquarePants', lang:'EN', min:44, max:600, minSek:1200, maxSek:14400,
-          obsahuje:'episodes?|marathon|full\\s+ep', vynechaj:'moment|scene|recreation|IRL|in \\d+ minutes?|minute from|clip|reaction|tutorial|how to|game|trailer|LIVE|español|latino|capítulo|hindi|tamil|telugu|urdu|bahasa|indonesia|português|dublado|deutsch|français|русск' },
+        { kanal:'@SpongeBobOfficial', show:'SpongeBob SquarePants', lang:'EN', min:44, max:600, minSek:900, maxSek:14400,
+          obsahuje:'episodes?|marathon|full\\s+ep|hours?\\b|season', vynechaj:'moment|scene|recreation|IRL|in \\d+ minutes?|minute from|clip|reaction|tutorial|how to|game|trailer|LIVE|español|latino|capítulo|hindi|tamil|telugu|urdu|bahasa|indonesia|português|dublado|deutsch|français|русск' },
+        { playlist:'UUx27Pkk8plpiosF14qXq-VA', show:'SpongeBob SquarePants', lang:'EN', min:44, max:600, minSek:900, maxSek:14400,
+          obsahuje:'episodes?|marathon|full\\s+ep|hours?\\b|season', vynechaj:'moment|scene|recreation|IRL|in \\d+ minutes?|minute from|clip|reaction|tutorial|how to|game|trailer|LIVE|español|latino|capítulo|hindi|tamil|telugu|urdu|bahasa|indonesia|português|dublado|deutsch|français|русск' },
 
         // Johnny Bravo: celé diely po anglicky
         // (playlist PLjScWr8… vyhodený 9. 11.: „Full Episode N“ boli cudzie videá, nie Johnny Bravo)
         { playlist:'PLCVuwQ1eXVCWVeSpX0khngqq_UIpX5hYU', show:'Johnny Bravo', lang:'EN', min:11, max:150, minSek:420, maxSek:3000,
           obsahuje:'Bravo', vynechaj:'new episode|watch full|johny|español|latino|capítulo|hindi|tamil|telugu|urdu|bahasa|indonesia|português|dublado|deutsch|français|русск|best of|best moments|top 10|compilation|Johnny Test' },
         { kanal:'johnnybravochannel', show:'Johnny Bravo', lang:'EN', min:22, max:300, minSek:420, maxSek:3000,
-          obsahuje:'Johnny Bravo', vynechaj:'new episode|watch full|johny|español|latino|capítulo|hindi|tamil|telugu|urdu|bahasa|indonesia|português|dublado|deutsch|français|русск|best of|best moments|top 10|compilation|theme|intro|Johnny Test' }
+          obsahuje:'Johnny Bravo', vynechaj:'new episode|watch full|johny|español|latino|capítulo|hindi|tamil|telugu|urdu|bahasa|indonesia|português|dublado|deutsch|français|русск|best of|best moments|top 10|compilation|theme|intro|Johnny Test' },
+        // Ďalšie klasiky po anglicky (cez vyhľadávanie; nahrávateľov overujem v inventúre)
+        { hladaj:['Johnny Bravo full episode', 'Johnny Bravo season 1 episodes'], jazyk:false, diel:false, obsahuje:'johnny bravo', show:'Johnny Bravo', lang:'EN', min:11, max:30, minSek:600, maxSek:3000, vynechaj:'johnny test|best of|compilation|moments|español|latino|hindi|tamil|dublado|deutsch|français|русск|trailer|game|reaction|theme|intro|cz|sk\\b|česk|slovensk' },
+        { hladaj:['Dexters Laboratory full episodes', 'Dexter\'s Laboratory full episode'], jazyk:false, diel:false, obsahuje:'dexter', show:"Dexter's Laboratory", lang:'EN', min:22, max:30, minSek:600, maxSek:3000, vynechaj:'best of|compilation|moments|español|latino|hindi|tamil|dublado|deutsch|français|русск|trailer|game|reaction|theme|intro|cz|sk\\b|česk|slovensk' },
+        { hladaj:['Courage the Cowardly Dog full episode'], jazyk:false, diel:false, obsahuje:'courage', show:'Courage the Cowardly Dog', lang:'EN', min:22, max:30, minSek:600, maxSek:3000, vynechaj:'best of|compilation|moments|español|latino|hindi|tamil|dublado|deutsch|français|русск|trailer|game|reaction|theme|intro|cz|sk\\b|česk|slovensk' },
+        { hladaj:['Ed Edd n Eddy full episode'], jazyk:false, diel:false, obsahuje:'ed,? edd', show:'Ed, Edd n Eddy', lang:'EN', min:22, max:30, minSek:600, maxSek:3000, vynechaj:'best of|compilation|moments|español|latino|hindi|tamil|dublado|deutsch|français|русск|trailer|game|reaction|theme|intro|cz|sk\\b|česk|slovensk' }
       ]
     }
   ],

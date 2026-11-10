@@ -93,6 +93,50 @@
       }
     },
     {
+      "id": "gtb3d",
+      "name": "Grand Theft Bratislava 3D",
+      "short": "GTB 3D",
+      "group": "hry",
+      "url": "appky/grand-theft-bratislava-3d/",
+      "icon": "appky/img/gtb3d-192.png",
+      "desc": {
+        "sk": "Staré Mesto v plnej 3D grafike: autá, električky, polícia, pešia zóna.",
+        "en": "Bratislava Old Town in full 3D: cars, trams, police, the pedestrian zone."
+      },
+      "visibility": "public",
+      "embed": true,
+      "away": false,
+      "allow": "fullscreen; autoplay",
+      "win": [
+        1100,
+        720
+      ],
+      "sitemap": {
+        "priority": 0.5
+      },
+      "linky": {
+        "section": "hry",
+        "order": 5,
+        "banner": "g-gtb3d.webp",
+        "h": 150,
+        "dark": false,
+        "shade": "side",
+        "kicker": "3D · STARÉ MESTO",
+        "title": "Grand Theft Bratislava 3D",
+        "line": "autá, električky, polícia, pešia zóna",
+        "gc": "gtb3d"
+      },
+      "titulka": {
+        "order": 5,
+        "img": "appky/grand-theft-bratislava-3d/thumb.webp",
+        "w": 512,
+        "h": 512,
+        "alt": "Grand Theft Bratislava 3D",
+        "sk": "Staré Mesto v plnej 3D grafike. Skutočná mapa, autá, električky, polícia, pešia zóna.",
+        "en": "Bratislava Old Town in full 3D. Real map, cars, trams, police, the pedestrian zone."
+      }
+    },
+    {
       "id": "gtb",
       "name": "Grand Theft Bratislava",
       "short": "GT Bratislava",

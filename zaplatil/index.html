@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>si/zaplatil</title>
+<meta name="description" content="Nahraj účet. Znudený miliardár swipne doprava a zaplatí ho.">
+<meta name="theme-color" content="#0f1d18">
+<link rel="canonical" href="https://durica.si/zaplatil/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="durica.si">
+<meta property="og:title" content="si/zaplatil">
+<meta property="og:description" content="Nahraj účet. Znudený miliardár swipne doprava a zaplatí ho.">
+<meta property="og:url" content="https://durica.si/zaplatil/">
+<meta property="og:image" content="https://durica.si/zaplatil/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="ikony/icon-192.png">
+<link rel="apple-touch-icon" href="ikony/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="si/zaplatil">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://znsrokpaoczljisaoulu.supabase.co">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+
+  <header class="hlava">
+    <a class="logo" href="./" aria-label="si/zaplatil, domov">si/<em>zaplatil</em></a>
+    <button type="button" class="pomoc" id="btn-info">Ako to funguje</button>
+  </header>
+
+  <nav class="prepinac" role="tablist" aria-label="Časti appky">
+    <button type="button" role="tab" id="tab-platit" data-view="platit" aria-selected="true" aria-controls="v-platit">Platiť</button>
+    <button type="button" role="tab" id="tab-nahrat" data-view="nahrat" aria-selected="false" aria-controls="v-nahrat">Nahrať účet</button>
+    <button type="button" role="tab" id="tab-moje" data-view="moje" aria-selected="false" aria-controls="v-moje">Moje účty<span class="bodka" id="moje-bodka" hidden></span></button>
+  </nav>
+
+  <main>
+    <!-- PLATIŤ: kôpka účtov na swipovanie -->
+    <section class="view view-platit" id="v-platit" role="tabpanel" aria-labelledby="tab-platit">
+      <p class="slogan">Nahraj účet. Znudený miliardár swipne doprava a zaplatí ho.</p>
+      <p class="stat" id="stat" aria-live="polite">Načítavam účty…</p>
+      <div class="deck" id="deck" aria-live="polite"></div>
+      <div class="akcie" id="akcie">
+        <button type="button" class="okruhle nie" id="btn-nie" aria-label="Nuda, preskočiť účet"><span aria-hidden="true">✕</span><small>Nuda</small></button>
+        <button type="button" class="nahlas" id="btn-nahlas">Nahlásiť</button>
+        <button type="button" class="okruhle ano" id="btn-ano" aria-label="Zaplatím tento účet"><span aria-hidden="true">€</span><small>Zaplatím</small></button>
+      </div>
+    </section>
+
+    <!-- NAHRAŤ ÚČET -->
+    <section class="view view-scroll" id="v-nahrat" role="tabpanel" aria-labelledby="tab-nahrat" hidden>
+      <form class="formular" id="form" novalidate>
+        <h1>Nahraj účet</h1>
+        <p class="uvod">Vyplň, čo treba zaplatiť a kam. Účet uvidí každý, kto appku otvorí.</p>
+
+        <div class="pole">
+          <span class="menovka">Fotka účtu <i>nepovinné</i></span>
+          <div class="foto-zona" id="foto-zona">
+            <label class="foto-vyber" for="f-foto" id="foto-vyber">
+              <b>Odfotiť alebo vybrať fotku</b>
+              <span>Potom na nej prstom zakry meno a adresu.</span>
+            </label>
+            <input type="file" id="f-foto" accept="image/*" class="skryty-input">
+            <div class="foto-editor" id="foto-editor" hidden>
+              <canvas id="foto-canvas" aria-label="Náhľad fotky. Ťahaním prsta zakryješ časť fotky čiernym pruhom."></canvas>
+              <p class="foto-rada">Ťahaj prstom po fotke a zakry, čo nemá nikto vidieť.</p>
+              <div class="foto-tlacidla">
+                <button type="button" class="tl-maly" id="foto-spat">Vrátiť zakrytie</button>
+                <button type="button" class="tl-maly" id="foto-prec">Odstrániť fotku</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pole">
+          <label class="menovka" for="f-nazov">Čo je to za účet</label>
+          <input type="text" id="f-nazov" maxlength="60" placeholder="Elektrina za október" autocomplete="off" required>
+        </div>
+
+        <div class="pole">
+          <label class="menovka" for="f-suma">Suma v eurách</label>
+          <input type="text" id="f-suma" inputmode="decimal" placeholder="84,50" autocomplete="off" required>
+        </div>
+
+        <div class="pole">
+          <span class="menovka" id="kat-menovka">Kategória</span>
+          <div class="cipy" id="kat" role="radiogroup" aria-labelledby="kat-menovka"></div>
+        </div>
+
+        <div class="pole">
+          <label class="menovka" for="f-pribeh">Prečo by ti ho mal niekto zaplatiť <i>nepovinné</i></label>
+          <textarea id="f-pribeh" maxlength="280" rows="3" placeholder="Kúrim od septembra, lebo mačke je zima."></textarea>
+        </div>
+
+        <div class="pole">
+          <label class="menovka" for="f-meno">Tvoje meno alebo prezývka <i>nepovinné</i></label>
+          <input type="text" id="f-meno" maxlength="30" placeholder="Robo z Ružinova" autocomplete="nickname">
+        </div>
+
+        <fieldset class="platba">
+          <legend>Kam má platba prísť</legend>
+          <p class="rada">Najlepšie opíš údaje rovno z účtu. Miliardár tak zaplatí priamo faktúru.</p>
+          <div class="pole">
+            <label class="menovka" for="f-prijemca">Názov príjemcu</label>
+            <input type="text" id="f-prijemca" maxlength="70" placeholder="ZSE Energia, a.s." autocomplete="off" required>
+          </div>
+          <div class="pole">
+            <label class="menovka" for="f-iban">IBAN</label>
+            <input type="text" id="f-iban" maxlength="42" placeholder="SK00 0000 0000 0000 0000 0000" autocomplete="off" autocapitalize="characters" spellcheck="false" required>
+          </div>
+          <div class="pole">
+            <label class="menovka" for="f-vs">Variabilný symbol <i>nepovinné</i></label>
+            <input type="text" id="f-vs" inputmode="numeric" maxlength="10" placeholder="1234567890" autocomplete="off">
+          </div>
+        </fieldset>
+
+        <label class="suhlas" for="f-suhlas">
+          <input type="checkbox" id="f-suhlas" required>
+          <span>Rozumiem, že účet, fotka a platobné údaje budú verejne viditeľné.</span>
+        </label>
+
+        <p class="chyba" id="form-chyba" role="alert" hidden></p>
+        <button type="submit" class="tl-hlavne" id="btn-odoslat">Nahrať účet</button>
+      </form>
+
+      <div class="hotovo" id="hotovo" hidden>
+        <div class="hotovo-peciatka">Nahraté</div>
+        <h1>Účet je medzi miliardármi</h1>
+        <p>Teraz ho pošli ľuďom, čo majú viac peňazí ako ty.</p>
+        <button type="button" class="tl-hlavne" id="btn-zdielat">Zdieľať účet</button>
+        <button type="button" class="tl-druhe" id="btn-dalsi">Nahrať ďalší</button>
+      </div>
+    </section>
+
+    <!-- MOJE ÚČTY -->
+    <section class="view view-scroll" id="v-moje" role="tabpanel" aria-labelledby="tab-moje" hidden>
+      <div class="obsah">
+        <h1>Moje účty</h1>
+        <div id="moje-zoznam" class="zoznam"></div>
+        <h2>Naposledy zaplatené</h2>
+        <div id="slava" class="zoznam"></div>
+        <h2>Tvoja štedrosť</h2>
+        <p class="stedrost" id="stedrost"></p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- spodný hárok: platba, potvrdenia, info -->
+<div class="zaves" id="zaves" hidden>
+  <div class="harok" id="harok" role="dialog" aria-modal="true" aria-labelledby="harok-nadpis" tabindex="-1"></div>
+</div>
+
+<!-- zväčšená fotka účtu -->
+<div class="lupa" id="lupa" hidden>
+  <img id="lupa-img" alt="Fotka účtu">
+  <button type="button" class="lupa-zavri" id="lupa-zavri">Zavrieť</button>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<div class="oslava" id="oslava" aria-hidden="true"></div>
+
+<script src="qrcode.js"></script>
+<script src="app.js"></script>
+<script src="/stats.js" defer></script>
+</body>
+</html>

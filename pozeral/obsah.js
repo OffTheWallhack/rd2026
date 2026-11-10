@@ -17,8 +17,16 @@ window.POZERAL = {
 
   // Ručne vyradené videá (napr. keď vieš, že na YouTube už nie sú). Skener tento zoznam nemení.
   // nahrávatelia, ktorých videá nikdy nepúšťame (herné let's play, audioknihy, cudzie dabingy, fanúšikovské kompilácie)
-  zakazaniAutori: ["AUDIOKNIHY PRO DĚTI", "Amálie Hučíková", "Barevný Svět zábavy Pejska a Kočičky", "Camille Santana", "Chronicles from the Cathode Tube", "Danovo DVD", "Dobré Pohádky", "Gellnerka Brno", "MATRIXXXL007", "Neywa Games", "PS Mláďata Chotěboř", "Radek Klaudis", "ShortStoryTime", "Studio Lyra - Klasické pohádky a příběhy", "Untilia", "Vetus", "ViolentNiceGuy", "czech bodybuilding", "interbubakcz", "nasuke159", "tyronejoseph senasi", "Bajki po Polsku", "Medojed", "Česká LP pařba"],
+  zakazaniAutori: ["AUDIOKNIHY PRO DĚTI", "Amálie Hučíková", "Barevný Svět zábavy Pejska a Kočičky", "Camille Santana", "Chronicles from the Cathode Tube", "Danovo DVD", "Dobré Pohádky", "Gellnerka Brno", "MATRIXXXL007", "Neywa Games", "PS Mláďata Chotěboř", "Radek Klaudis", "ShortStoryTime", "Studio Lyra - Klasické pohádky a příběhy", "Untilia", "Vetus", "ViolentNiceGuy", "czech bodybuilding", "interbubakcz", "nasuke159", "tyronejoseph senasi", "Bajki po Polsku", "Medojed", "Česká LP pařba", "Cartoon Network India", "Cartoon Network Sverige", "Ed Boy", "Epic Cartoons", "Hak9 i.T", "JarToon"],
   nefunguje: [
+    'CD-Q7P5PGro',  // Cartoon Network Indi – Johnny Bravo - Woah Mama video collectio
+    '5TMSZCuekvo',  // Epic Cartoons – New Funny Cartoons Johnny Bravo  Full Ep
+    'IjvTLuv6s_w',  // Hak9 i.T – All 69 Johnny Bravo Episodes & Extras At
+    'p2CoBJrzdcc',  // Cartoon Network Sver – En Johnny Bravo-jul | Johnny Bravo | 🇸🇪 
+    'kzpNLRDMvnw',  // JarToon – The ENTIRE Story of Dexters Laboratory 
+    's4IYUvDUlkA',  // JarToon – The ENTIRE Story of Courage the Cowardly
+    '-swdIehPjpM',  // Cartoon Network Indi – Courage The Cowardly Dog🐶| Snowman’s Col
+    'HXQ0at6ve_0',  // Ed Boy – Ed Edd n Eddy   Eds Immense Strength! 
     'r_eIKpRktvw',  // Danovo DVD – krtek a kalhotky (celý film)
     '6Iw3CbQ6j1Y',  // ShortStoryTime – Krtek o Vánocích - The Little Mole and C
     'a2ZeGyt4tv8',  // Zuzana Nováková – Maxipes Fík    zmoudření Maxipsa Fíka

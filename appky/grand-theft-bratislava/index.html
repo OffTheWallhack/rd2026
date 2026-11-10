@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <title>Grand Theft Bratislava · Robert Ďurica</title>
-<meta name="description" content="Grand Theft Bratislava: Staré Mesto ako 3D hra vykreslená znakmi ASCII. Skutočná mapa, skutočný terén, autá, ľudia, polícia. Hraj v prehliadači na mobile aj počítači.">
+<meta name="description" content="Grand Theft Bratislava: Staré Mesto, Petržalka, Ružinov aj Vrakuňa ako 3D hra vykreslená znakmi ASCII. Skutočná mapa, skutočný terén, autá, ľudia, polícia. Hraj v prehliadači na mobile aj počítači.">
 <link rel="canonical" href="https://durica.si/appky/grand-theft-bratislava/">
 <link rel="icon" href="icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -16,7 +16,7 @@
 <meta name="apple-mobile-web-app-title" content="GT Bratislava">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Grand Theft Bratislava · Robert Ďurica">
-<meta property="og:description" content="Staré Mesto ako 3D hra zo znakov ASCII. Hraj v prehliadači.">
+<meta property="og:description" content="Bratislava ako 3D hra zo znakov ASCII: Staré Mesto, Petržalka, Ružinov, Vrakuňa. Hraj v prehliadači.">
 <meta property="og:image" content="https://durica.si/appky/grand-theft-bratislava/og.jpg">
 <meta property="og:url" content="https://durica.si/appky/grand-theft-bratislava/">
 <meta name="twitter:card" content="summary_large_image">
@@ -125,7 +125,7 @@ body.touch #goal{font-size:12px}
 
 <div id="title" class="screen" hidden>
   <h1><small>GRAND THEFT</small>BRATISLAVA</h1>
-  <div class="sub">Staré Mesto podľa skutočnej mapy a skutočného terénu — Hrad, Michalská brána, Most SNP aj UFO. Celé vykreslené znakmi ASCII.</div>
+  <div class="sub">Staré Mesto, Petržalka, Ružinov aj Vrakuňa podľa skutočnej mapy — Hrad, Most SNP, paneláky aj mosty cez Dunaj. Celé vykreslené znakmi ASCII.</div>
   <button class="btn" id="bPlay">HRAŤ</button>
   <div class="ctrl d-only"><b>WASD</b> chôdza / jazda · <b>Shift</b> beh · <b>E</b> nastúp / vystúp · <b>Medzerník</b> úder / ručná brzda<br><b>myš (ťahaj)</b> kamera · <b>M</b> mapa · <b>H</b> trúbiť · <b>P</b> pauza</div>
   <div class="ctrl t-only">Ľavý palec: <b>joystick</b> · pravý palec: <b>ťahaj = kamera</b><br>V aute: <b>PLYN</b>, <b>BRZDA</b>, <b>RUČNÁ</b> · pri aute sa objaví <b>NASTÚP</b></div>
@@ -167,7 +167,7 @@ body.touch #goal{font-size:12px}
   </div>
   <div class="credit">Mapa © prispievatelia OpenStreetMap (ODbL) · Terén DMR 5.0 © ÚGKK SR · 3D modely CC0: Quaternius, Kay Lousberg</div>
 </div>
-<div id="map" hidden><canvas id="mapc"></canvas><div style="font-size:12px;color:#aaa">ťukni pre zatvorenie</div></div>
+<div id="map" hidden><canvas id="mapc"></canvas><div id="maphint" style="font-size:12px;color:#aaa">ťukni pre celé mesto</div></div>
 
 <script src="game.js"></script>
 <script src="/stats.js" defer></script>

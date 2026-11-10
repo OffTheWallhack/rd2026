@@ -103,7 +103,7 @@ FOOT = """</main>
 <footer class="foot">
   <div class="wrap">
     <p>Služby fakturuje 142 design, s. r. o., Holíčska 3049/5, 851 05 Bratislava · IČO 53389662</p>
-    <p><a href="{rel}">Služby</a> · <a href="{rel}ochrana-udajov/">Ochrana údajov</a> · © 2026 Robert Ďurica</p>
+    <p><a href="{rel}" data-en="Home">Domov</a> · <a href="{rel}blog/">Blog</a> · <a href="{rel}na-stiahnutie/" data-en="Downloads">Na stiahnutie</a> · <a href="{rel}ochrana-udajov/" data-en="Privacy">Ochrana údajov</a> · © 2026 Robert Ďurica</p>
   </div>
 </footer>
 """ + LB + """<script src="{rel}assets/common.js"></script>
@@ -161,8 +161,8 @@ def build_post(p, newer, older, posts=()):
     </div>
     {src}
     <div class="post-cta">
-      <p><b>Chceš si niečo také vyskúšať sám?</b> Na 3-hodinovej session ťa to naučím na tvojich vlastných veciach.</p>
-      <a class="btn btn-green" href="../../#hovor">15 min hovor zadarmo</a>
+      <p><b data-en="Want to try something like this yourself?">Chceš si niečo také vyskúšať sám?</b> <span data-en="I’ll show you on your own stuff. The first chat is free.">Ukážem ti to na tvojich vlastných veciach. Prvý rozhovor je zadarmo.</span></p>
+      <a class="btn btn-green" href="../../#spolu" data-en="Let’s do it together →">Poďme spolu →</a>
     </div>
     {nav}
   </article>
@@ -261,11 +261,28 @@ def blog_strip(posts):
     s = re.sub(r"<!--blog-strip-->.*?<!--/blog-strip-->", lambda m: block, s, flags=re.S)
     open(p, "w", encoding="utf-8").write(s)
 
+def build_llms(posts):
+    """llms.txt: a plain-text map of the site for AI assistants and crawlers (https://llmstxt.org)."""
+    apps = json.load(open(os.path.join(ROOT, "apps.json"), encoding="utf-8"))["apps"]
+    pub = [a for a in apps if a.get("visibility") == "public"]
+    def aurl(a): return a["url"] if a["url"].startswith("http") else BASE + a["url"]
+    out = ["# Robert Ďurica", "",
+           "> Osobný web Roberta Ďuricu z Bratislavy. Stavia appky, hry a nástroje s pomocou AI (bez toho, aby bol programátor) a píše o tom po ľudsky. Ľuďom, ktorí sa v AI nevyznajú, ukáže, ako na to. Prvý rozhovor je zadarmo.", "",
+           "Kontakt: WhatsApp +421 908 109 541, web https://durica.si/#kontakt. Jazyk webu: slovenčina (prepínač do angličtiny).", "",
+           "## Stránky", f"- [Domov]({BASE}): čo stavia a o čom píše", f"- [Kto som]({BASE}kto-som/): príbeh, skúsenosti, životopis",
+           f"- [Blog]({BASE}blog/): články o AI a vlastných projektoch", f"- [Na stiahnutie]({BASE}na-stiahnutie/): ťaháky a príručky o AI v PDF, zadarmo",
+           f"- [robOS]({BASE}appky/): všetky appky a hry na jednom mieste", f"- [Linky]({BASE}linky/): rozcestník", "",
+           "## Projekty (appky, hry, nástroje)"]
+    out += [f"- [{a['name']}]({aurl(a)}): {a['desc']['sk']}" for a in pub]
+    out += ["", "## Články"] + [f"- [{p['title']}]({BASE}blog/{p['slug']}/) ({p['date']}): {p['lead']}" for p in posts]
+    out += ["", "## Voliteľné", f"- [RSS]({BASE}blog/feed.xml)", f"- [Sitemap]({BASE}sitemap.xml)", ""]
+    open(os.path.join(ROOT, "llms.txt"), "w", encoding="utf-8").write("\n".join(out))
+
 if __name__ == "__main__":
     posts = read_posts()
     slugs = [p["slug"] for p in posts]
     if len(set(slugs)) != len(slugs): raise SystemExit("duplicate slug")
     for i, p in enumerate(posts):
         build_post(p, posts[i-1] if i > 0 else None, posts[i+1] if i + 1 < len(posts) else None, posts)
-    build_index(posts); build_feed(posts); build_sitemap(posts); latest_teaser(posts); blog_strip(posts)
+    build_index(posts); build_feed(posts); build_sitemap(posts); latest_teaser(posts); blog_strip(posts); build_llms(posts)
     print(f"built {len(posts)} posts")

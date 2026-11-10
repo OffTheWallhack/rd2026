@@ -415,4 +415,10 @@
     });
     if (picked) picked.style.viewTransitionName = "robo";
   };
+  // optional extras (search, build log, article tools) load after everything else
+  window.__rdRoot = ROOT;
+  (function () {
+    var l = document.createElement("link"); l.rel = "stylesheet"; l.href = ROOT + "assets/extras.css?v=1"; document.head.appendChild(l);
+    var x = document.createElement("script"); x.src = ROOT + "assets/extras.js?v=1"; x.defer = true; document.head.appendChild(x);
+  })();
 })();

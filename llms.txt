@@ -1,0 +1,48 @@
+# Robert Ďurica
+
+> Osobný web Roberta Ďuricu z Bratislavy. Stavia appky, hry a nástroje s pomocou AI (bez toho, aby bol programátor) a píše o tom po ľudsky. Ľuďom, ktorí sa v AI nevyznajú, ukáže, ako na to. Prvý rozhovor je zadarmo.
+
+Kontakt: WhatsApp +421 908 109 541, web https://durica.si/#kontakt. Jazyk webu: slovenčina (prepínač do angličtiny).
+
+## Stránky
+- [Domov](https://durica.si/): čo stavia a o čom píše
+- [Kto som](https://durica.si/kto-som/): príbeh, skúsenosti, životopis
+- [Blog](https://durica.si/blog/): články o AI a vlastných projektoch
+- [Na stiahnutie](https://durica.si/na-stiahnutie/): ťaháky a príručky o AI v PDF, zadarmo
+- [robOS](https://durica.si/appky/): všetky appky a hry na jednom mieste
+- [Linky](https://durica.si/linky/): rozcestník
+
+## Projekty (appky, hry, nástroje)
+- [Event Car Game](https://durica.si/appky/event-car-drift/): 3D hra s event autami Zubor a Sugga.
+- [Grand Theft Bratislava](https://durica.si/appky/grand-theft-bratislava/): Staré Mesto ako 3D hra zo znakov ASCII. Skutočná mapa a terén.
+- [Usage of Empires](https://offthewallhack.github.io/usage-of-empires/): RTS paródia na limity AI.
+- [Usage of Empires II](https://offthewallhack.github.io/uoe2/): Cozy idle dedina, kde villageri žijú sami.
+- [Acid Box](https://durica.si/appky/acid-box/): Acid bass synth a bubnový stroj v prehliadači.
+- [si/mixoval](https://durica.si/mixoval/): DJ pult s 2 alebo 4 deckami, aj spolu na diaľku.
+- [si/exportoval](https://durica.si/exportoval/): USB pre Pioneer CDJ bez rekordboxu: BPM, beatgrid, tónina a waveformy.
+- [Hlasoval](https://durica.si/hlasoval/): Ťukni na štýl hudby, ktorý chceš počuť. DJ to vidí naživo.
+- [si/pozeral](https://durica.si/pozeral/): Retro telka s rozprávkami a večerníčkami v CZ/SK dabingu.
+- [si/editoval](https://durica.si/editoval/): Post aj story z tvojej fotky, s efektami a fontami.
+- [LED IT ROLL](https://durica.si/appky/led-it-roll/): Scrollujúci LED banner na celú obrazovku, tancuje do hudby.
+- [Wallflash](https://durica.si/appky/wallflash/): Tekuté pozadie na celú obrazovku.
+- [BG Maker](https://bg-maker-gamma.vercel.app): Generátor pozadí pre Instagram a socials.
+- [Si stvoril](https://durica.si/stvoril/): Pixelové terárko: sypaj piesok, vodu a lávu, nechaj rásť stromy a pozeraj, čo sa stane.
+
+## Články
+- [Staviam dve hry s AI. Takto vznikli a ako fungujú.](https://durica.si/blog/dve-hry-usage-of-empires/) (2026-10-24): Usage of Empires dostal za pár dní vyše 30 nových verzií a popri ňom vznikla druhá hra, Usage of Empires II. Obe sú o dedine, ktorá žije, ale hrajú sa úplne inak. Tu je, ako ich staviam, ako fungujú a čo je nové.
+- [Postavil som si drift hru cez AI. Takto vznikala.](https://durica.si/blog/event-car-drift-hra-s-ai/) (2026-10-20): Event Car Game (pôvodne Event Car Drift) je 3D hra, ktorú som si s AI postavil v prehliadači: parkovisko, tréning, dovoz, offroad až na vrchol hory, diaľnica z kokpitu, tajné preteky o Red Bull autá a nočná naháňačka s políciou. Tu je, ako presne vznikala, na čo sme prišli a čo som z nej vyhodil. Hrať sa dá priamo v mojom robOS.
+- [Usage of Empires je hrateľná. Vyskúšaj ju a povedz mi, čo je zle.](https://durica.si/blog/usage-of-empires-hraj/) (2026-10-20): Hra, ktorú si stavám s AI, sa dá odteraz hrať. Stačí odkaz, nič sa neinštaluje. Je to beta, takže čakaj chyby. Práve preto ju dávam von: potrebujem, aby ju vyskúšal niekto iný ako ja, a povedal mi, čo sa pokazilo.
+- [Protesty v Paríži: porovnal som Grok, Gemini a Claude](https://durica.si/blog/pariz-tri-ai/) (2026-10-19): Na X vidím horiace autá a radnicu, z ktorej padá veža. V správach skoro nič. Grokovi, Gemini aj Claudovi som dal rovnakú otázku a každé ich tvrdenie som overil. Jeden vedel najviac, jeden bol najpresnejší a dokonalý nebol ani jeden.
+- [Nikdy som nebol programátor. Teraz si s AI staviam vlastnú hru.](https://durica.si/blog/usage-of-empires/) (2026-10-15): Vždy som chcel mať vlastnú hru a mal som na ňu milión nápadov. Konečne prišiel čas ich zužitkovať. Hra sa volá Usage of Empires a staviam ju len cez AI. Tu je, ako vznikla, čo v nej je a čo v nej nikdy nebude.
+- [Postavil som systém na šetrenie usage. Zožral mi usage.](https://durica.si/blog/zabi-chaos-zachranis-usage/) (2026-10-14): Chcel som mať projekty a nápady na jednom mieste, aby s nimi vedeli pracovať Claude aj Grok. Spravil som to tak, že mi to zjedlo týždenný limit za dva a pol dňa. Tu je, čo som sa naučil, a ako usage šetriť po ľudsky.
+- [Counter-Strike: kliatba alebo požehnanie?](https://durica.si/blog/ex-gamer/) (2026-10-07): Od prvého počítača s Bombermanom cez CS 1.5 u kamošov, modovanie GTA San Andreas, dlhé večery pri FIFA a covidové noci pri Counter-Strike až po deň, keď vyšlo CS2. Z hier sa mi medzitým stala práca.
+- [Postavil som si appku bez akéhokoľvek programovania.](https://durica.si/blog/event-hub-appka-na-vlastnu-robotu/) (2026-10-07): Celé dni som na cestách alebo na akciách a administratíva sa mi kopila v Exceli, poznámkach a správach. Tak som si s AI postavil Event Hub: jedno miesto, ktoré mi všetko zbiera, triedi a samo pripomína.
+- [Rodinný hub: jedna obrazovka pre celú rodinu](https://durica.si/blog/rodinny-hub/) (2026-10-07): Spoločný kalendár, správy a dokumenty na jednom mieste. Dokument stačí odfotiť a poslať jednému kontaktu v telefóne. Starí rodičia si doma len zapnú webovú stránku a vidia všetko.
+- [AI je odteraz SI? Trump premenoval umelú inteligenciu](https://durica.si/blog/ai-je-odteraz-si/) (2026-10-07): Americké úrady už nesmú písať „AI“. Odteraz je to „Super Intelligence“, skrátene SI. Musk hneď sľúbil premenovať aj svoju firmu. Čo sa vlastne zmenilo a čo to znamená pre nás v Európe?
+- [Čo AI nikdy nedávaj. Vážne.](https://durica.si/blog/co-ai-nikdy-nedavat/) (2026-10-07): AI ti ušetrí hodiny. Jedna zlá správa do chatu ťa ale môže stáť zákazníka, peniaze alebo pokutu. Tu je, čo do nej nikdy nevkladaj, čo vždy over, a prečo to od roku 2025 nie je len dobrá rada.
+- [Prvých 30 minút s AI: 5 vecí, ktoré vyskúšaj ešte dnes](https://durica.si/blog/prvych-30-minut-s-ai/) (2026-10-07): Nemusíš nič inštalovať ani vedieť programovať. Stačí pol hodiny, prehliadač a týchto päť krokov. Na konci budeš vedieť, kde ti AI ušetrí čas, a dostaneš aj checklist na stiahnutie.
+- [Minecraft v Elden Ringu: AI začala remixovať videohry](https://durica.si/blog/ai-remixovanie-hier/) (2026-10-07): Internet zaplavili videá, kde sa jedna hra objaví vnútri druhej. Za väčšinou z nich je AI, ktorá za pár hodín napíše kód, na ktorý by modder kedysi potreboval mesiace. Čo sa vlastne deje a prečo to nie je len zábava?
+
+## Voliteľné
+- [RSS](https://durica.si/blog/feed.xml)
+- [Sitemap](https://durica.si/sitemap.xml)

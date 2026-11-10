@@ -227,6 +227,20 @@
 
 
 
+  // nová analýza (rovnaká ako v si/exportoval): oktáva tempa, krátke skladby, začiatok taktu
+  var ANA = null;
+  async function analyzeNew(buf) {
+    if (!ANA) ANA = import('./analysis.js');
+    var mod = await ANA, sr = buf.sampleRate, f = Math.max(1, Math.round(sr / 11025));
+    var c0 = buf.getChannelData(0), c1 = buf.numberOfChannels > 1 ? buf.getChannelData(1) : c0;
+    var n = Math.floor(buf.length / f), x = new Float32Array(n);
+    for (var i = 0; i < n; i++) { var s = 0, b = i * f; for (var j = 0; j < f; j++) s += c0[b + j] + c1[b + j]; x[i] = s / (2 * f); }
+    var r = mod.analyzeSignal(x, sr / f, {});
+    if (!r || !r.bpm) return null;
+    var Tb = 60 / r.bpm, down = r.firstBeatS + (r.downbeat || 0) * Tb;
+    return { bpm: r.bpm, grid: down, key: r.key };
+  }
+
   // ------------------------------------------------------------------ prehrávač (deck)
   function Deck(id, idx) {
     this.id = id; this.idx = idx; this.buf = null; this.name = ''; this.status = '';
@@ -494,7 +508,10 @@
     this.status = 'Analyzujem tempo…'; await yieldUI();
     var r = null;
     if (known && known.bpm) r = { bpm: known.bpm, grid: known.grid };
-    else { try { r = analyze(buf); } catch (e) { r = null; } }
+    else {
+      try { r = await analyzeNew(buf); } catch (e) { r = null; }
+      if (!r) { try { r = analyze(buf); } catch (e) { r = null; } }
+    }
     if (r) {
       this.bpm = r.bpm; this.grid = r.grid;
       var Tb = 60 / r.bpm; this.cue = Math.max(0, r.grid - Math.floor(r.grid / Tb) * Tb); this.startPos = this.cue;
@@ -1103,6 +1120,49 @@
       }
     });
   });
+
+
+  // ------------------------------------------------------------------ klávesové skratky
+  // deck 1: medzerník=PLAY, C=CUE, 1–4=hot cue, S=SYNC, L=slučka 4, ,/. = skladba, [ ] = BPM ×½ / ×2
+  // deck 2: Enter=PLAY, M=CUE, 7–0=hot cue, K=SYNC, ; = slučka 4 · šípky ←/→ = crossfader · ? = pomocník
+  var KEYS = [
+    { play: ' ', cue: 'c', hot: ['1', '2', '3', '4'], sync: 's', loop: 'l', half: '[', dbl: ']' },
+    { play: 'Enter', cue: 'm', hot: ['7', '8', '9', '0'], sync: 'k', loop: ';', half: '{', dbl: '}' }
+  ];
+  var keyHeld = {};
+  function typing(e) { var t = e.target, n = t && t.tagName; return n === 'INPUT' || n === 'TEXTAREA' || n === 'SELECT' || (t && t.isContentEditable); }
+  function kHelp() {
+    var h = document.getElementById('kHelp');
+    if (h) { h.remove(); return; }
+    h = document.createElement('div'); h.id = 'kHelp';
+    h.innerHTML = '<b>Klávesy</b><br>Deck 1: <kbd>medzerník</kbd> play · <kbd>C</kbd> cue · <kbd>1</kbd>–<kbd>4</kbd> hot cue · <kbd>S</kbd> sync · <kbd>L</kbd> slučka 4 · <kbd>[</kbd> <kbd>]</kbd> BPM ½ / ×2<br>' +
+      'Deck 2: <kbd>Enter</kbd> play · <kbd>M</kbd> cue · <kbd>7</kbd>–<kbd>0</kbd> hot cue · <kbd>K</kbd> sync · <kbd>;</kbd> slučka 4<br>' +
+      'Crossfader: <kbd>←</kbd> <kbd>→</kbd> · <kbd>↓</kbd> do stredu · <kbd>?</kbd> zavrie toto okno';
+    h.addEventListener('pointerdown', function () { h.remove(); });
+    document.body.appendChild(h);
+  }
+  window.addEventListener('keydown', function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey || typing(e) || e.repeat) return;
+    var k = e.key, kl = k.length === 1 ? k.toLowerCase() : k, i, did = false;
+    if (k === '?') { kHelp(); e.preventDefault(); return; }
+    if (k === 'ArrowLeft' || k === 'ArrowRight' || k === 'ArrowDown') {
+      var v = ctl.xf ? ctl.xf.v : 0.5; v = k === 'ArrowDown' ? 0.5 : clamp(v + (k === 'ArrowLeft' ? -0.08 : 0.08), 0, 1);
+      setCtl('xf', v, 'ui'); e.preventDefault(); return;
+    }
+    for (i = 0; i < KEYS.length && i < decks.length; i++) {
+      var K = KEYS[i], d = decks[i];
+      try { ensureCtx(); } catch (x) {}
+      if (k === K.play || kl === K.play) { d.playPress(); did = true; }
+      else if (kl === K.cue) { d.cueDown(); keyHeld[e.code] = function () { d.cueUp(); }; did = true; }
+      else if (K.hot.indexOf(k) >= 0) { d.hotDown(K.hot.indexOf(k)); keyHeld[e.code] = function () { d.hotUp(); }; did = true; }
+      else if (kl === K.sync) { d.toggleSync(); did = true; }
+      else if (kl === K.loop) { d.loopBeats(4); did = true; }
+      else if (k === K.half || k === K.dbl) { if (d.bpm) { d.setBpm(d.bpm * (k === K.half ? 0.5 : 2)); toast('BPM ' + d.bpm.toFixed(2)); } did = true; }
+      if (did) break;
+    }
+    if (did) e.preventDefault();
+  });
+  window.addEventListener('keyup', function (e) { var h = keyHeld[e.code]; if (h) { delete keyHeld[e.code]; h(); } });
 
   // ------------------------------------------------------------------ knižnica skladieb
   var lib = [], AUDIO_RE = /\.(mp3|wav|wave|aif|aiff|flac|m4a|aac|ogg|oga|opus|mp4)$/i, MAXROWS = 300;

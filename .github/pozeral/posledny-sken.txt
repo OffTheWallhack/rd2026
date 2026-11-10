@@ -1,557 +1,565 @@
-Sken 2026-11-10T07:47:26.093Z
+Sken 2026-11-10T08:04:28.512Z
 innertube PLXkA6SvogZFumCc1H0KgXGPdsRrzCcTHw: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 100 videí; alert: []
+výsledok PLXkA6SvogZFumCc1H0KgXGPdsRrzCcTHw: 100 nájdených, 96 prijatých
+    dĺžka 16: Elf Samael upoutávka kanálu | Pohádky | Večerníčky | Animované seriály [0 min]
+    dĺžka 6166: Pat a Mat | Celá 1. Séria [103 min]
+    dĺžka 6450: Pat a Mat | Celá 2. Séria [108 min]
+    dĺžka 7080: A je to! - Pat a Mat  I.part (1-15) [118 min]
 innertube PL3SFGj27PTbfdUXNVv20TCjhbm8sriSH_: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 0 videí; alert: []
-html PL3SFGj27PTbfdUXNVv20TCjhbm8sriSH_: http 200, 895557 B, 0 videí
+html PL3SFGj27PTbfdUXNVv20TCjhbm8sriSH_: http 200, 887502 B, 0 videí
 rss PL3SFGj27PTbfdUXNVv20TCjhbm8sriSH_: http 404, 0 videí
+výsledok PL3SFGj27PTbfdUXNVv20TCjhbm8sriSH_: 0 nájdených, 0 prijatých
+    
 innertube PLXkA6SvogZFsro5cOPiQcy1CHMjSLOQq7: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 4 videí; alert: []
+výsledok PLXkA6SvogZFsro5cOPiQcy1CHMjSLOQq7: 4 nájdených, 4 prijatých
+    
 innertube PL_c00IPCdRoGD0k6aG7725OaqHQQffcVf: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 7 videí; alert: []
-kanál @byljednoujedenzivot: http 200, 1071561 B, id UCg0IwNjbI490rs0g_cPGFXA
+výsledok PL_c00IPCdRoGD0k6aG7725OaqHQQffcVf: 7 nájdených, 7 prijatých
+    
+kanál @byljednoujedenzivot: http 200, 1072046 B, id UCg0IwNjbI490rs0g_cPGFXA
 innertube UUg0IwNjbI490rs0g_cPGFXA: kľúče responseContext,contents,header,metadata,trackingParams,topbar,microformat,sidebar; 26 videí; alert: []
+výsledok @byljednoujedenzivot: 26 nájdených, 26 prijatých
+    
 innertube PLh4oNLWEP1pov-S4X2rwB3e1kKFFjecKe: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 37 videí; alert: []
+výsledok PLh4oNLWEP1pov-S4X2rwB3e1kKFFjecKe: 37 nájdených, 35 prijatých
+    dĺžka 16705: Bob a Bobek - všechny díly | Králici z klobouku [278 min]
+    dĺžka 7870: Bob a Bobek (dily 1 az 19) [131 min]
 hľadaj "Bolek a Lolek": 20 videí
 hľadaj "Bolek a Lolek celý díl": 20 videí
 hľadaj "Bolek a Lolek cz": 20 videí
-výsledok hladaj:Bolek a Lolek|Bolek a Lolek celý díl|Bolek a Lolek cz: 154 nájdených, 17 prijatých
+výsledok hladaj:Bolek a Lolek|Bolek a Lolek celý díl|Bolek a Lolek cz: 154 nájdených, 18 prijatých
     bez dĺžky: Bolek a Lolek Dobrodružství pod vodou
-    iný seriál: Velké Putování Bolka a Lolka
-    iný seriál: BOLEK I LOLEK NA DZIKIM ZACHODZIE
-    iný seriál: NA STRAŻACKIM POLIGONIE (1978) - SERIA: UWAGA, POŻAR
-    iný seriál: Bolek and Lolek - Complete Season 1 / Bolek i Lolek – Ukończ Sezon 1 (
-    iný seriál: Bolek i Lolek - wycieczka samochodem
-    iný seriál: WIOSENNE PORZĄDKI (1977) - SERIA: PRZYGODY BOLKA I LOLKA
-    iný seriál: Bolek i lolek Biciklistička utrka
-    iný seriál: BYCZEK (1978) - SERIA: PRZYGODY BOLKA I LOLKA
-    iný seriál: BOLEK I LOLEK - "SPORTOWCY"
-    dĺžka 7400: Bolek a Lolek na prázdninách (všetky časti) | Rozprávky pre deti
-    iný seriál: HARCERSKA WARTA (1976) - SERIA: PRZYGODY BOLKA I LOLKA
-hľadaj "Maxipes Fík": 20 videí
-hľadaj "Maxipes Fík celý díl": 20 videí
-výsledok hladaj:Maxipes Fík|Maxipes Fík celý díl: 80 nájdených, 7 prijatých
-    nedá sa vložiť 401: Maxipes Fik - Audio Pohadky
-    iný seriál: 23. července 2026
-    dĺžka 82: Maxipes Fík - Zrození Maxipsa Fíka (E01) - mluví Petr Nárožný
-    iný seriál: 23. srpna 2023
-    dĺžka 4327: Maxipes Fik a Divoké sny Maxipsa Fíka - Audio Pohadky
-    iný seriál: Mach a Šebestová - Kropáček má angínu
-    dĺžka 20: mistr světa ve skoku pro něco MAXIPES FIK Fik mistrem skoku
-    dĺžka 55: Trailer na maturak: Maxipes PAMFIK
-    iný seriál: Ukazka maxi psa Fíka
-    nie diel: 20 FAKTŮ - Večerníčky (Krteček, Maxipes Fík, Bob a Bobek)
-    nedá sa vložiť 401: 20 Maxipes Fik Hunting 1975 1978 DVDRip
-    iný seriál: Fík-nehoří
+    iný seriál: Velké Putování Bolka a Lolka [101 min]
+    iný seriál: BOLEK I LOLEK NA DZIKIM ZACHODZIE [69 min]
+    dĺžka 4017: Bolek a Lolek na Divokém západě 1986 - Dabing ČNTS [67 min]
+    iný seriál: Bolek i lolek Biciklistička utrka [8 min]
+    iný seriál: WIOSENNE PORZĄDKI (1977) - SERIA: PRZYGODY BOLKA I LOLKA [9 min]
+    iný seriál: NA STRAŻACKIM POLIGONIE (1978) - SERIA: UWAGA, POŻAR [10 min]
+    iný seriál: Bolek i Lolek - wycieczka samochodem [9 min]
+    iný seriál: Bolek and Lolek - Complete Season 1 / Bolek i Lolek – Ukończ Sezon 1 ( [111 min]
+    dĺžka 7400: Bolek a Lolek na prázdninách (všetky časti) | Rozprávky pre deti [123 min]
+    iný seriál: BYCZEK (1978) - SERIA: PRZYGODY BOLKA I LOLKA [9 min]
+    iný seriál: BOLEK I LOLEK - "SPORTOWCY" [10 min]
 hľadaj "Pohádky z mechu a kapradí": 20 videí
 hľadaj "Křemílek a Vochomůrka": 20 videí
-výsledok hladaj:Pohádky z mechu a kapradí|Křemílek a Vochomůrka: 117 nájdených, 30 prijatých
-    dĺžka 15619: Večerníček - Pohádky z mechu a kapradí - Křemílek a Vochomůrka (komple
-    dĺžka 152: Karel Gott - Cestu znám jen já (Pohádky z mechu a kapradí) Malý Dárek 
-    dĺžka 152: Karel Gott - Cestu znám jen já (Pohádky z mechu a kapradí)
-    dĺžka 129: J. Celba: Pohádky z mechu a kapradí, Eliška Faltysová, trubka
-    iný seriál: Pohádky z pařezové chaloupky
-    dĺžka 2868: Pohádky Z Pařezové Chaloupky Křemílka A Vochomůrky (1981) Vinyl Rip 📀
-    dĺžka 4738: Jak Křemílek a Vochomůrka hledali, až našli
-    dĺžka 3334: Jak si Křemílek a Vochomůrka věděli se vším rady
-    iný seriál: Jak Cipísek přepral medvěda
-    dĺžka 51: Pohádky z mechu a kapradí - znělka ve STEREO.
-    iný seriál: Kosí bratři - na pouti
-    iný seriál: 36   jak kremilek a vochomurka vystrelili z kanonu
+výsledok hladaj:Pohádky z mechu a kapradí|Křemílek a Vochomůrka: 116 nájdených, 30 prijatých
+    dĺžka 15619: Večerníček - Pohádky z mechu a kapradí - Křemílek a Vochomůrka (komple [260 min]
+    iný seriál: Pohádky z pařezové chaloupky [48 min]
+    dĺžka 152: Karel Gott - Cestu znám jen já (Pohádky z mechu a kapradí) Malý Dárek  [3 min]
+    dĺžka 152: Karel Gott - Cestu znám jen já (Pohádky z mechu a kapradí) [3 min]
+    dĺžka 3334: Jak si Křemílek a Vochomůrka věděli se vším rady [56 min]
+    dĺžka 129: J. Celba: Pohádky z mechu a kapradí, Eliška Faltysová, trubka [2 min]
+    dĺžka 47: Pohádky z mechu a kapradí [1 min]
+    dĺžka 4738: Jak Křemílek a Vochomůrka hledali, až našli [79 min]
+    iný seriál: Kosí bratři - na pouti [7 min]
+    dĺžka 51: Pohádky z mechu a kapradí - znělka ve STEREO. [1 min]
+    iný seriál: Jak Cipísek přepral medvěda [6 min]
+    dĺžka 2868: Pohádky Z Pařezové Chaloupky Křemílka A Vochomůrky (1981) Vinyl Rip 📀 [48 min]
 hľadaj "O loupežníku Rumcajsovi": 20 videí
 hľadaj "Rumcajs večerníček": 20 videí
-výsledok hladaj:O loupežníku Rumcajsovi|Rumcajs večerníček: 80 nájdených, 30 prijatých
-    dĺžka 16589: Večerníček - O loupežníku Rumcajsovi (komplet)
-    dĺžka 2684: Rumcajs
-    iný seriál: Jak Cipísek přepral medvěda
+výsledok hladaj:O loupežníku Rumcajsovi|Rumcajs večerníček: 79 nájdených, 30 prijatých
+    dĺžka 16589: Večerníček - O loupežníku Rumcajsovi (komplet) [276 min]
+    iný seriál: Jak myslivec Muška pásl včely [7 min]
+    iný seriál: Jak Cipísek přepral medvěda [6 min]
+    nie diel: O loupežníku Rumcajsovi - Jak měl Rumcajs patálii s drakem [7 min]
 hľadaj "Krtek večerníček": 20 videí
 hľadaj "Krteček celý díl": 20 videí
 hľadaj "Krtek a kalhotky": 20 videí
-výsledok hladaj:Krtek večerníček|Krteček celý díl|Krtek a kalhotky: 118 nájdených, 19 prijatých
-    nedá sa vložiť 401: Krtek a vejce / The Little Mole and the Egg
-    nedá sa vložiť 401: Krtek a autíčko / The Little Mole and the Car
-    nie diel: Krteček ve snu - celý film cz dabing - The Little Mole in the Dream - 
-    nedá sa vložiť 401: Krtek a televizor / The Little Mole and the TV
-    nedá sa vložiť 401: Krtek chemikem / The Little Mole as the Chemist
-    nedá sa vložiť 401: Krtek a zápalky / The Little Mole and the Matches
-    nedá sa vložiť 401: Krtek malířem / The Little Mole as a Painter
-    nedá sa vložiť 401: Jak krtek ke kalhotkám přišel / How the Little Mole Got His Trousers
-    nedá sa vložiť 401: Krtek a buldozer / The Little and the Bulldozer
-    nedá sa vložiť 401: Krtek a ježek / The Little Mole and the Hedgehog
-    nedá sa vložiť 401: Krtek hodinářem / The Little Mole the Watchmaker
-    nedá sa vložiť 401: Krtek o Vánocích / The Little Mole and Christmas
+výsledok hladaj:Krtek večerníček|Krteček celý díl|Krtek a kalhotky: 120 nájdených, 12 prijatých
+    nedá sa vložiť 401: Jak krtek ke kalhotkám přišel / How the Little Mole Got His Trousers [13 min]
+    iný seriál: Cricket and saw | Cvrček a pila | no dialogue [5 min]
+    nedá sa vložiť 401: Krtek a autíčko / The Little Mole and the Car [15 min]
+    nedá sa vložiť 401: Krtek malířem / The Little Mole as a Painter [10 min]
+    nedá sa vložiť 401: Krtek a ježek / The Little Mole and the Hedgehog [9 min]
+    nedá sa vložiť 401: Krtek chemikem / The Little Mole as the Chemist [6 min]
+    nedá sa vložiť 401: Krtek o Vánocích / The Little Mole and Christmas [6 min]
+    nie diel: Krteček ve snu - celý film cz dabing - The Little Mole in the Dream -  [28 min]
+    nedá sa vložiť 401: Krtek a zápalky / The Little Mole and the Matches [6 min]
+    nedá sa vložiť 401: Krtek a muzika / The Little Mole and the Music [6 min]
+    nedá sa vložiť 401: Krtek na poušti / The Little Mole in the Desert [6 min]
+    nedá sa vložiť 401: Krtek a televizor / The Little Mole and the TV [6 min]
 hľadaj "Mach a Šebestová": 20 videí
 hľadaj "Mach a Šebestová večerníček": 20 videí
-výsledok hladaj:Mach a Šebestová|Mach a Šebestová večerníček: 80 nájdených, 27 prijatých
-    nie diel: Mach a Šebestová k tabuli! | režie: Miloš Macourek | celý film
-    nedá sa vložiť 401: Mach a Šebestová - Kropáček má angínu
-    dĺžka 8193: Mach a Šebestová na prázdninách - Komplet
-    dĺžka 4413: Mach a Šebestová na cestách - CD verze
-    dĺžka 4659: Mach a Šebestová LP
-    nedá sa vložiť 401: Mach a Šebestová - Člověk neandrtálský
-    dĺžka 4733: Miloš Macourek - Mach A Šebestová (1985) Vinyl Rip 📀 [Full Album] by 
-    nedá sa vložiť 401: Mach a Šebestová - Vzorné chování
-    dĺžka 2833: Mach a Šebestová na prázdninách - MC verze STRANA B
-    dĺžka 2356: Miloš Macourek: Mach a Šebestová A
-    dĺžka 2100: Mach a Šebestová za školou - MC verze - Strana B
-    dĺžka 2830: Mach a Šebestová na prázdninách - MC verze STRANA A (OBSAHUJE OPROTI C
+výsledok hladaj:Mach a Šebestová|Mach a Šebestová večerníček: 80 nájdených, 25 prijatých
+    nie diel: Mach a Šebestová k tabuli! | režie: Miloš Macourek | celý film [69 min]
+    nedá sa vložiť 401: Mach a Šebestová - Kropáček má angínu [8 min]
+    dĺžka 8193: Mach a Šebestová na prázdninách - Komplet [137 min]
+    nedá sa vložiť 401: Mach a Šebestová - Člověk neandrtálský [7 min]
+    nedá sa vložiť 401: Mach a Šebestová - Piráti [7 min]
+    dĺžka 4659: Mach a Šebestová LP [78 min]
+    dĺžka 4733: Miloš Macourek - Mach A Šebestová (1985) Vinyl Rip 📀 [Full Album] by  [79 min]
+    dĺžka 210: Maxim Turbulenc Mach a šebestová [4 min]
+    zakázaný nahrávateľ AUDIOKNIHY PRO DĚTI: Mach a Šebestová na cestách - CD verze [74 min]
+    nedá sa vložiť 401: Mach a Šebestová - Vzorné chování [9 min]
+    nedá sa vložiť 401: Mach a Šebestová - O utrženém sluchátku [8 min]
+    dĺžka 34: Mach a Šebestová, silvestr [1 min]
 hľadaj "Včelka Mája cz": 20 videí
 hľadaj "Včelka Mája celý díl": 20 videí
-výsledok hladaj:Včelka Mája cz|Včelka Mája celý díl: 149 nájdených, 30 prijatých
-    dĺžka 83: Včelka Mája - Karel Gott
-    dĺžka 75: Včelka Mája znělka
-    iný seriál: Včielka Maja - Majina Záhrada
-    nedá sa vložiť 401: Včelka Mája 3D 2014 CZ HD trailer Dabing
-    iný seriál: NIGHTWORK - Maja / Maya (2006) DV PAL
-    iný seriál: Včielka Maja - Jar je tu
+výsledok hladaj:Včelka Mája cz|Včelka Mája celý díl: 151 nájdených, 30 prijatých
+    dĺžka 83: Včelka Mája - Karel Gott [1 min]
+    dĺžka 75: Včelka Mája znělka [1 min]
+    iný seriál: Včielka Maja - Majina Záhrada [12 min]
+    nedá sa vložiť 401: Včelka Mája 3D 2014 CZ HD trailer Dabing [2 min]
+    dĺžka 21: Včelka Mája Shrek [0 min]
+    iný seriál: Mother Courage - Maya the Bee - Episode 25 [12 min]
+    dĺžka 2421: Včelka Mája (LP 1986) (HD Audio) [40 min]
+    dĺžka 80: Včelka Mája (Die Biene Maja) [1 min]
+    dĺžka 92: Karel Gott - Včelka Mája (Text, Lyrics) [2 min]
+    iný seriál: Včielka Maja - Majina Záhrada [12 min]
 hľadaj "Včielka Maja sk": 20 videí
 hľadaj "Včielka Maja celý diel": 20 videí
-výsledok hladaj:Včielka Maja sk|Včielka Maja celý diel: 152 nájdených, 30 prijatých
-    iný seriál: 01-VcielkaMaja-AkoSaMajaNarodila_Slovensky
-    dĺžka 74: Včielka Maja - úvodná pieseň
-    iný seriál: VcielkaMaja-ASvatojanskaMuska_Slovensky
-    iný seriál: VcielkaMaja-AZaba_Slovensky
-    iný seriál: Včelka Mája | HD Episode 15 | Mája a motýl
-    iný seriál: 02-VcielkaMaja-MajaSaUciLietat_Slovensky
-    dĺžka 3055: Včielka Maja
-    iný seriál: Včelka Mája - Karel Gott
-    iný seriál: Max has a crush - Maya the Bee - Episode 28
-    iný seriál: Mother Courage - Maya the Bee - Episode 25
-    iný seriál: NIGHTWORK - Maja / Maya (2006) DV PAL
-    iný seriál: Včelka Mája - Dort pro královnu - Díl 25.
+výsledok hladaj:Včielka Maja sk|Včielka Maja celý diel: 153 nájdených, 30 prijatých
+    iný seriál: 01-VcielkaMaja-AkoSaMajaNarodila_Slovensky [25 min]
+    iný seriál: VcielkaMaja-ASvatojanskaMuska_Slovensky [24 min]
+    dĺžka 74: Včielka Maja - úvodná pieseň [1 min]
+    iný seriál: VcielkaMaja-AZaba_Slovensky [24 min]
+    iný seriál: 02-VcielkaMaja-MajaSaUciLietat_Slovensky [24 min]
+    dĺžka 3055: Včielka Maja [51 min]
+    dĺžka 20: Včielka Maja 2: Sladké hry | OFICIÁLNY SPOT | slovenský dabing [0 min]
+    iný seriál: Karel Gott - Včelka Mája [HQ] [2 min]
+    dĺžka 162: Včielka Maja (Biene Maja) na klavíri 🎹 - Piano Tutorial TV znelky slá [3 min]
+    dĺžka 111: 🌞 Pesnička pre deti 🌞 Včielka Maja, Animované video , Slovak kids so [2 min]
+    iný seriál: Včelka Mája (LP 1986) (HD Audio) [40 min]
+    iný seriál: Včelka Mája - Karel Gott [1 min]
 hľadaj "Mumínci": 20 videí
 hľadaj "Mumínci celý díl": 20 videí
-výsledok hladaj:Mumínci|Mumínci celý díl: 139 nájdených, 9 prijatých
-    dĺžka 6879: Mumínci 1
-    iný seriál: muminci   01    mali hoste
-    dĺžka 6887: Mumínci 2
-    dĺžka 6896: Mumínci 5
-    dĺžka 6893: Mumínci 4
-    dĺžka 6883: Mumínci 3
-    iný seriál: muminci   02    kufr
-    iný seriál: Muumimusiikkia (The Moomins Soundtrack Compilation)
-    iný seriál: Moomin Opening Theme Song (English)
-    dĺžka 282: CREEPY POHÁDKA | Mumínci
-    iný seriál: muminci   03   Hamburinova kouzla
-    iný seriál: muminci   04   Neviditelná kamarádka 1
+výsledok hladaj:Mumínci|Mumínci celý díl: 140 nájdených, 9 prijatých
+    dĺžka 6879: Mumínci 1 [115 min]
+    iný seriál: muminci   01    mali hoste [27 min]
+    dĺžka 6887: Mumínci 2 [115 min]
+    dĺžka 6893: Mumínci 4 [115 min]
+    dĺžka 6896: Mumínci 5 [115 min]
+    dĺžka 6883: Mumínci 3 [115 min]
+    iný seriál: muminci   02    kufr [28 min]
+    iný seriál: Muumimusiikkia (The Moomins Soundtrack Compilation) [36 min]
+    iný seriál: muminci   03   Hamburinova kouzla [16 min]
+    iný seriál: Moomin Opening Theme Song (English) [2 min]
+    iný seriál: The billion dollar comic franchise Americans don’t know about [20 min]
+    dĺžka 282: CREEPY POHÁDKA | Mumínci [5 min]
 hľadaj "Bořek stavitel cz": 20 videí
 hľadaj "Bořek stavitel celý díl": 20 videí
-výsledok hladaj:Bořek stavitel cz|Bořek stavitel celý díl: 137 nájdených, 21 prijatých
-    dĺžka 3848: 🏠 Bořek stavitel 1. série (spojené epizody)
-    dĺžka 3652: 🏠 Bořek stavitel 5. série (spojené epizody)
-    dĺžka 4289: 🏠 Bořek stavitel 2. série (spojené epizody)
-    dĺžka 3599: Bořek Stavitel Obří stroje cz
-    dĺžka 3592: 🏠 Bořek stavitel 18. série (spojené epizody)
-    dĺžka 3652: 🏠 Bořek stavitel 3. série (spojené epizody)
-    dĺžka 47: Bořek stavitel Bob The Builder CZ Znělka
-    dĺžka 4275: 🏠 Bořek stavitel 6. série (spojené epizody)
-    dĺžka 4795: 🏠 Bořek stavitel 19. série (spojené epizody)
-    dĺžka 4248: 🏠 Bořek stavitel 4. série (spojené epizody)
-    dĺžka 3590: 🏠 Bořek stavitel 17. série (spojené epizody)
-    dĺžka 3592: 🏠 Bořek stavitel 20. série (spojené epizody)
+výsledok hladaj:Bořek stavitel cz|Bořek stavitel celý díl: 152 nájdených, 20 prijatých
+    dĺžka 3848: 🏠 Bořek stavitel 1. série (spojené epizody) [64 min]
+    dĺžka 3652: 🏠 Bořek stavitel 5. série (spojené epizody) [61 min]
+    dĺžka 3599: Bořek Stavitel Obří stroje cz [60 min]
+    dĺžka 3592: 🏠 Bořek stavitel 18. série (spojené epizody) [60 min]
+    dĺžka 3652: 🏠 Bořek stavitel 3. série (spojené epizody) [61 min]
+    dĺžka 4289: 🏠 Bořek stavitel 2. série (spojené epizody) [71 min]
+    dĺžka 47: Bořek stavitel Bob The Builder CZ Znělka [1 min]
+    dĺžka 4273: 🏠 Bořek stavitel 11. série (spojené epizody) [71 min]
+    dĺžka 4275: 🏠 Bořek stavitel 6. série (spojené epizody) [71 min]
+    dĺžka 4795: 🏠 Bořek stavitel 19. série (spojené epizody) [80 min]
+    dĺžka 3592: 🏠 Bořek stavitel 20. série (spojené epizody) [60 min]
+    dĺžka 4274: 🏠 Bořek stavitel 16. série (spojené epizody) [71 min]
 hľadaj "Mašinka Tomáš cz": 20 videí
 hľadaj "Mašinka Tomáš a jeho přátelé": 20 videí
-výsledok hladaj:Mašinka Tomáš cz|Mašinka Tomáš a jeho přátelé: 141 nájdených, 3 prijatých
-    iný seriál: Zasněžené koleje | Lokomotiva Tomáš celé díly
-    iný seriál: Lokomotiva Tomáš S19E20 cz
-    iný seriál: Lokomotiva Tomáš Diesel má slavný den
-    iný seriál: Lokomotiva Tomáš - Král železnic (CZ/SK)
-    iný seriál: Sodorská legenda o ztraceném pokladu
-    iný seriál: Lokomotiva Tomáš S19E10 Salty na moři SDTV x264 PiP
-    iný seriál: Lokomotiva Tomáš S19E13 Pomalý Stephen SDTV x264 PiP
-    iný seriál: Čvachty, čvachty, čvachty! | Lokomotiva Tomáš celé díly
-    iný seriál: Lokomotiva Tomáš S14E04 345 Nudné špinavé prádlo
-    iný seriál: Lokomotiva Tomáš   Hrdina na kolejích film
-    iný seriál: Charlie a Edie | Lokomotiva Tomáš celé díly
-    iný seriál: Lokomotiva Tomáš S14E17 358 Tomáš a Špindíra
-hľadaj "Barbapapa cz": 20 videí
-hľadaj "Barbapapa česky": 20 videí
-výsledok hladaj:Barbapapa cz|Barbapapa česky: 135 nájdených, 1 prijatých
-    bez čísla dielu: Barbapapa One Big Happy Family intro Theme Song Tema Musical Opening i
-    bez čísla dielu: Barbapapa: One Big Happy Family! - Intro (Czech)
-    bez CZ/SK: Barbapapa: One Big Happy Family - "(Barba prank)" Full Ep.
-    iný seriál: Barbapapà : 50 minuti - 5 episodi completi ｜Una grande famiglia felice
-    iný seriál: 👻I Barbapapà festeggiano Halloween 🎃 – Raccolta di 50 minuti
-    bez CZ/SK: Barbapapa - No!!!!!!!
-    bez CZ/SK: Barbapapa
-    bez CZ/SK: Next/Now Barbapapa New Rebrand February 2024 nick jr. Global
-    bez CZ/SK: Barbapapa Theme Song - Original English
-    bez CZ/SK: Barbapapa en Famille   Les algues vertes
-    iný seriál: Barbapapà : 10 episodi completi - COMPILAZIONI (1h45 min)
-    iný seriál: Barbapapà : 50 MINUTI - Compilazione 5 episodi
+výsledok hladaj:Mašinka Tomáš cz|Mašinka Tomáš a jeho přátelé: 137 nájdených, 3 prijatých
+    iný seriál: Zasněžené koleje | Lokomotiva Tomáš celé díly [11 min]
+    iný seriál: Lokomotiva Tomáš S19E20 cz [10 min]
+    iný seriál: Lokomotiva Tomáš - Král železnic (CZ/SK) [60 min]
+    iný seriál: Lokomotiva Tomáš Diesel má slavný den [57 min]
+    iný seriál: Sodorská legenda o ztraceném pokladu [59 min]
+    iný seriál: Čvachty, čvachty, čvachty! | Lokomotiva Tomáš celé díly [11 min]
+    iný seriál: Lokomotiva Tomáš S19E10 Salty na moři SDTV x264 PiP [11 min]
+    iný seriál: Lokomotiva Tomáš S19E13 Pomalý Stephen SDTV x264 PiP [11 min]
+    iný seriál: Henryho kouzelná bedna | Lokomotiva Tomáš celé díly [11 min]
+    iný seriál: Lokomotiva Tomáš   Hrdina na kolejích film [59 min]
+    iný seriál: Charlie a Edie | Lokomotiva Tomáš celé díly [11 min]
+    iný seriál: Úděsný nepořádek | Lokomotiva Tomáš celé díly [11 min]
 hľadaj "Šmoulové cz": 20 videí
 hľadaj "Šmoulové celý díl": 20 videí
-výsledok hladaj:Šmoulové cz|Šmoulové celý díl: 136 nájdených, 14 prijatých
-    dĺžka 7920: 2 hodiny NEJLEPŠÍCH šmoulích epizod! • Šmoulové
-    dĺžka 11403: Šmoulové důvěra 💪• Šmoulové
-    dĺžka 5196: Šmoulové jdou do světa! | Vzrušující šmoulí dobrodružství pro děti
-    dĺžka 4620: Roztočme kolo štěstí! • Šmoulové
-    dĺžka 11399: Prázdninový speciál Smurfy ❄️ • Šmoulové
-    dĺžka 12112: 3 hodiny Šmoulů na Nový rok! 🎉 • Šmoulové
-    dĺžka 7138: Vzácní šmoulové • Šmoulové • Kreslené filmy pro děti
-    dĺžka 15: Šmoulové - Magický svět
-    dĺžka 3820: Kouzelný nový šmoula • Šmoulové
-    dĺžka 9710: Láska kvete v modrém 💙 Valentýnská extravagance Šmoulů | Animáky pro 
-    dĺžka 11629: Ledově studený 🥶 • Šmoulové
-    dĺžka 11937: Strom, na kterém rostou peníze! 💰🌳 • Šmoulové • Kreslené filmy pro d
+výsledok hladaj:Šmoulové cz|Šmoulové celý díl: 138 nájdených, 13 prijatých
+    dĺžka 7920: 2 hodiny NEJLEPŠÍCH šmoulích epizod! • Šmoulové [132 min]
+    dĺžka 11403: Šmoulové důvěra 💪• Šmoulové [190 min]
+    dĺžka 11399: Prázdninový speciál Smurfy ❄️ • Šmoulové [190 min]
+    dĺžka 4620: Roztočme kolo štěstí! • Šmoulové [77 min]
+    dĺžka 12112: 3 hodiny Šmoulů na Nový rok! 🎉 • Šmoulové [202 min]
+    dĺžka 5196: Šmoulové jdou do světa! | Vzrušující šmoulí dobrodružství pro děti [87 min]
+    dĺžka 7138: Vzácní šmoulové • Šmoulové • Kreslené filmy pro děti [119 min]
+    dĺžka 12721: Tři hodiny Šmoulů na prázdniny! 🎄• Šmoulové [212 min]
+    dĺžka 11937: Strom, na kterém rostou peníze! 💰🌳 • Šmoulové • Kreslené filmy pro d [199 min]
+    dĺžka 3820: Kouzelný nový šmoula • Šmoulové [64 min]
+    dĺžka 7139: Jedineční šmoulové! 👽😎🧑‍🌾🤒👨‍🚀😲😱 • Celá epizoda • Šmoulové [119 min]
+    dĺžka 11629: Ledově studený 🥶 • Šmoulové [194 min]
 hľadaj "Šmolkovia sk dabing": 20 videí
 hľadaj "Šmolkovia celý diel": 20 videí
-výsledok hladaj:Šmolkovia sk dabing|Šmolkovia celý diel: 136 nájdených, 26 prijatých
-    iný seriál: Smolkovia 2 parodia
-    iný seriál: Roztočme kolo štěstí! • Šmoulové
-    dĺžka 34158: Purpuroví Šmolkovia @smolkovia
-    iný seriál: Strom, na ktorom rastú peniaze! 💰🌳 @smolkovia
-    dĺžka 213: Šmolkovia - SK dabing
-    iný seriál: 2 hodiny NEJLEPŠÍCH šmoulích epizod! • Šmoulové
-    iný seriál: Gargamel se žení! 😱 • Šmoulové
-    dĺžka 11542: Dostaňte ma odtiaľto!  • Šmolkovia • Kreslené filmy pre deti
-    iný seriál: Proměna | Šmoulové 3D
-    dĺžka 3461: 60 minút Šmolkov • Priatelia zvierat • Šmolkovia
-    dĺžka 14811: Šmolkovia morské panny @smolkovia
-    dĺžka 11583: Už ťa mám, Šmudlo! • Šmolkovia
+výsledok hladaj:Šmolkovia sk dabing|Šmolkovia celý diel: 136 nájdených, 25 prijatých
+    iný seriál: Strom, na ktorom rastú peniaze! 💰🌳 @smolkovia [191 min]
+    dĺžka 34158: Purpuroví Šmolkovia @smolkovia [569 min]
+    iný seriál: 2 hodiny NEJLEPŠÍCH šmoulích epizod! • Šmoulové [132 min]
+    iný seriál: Nie je to smiešne! @smolkovia [205 min]
+    iný seriál: Smolkovia 2 parodia [2 min]
+    dĺžka 3423: 60 minút Šmolkov • lektvary • Šmolkovia [57 min]
+    iný seriál: Ledově studený 🥶 • Šmoulové [194 min]
+    dĺžka 3461: 60 minút Šmolkov • Priatelia zvierat • Šmolkovia [58 min]
+    iný seriál: Kouzelný nový šmoula • Šmoulové [64 min]
+    iný seriál: Když na mě zatlačíš, tak si prdnu! • Šmoulové [66 min]
+    iný seriál: Šmoulí návrat do budoucnosti – Část 1 • Šmoulové [77 min]
+    iný seriál: Proměna | Šmoulové 3D [11 min]
 hľadaj "Maťko a Kubko": 20 videí
-výsledok hladaj:Maťko a Kubko: 40 nájdených, 11 prijatých
-    dĺžka 3384: Maťko a Kubko
-    iný seriál: Ako sa Kubko a Matko s medvedom skamaratili
-    iný seriál: Ako sa Kubko s Matkom do popuku slaniny najedli
-    iný seriál: 1. „Ako Kubko s Maťkom vlkovi kožuch vyprášili"
-    iný seriál: Ako sa Kubko a Matko dali na zboj
-    iný seriál: 3. „Ako Kubkovi a Maťkovi do koliby udrel hrom"
-    iný seriál: Ako Kubko s Matkom nasli poklad na Jana
-    iný seriál: 05. Ako Kubko a Maťko vatru preskakovali (Pásli ovce valasi)
-    iný seriál: Pásli ovce valasi   Kubko a Maťko   Komplet   HD
-    iný seriál: Pásli ovce valasi - Kubko a Maťko
-    iný seriál: Pásli ovce valasi - Ako sa Kubko a Maťko s medveďom skamarátili
-    dĺžka 48: Virtuoso: Maťko a Kubko :-)
+výsledok hladaj:Maťko a Kubko: 40 nájdených, 10 prijatých
+    dĺžka 3384: Maťko a Kubko [56 min]
+    iný seriál: Ako Kubko a Maťko naučili vílu ovečky dojiť [7 min]
+    iný seriál: Ako sa Kubko a Matko s medvedom skamaratili [7 min]
+    iný seriál: 3. „Ako Kubkovi a Maťkovi do koliby udrel hrom" [6 min]
+    iný seriál: 1. „Ako Kubko s Maťkom vlkovi kožuch vyprášili" [7 min]
+    iný seriál: Ako sa Kubko s Matkom do popuku slaniny najedli [6 min]
+    iný seriál: Ako sa Kubko a Matko dali na zboj [6 min]
+    iný seriál: Ako Kubko s Matkom nasli poklad na Jana [6 min]
+    iný seriál: Ako Kubko s Matkom ucili kukucku kukat [7 min]
+    iný seriál: 05. Ako Kubko a Maťko vatru preskakovali (Pásli ovce valasi) [6 min]
+    iný seriál: Pásli ovce valasi   Kubko a Maťko   Komplet   HD [82 min]
+    iný seriál: Ako Kubka a Matka clivota prepadla [4 min]
 hľadaj "O pejskovi a kočičce": 20 videí
 hľadaj "Povídání o pejskovi a kočičce": 20 videí
-výsledok hladaj:O pejskovi a kočičce|Povídání o pejskovi a kočičce: 80 nájdených, 16 prijatých
-    iný seriál: Jak pejsek s kočičkou dělali dort | Režie: Eduard Hofman
-    iný seriál: Jak pejsek s kočičkou myli podlahu | Režie: Eduard Hofman
-    dĺžka 6287: Povídání o pejskovi a kočičce - Karel Čapek (celá audiokniha)
-    iný seriál: Jak si pejsek roztrhal kalhoty | Režie: Eduard Hofman
-    iný seriál: Jak pejsek s kočičkou psali psaní | Režie: Eduard Hofman
-    iný seriál: O pyšné noční košilce | Režie: Eduard Hofman
-    dĺžka 196: Alles Gute- O Pejskovi a Kočičce
-    dĺžka 34: Povídání o pejskovi a kočičce - začátek před prvním dílem [VHS]
-    dĺžka 6765: Povídání o pejskovi a kočičce – Celá audiokniha – napsal Josef Čapek
-    iný seriál: Jak se Pejsek ztratil – pohádka na dobrou noc
-    dĺžka 114: Pohádkové výlety pejska a kočičky 3
-    iný seriál: Jak Si Dělali K Svátku Dort
+výsledok hladaj:O pejskovi a kočičce|Povídání o pejskovi a kočičce: 80 nájdených, 8 prijatých
+    iný nahrávateľ FILMY ČESKY A SLOVENSKY: Jak pejsek s kočičkou dělali dort | Režie: Eduard Hofman [9 min]
+    iný nahrávateľ FILMY ČESKY A SLOVENSKY: Jak pejsek s kočičkou myli podlahu | Režie: Eduard Hofman [9 min]
+    zakázaný nahrávateľ Barevný Svět zábavy Pejska a Kočičky: Povídání o pejskovi a kočičce - Karel Čapek (celá audiokniha) [105 min]
+    iný nahrávateľ FILMY ČESKY A SLOVENSKY: Jak pejsek s kočičkou psali psaní | Režie: Eduard Hofman [16 min]
+    iný nahrávateľ FILMY ČESKY A SLOVENSKY: Jak si pejsek roztrhal kalhoty | Režie: Eduard Hofman [8 min]
+    iný nahrávateľ FILMY ČESKY A SLOVENSKY: O pyšné noční košilce | Režie: Eduard Hofman [11 min]
+    iný nahrávateľ Ghola36: Alles Gute- O Pejskovi a Kočičce [3 min]
+    iný nahrávateľ HEZKÝ ČTENÍ ČESKÝ: Povídání o pejskovi a kočičce – Celá audiokniha – napsal Josef Čapek [113 min]
+    dĺžka 34: Povídání o pejskovi a kočičce - začátek před prvním dílem [VHS] [1 min]
+    zablokované: O pejskovi, kočičce a napraveném vlkovi - Divadélko Bubáček.mpg [16 min]
+    iný nahrávateľ Barevný Svět - Topic: Jak Si Dělali K Svátku Dort [11 min]
+    iný nahrávateľ AudioStoryCZ: Vlastimil Peška -  Nové povídání o pejskovi a kočičce (Pohádka, Mluven [27 min]
 hľadaj "Jája a Pája": 20 videí
-výsledok hladaj:Jája a Pája: 40 nájdených, 28 prijatých
-    iný seriál: Jaja a Paja - Komplet.mp4
-    dĺžka 11718: Jája a Pája   Všechny díly
-    nie diel: Jája a Pája - Jak zachraňovali dědu Lebedu (S02E02)
-    dĺžka 6352: Jája a Pája  1  Animovaný, Loutkový, Komedie  Československo, 1986
-    iný seriál: Jaja a Paja-Vila Mila
-    dĺžka 87: Jája a Pája vstávání
-    dĺžka 37: Jája a Pája - kladivo
-    dĺžka 3633: Jája a Pája II. (aiF, 1993)
-    dĺžka 5: heršíf saprloď + zatr sakr (Jája a Pája)
-    iný seriál: Jaja och paja (1987)
-    nie diel: Jája a Pája music 20 coververze
-    dĺžka 42: Jája a Pája 
+výsledok hladaj:Jája a Pája: 40 nájdených, 27 prijatých
+    iný seriál: Jaja a Paja - Komplet.mp4 [214 min]
+    dĺžka 11718: Jája a Pája   Všechny díly [195 min]
+    nie diel: Jája a Pája - Jak zachraňovali dědu Lebedu (S02E02) [8 min]
+    dĺžka 6352: Jája a Pája  1  Animovaný, Loutkový, Komedie  Československo, 1986 [106 min]
+    iný seriál: Jajo a Pajo, ako zasadili prasací chvostík [9 min]
+    iný seriál: Jajo a Pajo, ako pestovali jahody [8 min]
+    dĺžka 87: Jája a Pája vstávání [1 min]
+    iný seriál: Jajo in Pajo - Kako so sadili kumarice [8 min]
+    iný seriál: Jaja a Paja-Vila Mila [9 min]
+    dĺžka 37: Jája a Pája - kladivo [1 min]
+    dĺžka 5: heršíf saprloď + zatr sakr (Jája a Pája) [0 min]
+    nie diel: Jája a Pája music 20 coververze [0 min]
 hľadaj "Ferda Mravenec večerníček": 20 videí
 hľadaj "Ferda Mravenec celý díl": 20 videí
-výsledok hladaj:Ferda Mravenec večerníček|Ferda Mravenec celý díl: 79 nájdených, 19 prijatých
-    iný seriál: 60 nejlepších večerníčků na DVD = celý film (2026)
-    iný seriál: Víla Amálka   Komplet
-    dĺžka 2469: Ferda Mravenec
-    iný seriál: Pojďte pane, budeme si hrát 1. série
-    nie diel: Ferda Mravenec - O TOM, JAK DOPADLY NAROZENINY BROUKA PYTLÍKA
-    iný seriál: Koulelo se jablíčko – všechny díly – večerníček pro děti
-    iný seriál: Nový večerníček s Ferdou Mravencem a Broukem Pytlíkem startuje na ČT :
-    iný seriál: Jak štěňátko dostalo chuť na med
-    iný seriál: 19 - O Pytlíkově podivném snu
-    iný seriál: Byla jednou koťata - Kočičí pranice
-    dĺžka 7: 60 nejlepších večerníčků dvd 16 17 18 země pohádek dvd ferda mravenec 
-    iný seriál: JIŘINA BOHDALOVÁ - DEN OTEVŘENÝCH DVEŘÍ V ČESKÉ TELEVIZI - Večerníček 
+výsledok hladaj:Ferda Mravenec večerníček|Ferda Mravenec celý díl: 80 nájdených, 22 prijatých
+    iný seriál: 01 - Jak se Beruška topila a jak přijela televize [25 min]
+    iný seriál: V mravenisku | Ferdo Mravec #28 [26 min]
+    dĺžka 2469: Ferda Mravenec [41 min]
+    nie diel: Ferda Mravenec - O TOM, JAK DOPADLY NAROZENINY BROUKA PYTLÍKA [26 min]
+    iný seriál: 02 - Jak se šly ploštice koupat [23 min]
+    iný seriál: Večerníček - Pohádky z mechu a kapradí - Křemílek a Vochomůrka (komple [260 min]
+    dĺžka 74: Marcela Králová - Ferda Mravenec (1991) [1 min]
+    iný seriál: Víla Amálka   Komplet [85 min]
+    iný seriál: Koulelo se jablíčko – všechny díly – večerníček pro děti [90 min]
+    iný seriál: 19 - O Pytlíkově podivném snu [24 min]
+    iný seriál: Nový večerníček s Ferdou Mravencem a Broukem Pytlíkem startuje na ČT : [4 min]
+    iný seriál: Pojďte pane, budeme si hrát 1. série [74 min]
 innertube PLQ7nXaicptSxRccybPZUBAPhSdxh1v9jI: kľúče responseContext,contents,header,metadata,trackingParams,topbar,microformat,sidebar; 72 videí; alert: []
+výsledok PLQ7nXaicptSxRccybPZUBAPhSdxh1v9jI: 72 nájdených, 71 prijatých
+    dĺžka 59: Galactik Football(CZ Titulky) - Intro [1 min]
 innertube PLwhLvPy7SFDEN8_qYEdv7LfbTdO3EQBBd: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 21 videí; alert: []
+výsledok PLwhLvPy7SFDEN8_qYEdv7LfbTdO3EQBBd: 21 nájdených, 21 prijatých
+    
 innertube PLpNHzGK1cU90EcFXgbD0C3n9LiHwJokg4: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 52 videí; alert: []
-kanál @spionkycz-sk1054: http 200, 1065591 B, id UCWY2ygfhSISX-SF2YjGKhgw
+výsledok PLpNHzGK1cU90EcFXgbD0C3n9LiHwJokg4: 52 nájdených, 9 prijatých
+    dĺžka 97: Kačeří příběhy - prodloužená znělka (Duck Tales - long version) [2 min]
+    dĺžka 221: Hláška měsíce 03/08 - Kačeří příběhy [4 min]
+    dĺžka 192: Kačeří příběhy: Poklad ze ztracené lampy (česky) [3 min]
+    dĺžka 224: Hlášky Rampy McKváka / Agent 00Kvak - Kačeří příběhy [4 min]
+    dĺžka 61: 3 v 1 verze znělky Kačeří příběhy / 3 in 1 versions of DuckTales Intro [1 min]
+    dĺžka 72: Kulík, Dulík, Bubík a Bobo - píseň ze seriálu Kačeří příběhy (původní  [1 min]
+    dĺžka 60: Kačeří příběhy - porovnání znělek 1991 (Vilém Čok) a 2018 (Debbi) [1 min]
+    dĺžka 131: Kačeří příběhy - 2x Rafanní song (Kačeří příběhy, původní česky) [2 min]
+    dĺžka 60: Kačeří příběhy - společný duet Viléma Čoka a Debbi [1 min]
+    dĺžka 11: Medvídek Pú + Kačeří příběhy předěl začátek (1993) [0 min]
+    dĺžka 153: Karanténa strýčka Skrblíka - Kačeří příběhy - první dabing (česky) [3 min]
+    dĺžka 190: Robokačer v kostce - Kačeří příběhy (1987) První český dabing [3 min]
+    dĺžka 40: #6 Animation Cel DuckTales / Animační list Kačeří příběhy (1987) [1 min]
+    dĺžka 38: Kačeří příběhy: Poklad ze ztracené lampy - Déčko květen 2020 (česky) H [1 min]
+    dĺžka 43: #3 Animation Cel DuckTales / Animační list Kačeří příběhy (1987) [1 min]
+    dĺžka 100: #7 Animation Cel DuckTales / Animační list Kačeří příběhy (1987) [2 min]
+    dĺžka 44: #5 Animation Cel DuckTales / Animační list Kačeří příběhy (1987) [1 min]
+    dĺžka 9: Rampa McKvák to myslí upřímně! / Kačeří příběhy (1987) - Hláška měsíce [0 min]
+    dĺžka 37: #1 Animation Cel DuckTales / Animační list Kačeří příběhy [1 min]
+    dĺžka 70: Ztroskotatelný Rampa McKvák a neztroskotatelný Hindentanic - Kačeří př [1 min]
+    dĺžka 43: #4 Animation Cel DuckTales / Animační list Kačeří příběhy (1987) [1 min]
+    dĺžka 30: Legendární animované seriály: Kačeří příběhy + Phineas a Ferb | Déčko  [1 min]
+    dĺžka 81: Disney Záhada: Sněhurka VS Kačeří příběhy (1937 - 1987) [1 min]
+    dĺžka 22: #2 Animation Cel DuckTales / Animační list Kačeří příběhy [0 min]
+    dĺžka 157: Kačeří příběhy | Osudové lampy kačeřího světa | Easter Egg (česky) [3 min]
+kanál @spionkycz-sk1054: http 200, 1063989 B, id UCWY2ygfhSISX-SF2YjGKhgw
 innertube UUWY2ygfhSISX-SF2YjGKhgw: kľúče responseContext,contents,header,metadata,trackingParams,topbar,microformat,sidebar; 25 videí; alert: []
+výsledok @spionkycz-sk1054: 25 nájdených, 25 prijatých
+    
 hľadaj "Špiónky celý díl": 20 videí
 hľadaj "Totally Spies Špiónky": 20 videí
 hľadaj "Totally Spies Špiónky cz": 20 videí
-výsledok hladaj:Špiónky celý díl|Totally Spies Špiónky|Totally Spies Špiónky cz: 211 nájdených, 16 prijatých
-    iný seriál: Totally Spies   Špionky S2E06
-    iný seriál: Totally Spies   Špionky S05E06
-    iný seriál: Totally Spies Špionky S1E09
-    iný seriál: Totally Spies   Špionky S05E13
-    iný seriál: Totally Spies   Špionky S03E17
-    iný seriál: Totally Spies   Špionky S2E05
-    iný seriál: Totally Spies Špionky S1E04
-    iný seriál: Totally Spies-Špionky S1E01
-    iný seriál: Totally Spies   Špionky S03E21
-    iný seriál: Totally Spies   Špionky S03E11
-    iný seriál: Totally Spies   Špionky S03E06
-    iný seriál: Totally Spies   Špionky S2E22
+výsledok hladaj:Špiónky celý díl|Totally Spies Špiónky|Totally Spies Špiónky cz: 207 nájdených, 10 prijatých
+    iný seriál: Totally Spies Špionky S1E09 [21 min]
+    iný seriál: Totally Spies   Špionky S05E06 [22 min]
+    iný seriál: Totally Spies   Špionky S2E22 [22 min]
+    iný seriál: Totally Spies   Špionky S2E05 [22 min]
+    iný seriál: Totally Spies   Špionky S03E17 [22 min]
+    iný seriál: CELÁ EPIZODA | Tajní superpadouši | Totally Spies! | Karikatury pro dě [22 min]
+    iný seriál: Totally Spies   Špionky S2E06 [22 min]
+    iný seriál: Totally Spies Špionky S1E04 [21 min]
+    iný seriál: Totally spies   Špionky S04E14 [22 min]
+    iný seriál: Totally Spies   Špionky S03E21 [22 min]
+    iný seriál: Totally Spies   Špionky S03E24 [22 min]
+    iný seriál: Totally Spies Špionky S1E16 [21 min]
 hľadaj "Robotboy cz": 20 videí
 hľadaj "Robotboy česky": 20 videí
 hľadaj "Robotboy cz dabing díl": 20 videí
-výsledok hladaj:Robotboy cz|Robotboy česky|Robotboy cz dabing díl: 150 nájdených, 0 prijatých
-    bez čísla dielu: Robotboy chytání mrdky CZ parodie
-    bez CZ/SK: RobotBoy [PRZERÓBKA] [+16] #05
-    bez CZ/SK: Robot Boy
-    bez CZ/SK: RobotBoy Odc 24a. Walka
-    dĺžka 55: Mike Shinoda - Robot Boy live in Prague, CZ 19/3/2019
-    bez CZ/SK: karate robot boy
-    bez CZ/SK: Robotboy 216 Feline Frenzy
-    iný seriál: 🎬Astro Boy (2009) - Full Animation Movie in English - HD
-    bez CZ/SK: Linkin Park- Robot Boy
-    iný seriál: A.I.: Artificial Intelligence (2001) - Dinner Malfunction | Movieclips
-    iný seriál: Cartoon Network UK - February 25th, 2006 reklamy i promos 
-    bez CZ/SK: Vir The Robot Boy | Robo Vir Aur Imli Ka New Suit | Vir Seven Suit Com
+výsledok hladaj:Robotboy cz|Robotboy česky|Robotboy cz dabing díl: 155 nájdených, 0 prijatých
+    bez čísla dielu: Robotboy chytání mrdky CZ parodie [11 min]
+    bez CZ/SK: Robot Boy [1 min]
+    bez CZ/SK: RobotBoy [PRZERÓBKA] [+16] #05 [6 min]
+    bez CZ/SK: RobotBoy Odc 24a. Walka [11 min]
+    dĺžka 55: Mike Shinoda - Robot Boy live in Prague, CZ 19/3/2019 [1 min]
+    bez CZ/SK: karate robot boy [0 min]
+    bez CZ/SK: Robotboy 216 Feline Frenzy [12 min]
+    iný seriál: 🎬Astro Boy (2009) - Full Animation Movie in English - HD [94 min]
+    bez CZ/SK: Linkin Park- Robot Boy [5 min]
+    iný seriál: A.I.: Artificial Intelligence (2001) - Dinner Malfunction | Movieclips [3 min]
+    bez CZ/SK: Vir The Robot Boy | Robo Vir Aur Imli Ka New Suit | Vir Seven Suit Com [17 min]
+    bez CZ/SK: Linkin Park - Robot Boy [2015 Short Instrumental Version] [2 min]
 hľadaj "Život s Louiem": 20 videí
 hľadaj "Život s Louiem celý díl": 20 videí
 hľadaj "Život s Louiem S02": 20 videí
 hľadaj "Život s Louiem CZ dabing": 20 videí
-výsledok hladaj:Život s Louiem|Život s Louiem celý díl|Život s Louiem S02|Život s Louiem CZ dabing: 186 nájdených, 60 prijatých
-    nie diel: Život s Louiem S1E14 Vánoční překvapení pro paní Stilmanovou
-    nie diel: Zivot s Louiem   S03E01   Louieho Film
-    iný seriál: zivot s Louie-JÁ TEĎ JDU SPÁT
-    iný seriál: Zivot s Loiem 1x03 Oslava den matek part 1.wmv
-    iný seriál: How Louie Anderson's Parents Inspired "Life With Louie" | Late Night w
-    iný seriál: Gargamelův pejsek • Šmoulové
-    iný seriál: Tři kamarádi a Jerry časť 1-5 (JETIX)
-    iný seriál: BibiBum  - Když jsem já sloužil - Písničky pro děti (Kids Nursery Rhym
-    iný seriál: Tři kamarádi a Jerry - 01x03 -  Mraveniště
-    iný seriál: Vražedné pobřeží - Letošní model avi cz dabing
-    iný seriál: 🤦 Nemotorný Louie | Nejlepší kámoši navždy | Disney Channel
-    iný seriál: Kapitan flamingo Jetix 01 Flamingo se predstavuje CZ
+výsledok hladaj:Život s Louiem|Život s Louiem celý díl|Život s Louiem S02|Život s Louiem CZ dabing: 181 nájdených, 60 prijatých
+    nie diel: Život s Louiem S1E14 Vánoční překvapení pro paní Stilmanovou [20 min]
+    nie diel: Život s Louiem S01E01 , vánoční překvapení pro paní Stilmanovou [20 min]
+    iný seriál: Pirát divoký Jack CZ Všechny díly [264 min]
+    iný seriál: Třída číslo 402   Přes řeku a bažiny [21 min]
+    iný seriál: Lucky Louie (CZ) - Bejt vedoucí je super [1 min]
+    iný seriál: Lucky Louie - Květiny pro Kim.mp4 [3 min]
+    iný seriál: Třída číslo 402   Kdo hlídá děti [21 min]
+    iný seriál: Třída číslo 402 - 2Díl Dívka v igelitové bublině -S01E02 CZ 1080 CELÝ  [21 min]
+    iný seriál: Třída číslo 402 - 5Díl Stydlík  -S01E05 CZ 1080 CELÝ DÍL [21 min]
+    iný seriál: Třída číslo 402 - 6Díl Třídní fotka  -S01E06 CZ 1080 CELÝ DÍL [21 min]
+    iný seriál: Byl jednou jeden... život 🌱 Ústa a zuby 🦷 [26 min]
+    iný seriál: Tři kamarádi a Jerry časť 6-10 (JETIX) [44 min]
 hľadaj "Klíšťák cz": 20 videí
 hľadaj "Klíšťák celý díl": 20 videí
 hľadaj "Klíšťák část 1/2": 20 videí
-hľadaj "Klíšťák S01": 19 videí
-výsledok hladaj:Klíšťák cz|Klíšťák celý díl|Klíšťák část 1/2|Klíšťák S01: 139 nájdených, 21 prijatých
-    dĺžka 189: Klíšťák   chůva z apocalypsy část 2/2 CZ
-    iný seriál: Jak bezpečně odstranit klíště ?
-    dĺžka 29: Klíšťák - jak vyndat klíště.
-    iný seriál: Jak správně odstranit klíště
-    iný seriál: Mýdlo, pinzety, oleje, ani různé spreje nejsou bez rizika při odstraňo
-    iný seriál: Kíšťák a hipnotizér část 1/2
-    iný seriál: Oldřích Kaiser,Jiří Lábus - Kliště
-    iný seriál: KLÍŠTĚ
-    iný seriál: Klíšťata – jak velké představují riziko?
-    nie diel: Hrobník  - Klíšťák Fet (Pošťák Pat Parodie) YTP
-    iný seriál: Večerníček - O skřítku Racochejlovi (komplet)
-    dĺžka 32: Klíšťák na to máš štempl!
+hľadaj "Klíšťák S01": 18 videí
+výsledok hladaj:Klíšťák cz|Klíšťák celý díl|Klíšťák část 1/2|Klíšťák S01: 137 nájdených, 21 prijatých
+    dĺžka 189: Klíšťák   chůva z apocalypsy část 2/2 CZ [3 min]
+    iný seriál: Jak správně odstranit klíště [2 min]
+    iný seriál: Jak bezpečně odstranit klíště ? [1 min]
+    iný seriál: Mýdlo, pinzety, oleje, ani různé spreje nejsou bez rizika při odstraňo [0 min]
+    iný seriál: Proč je kivi ten nejvíc agresivní a uřvanej skřet co běhá po Novém Zél [3 min]
+    dĺžka 32: Klíšťák na to máš štempl! [1 min]
+    iný seriál: Oldřich Kaiser a Jiří Lábus - Všechny televizní scénky | Nejlepší česk [98 min]
+    iný seriál: Oldřích Kaiser,Jiří Lábus - Kliště [5 min]
+    dĺžka 49: Klíšťák - shnilé jablko [1 min]
+    iný seriál: Jak přesně útočí klíště? Podívejte se, jak proniká pod kůži, na svou k [1 min]
+    iný seriál: Reportáž TV Nova: kliste.cz [1 min]
+    iný seriál: KLÍŠTĚ [1 min]
 hľadaj "Tři kamarádi a Jerry": 20 videí
 hľadaj "Tři kamarádi a Jerry celý díl": 20 videí
 hľadaj "Tři kamarádi a Jerry CZ": 20 videí
 hľadaj "Tři kamarádi a Jerry S2": 20 videí
-výsledok hladaj:Tři kamarádi a Jerry|Tři kamarádi a Jerry celý díl|Tři kamarádi a Jerry CZ|Tři kamarádi a Jerry S2: 216 nájdených, 60 prijatých
-    dĺžka 3663: Tři kamarádi a Jerry časť 21-25  (JETIX)
-    nedá sa vložiť 401: Tři kamarádi a Jerry časť 16-20  (JETIX)
-    iný seriál: Legendární pouliční utkání | Tom a Jerry speciální 1hodinová kompilace
-    iný seriál: Kamarádi 01 - Jak to začalo
-    iný seriál: Pirát divoký Jack CZ Všechny díly
-    iný seriál: Tom & Jerry | Summer Olympics | Classic Cartoon Compilation | WB Kids
-    iný seriál: Kamarádi 03 - Máme psa
-    iný seriál: Život s Louiem   Máma trenérem S1E08
-    iný seriál: Nejsmradlavější ovoce | Tom a Jerry speciální 1hodinová kompilace| Car
-    iný seriál: Život s Louiem   Bolesti a alergie S1E12
-    iný seriál: Past na žraloka 1
-    iný seriál: Spidey a jeho úžasní přátelé | Nové díly - Déčko | květen 2025 (česky)
+výsledok hladaj:Tři kamarádi a Jerry|Tři kamarádi a Jerry celý díl|Tři kamarádi a Jerry CZ|Tři kamarádi a Jerry S2: 236 nájdených, 60 prijatých
+    vynechané: Tři kamaradi a Jerry - Trojčata (EN.dab) ep. 46 [10 min]
+    dĺžka 3663: Tři kamarádi a Jerry časť 21-25  (JETIX) [61 min]
+    vynechané: [[ Tři kamarádi a Jerry - Čistý a Upravený (EN.dab) ep.15 ]] [7 min]
+    iný seriál: Legendární pouliční utkání | Tom a Jerry speciální 1hodinová kompilace [70 min]
+    iný seriál: Tom & Jerry | Summer Olympics | Classic Cartoon Compilation | WB Kids [17 min]
+    iný seriál: Kamarádi 01 - Jak to začalo [24 min]
+    iný seriál: Pirát divoký Jack CZ Všechny díly [264 min]
+    iný seriál: Kamarádi 03 - Máme psa [22 min]
+    iný seriál: Pepek námořník komplet [68 min]
+    iný seriál: Nejsmradlavější ovoce | Tom a Jerry speciální 1hodinová kompilace| Car [70 min]
+    iný seriál: Past na žraloka 1 [78 min]
+    iný seriál: Danka a Janka 👧👧 - Všetky diely za sebou SK [105 min]
 hľadaj "WITCH cz dabing": 20 videí
 hľadaj "W.I.T.C.H. česky": 20 videí
-výsledok hladaj:WITCH cz dabing|W.I.T.C.H. česky: 144 nájdených, 17 prijatých
-    bez CZ/SK: W.I.T.C.H. série1 díl.5 Pomáháme bližním
-    bez čísla dielu: W.I.T.C.H. - Znělka
-    bez CZ/SK: W.I.T.C.H. série.2 díl.13 Slitování
-    bez CZ/SK: W.I.T.C.H. 1x01 - Začátek (1/2)
-    bez CZ/SK: W.I.T.C.H. série.2 díl.23 Halloween
-    bez CZ/SK: W.I.T.C.H. série.1 díl.1 Začátek
-    bez CZ/SK: W.I.T.C.H. série.2 díl.14 Narcizmus
-    bez CZ/SK: W.I.T.C.H. série.2 díl.7 Odpad
-    bez CZ/SK: W.I.T.C.H. série.1 díl.23 Bitva na plánich Meridianu
-    dĺžka 58: W.I.T.C.H. | Čeština | Czech | Season 2 | Opening Theme (HD) ORIGINAL
-    bez CZ/SK: W.I.T.C.H. série.2 díl.2 Setkání
-    bez CZ/SK: W.I.T.C.H. 1x01 - Začátek (2/2)
+výsledok hladaj:WITCH cz dabing|W.I.T.C.H. česky: 145 nájdených, 14 prijatých
+    bez CZ/SK: W.I.T.C.H. série1 díl.5 Pomáháme bližním [22 min]
+    iný nahrávateľ Cartoon Czentral: W.I.T.C.H. - Znělka [1 min]
+    iný nahrávateľ WITCHcz: W.I.T.C.H. 1x01 - Začátek (1/2) [15 min]
+    bez CZ/SK: W.I.T.C.H. série.1 díl.1 Začátek [22 min]
+    bez CZ/SK: W.I.T.C.H. série.2 díl.13 Slitování [22 min]
+    bez CZ/SK: W.I.T.C.H. série.1 díl.23 Bitva na plánich Meridianu [22 min]
+    bez CZ/SK: W.I.T.C.H. série.2 díl.14 Narcizmus [22 min]
+    bez CZ/SK: W.I.T.C.H. série.2 díl.23 Halloween [22 min]
+    iný nahrávateľ WITCH CHANNEL: W.I.T.C.H. | Čeština | Czech | Season 2 | Opening Theme (HD) ORIGINAL [1 min]
+    bez CZ/SK: W.I.T.C.H. Série.1 díl.2 Pokračování [22 min]
+    dĺžka 59: W.I.T.C.H. série.2 opening cz [1 min]
+    iný nahrávateľ WITCHcz: W.I.T.C.H. 1x01 - Začátek (2/2) [6 min]
 hľadaj "Rychlá rota cz": 20 videí
 hľadaj "Rychlá rota celý díl": 20 videí
 hľadaj "Rychlá rota cz dabing": 20 videí
-výsledok hladaj:Rychlá rota cz|Rychlá rota celý díl|Rychlá rota cz dabing: 213 nájdených, 3 prijatých
-    iný seriál: S02E27 - Počasí nebo život
-    iný seriál: S02E42 - Rybolov pod hvězdami
-    dĺžka 65: Rychlá Rota - první česká znělka TOP HD Stereo (czech)
-    iný seriál: S03E02 - Pufalíci
-    iný seriál: Ras baskervilský
-    dĺžka 31: Rychlá Rota - upoutávka Déčko 04/2017 (česky)
-    iný seriál: CHIP A DALE CZ#2)
-    dĺžka 145: Rychlá rota - Oficiální Trailer | CZ DABING | Chip 'n Dale: Rescue Ran
-    dĺžka 163: Rychlá Rota na pláži ! 🌊☀️ První český dabing 1991
-    dĺžka 74: Rychlá Rota - Prohozená těla! (HD) První český dabing (1991)
-    dĺžka 60: Rychlá rota (Chip a Dale) znělka
-    iný seriál: Official Trailer | Chip n’ Dale: Rescue Rangers | Disney+ Hotstar Mala
+výsledok hladaj:Rychlá rota cz|Rychlá rota celý díl|Rychlá rota cz dabing: 232 nájdených, 3 prijatých
+    iný seriál: S02E27 - Počasí nebo život [23 min]
+    iný seriál: S02E42 - Rybolov pod hvězdami [22 min]
+    iný seriál: S03E02 - Pufalíci [22 min]
+    dĺžka 65: Rychlá Rota - první česká znělka TOP HD Stereo (czech) [1 min]
+    iný seriál: Ras baskervilský [22 min]
+    dĺžka 163: Rychlá Rota na pláži ! 🌊☀️ První český dabing 1991 [3 min]
+    dĺžka 31: Rychlá Rota - upoutávka Déčko 04/2017 (česky) [1 min]
+    dĺžka 145: Rychlá rota - Oficiální Trailer | CZ DABING | Chip 'n Dale: Rescue Ran [2 min]
+    dĺžka 74: Rychlá Rota - Prohozená těla! (HD) První český dabing (1991) [1 min]
+    dĺžka 121: Rychlá rota - Oficiální Teaser Trailer | CZ DABING | Chip 'n Dale: Res [2 min]
+    dĺžka 60: Rychlá rota (Chip a Dale) znělka [1 min]
+    iný seriál: CHIP A DALE CZ#2) [22 min]
 hľadaj "Totální drama cz": 20 videí
 hľadaj "Totální drama ostrov": 20 videí
 výsledok hladaj:Totální drama cz|Totální drama ostrov: 80 nájdených, 0 prijatých
-    dĺžka 202: Totální Dramarama | Pegasovo duhové Latté | Cartoon Network
-    dĺžka 249: Totální Dramarama | Hasič | Cartoon Network
-    dĺžka 238: Totální Dramarama | Žvýkání přes zákaz | Cartoon Network
-    dĺžka 243: Totální Dramarama | Kuřecí láska | Cartoon Network
-    iný seriál: total drama island part 1
-    iný seriál: ZRADIL JSEM KAMARÁDA! 👍 ROBLOX TOTAL DRAMA
-    iný seriál: Drama (2026) CZ HD trailer #A24 #Zendaya #RobertPattinson
-    iný seriál: Total Drama Island PL odcinek 1 cz.1/2
-    iný seriál: Total Drama Island PL odcinek 4 cz. 2/2
-    iný seriál: Total Drama All Stars odc.1 Heroes vs Villains cz.1 Napisy PL
-    iný seriál: Total Drama Island Complete season 1
-    iný seriál: Total Drama: A Half World Tour - Episodio 17 (FINAL)
+    iný seriál: Ostrov nečekaných dramat - Nešťastní táborníci - 1. díl [22 min]
+    iný seriál: Total Drama Island Complete season 1 [555 min]
+    dĺžka 284: Totální Dramarama | Simulanti | Cartoon Network [5 min]
+    dĺžka 202: Totální Dramarama | Pegasovo duhové Latté | Cartoon Network [3 min]
+    dĺžka 256: Totální Dramarama | Nemocenská mise | Cartoon Network [4 min]
+    iný seriál: ZRADIL JSEM KAMARÁDA! 👍 ROBLOX TOTAL DRAMA [17 min]
+    dĺžka 249: Totální Dramarama | Hasič | Cartoon Network [4 min]
+    iný seriál: Total Drama Island-Camp TV Promo [2 min]
+    iný seriál: Drama (2026) CZ HD trailer #A24 #Zendaya #RobertPattinson [3 min]
+    iný seriál: Ostrov nečekaných dramat - Větrný venek - 6. díl [22 min]
+    dĺžka 238: Totální Dramarama | Žvýkání přes zákaz | Cartoon Network [4 min]
+    iný seriál: TOTAL  Drama Drama Drama ISLAND | Total Drama [46 min]
 hľadaj "Garfieldova show cz": 20 videí
 hľadaj "Garfieldova show celý díl": 20 videí
 hľadaj "Garfield show sk dabing": 20 videí
-výsledok hladaj:Garfieldova show cz|Garfieldova show celý díl|Garfield show sk dabing: 214 nájdených, 13 prijatých
-    bez čísla dielu: Garfieldova show - Sýrový svět
-    bez CZ/SK: Garfieldova Show Zamilovaný Odie
-    bez CZ/SK: Garfieldova Show- John se vyfukuje
-    bez CZ/SK: Garfieldova Show- Spoura hlodavcú Ratzova odplata
-    bez CZ/SK: Garfieldova Show-  Pizza zdarma
-    bez CZ/SK: Garfieldova show: Roztomilá rodinka
-    bez CZ/SK: Garfieldova Show- Umazlený mazlík
-    bez čísla dielu: Garfieldova Show-  John je hvězda aniž by chtel
-    bez CZ/SK: Garfieldova show - Mstitel v kápi
-    bez čísla dielu: Garfieldova show - Al, můj nejlepší nepřítel
-    bez čísla dielu: Garfieldova Show- Perfektní pizza CZ
-    bez čísla dielu: Garfieldova show CZ- Hvezdný Osud
+výsledok hladaj:Garfieldova show cz|Garfieldova show celý díl|Garfield show sk dabing: 224 nájdených, 11 prijatých
+    bez CZ/SK: Garfieldova Show- Umazlený mazlík [12 min]
+    bez čísla dielu: Garfieldova Show-  John je hvězda aniž by chtel [12 min]
+    bez CZ/SK: Garfieldova Show-  Pizza zdarma [24 min]
+    bez CZ/SK: Garfieldova Show- Johnova noční procházka [12 min]
+    bez čísla dielu: Garfieldova show CZ- Krtčí dálnice [12 min]
+    bez CZ/SK: Garfieldova Show Zamilovaný Odie [13 min]
+    bez CZ/SK: Garfieldova show: Roztomilá rodinka [12 min]
+    bez CZ/SK: Garfieldova Show- Spoura hlodavcú Ratzova odplata [13 min]
+    bez CZ/SK: Garfieldova show- Garfield a zlaté lázne [12 min]
+    bez čísla dielu: Garfieldova Show-  Kdo křičí na kočku [12 min]
+    bez čísla dielu: Garfieldova Show- Perfektní pizza CZ [12 min]
+    bez čísla dielu: Garfieldova show CZ- Rybožrout [12 min]
 hľadaj "Gumídci": 20 videí
 hľadaj "Gumídci celý díl": 20 videí
 hľadaj "Gumídci cz": 20 videí
-výsledok hladaj:Gumídci|Gumídci celý díl|Gumídci cz: 207 nájdených, 2 prijatých
-    dĺžka 67: Gumídci (Gummi Bears) - nově nazpívaná znělka - Karel Černoch (1993) C
-    dĺžka 61: Gumídci - znělka (Starší verze)
-    dĺžka 63: Hláška měsíce 8 - Gumídci (česky)
-    iný seriál: Rychlá Rota   CZ A   44   Cisaruv novy slavik
-    nie diel: Gumídci 🎸 Rock Cover | ČESKÉ COVERY
-    iný seriál: Rychla Rota El Funo
-    dĺžka 37: Jak se vaří hopsinková šťáva? 🍯 | Gumídci (česky)
-    dĺžka 15: Gumídci – úvodní představení seriálu | Déčko (CZ)
-    dĺžka 20: Gumídci – každý den na Déčku 🐻✨ | Disney seriál | únor 2026 (CZ)
-    dĺžka 126: Gumídci | Hláška měsíce (česky)
-    dĺžka 106: Gumídci (Gummi Bears)
-    nie diel: Gumídci CZ - Nova - 1994/95 - Znělka + Titulky
+výsledok hladaj:Gumídci|Gumídci celý díl|Gumídci cz: 208 nájdených, 1 prijatých
+    dĺžka 67: Gumídci (Gummi Bears) - nově nazpívaná znělka - Karel Černoch (1993) C [1 min]
+    dĺžka 61: Gumídci - znělka (Starší verze) [1 min]
+    dĺžka 63: Hláška měsíce 8 - Gumídci (česky) [1 min]
+    iný seriál: Rychlá Rota   CZ A   44   Cisaruv novy slavik [22 min]
+    iný seriál: Rychla Rota El Funo [23 min]
+    dĺžka 37: Jak se vaří hopsinková šťáva? 🍯 | Gumídci (česky) [1 min]
+    dĺžka 126: Gumídci | Hláška měsíce (česky) [2 min]
+    dĺžka 20: Gumídci – každý den na Déčku 🐻✨ | Disney seriál | únor 2026 (CZ) [0 min]
+    dĺžka 90: Jak skončili Gumídci? 🐻 | Poslední scéna (CZ dabing) [2 min]
+    dĺžka 15: Gumídci – úvodní představení seriálu | Déčko (CZ) [0 min]
+    dĺžka 106: Gumídci (Gummi Bears) [2 min]
+    nie diel: Gumídci - Vojtěch Dyk | Živě na Letní koncerty 2024 na Sonberku [1 min]
 hľadaj "Darkwing Duck cz": 20 videí
 hľadaj "Darkwing Duck česky": 20 videí
-výsledok hladaj:Darkwing Duck cz|Darkwing Duck česky: 124 nájdených, 0 prijatých
-    bez čísla dielu: Detektiv Duck - znělka v češtině (Darkwing Duck, CZ intro)
-    iný seriál: Kačer Kabrňák / Detektiv Duck - česká znělka + vlastní logo
-    iný seriál: Hláška měsíce 12/07
-    iný seriál: Detektiv Duck znělka
-    iný seriál: Detektiv Duck
-    bez čísla dielu: Kačer Kabrňák zpívá! ⭐ Darkwing Duck sings! (CZECH)
-    nie diel: Kačer Kabrňák (Darkwing Duck) - České VHS titulky
-    nie diel: Darkwing Duck (1991) Intro (Czech 🇨🇿) (Cover)
-    bez CZ/SK: Darkwing Duck
-    bez CZ/SK: 1991 - Darkwing Duck cartoon opening
-    iný seriál: Detektiv Duck - Little Girl Blue CZ
-    bez CZ/SK: Darkwing duck intro Ukrainian
+výsledok hladaj:Darkwing Duck cz|Darkwing Duck česky: 122 nájdených, 0 prijatých
+    bez čísla dielu: Detektiv Duck - znělka v češtině (Darkwing Duck, CZ intro) [1 min]
+    iný seriál: Hláška měsíce 12/07 [1 min]
+    iný seriál: Kačer Kabrňák / Detektiv Duck - česká znělka + vlastní logo [1 min]
+    iný seriál: Detektiv Duck [1 min]
+    iný seriál: Detektiv Duck znělka [1 min]
+    bez čísla dielu: Kačer Kabrňák zpívá! ⭐ Darkwing Duck sings! (CZECH) [1 min]
+    nie diel: Kačer Kabrňák (Darkwing Duck) - České VHS titulky [1 min]
+    nie diel: Darkwing Duck (1991) Intro (Czech 🇨🇿) (Cover) [1 min]
+    bez CZ/SK: 1991 - Darkwing Duck cartoon opening [1 min]
+    bez CZ/SK: Darkwing duck intro Ukrainian [1 min]
+    iný seriál: Detektiv Duck - Little Girl Blue CZ [2 min]
+    iný seriál: Hrabě Káčula / Count Duckula- Czech Opening 3 [1 min]
 hľadaj "Timon a Pumbaa cz": 20 videí
 hľadaj "Timon a Pumbaa celý díl": 20 videí
-výsledok hladaj:Timon a Pumbaa cz|Timon a Pumbaa celý díl: 146 nájdených, 0 prijatých
-    nie diel: Lví král - Timon a Pumbaa zachraňují Simbu HD
-    iný seriál: Lvi Kral - Hakuna Matata (Original) (Czech) (HQ)
-    dĺžka 59: HAKUNA MATATA - TIMON A PUMBAA - CZ
-    dĺžka 26: Timon a Pumbaa - Déčko / březen 2016 (česky)
-    iný seriál: The Lion Sleeps Tonight  - By timon and pumbaa | The Lion King 2019
-    dĺžka 65: 4v1 verze znělek Timon a Pumbaa / 4in1 versions of Timon and Pumbaa se
-    iný seriál: (Disney´s) Lví král Návrat do Lví země (CZ dabing) 1080p 2022
-    iný seriál: STAND BY ME - TOMÁŠ TRAPL JAKO TIMON
-    iný seriál: Lvi Kral 3 Hakuna Matata - Tunelujme (Czech)
-    iný seriál: Pumba - pan Prase
-    dĺžka 77: Timon a Pumbaa - Vtipná scéna se Simbou (SK)
-    dĺžka 23: Timon a Pumba - tanec Hula Hula
-hľadaj "Scooby Doo cz dabing": 20 videí
-hľadaj "Scooby-Doo česky celý díl": 20 videí
-výsledok hladaj:Scooby Doo cz dabing|Scooby-Doo česky celý díl: 135 nájdených, 8 prijatých
-    nie diel: Scooby Doo - Záhada ve městě duchů film CZ (Gamemovie)
-    bez CZ/SK: Scooby doo  prdeni
-    bez čísla dielu: Scooby Doo - Záhada ve Městě Duchů CZ dabing (No Commentary)
-    nie diel: Scooby Doo a Přízrak Tajemného rytíře film CZ (Gamemovie)
-    bez CZ/SK: Scooby doo 1- Prdíci bitva
-    bez čísla dielu: Scooby Doo a nespoutané příšery-Facky
-    bez čísla dielu: Scooby doo:střes se beštie z hlubin
-    bez čísla dielu: Scooby-Doo:Příšera z Hlubin
-    bez CZ/SK: A Haunting In Crystal Cove: FULL EPISODE | Scooby-Doo Mystery Incorpor
-    bez CZ/SK: Scooby-Doo! | Ahoy Scooby Doo! 🛥| Classic Cartoon Compilation | WB Ki
-    bez čísla dielu: Scooby Doo - Přízrak Tajemného Rytíře CZ dabing (No Commentary)
-    bez CZ/SK: The Scooby-Doo Show - Slovak Opening
+výsledok hladaj:Timon a Pumbaa cz|Timon a Pumbaa celý díl: 138 nájdených, 0 prijatých
+    iný seriál: Lvi Kral - Hakuna Matata (Original) (Czech) (HQ) [4 min]
+    dĺžka 59: HAKUNA MATATA - TIMON A PUMBAA - CZ [1 min]
+    nie diel: Lví král - Timon a Pumbaa zachraňují Simbu HD [3 min]
+    iný seriál: The Lion Sleeps Tonight  - By timon and pumbaa | The Lion King 2019 [2 min]
+    iný seriál: (Disney´s) Lví král Návrat do Lví země (CZ dabing) 1080p 2022 [83 min]
+    dĺžka 26: Timon a Pumbaa - Déčko / březen 2016 (česky) [0 min]
+    dĺžka 65: 4v1 verze znělek Timon a Pumbaa / 4in1 versions of Timon and Pumbaa se [1 min]
+    iný seriál: Lvi Kral 3 Hakuna Matata - Tunelujme (Czech) [1 min]
+    iný seriál: STAND BY ME - TOMÁŠ TRAPL JAKO TIMON [3 min]
+    iný seriál: Pumba - pan Prase [1 min]
+    dĺžka 23: Timon a Pumba - tanec Hula Hula [0 min]
+    dĺžka 77: Timon a Pumbaa - Vtipná scéna se Simbou (SK) [1 min]
 hľadaj "Pepek námořník": 0 videí
 hľadaj "Pepek námořník cz": 0 videí
 výsledok hladaj:Pepek námořník|Pepek námořník cz: 0 nájdených, 0 prijatých
     
 hľadaj "Animáci cz": 20 videí
 hľadaj "Animáci celý díl": 20 videí
-výsledok hladaj:Animáci cz|Animáci celý díl: 103 nájdených, 0 prijatých
-    dĺžka 70: Animáci - Znělka
-    dĺžka 38: Animáci - Ruda a Kápo znělka 2 díl
-    iný seriál: Animaci - Znelka CZ (Fandub)
-    iný seriál: Scott Pilgrim proti Animaci CZ
-    dĺžka 108: Yakko's World CZ - Libor Terš | Animáci / Animaniacs (official Czech T
-    nie diel: Animáci CZ + karaoke
-    iný seriál: Když se ti nechce do Školy (Animace cz)
-    iný seriál: Světy české animace upoutávka CZ
-    iný seriál: Schovka, kterou jsem neměla hrát (Animovaný horor)
-    iný seriál: Moje Nekonečná Nemoc... ANIMACE
-    iný seriál: Kačer Skrblík ve 3D animaci, Vánoce / CZ
-    iný seriál: Proč je STELA tak ZLÁ?!
+výsledok hladaj:Animáci cz|Animáci celý díl: 99 nájdených, 0 prijatých
+    dĺžka 70: Animáci - Znělka [1 min]
+    dĺžka 38: Animáci - Ruda a Kápo znělka 2 díl [1 min]
+    dĺžka 108: Yakko's World CZ - Libor Terš | Animáci / Animaniacs (official Czech T [2 min]
+    iný seriál: Animaci - Znelka CZ (Fandub) [1 min]
+    iný seriál: Scott Pilgrim proti Animaci CZ [4 min]
+    nie diel: Animáci CZ + karaoke [1 min]
+    iný seriál: "EMČA JE COOL" (ZŠ Humnická) [7 min]
+    iný seriál: Kačer Skrblík ve 3D animaci, Vánoce / CZ [3 min]
+    iný seriál: Schovka, kterou jsem neměla hrát (Animovaný horor) [8 min]
+    iný seriál: Když se ti nechce do Školy (Animace cz) [1 min]
+    iný seriál: Moje Nekonečná Nemoc... ANIMACE [11 min]
+    iný seriál: Světy české animace upoutávka CZ [2 min]
 hľadaj "Pinky a Brain cz": 20 videí
 hľadaj "Pinky a Brain česky": 20 videí
 výsledok hladaj:Pinky a Brain cz|Pinky a Brain česky: 80 nájdených, 0 prijatých
-    iný seriál: Neuvěřitelná dobrodružství Rudly a Koumáka - Znělka
-    iný seriál: Rudla a Koumák- 1/5 O myších a lidech
-    iný seriál: Rudla a Koumák- 2/5 O myších a lidech
-    iný seriál: Neuvěřitelná dobrodružství Rudly a Koumáka - Czech Intro (VHS Dub)
-    iný seriál: Animaniacs - Pinky and The Brain intro (Czech)
-    iný seriál: Rudly a Koumaka - Czech Opening and Credits
-    iný seriál: Pinky i Mózg - Czołówka PL
-    iný seriál: Neuvěřitelná dobrodružství Rudly a Koumáka - znělka
-    iný seriál: Pinky And The Brain (REBOOT)
-    iný seriál: Watch Brain Finally B*tch Out Pinky For Being Such An Idiot
-    iný seriál: Pinky & Brain -  Funny Clips 2
-    iný seriál: Pinky and the Brain [Rock Remix by New Source]
+    iný seriál: Neuvěřitelná dobrodružství Rudly a Koumáka - Znělka [1 min]
+    iný seriál: Rudla a Koumák- 1/5 O myších a lidech [4 min]
+    iný seriál: Rudla a Koumák- 2/5 O myších a lidech [3 min]
+    iný seriál: Neuvěřitelná dobrodružství Rudly a Koumáka - Czech Intro (VHS Dub) [1 min]
+    iný seriál: Pinky i Mózg - Czołówka PL [1 min]
+    iný seriál: Rudly a Koumaka - Czech Opening and Credits [2 min]
+    iný seriál: Neuvěřitelná dobrodružství Rudly a Koumáka - znělka [1 min]
+    iný seriál: Pinky And The Brain (REBOOT) [1 min]
+    iný seriál: Watch Brain Finally B*tch Out Pinky For Being Such An Idiot [1 min]
+    iný seriál: Animaniacs - Pinky and The Brain intro (Czech) [1 min]
+    iný seriál: Najlepsze momenty Pinky'ego i Mózgu | @GenWBInternational [8 min]
+    iný seriál: Pinky & Brain -  Funny Clips 2 [14 min]
 hľadaj "Dexterova laboratoř": 19 videí
 hľadaj "Dexterova laboratoř cz": 20 videí
-výsledok hladaj:Dexterova laboratoř|Dexterova laboratoř cz: 141 nájdených, 0 prijatých
-    iný seriál: Dexter's Laboratory Intro | Cartoon Network
-    iný seriál: FULL EPISODE: Babysitter Blues/Valhallen's Room/Dream Machine | Dexter
-    iný seriál: Dexter’s Lab - S3 E5a - A Boy Named Sue (2002)
-    iný seriál: Omelette du Fromage | Dexter's Laboratory | Cartoon Network
-    iný seriál: Dexter's Laboratory | Dee Dee's Science Project | Cartoon Network
+výsledok hladaj:Dexterova laboratoř|Dexterova laboratoř cz: 131 nájdených, 1 prijatých
+    iný seriál: Dexter's Laboratory Intro | Cartoon Network [1 min]
+    iný seriál: FULL EPISODE: Babysitter Blues/Valhallen's Room/Dream Machine | Dexter [15 min]
     bez dĺžky: 🔴 LIVE! FULL EPISODES: SEASON 01 | Dexter's Laboratory | #animation #
-    iný seriál: Dexter's Laboratory | Trapped with a Vengeance | Cartoon Network
-    iný seriál: Doll House Drama: FULL EPISODE | Dexter's Laboratory | Cartoon Cartoon
-    iný seriál: Dexter's Laboratory: Mandark's Lab FULL GAME Longplay (PS1)
-    iný seriál: Omlette du Frommage CLASSIC SCENE | Dexter's Laboratory | @GenerationW
-    iný seriál: Dexter's Laboratory | Deedee's Lost Teddy Bear | Cartoon Network
-    iný seriál: Dexter's Laboratory: Mandark's Lab? (PS1) | Full Game | 4K Ultra HD | 
+    iný seriál: Dexter's Laboratory | You Vegetabelieve It! & Old Flame | REACTION [14 min]
+    iný seriál: Omelette du Fromage | Dexter's Laboratory | Cartoon Network [3 min]
+    iný seriál: Dexter's Laboratory | Dee Dee's Science Project | Cartoon Network [5 min]
+    iný seriál: Doll House Drama: FULL EPISODE | Dexter's Laboratory | Cartoon Cartoon [8 min]
+    iný seriál: Dexter's Laboratory | Figure Not Included | Clip | Cartoon Network [4 min]
+    iný seriál: Dexter’s Lab - S3 E5a - A Boy Named Sue (2002) [3 min]
+    iný seriál: Dexter's Laboratory - You're So Stupid [0 min]
+    iný seriál: Omlette du Frommage CLASSIC SCENE | Dexter's Laboratory | @GenerationW [3 min]
+    iný seriál: Dexter Dodgeball: FULL EPISODE | Dexter's Laboratory | Cartoon Cartoon [8 min]
 hľadaj "Kravička a Kuřátko": 20 videí
-výsledok hladaj:Kravička a Kuřátko: 60 nájdených, 0 prijatých
-    iný seriál: 🐮 Telátko a kuřátko na výletě | Roztomilá písnička pro děti | MiniMoo
-    iný seriál: Parta zvířátek - dětská písnička o zvucích zvířat jako kráva, ovce, ko
-    iný seriál: ŽLUTÁ KUŘÁTKA
-    iný seriál: BÉBA - Kuře na dvoře | Písnička pro děti | Dětská píseň se zvuky zvířa
-    iný seriál: Krtek a vejce / The Little Mole and the Egg
-    iný seriál: Zvířátka z farmy – Veselá písnička pro děti | Kravička, Ovečka, Prasát
-    iný seriál: Kačátko Hledá Kamarády – Dětské Písně – S Láskou k Dětem
-    iný seriál: BibiBum  - Když jsem já sloužil - Písničky pro děti (Kids Nursery Rhym
-    iný seriál: Vstávací
-    iný seriál: Kravička na stopě UFO
-    iný seriál: 🐄 KRAVIČKA 🐄 DĚTSKÁ písnička 🎵
-    iný seriál: Kravička 🐄🎶 | Dětská písnička
+výsledok hladaj:Kravička a Kuřátko: 67 nájdených, 0 prijatých
+    iný seriál: Parta zvířátek - dětská písnička o zvucích zvířat jako kráva, ovce, ko [2 min]
+    iný seriál: 🐮 Telátko a kuřátko na výletě | Roztomilá písnička pro děti | MiniMoo [2 min]
+    iný seriál: ŽLUTÁ KUŘÁTKA [2 min]
+    iný seriál: BÉBA - Kuře na dvoře | Písnička pro děti | Dětská píseň se zvuky zvířa [3 min]
+    iný seriál: Zvířátka z farmy – Veselá písnička pro děti | Kravička, Ovečka, Prasát [2 min]
+    iný seriál: Zvířátka na farmě 🐮🐷🐥 | Písnička o zvířátkách a jejich zvucích pro  [3 min]
+    iný seriál: Kravička 🐄🎶 | Dětská písnička [1 min]
+    iný seriál: BibiBum  - Když jsem já sloužil - Písničky pro děti (Kids Nursery Rhym [4 min]
+    iný seriál: 🐄 KRAVIČKA 🐄 DĚTSKÁ písnička 🎵 [1 min]
+    iný seriál: Vstávací [2 min]
+    iný seriál: Kačátko Hledá Kamarády – Dětské Písně – S Láskou k Dětem [3 min]
+    iný seriál: 🐮 Naše malé telátko | Písnička pro děti o kravičkách | MiniMoo 🐄🐂 [5 min]
 hľadaj "Johnny Bravo cz dabing": 20 videí
 hľadaj "Johnny Bravo česky": 20 videí
-výsledok hladaj:Johnny Bravo cz dabing|Johnny Bravo česky: 137 nájdených, 0 prijatých
-    bez CZ/SK: Johnny Bravo funny moments pl
-    bez CZ/SK: Johnny Bravo valentine day - čistý klasik :D
-    bez CZ/SK: Johnny Bravo - Sergeant Trixie
-    iný seriál: RIO BRAVO(1959) - John Wayne, Dean Martin, Ricky Nelson and Walter Bre
-    iný seriál: Looney Tunes 🐰| Wile E. Coyote’s Wildest Fails! | Classic Cartoon 😍|
-    iný seriál: FULL EPISODE: Babysitter Blues/Valhallen's Room/Dream Machine | Dexter
-    iný seriál: Bravogirl Všechno nebo nic
-    iný seriál: Looney Tuesdays | How NOT To Capture The Roadrunner | WB Kids
-    iný seriál: Maraton De 4 Ore Cu Sezonul 3 Din Johnny Test
-    iný seriál: My little pony Frenship is magic S03E09 Spike k vašim službám cz
-    iný seriál: The Settlers IV - originální intro video (český dabing)
-    iný seriál: Tom and Jerry | Mega Compilation | Vol. 16 | Warner Classics
+výsledok hladaj:Johnny Bravo cz dabing|Johnny Bravo česky: 121 nájdených, 0 prijatých
+    bez CZ/SK: Johnny Bravo funny moments pl [21 min]
+    bez CZ/SK: Johnny Bravo - Sergeant Trixie [2 min]
+    bez CZ/SK: Johnny Bravo valentine day - čistý klasik :D [2 min]
+    iný seriál: Looney Tunes 🐰| Wile E. Coyote’s Wildest Fails! | Classic Cartoon 😍| [61 min]
+    iný seriál: RIO BRAVO(1959) - John Wayne, Dean Martin, Ricky Nelson and Walter Bre [4 min]
+    iný seriál: FULL EPISODE: Babysitter Blues/Valhallen's Room/Dream Machine | Dexter [15 min]
+    iný seriál: Bravogirl Všechno nebo nic [1 min]
+    iný seriál: Maraton De 4 Ore Cu Sezonul 3 Din Johnny Test [267 min]
+    iný seriál: Looney Tuesdays | How NOT To Capture The Roadrunner | WB Kids [23 min]
+    iný seriál: Tom and Jerry | Mega Compilation | Vol. 16 | Warner Classics [43 min]
+    iný seriál: My little pony Frenship is magic S03E09 Spike k vašim službám cz [21 min]
+    iný seriál: The Settlers IV - originální intro video (český dabing) [1 min]
 hľadaj "Kouzelní kmotříčkové": 3 videí
 hľadaj "Kouzelní kmotříčkové cz": 3 videí
 výsledok hladaj:Kouzelní kmotříčkové|Kouzelní kmotříčkové cz: 6 nájdených, 3 prijatých
@@ -559,318 +567,430 @@ výsledok hladaj:Kouzelní kmotříčkové|Kouzelní kmotříčkové cz: 6 nájd
 hľadaj "Jimmy Neutron cz": 20 videí
 hľadaj "Jimmy Neutron česky": 20 videí
 výsledok hladaj:Jimmy Neutron cz|Jimmy Neutron česky: 80 nájdených, 0 prijatých
-    bez CZ/SK: Jimmy Neutron - The Neutron Style
-    bez CZ/SK: "Jimmy Neutron: Boy Genius" Theme Song (HQ) | Episode Opening Credits 
-    bez čísla dielu: JIMMY NEUTRON NEMŮŽE DÝCHAT (Jimmy Neutron cant breathe) by MeatCanyon
-    bez CZ/SK: Jimmy Neutron - Chrysler Town & Country HD
-    bez CZ/SK: Jimmy Neutron: Boy Genius - Getting Ready For School | Fandango Family
-    bez CZ/SK: Ready For School! | Jimmy Neutron: Boy Genius | CLIP
-    bez CZ/SK: jimmy neutron to pojeb
-    iný seriál: wat is jim pop name
-    iný seriál: Kouzelní kmotříčci dva a půl dítěte
-    bez CZ/SK: Banga -Jimmy Neutron
-    bez CZ/SK: TMF - desktopnn (ft. Jimmy Neutron)
-    bez CZ/SK: Nicktoons & The Dice of Destiny - Official Jimmy Neutron Reveal Traile
+    bez CZ/SK: Jimmy Neutron - The Neutron Style [0 min]
+    bez CZ/SK: "Jimmy Neutron: Boy Genius" Theme Song (HQ) | Episode Opening Credits  [1 min]
+    bez CZ/SK: Jimmy Neutron - Chrysler Town & Country HD [1 min]
+    bez CZ/SK: Jimmy Neutron: Boy Genius - Getting Ready For School | Fandango Family [2 min]
+    bez čísla dielu: JIMMY NEUTRON NEMŮŽE DÝCHAT (Jimmy Neutron cant breathe) by MeatCanyon [1 min]
+    bez CZ/SK: Ready For School! | Jimmy Neutron: Boy Genius | CLIP [4 min]
+    bez CZ/SK: jimmy neutron to pojeb [0 min]
+    iný seriál: wat is jim pop name [1 min]
+    iný seriál: Kouzelní kmotříčci dva a půl dítěte [11 min]
+    bez CZ/SK: Nicktoons & The Dice of Destiny - Official Jimmy Neutron Reveal Traile [1 min]
+    bez CZ/SK: TMF - desktopnn (ft. Jimmy Neutron) [1 min]
+    bez CZ/SK: Banga -Jimmy Neutron [3 min]
 hľadaj "Hej Arnolde": 18 videí
 hľadaj "Hej Arnolde cz": 20 videí
-výsledok hladaj:Hej Arnolde|Hej Arnolde cz: 57 nájdených, 0 prijatých
-    iný seriál: Hey Arnold! Opening Theme Song
-    iný seriál: Hey Arnold!: Season One: Opening Credits
-    iný seriál: Hey Arnold! The Movie - Trailer
-    iný seriál: The Mule Race | Hey Arnold! | Nicktoons
-    iný seriál: That's Bold TV: My Massive Review of Hey Arnold
-    iný seriál: "Hey Arnold!" Theme Song (HQ) | Episode Opening Credits | Nick Animati
-    iný seriál: HEY, ARNOLD: Pigeon Man Hit The FEELS! 🥺 1st Time Watching
-    iný seriál: Romeo and Juliet | Hey Arnold! | Nicktoons
-    iný seriál: The WEIRD World of Hey Arnold!
-    iný seriál: Oskar REALLY Frustrated the Hell Out of Me!! | Hey Arnold! S3E1 Reacti
-    iný seriál: Where is Arnold Going? | Hey Arnold! | Nicktoons
-    iný seriál: Hey Arnold! Pilot 🏈 Animatic | Hey Arnold!
+výsledok hladaj:Hej Arnolde|Hej Arnolde cz: 56 nájdených, 0 prijatých
+    iný seriál: Hey Arnold! Opening Theme Song [1 min]
+    iný seriál: Hey Arnold!: Season One: Opening Credits [1 min]
+    iný seriál: Hey Arnold! The Movie - Trailer [2 min]
+    iný seriál: "Hey Arnold!" Theme Song (HQ) | Episode Opening Credits | Nick Animati [1 min]
+    iný seriál: The Mule Race | Hey Arnold! | Nicktoons [3 min]
+    iný seriál: The WEIRD World of Hey Arnold! [444 min]
+    iný seriál: Helga Takes Over the Opera | Hey Arnold! | Nicktoons [3 min]
+    iný seriál: Romeo and Juliet | Hey Arnold! | Nicktoons [4 min]
+    iný seriál: Arnold! Hey Tribute [1 min]
+    iný seriál: HEY, ARNOLD: Pigeon Man Hit The FEELS! 🥺 1st Time Watching [16 min]
+    iný seriál: That's Bold TV: My Massive Review of Hey Arnold [123 min]
+    iný seriál: Hey Arnold 24 Hours Until You Die! [0 min]
 hľadaj "Rugrats cz": 20 videí
 hľadaj "Rugrats česky": 20 videí
-výsledok hladaj:Rugrats cz|Rugrats česky: 127 nájdených, 0 prijatých
-    bez CZ/SK: The Rugrats Movie (3/10) Movie CLIP - Dil Pickles (1998) HD
-    iný seriál: Myšák Stuart Little (1999) - Pro Columbia Pictures vyrobila LS Product
-    bez CZ/SK: 18. 9. 2024 | Rugrats: Adventures in Gameland - Longplay | Detective P
-    iný seriál: paris - Limuu
-    iný seriál: Hercules Disney cz CUT
-    iný seriál: 1remmunniveK [PS4]
-    iný seriál: 9 - Získání posledních dvou automobilů - Ford Racing 2 - CZ (medium di
-    iný seriál: Ren & Stimpy - 10 NEJLEPŠÍCH epizod!
-    bez CZ/SK: RUGRATS: 1950's Super Panavision 70 - Ai Short Film
-    iný seriál: Scaredy Pants Deleted Scene Reconstruction
-    bez CZ/SK: Cwopk | FiveM Montage | #Reapers #RugRats
-    iný seriál: UNBOXING CZ PS1 CLASSIC  STARLINK ZELDA CZECHGAMER.COM DEATHDEALERCZ
+výsledok hladaj:Rugrats cz|Rugrats česky: 131 nájdených, 0 prijatých
+    iný seriál: Tommy Finds Reptar In Outer Space & Chuckie Gets a Balloon! | FULL EPI [44 min]
+    bez CZ/SK: Angelica Has Responsibilities | Rugrats | Nicktoons [1 min]
+    bez CZ/SK: The Rugrats Movie (3/10) Movie CLIP - Dil Pickles (1998) HD [2 min]
+    bez CZ/SK: Rugrats - "Take Me There" Music video [4 min]
+    iný seriál: paris - Limuu [2 min]
+    bez CZ/SK: The Best of Cynthia Pickles! 💖 Rugrats | Nicktoons [8 min]
+    bez CZ/SK: RUGRATS: 1950's Super Panavision 70 - Ai Short Film [2 min]
+    bez CZ/SK: Rugrats Christmas ending with Chalkzone [1 min]
+    bez CZ/SK: The Rugrats Movie - Take Me There (Mýa, Blackstreet, Mase, & Blinky Bl [4 min]
+    bez CZ/SK: open season 2 rugrats dinosaur train rubbadubbers nature cat fight pla [1 min]
+    iný seriál: Take Me there [5 min]
+    bez CZ/SK: IMDb Video The Rugrats Go Wild [3 min]
 hľadaj "Divocí Thornberryovi": 0 videí
 výsledok hladaj:Divocí Thornberryovi: 0 nájdených, 0 prijatých
     
 hľadaj "SpongeBob v kalhotách cz": 20 videí
 hľadaj "SpongeBob v kalhotách celý díl": 20 videí
-výsledok hladaj:SpongeBob v kalhotách cz|SpongeBob v kalhotách celý díl: 149 nájdených, 0 prijatých
-    dĺžka 246: SpongeBob v kalhotách S01E01 CZ 1/6
-    iný seriál: Songebob chata v lese česky celý díl
-    dĺžka 180: Spongebob v kalhotách S11E1 - 4. část
-    dĺžka 181: Spongebob v kalhotách S11E1 - 7. část
-    dĺžka 180: Spongebob v kalhotách S11E9 - [6/8 ]
-    dĺžka 87: SpongeBob v kalhotách | Mimina
-    iný seriál: Spongebob v Kalotách ČESKY
-    iný seriál: Spongebob Squarepants - Znělka
-    dĺžka 180: Spongebob v kalhotách S12E24 - [6/8]
-    iný seriál: Spongebob: Plankton's robot fight CZ
-    dĺžka 180: Spongebob v kalhotách S11E9 - [7/8 ]
-    dĺžka 180: Spongebob v kalhotách S12E24 - [4/8]
+výsledok hladaj:SpongeBob v kalhotách cz|SpongeBob v kalhotách celý díl: 146 nájdených, 0 prijatých
+    dĺžka 246: SpongeBob v kalhotách S01E01 CZ 1/6 [4 min]
+    iný seriál: Songebob chata v lese česky celý díl [12 min]
+    iný seriál: Spongebob v Kalotách ČESKY [3 min]
+    dĺžka 87: SpongeBob v kalhotách | Mimina [1 min]
+    iný seriál: Spongebob CZ S04E14 - Stavebnice [1 min]
+    iný seriál: Spongebob: Plankton's robot fight CZ [6 min]
+    dĺžka 180: Spongebob v kalhotách S11E1 - 4. část [3 min]
+    dĺžka 180: Spongebob v kalhotách S11E9 - [6/8 ] [3 min]
+    dĺžka 233: Spongebob v kalhotách CZ S10E11 [1/4] CZ dabing [4 min]
+    dĺžka 181: Spongebob v kalhotách S11E1 - 7. část [3 min]
+    dĺžka 180: Spongebob v kalhotách S12E24 - [3/8] [3 min]
+    dĺžka 180: Spongebob v kalhotách S11E9 - [7/8 ] [3 min]
 hľadaj "SpongeBob v nohaviciach": 17 videí
 hľadaj "SpongeBob v nohaviciach sk": 20 videí
-výsledok hladaj:SpongeBob v nohaviciach|SpongeBob v nohaviciach sk: 126 nájdených, 0 prijatých
-    dĺžka 42: Spongebob v nohaviciach - Zvučka (SK Dabing)
-    dĺžka 141: Spongebob v nohaviciach S06E03a - Spongicus [1/5]
-    dĺžka 42: Spongebob v nohaviciach - Znelka
-    dĺžka 143: Spongebob v nohaviciach S06E04a - Nenormálny [4/5]
-    iný seriál: SpongeBob v kalhotách S01E01 CZ 1/6
-    dĺžka 143: Spongebob v nohaviciach S06E03b - Prísavková symfónia [3/5]
-    dĺžka 143: Spongebob v nohaviciach S06E04a - Nenormálny [3/5]
-    dĺžka 143: Spongebob v nohaviciach S06E04b - Zmiznutý [1/5]
-    dĺžka 58: Spongebob v nohaviciach S06E03a - Spongicus [5/5]
-    dĺžka 143: Spongebob v nohaviciach S06E04b - Zmiznutý [2/5]
-    dĺžka 143: Spongebob v nohaviciach S06E04a - Nenormálny [1/5]
-    dĺžka 143: Spongebob v nohaviciach S06E03b - Prísavková symfónia [4/5]
+výsledok hladaj:SpongeBob v nohaviciach|SpongeBob v nohaviciach sk: 145 nájdených, 0 prijatých
+    dĺžka 42: Spongebob v nohaviciach - Zvučka (SK Dabing) [1 min]
+    dĺžka 143: Spongebob v nohaviciach S06E03b - Prísavková symfónia [3/5] [2 min]
+    iný seriál: SpongeBob v kalhotách S01E01 CZ 1/6 [4 min]
+    dĺžka 143: Spongebob v nohaviciach S06E04a - Nenormálny [4/5] [2 min]
+    dĺžka 42: Spongebob v nohaviciach - Znelka [1 min]
+    dĺžka 141: Spongebob v nohaviciach S06E03a - Spongicus [1/5] [2 min]
+    dĺžka 143: Spongebob v nohaviciach S06E04a - Nenormálny [3/5] [2 min]
+    dĺžka 143: Spongebob v nohaviciach S06E04b - Zmiznutý [1/5] [2 min]
+    dĺžka 143: Spongebob v nohaviciach S06E04a - Nenormálny [1/5] [2 min]
+    dĺžka 143: Spongebob v nohaviciach S06E04b - Zmiznutý [2/5] [2 min]
+    dĺžka 58: Spongebob v nohaviciach S06E03a - Spongicus [5/5] [1 min]
+    iný seriál: SpongeBob SquarePants GROWING UP EVOLUTION 👉@WANAPlus [3 min]
 hľadaj "Inspektor Gadget cz": 20 videí
 hľadaj "Inspektor Gadget česky": 20 videí
-výsledok hladaj:Inspektor Gadget cz|Inspektor Gadget česky: 137 nájdených, 13 prijatých
-    iný seriál: Inspector Gadget:  Monster Lake // Series 1, Episode 1
-    iný seriál: Inspector Gadget 105 - Health Spa | HD | Full Episode
-    iný seriál: Haunted Castle | 🎃 Halloween Special 🎃 | Inspector Gadget | Full Epi
-    iný seriál: The Japanese Connection 🔍 Inspector Gadget | Full Episode | Season On
-    iný seriál: Inspector Gadget - Tajemnica Potwora z Jeziora! 👾 | Bajki dla dzieci 
-    iný seriál: Inšpektor Gadget  - SK - Zelenáč - Slovenský dabing
-    bez CZ/SK: Spukschloss - Inspektor Gadget - Staffel 1
-    iný seriál: Inšpektor Gadget  - SK - Gadget ide na západ - Slovenský dabing
-    iný seriál: Dr. Claw's Jungle Trap! | Inspector Gadget - WildBrain | Full HD Episo
-    iný seriál: Inspector Gadget:  Monster Lake // Series 1, Episode 1
-    iný seriál: Dr. Claw's Spa Trap! | Inspector Gadget - WildBrain | Full HD Episodes
-    iný seriál: Замок с привидениями - Инспектор Гаджет по-русски - 1 сезон Эпизод 7
+výsledok hladaj:Inspektor Gadget cz|Inspektor Gadget česky: 142 nájdených, 14 prijatých
+    iný seriál: Inspector Gadget:  Monster Lake // Series 1, Episode 1 [22 min]
+    iný seriál: Inspector Gadget 105 - Health Spa | HD | Full Episode [22 min]
+    iný seriál: Haunted Castle | 🎃 Halloween Special 🎃 | Inspector Gadget | Full Epi [22 min]
+    iný seriál: The Japanese Connection 🔍 Inspector Gadget | Full Episode | Season On [22 min]
+    iný seriál: Inspector Gadget - Tajemnica Potwora z Jeziora! 👾 | Bajki dla dzieci  [21 min]
+    bez CZ/SK: Spukschloss - Inspektor Gadget - Staffel 1 [21 min]
+    iný seriál: Inšpektor Gadget  - SK - Gadget ide na západ - Slovenský dabing [23 min]
+    iný seriál: Dr. Claw's Jungle Trap! | Inspector Gadget - WildBrain | Full HD Episo [22 min]
+    iný seriál: Inspector Gadget:  Monster Lake // Series 1, Episode 1 [22 min]
+    iný seriál: Inšpektor Gadget  - SK - Zelenáč - Slovenský dabing [23 min]
+    iný seriál: Inspector Gadget Theme 🚨 [1 min]
+    iný seriál: Inspektor Šikula 2015 | Česká úvodní píseň | Minimax [1 min]
 hľadaj "Kim Possible cz dabing díl": 20 videí
-výsledok hladaj:Kim Possible cz dabing díl: 64 nájdených, 0 prijatých
-    bez čísla dielu: Kim Possible 🎃 Halloween (česky)
-    bez čísla dielu: Kim Possible - Lucie Vondráčková "Stačí říct!" (Czech)
-    bez čísla dielu: Kim Possible - Déčko / leden 2016 (česky)
-    bez CZ/SK: Kim Possible Full Episode | Bueno Nacho 🌮  | S1 E6 | Disney Channel
-    nie diel: 20 FAKTŮ - Kim Possible
-    bez CZ/SK: 👀 Ochutnávka | Prvních 5 minut | Kim Possible | Disney Channel
-    iný seriál: 12 seriálů, které jsme na Jetixu milovali
-    iný seriál: W.I.T.C.H. 1x01 - Začátek (1/2)
-    bez CZ/SK: Kim Possible║ Text
-    iný seriál: Celý díl: 🦕 Jde o čas! | Phineas a Ferb | Disney Channel Česká republ
-    iný seriál: Léto na vlnách
-    iný seriál: Jetix 2008 - upútávky, znelky, reklamy 2
-hľadaj "Gargoyles cz dabing": 20 videí
-výsledok hladaj:Gargoyles cz dabing: 40 nájdených, 1 prijatých
-    bez CZ/SK: Gargoyles - intro (HD)
-    iný seriál: Nekonečný příběh - World-Boss 2
-    nie diel: ► Dark Souls | #2 | Uchigatana a Gargoyle boss | CZ Lets Play / Gamepl
-    nie diel: ► Dark Souls 2 | #11 | Belfry Gargoyles | CZ Lets Play / Gameplay [HD]
-    nie diel: Dark Souls II Slovenský walkthrough:Epizóda 19,7 - Belfry Gargoyles
-    nie diel: Dark Souls 2 : SOTFS |#5| Lost Sinner + Belfry Gargoyles | CZ Lets pla
-    bez CZ/SK: DARK SOULS™: REMASTERED...#2 Bell Gargoyles boss...Oncek jede sólo
-    nie diel: ► Dark Souls 2 : SOTFS | #17 | Belfry Gargoyles | CZ Lets Play / Gamep
-    bez CZ/SK: Valiant Gargoyle - Elden Ring | #24 | 3.3.2022
-    bez CZ/SK: DARK SOULS:Prepare to die edition #2 Bell Gargoyles
-    iný seriál: Bunt gargulców  Polski dubbing
-    iný seriál: (Transformers Prime) s1e5  (2/4)
-kanál @pokemonserialczsk6452: http 200, 880170 B, id UCEarul-dRmRW6dpUePG8xpA
+výsledok hladaj:Kim Possible cz dabing díl: 71 nájdených, 0 prijatých
+    bez čísla dielu: Znělka Kim Possible [1 min]
+    bez CZ/SK: Kim Possible S01E01 Zamilovaná 2část [5 min]
+    bez CZ/SK: Kim Possible Full Episode | Bueno Nacho 🌮  | S1 E6 | Disney Channel [23 min]
+    bez čísla dielu: Kim Possible 🎃 Halloween (česky) [4 min]
+    bez čísla dielu: Kim Possible - Déčko / leden 2016 (česky) [0 min]
+    bez čísla dielu: Kim Possible - Lucie Vondráčková "Stačí říct!" (Czech) [1 min]
+    bez čísla dielu: To Se Nám / Could It Be? - Kim Possible (Czech/Čeština) [2 min]
+    bez čísla dielu: Kim Possible - Může být [1 min]
+    nie diel: 20 FAKTŮ - Kim Possible [11 min]
+    bez čísla dielu: Kim Possible Theme Song (čeština/Czech, NTSC) [1 min]
+    bez CZ/SK: Kim Possible║ Text [1 min]
+    bez CZ/SK: 👀 Ochutnávka | Prvních 5 minut | Kim Possible | Disney Channel [5 min]
+kanál @pokemonserialczsk6452: http 200, 880709 B, id UCEarul-dRmRW6dpUePG8xpA
 innertube UUEarul-dRmRW6dpUePG8xpA: kľúče responseContext,alerts,trackingParams,topbar,microformat; 0 videí; alert: [{"type":"ERROR","text":{"runs":[{"text":"Playlist neexistuje."}]}}]
-html UUEarul-dRmRW6dpUePG8xpA: http 200, 865194 B, 0 videí
+html UUEarul-dRmRW6dpUePG8xpA: http 200, 861521 B, 0 videí
 rss UUEarul-dRmRW6dpUePG8xpA: http 404, 0 videí
+výsledok @pokemonserialczsk6452: 0 nájdených, 0 prijatých
+    
 innertube PLhr2MGr4OPNcEUNaI_aESmupie_m-Ppzr: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 0 videí; alert: []
-html PLhr2MGr4OPNcEUNaI_aESmupie_m-Ppzr: http 200, 887109 B, 0 videí
+html PLhr2MGr4OPNcEUNaI_aESmupie_m-Ppzr: http 200, 888638 B, 0 videí
 rss PLhr2MGr4OPNcEUNaI_aESmupie_m-Ppzr: http 404, 0 videí
+výsledok PLhr2MGr4OPNcEUNaI_aESmupie_m-Ppzr: 0 nájdených, 0 prijatých
+    
 innertube PL3EEYr69JFOyn1EKmWZwkq6_cPL_LGxEY: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 45 videí; alert: []
+výsledok PL3EEYr69JFOyn1EKmWZwkq6_cPL_LGxEY: 45 nájdených, 45 prijatých
+    
 hľadaj "Pokémon cz dabing celý díl": 20 videí
 hľadaj "Pokémon česky epizoda": 20 videí
 hľadaj "Pokémon sk dabing": 20 videí
-výsledok hladaj:Pokémon cz dabing celý díl|Pokémon česky epizoda|Pokémon sk dabing: 220 nájdených, 1 prijatých
-    bez CZ/SK: Pokémon - I Choose You! | FULL EPISODE 1 | Season 1
-    bez čísla dielu: Pokemon - uvodni znělka
-    nie diel: Pokémon První film český dabing
-    bez CZ/SK: Pokémon Emergency | FULL EPISODE 2 | Season 1
-    bez čísla dielu: HISTORIE POKÉMON SVĚTA!
-    bez CZ/SK: The Battling Eevee Brothers | POKÉMON FULL EPISODE 37 | Season 1
-    iný seriál: CELÝ PŘÍBĚH ASHOVA GENGARA!
-    nie diel: 20 FAKTŮ - Pokémon
-    bez čísla dielu: Pokemon célá znelka v češtině
-    bez CZ/SK: Volcanic Panic  | POKÉMON FULL EPISODE 4 | Season 2
-    bez čísla dielu: Pokémon Seriál: Vrcholné Cesty | Zahájení České
-    nie diel: 20 FAKTŮ - Pokémon
+výsledok hladaj:Pokémon cz dabing celý díl|Pokémon česky epizoda|Pokémon sk dabing: 214 nájdených, 1 prijatých
+    iný seriál: SRDCERVOUCÍ PŘÍBĚH ASHOVA CHARIZARDA! [26 min]
+    bez čísla dielu: OTEVŘEL JSEM VŠECHNY POKÉMON EDICE A BALÍČKY (1000 KARET) [44 min]
+    iný seriál: CELÝ PŘÍBĚH ASHOVA GENGARA! [12 min]
+    bez čísla dielu: HISTORIE POKÉMON SVĚTA! [16 min]
+    bez CZ/SK: Historie série Pokémon - 1. generace [20 min]
+    nie diel: VŠECHNY Díly Minecraft Pokemonů [250 min]
+    bez CZ/SK: 100 dní jako dračí trenér v Minecraftu s Pokémony: Dokážu porazit svéh [140 min]
+    bez čísla dielu: Moje Pokémon sbírka za půl milionu korun. [28 min]
+    nie diel: TOP 10 Nejsilnějších Pokémonů [14 min]
+    iný seriál: NEJDRAŽŠÍ OTEVÍRÁNÍ V ČESKU - BASE SET 1999 ZA 360 TISÍC KORUN [10 min]
+    bez CZ/SK: Vyhraju První POKÉMON Turnaj? [10 min]
+    bez CZ/SK: Chytám pokémony na Maledivách! | Hraju Pokémon Go po 100 letech! [12 min]
 hľadaj "Ben 10 cz dabing": 20 videí
 hľadaj "Ben 10 česky celý díl": 20 videí
-výsledok hladaj:Ben 10 cz dabing|Ben 10 česky celý díl: 158 nájdených, 0 prijatých
-    bez čísla dielu: Ben 10 | Můžu si ho nechat? | Cartoon Network
-    bez čísla dielu: Ben 10: Classic Theme Song - (Czech/čeština)
-    bez CZ/SK: Ben 10 I Pomoc z jiných dimenzí I Cartoon Network
-    bez CZ/SK: BEN 10 | Nejrychlejší auto | Cartoon Network
-    bez CZ/SK: Ben 10 | Nebezpečí ve vodním parku | Cartoon Network
-    bez čísla dielu: Ben 10 | Kovová paže potká čtyřhnáta | Cartoon Network
-    bez čísla dielu: Ben 10 I Sběratel Omnitrixu I Cartoon Network
-    bez CZ/SK: Ben 10 | Ben 10,010 | Cartoon Network
-    bez CZ/SK: Ben 10 | Síla 10: Obrosaurus a Rejnotrysk | Cartoon Network
-    bez CZ/SK: Ben 10 | Ben 10,010 | Cartoon Network
-    bez CZ/SK: Ben 10 Alien Worlds | Aktulák: Krize na Galvanu B | Cartoon Network
-    bez CZ/SK: Ben 10 | Bentuice část 1 | Cartoon Network
+výsledok hladaj:Ben 10 cz dabing|Ben 10 česky celý díl: 157 nájdených, 0 prijatých
+    bez čísla dielu: Ben 10 | Můžu si ho nechat? | Cartoon Network [11 min]
+    bez čísla dielu: Ben 10: Classic Theme Song - (Czech/čeština) [1 min]
+    bez CZ/SK: BEN 10 | Nejrychlejší auto | Cartoon Network [5 min]
+    bez CZ/SK: Vzpomínáte si na seriál Ben 10? [16 min]
+    bez CZ/SK: Ben 10 | Síla 10: Kanoňák a Šokval | Cartoon Network [3 min]
+    bez čísla dielu: Ben 10 I Sběratel Omnitrixu I Cartoon Network [4 min]
+    bez CZ/SK: Ben 10 I Pomoc z jiných dimenzí I Cartoon Network [4 min]
+    bez čísla dielu: Ben 10 | Kovová paže potká čtyřhnáta | Cartoon Network [5 min]
+    bez CZ/SK: Ben 10 | Síla 10: Akcelerátor a Diamantovec | Cartoon Network [4 min]
+    bez CZ/SK: Ben 10 Alien Worlds | Aktulák: Krize na Galvanu B | Cartoon Network [1 min]
+    bez CZ/SK: Ben 10 | Síla 10: Obrosaurus a Rejnotrysk | Cartoon Network [4 min]
+    bez CZ/SK: Ben 10 | Vesmírná bitva | Cartoon Network [4 min]
 hľadaj "Power Rangers cz dabing": 20 videí
 hľadaj "Power Rangers česky": 20 videí
 hľadaj "Power Rangers Síla Strážců cz": 20 videí
 hľadaj "Mighty Morphin Power Rangers CZ": 20 videí
-výsledok hladaj:Power Rangers cz dabing|Power Rangers česky|Power Rangers Síla Strážců cz|Mighty Morphin Power Rangers CZ: 295 nájdených, 50 prijatých
-    nie diel: Power Rangers: Film (CZ dabing)
-    bez čísla dielu: Power Rangers: Strážci Vesmíru (CZ dabing)
-    bez čísla dielu: Power rangers Strazci vesmiru cesky
-    iný seriál: Strážci Vesmíru S01E02 - Velká Pětka (CZ dabing)
-    dĺžka 146: Power Rangers (2017) CZ dabing hlavní trailer HD
-    bez čísla dielu: Power rangers Strazci vesmiru cesky
-    iný seriál: Strážci Vesmíru S01E01 - Den Zrození (CZ dabing)
-    bez CZ/SK: Strážci vesmíru: Power Rangers TURBO (1997) Full HD
-    iný seriál: Strážci Vesmíru S02E03 - Vzpoura, část 3 (CZ dabing)
-    iný seriál: Strážci Vesmíru S02E18 - Bílé Světlo, část 2 (CZ dabing)
-    bez čísla dielu: Power Rangers: Strážci vesmíru -  trailer s českým dabingem
-    iný seriál: Strážci Vesmíru S02E17 - Bílé Světlo, část 1 (CZ dabing)
+výsledok hladaj:Power Rangers cz dabing|Power Rangers česky|Power Rangers Síla Strážců cz|Mighty Morphin Power Rangers CZ: 276 nájdených, 45 prijatých
+    bez čísla dielu: Power Rangers: Strážci Vesmíru (CZ dabing) [124 min]
+    nie diel: Power Rangers: Film (CZ dabing) [96 min]
+    bez čísla dielu: Power rangers Strazci vesmiru cesky [3 min]
+    iný seriál: Strážci Vesmíru S01E02 - Velká Pětka (CZ dabing) [20 min]
+    bez CZ/SK: Strážci vesmíru: Power Rangers Film (1995) Full HD [96 min]
+    bez CZ/SK: Strážci vesmíru: Power Rangers TURBO (1997) Full HD [100 min]
+    bez čísla dielu: Power rangers Strazci vesmiru cesky [3 min]
+    dĺžka 146: Power Rangers (2017) CZ dabing hlavní trailer HD [2 min]
+    iný seriál: Strážci Vesmíru S01E01 - Den Zrození (CZ dabing) [21 min]
+    iný seriál: Strážci Vesmíru S02E17 - Bílé Světlo, část 1 (CZ dabing) [20 min]
+    bez čísla dielu: Power Rangers: Strážci vesmíru -  trailer s českým dabingem [2 min]
+    bez čísla dielu: Mighty Morphin Power Rangers: Jednou Provždy (CZ dabing) [58 min]
 hľadaj "Gormiti cz": 20 videí
-výsledok hladaj:Gormiti cz: 40 nájdených, 4 prijatých
-    bez čísla dielu: Z ničeho ovládli svět… a pak úplně zmizeli- GORMITI
-    bez CZ/SK: Gormiti #1 - Let snežného orla
-    bez čísla dielu: gormiti - cz
-    bez CZ/SK: Gormiti - série 3
-    bez čísla dielu: Gormiti - jogurt s překvapením
-    bez CZ/SK: GORMITI - The Legend Begins
-    dĺžka 46: Gormiti (2018) - Znělka
-    nie diel: Atak na Gorm - Gormiti po polsku 2008 cz. 1/3
-    bez CZ/SK: Gormiti Cartoon - reklama EP Line
-    bez CZ/SK: CO SE STALO S GORMITI ?
-    bez CZ/SK: Gormiti opeing pl
-    dĺžka 21: gormiti   cz 20 2
-hľadaj "Avatar Legenda o Aangovi cz": 20 videí
-hľadaj "Legenda o Aangovi díl": 20 videí
-výsledok hladaj:Avatar Legenda o Aangovi cz|Legenda o Aangovi díl: 118 nájdených, 1 prijatých
-    dĺžka 130: Avatar: Legenda o Aangovi – 2. řada | Oficiální trailer | Netflix
-    dĺžka 152: Avatar: Legenda o Aangovi | Oficiální trailer | Netflix
-    dĺžka 79: Avatar: Legenda o Aangovi – 2. řada | Oficiální teaser trailer | Netfl
-    dĺžka 137: Avatar: Legenda o Aangovi | Rekapitulace 1. řady | Netflix
-    iný seriál: Když magie potká průmyslovou revoluci - Avatar
-    dĺžka 77: Úvodní intro 💨 | Avatar Legenda o Aangovi ⬇️ | CZ Dabing 1080p
-    iný seriál: Awatar: Ostatni władca wiatru – sezon 2 | Oficjalny zwiastun | Netflix
-    iný seriál: Avatar: The Last Airbender | Official Trailer | Netflix
-    iný seriál: Avatar Poslední Vládce Větru je Lepší než se Pamatujete
-    dĺžka 84: Avatar: Legenda o Aangovi (Avatar: The Last Airbender) 2. série: CZ HD
-    dĺžka 74: Avatar: Legenda o Aangovi (Avatar: The Last Airbender) 2. série: CZ Da
-    iný seriál: 20 PŘEKVAPIVÝCH FAKTŮ AVATAR: THE LAST AIRBENDER
+výsledok hladaj:Gormiti cz: 40 nájdených, 3 prijatých
+    bez CZ/SK: CO SE STALO S GORMITI ? [6 min]
+    bez CZ/SK: Gormiti #1 - Let snežného orla [22 min]
+    bez čísla dielu: Z ničeho ovládli svět… a pak úplně zmizeli- GORMITI [18 min]
+    bez CZ/SK: Gormiti - série 3 [1 min]
+    bez čísla dielu: Gormiti - jogurt s překvapením [1 min]
+    bez čísla dielu: gormiti - cz [1 min]
+    dĺžka 46: Gormiti (2018) - Znělka [1 min]
+    bez CZ/SK: Gormiti | Episodios 1-10 | Toons Mania - Aventuras Animadas [101 min]
+    bez CZ/SK: Gormiti - Nature Unleashed Opening (English) [1 min]
+    bez CZ/SK: Gormiti | Episodios 1-5 🌟 Acción y Aventuras | Super Toons TV - Avent [53 min]
+    bez CZ/SK: Gormiti Fantasy Series - All Episodes in a Row ⚡ Super Hero Adventures [34 min]
+    bez CZ/SK: Gormiti | Clip 98| Keryonvs Trytion [4 min]
 hľadaj "Bakugan cz dabing": 20 videí
 hľadaj "Bakugan bitevní planeta cz": 0 videí
-výsledok hladaj:Bakugan cz dabing|Bakugan bitevní planeta cz: 39 nájdených, 13 prijatých
-    bez CZ/SK: Bakugan | Zdroj energie | Cartoon Network
-    bez CZ/SK: Bakugan | Roztomilý Bakugan| Cartoon Network
-    bez CZ/SK: Bakugan | Scéna pro herce | Cartoon Network
-    bez CZ/SK: Bakugan BakuBios | Nillious | Cartoon Network
-    bez čísla dielu: Bakugan | Tajemné dveře| Cartoon Network
-    bez CZ/SK: Bakugan BakuBios | Artulean | Cartoon Network
-    bez CZ/SK: Bakugan BakuBios | Howlkor | Cartoon Network
-    bez CZ/SK: Where Are You Going! (Compilation) |Bakugan | Cartoons For Kids
-    bez CZ/SK: E119 - BAKUGAN UNBOXING
-    bez CZ/SK: HUGE BAKUGAN REBOOT COLLECTION! EVEN DAN KUSO HAS LESS!
-    bez CZ/SK: Bakugan evolutions epizodes 27
-    bez CZ/SK: Bakugan | Mise | Cartoon Network
+výsledok hladaj:Bakugan cz dabing|Bakugan bitevní planeta cz: 40 nájdených, 25 prijatých
+    bez CZ/SK: Bakugan | Zdroj energie | Cartoon Network [4 min]
+    bez CZ/SK: Bakugan | Scéna pro herce | Cartoon Network [3 min]
+    bez CZ/SK: Bakugan BakuBios | Nillious | Cartoon Network [2 min]
+    bez CZ/SK: Bakugan | Roztomilý Bakugan| Cartoon Network [3 min]
+    bez čísla dielu: Bakugan | Tajemné dveře| Cartoon Network [4 min]
+    vynechané: 23 BAKUGAN Náhradní dědic CZ [21 min]
+    bez CZ/SK: Bakugan BakuBios | Artulean | Cartoon Network [2 min]
+    bez CZ/SK: Bakugan BakuBios | Howlkor | Cartoon Network [1 min]
+    bez CZ/SK: Bakugan BakuBios | Mantonoid | Cartoon Network [2 min]
+    bez CZ/SK: Bakugan Speciální útok Bojová aréna [0 min]
+    bez CZ/SK: BAKUGAN: Live Action (2026) - Tom holland, Timothée Chalamet | Concept [2 min]
+    bez CZ/SK: Bakugan | Mise | Cartoon Network [4 min]
 hľadaj "Naruto cz dabing díl": 20 videí
 hľadaj "Naruto český dabing": 20 videí
-výsledok hladaj:Naruto cz dabing díl|Naruto český dabing: 79 nájdených, 2 prijatých
-    nie diel: Naruto and Sasuke VS Momoshiki  (Celý súboj + CZ titulky ) 1080p60fps
-    nie diel: Naruto s01e03 CZ titulky
-    nie diel: Naruto special jounin vs genin! eng sub,cz titulky
-    nie diel: 20 FAKTŮ - Naruto
-    bez čísla dielu: NARUTO CZ DABING
-    iný seriál: shikamaru vs temari chuunin exam cz dabing
-    nie diel: Jak Naruto Zradil Svoje Nejzajímavější Téma
-    bez čísla dielu: Naruto Shippuden CZ - To Je Jenom Začatek [this is just the beginning]
-    bez čísla dielu: Naruto shippuden - cz dab - odkaz v popisku
-    iný seriál: Porovnání Českého dabingu Naruta (Jetix vs Animax)
-    nie diel: Naruto vs Konohamaru.cz titulky.mkv
-    bez CZ/SK: JAK JE NARUTO SILNÝ BEZ KURAMY?
+výsledok hladaj:Naruto cz dabing díl|Naruto český dabing: 79 nájdených, 1 prijatých
+    iný nahrávateľ Lucky Mark: Naruto and Sasuke VS Momoshiki  (Celý súboj + CZ titulky ) 1080p60fps [10 min]
+    iný nahrávateľ adam_English: Naruto s01e03 CZ titulky [20 min]
+    iný nahrávateľ Raikage85: Naruto special jounin vs genin! eng sub,cz titulky [26 min]
+    iný nahrávateľ Stejk: 20 FAKTŮ - Naruto [4 min]
+    iný nahrávateľ Raikage85: Naruto Shippuden CZ - To Je Jenom Začatek [this is just the beginning] [1 min]
+    zakázaný nahrávateľ Medojed: Jak Naruto Zradil Svoje Nejzajímavější Téma [12 min]
+    iný nahrávateľ Anime Maty: shikamaru vs temari chuunin exam cz dabing [20 min]
+    iný nahrávateľ cyklo 620: Porovnání Českého dabingu Naruta (Jetix vs Animax) [6 min]
+    iný nahrávateľ Seriály.i.filmy CZ: Naruto shippuden - cz dab - odkaz v popisku [0 min]
+    iný nahrávateľ 36mirecek: NARUTO CZ DABING [3 min]
+    iný nahrávateľ Alexa Sweenová: Naruto - Znělka (1. řada) [1 min]
+    iný nahrávateľ Ivan S: Naruto vs Konohamaru.cz titulky.mkv [14 min]
 hľadaj "Yu-Gi-Oh cz dabing díl": 20 videí
 výsledok hladaj:Yu-Gi-Oh cz dabing díl: 40 nájdených, 1 prijatých
-    bez CZ/SK: Yu-Gi-Oh! Duel Monsters - Season 1, Episode 1 - The Heart of The Cards
-    iný seriál: A+ CZ/HU - Yu Gi Oh! GX upoutávka
-    bez CZ/SK: Yu-Gi-Oh! DL #1 - Vyvolávám Modrookého Bílého Draka!
-    bez CZ/SK: Yu-Gi-Oh! TCG - Série Invaze 2010 - Liberec Finále
-    bez CZ/SK: Yu-Gi-Oh základy! Seznámení s hrou a kartami
-    nie diel: Yu-Gi-Oh! TCG Czech republic Nationals 2010 - Nessa
-    bez CZ/SK: YuGiOh - Pravidla - Díl 1 - Úvod a Typy Monster
-    bez CZ/SK: Yu-Gi-Oh! Duel Monsters | Episodes 14 - 26
-    bez CZ/SK: Yu-Gi-Oh! TCG - Oficiální pravidla 1. část
-    bez čísla dielu: Rozbaluji Yu-Gi-Oh! karty [Vtuber][CZ/SK]
-    bez CZ/SK: YuGiOh - Pravidla - Díl 3 - Pasti
-    bez CZ/SK: Yu-Gi-Oh! TCG - Oficiální pravidla 2. část
+    bez CZ/SK: Yu-Gi-Oh! DL #1 - Vyvolávám Modrookého Bílého Draka! [29 min]
+    iný seriál: A+ CZ/HU - Yu Gi Oh! GX upoutávka [1 min]
+    bez CZ/SK: Yu-Gi-Oh! Duel Monsters - Season 1, Episode 1 - The Heart of The Cards [20 min]
+    bez CZ/SK: Yu-Gi-Oh základy! Seznámení s hrou a kartami [12 min]
+    bez čísla dielu: Rozbaluji Yu-Gi-Oh! karty [Vtuber][CZ/SK] [30 min]
+    bez CZ/SK: Yu-Gi-Oh! TCG - Série Invaze 2010 - Liberec Finále [10 min]
+    bez CZ/SK: YuGiOh - Pravidla - Díl 1 - Úvod a Typy Monster [16 min]
+    nie diel: Yu-Gi-Oh! TCG Czech republic Nationals 2010 - Nessa [0 min]
+    bez CZ/SK: Yu-Gi-Oh! TCG - Oficiální pravidla 1. část [3 min]
+    bez čísla dielu: CZ Yu-Gi-Oh /Power Of Chaos/ - Kaiba - The Revenge [15 min]
+    bez CZ/SK: Yu-Gi-Oh! Duel Monsters | Episodes 14 - 26 [268 min]
+    bez CZ/SK: YuGiOh - Pravidla - Díl 3 - Pasti [5 min]
 hľadaj "Želvy ninja cz dabing díl": 20 videí
 hľadaj "Želvy ninja 2003 cz": 20 videí
-výsledok hladaj:Želvy ninja cz dabing díl|Želvy ninja 2003 cz: 80 nájdených, 3 prijatých
-    bez čísla dielu: RETRO Hitovka: Želvy Ninja - My jsme přátelé ( MC / CD 1993 )
-    bez čísla dielu: Želvy ninja, nový přítel starý ne přítel
-    nie diel: Želvy Ninja 3 - film 1993 cz
-    bez čísla dielu: Želvy ninja 2014 CZ (nejlepši scéna)
-    dĺžka 271: Želvy Ninja | 1x01 | CZ dabing [1/6]
-    bez čísla dielu: Želvy ninja, Rande s April
-    bez čísla dielu: Želvy ninja / Donatello / CZ dabing 🇨🇿
-    bez čísla dielu: Byl jsem adoptován TMNT! Želvy Ninja v extrémní výzvě na schovávanou v
-    dĺžka 88: Želvy Ninja 2 (Teenage Mutant Ninja Turtles 2) - dabovaný oficiální če
-    bez čísla dielu: Želvy Ninja - trailer - CZ dabing
-    dĺžka 76: Želvy Ninja: Mutantní chaos - trailer 2 - CZ dabing - StanleyS Trailer
-    dĺžka 229: Želvy Ninja 2012 Mikey&Raph Nejlepší scénky SÉRIE 1
+výsledok hladaj:Želvy ninja cz dabing díl|Želvy ninja 2003 cz: 80 nájdených, 2 prijatých
+    bez čísla dielu: RETRO Hitovka: Želvy Ninja - My jsme přátelé ( MC / CD 1993 ) [4 min]
+    nie diel: Želvy Ninja 3 - film 1993 cz [92 min]
+    bez čísla dielu: Želvy ninja, nový přítel starý ne přítel [23 min]
+    dĺžka 271: Želvy Ninja | 1x01 | CZ dabing [1/6] [5 min]
+    dĺžka 229: Želvy Ninja 2012 Mikey&Raph Nejlepší scénky SÉRIE 1 [4 min]
+    bez čísla dielu: Želvy ninja 2014 CZ (nejlepši scéna) [1 min]
+    bez čísla dielu: Želvy ninja, Rande s April [23 min]
+    iný seriál: Season 1 - FULL EPISODE MARATHON 🐢 | TMNT (1987) | Teenage Mutant Nin [106 min]
+    bez čísla dielu: Michal David, P.Horňák, J.Rosák a St.Hložek - My jsme přátelé (Želvy N [3 min]
+    bez čísla dielu: Byl jsem adoptován TMNT! Želvy Ninja v extrémní výzvě na schovávanou v [38 min]
+    dĺžka 158: Želvy ninja 1 1990,USA....klasická verze použité jenom kostýmy z minim [3 min]
+    bez čísla dielu: Želvy ninja znělka česky.wmv [1 min]
 hľadaj "Beyblade Metal Fusion cz": 20 videí
 hľadaj "Beyblade Metal Fury cz": 20 videí
 hľadaj "Beyblade cz dabing díl": 20 videí
-výsledok hladaj:Beyblade Metal Fusion cz|Beyblade Metal Fury cz|Beyblade cz dabing díl: 163 nájdených, 30 prijatých
-    nedá sa vložiť 401: Beyblade Metal Fusion 29.díl cz
-    bez čísla dielu: Beyblade opening cz
-    bez CZ/SK: BEYBLADE METAL FUSION JE VÍC NEŽ DOBRÝ
-    bez CZ/SK: BEYBLADE METAL FUSION | Ép.14 Les mémoires de Ryo
-    bez CZ/SK: beyblade metal fusion: brun fireblaze unboxing
-    bez čísla dielu: Beyblade Metal Masters Intro Czech Český 🇨🇿
-    bez čísla dielu: Beyblade Metal Fusion Intro Slovenská
-    bez CZ/SK: Beyblade: Metal Fusion Ep. 3 ČEŠTINA!
-    bez CZ/SK: Beyblade: Metal Fusion Ep. 1 ČEŠTINA!
-    bez CZ/SK: Beyblade Metal Fusion Midnight Serpent M145 MS REVIEW
-    bez CZ/SK: Beyblade Metal Masters 01 Hledání legendy
-    bez CZ/SK: Beyblade Metal Fusion Dark Wolf DF145 FS REVIEW
+výsledok hladaj:Beyblade Metal Fusion cz|Beyblade Metal Fury cz|Beyblade cz dabing díl: 147 nájdených, 30 prijatých
+    bez CZ/SK: BEYBLADE METAL FUSION JE VÍC NEŽ DOBRÝ [10 min]
+    nedá sa vložiť 401: Beyblade Metal Fusion 29.díl cz [21 min]
+    bez čísla dielu: Beyblade opening cz [1 min]
+    bez CZ/SK: Beyblade: Metal Fusion Ep. 4 ČEŠTINA! [21 min]
+    bez čísla dielu: Beyblade Metal Fusion Intro Slovenská [1 min]
+    bez CZ/SK: Beyblade Metal Fusion - Slovak Opening [1 min]
+    bez čísla dielu: Beyblade Metal Masters Intro Czech Český 🇨🇿 [1 min]
+    bez CZ/SK: Beyblade: Metal Fusion Ep. 1 ČEŠTINA! [21 min]
+    bez CZ/SK: beyblade metal fusion: brun fireblaze unboxing [3 min]
+    bez CZ/SK: Beyblade: Metal Fusion Ep. 3 ČEŠTINA! [21 min]
+    bez CZ/SK: BEYBLADE METAL FUSION | Ép.14 Les mémoires de Ryo [21 min]
+    bez CZ/SK: Beyblade Metal Fusion Midnight Serpent M145 MS REVIEW [2 min]
 hľadaj "Oban Star Racers cz": 20 videí
-výsledok hladaj:Oban Star Racers cz: 40 nájdených, 15 prijatých
-    bez CZ/SK: Oban Star-Racers opening (HD remastered version)
-    iný seriál: O Princi Aikkovi (CZ)
-    bez CZ/SK: Oban Star Racers S01E01
-    bez CZ/SK: Závod vida loca Oban
-    bez CZ/SK: OBAN Star Racers 12 Wola walki
-    bez CZ/SK: Oban Star-Racers Opening
-    bez CZ/SK: OBAN Star Racers 02 Niesnaski
-    bez CZ/SK: Oban Star Racers Opening Intro HD 1080p Jetix Europe
-    bez CZ/SK: OBAN Star Racers 09 Zaskakujący jak Super Ścigacz
-    bez CZ/SK: Fallout Equestria and Oban Star-Racers
-    bez CZ/SK: Oban star racers- moj pierwszy film
-    bez CZ/SK: OBAN Star Racers 04 Cwany jak Flint
+výsledok hladaj:Oban Star Racers cz: 40 nájdených, 22 prijatých
+    bez CZ/SK: Oban Star-Racers opening (HD remastered version) [1 min]
+    iný seriál: O Princi Aikkovi (CZ) [6 min]
+    bez CZ/SK: Závod vida loca Oban [4 min]
+    bez CZ/SK: OBAN Star Racers 20 Tajemniczy jak Sul [22 min]
+    bez CZ/SK: Oban star racers- moj pierwszy film [4 min]
+    bez CZ/SK: Oban Star Racers Opening Intro HD 1080p Jetix Europe [1 min]
+    bez CZ/SK: Oban Star Racers S01E01 [41 min]
+    bez CZ/SK: OBAN Star Racers 02 Niesnaski [22 min]
+    bez CZ/SK: OBAN Star Racers 04 Cwany jak Flint [22 min]
+    bez CZ/SK: OBAN Star Racers 05 Okrutny jak Ceres [22 min]
+    iný seriál: Neko Mini (waratteta) [1 min]
+    bez CZ/SK: OBAN Star Racers 07 Zdradliwy jak Toros [22 min]
 hľadaj "Monster Buster Club cz": 20 videí
-výsledok hladaj:Monster Buster Club cz: 64 nájdených, 0 prijatých
-    bez čísla dielu: [Remastered] Monster Buster Club - Theme song Czech
-    nie diel: Monster Buster Club |S02E01| (CZ Titulky) Nový členové
-    bez CZ/SK: Monster Buster Club - Theme and ending song (Serbian)
-    bez CZ/SK: Monster Buster Club - Intro (Polish)
-    nie diel: Monster Buster Club |S02E11| (CZ Titulky) Nejdivnější stvoření z celé 
-    nie diel: Monster Buster Club |S02E09| (CZ Titulky) Žáby ve vesmíru
-    bez CZ/SK: Monster Buster Club E21 S01 O Chestiune De Directori
-    nie diel: Monster Buster Club |S02E03| (CZ Titulky) Můj Krogu ty pěkně válíš
-    nie diel: Monster Buster Club |S02E17| (CZ Titulky) Slavná čtyřka část druhá
-    nie diel: Monster Buster Club |S02E12| (CZ Titulky) Není dobré být králem
-    bez CZ/SK: Monster Buster Club End Credits (Season 2) (Disney XD Variant)
-    nie diel: Monster Buster Club |S02E07| (CZ Titulky) Kondiční šílenec
-kanál @SpongeBobOfficial: http 200, 1781058 B, id UCf4nYHJi6V0_lil4uGX4HwQ
+výsledok hladaj:Monster Buster Club cz: 62 nájdených, 0 prijatých
+    bez čísla dielu: [Remastered] Monster Buster Club - Theme song Czech [1 min]
+    nie diel: Monster Buster Club |S02E01| (CZ Titulky) Nový členové [23 min]
+    bez CZ/SK: Monster Buster Club - Theme and ending song (Serbian) [2 min]
+    nie diel: Monster Buster Club |S02E11| (CZ Titulky) Nejdivnější stvoření z celé  [23 min]
+    bez CZ/SK: Monster Buster Club - Intro (Polish) [1 min]
+    nie diel: Monster Buster Club |S02E09| (CZ Titulky) Žáby ve vesmíru [21 min]
+    nie diel: Monster Buster Club |S02E03| (CZ Titulky) Můj Krogu ty pěkně válíš [21 min]
+    nie diel: Monster Buster Club |S02E15| (CZ Titulky) Drž svůj dohled na Nebulakov [22 min]
+    nie diel: Monster Buster Club |S02E12| (CZ Titulky) Není dobré být králem [21 min]
+    nie diel: Monster Buster Club |S02E17| (CZ Titulky) Slavná čtyřka část druhá [23 min]
+    nie diel: Monster Buster Club |S02E07| (CZ Titulky) Kondiční šílenec [21 min]
+    bez CZ/SK: Monster Buster Club End Credits (Season 2) (Disney XD Variant) [1 min]
+kanál @SpongeBobOfficial: http 200, 1793483 B, id UCf4nYHJi6V0_lil4uGX4HwQ
 innertube UUf4nYHJi6V0_lil4uGX4HwQ: kľúče responseContext,contents,header,metadata,trackingParams,topbar,microformat,sidebar; 100 videí; alert: []
+výsledok @SpongeBobOfficial: 100 nájdených, 5 prijatých
+    nesedí názov: Patrick Eating for 30 Minutes Straight 🍦 | The Patrick Star Show | Pa [30 min]
+    dĺžka 50: Patrick's Mortal Enemy is Bubble Bass?! 🪓 [1 min]
+    nesedí názov: Patrick Living Under a Rock for 45 Minutes Straight 🪨 | SpongeBob | P [49 min]
+    dĺžka 310: The Star Family's Chaotic Thanksgiving Dinner 🦃 | Full Scene | Patric [5 min]
+    dĺžka 94: Patrick & SpongeBob LOVE the Goofy Scoopers 🥁 [2 min]
+    vynechané: 🔴 LIVE: Patrick's Family & Food Marathon 🩷🍔 | SpongeBob & The Patri
+    nesedí názov: The Patrick Star Show's Fever Dream Moments 😯 | 45 Minutes | Patrick  [42 min]
+    dĺžka 64: Super Patrick to the Rescue! 🦸 [1 min]
+    vynechané: 2 Hours of Spooky Halloween Moments 👻 | SpongeBob, The Patrick Star S [123 min]
+    dĺžka 303: Patrick & SpongeBob Get Turned into GHOSTS 👻 | Full Scene | Patrick S [5 min]
+    dĺžka 20: Patrick JUMPS Out of a Window 🪟 [0 min]
+    dĺžka 93: Patrick & SpongeBob in a Frankenstein Universe 🧟 [2 min]
+    dĺžka 310: Patrick Dresses Up as SpongeBob for Halloween 🎃🧽 | Full Scene | Patr [5 min]
+    dĺžka 83: Patrick Meets Sir Urchin 🚕 [1 min]
+    nesedí názov: Patrick's Best Costumes Ever on The Patrick Star Show 🕷️ | 30 Minutes [33 min]
+    dĺžka 61: The Star Family Meets the Flying Dutchman! 👻 [1 min]
+    dĺžka 311: Patrick & SpongeBob Play with Mysterious Goo Bubbles 🟣🌊 | Full Scene [5 min]
+    dĺžka 19: Patrick & SpongeBob are Stuck in a Snowstorm ❄️ [0 min]
+    nesedí názov: Patrick's Funniest Adventures from The Patrick Star Show 🤭 | 30 Minut [35 min]
+    dĺžka 28: No, this is Patrick! 📞 [0 min]
+    nesedí názov: Patrick Eating EVERYTHING for 45 Minutes Straight 🍔🍦 | Patrick Star [48 min]
+    dĺžka 247: Bunny Takes on ROBOTS in a Roller Derby 🤖🛼 | Full Scene | Patrick St [4 min]
+    dĺžka 75: Patrick Is a GROWN UP?! 🧔‍♂️ [1 min]
+    vynechané: Patrick's Best Moments from NEWER Episodes ⭐️ | The Patrick Star Show  [31 min]
+    nesedí názov: Patrick Actually Being Smart for 30 Minutes Straight 🤓 | Patrick Star [35 min]
 innertube UUx27Pkk8plpiosF14qXq-VA: kľúče responseContext,contents,header,metadata,trackingParams,topbar,microformat,sidebar; 100 videí; alert: []
+výsledok UUx27Pkk8plpiosF14qXq-VA: 100 nájdených, 11 prijatých
+    dĺžka 36: Plankton Core 👁️ [1 min]
+    dĺžka 68: Gary Core 🐌 [1 min]
+    vynechané: 3 Hours of SpongeBob's Best Moments from Seasons 11–13 🧽 | SpongeBob [187 min]
+    nesedí názov: SpongeBob's Most Chaotic BFF Moments 😅 | 45 Minutes | SpongeBob [49 min]
+    nesedí názov: SpongeBob's Funniest Reactions 😂 | 30 Minutes | SpongeBob [31 min]
+    nesedí názov: Every Time the Krusty Krab Lost Money 💰🍔 | 90 Minutes | SpongeBob [93 min]
+    dĺžka 88: DoodleBob Interviews NFL Player Dennis Gardeck ✏️🏈 [1 min]
+    dĺžka 250: SpongeBob FINALLY Gets His Driver's License?! 🪪🚗 | Full Scene | Spon [4 min]
+    vynechané: 🔴LIVE: Spongebob's FAMILY Marathon! 💞🧽 | SpongeBob
+    dĺžka 29: SpongeBob's Pineapple House Made with Origami?! 👶 [0 min]
+    dĺžka 14722: 4 Hours of Classic SpongeBob 🧽 | SpongeBob [245 min]
+    nesedí názov: SpongeBob's Best Halloween Moments 🎃 | 45 Minutes | SpongeBob [53 min]
+    dĺžka 20: SpongeBob & Patrick running for their lives 🏃 [0 min]
+    nesedí názov: SpongeBob Characters Being CHASED 🏃🏻‍♂️💨 | 30 Minutes | SpongeBob [34 min]
+    dĺžka 596: SpongeBob's Scariest Krabby Patties 👹🍔 | 10 Minutes | SpongeBob [10 min]
+    dĺžka 86: SpongeBob's Spookiest Nights 🌙 [1 min]
+    nesedí názov: Five Nights at the Chum Bucket with Plankton 🪣👹  | 60 Minutes | Spon [67 min]
+    dĺžka 323: SpongeBob's Afraid of the Dark 💡🌙 | Full Scene | SpongeBob [5 min]
+    dĺžka 34: Baby Patrick Made with Origami?! 👶 [1 min]
+    vynechané: 1 Hour of SpongeBob's Funniest Boating School & Driving Moments 🤣 | S [63 min]
+    dĺžka 44: SpongeBob Scares the Flying Dutchman?! 🧠 [1 min]
+    nesedí názov: SpongeBob Getting SCARED for 45 Minutes Straight 😱 | SpongeBob [47 min]
+    nesedí názov: SpongeBob's Spookiest Moments 🎃  | 30 Minutes | SpongeBob [31 min]
+    dĺžka 67: DoodleBob Interviews an NFL player 🏈 [1 min]
+    nesedí názov: SpongeBob's Funniest Moments with Patrick 🧽⭐️ | 90 Minutes | SpongeBo [97 min]
 innertube PLCVuwQ1eXVCWVeSpX0khngqq_UIpX5hYU: kľúče responseContext,contents,header,alerts,metadata,trackingParams,topbar,microformat; 68 videí; alert: []
-kanál johnnybravochannel: http 200, 899337 B, id UCW_cynN0NH7tVBdZP5LsMjQ
+výsledok PLCVuwQ1eXVCWVeSpX0khngqq_UIpX5hYU: 68 nájdených, 0 prijatých
+    dĺžka 319: Johnny Bravo | Becoming the Worst Super Hero | Cartoon Network [5 min]
+    dĺžka 34: Johnny Bravo - My Glasses [1 min]
+    dĺžka 26: Johnny Bravo's Best Scene [0 min]
+    zablokované: Johnny Bravo New Episode - Watch Full Episode Johny Bravo 90s [20 min]
+    dĺžka 32: Johnny Bravo - Intro [1 min]
+    zablokované: 'A Johnny Bravo Christmas' (Rare Cartoon Network Holiday Special) [23 min]
+    dĺžka 47: Let's split up - Johnny Bravo & Scooby Doo Scene [1 min]
+    dĺžka 107: Johnny Bravo - Sergeant Trixie [2 min]
+    dĺžka 82: Johnny Bravo - Obstacle course [1 min]
+    dĺžka 21: Johnny Bravo - Pickup line [0 min]
+    dĺžka 167: Johnny Bravo | Body Transformation | Cartoon Network [3 min]
+    dĺžka 86: Johnny Bravo - War games [1 min]
+    dĺžka 92: Johnny Bravo funny quotes and moments [2 min]
+    dĺžka 128: Johnny Bravo - Johnny Bravo catches a zoo gorilla [2 min]
+    dĺžka 66: Johnny Bravo - I'm the last man on Earth [1 min]
+    dĺžka 142: Johnny Bravo - The Day the Earth Didn't Move Around Very Much (Clip) [2 min]
+    dĺžka 132: Johnny Bravo - A Wolf in Chick's Clothing (Clip) [2 min]
+    dĺžka 160: Johnny Bravo - The Time of My Life [3 min]
+    dĺžka 117: A Wolf in Chick's Clothing | Johnny Bravo | Cartoon Network [2 min]
+    dĺžka 118: Bravo Scooby-Doo | Scooby-Doo | Cartoon Network [2 min]
+    dĺžka 88: The Sensitive Male | Johnny Bravo | Cartoon Network [1 min]
+    dĺžka 5: Johnny Bravo is my hero [0 min]
+    dĺžka 141: Girls Are Smart- Johnny Bravo [2 min]
+    dĺžka 148: Johnny Bravo - Johnny Real Good [2 min]
+    dĺžka 106: "The Reveal" - Johnny Bravo & Scooby Doo Crossover [2 min]
+kanál johnnybravochannel: http 200, 899464 B, id UCW_cynN0NH7tVBdZP5LsMjQ
 innertube UUW_cynN0NH7tVBdZP5LsMjQ: kľúče responseContext,contents,header,metadata,trackingParams,topbar,microformat,sidebar; 1 videí; alert: []
+výsledok johnnybravochannel: 1 nájdených, 0 prijatých
+    dĺžka 31: Intro Video [1 min]
+hľadaj "Johnny Bravo full episode": 20 videí
+hľadaj "Johnny Bravo season 1 episodes": 20 videí
+výsledok hladaj:Johnny Bravo full episode|Johnny Bravo season 1 episodes: 138 nájdených, 5 prijatých
+    zablokované: Johnny Bravo New Episode - Watch Full Episode Johny Bravo 90s [20 min]
+    dĺžka 107: Johnny Bravo - Sergeant Trixie [2 min]
+    zablokované: 'A Johnny Bravo Christmas' (Rare Cartoon Network Holiday Special) [23 min]
+    dĺžka 313: Johnny Bravo | Chased By the Time Bear | Cartoon Network [5 min]
+    dĺžka 31: Johnny Bravo 💪🏾 [1 min]
+    dĺžka 167: Johnny Bravo | Body Transformation | Cartoon Network [3 min]
+    dĺžka 319: Johnny Bravo | Becoming the Worst Super Hero | Cartoon Network [5 min]
+    dĺžka 141: Girls Are Smart- Johnny Bravo [2 min]
+    vynechané: En Johnny Bravo-jul | Johnny Bravo | 🇳🇴Norsk Cartoon Network [22 min]
+    dĺžka 88: Johnny Bravo - I never been in a woman's apartment before [1 min]
+    iný seriál: JBVO S1E01 - Pilot [22 min]
+    dĺžka 578: Was Johnny Bravo ACTUALLY Made For Kids? [10 min]
+hľadaj "Dexters Laboratory full episodes": 20 videí
+hľadaj "Dexter's Laboratory full episode": 20 videí
+výsledok hladaj:Dexters Laboratory full episodes|Dexter's Laboratory full episode: 129 nájdených, 2 prijatých
+    bez dĺžky: 🔴 LIVE! FULL EPISODES: SEASON 01 | Dexter's Laboratory | #animation #
+    dĺžka 459: Double Trouble | Dexter's Laboratory: FULL EPISODE | Cartoon Cartoons [8 min]
+    dĺžka 3036: Dexter’s Laboratory: Ego Trip In 1080p/Widescreen [51 min]
+    dĺžka 462: Maternal Combat: FULL EPISODE | Dexter's Laboratory | Cartoon Cartoons [8 min]
+    dĺžka 464: Doll House Drama: FULL EPISODE | Dexter's Laboratory | Cartoon Cartoon [8 min]
+    bez dĺžky: Classic Cartoons Non-Stop Binge Marathon | Courage, Foster's Home for 
+    dĺžka 464: Big Sister: FULL EPISODE | Dexter's Laboratory | Cartoon Cartoons [8 min]
+    dĺžka 462: Dimwit Dexter: FULL EPISODE | Dexter's Laboratory | Cartoon Cartoons [8 min]
+    dĺžka 433: Magmanamus: FULL EPISODE | Dexter's Laboratory | Cartoon Cartoons [7 min]
+    dĺžka 463: Changes | Dexter's Laboratory: FULL EPISODE | Cartoon Cartoons [8 min]
+    dĺžka 490: Game Over: FULL EPISODE | Dexter's Laboratory | Cartoon Cartoons [8 min]
+    nie diel: 👽 👽 Dexter Family’s Minds Taken Over by ALIENS?! | Dexter VS Aliens  [21 min]
+hľadaj "Courage the Cowardly Dog full episode": 20 videí
+výsledok hladaj:Courage the Cowardly Dog full episode: 71 nájdených, 30 prijatých
+    bez dĺžky: 🔴 LIVE: SEASON 01 | FULL EPISODES | Courage the Cowardly Dog | #hallo
+    dĺžka 14290: Courage the Cowardly Dog - Summary Of All Episodes [238 min]
+    dĺžka 66: Macaroni and Cheese ~ Courage The Cowardly Dog [1 min]
+    dĺžka 3694: Courage The Cowardly Dog | Savage Garbage Rats on the Loose! 🐀💥| Com [62 min]
+    dĺžka 136: Courage The Cowardly Dog Computer Moment with Scooby Doo [2 min]
+    dĺžka 437: Courage the Cowardly Dog The Fog of Courage (2014) 1080p HD [7 min]
+    dĺžka 25: Courage The Cowardly Dog - Muriel finds baby courage [0 min]
+    dĺžka 3432: Courage The Cowardly Dog🐶| Courage Against The Unknown!😍| Dog Cartoo [57 min]
+    nie diel: Courage The Cowardly Dog - Boxers Vs. Briefs [0 min]
+hľadaj "Ed Edd n Eddy full episode": 20 videí
+výsledok hladaj:Ed Edd n Eddy full episode: 69 nájdených, 30 prijatých
+    dĺžka 294: Ed Edd n Eddy | Rich Guy Eddy | Cartoon Network [5 min]
+    dĺžka 157: Ed, Edd n Eddy's Big Picture Show - Edd and Eddy fight scene [3 min]
+    dĺžka 318: Ed Edd n Eddy | Thrill Seekers | Cartoon Network [5 min]
+    dĺžka 103: Ed Edd n Eddy - The Bet [2 min]
+    bez dĺžky: 🔴 LIVE! FULL EPISODES: SEASON 01 | Ed, Edd n Eddy | #animation #carto
+    dĺžka 168: Ed, Edd’n, Eddy’s (s3 ep11) Ed is animal scene [3 min]
+    dĺžka 3031: ED, EDD N EDDY is UNHINGED [51 min]
+    dĺžka 111: Ed Edd n Eddy - Armenian Hot Sauce [2 min]
+    dĺžka 317: Ed Edd n Eddy | Date Night | Cartoon Network [5 min]
+    dĺžka 33: Ed Edd n Eddy - Eds And Kankers Sisters Footsies [1 min]
+    dĺžka 84: Ed Edd n Eddy - Ed wakes up Eddy for school on Saturday [1 min]
+    dĺžka 29: Ed, Edd & Eddy - Big Trouble [0 min]
 ---
 wvDJPJLScqY  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 rLm4Ficu5Fg  oembed:401  =>  vkladanie zakázané
@@ -924,13 +1044,13 @@ mCG3mEYGWWg  oembed:404  =>  video neexistuje alebo je súkromné
 -awgOp-5sJE  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 JHCMnr1bU2Q  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 ynJ6B1dLyCE  oembed:404  =>  video neexistuje alebo je súkromné
-8wkHzEQ7Ggc  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
+8wkHzEQ7Ggc  oembed:200  =>  604
 5Gdl8YBpHzQ  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 YyEZty88LdQ  oembed:200  =>  449
 Ye_jtPsGuk0  oembed:404  =>  video neexistuje alebo je súkromné
 jd5sQAHt0Yw  oembed:404  =>  video neexistuje alebo je súkromné
 hVrrYaNjzv8  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
-BG2GmWVXZzk  oembed:200  =>  494
+BG2GmWVXZzk  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 tsJ1GV_xDK0  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 0Babqb-hNSc  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 mREr3qOgDpY  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
@@ -946,14 +1066,14 @@ I6sNX_ZLciI  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 kvvEvgNPKBI  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 ptjfy7a4-Hc  oembed:200  =>  521
 6Iw3CbQ6j1Y  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
-GhBuGixYe9I  oembed:200  =>  1269
+GhBuGixYe9I  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 7hssKvYVeWQ  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 IKo5iM7I028  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 bVqxXSJ2pDY  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 Ka7azkbEvwk  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 Ba_HMUsXZh0  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 vHVXHptT2gA  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
-mBG6jYdyXOk  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
+mBG6jYdyXOk  oembed:200  =>  1272
 rb9YK_TuXqA  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 7317QcTXiDw  oembed:404  =>  video neexistuje alebo je súkromné
 g-sb2JideT8  oembed:404  =>  video neexistuje alebo je súkromné
@@ -961,7 +1081,7 @@ g-sb2JideT8  oembed:404  =>  video neexistuje alebo je súkromné
 f-gYesYeIuo  oembed:404  =>  video neexistuje alebo je súkromné
 KBFq_JYvenE  oembed:404  =>  video neexistuje alebo je súkromné
 a98xtdBdlqU  oembed:404  =>  video neexistuje alebo je súkromné
-lWLpRq9TAU4  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
+lWLpRq9TAU4  oembed:200  =>  612
 nXJXmtwVXUg  oembed:404  =>  video neexistuje alebo je súkromné
 DuZ3fcaIo-I  oembed:200  =>  2487
 SxyHoiyugis  oembed:200  =>  2620
@@ -997,7 +1117,7 @@ VYYtmlgJjO8  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 D5ecUCYUoQA  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 OlWiAglOCGc  oembed:200  =>  420
 MlrqMNysrgs  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
-76RQmb-hhjc  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
+76RQmb-hhjc  oembed:200  =>  421
 rGABDba-FUM  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 m7-xx__rSMo  oembed:200  =>  425
 CcqpZpvybP0  oembed:200  =>  1191
@@ -1012,7 +1132,7 @@ jFDNPc8EgFo  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 aKChMtuiykE  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 KG20Le3mhUs  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 PU-CdSmSiaU  oembed:404  =>  video neexistuje alebo je súkromné
-XouTkwoTH8I  oembed:200  =>  733
+XouTkwoTH8I  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 asb09scHGSM  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 C11GBYdAP7k  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 CJgcvSYN9YM  oembed:404  =>  video neexistuje alebo je súkromné
@@ -1062,7 +1182,7 @@ HO4MBz17lfg  oembed:404  =>  video neexistuje alebo je súkromné
 -Vhv7B3ErBY  oembed:404  =>  video neexistuje alebo je súkromné
 ZL-JNEgCF_c  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 nclfXMJLsCU  oembed:404  =>  video neexistuje alebo je súkromné
-g3592ZthdnU  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
+g3592ZthdnU  oembed:200  =>  1293
 iqUjm8oX7IM  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 WSbDlKyd70o  oembed:404  =>  video neexistuje alebo je súkromné
 WM3Byx1-Z9k  oembed:200  =>  1360
@@ -1070,8 +1190,8 @@ B9dig9jOvOM  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 8jAuOt1kLYI  oembed:200  =>  1275
 82347rgAJRU  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 9a8gvUu1VaU  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
-_W72hoVddDM  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
-HrFiDKeIZPA  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
+_W72hoVddDM  oembed:200  =>  1283
+HrFiDKeIZPA  oembed:200  =>  1282
 6NMj1Iypb4o  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 Ol0qBsGWI5c  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 JDn8h8666MU  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
@@ -1234,334 +1354,308 @@ ahARUQ3Uo3U  oembed:200  =>  484
 xrXD5MQeol0  oembed:200  =>  454
 pVS_xo_uKzw  oembed:200  =>  424
 vf558iXBKVE  oembed:200  =>  543
-dnW92y3kc6w  oembed:200  =>  518
 CkKtxL6n8ZA  oembed:200  =>  554
-mxvlkxhjKgY  oembed:200  =>  538
+4RyXzin2mb8  oembed:200  =>  587
+dnW92y3kc6w  oembed:200  =>  518
 VtR6QmvVFOQ  oembed:200  =>  527
 gztqB593onw  oembed:200  =>  538
+y5S78MSWLaE  oembed:200  =>  545
 7OiUQ3OCBUw  oembed:200  =>  535
 8QqreitkD0A  oembed:200  =>  561
 GXospI5gHxY  oembed:200  =>  554
-TuoCwzYVifc  oembed:200  =>  549
-4RyXzin2mb8  oembed:200  =>  587
-wQs-8lpiBSQ  oembed:200  =>  547
 sNbZiJSeir4  oembed:200  =>  530
-XosIGBu3nEo  oembed:200  =>  571
 XYVZth92Iqk  oembed:200  =>  562
-a2ZeGyt4tv8  oembed:200  =>  370
-FcplaEMyAjs  oembed:200  =>  1306
-yI_DGd5NFdI  oembed:200  =>  1304
-QnzlK0y3xdE  oembed:200  =>  1322
-PTuMXXyQLJ4  oembed:200  =>  367
-FUcMf1vEsp8  oembed:200  =>  422
-bwcRz79q--w  oembed:200  =>  272
+mxvlkxhjKgY  oembed:200  =>  538
+wQs-8lpiBSQ  oembed:200  =>  547
+XosIGBu3nEo  oembed:200  =>  571
+v3jwl1p9io4  oembed:200  =>  541
 71MoEBPT24U  oembed:200  =>  378
-R_WNCmJDXfk  oembed:200  =>  421
-ejFb1uzQBPM  oembed:200  =>  392
 2frZ9g4jVdg  oembed:200  =>  427
-y3iEoGDr34g  oembed:200  =>  392
-xPBJysXHGbY  oembed:200  =>  405
 dnT18t-TgxA  oembed:200  =>  415
-UgfC8En3zy4  oembed:200  =>  427
-6O2ja9eiEUg  oembed:200  =>  435
-YI2D6WXdIzI  oembed:200  =>  413
-QNdnGKaYyC4  oembed:200  =>  408
-w_6oWMVvKxM  oembed:200  =>  397
-brBhaWBs3UI  oembed:200  =>  402
-ecyU6oHrDt4  oembed:200  =>  435
-8z02sBxwGEo  oembed:200  =>  361
-rI_aZCmTs8Q  oembed:200  =>  408
-SEDV9OgquDQ  oembed:200  =>  390
-C4amVx2Mkcc  oembed:200  =>  396
-YceD3kxbXQY  oembed:200  =>  415
-aO-rUwJYpn4  oembed:200  =>  421
-MJtvbjNFzcM  oembed:200  =>  553
-ECdGy2YSww8  oembed:200  =>  442
-T71khbM-hiM  oembed:200  =>  388
+ejFb1uzQBPM  oembed:200  =>  392
 9Kaa-hGRZJU  oembed:200  =>  362
-jJTSEKLP4_Q  oembed:200  =>  421
-OMcV6uEg8tY  oembed:200  =>  391
-csD0eKuqGos  oembed:200  =>  399
-1DAVCpARPDk  oembed:200  =>  362
-wKWbJVOw8Qk  oembed:200  =>  421
+R_WNCmJDXfk  oembed:200  =>  421
 r1BZfpsCDGo  oembed:200  =>  401
+OMcV6uEg8tY  oembed:200  =>  391
+nUAygcnuRjg  oembed:200  =>  379
+SEDV9OgquDQ  oembed:200  =>  390
+12hbl5KNtcU  oembed:200  =>  778
+8z02sBxwGEo  oembed:200  =>  361
+MHMF6RVco1Q  oembed:200  =>  398
+C4amVx2Mkcc  oembed:200  =>  396
+rI_aZCmTs8Q  oembed:200  =>  408
+6O2ja9eiEUg  oembed:200  =>  435
+YceD3kxbXQY  oembed:200  =>  415
+YI2D6WXdIzI  oembed:200  =>  413
+aO-rUwJYpn4  oembed:200  =>  421
+4psjG6msxs0  oembed:200  =>  391
+7i-MYWguDAc  oembed:200  =>  406
+T71khbM-hiM  oembed:200  =>  388
+ECdGy2YSww8  oembed:200  =>  442
+aSJ8719qXQo  oembed:200  =>  378
+jJTSEKLP4_Q  oembed:200  =>  421
+QNdnGKaYyC4  oembed:200  =>  408
+49wBPOK83Fw  oembed:200  =>  399
+xPBJysXHGbY  oembed:200  =>  405
+brBhaWBs3UI  oembed:200  =>  402
+wKWbJVOw8Qk  oembed:200  =>  421
 XRobsr3CpUs  oembed:200  =>  429
-9hFCIocDkco  oembed:200  =>  425
-b7Pv_Z0uD-k  oembed:200  =>  365
-RnS1XUZRaGc  oembed:200  =>  443
-bJ37IRyNV4Q  oembed:200  =>  381
-_i3sex0RK2w  oembed:200  =>  390
 oAleBPeJNMc  oembed:200  =>  416
-9_8Q58NzfDU  oembed:200  =>  472
-Nr_eTLfRmJM  oembed:200  =>  360
-SaJFEwljHh0  oembed:200  =>  445
-muD2wvMB3KY  oembed:200  =>  414
-aJ8m1F-sq7w  oembed:200  =>  370
 dnx5dRYKcUw  oembed:200  =>  465
-7IKyhD0-4vw  oembed:200  =>  479
-8WSyGJuJo_8  oembed:200  =>  416
-gOVJ8IsBrrs  oembed:200  =>  360
+bJ37IRyNV4Q  oembed:200  =>  381
+9hFCIocDkco  oembed:200  =>  425
+SaJFEwljHh0  oembed:200  =>  445
+9_8Q58NzfDU  oembed:200  =>  472
 eseMi01-5XY  oembed:200  =>  391
+zkbWHVrzunI  oembed:200  =>  462
 tUDCKn7amEY  oembed:200  =>  430
-0PmhhmkSFHI  oembed:200  =>  465
-DTi5v5S9LfY  oembed:200  =>  380
-rCc-7fe_gBg  oembed:200  =>  368
+Nr_eTLfRmJM  oembed:200  =>  360
+8WSyGJuJo_8  oembed:200  =>  416
+7IKyhD0-4vw  oembed:200  =>  479
+Jn5F4S6oR6Y  oembed:200  =>  430
+zvvIGAHXCXw  oembed:200  =>  405
+aJ8m1F-sq7w  oembed:200  =>  370
 7Z2Tv5NK01I  oembed:200  =>  443
-dZrhNMmUO4o  oembed:200  =>  409
-MVe825Eg-ek  oembed:200  =>  423
-WePXOtuDonw  oembed:200  =>  436
--l4IJk8-NlE  oembed:200  =>  375
-c4nHledAYbU  oembed:200  =>  368
+-2ZlhANuXa8  oembed:200  =>  396
 qId6usKbtaQ  oembed:200  =>  428
+0PmhhmkSFHI  oembed:200  =>  465
+_i3sex0RK2w  oembed:200  =>  390
+rCc-7fe_gBg  oembed:200  =>  368
+dZrhNMmUO4o  oembed:200  =>  409
+5QBugVnomKU  oembed:200  =>  455
+c4nHledAYbU  oembed:200  =>  368
+wf8wFi0kmSE  oembed:200  =>  498
+-l4IJk8-NlE  oembed:200  =>  375
 PgrtQQHGUN4  oembed:200  =>  427
+gOVJ8IsBrrs  oembed:200  =>  360
 MgFC_hYib2c  oembed:200  =>  350
 S-83Thh9pxE  oembed:200  =>  324
-B20v5399QfU  oembed:200  =>  325
-UHDO4mPv774  oembed:200  =>  432
-FkGauEYpU-M  oembed:200  =>  311
-1YwWjen2-w4  oembed:200  =>  322
-zaJozAY3Mrg  oembed:200  =>  1687
-4Jrn6gnEJgc  oembed:200  =>  324
--CBWadpy95w  oembed:200  =>  1683
-0kdXKzpaRFE  oembed:200  =>  405
-A7P6IDxcdzo  oembed:200  =>  321
-Ts8w6M9RZUc  oembed:200  =>  321
-E4gCsx_T9io  oembed:200  =>  677
-LcN1uG6i2gM  oembed:200  =>  447
 KzVco9ZYpOY  oembed:200  =>  325
+zYGGltBkXUU  oembed:200  =>  326
+4Jrn6gnEJgc  oembed:200  =>  324
+R9fNHgjNOkA  oembed:200  =>  322
+B20v5399QfU  oembed:200  =>  325
 YIxkz1ozqfc  oembed:200  =>  321
-ncOv7CGFWNc  oembed:200  =>  354
+Iquhoc52Luc  oembed:200  =>  325
 pjpBWEayAPE  oembed:200  =>  322
-AfBwe30yOiU  oembed:200  =>  321
-Uo4KU-yhQDQ  oembed:200  =>  444
+a2mncUDVY1s  oembed:200  =>  324
 fTJ3ok8FnZ8  oembed:200  =>  495
+Uo4KU-yhQDQ  oembed:200  =>  444
 holMgUMW334  oembed:200  =>  532
+1gi7bsmh0ug  oembed:200  =>  507
 V8J9IFrDz3M  oembed:200  =>  436
 mvOKnNGEMOc  oembed:200  =>  548
-1gi7bsmh0ug  oembed:200  =>  507
-9oUFZZqO_xQ  oembed:200  =>  473
-6gKG0Z5AJkA  oembed:200  =>  414
-SvbOeXFDFaw  oembed:200  =>  551
-qXzwxWbw5yI  oembed:200  =>  426
-zUBezxiQ5fk  oembed:200  =>  505
-oF62l-hiBg8  oembed:200  =>  394
-l--Yn_jd138  oembed:200  =>  458
 QJDIxpoBi1Y  oembed:200  =>  477
+9oUFZZqO_xQ  oembed:200  =>  473
+qXzwxWbw5yI  oembed:200  =>  426
+6gKG0Z5AJkA  oembed:200  =>  414
 XvgA441esx4  oembed:200  =>  472
--XarecoqGfY  oembed:200  =>  428
+lmbvnTftdwQ  oembed:200  =>  541
 aFXTuDuFOP0  oembed:200  =>  445
-KlbQUxRmZpM  oembed:200  =>  479
-mhV_j8ZZy5M  oembed:200  =>  492
-bn7K0ONUOtY  oembed:200  =>  433
+oF62l-hiBg8  oembed:200  =>  394
+zUBezxiQ5fk  oembed:200  =>  505
 VUcMCjixvsc  oembed:200  =>  377
+KlbQUxRmZpM  oembed:200  =>  479
+-XarecoqGfY  oembed:200  =>  428
+bn7K0ONUOtY  oembed:200  =>  433
+mhV_j8ZZy5M  oembed:200  =>  492
 hJf_ulrKAUU  oembed:200  =>  460
 smWtYGWVygw  oembed:200  =>  433
-keijAP5Ii3s  oembed:200  =>  474
 LwvqISxhcJM  oembed:200  =>  476
 mBtKp0JT3C8  oembed:200  =>  728
+6Stkt5ccrqc  oembed:200  =>  725
+vpiEIqYnDaY  oembed:200  =>  1295
+tic5N4Z621E  oembed:200  =>  1426
 IPNDf3Pvwys  oembed:200  =>  709
 20_j76bnMkU  oembed:200  =>  716
-tic5N4Z621E  oembed:200  =>  1426
-aRnGRSVlEgg  oembed:200  =>  729
-vpiEIqYnDaY  oembed:200  =>  1295
 r5vaVZ5wTvo  oembed:200  =>  1426
-jmbyPHp0RWg  oembed:200  =>  730
-6Stkt5ccrqc  oembed:200  =>  725
+aRnGRSVlEgg  oembed:200  =>  729
 9McTMXXvsis  oembed:200  =>  732
-5uF3yPOKqDs  oembed:200  =>  1379
-JRrImN4rgzg  oembed:200  =>  721
+jmbyPHp0RWg  oembed:200  =>  730
 Lo5ivpjifjI  oembed:200  =>  721
-srJpUH_dhCY  oembed:200  =>  716
-ReLmB0kIZmQ  oembed:200  =>  726
-DX4thCMVoyE  oembed:200  =>  726
-VvIyQi3RgXc  oembed:200  =>  1414
-3-z-c6xiBjs  oembed:200  =>  717
-EzoZH_FmSn8  oembed:200  =>  713
+XhsWuXRyzm0  oembed:200  =>  713
+LdVoMNXKSsM  oembed:200  =>  1342
+fZlIw9VF-NU  oembed:200  =>  1350
+WWSgJ8pwTGU  oembed:200  =>  1425
 R2usUzkp4RA  oembed:200  =>  718
-WzO7RaUvG-w  oembed:200  =>  1341
-nB7_Ei8euMc  oembed:200  =>  1342
-iSY8JvlRuEA  oembed:200  =>  728
-rHZmmHT5ZYg  oembed:200  =>  1343
 wkcXPyyz1DU  oembed:200  =>  1335
-dg5cx8W2YUo  oembed:200  =>  1421
-8oKziCdBB_I  oembed:200  =>  1341
-U-sIgjJKpJA  oembed:200  =>  1342
-_upn3EaoKc8  oembed:200  =>  1422
+0QrBiByMKWI  oembed:200  =>  725
+ZEMDLihR4Q8  oembed:200  =>  1415
+srJpUH_dhCY  oembed:200  =>  716
+rHZmmHT5ZYg  oembed:200  =>  1343
+WzO7RaUvG-w  oembed:200  =>  1341
+HQacnJkDbNE  oembed:200  =>  723
+XZMPsHSevhY  oembed:200  =>  718
+J_zZohxdizo  oembed:200  =>  1344
+5uF3yPOKqDs  oembed:200  =>  1379
+DX4thCMVoyE  oembed:200  =>  726
 AJ-2EaGrtjM  oembed:200  =>  711
-7Rimpzdn--0  oembed:200  =>  719
-GkWDfJKKgEE  oembed:200  =>  1440
+XATRZ6wvW-A  oembed:200  =>  718
+3-z-c6xiBjs  oembed:200  =>  717
 F0iljvJpYsk  oembed:200  =>  715
-opuYUeUGmUY  oembed:200  =>  1445
-G06agOK9qEs  oembed:200  =>  1440
-ce6wSO5-VFw  oembed:200  =>  716
-JlzaT1O9kXI  oembed:200  =>  1438
-MAcDhgpGZCE  oembed:200  =>  1439
-dwmyO2-wO5o  oembed:200  =>  1428
-ChifU7mTNdw  oembed:200  =>  1449
-9gMOIC360HY  oembed:200  =>  1434
-6yThT-8uwKE  oembed:200  =>  725
-HybfNxjNGJE  oembed:200  =>  714
-ahUvog1MMc0  oembed:200  =>  710
+GkWDfJKKgEE  oembed:200  =>  1440
+7Rimpzdn--0  oembed:200  =>  719
 DkBAJoP2tE4  oembed:200  =>  1439
+l3fuDFGvjeA  oembed:200  =>  1423
+opuYUeUGmUY  oembed:200  =>  1445
+ce6wSO5-VFw  oembed:200  =>  716
+E9W2zDlXXf0  oembed:200  =>  1449
+dwmyO2-wO5o  oembed:200  =>  1428
+-hnRxBPQl14  oembed:200  =>  1440
+ChifU7mTNdw  oembed:200  =>  1449
+0Bb-8q_S50Y  oembed:200  =>  1381
+JlzaT1O9kXI  oembed:200  =>  1438
+ahUvog1MMc0  oembed:200  =>  710
+I_LidojANvE  oembed:200  =>  1438
+G06agOK9qEs  oembed:200  =>  1440
+9gMOIC360HY  oembed:200  =>  1434
 dj_yOMI_MhU  oembed:200  =>  1317
+HybfNxjNGJE  oembed:200  =>  714
+6yThT-8uwKE  oembed:200  =>  725
+QcRuYsdSa4U  oembed:200  =>  710
+SsHW-v8Qcas  oembed:200  =>  720
 fKFrFRyEDt4  oembed:200  =>  1439
 mn1JWuztBIQ  oembed:200  =>  1450
-3sfSHTgScug  oembed:200  =>  1443
-SsHW-v8Qcas  oembed:200  =>  720
-_AsuEX4MiLg  oembed:200  =>  1437
 pmGteIlszS8  oembed:200  =>  1447
-BVUp0okqdWk  oembed:200  =>  1493
-I_LidojANvE  oembed:200  =>  1438
-hzDmywfX8Dk  oembed:200  =>  711
-I3eSyMUe5SM  oembed:200  =>  1450
+3sfSHTgScug  oembed:200  =>  1443
+_AsuEX4MiLg  oembed:200  =>  1437
+mJUuxuPtdts  oembed:200  =>  1433
+ihuzsbSLwak  oembed:200  =>  1450
 CudY98C1rro  oembed:200  =>  1449
-hqcl4V7Xqno  oembed:200  =>  1452
-QcRuYsdSa4U  oembed:200  =>  710
-hNo161nP3cw  oembed:200  =>  1450
 Uh8YUJItrNw  oembed:200  =>  1311
 2J2t_QGQbw4  oembed:200  =>  1378
 0iYOBDmcpk8  oembed:200  =>  1372
 C3ShtSjfL_I  oembed:200  =>  1380
-7crqD43XH5g  oembed:200  =>  1376
 IqhVb5NnCJg  oembed:200  =>  1379
-stsEBYdVVpk  oembed:200  =>  1378
+7crqD43XH5g  oembed:200  =>  1376
 JRRxDnFVimc  oembed:200  =>  1377
 vvs3DnyeY5g  oembed:200  =>  1381
-N0yOBbUDXyU  oembed:200  =>  603
+stsEBYdVVpk  oembed:200  =>  1378
 tBZuvbPY3kg  oembed:200  =>  601
-24qkAX1KSmM  oembed:200  =>  1777
+N0yOBbUDXyU  oembed:200  =>  603
 rSgc9I6nnVg  oembed:200  =>  574
-L_g8aH0ozZQ  oembed:200  =>  601
+24qkAX1KSmM  oembed:200  =>  1777
 xqe8BFlfSdU  oembed:200  =>  601
 q_T5k9zyWXE  oembed:200  =>  673
+L_g8aH0ozZQ  oembed:200  =>  601
 qOu5L4MSVSg  oembed:200  =>  601
-m7Y6kzmHE3k  oembed:200  =>  601
 5NkbhuRMfMY  oembed:200  =>  601
-mKB2PIXiQ2M  oembed:200  =>  601
+m7Y6kzmHE3k  oembed:200  =>  601
+uYN4Q0K6_Vg  oembed:200  =>  572
 PDtk2Km6MVE  oembed:200  =>  571
 Lk8mOhRpeVI  oembed:200  =>  604
-ji0UfJgR6LE  oembed:200  =>  602
-uYN4Q0K6_Vg  oembed:200  =>  572
 ElN0pw3gdyo  oembed:200  =>  527
-kC1zjw7dmJc  oembed:200  =>  520
-PuOa3C3-avs  oembed:200  =>  525
-G5f33ONfYM4  oembed:200  =>  524
-Hu1VIemIOTk  oembed:200  =>  574
-Hx3NVVLgr5s  oembed:200  =>  556
+mKB2PIXiQ2M  oembed:200  =>  601
+VyP5n4wq53M  oembed:200  =>  604
+E1MM17m5Xa4  oembed:200  =>  1168
+L6DJgzHjjUE  oembed:200  =>  591
+Iruq6FXc8lo  oembed:200  =>  475
+ji0UfJgR6LE  oembed:200  =>  602
 dAVogbJGUVs  oembed:200  =>  654
 YDm4Golo-DQ  oembed:200  =>  330
 882Aw6sdkUc  oembed:200  =>  333
-dYdlyQujL6M  oembed:200  =>  451
 89Q9rFuONxY  oembed:200  =>  653
 U6XkJhp6SM8  oembed:200  =>  659
 YGD5xhL42tU  oembed:200  =>  690
-93MxDBC8GrI  oembed:200  =>  1271
-WBThzllaokI  oembed:200  =>  656
-sQCLgWFfT7k  oembed:200  =>  656
-I3CmblNKCh8  oembed:200  =>  656
 jTIlxBc9q3E  oembed:200  =>  655
-ZHQEIg-xbSU  oembed:200  =>  1272
-H-sBVm13yxY  oembed:200  =>  680
+l_-7ujJeXss  oembed:200  =>  604
+I3CmblNKCh8  oembed:200  =>  656
 rZ6fQ1Aob8Y  oembed:200  =>  655
-jBdSPA1DTAc  oembed:200  =>  1264
-5RfhZYyMSh8  oembed:200  =>  1268
-7fVY1QTQBt4  oembed:200  =>  788
-iaWQRR9gpOQ  oembed:200  =>  700
-P0OC9COgPcY  oembed:200  =>  768
-TPTQ5Jd5T3s  oembed:200  =>  767
-qWy90GnnTj8  oembed:200  =>  653
+WBThzllaokI  oembed:200  =>  656
+ZHQEIg-xbSU  oembed:200  =>  1272
+zedYgKQPkIg  oembed:200  =>  1263
+bO7SrSQlgdM  oembed:200  =>  1267
+MuP7OIBlIdM  oembed:200  =>  1266
 uqwb75mut10  oembed:200  =>  691
+iaWQRR9gpOQ  oembed:200  =>  700
+krVJiXx9K7E  oembed:200  =>  653
+7fVY1QTQBt4  oembed:200  =>  788
+TPTQ5Jd5T3s  oembed:200  =>  767
+UjOgw-M1bUA  oembed:200  =>  768
 0fAG7iWV6lg  oembed:200  =>  653
-tfaRuwVal7E  oembed:200  =>  653
-qzo-2fRtLHY  oembed:200  =>  656
 6HkUgWSazR0  oembed:200  =>  661
-gIsgGLsEE7M  oembed:200  =>  691
-x5G03s--R1k  oembed:200  =>  770
-kKYggAAir20  oembed:200  =>  661
-KVVLaEUEx2o  oembed:200  =>  653
 mlyXEH-ZhGQ  oembed:200  =>  744
-0yoJZ25z0LY  oembed:200  =>  1357
+HpvOtt5_R-Q  oembed:200  =>  653
+gIsgGLsEE7M  oembed:200  =>  691
+kKYggAAir20  oembed:200  =>  661
+rv1alOyx0AA  oembed:200  =>  763
+qWy90GnnTj8  oembed:200  =>  653
 LYp8OZpj1qQ  oembed:200  =>  703
 LolcasDqIww  oembed:200  =>  653
-MBagKYcv_pE  oembed:200  =>  653
+8OWljl0ANxM  oembed:200  =>  653
+qzo-2fRtLHY  oembed:200  =>  656
 kCsCFwYkFC8  oembed:200  =>  745
+0yoJZ25z0LY  oembed:200  =>  1357
+bO5bOL36QtA  oembed:200  =>  661
+lObd_1x4sB4  oembed:200  =>  653
 POgd3s-PeUc  oembed:200  =>  744
-krVJiXx9K7E  oembed:200  =>  653
-UjOgw-M1bUA  oembed:200  =>  768
-eH4-O210gw0  oembed:200  =>  1337
 M4KRbR0B1g4  oembed:200  =>  391
 eBDry5kVfmU  oembed:200  =>  392
-E1AWr-QxfAU  oembed:200  =>  383
-Xk4BBtg8Po0  oembed:200  =>  392
 rRoRaSfyQss  oembed:200  =>  362
-e2e9C_2xfhk  oembed:200  =>  374
-HH-gF367-m4  oembed:200  =>  400
 KyeM-xQs8FQ  oembed:200  =>  398
+e2e9C_2xfhk  oembed:200  =>  374
 iXBWTZTwh6Q  oembed:200  =>  409
 ZO12cdM3ot0  oembed:200  =>  311
+qfMm4_Hcv4s  oembed:200  =>  337
 Agofaf3S2Gw  oembed:200  =>  371
+SaeHmJrknlY  oembed:200  =>  302
 18lr1KqAwAE  oembed:200  =>  901
 zv_trc--th0  oembed:200  =>  450
 HEFnPxKlzjk  oembed:200  =>  812
-UZxQPFRL9zA  oembed:200  =>  960
 _-GdBde-BmE  oembed:200  =>  1025
-kz8q3UVGT6Y  oembed:200  =>  859
 u3fHvaH15IA  oembed:200  =>  675
+kz8q3UVGT6Y  oembed:200  =>  859
 0pN5jKgcCAo  oembed:200  =>  750
-yTeMiL_Ojvg  oembed:200  =>  418
--k0HKjAstgk  oembed:200  =>  429
-mO2lSPx2NTM  oembed:200  =>  620
-qAJlpSFT83o  oembed:200  =>  734
 qHkjEloj_qk  oembed:200  =>  751
-DYs15S0JRXY  oembed:200  =>  439
-SEWbJC9hYrg  oembed:200  =>  483
-iURXwE0f1CQ  oembed:200  =>  708
 BjUbcG4YKj0  oembed:200  =>  511
-SiLaFMeY_fc  oembed:200  =>  468
-cGu6GJAmJ7o  oembed:200  =>  523
-psRZ8wbPgys  oembed:200  =>  484
-SCbFCULUm3s  oembed:200  =>  480
-6dIupYzkIFk  oembed:200  =>  516
-vKLzKBlJD4M  oembed:200  =>  471
-xVhyZ5fernc  oembed:200  =>  495
-wszGDtzXGIA  oembed:200  =>  499
 EHljUcr5uEU  oembed:200  =>  478
-E6_Wzxjk5IA  oembed:200  =>  459
-33Hwe231UGE  oembed:200  =>  486
+hYNlktIJxc4  oembed:200  =>  502
+cGu6GJAmJ7o  oembed:200  =>  523
+hjlEovE77dM  oembed:200  =>  520
+6dIupYzkIFk  oembed:200  =>  516
+7HeDTgoOBW8  oembed:200  =>  503
+vKLzKBlJD4M  oembed:200  =>  471
+psRZ8wbPgys  oembed:200  =>  484
 HPLiOqDWK3k  oembed:200  =>  480
+SCbFCULUm3s  oembed:200  =>  480
+Z4GJ-ef0vpg  oembed:200  =>  495
 NwduIOKGkXQ  oembed:200  =>  505
-LtwSd5_cKKU  oembed:200  =>  523
-tuWOBmiWy4Q  oembed:200  =>  519
+E6_Wzxjk5IA  oembed:200  =>  459
 dB04WsqCeIU  oembed:200  =>  477
-PWhIEJ8z4Go  oembed:200  =>  520
+tuWOBmiWy4Q  oembed:200  =>  519
+m2L5oCj5Qk8  oembed:200  =>  506
 wgAAOX7hmwE  oembed:200  =>  473
-9p_jm-VqxZA  oembed:200  =>  486
 fKDb0y8ax0w  oembed:200  =>  484
+LtwSd5_cKKU  oembed:200  =>  523
+PWhIEJ8z4Go  oembed:200  =>  520
+RHvja0H3cYw  oembed:200  =>  466
+33Hwe231UGE  oembed:200  =>  486
 Qn-7qPn51yU  oembed:200  =>  486
 2g27Q0mJRrQ  oembed:200  =>  482
-RHvja0H3cYw  oembed:200  =>  466
 ahvdk2wOnv4  oembed:200  =>  491
 VZacmdm6IAk  oembed:200  =>  482
-r5kf5VamHKM  oembed:200  =>  574
-WjkfwkCZ4hY  oembed:200  =>  1539
-WeKU7JUiKEo  oembed:200  =>  1483
 37l3O1sVc0g  oembed:200  =>  1465
-yNujthFxNho  oembed:200  =>  1456
-GRbmMt9e9xI  oembed:200  =>  1497
-u_DcYGysmHw  oembed:200  =>  1386
 uFmVJVBCzJQ  oembed:200  =>  1471
-lDDnjHYmRY8  oembed:200  =>  1493
-7ExSIrthHfI  oembed:200  =>  1453
-745thBBJsRY  oembed:200  =>  1497
-DtpwZaYGzX0  oembed:200  =>  1405
-nzisl3Q9Iu0  oembed:200  =>  1485
-Xc2FCIz48-8  oembed:200  =>  591
-8bd6Vf6caJ0  oembed:200  =>  385
-Ovz8ccGfD38  oembed:200  =>  1575
+ZgdRlfTNosA  oembed:200  =>  1380
 NNeROPveio4  oembed:200  =>  1491
+WjkfwkCZ4hY  oembed:200  =>  1539
+GRbmMt9e9xI  oembed:200  =>  1497
+yNujthFxNho  oembed:200  =>  1456
+DtpwZaYGzX0  oembed:200  =>  1405
 zSf2dI18Ty0  oembed:200  =>  1462
-fYiC8G6Qsd8  oembed:200  =>  1498
+745thBBJsRY  oembed:200  =>  1497
+PhgW4H4Q_io  oembed:200  =>  1478
+7ExSIrthHfI  oembed:200  =>  1453
+lDDnjHYmRY8  oembed:200  =>  1493
+Xc2FCIz48-8  oembed:200  =>  591
+Ovz8ccGfD38  oembed:200  =>  1575
 LMgKjmoqM-E  oembed:200  =>  1456
+IVhlTskE8qs  oembed:200  =>  1471
+fYiC8G6Qsd8  oembed:200  =>  1498
+nzisl3Q9Iu0  oembed:200  =>  1485
+BMu3-6Zj4o8  oembed:200  =>  939
+NwbarSg3Pj8  oembed:200  =>  1539
+CzWBTqxkHr4  oembed:200  =>  1451
 IbNGijd63YU  oembed:200  =>  1440
 QNiqO9_JvyE  oembed:200  =>  1440
 5IuWokv9wG4  oembed:200  =>  1440
@@ -1651,183 +1745,172 @@ RvceU_c2yJ0  oembed:200  =>  1246
 WjBzpo9U2ew  oembed:200  =>  1271
 H64B2oERzGQ  oembed:200  =>  1272
 5dH6uC7g6Nw  oembed:200  =>  1271
-cTUwfCRc3Fg  oembed:200  =>  659
-15jZpo28iEo  oembed:200  =>  1221
-MRxje-PT7vM  oembed:200  =>  1210
-6d7XAgcG7lw  oembed:200  =>  1227
-ceXzUNa9t08  oembed:200  =>  1210
-JeqB3quI-ag  oembed:200  =>  1160
-SXf9A-_fOS0  oembed:200  =>  1227
-MyZF5xmDrsI  oembed:200  =>  616
-1JPqXuOMkn8  oembed:200  =>  566
-IhswOmJCN7w  oembed:200  =>  1188
-upLLXWQ3ftc  oembed:200  =>  594
-KpNtUI_ilKI  oembed:200  =>  613
-t5P9wwbgEtc  oembed:200  =>  567
-C2e1Lin_2rs  oembed:200  =>  1189
-swC3XnOn3eU  oembed:200  =>  1218
-mh4wOTOnZdI  oembed:200  =>  1222
-U1oRP0PUGBE  oembed:200  =>  1159
-hVpqWZONedg  oembed:200  =>  1201
-TE_wERFZ2JI  oembed:200  =>  1188
-xyD1A8UooG4  oembed:200  =>  1223
-qASqq7bdU-Q  oembed:200  =>  1220
-jPHv0-SKNt0  oembed:200  =>  1222
-2ZprDrKnQwg  oembed:200  =>  1220
-9iSQSNe9IiA  oembed:200  =>  1193
-Ta_J3tpMtEc  oembed:200  =>  1226
-GsTxB9q2c7c  oembed:200  =>  1227
-vq8hZVSEWVw  oembed:200  =>  1227
-8LYh7d_Z8c4  oembed:200  =>  1229
-4qQiKEWv0Jo  oembed:200  =>  1227
-2XmH7t612Rc  oembed:200  =>  1171
-NL1sZI3jyow  oembed:200  =>  1198
 MKYjyuvlQTg  oembed:200  =>  1225
-Ap2UmFZCkKA  oembed:200  =>  1194
-dWCO9ucSSDU  oembed:200  =>  1212
+4qQiKEWv0Jo  oembed:200  =>  1227
+ubehFQC8YPY  oembed:200  =>  1161
 6MovtHjwzfc  oembed:200  =>  1226
-wuBaF8VqO98  oembed:200  =>  1161
-nyDXPTHi8fE  oembed:200  =>  1195
-WREZSjXleHE  oembed:200  =>  1228
-48LQjbJ_XFE  oembed:200  =>  1157
-TKaXnWwzYy8  oembed:200  =>  1189
-WjkRCLsdJGE  oembed:200  =>  1223
-KGgeTq8gkIU  oembed:200  =>  1188
-TcVrLHT2x-Y  oembed:200  =>  1189
-jQ3Tk1Qc-Es  oembed:200  =>  1222
-x3sPNDCQmeU  oembed:200  =>  1195
+S3a-usQ1zks  oembed:200  =>  1221
+Vw3Cxa2ydyQ  oembed:200  =>  1217
+NL1sZI3jyow  oembed:200  =>  1198
+dWCO9ucSSDU  oembed:200  =>  1212
+15jZpo28iEo  oembed:200  =>  1221
+swC3XnOn3eU  oembed:200  =>  1218
+Ap2UmFZCkKA  oembed:200  =>  1194
+DnlEoDli12M  oembed:200  =>  1224
 Zgci3gaNmW0  oembed:200  =>  1220
+2XmH7t612Rc  oembed:200  =>  1171
+6d7XAgcG7lw  oembed:200  =>  1227
+48LQjbJ_XFE  oembed:200  =>  1157
+G0vtW1UdqR0  oembed:200  =>  1223
+C2e1Lin_2rs  oembed:200  =>  1189
+SXf9A-_fOS0  oembed:200  =>  1227
+TE_wERFZ2JI  oembed:200  =>  1188
+Z16M_jMm-D0  oembed:200  =>  1202
+jQ3Tk1Qc-Es  oembed:200  =>  1222
+JeqB3quI-ag  oembed:200  =>  1160
+1JPqXuOMkn8  oembed:200  =>  566
+xyD1A8UooG4  oembed:200  =>  1223
+WjkRCLsdJGE  oembed:200  =>  1223
+w6mH1u5vSvI  oembed:200  =>  1195
+6Fw9Th8DNKI  oembed:200  =>  1221
+L39RHC0PCsU  oembed:200  =>  1160
+MyZF5xmDrsI  oembed:200  =>  616
+GsTxB9q2c7c  oembed:200  =>  1227
+8LYh7d_Z8c4  oembed:200  =>  1229
+U1oRP0PUGBE  oembed:200  =>  1159
+nyDXPTHi8fE  oembed:200  =>  1195
+IhswOmJCN7w  oembed:200  =>  1188
+KGgeTq8gkIU  oembed:200  =>  1188
+x3sPNDCQmeU  oembed:200  =>  1195
+ceXzUNa9t08  oembed:200  =>  1210
+Ta_J3tpMtEc  oembed:200  =>  1226
+hVpqWZONedg  oembed:200  =>  1201
+mh4wOTOnZdI  oembed:200  =>  1222
+KpNtUI_ilKI  oembed:200  =>  613
 1zaZ04lXF04  oembed:200  =>  1217
-WrsWcNh0Q0s  oembed:200  =>  1194
+lpIOtvL6jRw  oembed:200  =>  1204
+bNEVd4N0hsQ  oembed:200  =>  1224
+GFyjYD4PeJA  oembed:200  =>  1194
+2ZprDrKnQwg  oembed:200  =>  1220
+Rw0YVTAUFs4  oembed:200  =>  1191
+9iSQSNe9IiA  oembed:200  =>  1193
+O1JrxIAA2p4  oembed:200  =>  1224
+pOhcJd4IruU  oembed:200  =>  1197
 MrC4fC_9qGM  oembed:200  =>  601
 9W7ipLm5ai8  oembed:200  =>  601
-tX6rESMOZ1Q  oembed:200  =>  1035
 kLjG8vQG6_g  oembed:200  =>  601
+tX6rESMOZ1Q  oembed:200  =>  1035
+-RSfm4sZFmg  oembed:200  =>  601
 ArxDK7n-vKk  oembed:200  =>  444
 I7MDvDhM8cw  oembed:200  =>  437
--RSfm4sZFmg  oembed:200  =>  601
 quwjvrW0NDs  oembed:200  =>  540
 3E9QpELnNv4  oembed:200  =>  550
-ki9lToS4ljc  oembed:200  =>  558
 mE7SwhGUH4M  oembed:200  =>  601
 Tvfj4LBsHxk  oembed:200  =>  601
+ki9lToS4ljc  oembed:200  =>  558
+TR3Tps4BZ5Q  oembed:200  =>  536
 XkRFOPUJeMw  oembed:200  =>  496
 jAj4INuqcQ4  oembed:200  =>  600
 HJfaC5n22Pw  oembed:200  =>  584
 zFHxyP6puf4  oembed:200  =>  435
-TR3Tps4BZ5Q  oembed:200  =>  536
 9Evru3JOrU4  oembed:200  =>  1231
 ImBIyqB40MI  oembed:200  =>  425
 smdgGOWv43U  oembed:200  =>  416
-k4rdNYVRcgc  oembed:200  =>  415
-5nQQ_6r9GiM  oembed:200  =>  404
-2FT90Y0q1gQ  oembed:200  =>  620
-0N-bJLoNnCU  oembed:200  =>  417
-P4-xCUmYe6g  oembed:200  =>  3053
-jxvQHngr8Cs  oembed:200  =>  422
 Vxl5-wkOsOM  oembed:200  =>  422
-efW2XsgQO1g  oembed:200  =>  610
-Wh7W1Dvddik  oembed:200  =>  409
-KuqrdQ9btHI  oembed:200  =>  611
-kMtE6_HmT3s  oembed:200  =>  390
-ds84KHArKC4  oembed:200  =>  417
-Pjoin_bkpd0  oembed:200  =>  611
-KuEDN2wRTzw  oembed:200  =>  611
-Dq_2VhGRMJA  oembed:200  =>  612
-YhintJy99UQ  oembed:200  =>  611
-Uobc9r1FsJM  oembed:200  =>  612
+k4rdNYVRcgc  oembed:200  =>  415
 eCjrDMAcUwA  oembed:200  =>  414
-04Vd927S6JA  oembed:200  =>  420
-c-CwvRr36ao  oembed:200  =>  612
-ku16YcCjGq4  oembed:200  =>  611
-Yk0O-KLas4w  oembed:200  =>  604
+0N-bJLoNnCU  oembed:200  =>  417
+KuqrdQ9btHI  oembed:200  =>  611
+ds84KHArKC4  oembed:200  =>  417
+jxvQHngr8Cs  oembed:200  =>  422
+5nQQ_6r9GiM  oembed:200  =>  404
+Wh7W1Dvddik  oembed:200  =>  409
+efW2XsgQO1g  oembed:200  =>  610
+Uobc9r1FsJM  oembed:200  =>  612
+P4-xCUmYe6g  oembed:200  =>  3053
+wzuAJBfkGSg  oembed:200  =>  421
 6e_tDW6ViV0  oembed:200  =>  611
-9NygmgBBrDg  oembed:200  =>  611
-Nct901UYIFM  oembed:200  =>  427
-5pybbNxCbu8  oembed:200  =>  619
-zJNhfvWBA3Y  oembed:200  =>  611
-B7ouAxH4hRc  oembed:200  =>  611
-CaCDXPd2yJw  oembed:200  =>  611
-Eyi5-6RNoDA  oembed:200  =>  611
-T9ZHNSr0JTc  oembed:200  =>  412
-K_nW0JLgo3o  oembed:200  =>  610
-48P34DNjFR8  oembed:200  =>  611
-1Ze-beN3y7k  oembed:200  =>  427
-xWzwe6qY4ZU  oembed:200  =>  398
-NrW6kgwE-hY  oembed:200  =>  409
-9D_R9P0yvzU  oembed:200  =>  425
-MzYox5E-lzI  oembed:200  =>  425
-zpn9gYDpQB8  oembed:200  =>  610
-t3w4CqOHoUA  oembed:200  =>  611
-dFg1qUjADRQ  oembed:200  =>  422
-p2onBQB--J0  oembed:200  =>  422
-09nFn30G4sY  oembed:200  =>  428
-JaB8DaY6Hvk  oembed:200  =>  552
-hJTkSBcK3dQ  oembed:200  =>  611
-kAJ87eX6W0s  oembed:200  =>  2485
-zHZDqEduSDQ  oembed:200  =>  1397
-ohqIRQuhTs8  oembed:200  =>  611
-RQqecH6yGZU  oembed:200  =>  612
 82sjP05W0yc  oembed:200  =>  423
-NrweVXEk8AI  oembed:200  =>  380
-he5d9h0bReo  oembed:200  =>  611
-GpmJIduGuok  oembed:200  =>  1305
-NTMpnwo5XTg  oembed:200  =>  1305
-LpZGISR2dFc  oembed:200  =>  1305
--YMBquzifUE  oembed:200  =>  1305
-fz8Hrmx2ThE  oembed:200  =>  1305
-j-2sUSX1ef8  oembed:200  =>  1305
-q9zIBVvLL8M  oembed:200  =>  1304
-WpgEzhJgzek  oembed:200  =>  1305
-EnMxfCqrISg  oembed:200  =>  659
-jaund8GhlJw  oembed:200  =>  1304
-2V8WbzCTIfE  oembed:200  =>  1306
-H98Ss1kFbNo  oembed:200  =>  1305
+pkwA_83BdiA  oembed:200  =>  412
+kAJ87eX6W0s  oembed:200  =>  2485
+T9ZHNSr0JTc  oembed:200  =>  412
+YhintJy99UQ  oembed:200  =>  611
+ku16YcCjGq4  oembed:200  =>  611
+Eyi5-6RNoDA  oembed:200  =>  611
+KuEDN2wRTzw  oembed:200  =>  611
+9NygmgBBrDg  oembed:200  =>  611
+Pjoin_bkpd0  oembed:200  =>  611
+Nct901UYIFM  oembed:200  =>  427
+m66puecuN4c  oembed:200  =>  427
+04Vd927S6JA  oembed:200  =>  420
+zJNhfvWBA3Y  oembed:200  =>  611
+RQqecH6yGZU  oembed:200  =>  612
+YPGiLd7bklQ  oembed:200  =>  427
+5pybbNxCbu8  oembed:200  =>  619
+1Ze-beN3y7k  oembed:200  =>  427
+MzYox5E-lzI  oembed:200  =>  425
+xWzwe6qY4ZU  oembed:200  =>  398
+48P34DNjFR8  oembed:200  =>  611
+USSPaJRfsUs  oembed:200  =>  611
+zpn9gYDpQB8  oembed:200  =>  610
+NrW6kgwE-hY  oembed:200  =>  409
+t3w4CqOHoUA  oembed:200  =>  611
+V7EjZwRF_rw  oembed:200  =>  428
+9D_R9P0yvzU  oembed:200  =>  425
+dFg1qUjADRQ  oembed:200  =>  422
+09nFn30G4sY  oembed:200  =>  428
+hJTkSBcK3dQ  oembed:200  =>  611
+JaB8DaY6Hvk  oembed:200  =>  552
+zHZDqEduSDQ  oembed:200  =>  1397
+3Gufewrn1hU  oembed:200  =>  1440
+ohqIRQuhTs8  oembed:200  =>  611
+kMtE6_HmT3s  oembed:200  =>  390
+1uqTsto2UzA  oembed:200  =>  611
 bhIEVNIwdc4  oembed:200  =>  1305
+LpZGISR2dFc  oembed:200  =>  1305
+GpmJIduGuok  oembed:200  =>  1305
+-YMBquzifUE  oembed:200  =>  1305
+j-2sUSX1ef8  oembed:200  =>  1305
+fz8Hrmx2ThE  oembed:200  =>  1305
+H98Ss1kFbNo  oembed:200  =>  1305
+jaund8GhlJw  oembed:200  =>  1304
+q9zIBVvLL8M  oembed:200  =>  1304
+EnMxfCqrISg  oembed:200  =>  659
+2V8WbzCTIfE  oembed:200  =>  1306
+WpgEzhJgzek  oembed:200  =>  1305
 bxaTk0QXtAs  oembed:200  =>  1305
-WrwuSgHOHBg  oembed:200  =>  1459
-gFrpwDo3hNk  oembed:200  =>  734
-KWirTl0vnU0  oembed:200  =>  512
+NTMpnwo5XTg  oembed:200  =>  1305
 WEO3BmHeIRM  oembed:200  =>  1308
 -q-aWoLhcw0  oembed:200  =>  1308
 BpwvS8raYrw  oembed:200  =>  1359
+lkQ48FrpgHg  oembed:200  =>  788
 2i_dutN-jRE  oembed:200  =>  737
-DfTRo2ePiJo  oembed:200  =>  769
-UL-GbwDKwww  oembed:200  =>  701
+K-YMF76g1gw  oembed:200  =>  745
+E-S1u5UWNRs  oembed:200  =>  785
 ClunvqYWpdo  oembed:200  =>  708
-1gc7MAXJinA  oembed:200  =>  789
-M22g0fSpElE  oembed:200  =>  731
+UL-GbwDKwww  oembed:200  =>  701
 b0dBfoyFKdw  oembed:200  =>  742
 EL_o0EdXQ-s  oembed:200  =>  729
-gpwm9T_wm_s  oembed:200  =>  789
-lkQ48FrpgHg  oembed:200  =>  788
+M22g0fSpElE  oembed:200  =>  731
 dkwu_BwWeng  oembed:200  =>  672
-KHf_xLMyw_g  oembed:200  =>  613
-ForN7dkOKik  oembed:200  =>  854
-XO8QwISMhuQ  oembed:200  =>  1145
-2iYgX0BvzMg  oembed:200  =>  1549
-0v8OLYjIrPg  oembed:200  =>  1524
-6LZkkUJdy2Q  oembed:200  =>  1552
-Q8OmGK83DZk  oembed:200  =>  1584
-0s9afsgW2D8  oembed:200  =>  1399
-KEOCbn94mmE  oembed:200  =>  719
+3bLNQgRn-Wg  oembed:200  =>  921
 DQvtTjeYbZE  oembed:200  =>  657
 qITCq_SR0fA  oembed:200  =>  651
 O4E-ZOXNjJI  oembed:200  =>  665
 2BE8-YqFJXM  oembed:200  =>  1357
 T_J3YR9mNXc  oembed:200  =>  1355
-_Hl9wrYAOGU  oembed:200  =>  1354
 j6PXk6Isrxk  oembed:200  =>  1352
 A8NPzfDQvdw  oembed:200  =>  1356
-FIZQXTfbNVA  oembed:200  =>  1355
+_Hl9wrYAOGU  oembed:200  =>  1354
 htXsbZGHcUY  oembed:200  =>  1356
 9JU8q5IDcxM  oembed:200  =>  1356
+FIZQXTfbNVA  oembed:200  =>  1355
 6K6V2-INi84  oembed:200  =>  1352
 DZzfPywF2n4  oembed:200  =>  1356
 e7P_N_UpH_4  oembed:200  =>  1355
 0IFYLFjQa20  oembed:200  =>  1354
 pOycp6JEzf8  oembed:200  =>  1356
-4oSkyKa4UOE  oembed:200  =>  1692
+q4bhlP6o9fE  oembed:200  =>  1355
 QKLxhpZa1Sw  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 yeggavGSMzE  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
 Y3Xh2_E9aqY  oembed:200  =>  ? existuje, dĺžku sa nepodarilo zistiť
@@ -1873,115 +1956,201 @@ otQ5wvaMD3g  oembed:200  =>  1292
 pLBQlQs5yIE  oembed:200  =>  1292
 pfxMHAxRM_Y  oembed:200  =>  1294
 7DXO1yIe2Xw  oembed:200  =>  609
-RRPAi9lhcwo  oembed:200  =>  1289
+-5DI_FXSM1U  oembed:200  =>  1123
 vmVOOlRvoAQ  oembed:200  =>  1139
 PZUystYZe9c  oembed:200  =>  1353
+uci5Mto80HA  oembed:200  =>  1298
+mmunNNi0h6U  oembed:200  =>  1217
+evrtrDXhMwo  oembed:200  =>  1083
 8el_wljrybI  oembed:200  =>  1360
 20TFoN6R8ao  oembed:200  =>  1296
--5DI_FXSM1U  oembed:200  =>  1123
-ujiKAzN-yt8  oembed:200  =>  1354
-cmjGfdZkHpk  oembed:200  =>  1300
-fT7tFA8BnYI  oembed:200  =>  1297
-NeAph3PWalc  oembed:200  =>  1296
-F2c65tntCuw  oembed:200  =>  1296
-evrtrDXhMwo  oembed:200  =>  1083
-mmunNNi0h6U  oembed:200  =>  1217
-IcrQhcPTLfk  oembed:200  =>  1296
-s3aBuKQDhBk  oembed:200  =>  1351
-ZO7ZQd78LZY  oembed:200  =>  1297
-8OO2f1h-Ebs  oembed:200  =>  1298
-uci5Mto80HA  oembed:200  =>  1298
-0HYoAisg6OQ  oembed:200  =>  1181
-ZT05b33hFjs  oembed:200  =>  1148
-6wzA9oolf60  oembed:200  =>  1217
-7jQDCaVYLyE  oembed:200  =>  1354
-Gnxy5mAo3Gs  oembed:200  =>  1357
-ZmPRVALfA-M  oembed:200  =>  1300
-ydDE1HIpprA  oembed:200  =>  1296
-x3T2tk8dPUc  oembed:200  =>  1220
--iOJnC7iM2c  oembed:200  =>  1296
-f44E1rPu3GA  oembed:200  =>  1200
+3J2WUEtoZ_I  oembed:200  =>  1125
 yCcTtgtwuKQ  oembed:200  =>  1157
-J8Re-5u4o-w  oembed:200  =>  1179
+6wzA9oolf60  oembed:200  =>  1217
 -rTfX1gme5o  oembed:200  =>  1158
-I7-3BDmSuDs  oembed:200  =>  1136
-E3T33hoTJEY  oembed:200  =>  1351
+s3aBuKQDhBk  oembed:200  =>  1351
+NeAph3PWalc  oembed:200  =>  1296
 RYq4P5ar9sY  oembed:200  =>  1297
-q1pt_sH9zKI  oembed:200  =>  1296
-4CPy8SNqFTU  oembed:200  =>  1296
-Mf6-5xl0msY  oembed:200  =>  1291
+E3T33hoTJEY  oembed:200  =>  1351
+I7-3BDmSuDs  oembed:200  =>  1136
+J8Re-5u4o-w  oembed:200  =>  1179
+fT7tFA8BnYI  oembed:200  =>  1297
+IcrQhcPTLfk  oembed:200  =>  1296
+ujiKAzN-yt8  oembed:200  =>  1354
+ZT05b33hFjs  oembed:200  =>  1148
+0HYoAisg6OQ  oembed:200  =>  1181
+x3T2tk8dPUc  oembed:200  =>  1220
+Gnxy5mAo3Gs  oembed:200  =>  1357
+RRPAi9lhcwo  oembed:200  =>  1289
+vff2mn5ayhQ  oembed:200  =>  1082
+f44E1rPu3GA  oembed:200  =>  1200
+7jQDCaVYLyE  oembed:200  =>  1354
+ydDE1HIpprA  oembed:200  =>  1296
+ZmPRVALfA-M  oembed:200  =>  1300
 9O70x1bRfHI  oembed:200  =>  1354
-9WbTVdszi_s  oembed:200  =>  1351
+4CPy8SNqFTU  oembed:200  =>  1296
+q1pt_sH9zKI  oembed:200  =>  1296
+ZO7ZQd78LZY  oembed:200  =>  1297
+RsoMhQrKMH4  oembed:200  =>  1354
 2yhKz6E2GLA  oembed:200  =>  1299
+B0dfjDj9KUY  oembed:200  =>  1297
 7k1sVqHJFlI  oembed:200  =>  1160
 3taCIXc-NPQ  oembed:200  =>  1191
-vff2mn5ayhQ  oembed:200  =>  1082
-3J2WUEtoZ_I  oembed:200  =>  1125
 nEsjzxDwj6U  oembed:200  =>  1206
-0vMyugjWLSA  oembed:200  =>  1127
 wfKw_k1BmkA  oembed:200  =>  1200
+WxsEjAus5Lk  oembed:200  =>  1218
 ra1w--F742E  oembed:200  =>  1196
-W3uKl-GH2ZQ  oembed:200  =>  1151
-7uZasBe4iD4  oembed:200  =>  1308
 UD2fTQ6OX68  oembed:200  =>  1308
+7uZasBe4iD4  oembed:200  =>  1308
 SSQ1TPoyLsU  oembed:200  =>  1308
-sccG1FB_PwU  oembed:200  =>  903
-PQtLftk_8bY  oembed:200  =>  1002
 9NRgDulY7Ag  oembed:200  =>  1283
-mul-rqKo47k  oembed:200  =>  1295
 CGX79QfRu8I  oembed:200  =>  1293
-hWCvp23mlNE  oembed:200  =>  1293
+mul-rqKo47k  oembed:200  =>  1295
+0tCSqLV2wQE  oembed:200  =>  1283
+lnQeuzeebkE  oembed:200  =>  1337
+axQ4_h-bj4c  oembed:200  =>  1283
 N3Dx-aKk3VA  oembed:200  =>  1283
-T0pdheRk8qo  oembed:200  =>  1283
 MAh4yu9GOQk  oembed:200  =>  1283
+T0pdheRk8qo  oembed:200  =>  1283
 3HbOEEEpb4M  oembed:200  =>  1283
 n5uJ3Qmz_qI  oembed:200  =>  1283
 l-rDpY9F_bk  oembed:200  =>  1289
-0tCSqLV2wQE  oembed:200  =>  1283
+hHaBxF88jB0  oembed:200  =>  1281
+xVSGY5sWPF0  oembed:200  =>  1279
+aUeQ2HyxGCk  oembed:200  =>  1296
+piIoABQSz4Q  oembed:200  =>  1287
+hWCvp23mlNE  oembed:200  =>  1293
 thcieLiDUPs  oembed:200  =>  1283
+bpte0g_pfQk  oembed:200  =>  1282
+rNrS67MQVxo  oembed:200  =>  1283
+o3tTnco6jio  oembed:200  =>  1283
+sklyGw5F-Vw  oembed:200  =>  1282
 Oz6BfffvRnA  oembed:200  =>  1175
-CiywEQOQkzI  oembed:200  =>  615
 G9oHXlZHK0A  oembed:200  =>  1237
 8eU833iBvwk  oembed:200  =>  1295
 Lv81ITUiOE4  oembed:200  =>  1295
-ZHBi60frWoc  oembed:200  =>  637
 u6f2oKSsQq0  oembed:200  =>  1266
-7-zwf_BzGUU  oembed:200  =>  1267
 kufKSbcqjak  oembed:200  =>  1295
-srQcieXeNac  oembed:200  =>  1266
 PmjO5itpyCw  oembed:200  =>  1262
-uiuvoU3j27E  oembed:200  =>  1266
+7-zwf_BzGUU  oembed:200  =>  1267
 sfbP0Rj2X1w  oembed:200  =>  1267
-WOEbOZ-FYWM  oembed:200  =>  1267
-w42FudSpP_o  oembed:200  =>  1265
-WaoOzzQFI50  oembed:200  =>  1272
-4sTONYIhJvU  oembed:200  =>  1266
-oLAQ1rbF0bc  oembed:200  =>  1267
 1RhNnzJn5Uw  oembed:200  =>  1267
+uiuvoU3j27E  oembed:200  =>  1266
+kpk2QiKMZxI  oembed:200  =>  1334
+WOEbOZ-FYWM  oembed:200  =>  1267
+oLAQ1rbF0bc  oembed:200  =>  1267
 OWyMGtXr_EA  oembed:200  =>  1272
 gfsW15opwWY  oembed:200  =>  1268
 kwpxakUtQA8  oembed:200  =>  1272
-KM0lWN_Wwxc  oembed:200  =>  1272
+WaoOzzQFI50  oembed:200  =>  1272
 -JMTSyi26J0  oembed:200  =>  1269
-8vZDr112Guw  oembed:200  =>  1271
-0i9cJI86Pyo  oembed:200  =>  1267
 mmL4SsQRJzU  oembed:200  =>  729
+KM0lWN_Wwxc  oembed:200  =>  1272
+0i9cJI86Pyo  oembed:200  =>  1267
 iuCYXiOnB7Y  oembed:200  =>  1267
+HL_TbIGhOoo  oembed:200  =>  1261
 3L_htALXH6g  oembed:200  =>  1296
-QreyZa2cfqM  oembed:200  =>  1296
 EWfSwqPB_Kw  oembed:200  =>  1296
-q0gyt59IL_s  oembed:200  =>  1293
-IHJx8Pl6_R4  oembed:200  =>  1297
+QreyZa2cfqM  oembed:200  =>  1296
 4yM5_b3BXk8  oembed:200  =>  1297
-7tFlhxYreBs  oembed:200  =>  1297
-GTv3O8Onia0  oembed:200  =>  1294
+d2Qz79h9YnA  oembed:200  =>  1293
+IHJx8Pl6_R4  oembed:200  =>  1297
+2KcV52m2bR4  oembed:200  =>  1296
+i_Rb4f6yw1M  oembed:200  =>  1296
+S-Ay1NPvLCg  oembed:200  =>  1296
 vrdS65AL61I  oembed:200  =>  1294
 mcZK9CEKZwY  oembed:200  =>  1297
-YPAtYnxwsPw  oembed:200  =>  1296
 3zi_SbnCM60  oembed:200  =>  1296
+q0gyt59IL_s  oembed:200  =>  1293
+GTv3O8Onia0  oembed:200  =>  1294
+YPAtYnxwsPw  oembed:200  =>  1296
 yWjH2N0jQ0c  oembed:200  =>  1297
-BLFPOYK8X9w  oembed:200  =>  1294
+7tFlhxYreBs  oembed:200  =>  1297
 CTecPqzDzFE  oembed:200  =>  1296
+BLFPOYK8X9w  oembed:200  =>  1294
+7R8uxhwO5fQ  oembed:200  =>  1297
+6vuseXgiU30  oembed:200  =>  1296
+QDpogzWV9Ng  oembed:200  =>  1299
+ZhgDYPy-8_w  oembed:200  =>  4118
+fMMuVOo30Pc  oembed:200  =>  7607
 jPzOW2aLYnM  oembed:200  =>  4522
+XUqpKP9IV8c  oembed:200  =>  3954
+4BlQjnBlOds  oembed:200  =>  3673
+sI4q1JMRUqE  oembed:200  =>  4332
+aczxcJT-Xdo  oembed:200  =>  10861
+p4Z24JJdWBs  oembed:200  =>  7892
+pwdLHjudj9Q  oembed:200  =>  10998
+Oh1FEGT5t80  oembed:200  =>  3541
+fCY72TRx3bI  oembed:200  =>  3437
+PqPklzqhZv8  oembed:200  =>  3852
 ruuUrulIOgI  oembed:200  =>  5439
+xnvv964sH7s  oembed:200  =>  4403
+G8gC6x6QANk  oembed:200  =>  7287
+02qxFOy-MPA  oembed:200  =>  3646
 RRNxhuXi-uo  oembed:200  =>  1353
+CD-Q7P5PGro  oembed:200  =>  1965
+H71l5Xu21nM  oembed:200  =>  1355
+5TMSZCuekvo  oembed:200  =>  1301
+IjvTLuv6s_w  oembed:200  =>  1381
+p2CoBJrzdcc  oembed:200  =>  1301
+kzpNLRDMvnw  oembed:200  =>  2001
+RQl3VNo_fvA  oembed:200  =>  682
+cZ5MfP9qzzs  oembed:200  =>  680
+UCImdP7JxNU  oembed:200  =>  662
+DLct1oqOv2I  oembed:200  =>  689
+ZDadAivyLIo  oembed:200  =>  670
+i-bmweYiWoQ  oembed:200  =>  682
+bb6KItJENVY  oembed:200  =>  670
+fpjWkbUSo1E  oembed:200  =>  688
+IXs629bsGRc  oembed:200  =>  679
+i2TLZ9GHfK4  oembed:200  =>  678
+KJARF7lAZo8  oembed:200  =>  681
+kND7DJOXfds  oembed:200  =>  682
+co-UiZpYAok  oembed:200  =>  671
+KLtUJEJpMKI  oembed:200  =>  688
+QSm-lO03D6Q  oembed:200  =>  679
+fn1sArINBYE  oembed:200  =>  678
+pyEKOY1TIbU  oembed:200  =>  1363
+yzONufZt5-E  oembed:200  =>  679
+4uCY4p05NY0  oembed:200  =>  683
+0G61GqTmllM  oembed:200  =>  676
+6bj436QTK3U  oembed:200  =>  678
+pKnxjSTkOsI  oembed:200  =>  679
+ONABzxDXFGo  oembed:200  =>  673
+exUAPSJ8Clw  oembed:200  =>  677
+VtN96RiQTuQ  oembed:200  =>  670
+PQmx67NAsAU  oembed:200  =>  675
+NhHbzUO6VbQ  oembed:200  =>  677
+s4IYUvDUlkA  oembed:200  =>  2191
+-swdIehPjpM  oembed:200  =>  1808
+QEaW26x0dow  oembed:200  =>  1982
+X-HRLChOTOA  oembed:200  =>  1377
+y99IeSZU1b8  oembed:200  =>  678
+zhylMHRPg5M  oembed:200  =>  680
+ve7p6NRrAzI  oembed:200  =>  679
+xUSk2XT1PLo  oembed:200  =>  678
+MFiPDoMi0N0  oembed:200  =>  679
+T4Amb65-F3A  oembed:200  =>  679
+EnAQ9gNglEQ  oembed:200  =>  679
+52AESdNWtSY  oembed:200  =>  678
+HXQ0at6ve_0  oembed:200  =>  1284
+UGh0qCWgRrc  oembed:200  =>  673
+i-ckAUxxX1k  oembed:200  =>  672
+aKeQUNa2Ik0  oembed:200  =>  641
+OUOc2qxLAoI  oembed:200  =>  677
+ZCaAuKLc2nI  oembed:200  =>  673
+ecIDF7J1bVI  oembed:200  =>  674
+fESdclNWyAE  oembed:200  =>  678
+_MuAj5E9OQk  oembed:200  =>  677
+xM0MrW3sNmI  oembed:200  =>  677
+y1Fd7CDm2aE  oembed:200  =>  678
+cRSebjCsYio  oembed:200  =>  638
+GoQuve4ko-E  oembed:200  =>  678
+_3uB0INcZlI  oembed:200  =>  679
+Hl7OEXwmXq8  oembed:200  =>  674
+2n-F020_ajM  oembed:200  =>  676
+Tc0rHaoP7HY  oembed:200  =>  675
+srtbNR8AhPE  oembed:200  =>  673
+5SsMZoAWRWQ  oembed:200  =>  674
+tSJiNKVhUhk  oembed:200  =>  679
+hBcHzXXuUvY  oembed:200  =>  672

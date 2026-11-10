@@ -307,6 +307,9 @@ dialog.nvd .tt{max-height:calc(100dvh - 48px);overflow:auto}
   .ticker-run{font-size:20px}
 }
 @media (max-width:380px){ .ticker{display:none} .bottom-in{justify-content:center} }
+/* odznak návštevnosti nesmie prekrývať ovládanie ani celú obrazovku */
+#rd-stats{bottom:calc(70px + env(safe-area-inset-bottom,0px)) !important;opacity:.85}
+body.fs #rd-stats{display:none !important}
 </style>
 </head>
 <body>
@@ -773,6 +776,7 @@ try { const s = JSON.parse(localStorage.getItem('pozeral-stav') || 'null'); if (
 const vid = $('vid');
 
 window.onYouTubeIframeAPIReady = function(){
+  if (player) return;
   player = new YT.Player('yt', {
     playerVars: { autoplay:0, controls:0, disablekb:1, rel:0, playsinline:1, iv_load_policy:3, fs:0, origin: location.origin },
     events: {
@@ -957,6 +961,7 @@ function tick(){
   }
   if (!playing || playing.ch !== ch || playing.i !== cur.i || playing.start !== cur.start){ tuneIn(false); return; }
   const it = cur.it, pos = startAbs(it) + cur.offset;
+  if (mode === 'error' && real - Math.max(poslednyPokus, loadStart) > 20000 && !document.hidden){ pokusSaZnova(); return; }
   if (mode === 'filler' || mode === 'error'){
     $('ttvCd').textContent = mmss((cur.end - now) / 1000);
     $('errAt').textContent = za(cur.end, ch);
@@ -1135,9 +1140,24 @@ function start(){
   layout();
   if (powered) tuneIn(true);
 }
-const tag = document.createElement('script');
-tag.src = 'https://www.youtube.com/iframe_api';
-document.head.appendChild(tag);
+/* načítanie YouTube prehrávača: keď zlyhá (slabý signál, blokátor), skúsime to znova až 6x */
+let ytTries = 0;
+function nacitajYT(){
+  if (window.YT && YT.Player){ if (!player) window.onYouTubeIframeAPIReady(); return; }
+  const t = document.createElement('script');
+  t.src = 'https://www.youtube.com/iframe_api' + (ytTries ? '?r=' + ytTries : '');
+  t.onerror = () => { t.remove(); if (++ytTries < 6) setTimeout(nacitajYT, 2000 * ytTries); };
+  document.head.appendChild(t);
+}
+nacitajYT();
+window.addEventListener('online', () => { if (!ytReady){ ytTries = 0; nacitajYT(); } if (powered && mode === 'error') pokusSaZnova(); });
+/* porucha nezostane: každých 20 s skúsime video znova (tiež po návrate internetu) */
+let poslednyPokus = 0;
+function pokusSaZnova(){
+  poslednyPokus = Date.now(); autoSkipy = [];
+  if (!ytReady && !usingFile){ ytTries = 0; nacitajYT(); }
+  tuneIn(false);
+}
 
 renderTabs();
 layout();

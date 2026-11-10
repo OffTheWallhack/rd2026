@@ -104,6 +104,7 @@ function render() {
   if (!M[cur]) cur = 'bj';
   if (!$('#gnav')) v.innerHTML = `<div class="gnav chips" id="gnav">${GAMES.map(([k, n]) => `<button class="chip" data-a="nav.${k}" data-k="${k}">${n}</button>`).join('')}</div><div id="gbody"></div>`;
   document.querySelectorAll('#gnav .chip').forEach(c => c.classList.toggle('on', c.dataset.k === cur));
+  { const g = $('#gnav'), on = g.querySelector('.chip.on'); if (on) g.scrollLeft = on.offsetLeft - (g.clientWidth - on.offsetWidth) / 2; }
   M[cur].render();
 }
 function go(k) { if (!M[k]) return; cur = k; lsSet('rl_game', k); render(); }
@@ -722,5 +723,5 @@ function init() {
   setInterval(() => { if (!$('#v-games').hidden && cur === 'mkt') { const n = simSales(); const m = D().mkt, now = Date.now(); if (n || m.list.some(l => l.exp <= now)) M.mkt.render(); } }, 20000);
 }
 
-window.RLG = { render, init, snap, graphHTML, leave() {}, core: { hv, isBJ, bjResult, plkTable, crashPoint, scrRoll, scrGrid, hiloP, SCR_PRIZE, p5, botWealth } };
+window.RLG = { render, init, snap, graphHTML, leave() {}, api: { M, GAMES, take, pendAdd, pendGet, pendSet, pendBet, pendDone, betBox, getBet, win, body, CR, rnd, ri, pick, shuffle, lsGet, lsSet, go, render, D, mulberry, gauss, cardHTML, cur: () => cur }, core: { hv, isBJ, bjResult, plkTable, crashPoint, scrRoll, scrGrid, hiloP, SCR_PRIZE, p5, botWealth } };
 })();

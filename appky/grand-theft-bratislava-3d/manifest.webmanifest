@@ -1,0 +1,16 @@
+{
+  "name": "Grand Theft Bratislava 3D",
+  "short_name": "GTB 3D",
+  "description": "Staré Mesto v plnej 3D grafike: autá, električky, polícia, pešia zóna.",
+  "lang": "sk",
+  "start_url": "/appky/grand-theft-bratislava-3d/",
+  "scope": "/appky/grand-theft-bratislava-3d/",
+  "display": "fullscreen",
+  "orientation": "any",
+  "background_color": "#0b0b0d",
+  "theme_color": "#0b0b0d",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

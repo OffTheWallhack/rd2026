@@ -44,17 +44,18 @@ function polozky(j){
   const out = [];
   for (const v of najdi(j, 'playlistVideoRenderer')){
     if (!v.videoId || v.isPlayable === false) continue;
-    out.push({ id:v.videoId, nazov:textZ(v.title), s:+v.lengthSeconds || casNaSek(textZ(v.lengthText)) });
+    out.push({ id:v.videoId, nazov:textZ(v.title), s:+v.lengthSeconds || casNaSek(textZ(v.lengthText)), k:textZ(v.shortBylineText) });
   }
   for (const v of najdi(j, 'lockupViewModel')){
     if (!v.contentId || (v.contentType && v.contentType !== 'LOCKUP_CONTENT_TYPE_VIDEO')) continue;
     const nazov = v.metadata?.lockupMetadataViewModel?.title?.content || '';
     const cas = najdi(v, 'thumbnailBadgeViewModel').map(b => b.text).find(t => /^\d+(:\d+)+$/.test(t || '')) || '';
-    out.push({ id:v.contentId, nazov, s:casNaSek(cas) });
+    const k = (najdi(v, 'metadataParts')[0] || []).map(m => m?.text?.content).find(Boolean) || '';
+    out.push({ id:v.contentId, nazov, s:casNaSek(cas), k });
   }
   for (const v of najdi(j, 'videoRenderer')){
     if (!v.videoId) continue;
-    out.push({ id:v.videoId, nazov:textZ(v.title), s:casNaSek(textZ(v.lengthText)) });
+    out.push({ id:v.videoId, nazov:textZ(v.title), s:casNaSek(textZ(v.lengthText)), k:textZ(v.ownerText) || textZ(v.longBylineText) || textZ(v.shortBylineText) });
   }
   return out;
 }
@@ -99,8 +100,10 @@ async function kanalNaPlaylist(handle){
   ladenie.push(`kanál ${handle}: http ${r.status}, ${html.length} B, id ${m ? m[1] : '-'}`);
   return m ? 'UU' + m[1].slice(2) : null;
 }
+const oeInfo = new Map();   // id -> { autor, nazov } z oEmbed
 async function zOembed(id){
   const r = await fetch(`https://www.youtube.com/oembed?format=json&url=${encodeURIComponent('https://www.youtube.com/watch?v=' + id)}`, { headers:{ 'User-Agent':UA } });
+  if (r.ok){ try { const j = await r.json(); oeInfo.set(id, { autor: j.author_name || '', nazov: j.title || '' }); } catch {} }
   return r.status;   // 200 = existuje a dá sa vložiť, 401/403 = vkladanie zakázané, 400/404 = neexistuje alebo súkromné
 }
 
@@ -125,6 +128,8 @@ const JAZYK = /(^|[^a-z])(cz|sk|cze|česk|cesk|slovensk|dabing|dab)|[ěřůľô�
 const DIEL = /s\d+\s?e\d+|\d+\s?x\s?\d+|d[ií]l|epizod|ep\.?\s?\d|část|časť|\(\d+\)|#\d|(^|[^\d])\d{1,3}([^\d]|$)/i;
 const NIE_DIEL = /fakt[ůuy]?\b|proč|zrušen|jak m[ěe]l|dopadl|report|championship|úvod do|zradil|vánoční|nikdo neměl|retro hry|twitch|živě|hrajeme|\bps[1-5]\b|\btcg\b|soundtrack|\bfilm\b|movie|titulk|tiulk|\btit\b|fandub|po polsku|polsk|\bcz\.\s?\d|speedrun|nejtemn|momenty|teori|skvěl|licens|audio only|walkthrough|longplay|recenz|#shorts|\bshorts?\b|tiktok|reakc|reaction|edit\b|fan ?made|\bai\b|minecraft|roblox|fortnite|gameplay|hra\b|lets ?play|let's play|karaoke|cover|remix|meme|ytp|youtube poop|speedpaint|drawing|unboxing|hračk|toys?\b|top ?\d+|vs\.?\b|tier list|teorie|theory/i;
 const zdrojKluc = p => p.playlist || p.kanal || (p.hladaj ? 'hladaj:' + [].concat(p.hladaj).join('|') : '');
+const BLOK = new Set(O.nefunguje || []);
+const ZAKAZANI = new Set((O.zakazaniAutori || []).map(a => a.toLowerCase().trim()));
 const plVysledky = {};
 for (const k of O.kanaly) for (const p of k.program){
   if (!p.playlist && !p.kanal && !p.hladaj) continue;
@@ -135,11 +140,15 @@ for (const k of O.kanaly) for (const p of k.program){
     else { const pl = p.playlist || await kanalNaPlaylist(p.kanal); zoznam = pl ? await nacitajPlaylist(pl, p.max || 60) : []; }
     const unik = []; const videne = new Set(), videneNazvy = new Set();
     const vlozit = p.obsahuje ? new RegExp(p.obsahuje, 'i') : null, vynechat = p.vynechaj ? new RegExp(p.vynechaj, 'i') : null;
+    const autorMusi = p.autor ? new RegExp(p.autor, 'i') : null;   // voliteľné: len od týchto nahrávateľov
     const minS = p.minSek ?? (p.hladaj ? 300 : 240), maxS = p.maxSek ?? (p.hladaj ? 3600 : 5400);   // bez krátkych klipov a dlhých kompilácií
     const odmietnute = [];
     const zamietni = (x, d) => { if (p.hladaj && odmietnute.length < 12) odmietnute.push(d + ': ' + (x.nazov || '').slice(0, 70)); };
     for (const x of zoznam){
       if (videne.has(x.id)) continue;
+      if (BLOK.has(x.id)){ zamietni(x, 'zablokované'); continue; }
+      if (x.k && ZAKAZANI.has(x.k.toLowerCase().trim())){ zamietni(x, 'zakázaný nahrávateľ ' + x.k); continue; }
+      if (autorMusi && !autorMusi.test(x.k || '')){ zamietni(x, 'iný nahrávateľ ' + x.k); continue; }
       if (/[\u0900-\u0DFF\u0E00-\u0E7F\u0600-\u06FF\u3040-\u30FF\u4E00-\u9FFF]|^full episode \d+$|watch full episode/i.test(x.nazov || '')){ zamietni(x, 'cudzie video'); continue; }   // hindčina, thajčina, arabčina… a anonymné „Full Episode N“
       if (p.hladaj){
         if (!x.s){ zamietni(x, 'bez dĺžky'); continue; }             // pri hľadaní chceme presnú dĺžku
@@ -231,6 +240,24 @@ for (const x of vysledky){
   if (x.s) videa[x.id] = x.s;
   else if (x.chyba && !blokovane){ videa[x.id] = -1; chyby[x.id] = x.chyba; }
   else if (staraDlzka > 0) videa[x.id] = staraDlzka;           // nevieme isto: necháme poslednú dobrú dĺžku
+}
+
+// ---------- inventúra: čo presne beží na ktorom kanáli a kto to nahral (na ručnú kontrolu) ----------
+{
+  const inv = ['kanal\tserial\tzdroj\tid\tsek\tnahral\tnazov\tstav'];
+  const stav = id => { const v = videa[id]; return v > 0 ? 'ok' : v < 0 ? 'NEJDE' : '?'; };
+  const autorZ = (id, k) => k || (oeInfo.get(id) || {}).autor || '';
+  const cisty = t => String(t ?? '').replace(/[\t\r\n]+/g, ' ');
+  O.kanaly.forEach((kan, ci) => {
+    for (const p of kan.program){
+      const z = zdrojKluc(p);
+      if (z) for (const x of plVysledky[z] || []) inv.push([ci + 1, p.show, z.slice(0, 50), x.id, x.s || '', autorZ(x.id, x.k), x.nazov, stav(x.id)].map(cisty).join('\t'));
+      else if (p.id) inv.push([ci + 1, p.show, 'rucne', p.id, videa[p.id] || '', autorZ(p.id), (oeInfo.get(p.id) || {}).nazov || p.ep || '', stav(p.id)].map(cisty).join('\t'));
+    }
+  });
+  for (const [typ, list] of [['reklama', O.reklamy], ['predel', O.predely], ['znelka', O.znelky]])
+    for (const p of list || []) if (p.id) inv.push(['-', typ, 'rucne', p.id, videa[p.id] || '', autorZ(p.id), (oeInfo.get(p.id) || {}).nazov || p.ep || '', stav(p.id)].map(cisty).join('\t'));
+  fs.writeFileSync('.github/pozeral/inventura.tsv', inv.join('\n') + '\n');
 }
 
 fs.writeFileSync(LOG, `Sken ${new Date().toISOString()}${blokovane ? '  (POISTKA: chyby nezapísané)' : ''}\n` + ladenie.join('\n') + '\n---\n' + riadky.join('\n') + '\n');

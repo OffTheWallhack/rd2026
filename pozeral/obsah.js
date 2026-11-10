@@ -117,7 +117,25 @@ window.POZERAL = {
         { playlist:'PLXkA6SvogZFsro5cOPiQcy1CHMjSLOQq7', show:'Byl jednou jeden… život', lang:'CZ', min:25, max:26 },
         { playlist:'PL_c00IPCdRoGD0k6aG7725OaqHQQffcVf', show:'Byl jednou jeden… život', lang:'CZ', min:25, max:26 },
         { kanal:'@byljednoujedenzivot', show:'Byl jednou jeden… život', lang:'CZ', min:25, max:20 },
-        { playlist:'PLh4oNLWEP1pov-S4X2rwB3e1kKFFjecKe', show:'Bob a Bobek', lang:'CZ', min:8, max:30 }
+        { playlist:'PLh4oNLWEP1pov-S4X2rwB3e1kKFFjecKe', show:'Bob a Bobek', lang:'CZ', min:8, max:30 },
+        { hladaj:['Bolek a Lolek', 'Bolek a Lolek celý díl', 'Bolek a Lolek cz'], obsahuje:'bolek a lolek', show:'Bolek a Lolek', lang:'CZ', min:9, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke', minSek:240, maxSek:1800 },
+        { hladaj:['Maxipes Fík', 'Maxipes Fík celý díl'], obsahuje:'maxipes', show:'Maxipes Fík', lang:'CZ', min:8, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke', minSek:240, maxSek:1800 },
+        { hladaj:['Pohádky z mechu a kapradí', 'Křemílek a Vochomůrka'], obsahuje:'mechu a kaprad|křemílek|vochomůrk', show:'Pohádky z mechu a kapradí', lang:'CZ', min:8, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke', minSek:240, maxSek:1800 },
+        { hladaj:['O loupežníku Rumcajsovi', 'Rumcajs večerníček'], obsahuje:'rumcajs', show:'Rumcajs', lang:'CZ', min:8, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film', minSek:240, maxSek:1800 },
+        { hladaj:['Krtek večerníček', 'Krteček celý díl', 'Krtek a kalhotky'], obsahuje:'krte(k|ček)', show:'Krtek', lang:'bez slov', min:7, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|na dobrou noc|zábava|vyrábí|kreslen|kreslí', minSek:240, maxSek:1800 },
+        { hladaj:['Mach a Šebestová', 'Mach a Šebestová večerníček'], obsahuje:'mach a šebestov', show:'Mach a Šebestová', lang:'CZ', min:9, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film', minSek:240, maxSek:1800 },
+        { hladaj:['Včelka Mája cz', 'Včelka Mája celý díl'], obsahuje:'v[čc]elka m[áa]j', show:'Včelka Mája', lang:'CZ', min:12, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie', minSek:240, maxSek:1800 },
+        { hladaj:['Včielka Maja sk', 'Včielka Maja celý diel'], obsahuje:'v[čc]ielka maj', show:'Včielka Maja', lang:'SK', min:12, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie', minSek:240, maxSek:1800 },
+        { hladaj:['Mumínci', 'Mumínci celý díl'], obsahuje:'mumín', show:'Mumínci', lang:'CZ', min:22, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie|trailer', minSek:300, maxSek:1800 },
+        { hladaj:['Bořek stavitel cz', 'Bořek stavitel celý díl'], obsahuje:'bo[řr]ek stavitel', show:'Bořek stavitel', lang:'CZ', min:10, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|toys?|stavebnic|unbox', minSek:240, maxSek:1800 },
+        { hladaj:['Mašinka Tomáš cz', 'Mašinka Tomáš a jeho přátelé'], obsahuje:'ma[šs]inka tom[áa][šs]', show:'Mašinka Tomáš', lang:'CZ', min:10, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|toys?|vláčk|trackmaster|unbox|koleje|dráha|vlaky', minSek:240, maxSek:1800 },
+        { hladaj:['Barbapapa cz', 'Barbapapa česky'], obsahuje:'barbapapa', show:'Barbapapa', lang:'CZ', min:5, max:30, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke', minSek:180, maxSek:1800 },
+        { hladaj:['Šmoulové cz', 'Šmoulové celý díl'], obsahuje:'šmoul', show:'Šmoulové', lang:'CZ', min:12, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie|trailer', minSek:300, maxSek:1800 },
+        { hladaj:['Šmolkovia sk dabing', 'Šmolkovia celý diel'], obsahuje:'šmolkov', show:'Šmolkovia', lang:'SK', min:12, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie|trailer', minSek:300, maxSek:1800 },
+        { hladaj:['Maťko a Kubko'], obsahuje:'ma[ťt]ko a kubko', show:'Maťko a Kubko', lang:'SK', min:8, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke', minSek:180, maxSek:1800 },
+        { hladaj:['O pejskovi a kočičce', 'Povídání o pejskovi a kočičce'], obsahuje:'pejsk', show:'O pejskovi a kočičce', lang:'CZ', min:8, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film', minSek:240, maxSek:1800 },
+        { hladaj:['Jája a Pája'], obsahuje:'jája a pája', show:'Jája a Pája', lang:'CZ', min:8, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke', minSek:180, maxSek:1800 },
+        { hladaj:['Ferda Mravenec večerníček', 'Ferda Mravenec celý díl'], obsahuje:'ferda', show:'Ferda Mravenec', lang:'CZ', min:8, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|hra', minSek:240, maxSek:1800 }
       ]
     },
     {
@@ -232,7 +250,27 @@ window.POZERAL = {
         { hladaj:['WITCH cz dabing', 'W.I.T.C.H. česky'], obsahuje:'w\\.?i\\.?t\\.?c\\.?h', show:'W.I.T.C.H.', lang:'CZ', min:22, max:30 },
         { hladaj:['Rychlá rota cz', 'Rychlá rota celý díl', 'Rychlá rota cz dabing'], obsahuje:'rychl[áa] rota', show:'Rychlá rota', lang:'CZ', min:22, max:30, jazyk:false },
         { hladaj:['Totální drama cz', 'Totální drama ostrov'], obsahuje:'tot[áa]ln[íi] drama', show:'Totální drama', lang:'CZ', min:22, max:30, jazyk:false },
-        { hladaj:['Garfieldova show cz', 'Garfieldova show celý díl', 'Garfield show sk dabing'], obsahuje:'garfield', show:'Garfieldova show', lang:'CZ', min:12, max:40 }
+        { hladaj:['Garfieldova show cz', 'Garfieldova show celý díl', 'Garfield show sk dabing'], obsahuje:'garfield', show:'Garfieldova show', lang:'CZ', min:12, max:40 },
+        { hladaj:['Gumídci', 'Gumídci celý díl', 'Gumídci cz'], obsahuje:'gumídci|gumidci', show:'Gumídci', lang:'CZ', min:22, max:30, jazyk:false, minSek:600, maxSek:1800 },
+        { hladaj:['Darkwing Duck cz', 'Darkwing Duck česky'], obsahuje:'darkwing', show:'Darkwing Duck', lang:'CZ', min:22, max:30, minSek:600, maxSek:1800 },
+        { hladaj:['Timon a Pumbaa cz', 'Timon a Pumbaa celý díl'], obsahuje:'timon a pumb', show:'Timon a Pumbaa', lang:'CZ', min:11, max:30, jazyk:false, minSek:300, maxSek:1800 },
+        { hladaj:['Scooby Doo cz dabing', 'Scooby-Doo česky celý díl'], obsahuje:'scooby', show:'Scooby-Doo', lang:'CZ', min:22, max:30, vynechaj:'film|movie|trailer|hra|game|lego|hračk', minSek:600, maxSek:1800 },
+        { hladaj:['Pepek námořník', 'Pepek námořník cz'], obsahuje:'pepek', show:'Pepek námořník', lang:'CZ', min:7, max:30, jazyk:false, minSek:240, maxSek:1800 },
+        { hladaj:['Animáci cz', 'Animáci celý díl'], obsahuje:'animáci', show:'Animáci', lang:'CZ', min:22, max:30, jazyk:false, minSek:600, maxSek:1800 },
+        { hladaj:['Pinky a Brain cz', 'Pinky a Brain česky'], obsahuje:'pinky a brain', show:'Pinky a Brain', lang:'CZ', min:22, max:30, jazyk:false, minSek:300, maxSek:1800 },
+        { hladaj:['Dexterova laboratoř', 'Dexterova laboratoř cz'], obsahuje:'dexterova laborato', show:'Dexterova laboratoř', lang:'CZ', min:22, max:30, jazyk:false, minSek:300, maxSek:1800 },
+        { hladaj:['Kravička a Kuřátko'], obsahuje:'kravi[čc]ka a ku[řr][áa]tko', show:'Kravička a Kuřátko', lang:'CZ', min:22, max:30, jazyk:false, minSek:300, maxSek:1800 },
+        { hladaj:['Johnny Bravo cz dabing', 'Johnny Bravo česky'], obsahuje:'johnny bravo', show:'Johnny Bravo', lang:'CZ', min:22, max:30, minSek:300, maxSek:1800 },
+        { hladaj:['Kouzelní kmotříčkové', 'Kouzelní kmotříčkové cz'], obsahuje:'kouzeln[ií] kmot', show:'Kouzelní kmotříčkové', lang:'CZ', min:22, max:30, jazyk:false, minSek:300, maxSek:1800 },
+        { hladaj:['Jimmy Neutron cz', 'Jimmy Neutron česky'], obsahuje:'jimmy neutron', show:'Jimmy Neutron', lang:'CZ', min:22, max:30, vynechaj:'film|movie', minSek:600, maxSek:1800 },
+        { hladaj:['Hej Arnolde', 'Hej Arnolde cz'], obsahuje:'hej,? arnolde', show:'Hej Arnolde!', lang:'CZ', min:22, max:30, jazyk:false, vynechaj:'film|movie', minSek:300, maxSek:1800 },
+        { hladaj:['Rugrats cz', 'Rugrats česky'], obsahuje:'rugrats', show:'Rugrats', lang:'CZ', min:22, max:30, vynechaj:'film|movie', minSek:300, maxSek:1800 },
+        { hladaj:['Divocí Thornberryovi'], obsahuje:'divo[cč][ií] thornberr', show:'Divocí Thornberryovi', lang:'CZ', min:22, max:30, jazyk:false, minSek:600, maxSek:1800 },
+        { hladaj:['SpongeBob v kalhotách cz', 'SpongeBob v kalhotách celý díl'], obsahuje:'v kalhot', show:'SpongeBob v kalhotách', lang:'CZ', min:11, max:30, jazyk:false, vynechaj:'film|movie|hra|game|lego|hračk|minecraft|roblox', minSek:300, maxSek:1800 },
+        { hladaj:['SpongeBob v nohaviciach', 'SpongeBob v nohaviciach sk'], obsahuje:'v nohavic', show:'SpongeBob v nohaviciach', lang:'SK', min:11, max:30, jazyk:false, vynechaj:'film|movie|hra|game|lego|hračk|minecraft|roblox', minSek:300, maxSek:1800 },
+        { hladaj:['Inspektor Gadget cz', 'Inspektor Gadget česky'], obsahuje:'inspektor gadget', show:'Inspektor Gadget', lang:'CZ', min:22, max:30, vynechaj:'film|movie|2015', minSek:600, maxSek:1800 },
+        { hladaj:['Kim Possible cz dabing díl'], obsahuje:'kim possible', show:'Kim Possible', lang:'CZ', min:22, max:30, vynechaj:'film|movie|ps2|gba|hra|game', minSek:600, maxSek:1800 },
+        { hladaj:['Gargoyles cz dabing'], obsahuje:'gargoyl', show:'Gargoyles', lang:'CZ', min:22, max:30, minSek:600, maxSek:1800 }
       ]
     },
     {
@@ -275,7 +313,15 @@ window.POZERAL = {
         { hladaj:['Pokémon cz dabing celý díl', 'Pokémon česky epizoda', 'Pokémon sk dabing'], obsahuje:'pok[eé]mon', show:'Pokémon', lang:'CZ', min:22, max:30, vynechaj:'karty|cards?\\b|booster|pack|balíč|\\bgo\\b|scarlet|violet|legends|film|soundtrack|movie' },
         { hladaj:['Ben 10 cz dabing', 'Ben 10 česky celý díl'], obsahuje:'ben ?10', show:'Ben 10', lang:'CZ', min:22, max:30, vynechaj:'omnitrix|hračk|toy' },
         { hladaj:['Power Rangers cz dabing', 'Power Rangers česky', 'Power Rangers Síla Strážců cz', 'Mighty Morphin Power Rangers CZ'], obsahuje:'power rangers', show:'Power Rangers', lang:'CZ', min:22, max:50, vynechaj:'film|movie|trailer|game|toy' },
-        { hladaj:['Gormiti cz'], obsahuje:'gormiti', show:'Gormiti', vynechaj:'apk|sběratel|kolekc', lang:'CZ', min:22, max:30 }
+        { hladaj:['Gormiti cz'], obsahuje:'gormiti', show:'Gormiti', vynechaj:'apk|sběratel|kolekc', lang:'CZ', min:22, max:30 },
+        { hladaj:['Avatar Legenda o Aangovi cz', 'Legenda o Aangovi díl'], obsahuje:'aangovi', show:'Avatar: Legenda o Aangovi', lang:'CZ', min:22, max:30, jazyk:false, vynechaj:'film|movie|hra|game|korr', minSek:600, maxSek:1800 },
+        { hladaj:['Bakugan cz dabing', 'Bakugan bitevní planeta cz'], obsahuje:'bakugan', show:'Bakugan', lang:'CZ', min:22, max:30, vynechaj:'hračk|toys?|unbox|recenz|game|hra', minSek:600, maxSek:1800 },
+        { hladaj:['Naruto cz dabing díl', 'Naruto český dabing'], obsahuje:'naruto', show:'Naruto', lang:'CZ', min:22, max:30, vynechaj:'shippuden|boruto|film|movie|amv|titulk|\\btit\\b|\\bsub|game|hra|storm|reakc', minSek:600, maxSek:1800 },
+        { hladaj:['Yu-Gi-Oh cz dabing díl'], obsahuje:'yu-?gi-?oh', show:'Yu-Gi-Oh!', lang:'CZ', min:22, max:30, vynechaj:'karty|cards?|booster|pack|deck|duel links|master duel|game|hra|ps\\d', minSek:600, maxSek:1800 },
+        { hladaj:['Želvy ninja cz dabing díl', 'Želvy ninja 2003 cz'], obsahuje:'[žz]elvy ninja', show:'Želvy Ninja', lang:'CZ', min:22, max:30, jazyk:false, diel:true, vynechaj:'film|movie|trailer|hra|game|lego|hračk|figur', minSek:600, maxSek:1800 },
+        { hladaj:['Beyblade Metal Fusion cz', 'Beyblade Metal Fury cz', 'Beyblade cz dabing díl'], obsahuje:'beyblade', show:'Beyblade', lang:'CZ', min:22, max:30, vynechaj:'hračk|toys?|unbox|souboj|arena|launcher|recenz|test|stadium', minSek:600, maxSek:1800 },
+        { hladaj:['Oban Star Racers cz'], obsahuje:'oban', show:'Oban Star-Racers', lang:'CZ', min:22, max:30, minSek:600, maxSek:1800 },
+        { hladaj:['Monster Buster Club cz'], obsahuje:'monster buster', show:'Monster Buster Club', lang:'CZ', min:22, max:30, minSek:600, maxSek:1800 }
       ]
     },
     {

@@ -124,6 +124,7 @@ async function hladajVideo(dotaz, max){
   }
   return vsetko;
 }
+const NAHRAVATEL_ZLY = /gam(e|ing|er)s?\b|\bhry\b|\bhraj|roblox|minecraft|fortnite|\bplay(s|er|through)?\b|tutorial|návod|\birl\b|news|zprávy|správy|shorts|compilation|kompilac/i;
 const JAZYK = /(^|[^a-z])(cz|sk|cze|česk|cesk|slovensk|dabing|dab)|[ěřůľôäĺŕ]/i;
 const DIEL = /s\d+\s?e\d+|\d+\s?x\s?\d+|d[ií]l|epizod|ep\.?\s?\d|část|časť|\(\d+\)|#\d|(^|[^\d])\d{1,3}([^\d]|$)/i;
 const NIE_DIEL = /fakt[ůuy]?\b|proč|zrušen|jak m[ěe]l|dopadl|report|championship|úvod do|zradil|vánoční|nikdo neměl|retro hry|twitch|živě|hrajeme|\bps[1-5]\b|\btcg\b|soundtrack|\bfilm\b|movie|titulk|tiulk|\btit\b|fandub|po polsku|polsk|\bcz\.\s?\d|speedrun|nejtemn|momenty|teori|skvěl|licens|audio only|walkthrough|longplay|recenz|#shorts|\bshorts?\b|tiktok|reakc|reaction|edit\b|fan ?made|\bai\b|minecraft|roblox|fortnite|gameplay|hra\b|lets ?play|let's play|karaoke|cover|remix|meme|ytp|youtube poop|speedpaint|drawing|unboxing|hračk|toys?\b|top ?\d+|vs\.?\b|tier list|teorie|theory/i;
@@ -148,6 +149,7 @@ for (const k of O.kanaly) for (const p of k.program){
       if (videne.has(x.id)) continue;
       if (BLOK.has(x.id)){ zamietni(x, 'zablokované'); continue; }
       if (x.k && ZAKAZANI.has(x.k.toLowerCase().trim())){ zamietni(x, 'zakázaný nahrávateľ ' + x.k); continue; }
+      if (x.k && NAHRAVATEL_ZLY.test(x.k)){ zamietni(x, 'herný/cudzí nahrávateľ ' + x.k); continue; }   // kanály o hrách, tutoriály, zábava…
       if (autorMusi && !autorMusi.test(x.k || '')){ zamietni(x, 'iný nahrávateľ ' + x.k); continue; }
       if (/[\u0900-\u0DFF\u0E00-\u0E7F\u0600-\u06FF\u3040-\u30FF\u4E00-\u9FFF]|^full episode \d+$|watch full episode/i.test(x.nazov || '')){ zamietni(x, 'cudzie video'); continue; }   // hindčina, thajčina, arabčina… a anonymné „Full Episode N“
       if (p.hladaj){

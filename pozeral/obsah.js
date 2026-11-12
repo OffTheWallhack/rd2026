@@ -17,8 +17,73 @@ window.POZERAL = {
 
   // Ručne vyradené videá (napr. keď vieš, že na YouTube už nie sú). Skener tento zoznam nemení.
   // nahrávatelia, ktorých videá nikdy nepúšťame (herné let's play, audioknihy, cudzie dabingy, fanúšikovské kompilácie)
-  zakazaniAutori: ["AUDIOKNIHY PRO DĚTI", "Amálie Hučíková", "Barevný Svět zábavy Pejska a Kočičky", "Camille Santana", "Chronicles from the Cathode Tube", "Danovo DVD", "Dobré Pohádky", "Gellnerka Brno", "MATRIXXXL007", "Neywa Games", "PS Mláďata Chotěboř", "Radek Klaudis", "ShortStoryTime", "Studio Lyra - Klasické pohádky a příběhy", "Untilia", "Vetus", "ViolentNiceGuy", "czech bodybuilding", "interbubakcz", "nasuke159", "tyronejoseph senasi", "Bajki po Polsku", "Medojed", "Česká LP pařba", "Cartoon Network India", "Cartoon Network Sverige", "Ed Boy", "Epic Cartoons", "Hak9 i.T", "JarToon"],
+  zakazaniAutori: ["AUDIOKNIHY PRO DĚTI", "Amálie Hučíková", "Barevný Svět zábavy Pejska a Kočičky", "Camille Santana", "Chronicles from the Cathode Tube", "Danovo DVD", "Dobré Pohádky", "Gellnerka Brno", "MATRIXXXL007", "Neywa Games", "PS Mláďata Chotěboř", "Radek Klaudis", "ShortStoryTime", "Studio Lyra - Klasické pohádky a příběhy", "Untilia", "Vetus", "ViolentNiceGuy", "czech bodybuilding", "interbubakcz", "nasuke159", "tyronejoseph senasi", "Bajki po Polsku", "Medojed", "Česká LP pařba", "Cartoon Network India", "Cartoon Network Sverige", "Ed Boy", "Epic Cartoons", "Hak9 i.T", "JarToon", "Pohádky MP3", "Je to jedno s Vendy", "Roblox irl", "Cartoon Network Australia"],
   nefunguje: [
+    '8XNQMddyKxc', // zmazaný zdroj: Mauglí (Filmak.eu)
+    'QpBpu9XcPDI', // zmazaný zdroj: Mauglí (Release - Topic)
+    'HAaYSP_TPvI', // zmazaný zdroj: Mauglí (Václav Postránecký - Topic)
+    'R0cumxzR6Qo', // zmazaný zdroj: Heidi, děvčátko z hor (Fan klub Lucie Vondráčkové)
+    'F2stxwOnUn0', // zmazaný zdroj: Heidi, děvčátko z hor (klebetniček )
+    'EVgfw3-OdQc', // zmazaný zdroj: Heidi, děvčátko z hor (Michal Kep)
+    'StdrTh3XvIs', // zmazaný zdroj: Heidi, děvčátko z hor (klebetniček )
+    'xmORQRtFarc', // zmazaný zdroj: Heidi, děvčátko z hor (Michal Kep)
+    'sumAzeJYtfE', // zmazaný zdroj: Heidi, děvčátko z hor (HomeCookTeach)
+    'e_Hxfb5XT1k', // zmazaný zdroj: Heidi, děvčátko z hor (Michal Kep)
+    'Z55RDmEeHt8', // zmazaný zdroj: Heidi, děvčátko z hor (Studio100 KIDS)
+    'OjeSulZXfBs', // zmazaný zdroj: Heidi, děvčátko z hor (Studio100 KIDS)
+    's8kHIyDgDyE', // zmazaný zdroj: Mladí Titáni (Cartoon Network Česká Republik)
+    '9OhWtGt6Q0o', // zmazaný zdroj: Mladí Titáni (Cartoon Network Česká Republik)
+    '2eYMbbvNRjI', // zmazaný zdroj: Mladí Titáni (Cartoon Network Česká Republik)
+    'xaVMYisVDZ8', // zmazaný zdroj: Mladí Titáni (Cartoon Network Česká Republik)
+    'r-t_LbKWpp4', // zmazaný zdroj: Mladí Titáni (Cartoon Network Česká Republik)
+    'Iv6hykEWqp0', // zmazaný zdroj: Mladí Titáni (Cartoon Network Česká Republik)
+    'dJchzbakArY', // zmazaný zdroj: Mladí Titáni (Cartoon Network Česká Republik)
+    'Y5feVNIkX-I', // zmazaný zdroj: Chip a Dale: Rescue Rangers (Disney Channel Animation)
+    'anbNuK_sGJI', // zmazaný zdroj: Chip a Dale: Rescue Rangers (Disney Channel Animation)
+    'oaVUdgYgCng', // zmazaný zdroj: Chip a Dale: Rescue Rangers (Disney Kids a Disney Channel A)
+    '8mTiqrzSRz4', // zmazaný zdroj: Chip a Dale: Rescue Rangers (Disney Kids a Disney Channel A)
+    'OWuXkkevavM', // zmazaný zdroj: Chip a Dale: Rescue Rangers (Chip n Dale Rescue Rangers)
+    'bKurfUtstTI', // zmazaný zdroj: Chip a Dale: Rescue Rangers (Disney Kids)
+    '3y-MgQJCSCY', // zmazaný zdroj: Chip a Dale: Rescue Rangers (Disney Kids a Disney Channel A)
+    'p9GTSkpF5FY', // zmazaný zdroj: Chip a Dale: Rescue Rangers (Disney Kids a Disney Channel A)
+    'S6NZ82Labtk', // zmazaný zdroj: Chip a Dale: Rescue Rangers (Disney Kids a Disney Channel A)
+    '_JI1MPpCDh0', // zmazaný zdroj: Chip a Dale: Rescue Rangers (Disney Kids a Disney Channel A)
+    'f4XoNqaf2gw', // zmazaný zdroj: Chip a Dale: Rescue Rangers (Filmy a televize YouTube)
+    'eQ3fYwQFHeU', // zmazaný zdroj: Chip a Dale: Rescue Rangers (Disney Kids a Disney Channel A)
+    '1DBct9DRr7k', // zmazaný zdroj: Chip a Dale: Rescue Rangers (Corie Tomas)
+    'fWnca72MOaw', // zmazaný zdroj: Chip a Dale: Rescue Rangers (ABC)
+    'uvfVWCNaLFE', // zmazaný zdroj: Chip a Dale: Rescue Rangers (Disney Kids a Disney Channel A)
+    'Rh37yPJmorc', // zmazaný zdroj: Chip a Dale: Rescue Rangers (Disney Kids a Disney Channel A)
+    'DmhsYJdxK3I', // zmazaný zdroj: Chip a Dale: Rescue Rangers (ABC)
+    'hFrOiJ-6ICI', // zmazaný zdroj: Digimon (Ivoch)
+    'Y8RauPQJc-c', // zmazaný zdroj: Digimon (Ivoch)
+    'gHYG2F-DCdU', // zmazaný zdroj: Dragon Ball (Animation Maker a  další (4))
+    'xpf8VEY4Gyw', // zmazaný zdroj: Spider-Man (Tobyy)
+    'b76G9bRgC1Q', // zmazaný zdroj: Spider-Man (Lůk Extra)
+    '_879X68fBL4', // zmazaný zdroj: Spider-Man (Marvel HQ)
+    '20xpbid8HEk', // zmazaný zdroj: Spider-Man (Marvel HQ)
+    'YoLs64vFMEo', // zmazaný zdroj: Spider-Man (Marvel HQ)
+    'mH0oh9I3q40', // zmazaný zdroj: Spider-Man (Marvel HQ)
+    'fruHQAoiF8Q', // zmazaný zdroj: Spider-Man (RetroFunTV)
+    'yLLNqUPNWHg', // zmazaný zdroj: Spider-Man (RetroFunTV)
+    'ygTYt1RF_l4', // zmazaný zdroj: Spider-Man (Bajki z dawnych lat)
+    'xYf4_CfRXSs', // zmazaný zdroj: Spider-Man (Old Is Gold)
+    'AOGSxWnjeP0', // zmazaný zdroj: Spider-Man (Hall Of Heroes)
+    'C13Asup4ogg', // zmazaný zdroj: Spider-Man (Lůk Extra a Lůk)
+    'SM_fhmKjyNw', // zmazaný zdroj: Spider-Man (Clip)
+    '7mYr8GkV18s', // zmazaný zdroj: Spider-Man (RetroFunTV)
+    'GuZuwOzSOd0', // zmazaný zdroj: Spider-Man (RetroFunTV)
+    'UEDkMnRu6xs', // zmazaný zdroj: Spider-Man (CARTOON CHRONICLES)
+    'RkUO33CZCUY', // zmazaný zdroj: Spider-Man (CARTOON CHRONICLES)
+    'n2LuooaggD0', // zmazaný zdroj: Spider-Man (RetroFunTV)
+    'sqgSI-dx31M', // zmazaný zdroj: X-Men (Mr. Anybody)
+    'GzFjkBlcRAs', // zmazaný zdroj: X-Men (Super Trendy)
+    'xaVMYisVDZ8', // zmazaný zdroj: Batman (Cartoon Network Česká Republik)
+    'SlRLJQZscwQ', // zmazaný zdroj: Batman (Pavouk42)
+    'seUa8sQvpao', // zmazaný zdroj: Batman (Cartoon Network Česká Republik)
+    'DdxYFT9SD5A', // zmazaný zdroj: Motorkáři z Marsu (MT-TM)
+    'HD-eoX_gJL4', // zmazaný zdroj: Motorkáři z Marsu (LOSAW RETRO)
+    '9WyEy9Dbrgw', // zmazaný zdroj: Hey Arnold! (¡Hey Arnold!)
     'CD-Q7P5PGro',  // Cartoon Network Indi – Johnny Bravo - Woah Mama video collectio
     '5TMSZCuekvo',  // Epic Cartoons – New Funny Cartoons Johnny Bravo  Full Ep
     'IjvTLuv6s_w',  // Hak9 i.T – All 69 Johnny Bravo Episodes & Extras At
@@ -192,12 +257,9 @@ window.POZERAL = {
         { hladaj:['Ferda Mravenec večerníček', 'Ferda Mravenec celý díl'], obsahuje:'ferda', show:'Ferda Mravenec', lang:'CZ', min:8, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|hra', minSek:240, maxSek:1800 },
         { hladaj:['Rákosníček', 'Rákosníček a hvězdy'], obsahuje:'rákosn[ií][cč]ek', show:'Rákosníček', lang:'CZ', min:8, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie|hra|game|figurk|cosplay|amv|trailer|zvučka|znelka|intro', minSek:240, maxSek:1800 },
         { hladaj:['Čtyřlístek cz', 'Čtyřlístek celý díl'], obsahuje:'čtyřlístek', show:'Čtyřlístek', lang:'CZ', min:10, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie|hra|game|figurk|cosplay|amv|trailer|zvučka|znelka|intro', minSek:300, maxSek:1800 },
-        { hladaj:['Mauglí cz dabing', 'Mauglí celý díl'], obsahuje:'maugl', show:'Mauglí', lang:'CZ', min:10, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie|hra|game|figurk|cosplay|amv|trailer|zvučka|znelka|intro', minSek:300, maxSek:1800 },
-        { hladaj:['Heidi děvčátko z hor cz', 'Heidi děvčátko z hor díl'], obsahuje:'heidi', show:'Heidi, děvčátko z hor', lang:'CZ', min:22, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie|hra|game|figurk|cosplay|amv|trailer|zvučka|znelka|intro', minSek:600, maxSek:1800 },
         { hladaj:['Včelí medvídci cz', 'Včelí medvídci díl'], obsahuje:'včelí medv', show:'Včelí medvídci', lang:'CZ', min:22, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie|hra|game|figurk|cosplay|amv|trailer|zvučka|znelka|intro', minSek:600, maxSek:1800 },
         { hladaj:['Pipi Dlouhá punčocha cz', 'Pipi Dlouhá punčocha díl'], obsahuje:'pipi', show:'Pipi Dlouhá punčocha', lang:'CZ', min:22, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie|hra|game|figurk|cosplay|amv|trailer|zvučka|znelka|intro', minSek:600, maxSek:1800 },
-        { hladaj:['Lucky Luke cz dabing', 'Lucky Luke česky'], obsahuje:'lucky luke', show:'Lucky Luke', lang:'CZ', min:22, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie|hra|game|figurk|cosplay|amv|trailer|zvučka|znelka|intro', minSek:600, maxSek:1800 },
-        { hladaj:['Tom a Jerry cz', 'Tom a Jerry česky celý díl'], obsahuje:'tom a jerry', show:'Tom a Jerry', lang:'CZ', min:7, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie|hra|game|figurk|cosplay|amv|trailer|zvučka|znelka|intro|kreslíme|kreslení|jak nakreslit', minSek:300, maxSek:1800 },
+        { autor:'^Celé Filmy a seriály', hladaj:['Lucky Luke cz dabing', 'Lucky Luke česky'], obsahuje:'lucky luke', show:'Lucky Luke', lang:'CZ', min:22, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie|hra|game|figurk|cosplay|amv|trailer|zvučka|znelka|intro', minSek:600, maxSek:1800 },
         { hladaj:['Medvídek Pú cz dabing', 'Medvedík Pú sk'], obsahuje:'medv[ií]d?[eí]k p[uú]', show:'Medvídek Pú', lang:'CZ', min:22, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie|hra|game|figurk|cosplay|amv|trailer|zvučka|znelka|intro', minSek:300, maxSek:1800 },
       ]
     },
@@ -332,12 +394,8 @@ window.POZERAL = {
         { hladaj:['SpongeBob v nohaviciach', 'SpongeBob v nohaviciach sk'], obsahuje:'v nohavic', show:'SpongeBob v nohaviciach', lang:'SK', min:11, max:30, jazyk:false, vynechaj:'film|movie|hra|game|lego|hračk|minecraft|roblox', minSek:300, maxSek:1800 },
         { hladaj:['Inspektor Gadget cz', 'Inspektor Gadget česky'], obsahuje:'inspektor gadget', show:'Inspektor Gadget', lang:'CZ', min:22, max:30, vynechaj:'film|movie|2015', minSek:600, maxSek:1800 },
         { hladaj:['Kim Possible cz dabing díl'], obsahuje:'kim possible', show:'Kim Possible', lang:'CZ', min:22, max:30, vynechaj:'film|movie|ps2|gba|hra|game', minSek:600, maxSek:1800 },
-        { hladaj:['Fosterův dům pro imaginární přátele cz', 'Fosterův dům díl'], obsahuje:'fosterův dům', show:'Fosterův dům', lang:'CZ', min:22, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie|hra|game|figurk|cosplay|amv|trailer|zvučka|znelka|intro', minSek:600, maxSek:1800 },
-        { hladaj:['Phineas a Ferb cz dabing', 'Phineas a Ferb díl'], obsahuje:'phineas', show:'Phineas a Ferb', lang:'CZ', min:22, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie|hra|game|figurk|cosplay|amv|trailer|zvučka|znelka|intro', minSek:600, maxSek:1800 },
-        { hladaj:['Mladí titáni cz', 'Teen Titans cz dabing díl'], obsahuje:'mladí titáni|teen titans', show:'Mladí Titáni', lang:'CZ', min:22, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie|hra|game|figurk|cosplay|amv|trailer|zvučka|znelka|intro', minSek:600, maxSek:1800 },
-        { hladaj:['Chip a Dale rescue rangers cz', 'Chip a Dale Rescue Rangers díl'], obsahuje:'chip a dale|rescue rangers', show:'Chip a Dale: Rescue Rangers', lang:'CZ', min:22, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie|hra|game|figurk|cosplay|amv|trailer|zvučka|znelka|intro', minSek:600, maxSek:1800 },
-        { hladaj:['Lilo a Stitch seriál cz'], obsahuje:'lilo', show:'Lilo a Stitch', lang:'CZ', min:22, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie|hra|game|figurk|cosplay|amv|trailer|zvučka|znelka|intro', minSek:600, maxSek:1800 },
-        { hladaj:['Aladin seriál cz dabing'], obsahuje:'aladin', show:'Aladin', lang:'CZ', min:22, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie|hra|game|figurk|cosplay|amv|trailer|zvučka|znelka|intro', minSek:600, maxSek:1800 },
+        { autor:'^Disney Channel Česk', hladaj:['Phineas a Ferb cz dabing', 'Phineas a Ferb díl'], obsahuje:'phineas', show:'Phineas a Ferb', lang:'CZ', min:22, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie|hra|game|figurk|cosplay|amv|trailer|zvučka|znelka|intro', minSek:600, maxSek:1800 },
+        { autor:'^Disney Channel Česk', hladaj:['Lilo a Stitch seriál cz'], obsahuje:'lilo', show:'Lilo a Stitch', lang:'CZ', min:22, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie|hra|game|figurk|cosplay|amv|trailer|zvučka|znelka|intro', minSek:600, maxSek:1800 },
       ]
     },
     {
@@ -388,14 +446,7 @@ window.POZERAL = {
         { hladaj:['Beyblade Metal Fusion cz', 'Beyblade Metal Fury cz', 'Beyblade cz dabing díl'], obsahuje:'beyblade', show:'Beyblade', lang:'CZ', min:22, max:30, vynechaj:'hračk|toys?|unbox|souboj|arena|launcher|recenz|test|stadium', minSek:600, maxSek:1800 },
         { hladaj:['Oban Star Racers cz'], obsahuje:'oban', show:'Oban Star-Racers', lang:'CZ', min:22, max:30, minSek:600, maxSek:1800 },
         { hladaj:['Monster Buster Club cz'], obsahuje:'monster buster', show:'Monster Buster Club', lang:'CZ', min:22, max:30, minSek:600, maxSek:1800 },
-        { hladaj:['Digimon cz dabing díl', 'Digimon Dobrodružství česky'], obsahuje:'digimon', show:'Digimon', lang:'CZ', min:22, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie|hra|game|figurk|cosplay|amv|trailer|zvučka|znelka|intro|hrá|vs\\.?|figur', minSek:600, maxSek:1800 },
-        { hladaj:['Dragon Ball cz dabing díl', 'Dragon Ball Z cz dabing'], obsahuje:'dragon ball', show:'Dragon Ball', lang:'CZ', min:22, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie|hra|game|figurk|cosplay|amv|trailer|zvučka|znelka|intro|hrá|vs\\.?|figur', minSek:600, maxSek:1800 },
-        { hladaj:['Sailor Moon cz dabing', 'Čarodějka z Měsíce cz díl'], obsahuje:'sailor moon|čarodějk', show:'Sailor Moon', lang:'CZ', min:22, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie|hra|game|figurk|cosplay|amv|trailer|zvučka|znelka|intro|hrá|vs\\.?|figur', minSek:600, maxSek:1800 },
-        { hladaj:['Transformers cz dabing díl', 'Beast Wars cz dabing'], obsahuje:'transformers|beast wars', show:'Transformers', lang:'CZ', min:22, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie|hra|game|figurk|cosplay|amv|trailer|zvučka|znelka|intro|hrá|vs\\.?|figur', minSek:600, maxSek:1800 },
-        { hladaj:['Spider-Man animovaný seriál cz', 'Spider-Man 1994 cz dabing'], obsahuje:'spider-?man|pavouk', show:'Spider-Man', lang:'CZ', min:22, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie|hra|game|figurk|cosplay|amv|trailer|zvučka|znelka|intro|hrá|vs\\.?|figur', minSek:600, maxSek:1800 },
-        { hladaj:['X-Men animovaný seriál cz dabing', 'X-Meni cz díl'], obsahuje:'x-?men', show:'X-Men', lang:'CZ', min:22, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie|hra|game|figurk|cosplay|amv|trailer|zvučka|znelka|intro|hrá|vs\\.?|figur', minSek:600, maxSek:1800 },
-        { hladaj:['Batman animovaný seriál cz dabing'], obsahuje:'batman', show:'Batman', lang:'CZ', min:22, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie|hra|game|figurk|cosplay|amv|trailer|zvučka|znelka|intro|hrá|vs\\.?|figur', minSek:600, maxSek:1800 },
-        { hladaj:['Motorkáři z Marsu cz dabing', 'Biker Mice from Mars cz'], obsahuje:'motorká[řr]i z marsu|biker mice', show:'Motorkáři z Marsu', lang:'CZ', min:22, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie|hra|game|figurk|cosplay|amv|trailer|zvučka|znelka|intro|hrá|vs\\.?|figur', minSek:600, maxSek:1800 },
+        { autor:'^(Gigatron|Maja Polasek)$', hladaj:['Transformers cz dabing díl', 'Beast Wars cz dabing'], obsahuje:'transformers|beast wars', show:'Transformers', lang:'CZ', min:22, max:30, jazyk:false, vynechaj:'hračk|plyš|lego|omaľov|omalov|vymaľov|pexeso|puzzle|nálepk|audio|kniha|čte |čtení|čítanie|divadl|písni|píseň|pesni|song|karaoke|film|movie|hra|game|figurk|cosplay|amv|trailer|zvučka|znelka|intro|hrá|vs\\.?|figur', minSek:600, maxSek:1800 },
       ]
     },
     {
@@ -429,12 +480,11 @@ window.POZERAL = {
         { hladaj:['Dexters Laboratory full episodes', 'Dexter\'s Laboratory full episode'], jazyk:false, diel:false, obsahuje:'dexter', show:"Dexter's Laboratory", lang:'EN', min:22, max:30, minSek:600, maxSek:3000, vynechaj:'best of|compilation|moments|español|latino|hindi|tamil|dublado|deutsch|français|русск|trailer|game|reaction|theme|intro|cz|sk\\b|česk|slovensk' },
         { hladaj:['Courage the Cowardly Dog full episode'], jazyk:false, diel:false, obsahuje:'courage', show:'Courage the Cowardly Dog', lang:'EN', min:22, max:30, minSek:600, maxSek:3000, vynechaj:'best of|compilation|moments|español|latino|hindi|tamil|dublado|deutsch|français|русск|trailer|game|reaction|theme|intro|cz|sk\\b|česk|slovensk' },
         { hladaj:['Ed Edd n Eddy full episode'], jazyk:false, diel:false, obsahuje:'ed,? edd', show:'Ed, Edd n Eddy', lang:'EN', min:22, max:30, minSek:600, maxSek:3000, vynechaj:'best of|compilation|moments|español|latino|hindi|tamil|dublado|deutsch|français|русск|trailer|game|reaction|theme|intro|cz|sk\\b|česk|slovensk' },
-        { hladaj:['Powerpuff Girls full episode', 'The Powerpuff Girls FULL EPISODE'], jazyk:false, diel:false, autor:'Cartoon (Network|Cartoons)|Nickelodeon|Hey Arnold|Rugrats|Wild Thornberrys|Powerpuff', obsahuje:'powerpuff', show:"The Powerpuff Girls", lang:'EN', min:22, max:30, minSek:600, maxSek:3000, vynechaj:'best of|compilation|moments|español|latino|hindi|tamil|dublado|deutsch|français|русск|trailer|game|reaction|theme|intro|cz|sk\\\\b|česk|slovensk|shorts?\\\\b|promo|sneak' },
-        { hladaj:['Cow and Chicken full episode', 'Cow and Chicken FULL EPISODE'], jazyk:false, diel:false, autor:'Cartoon (Network|Cartoons)|Nickelodeon|Hey Arnold|Rugrats|Wild Thornberrys|Powerpuff', obsahuje:'cow and chicken', show:"Cow and Chicken", lang:'EN', min:22, max:30, minSek:600, maxSek:3000, vynechaj:'best of|compilation|moments|español|latino|hindi|tamil|dublado|deutsch|français|русск|trailer|game|reaction|theme|intro|cz|sk\\\\b|česk|slovensk|shorts?\\\\b|promo|sneak' },
-        { hladaj:['Hey Arnold full episode', 'Hey Arnold FULL EPISODE Nickelodeon'], jazyk:false, diel:false, autor:'Cartoon (Network|Cartoons)|Nickelodeon|Hey Arnold|Rugrats|Wild Thornberrys|Powerpuff', obsahuje:'hey arnold', show:"Hey Arnold!", lang:'EN', min:22, max:30, minSek:600, maxSek:3000, vynechaj:'best of|compilation|moments|español|latino|hindi|tamil|dublado|deutsch|français|русск|trailer|game|reaction|theme|intro|cz|sk\\\\b|česk|slovensk|shorts?\\\\b|promo|sneak' },
-        { hladaj:['Rugrats full episode Nickelodeon'], jazyk:false, diel:false, autor:'Cartoon (Network|Cartoons)|Nickelodeon|Hey Arnold|Rugrats|Wild Thornberrys|Powerpuff', obsahuje:'rugrats', show:"Rugrats", lang:'EN', min:22, max:30, minSek:600, maxSek:3000, vynechaj:'best of|compilation|moments|español|latino|hindi|tamil|dublado|deutsch|français|русск|trailer|game|reaction|theme|intro|cz|sk\\\\b|česk|slovensk|shorts?\\\\b|promo|sneak' },
-        { hladaj:['The Wild Thornberrys full episode'], jazyk:false, diel:false, autor:'Cartoon (Network|Cartoons)|Nickelodeon|Hey Arnold|Rugrats|Wild Thornberrys|Powerpuff', obsahuje:'thornberr', show:"The Wild Thornberrys", lang:'EN', min:22, max:30, minSek:600, maxSek:3000, vynechaj:'best of|compilation|moments|español|latino|hindi|tamil|dublado|deutsch|français|русск|trailer|game|reaction|theme|intro|cz|sk\\\\b|česk|slovensk|shorts?\\\\b|promo|sneak' },
-        { hladaj:['I Am Weasel full episode', 'Dexters Laboratory FULL EPISODE Cartoon Network'], jazyk:false, diel:false, autor:'Cartoon (Network|Cartoons)|Nickelodeon|Hey Arnold|Rugrats|Wild Thornberrys|Powerpuff', obsahuje:'weasel|dexter', show:"Cartoon Network klasiky", lang:'EN', min:11, max:30, minSek:600, maxSek:3000, vynechaj:'best of|compilation|moments|español|latino|hindi|tamil|dublado|deutsch|français|русск|trailer|game|reaction|theme|intro|cz|sk\\\\b|česk|slovensk|shorts?\\\\b|promo|sneak' }
+        { hladaj:['Powerpuff Girls full episode', 'The Powerpuff Girls FULL EPISODE'], jazyk:false, diel:false, autor:'^(Cartoon Network|The Powerpuff Girls)$', obsahuje:'powerpuff', show:"The Powerpuff Girls", lang:'EN', min:22, max:30, minSek:600, maxSek:3000, vynechaj:'best of|compilation|moments|español|latino|hindi|tamil|dublado|deutsch|français|русск|trailer|game|reaction|theme|intro|cz|sk\\\\b|česk|slovensk|shorts?\\\\b|promo|sneak' },
+        { hladaj:['I Am Weasel full episode', 'Dexters Laboratory FULL EPISODE Cartoon Network'], jazyk:false, diel:false, autor:'Cartoon (Network|Cartoons)|Nickelodeon|Hey Arnold|Rugrats|Wild Thornberrys|Powerpuff', obsahuje:'weasel|dexter', show:"Cartoon Network klasiky", lang:'EN', min:11, max:30, minSek:600, maxSek:3000, vynechaj:'best of|compilation|moments|español|latino|hindi|tamil|dublado|deutsch|français|русск|trailer|game|reaction|theme|intro|cz|sk\\\\b|česk|slovensk|shorts?\\\\b|promo|sneak' },
+        { hladaj:['Chip n Dale Rescue Rangers full episode', 'Chip n Dale Rescue Rangers S1 full episode'], jazyk:false, diel:false, autor:'^(Disney Kids( a\\s.*)?|Disney Channel Animation.*)$', obsahuje:'rescue rangers', show:"Chip n Dale: Rescue Rangers", lang:'EN', min:22, max:30, minSek:900, maxSek:3000, vynechaj:'best of|compilation|moments|ganze|aflevering|epis[oó]dio|teljes|volledige|complet|completo|folge|odcinek|trailer|clip|shorts?\\\\b|promo|reaction|explained' },
+        { hladaj:['Lilo and Stitch The Series full episode'], jazyk:false, diel:false, autor:'^(Disney Kids( a\\s.*)?|Disney Channel Animation.*)$', obsahuje:'lilo', show:"Lilo & Stitch: The Series", lang:'EN', min:22, max:30, minSek:900, maxSek:3000, vynechaj:'best of|compilation|moments|ganze|aflevering|epis[oó]dio|teljes|volledige|complet|completo|folge|odcinek|trailer|clip|shorts?\\\\b|promo|reaction|explained' },
+        { hladaj:['Ultimate Spider-Man full episode Marvel HQ'], jazyk:false, diel:false, autor:'^Marvel HQ$', obsahuje:'spider-?man', show:"Spider-Man (Marvel HQ)", lang:'EN', min:22, max:30, minSek:900, maxSek:3000, vynechaj:'best of|compilation|moments|ganze|aflevering|epis[oó]dio|teljes|volledige|complet|completo|folge|odcinek|trailer|clip|shorts?\\\\b|promo|reaction|explained' }
       ]
     }
   ],

@@ -124,7 +124,7 @@ async function hladajVideo(dotaz, max){
   }
   return vsetko;
 }
-const NAHRAVATEL_ZLY = /gam(e|ing|er)s?\b|\bhry\b|\bhraj|roblox|minecraft|fortnite|\bplay(s|er|through)?\b|tutorial|návod|\birl\b|news|zprávy|správy|shorts|compilation|kompilac/i;
+const NAHRAVATEL_ZLY = /gam(e|ing|er)s?\b|\bhry\b|\bhraj|roblox|minecraft|fortnite|\bplay(s|er|through)?\b|tutorial|návod|\birl\b|news|zprávy|správy|shorts|compilation|kompilac|\\s-\\stopic$/i;
 const JAZYK = /(^|[^a-z])(cz|sk|cze|česk|cesk|slovensk|dabing|dab)|[ěřůľôäĺŕ]/i;
 const DIEL = /s\d+\s?e\d+|\d+\s?x\s?\d+|d[ií]l|epizod|ep\.?\s?\d|část|časť|\(\d+\)|#\d|(^|[^\d])\d{1,3}([^\d]|$)/i;
 const NIE_DIEL = /fakt[ůuy]?\b|proč|zrušen|jak m[ěe]l|dopadl|report|championship|úvod do|zradil|vánoční|nikdo neměl|retro hry|twitch|živě|hrajeme|\bps[1-5]\b|\btcg\b|soundtrack|\bfilm\b|movie|titulk|tiulk|\btit\b|fandub|po polsku|polsk|\bcz\.\s?\d|speedrun|nejtemn|momenty|teori|skvěl|licens|audio only|walkthrough|longplay|recenz|#shorts|\bshorts?\b|tiktok|reakc|reaction|edit\b|fan ?made|\bai\b|minecraft|roblox|fortnite|gameplay|hra\b|lets ?play|let's play|karaoke|cover|remix|meme|ytp|youtube poop|speedpaint|drawing|unboxing|hračk|toys?\b|top ?\d+|vs\.?\b|tier list|teorie|theory/i;

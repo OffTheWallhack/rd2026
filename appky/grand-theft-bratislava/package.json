@@ -1,0 +1,7 @@
+{
+  "name": "grand-theft-bratislava",
+  "private": true,
+  "type": "module",
+  "dependencies": { "three": "0.160.0", "earcut": "^2.2.4" },
+  "devDependencies": { "esbuild": "^0.20.2" }
+}

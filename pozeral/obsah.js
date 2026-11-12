@@ -17,8 +17,19 @@ window.POZERAL = {
 
   // Ručne vyradené videá (napr. keď vieš, že na YouTube už nie sú). Skener tento zoznam nemení.
   // nahrávatelia, ktorých videá nikdy nepúšťame (herné let's play, audioknihy, cudzie dabingy, fanúšikovské kompilácie)
-  zakazaniAutori: ["AUDIOKNIHY PRO DĚTI", "Amálie Hučíková", "Barevný Svět zábavy Pejska a Kočičky", "Camille Santana", "Chronicles from the Cathode Tube", "Danovo DVD", "Dobré Pohádky", "Gellnerka Brno", "MATRIXXXL007", "Neywa Games", "PS Mláďata Chotěboř", "Radek Klaudis", "ShortStoryTime", "Studio Lyra - Klasické pohádky a příběhy", "Untilia", "Vetus", "ViolentNiceGuy", "czech bodybuilding", "interbubakcz", "nasuke159", "tyronejoseph senasi", "Bajki po Polsku", "Medojed", "Česká LP pařba", "Cartoon Network India", "Cartoon Network Sverige", "Ed Boy", "Epic Cartoons", "Hak9 i.T", "JarToon", "Pohádky MP3", "Je to jedno s Vendy", "Roblox irl", "Cartoon Network Australia"],
+  zakazaniAutori: ["Lůk", "TecŁuna TV", "Totally Awesome Geeks", "TrashmanCZ", "AUDIOKNIHY PRO DĚTI", "Amálie Hučíková", "Barevný Svět zábavy Pejska a Kočičky", "Camille Santana", "Chronicles from the Cathode Tube", "Danovo DVD", "Dobré Pohádky", "Gellnerka Brno", "MATRIXXXL007", "Neywa Games", "PS Mláďata Chotěboř", "Radek Klaudis", "ShortStoryTime", "Studio Lyra - Klasické pohádky a příběhy", "Untilia", "Vetus", "ViolentNiceGuy", "czech bodybuilding", "interbubakcz", "nasuke159", "tyronejoseph senasi", "Bajki po Polsku", "Medojed", "Česká LP pařba", "Cartoon Network India", "Cartoon Network Sverige", "Ed Boy", "Epic Cartoons", "Hak9 i.T", "JarToon", "Pohádky MP3", "Je to jedno s Vendy", "Roblox irl", "Cartoon Network Australia"],
   nefunguje: [
+    'lmbvnTftdwQ', // mimo rozprávku: Nejmocnější hrdinové Česka: Kouzelné Slu
+    'fJueyvFFWbg', // mimo rozprávku: Nejmocnější hrdinové Česka: Rákosníček
+    'O_fwVUYToUM', // mimo rozprávku: Čtyřlístek   05 Záhada pyramidy 2024
+    '_hKvsQtSp68', // mimo rozprávku: Med a čtyřlístek 1x17 "To, co nemám, je 
+    '3tHQkKRgrew', // mimo rozprávku: Med a čtyřlístek 1x11 Láska nás tlačí. C
+    'f5nJ4sow3x0', // mimo rozprávku: Med a čtyřlístek 1x18 Vrátil se. Cz
+    'wjhXpDy7PHg', // mimo rozprávku: Med a čtyřlístek 1x02 Hej počkej!!. Cz
+    'wZmIG6vza7A', // mimo rozprávku: Med a čtyřlístek 1x10 "Přejdeme oblohu".
+    '5nrKSlGv0Vk', // mimo rozprávku: Med a čtyřlístek 1x15 Přesto mu stále ch
+    'T_ctYlh_fns', // mimo rozprávku: Mentální Problémy Postav z Pohádek | Na 
+    'etvG8hNjJCg', // mimo rozprávku: Every Title Card In Dexters Laboratory 
     '8XNQMddyKxc', // zmazaný zdroj: Mauglí (Filmak.eu)
     'QpBpu9XcPDI', // zmazaný zdroj: Mauglí (Release - Topic)
     'HAaYSP_TPvI', // zmazaný zdroj: Mauglí (Václav Postránecký - Topic)

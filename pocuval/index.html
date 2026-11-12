@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>si/počúval · rádio</title>
+<meta name="description" content="Rádio s DJ setmi, vlastnými stanicami a hláškami DJ-a. Ladíš ako na starom rádiu, stanice bežia stále.">
+<meta name="theme-color" content="#0d0a07">
+<link rel="canonical" href="https://durica.si/pocuval/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="durica.si">
+<meta property="og:title" content="si/počúval · rádio">
+<meta property="og:description" content="Štyri stanice, DJ sety a hlášky medzi skladbami. Zapni rádio, pootoč ladením a počúvaj.">
+<meta property="og:url" content="https://durica.si/pocuval/">
+<meta property="og:image" content="https://durica.si/pocuval/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://durica.si/pocuval/og.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="ikony/icon-192.png">
+<link rel="apple-touch-icon" href="ikony/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="si/počúval">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Oswald:wght@400;500;700&family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="rig" id="rig" data-power="off">
+  <div class="wood l" aria-hidden="true"></div>
+  <div class="wood r" aria-hidden="true"></div>
+
+  <section class="unit" aria-label="Rádio">
+    <i class="screw tl"></i><i class="screw tr"></i><i class="screw bl"></i><i class="screw br"></i>
+
+    <header class="top">
+      <div class="brand">SI/POČÚVAL<small>FM STEREO RECEIVER · MODEL 2026</small></div>
+      <div class="lamps" aria-hidden="true">
+        <span class="lamp" id="lampStereo">STEREO</span>
+        <span class="lamp red" id="lampAir">ON AIR</span>
+      </div>
+    </header>
+
+    <div class="vfd" id="vfd" aria-live="polite">
+      <div class="vfd-freq"><b id="freq">--.-</b><small>FM · MHz</small></div>
+      <div class="vfd-main">
+        <div class="stn" id="stnName">SI/POČÚVAL</div>
+        <div class="np"><span id="npText">Zapni rádio</span></div>
+        <div class="nx" id="nextTxt">&nbsp;</div>
+        <div class="prog"><i id="progBar"></i></div>
+      </div>
+      <div class="vfd-side">
+        <canvas id="meter" width="96" height="56" aria-hidden="true"></canvas>
+        <div class="clock" id="clock">--:--</div>
+      </div>
+    </div>
+
+    <div class="dialwin" id="dial" role="slider" aria-label="Ladenie" aria-valuemin="87.5" aria-valuemax="108" tabindex="0">
+      <div class="glow"></div>
+      <div class="scale" id="scale"></div>
+      <div class="marks" id="marks"></div>
+      <div class="needle" id="needle"><i></i></div>
+      <div class="glass"></div>
+    </div>
+
+    <div class="controls">
+      <div class="kcol">
+        <div class="knob" id="knobVol" role="slider" aria-label="Hlasitosť" aria-valuemin="0" aria-valuemax="100" tabindex="0"><i></i></div>
+        <label>HLASITOSŤ</label>
+      </div>
+
+      <div class="mid">
+        <div class="seek">
+          <button class="hw" id="prev" aria-label="Predchádzajúca stanica">◀◀</button>
+          <button class="hw power" id="power" aria-label="Zapnúť alebo vypnúť rádio"><span class="led"></span>POWER</button>
+          <button class="hw" id="next" aria-label="Ďalšia stanica">▶▶</button>
+        </div>
+        <div class="presets" id="presets"></div>
+      </div>
+
+      <div class="kcol">
+        <div class="knob" id="knobTune" role="slider" aria-label="Ladenie" tabindex="0"><i></i></div>
+        <label>LADENIE</label>
+      </div>
+    </div>
+
+    <div class="grille" aria-hidden="true"></div>
+
+    <button class="bigpower" id="bigPower" type="button">
+      <span class="ring"></span>
+      <b>ZAPNI RÁDIO</b>
+      <small>ťukni a zapni zvuk</small>
+    </button>
+  </section>
+
+  <section class="board" id="board" aria-label="Program stanice">
+    <div class="bhead">
+      <div>
+        <h2 id="bName">Program</h2>
+        <p id="bSlogan"></p>
+      </div>
+      <div class="bdj" id="bDj"></div>
+    </div>
+    <ol class="tlist" id="tlist"></ol>
+    <p class="hint" id="bHint"></p>
+  </section>
+
+  <footer class="foot">
+    <a href="/">durica.si</a> · rádio beží stále, aj keď je vypnuté · šípky ←→ stanice, ↑↓ hlasitosť, medzerník zapne
+  </footer>
+</main>
+
+<script src="radio.js"></script>
+<script src="/stats.js" defer></script>
+</body>
+</html>

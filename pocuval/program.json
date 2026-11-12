@@ -1,0 +1,75 @@
+{
+ "version": 1,
+ "stations": [
+  {
+   "id": "event-car-fm",
+   "name": "Event Car FM",
+   "short": "ECFM",
+   "freq": 89.6,
+   "color": "#ffb23d",
+   "slogan": "Nasadni. Šmykni. Opakuj.",
+   "dj": "Tvoj DJ",
+   "total": 149.0,
+   "tracks": [
+    {
+     "file": "stanice/event-car-fm/hudba/01%20Drift%20Song.mp3",
+     "title": "Drift Song",
+     "artist": "",
+     "dur": 149.0,
+     "announce": null,
+     "text": null
+    }
+   ],
+   "idents": [],
+   "between": []
+  },
+  {
+   "id": "drop-ups-fm",
+   "name": "Drop Ups FM",
+   "short": "DROP",
+   "freq": 94.4,
+   "color": "#c84bff",
+   "slogan": "Drum & bass z podzemia",
+   "dj": "Tvoj DJ",
+   "total": 330.0,
+   "tracks": [
+    {
+     "file": "stanice/drop-ups-fm/hudba/01%20Drop%20Ups%20-%20Live%20set.mp3",
+     "title": "Live set",
+     "artist": "Drop Ups",
+     "dur": 330.0,
+     "announce": null,
+     "text": null
+    }
+   ],
+   "idents": [],
+   "between": []
+  },
+  {
+   "id": "fm-2000s",
+   "name": "2000s FM",
+   "short": "2000s",
+   "freq": 99.2,
+   "color": "#4bd1ff",
+   "slogan": "Pamätáš si to?",
+   "dj": "Tvoj DJ",
+   "total": 0,
+   "tracks": [],
+   "idents": [],
+   "between": []
+  },
+  {
+   "id": "techno-fm",
+   "name": "Techno FM",
+   "short": "TECH",
+   "freq": 104.0,
+   "color": "#ff4b4b",
+   "slogan": "Tvrdo a dlho",
+   "dj": "Tvoj DJ",
+   "total": 0,
+   "tracks": [],
+   "idents": [],
+   "between": []
+  }
+ ]
+}

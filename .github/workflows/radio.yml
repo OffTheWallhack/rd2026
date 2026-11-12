@@ -1,0 +1,43 @@
+name: Rádio – prepísať program.json
+
+# Keď nahráš hudbu alebo hlášky do pocuval/stanice/, tento krok sám
+# prepočíta pocuval/program.json (dĺžky skladieb a zoznam hlášok).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'pocuval/stanice/**'
+      - 'tools/build_radio.py'
+      - '.github/workflows/radio.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: radio-program
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: ffprobe na zisťovanie dĺžok
+        run: sudo apt-get install -y ffmpeg >/dev/null
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Prepísať program.json
+        run: python3 tools/build_radio.py
+      - name: Uložiť, ak sa niečo zmenilo
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then echo "Bez zmeny"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pocuval/program.json
+          git commit -m "Rádio: prepísaný program.json"
+          git pull --rebase origin main
+          git push

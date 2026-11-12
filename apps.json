@@ -590,6 +590,30 @@
         "sk": "Pixelové terárko v prehliadači. Sypeš piesok, vodu a lávu a pozeráš, čo sa stane.",
         "en": "A pixel terrarium in your browser. Pour sand, water and lava and watch what happens."
       }
+    },
+    {
+      "id": "pocuval",
+      "name": "si/počúval",
+      "short": "Počúval",
+      "group": "dj",
+      "url": "pocuval/",
+      "icon": "appky/img/pocuval-192.png",
+      "desc": {
+        "sk": "Rádio so stanicami, DJ setmi a hláškami. Ladíš ako na starom rádiu, stanice bežia stále.",
+        "en": "A radio with stations, DJ sets and DJ voice lines. Tune like on an old radio, stations run non-stop."
+      },
+      "visibility": "public",
+      "embed": true,
+      "away": true,
+      "allow": "autoplay; fullscreen",
+      "win": [
+        900,
+        640
+      ],
+      "sitemap": {
+        "priority": 0.6
+      },
+      "status": "new"
     }
   ]
 }

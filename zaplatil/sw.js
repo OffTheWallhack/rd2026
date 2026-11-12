@@ -1,5 +1,5 @@
-/* si/zaplatil — offline obal appky. Účty a fotky idú vždy zo siete (Supabase), tu sa drží len samotná appka. */
-var C='zaplatil-v1',FILES=['./','./index.html','./style.css','./app.js','./qrcode.js','./manifest.webmanifest','./ikony/icon-192.png','./ikony/icon-512.png'];
+/* si/zaplatil — offline obal appky. Účty, profily a súbory idú vždy zo siete (Supabase), tu sa drží len samotná appka. */
+var C='zaplatil-v2',FILES=['./','./index.html','./style.css','./app.js','./preklady.js','./citac.js','./qrcode.js','./pismo/bricolage-latin.woff2','./pismo/bricolage-latin-ext.woff2','./manifest.webmanifest','./ikony/icon-192.png','./ikony/icon-512.png'];
 self.addEventListener('install',function(e){e.waitUntil(caches.open(C).then(function(c){return c.addAll(FILES);}).then(function(){return self.skipWaiting();}));});
 self.addEventListener('activate',function(e){e.waitUntil(caches.keys().then(function(ks){return Promise.all(ks.filter(function(k){return k.indexOf('zaplatil-')===0&&k!==C;}).map(function(k){return caches.delete(k);}));}).then(function(){return self.clients.claim();}));});
 self.addEventListener('fetch',function(e){if(e.request.method!=='GET')return;var u=new URL(e.request.url);if(u.origin!==location.origin)return;

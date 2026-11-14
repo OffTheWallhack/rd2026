@@ -321,7 +321,10 @@
 
   function vTipy() {
     var z = zoradene().reverse().filter(function (t) { return t.stav === 'caka' || t.stav === 'navrh'; });
-    var h = '<h2>Aktuálne tipy <small>' + z.length + ' ' + (z.length === 1 ? 'tiket' : z.length > 1 && z.length < 5 ? 'tikety' : 'tiketov') + '</small></h2>';
+    var h = '<h2>Aktuálne tipy <small>' + z.length + ' ' + (z.length === 1 ? 'tiket' : z.length > 1 && z.length < 5 ? 'tikety' : 'tiketov') + '</small></h2>' +
+      '<div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px"><div><div class="t1" style="font-weight:700">Verejné tipy na dnes</div>' +
+      '<div class="mut" style="font-size:13px">Bez vkladov a výhier, len zápasy a tipy · durica.si/vsadzal/dnes</div></div>' +
+      '<button class="ibtn pri" data-a="zdielat">Zdieľať</button></div>';
     if (!z.length) return h + '<div class="empty">Teraz nič nečaká. Nové tipy sa sem pridajú, keď ich vymyslíme.</div>';
     h += '<div class="slips">' + z.map(slip).join('') + '</div>';
     var hotove = zoradene().reverse().filter(function (t) { return UZAVRETE[t.stav]; }).slice(0, 4);
@@ -537,6 +540,12 @@
     if (ft) { S.fStav = ft.getAttribute('data-fstav'); render(); return; }
     var b = e.target.closest('[data-a]'); if (!b) return;
     var a = b.getAttribute('data-a'), t = najdi(b.getAttribute('data-id'));
+    if (a === 'zdielat') {
+      var url = 'https://durica.si/vsadzal/dnes/';
+      if (navigator.share) navigator.share({ title: 'Tipy na dnes', text: 'Dnešné tipy na zápasy 👇', url: url }).catch(function () {});
+      else if (navigator.clipboard) navigator.clipboard.writeText(url).then(function () { toast('Odkaz skopírovaný'); });
+      return;
+    }
     if (a === 'novy') editor(null);
     else if (a === 'menu') menu();
     else if (a === 'rozbal') { S.otvorene[t.id] = !S.otvorene[t.id]; render(); }

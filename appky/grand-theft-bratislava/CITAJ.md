@@ -20,6 +20,7 @@ Jedna hra – pôvodná verzia zo znakov ASCII a samostatná „3D“ verzia sú
 - `hd.js` – vykresľovanie: HDR, vyhladzovanie hrán, žiara, farby.
 - `hdglsl.js` – shadery: zem, voda, fasády, strechy, obloha.
 - `x3.js` – život Bratislavy: električky, pešia zóna, polepy polície, ŠPZ, taxíky, terasy, Stará radnica, Čumil, pamiatky.
+- `venues.js` – miesta podľa skutočnosti: nápisy, terasy, vchody (Prior, Hotel Kyjev, Kácečko, Ost Block). Nové miesta sa pridávajú sem; vzhľad konkrétnych budov (farba, výška, typ fasády) je v `tools/prep2.py` vo funkcii `restyle`.
 - `actors.js`, `carmodels.js` – autá, ľudia, umelá inteligencia vodičov.
 - `ui.js`, `sound.js`, `util.js` – HUD a mapa, zvuk, pomocné funkcie.
 

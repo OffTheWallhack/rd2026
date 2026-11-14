@@ -105,7 +105,7 @@ const MOD = ['#b8bcc0', '#9aa4ac', '#c8c4bc', '#a9b3b5', '#d0ccc4'];
 const HOUSE = ['#f1ead8', '#ece0c2', '#e9d6a8', '#f4f1ea', '#dfd3bd', '#e6c9a0', '#d9dccf', '#efe2cf', '#e0b58f', '#cfd3d6'];
 const BLOCK = ['#c9c4b8', '#bdb7aa', '#d4cdbd', '#b3b6b4', '#cbbfa8', '#c2c7c4'];
 const ROOF = ['#9a4a32', '#a85a3a', '#8a3e2c', '#7d4434', '#b0603f', '#94503a', '#53565c', '#5c5450'];
-const KID = { old: 0, modern: 1, util: 2, church: 3, castle: 4, roof: 5, ruin: 2, panel: 6, house: 7, block: 8 };
+const KID = { old: 0, modern: 1, util: 2, church: 3, castle: 4, roof: 5, ruin: 2, panel: 6, house: 7, block: 8, clad: 9 };
 const EMPTY = { bld: [], green: [], water: [], parea: [], walls: [], trees: [], lamps: [] };
 const _col = new THREE.Color();
 
@@ -280,12 +280,24 @@ export class World {
             glass = pane * mix(1.0, mull, 1.0 - far) * (1.0 - logg);
             glass = max(glass, lg * hdBox(q, vec2(-ww * 0.5, 1.05), vec2(ww * 0.5, floorH - 0.45), aa) * (1.0 - rail));
             lit = glass * step(0.5, rnd);
+          } else if (clad) {
+            // stone cladding of a 1960s department store: blank panelled walls, glass ground floor
+            vec2 pm = vec2(vF.x * bw / 1.25, vF.y / 0.95);
+            vec2 pf = fract(pm), pa = vec2(aa.x / 1.25, aa.y / 0.95);
+            float jn = max(1.0 - hdBand(pf.x, 0.035, 0.965, pa.x), 1.0 - hdBand(pf.y, 0.05, 0.95, pa.y));
+            col *= 0.90 + 0.18 * h21(floor(pm) + seed * 7.0);
+            col *= 1.0 - 0.26 * jn * (1.0 - far) * above;
+            col *= 0.93 + 0.07 * smoothstep(0.15, 0.5, pf.y) * (1.0 - far);
+            float gl = isGround * hdBox(q, vec2(-bw * 0.47, 0.22), vec2(bw * 0.47, floorH - 0.55), aa);
+            float fr = isGround * hdBox(q, vec2(-bw * 0.5, 0.0), vec2(bw * 0.5, floorH - 0.3), aa);
+            col = mix(col, vec3(0.10, 0.10, 0.11), fr * (1.0 - gl));
+            glass = gl; lit = gl * step(0.18, rnd);
           } else if (util) {`;
     let fb = FACADE_BODY
-      .replace('bool old = kid < 0.5,', 'bool panel = kid > 5.5 && kid < 6.5; bool old = kid < 0.5 || kid > 6.5,')
+      .replace('bool old = kid < 0.5,', 'bool panel = kid > 5.5 && kid < 6.5; bool clad = kid > 8.5; bool old = kid < 0.5 || (kid > 6.5 && kid < 8.5),')
       .replace('float gType = isGround * (old ? 1.0 : 0.0);', 'float gType = isGround * (kid < 0.5 ? 1.0 : 0.0);')
       .replace('} else if (util) {', PANEL);
-    if (fb.length < FACADE_BODY.length + 900) throw new Error('facade shader patch failed');
+    if (fb.length < FACADE_BODY.length + 1700) throw new Error('facade shader patch failed');
     this.wallMat.onBeforeCompile = (sh) =>
       patchCommon(sh, 'attribute vec3 fuv; attribute vec4 fdat; varying vec3 vF; varying vec4 vD; //MAIN vF = fuv; vD = fdat;', FACADE_HEAD, fb);
     this.roofMat = new THREE.MeshLambertMaterial({ vertexColors: true, side: THREE.DoubleSide, flatShading: true });

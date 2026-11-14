@@ -4,6 +4,7 @@ import { World, shared, patchCommon, SGrid } from './world.js';
 import { HD } from './hd.js';
 import { SKY_FRAG } from './hdglsl.js';
 import { makeX3 } from './x3.js';
+import { buildVenues } from './venues.js';
 import { loadAssets, ASSETS, HOOK, Car, Person, Ped, DriverAI, carCar } from './actors.js';
 import { clamp, lerp, wrapA, rnd, rpick, smooth, hash } from './util.js';
 import { Sound } from './sound.js';
@@ -25,6 +26,7 @@ renderer.setPixelRatio(1);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFShadowMap;
 let ascii;
+let VEN = null; // podniky a miesta podľa skutočnosti (nápisy, terasy, vchody)
 // X3 = život Bratislavy (električky, pešia zóna, polepy, pamiatky); a harmless stub until the world is built
 let X3 = { zoneNow: false, obst: () => cars, update() {}, flash() {}, maybeTaxi() {}, livery() {}, goalText: () => '' };
 const scene = new THREE.Scene();
@@ -348,6 +350,8 @@ const MORE_LM = [
   ['Štrkovecké jazero', 17.1510, 48.1545, 80], ['Zimný prístav', 17.1420, 48.1400, 90], ['Malý Dunaj vo Vrakuni', 17.1990, 48.1425, 80],
   ['Slovnaft', 17.1790, 48.1270, 160],
 ];
+// miesta zadané priamo v metroch mapy: [názov, x, z, polomer]
+const XY_LM = [['Kamenné námestie: Prior a Hotel Kyjev', 2562, 1150, 40], ['Kácečko – terasa s výhľadom na Kyjev', 2563, 1116, 9]];
 const nearestSpot = (list, x, z) => { let b = null, bd = 1e9; for (const s of list) { const d = Math.hypot(s[0] - x, s[1] - z); if (d < bd) { bd = d; b = s; } } return b; };
 const markers = {};
 window.__gtbLOC = LOC;
@@ -550,12 +554,13 @@ async function boot() {
     X3 = makeX3({
       Fe: world, Wt: scene, Tt: cars, Pn: peds, Ln: police, we: player, pc: () => playerCar, q: G, Ve: ui, vt: snd, Kn: MOBILE, an: shared, Xs: patchCommon,
       Ye: clamp, Ge: lerp, Xn: wrapA, ct: rnd, en: rpick, fn: hash, Zs: addCrime, mh: shake, Zn: pState, Yn: ASSETS, Ks: spawnCar, SGrid, OX: m.ox, OZ: m.oz,
-      moreLandmarks: MORE_LM.map(([n, lon, lat, r]) => [n, ...ll(lon, lat), r]),
+      moreLandmarks: MORE_LM.map(([n, lon, lat, r]) => [n, ...ll(lon, lat), r]).concat(XY_LM),
     });
     HOOK.mat = (mat) => (mat.name === 'Plate' ? X3.plateMat() : X3.gloss(mat));
     X3.init();
     G.x3 = () => X3;
   } catch (e) { console.error('X3', e); }
+  try { VEN = buildVenues(world, scene); G.ven = VEN; } catch (e) { console.error('venues', e); }
   player.h = Math.PI;
   idleMarkers();
   // a starter car parked right next to the player
@@ -661,6 +666,13 @@ function step(dt) {
   else player.mixer.update(dt);
   updateWorldActors(dt, true);
   X3.update(dt, false);
+  if (VEN) {
+    VEN.update(dt, shared.uNight.value);
+    if (G.mode === 'play' && !playerCar) {
+      const d = VEN.tryDoor(player.x, player.z, player.y);
+      if (d) { setPlayerPos(d[0], d[1]); ui.toast(d[3]); }
+    }
+  }
   updatePolice(dt);
   if (G.mission && G.mode === 'play') G.mission.update(dt);
   // marker triggers

@@ -765,6 +765,29 @@ for bi, r in enumerate(pm_recs):
     buildings.append(rec)
 print('pm buildings', len(pm_recs), 'tagged', n_tag, dict(kst), 'total', len(buildings), file=sys.stderr)
 
+# ---- miesta, ktoré majú vyzerať ako naozaj: ručné úpravy konkrétnych budov (stred pôdorysu, plocha)
+def _cen(o):
+    return sum(p[0] for p in o) / len(o), sum(p[1] for p in o) / len(o)
+def _area(o):
+    return abs(sum(o[k][0] * o[(k + 1) % len(o)][1] - o[(k + 1) % len(o)][0] * o[k][1] for k in range(len(o)))) / 2
+def restyle(cx, cz, area, **kw):
+    hit = 0
+    for b in buildings:
+        x, z = _cen(b['o'])
+        if abs(x - cx) < 6 and abs(z - cz) < 6 and abs(_area(b['o']) - area) < area * 0.12 + 30:
+            b.update(kw); b.pop('r', None); b['r'] = 0; b['s'] = 'f'; hit += 1
+    if hit != 1: print('RESTYLE miss/multi', cx, cz, area, hit, file=sys.stderr)
+TRAV = '#cfc5b0'
+# Kamenné námestie: obchodný dom Prior (dva bloky) a Hotel Kyjev
+restyle(2539, 1142, 2881, k='clad', c=TRAV, n='Prior')
+restyle(2533, 1156, 3369, k='clad', c=TRAV, h=12.0, n='Prior')
+restyle(2578, 1188, 1987, k='clad', c=TRAV, n='Prior')
+restyle(2571, 1183, 2471, k='clad', c=TRAV, h=20.0, n='Prior')
+restyle(2592, 1070, 1979, k='clad', c='#b9b1a2')
+restyle(2598, 1066, 2353, k='clad', c='#b9b1a2')
+restyle(2592, 1069, 505, k='modern', c='#e6e7e3', rc='#8c8e90')
+
+
 # ================================================================== C. terrain
 def dedupe(z):
     a = np.array(z, dtype=float)

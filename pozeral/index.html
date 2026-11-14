@@ -221,6 +221,22 @@ section{min-width:0;scroll-margin-top:calc(var(--hc) + 16px)}
 .lang.sk{color:var(--tt-green)}
 .lang.ns{color:var(--accent)}
 .lang.en{color:var(--muted)}
+
+/* vlajky jazyka (SVG, aby fungovali aj na Windows, kde emoji vlajky nie sú) */
+.fl{display:inline-block;width:20px;height:14px;border-radius:2px;background:center/cover no-repeat;box-shadow:0 0 0 1px rgba(255,255,255,.22);vertical-align:-2px;flex:none}
+.fl.cz{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 20'><rect width='30' height='10' fill='%23fff'/><rect y='10' width='30' height='10' fill='%23d7141a'/><path d='M0 0l15 10L0 20z' fill='%2311457e'/></svg>")}
+.fl.sk{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 20'><rect width='30' height='7' fill='%23fff'/><rect y='7' width='30' height='6' fill='%230b4ea2'/><rect y='13' width='30' height='7' fill='%23ee1c25'/><path d='M7 3.5h6v7.5c0 3-3 4.5-3 4.5s-3-1.500-3-4.500z' fill='%23ee1c25' stroke='%23fff' stroke-width='.8'/><path d='M10 5.500v7M8 8h4M8.500 10h3' stroke='%23fff' stroke-width='1.100' fill='none'/></svg>")}
+.fl.en{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 20'><rect width='30' height='20' fill='%23012169'/><path d='M0 0l30 20M30 0L0 20' stroke='%23fff' stroke-width='4'/><path d='M0 0l30 20M30 0L0 20' stroke='%23c8102e' stroke-width='1.500'/><path d='M15 0v20M0 10h30' stroke='%23fff' stroke-width='6'/><path d='M15 0v20M0 10h30' stroke='%23c8102e' stroke-width='3.500'/></svg>")}
+.fls{display:inline-flex;gap:4px;align-items:center;white-space:nowrap}
+.fls b{font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--ink)}
+.lang::before,.lgd::before{content:"";display:inline-block;width:14px;height:10px;border-radius:1px;margin-right:5px;background:center/cover no-repeat;vertical-align:-1px}
+.lang.cz::before,.lgd.cz::before{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 20'><rect width='30' height='10' fill='%23fff'/><rect y='10' width='30' height='10' fill='%23d7141a'/><path d='M0 0l15 10L0 20z' fill='%2311457e'/></svg>")}
+.lang.sk::before,.lgd.sk::before{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 20'><rect width='30' height='7' fill='%23fff'/><rect y='7' width='30' height='6' fill='%230b4ea2'/><rect y='13' width='30' height='7' fill='%23ee1c25'/><path d='M7 3.5h6v7.5c0 3-3 4.5-3 4.5s-3-1.500-3-4.500z' fill='%23ee1c25' stroke='%23fff' stroke-width='.8'/><path d='M10 5.500v7M8 8h4M8.500 10h3' stroke='%23fff' stroke-width='1.100' fill='none'/></svg>")}
+.lang.en::before,.lgd.en::before{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 20'><rect width='30' height='20' fill='%23012169'/><path d='M0 0l30 20M30 0L0 20' stroke='%23fff' stroke-width='4'/><path d='M0 0l30 20M30 0L0 20' stroke='%23c8102e' stroke-width='1.500'/><path d='M15 0v20M0 10h30' stroke='%23fff' stroke-width='6'/><path d='M15 0v20M0 10h30' stroke='%23c8102e' stroke-width='3.500'/></svg>")}
+.lang.ns::before{display:none}
+.chrow.en .name > span{color:var(--ink)}
+.tt-tabs .fl{width:16px;height:11px;margin-left:4px;vertical-align:-1px}
+#osdCh .fl{width:22px;height:15px;margin-left:6px}
 .meta{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:10px}
 
 .tt{background:#000;border-radius:10px;font-family:var(--f-osd);font-size:clamp(18px,3.9vw,23px);line-height:1.15;padding:16px clamp(12px,3vw,22px) 18px;color:#fff;box-shadow:0 0 0 1px var(--line)}
@@ -385,7 +401,7 @@ body.fs #rd-stats{display:none !important}
       <div class="tt-tabs" id="ttTabs" role="tablist" aria-label="Kanál v programe"></div>
       <span class="tt-title" id="ttTitle">PROGRAM</span>
       <ol id="guide"></ol>
-      <div class="tt-foot"><span style="color:var(--tt-cyan)">CZ dabing</span><span style="color:var(--tt-green)">SK dabing</span><span style="color:var(--tt-yellow)">bez slov</span></div>
+      <div class="tt-foot"><span class="lgd cz" style="color:var(--tt-cyan)">CZ dabing</span><span class="lgd sk" style="color:var(--tt-green)">SK dabing</span><span class="lgd en" style="color:var(--tt-yellow)">EN originál</span></div>
     </div>
   </section>
 
@@ -562,7 +578,21 @@ function upcoming(ci, n){
 }
 const hm = t => new Date(t).toLocaleTimeString('sk-SK', { hour:'2-digit', minute:'2-digit' });
 const mmss = s => { s = Math.max(0, Math.round(s)); return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0'); };
-const langClass = l => l === 'SK' ? 'lang sk' : l === 'CZ' ? 'lang' : (l === 'bez slov') ? 'lang ns' : 'lang en';
+const langClass = l => l === 'SK' ? 'lang sk' : l === 'CZ' ? 'lang cz' : (l === 'bez slov') ? 'lang ns' : 'lang en';
+/* jazyky kanála: z obsah.js (jazyky:[...]) alebo podľa toho, čo na ňom prevláda (angličtina = Originál) */
+function jazykyKanala(ci){
+  const k = CH[ci] && CH[ci].k; if (!k) return [];
+  if (k.jazyky) return k.jazyky;
+  const sl = (k.program || []).filter(p => p.lang && p.lang !== 'bez slov');
+  return sl.length && sl.filter(p => p.lang === 'EN').length > sl.length / 2 ? ['EN'] : ['CZ', 'SK'];
+}
+function vlajky(ci, text){
+  const w = document.createElement('span'); w.className = 'fls';
+  const j = jazykyKanala(ci);
+  j.forEach(l => { const f = document.createElement('i'); f.className = 'fl ' + l.toLowerCase(); f.title = l === 'EN' ? 'English' : l === 'CZ' ? 'česky' : 'slovensky'; w.appendChild(f); });
+  if (text && j.length === 1 && j[0] === 'EN'){ const b = document.createElement('b'); b.textContent = 'ENGLISH'; w.appendChild(b); }
+  return w;
+}
 const label = it => it.kind === 'ad' ? 'Reklamná prestávka' : it.kind === 'ident' ? 'Si pozeral' : it.show;
 const chName = ci => (ci + 1) + ' · ' + (CH[ci] ? CH[ci].k.nazov : '');
 const $ = id => document.getElementById(id);
@@ -590,6 +620,8 @@ function renderChannels(now){
       b.innerHTML = '<span class="num"></span><span class="name"><span></span><em></em></span><span class="what"><b></b><span></span></span><span class="prog"><i></i></span>';
       b.querySelector('.num').textContent = ci + 1;
       b.querySelector('.name > span').textContent = c.k.nazov;
+      b.querySelector('.name > span').after(vlajky(ci, true));
+      if (jazykyKanala(ci)[0] === 'EN') b.classList.add('en');
       b.querySelector('.name em').textContent = c.k.popis || '';
       b.addEventListener('click', () => { setChannel(ci); if (!powered) power(true); scrollTo({ top:0 }); });
       box.appendChild(b);
@@ -645,6 +677,7 @@ function renderNow(){
       else s.textContent = label(p);
       const l = document.createElement('span');
       l.textContent = p.kind !== 'show' ? '' : p.lang === 'bez slov' ? '—' : p.lang;
+      if (p.kind === 'show' && (p.lang === 'CZ' || p.lang === 'SK' || p.lang === 'EN')) l.className = 'lgd ' + p.lang.toLowerCase();
       l.style.color = p.lang === 'SK' ? 'var(--tt-green)' : p.lang === 'CZ' ? 'var(--tt-cyan)' : 'var(--tt-yellow)';
       li.append(t, s, l); ol.appendChild(li);
     }
@@ -665,7 +698,7 @@ function renderTabs(){
     box.textContent = '';
     CH.forEach((c, ci) => {
       const b = document.createElement('button');
-      b.setAttribute('role', 'tab'); b.textContent = 'P10' + (ci + 1) + ' ' + c.k.nazov.toUpperCase();
+      b.setAttribute('role', 'tab'); b.textContent = 'P10' + (ci + 1) + ' ' + c.k.nazov.toUpperCase(); b.appendChild(vlajky(ci));
       b.addEventListener('click', () => { viewCh = ci; lastGuideKey = ''; renderNow(); });
       box.appendChild(b);
     });
@@ -929,7 +962,7 @@ function filler(){
   $('ttv').classList.toggle('ad', it.kind === 'ad');
   $('ttvBand').textContent = it.kind === 'ad' ? 'REKLAMA' : 'HNEĎ SME SPÄŤ';
   $('ttvP').textContent = 'P10' + (ch + 1);
-  $('ttvName').textContent = CH[ch].k.nazov.toUpperCase();
+  $('ttvName').textContent = CH[ch].k.nazov.toUpperCase() + ' '; $('ttvName').appendChild(vlajky(ch));
   const ol = $('ttvList'); ol.textContent = '';
   const list = upcoming(ch, 7).slice(1);
   list.forEach(g => {
@@ -1007,7 +1040,8 @@ function tick(){
 
 function showOsd(volOnly){
   const cur = at(ch, vt(ch));
-  $('osdCh').textContent = volOnly ? '' : 'CH ' + chName(ch).toUpperCase();
+  $('osdCh').textContent = volOnly ? '' : 'CH ' + chName(ch).toUpperCase() + ' ';
+  if (!volOnly) $('osdCh').appendChild(vlajky(ch, true));
   $('osdTitle').textContent = volOnly || !cur ? '' : label(cur.it);
   const bars = Math.round(volume/10);
   $('osdVol').textContent = volOnly ? (muted ? 'MUTE' : 'VOL ' + '▮'.repeat(bars) + '▯'.repeat(10 - bars)) : '';

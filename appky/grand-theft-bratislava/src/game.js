@@ -5,6 +5,7 @@ import { HD } from './hd.js';
 import { SKY_FRAG } from './hdglsl.js';
 import { makeX3 } from './x3.js';
 import { buildVenues } from './venues.js';
+import { CAR_SPECS } from './carmodels.js';
 import { loadAssets, ASSETS, HOOK, Car, Person, Ped, DriverAI, carCar } from './actors.js';
 import { clamp, lerp, wrapA, rnd, rpick, smooth, hash } from './util.js';
 import { Sound } from './sound.js';
@@ -27,6 +28,8 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFShadowMap;
 let ascii;
 const guestPeople = [];
+// SANDBOX: voľná jazda po meste - bez polície, hľadanosti, peňazí, misií a pokút
+const SANDBOX = true;
 let VEN = null; // podniky a miesta podľa skutočnosti (nápisy, terasy, vchody)
 // X3 = život Bratislavy (električky, pešia zóna, polepy, pamiatky); a harmless stub until the world is built
 let X3 = { zoneNow: false, obst: () => cars, update() {}, flash() {}, maybeTaxi() {}, livery() {}, goalText: () => '' };
@@ -218,6 +221,7 @@ function removePed(p) {
 
 // police
 function spawnPolice(px, pz) {
+  if (SANDBOX) return null;
   for (let tries = 0; tries < 10; tries++) {
     const a = rnd() * Math.PI * 2, d = 90 + rnd() * 60;
     const ne = world.nearestEdge(px + Math.sin(a) * d, pz + Math.cos(a) * d, 50);
@@ -237,6 +241,27 @@ function spawnPolice(px, pz) {
 
 // ------------------------------------------------------------------ player state
 const pState = { vy: 0, punchT: 0, hurtT: 0 };
+// polep event áut: strieborný spodok, žlto-červený pruh a meno auta na dverách (bez log značiek)
+function eventLivery(c, kind) {
+  const S = CAR_SPECS[kind], cv = document.createElement('canvas');
+  cv.width = 512; cv.height = 128;
+  const g = cv.getContext('2d');
+  g.fillStyle = '#c9ccd2'; g.fillRect(0, 86, 512, 42);
+  g.fillStyle = '#ffd23a'; g.fillRect(0, 74, 512, 8);
+  g.fillStyle = '#d7263d'; g.fillRect(0, 82, 512, 6);
+  g.fillStyle = '#ffffff'; g.font = '800 62px Arial, Helvetica, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.fillText(kind.toUpperCase(), 256, 40);
+  const tex = new THREE.CanvasTexture(cv);
+  tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
+  const mat = new THREE.MeshLambertMaterial({ map: tex, transparent: true, polygonOffset: true, polygonOffsetFactor: -2 });
+  const w = S.L * 0.5, h = w / 4, y = (S.clear || 0.3) + h / 2 + 0.12;
+  for (const sd of [1, -1]) {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), mat);
+    m.position.set(sd * (S.W / 2 + 0.012), y, -S.L * 0.06);
+    m.rotation.y = (sd * Math.PI) / 2;
+    c.obj.add(m);
+  }
+}
 function setPlayerPos(x, z) {
   player.x = x; player.z = z;
   player.y = world.surfaceY(x, z);
@@ -286,6 +311,7 @@ function exitCar() {
 const hit = {};
 
 function addCrime(n, why) {
+  if (SANDBOX) return;
   if (n <= 0) return;
   if (G.mode !== 'play') return;
   G.heat += n;
@@ -368,6 +394,7 @@ function placeMarker(id, x, z, color) {
 function hideMarker(id) { if (markers[id]) markers[id].visible = false; }
 
 function idleMarkers() {
+  if (SANDBOX) return;
   LOC.contacts.forEach((c, i) => placeMarker('contact' + i, c[0], c[1], '#ffcc33'));
   LOC.races.forEach((c, i) => placeMarker('race' + i, c[0], c[1], '#33e0ff'));
   hideMarker('target');
@@ -553,7 +580,7 @@ async function boot() {
   try {
     const m = world.d.meta;
     X3 = makeX3({
-      Fe: world, Wt: scene, Tt: cars, Pn: peds, Ln: police, we: player, pc: () => playerCar, q: G, Ve: ui, vt: snd, Kn: MOBILE, an: shared, Xs: patchCommon,
+      sandbox: SANDBOX, Fe: world, Wt: scene, Tt: cars, Pn: peds, Ln: police, we: player, pc: () => playerCar, q: G, Ve: ui, vt: snd, Kn: MOBILE, an: shared, Xs: patchCommon,
       Ye: clamp, Ge: lerp, Xn: wrapA, ct: rnd, en: rpick, fn: hash, Zs: addCrime, mh: shake, Zn: pState, Yn: ASSETS, Ks: spawnCar, SGrid, OX: m.ox, OZ: m.oz,
       moreLandmarks: MORE_LM.map(([n, lon, lat, r]) => [n, ...ll(lon, lat), r]).concat(XY_LM),
     });
@@ -571,15 +598,23 @@ async function boot() {
   }
   player.h = Math.PI;
   idleMarkers();
-  // a starter car parked right next to the player
+  // dve event autá zaparkované hneď pri hráčovi: Zubor a Sugga
+  if (SANDBOX) { document.body.classList.add('sandbox'); LOC.contacts.length = 0; LOC.races.length = 0; }
   const ne = world.nearestEdge(LOC.start[0], LOC.start[1] + 30, 60);
   if (ne) {
-    World.at(ne.e, clamp(ne.s, 5, ne.e.L - 5), tmpP);
-    const off = ne.e.r.w / 2 - 1.05;
-    const c = spawnCar('golfik', tmpP.x - tmpP.dz * off, tmpP.z + tmpP.dx * off, Math.atan2(tmpP.dx, tmpP.dz), '#b8352b');
-    c.parked = true;
-    c.safe = true;
-    c.keep = true;
+    const s0 = clamp(ne.s, 9, ne.e.L - 9);
+    [['zubor', '#14254d', -4.2], ['sugga', '#1c2f5e', 4.4]].forEach(([kind, paint, ds]) => {
+      World.at(ne.e, clamp(s0 + ds, 3, ne.e.L - 3), tmpP);
+      const off = ne.e.r.w / 2 - 1.2;
+      const c = spawnCar(kind, tmpP.x - tmpP.dz * off, tmpP.z + tmpP.dx * off, Math.atan2(tmpP.dx, tmpP.dz), paint);
+      c.parked = true; c.safe = true; c.keep = true;
+      eventLivery(c, kind);
+    });
+    World.at(ne.e, s0, tmpP);
+    const po = ne.e.r.w / 2 + 1.6;
+    setPlayerPos(tmpP.x - tmpP.dz * po, tmpP.z + tmpP.dx * po);
+    player.h = Math.atan2(tmpP.dz, -tmpP.dx);
+    G.camYaw = Math.atan2(tmpP.dx, tmpP.dz) + Math.PI * 0.75;
   }
   for (let i = 0; i < 10; i++) spawnPed(player.x, player.z, true);
   resize();
@@ -685,7 +720,7 @@ function step(dt) {
   updatePolice(dt);
   if (G.mission && G.mode === 'play') G.mission.update(dt);
   // marker triggers
-  if (!G.mission && G.mode === 'play') {
+  if (!SANDBOX && !G.mission && G.mode === 'play') {
     const px = playerCar ? playerCar.x : player.x, pz = playerCar ? playerCar.z : player.z;
     const cs = nearestSpot(LOC.contacts, px, pz), rs = nearestSpot(LOC.races, px, pz);
     if (cs && Math.hypot(px - cs[0], pz - cs[1]) < 4) startTheft();
@@ -738,6 +773,7 @@ function titleCam(dt) {
   camera.position.set(cx + Math.sin(a) * 330, world.hAt(cx, cz) + 95, cz + Math.cos(a) * 330);
   camera.lookAt(cx, world.hAt(cx, cz) + 20, cz);
   placeShadow(cx, cz);
+  sky.position.copy(camera.position);
 }
 
 function placeShadow(x, z) {
@@ -990,6 +1026,7 @@ function updateFx(dt) {
 // ------------------------------------------------------------------ police
 let policeT = 0;
 function updatePolice(dt) {
+  if (SANDBOX) { G.wanted = 0; G.heat = 0; G.hp = 100; return; }
   const px = playerCar ? playerCar.x : player.x, pz = playerCar ? playerCar.z : player.z;
   const want = [0, 1, 2, 3, 4, 6][G.wanted];
   policeT -= dt;
@@ -1097,10 +1134,10 @@ function updateHUD(dt) {
     yaw: G.camYaw,
     speed: playerCar ? playerCar.speed * 3.6 : null,
     goal,
-    goalText: G.mission ? G.mission.text : 'Kšefty: žlté body · Preteky: modré body' + X3.goalText(),
+    goalText: G.mission ? G.mission.text : SANDBOX ? 'Voľná jazda po Bratislave' + X3.goalText() : 'Kšefty: žlté body · Preteky: modré body' + X3.goalText(),
     markers: [
-      ...[nearestSpot(LOC.contacts, px, pz)].filter(Boolean).map((c) => ({ x: c[0], z: c[1], c: '#ffcc33', on: !G.mission })),
-      ...[nearestSpot(LOC.races, px, pz)].filter(Boolean).map((c) => ({ x: c[0], z: c[1], c: '#33e0ff', on: !G.mission })),
+      ...(SANDBOX ? [] : [nearestSpot(LOC.contacts, px, pz)]).filter(Boolean).map((c) => ({ x: c[0], z: c[1], c: '#ffcc33', on: !G.mission })),
+      ...(SANDBOX ? [] : [nearestSpot(LOC.races, px, pz)]).filter(Boolean).map((c) => ({ x: c[0], z: c[1], c: '#33e0ff', on: !G.mission })),
     ],
     police: police.map((c) => ({ x: c.x, z: c.z })),
     inCar: !!playerCar,

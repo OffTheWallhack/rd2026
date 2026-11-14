@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <title>Grand Theft Bratislava · Robert Ďurica</title>
-<meta name="description" content="Grand Theft Bratislava: 3D hra podľa skutočnej mapy Bratislavy. Staré Mesto, Petržalka, Ružinov aj Vrakuňa, autá, električky, polícia, pešia zóna, Hrad, Most SNP aj UFO. Hraj v prehliadači na mobile aj počítači.">
+<meta name="description" content="Grand Theft Bratislava: voľná jazda po Bratislave v 3D podľa skutočnej mapy. Staré Mesto, Petržalka, Ružinov aj Vrakuňa, Hrad, Most SNP, Kamenné námestie. Hraj v prehliadači na mobile aj počítači.">
 <link rel="canonical" href="https://durica.si/appky/grand-theft-bratislava/">
 <link rel="icon" href="icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -115,6 +115,8 @@ body.touch #goal{font-size:12px}
 #pause,#map{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
 #pause h2{font-family:Anton,Impact,sans-serif;font-weight:400;font-size:52px;margin:0}
 #map canvas{border-radius:12px;box-shadow:0 10px 40px #000}
+.logo{width:min(64vw,46vh);height:auto;display:block;margin:0 auto 6px;filter:drop-shadow(0 6px 18px rgba(0,0,0,.6))}
+body.sandbox #money,body.sandbox #stars,body.sandbox #hpw{display:none}
 </style>
 </head>
 <body>
@@ -127,8 +129,8 @@ body.touch #goal{font-size:12px}
 </div>
 
 <div id="title" class="screen" hidden>
-  <h1><small>GRAND THEFT</small>BRATISLAVA</h1>
-  <div class="sub">Staré Mesto, Petržalka, Ružinov aj Vrakuňa podľa skutočnej mapy a terénu — Hrad, Michalská brána, Most SNP aj UFO, paneláky a mosty cez Dunaj. Električky, polícia, pešia zóna a 26 pamiatok na objavenie.</div>
+  <img class="logo" src="logo.png" alt="Grand Theft Bratislava by Robert Ďurica" width="900" height="900">
+  <div class="sub">Voľná jazda po Bratislave podľa skutočnej mapy: Staré Mesto, Petržalka, Ružinov aj Vrakuňa. Zober Zubra alebo Suggu a prejdi si mesto — Hrad, Most SNP, Kamenné námestie, Kácečko a 28 miest na objavenie.</div>
   <button class="btn" id="bPlay">HRAŤ</button>
   <div class="ctrl d-only"><b>WASD</b> chôdza / jazda · <b>Shift</b> beh · <b>E</b> nastúp / vystúp · <b>Medzerník</b> úder / ručná brzda<br><b>myš (ťahaj)</b> kamera · <b>M</b> mapa · <b>H</b> trúbiť · <b>P</b> pauza</div>
   <div class="ctrl t-only">Ľavý palec: <b>joystick</b> · pravý palec: <b>ťahaj = kamera</b><br>V aute: <b>PLYN</b>, <b>BRZDA</b>, <b>RUČNÁ</b> · pri aute sa objaví <b>NASTÚP</b></div>

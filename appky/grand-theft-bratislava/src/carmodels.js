@@ -9,6 +9,9 @@ export const CAR_SPECS = {
   golfik: { L: 4.28, W: 1.79, H: 1.46, hood: 1.0, wind: 0.8, rear: 'hatch', rr: 0.31, belt: 0.99, acc: 5.6, vmax: 52, nick: 'Golfík', acc_: 'Golfa', g: 'm' },
   favorit: { L: 3.82, W: 1.62, H: 1.42, hood: 0.95, wind: 0.5, rear: 'box', rr: 0.29, belt: 0.95, acc: 3.6, vmax: 40, nick: 'Favorit', acc_: 'Favorita', g: 'm', boxy: true },
   esuv: { L: 4.7, W: 1.88, H: 1.68, hood: 1.0, wind: 0.8, rear: 'estate', rr: 0.36, belt: 1.12, clear: 0.42, acc: 4.9, vmax: 50, nick: 'SUV-čko', acc_: 'SUV-čko', g: 'n' },
+  // event autá: veľký americký pick-up s nadstavbou a hranatý starý terénny diesel
+  zubor: { L: 5.9, W: 2.06, H: 2.02, hood: 1.55, wind: 0.55, rear: 'estate', rr: 0.44, belt: 1.34, clear: 0.52, acc: 5.2, vmax: 50, nick: 'Zubor', acc_: 'Zubra', g: 'm', boxy: true },
+  sugga: { L: 4.68, W: 1.82, H: 1.98, hood: 1.15, wind: 0.32, rear: 'box', rr: 0.41, belt: 1.28, clear: 0.5, acc: 3.2, vmax: 36, nick: 'Sugga', acc_: 'Suggu', g: 'f', boxy: true },
   dacik: { L: 4.34, W: 1.8, H: 1.65, hood: 0.95, wind: 0.75, rear: 'estate', rr: 0.34, belt: 1.08, clear: 0.4, acc: 4.2, vmax: 46, nick: 'Krosover', acc_: 'Krosover', g: 'i' },
 };
 

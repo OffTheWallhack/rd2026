@@ -889,7 +889,7 @@ export function makeX3(B) {
       let deliv = q.tod >= 6 && q.tod < 9,
         el = ZN.el || (ZN.el = document.getElementById("zone"));
       if (el) {
-        let txt = ZN.on ? (car ? (deliv ? "PEŠIA ZÓNA · zásobovanie do 9:00 · max 20 km/h" : "PEŠIA ZÓNA · autám vjazd zakázaný") : "PEŠIA ZÓNA") : "";
+        let txt = B.sandbox ? (ZN.on ? "PEŠIA ZÓNA" : "") : ZN.on ? (car ? (deliv ? "PEŠIA ZÓNA · zásobovanie do 9:00 · max 20 km/h" : "PEŠIA ZÓNA · autám vjazd zakázaný") : "PEŠIA ZÓNA") : "";
         if (ZN._txt !== txt) {
           ZN._txt = txt;
           el.textContent = txt;
@@ -907,9 +907,11 @@ export function makeX3(B) {
           ZN.fineT += dt;
           if (ZN.fineT > 6) {
             ZN.fineT = -22;
+            if (!B.sandbox) {
             let f = Math.min(50, Math.floor(q.money));
             q.money -= f;
             Ve.toast("Mestská polícia: jazda v pešej zóne · pokuta " + (f ? "−" + f + " €" : "50 € (nemáš z čoho)"));
+            }
             vt._tone(660, 330, 0.3, 0.14, "square");
           }
         }
@@ -1323,7 +1325,7 @@ export function makeX3(B) {
         let all = found.size === LM.length,
           rew = all ? 1500 : 60;
         q.money += rew;
-        Ve.big(all ? "CELÁ BRATISLAVA" : "OBJAVENÉ", `${l[0]} · ${found.size}/${LM.length} · +${rew} €`, "#ffcc33", 3);
+        Ve.big(all ? "CELÁ BRATISLAVA" : "OBJAVENÉ", B.sandbox ? `${l[0]} · ${found.size}/${LM.length}` : `${l[0]} · ${found.size}/${LM.length} · +${rew} €`, "#ffcc33", 3);
         vt.win();
         break;
       }
@@ -1371,7 +1373,7 @@ export function makeX3(B) {
         step("radnica", oldTownHall);
         step("terraces", terraces);
         step("fountains", fountainTops);
-        step("patrol", patrolCar);
+        if (!B.sandbox) step("patrol", patrolCar);
         step("landmarks", lmLoad);
         // a few trams are already on their way when the game starts
         step("prewarm", () => {

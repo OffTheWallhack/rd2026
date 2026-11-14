@@ -314,7 +314,12 @@
   }
   function vTipy() {
     var d = dnes(), z = tipyDna(d);
+    var spolu = 0, max = 0;
+    z.forEach(function (t) { spolu += +t.vklad || 0; max += (+t.vklad || 0) * (+t.kurz || 0); });
     var h = '<div class="intro"><h1>Dnešné tipy</h1><p class="mut">' + datum(d) + ' · ' + (z.length ? z.length + ' ' + (z.length === 1 ? 'tiket' : z.length < 5 ? 'tikety' : 'tiketov') : 'zatiaľ nič') + '</p></div>';
+    if (spolu > 0) h += '<div class="budget"><div><div class="lab">Dnes vsadené spolu</div><div class="v">' + eur(spolu) + '</div></div>' +
+      '<div><div class="lab">Keby vyšlo všetko</div><div class="v pos">' + eur(max) + '</div></div>' +
+      '<p class="mut">Ako delíme vklad: ultra safe 8–10 €, safe 5–6 €, risky 2–3 €.</p></div>';
     h += z.length ? '<div class="slips">' + z.map(function (t) { return slip(t, true); }).join('') + '</div>'
       : '<div class="empty">Na dnes ešte nie sú tipy. Pribudnú, keď ich vymyslíme.</div>';
     var dni = [];
@@ -337,9 +342,12 @@
         (z.stav !== 'caka' ? '<span class="chip st-' + esc(z.stav) + '">' + esc(STAV[z.stav]) + (z.vysledok ? ' ' + esc(z.vysledok) : '') + '</span>' : '') + '</div>' +
         (z.preco && dnesny ? '<div class="why">' + esc(z.preco) + '</div>' : '') + '</div>';
     });
-    h += '</div><div class="perf"><i></i></div><div class="ft ft2">' +
+    var vk = +t.vklad || 0, farba = t.stav === 'vyhral' ? 'pos' : t.stav === 'prehral' ? 'neg' : '';
+    h += '</div><div class="perf"><i></i></div><div class="ft' + (vk ? '' : ' ft2') + '">' +
       '<div><div class="lab">Celkový kurz</div><div class="v">' + kurzTxt(t.kurz) + '</div></div>' +
-      '<div><div class="lab">Za 10 € by bolo</div><div class="v ' + (t.stav === 'vyhral' ? 'pos' : t.stav === 'prehral' ? 'neg' : '') + '">' + (t.kurz ? eur(10 * t.kurz) : '—') + '</div></div></div></article>';
+      (vk ? '<div><div class="lab">Vklad</div><div class="v">' + eur(vk) + '</div></div>' +
+        '<div><div class="lab">' + (t.stav === 'vyhral' ? 'Vyhral' : t.stav === 'prehral' ? 'Mohol vyhrať' : 'Možná výhra') + '</div><div class="v ' + farba + '">' + (t.stav === 'vyhral' && +t.vyhra ? eur(t.vyhra) : t.kurz ? eur(vk * t.kurz) : '—') + '</div></div>'
+      : '<div><div class="lab">Za 10 € by bolo</div><div class="v ' + farba + '">' + (t.kurz ? eur(10 * t.kurz) : '—') + '</div></div>') + '</div></article>';
     return h;
   }
   function casTxt(c) { var d = new Date(c); return isNaN(d) ? '' : d.toLocaleTimeString('sk-SK', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Bratislava' }); }

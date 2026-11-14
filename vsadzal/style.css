@@ -185,3 +185,7 @@ body{overflow-x:hidden}
 .badge.live{background:var(--win)}
 .slips.hotove .slip{opacity:.6}
 .slips.hotove .slip:hover{opacity:.85}
+
+.budget{display:grid;grid-template-columns:1fr 1fr;gap:10px;background:var(--panel);border:1px solid rgba(184,255,60,.25);border-radius:14px;padding:12px 14px;margin:0 0 14px}
+.budget .lab{font-size:12px;opacity:.7}.budget .v{font:700 20px var(--mono);font-weight:700}
+.budget p{grid-column:1/-1;margin:0;font-size:13px}

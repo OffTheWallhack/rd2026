@@ -26,6 +26,7 @@ renderer.setPixelRatio(1);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFShadowMap;
 let ascii;
+const guestPeople = [];
 let VEN = null; // podniky a miesta podľa skutočnosti (nápisy, terasy, vchody)
 // X3 = život Bratislavy (električky, pešia zóna, polepy, pamiatky); a harmless stub until the world is built
 let X3 = { zoneNow: false, obst: () => cars, update() {}, flash() {}, maybeTaxi() {}, livery() {}, goalText: () => '' };
@@ -561,6 +562,13 @@ async function boot() {
     G.x3 = () => X3;
   } catch (e) { console.error('X3', e); }
   try { VEN = buildVenues(world, scene); G.ven = VEN; } catch (e) { console.error('venues', e); }
+  if (VEN) for (const [gx, gz, gy, gh] of VEN.guests) {
+    const g = new Person(-1, true);
+    g.x = gx; g.z = gz; g.y = gy; g.h = gh; g.sync();
+    g.mixer.update(rnd(0, 3));
+    scene.add(g.obj);
+    guestPeople.push(g);
+  }
   player.h = Math.PI;
   idleMarkers();
   // a starter car parked right next to the player
@@ -668,6 +676,7 @@ function step(dt) {
   X3.update(dt, false);
   if (VEN) {
     VEN.update(dt, shared.uNight.value);
+    if (guestPeople.length && Math.hypot(player.x - guestPeople[0].x, player.z - guestPeople[0].z) < 160) for (const g of guestPeople) g.mixer.update(dt);
     if (G.mode === 'play' && !playerCar) {
       const d = VEN.tryDoor(player.x, player.z, player.y);
       if (d) { setPlayerPos(d[0], d[1]); ui.toast(d[3]); }

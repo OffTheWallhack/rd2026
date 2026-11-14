@@ -19,7 +19,6 @@ window.POZERAL = {
   // nahrávatelia, ktorých videá nikdy nepúšťame (herné let's play, audioknihy, cudzie dabingy, fanúšikovské kompilácie)
   zakazaniAutori: ["Johnny: Coffee Euphoria", "Lůk", "TecŁuna TV", "Totally Awesome Geeks", "TrashmanCZ", "AUDIOKNIHY PRO DĚTI", "Amálie Hučíková", "Barevný Svět zábavy Pejska a Kočičky", "Camille Santana", "Chronicles from the Cathode Tube", "Danovo DVD", "Dobré Pohádky", "Gellnerka Brno", "MATRIXXXL007", "Neywa Games", "PS Mláďata Chotěboř", "Radek Klaudis", "ShortStoryTime", "Studio Lyra - Klasické pohádky a příběhy", "Untilia", "Vetus", "ViolentNiceGuy", "czech bodybuilding", "interbubakcz", "nasuke159", "tyronejoseph senasi", "Bajki po Polsku", "Medojed", "Česká LP pařba", "Cartoon Network India", "Cartoon Network Sverige", "Ed Boy", "Epic Cartoons", "Hak9 i.T", "JarToon", "Pohádky MP3", "Je to jedno s Vendy", "Roblox irl", "Cartoon Network Australia"],
   nefunguje: [
-    'ruuUrulIOgI', // mimo rozprávku/kompilácia: 90 Minutes of the Best Krusty Krab Episo
     '-8OTQcxIaXI', // mimo rozprávku/kompilácia: Every Episode of Classic The Powerpuff G
     'vNTwE9_IApg', // mimo rozprávku/kompilácia: 35 Minutes of Chaos with Billy and Mandy
     'g2stvpcjeaE', // mimo rozprávku/kompilácia: Wildest Omnitrix Malfunctions💥 | Ben 10 

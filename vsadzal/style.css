@@ -9,7 +9,9 @@
   --sb:env(safe-area-inset-bottom,0px); --st:env(safe-area-inset-top,0px);
 }
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%;background:var(--bg)}
+html{-webkit-text-size-adjust:100%;background:var(--bg);touch-action:manipulation}
+*{touch-action:manipulation}
+button{-webkit-user-select:none;user-select:none}
 body{margin:0;min-height:100vh;background:radial-gradient(1200px 500px at 80% -10%,rgba(184,255,60,.07),transparent 60%),var(--bg);
   color:var(--tx);font:15px/1.45 'Instrument Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 button,input,select,textarea{font:inherit;color:inherit}
@@ -147,7 +149,7 @@ td .t2{font-size:12px;color:var(--mut)}
 .grid .full{grid-column:1/-1}
 .grid3{grid-template-columns:repeat(3,1fr)}
 label.f{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--mut);font-weight:600}
-.f input,.f select,.f textarea{width:100%;background:var(--panel);border:1px solid var(--line2);border-radius:10px;padding:9px 10px;font-size:15px;outline:none}
+.f input,.f select,.f textarea{width:100%;background:var(--panel);border:1px solid var(--line2);border-radius:10px;padding:9px 10px;font-size:16px;outline:none}
 .f input:focus,.f select:focus,.f textarea:focus{border-color:var(--win)}
 .f textarea{min-height:56px;resize:vertical}
 .legbox{border:1px solid var(--line);border-radius:14px;padding:12px;margin-top:10px;background:var(--panel)}

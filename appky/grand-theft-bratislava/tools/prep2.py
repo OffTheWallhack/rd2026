@@ -786,6 +786,8 @@ restyle(2571, 1183, 2471, k='clad', c=TRAV, h=20.0, n='Prior')
 restyle(2592, 1070, 1979, k='clad', c='#b9b1a2')
 restyle(2598, 1066, 2353, k='clad', c='#b9b1a2')
 restyle(2592, 1069, 505, k='modern', c='#e6e7e3', rc='#8c8e90')
+# Manderlák na Námestí SNP: prvý bratislavský výškový dom, hladká svetlá fasáda
+restyle(2400, 1236, 345, k='block', c='#e9e3d3', rc='#77746e')
 
 
 # ================================================================== C. terrain

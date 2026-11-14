@@ -42,7 +42,7 @@ function sign(world, group, text, o) {
 
 export function buildVenues(world, scene) {
   const G = new THREE.Group();
-  const doors = [];
+  const doors = [], guests = [];
   const lerp2 = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
   const box = (w, h, d, col, x, y, z, ry = 0, mat = null) => {
     const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat || new THREE.MeshLambertMaterial({ color: col }));
@@ -133,6 +133,55 @@ export function buildVenues(world, scene) {
     // vchod dole pri nápise a východ na terase
     const dn = lerp2(A_W[0], A_W[1], 0.62), up = P(hw - 2.2, tl / 2 - 2.5);
     doors.push({ a: [dn[0] + n[0] * 1.6, dn[1] + n[1] * 1.6], b: up, yb: yT, name: 'Kácečko – terasa', back: 'Kamenné námestie' });
+    // hostia na terase: [x, z, y, otočenie]
+    const kx = KY_C[0], kz = KY_C[1];
+    for (const [u, v] of [[-hw + 3.6, -tl / 2 + 4], [-hw + 3.6, -tl / 2 + 6.5], [0.4, -1], [2.8, 1.2], [5, 6.5], [7.4, -6], [hw - 1.2, 3], [hw - 1.2, 5], [-3, tl / 2 - 1.2], [-1.2, tl / 2 - 1.2]]) {
+      const [x, z] = P(u, v);
+      guests.push([x, z, yT, u > hw - 2 || v > tl / 2 - 2 ? Math.atan2(kx - x, kz - z) : Math.atan2(tc[0] - x + (v % 3), tc[1] - z + (u % 2))]);
+    }
+  }
+
+  // ------------------------------------------------------------ zastávka Kamenné námestie: prístrešky pri koľajach
+  {
+    const a = [2448, 1196], b = [2485, 1128], L = Math.hypot(b[0] - a[0], b[1] - a[1]);
+    const d = [(b[0] - a[0]) / L, (b[1] - a[1]) / L], nn = [-d[1], d[0]], ry = Math.atan2(d[0], d[1]);
+    const glass = new THREE.MeshLambertMaterial({ color: 0x9fc4d8, transparent: true, opacity: 0.35, side: THREE.DoubleSide });
+    const frame = new THREE.MeshLambertMaterial({ color: 0x2b2d30 }), bench = new THREE.MeshLambertMaterial({ color: 0x8a6a48 });
+    for (const [t, side] of [[0.38, 9.5], [0.62, -5.5]]) {
+      const cx = a[0] + (b[0] - a[0]) * t + nn[0] * side, cz = a[1] + (b[1] - a[1]) * t + nn[1] * side, y = world.hAt(cx, cz);
+      const sg = Math.sign(side);
+      box(1.7, 0.1, 8, 0, cx, y + 2.6, cz, ry, frame);
+      box(0.06, 2.5, 8, 0, cx + nn[0] * 0.8 * sg, y + 1.3, cz + nn[1] * 0.8 * sg, ry, glass).castShadow = false;
+      for (const e of [-3.95, 3.95]) box(1.6, 2.5, 0.06, 0, cx + d[0] * e, y + 1.3, cz + d[1] * e, ry, glass).castShadow = false;
+      for (const e of [-3.95, 0, 3.95]) box(0.09, 2.6, 0.09, 0, cx + d[0] * e + nn[0] * 0.8 * sg, y + 1.3, cz + d[1] * e + nn[1] * 0.8 * sg, ry, frame);
+      box(0.45, 0.08, 5, 0, cx + nn[0] * 0.45 * sg, y + 0.5, cz + nn[1] * 0.45 * sg, ry, bench);
+      const e0 = [cx - d[0] * 4 - nn[0] * 0.85 * sg, cz - d[1] * 4 - nn[1] * 0.85 * sg], e1 = [cx + d[0] * 4 - nn[0] * 0.85 * sg, cz + d[1] * 4 - nn[1] * 0.85 * sg];
+      sign(world, G, 'Kamenné námestie', { a: e0, b: e1, t: 0.5, away: [cx + nn[0] * 5 * sg, cz + nn[1] * 5 * sg], y: 2.86, w: 4.2, h: 0.42, fg: '#ffffff', bg: '#c8102e', weight: 700, glow: 0.9, off: 0.02 });
+      world.colliders.add({ ax: cx - d[0] * 4 + nn[0] * 0.8 * sg, az: cz - d[1] * 4 + nn[1] * 0.8 * sg, bx: cx + d[0] * 4 + nn[0] * 0.8 * sg, bz: cz + d[1] * 4 + nn[1] * 0.8 * sg, y0: y - 1, y1: y + 2.7, kind: 'w', tag: null }, cx - 5, cz - 5, cx + 5, cz + 5);
+    }
+  }
+
+  // ------------------------------------------------------------ Stará tržnica: nápis a trhové stánky pred ňou; Manderlák
+  {
+    const a = [2314, 1201], b = [2340, 1231], C = [2322, 1245];
+    const f = sign(world, G, 'STARÁ TRŽNICA', { a, b, t: 0.5, away: C, y: 9.6, w: 13, h: 1.5, fg: '#f3ead2', glow: 1.0, off: 0.25 });
+    const L = Math.hypot(b[0] - a[0], b[1] - a[1]), d = [(b[0] - a[0]) / L, (b[1] - a[1]) / L], ry = Math.atan2(d[0], d[1]);
+    const cols = [0xd9482b, 0xf2efe6, 0x3f8a4f, 0xf2c230, 0x2f6b8a], wood = new THREE.MeshLambertMaterial({ color: 0x8a6a48 });
+    const crate = [0xd9812b, 0xc23b2b, 0x6aa33c, 0xe8c832];
+    let k = 0;
+    for (let row = 0; row < 2; row++)
+      for (let i = -2; i <= 2; i++) {
+        const x = f.x + f.nx * (7 + row * 6.5) + d[0] * i * 4.6, z = f.z + f.nz * (7 + row * 6.5) + d[1] * i * 4.6;
+        if (world.hAt(x, z) < world.water + 2) continue;
+        const y = world.hAt(x, z);
+        box(3.2, 0.08, 1.3, 0, x, y + 0.9, z, ry + Math.PI / 2, wood);
+        for (const e of [-1.5, 1.5]) for (const g of [-0.6, 0.6]) box(0.07, 2.3, 0.07, 0x3a3a3a, x + d[0] * e + f.nx * g, y + 1.15, z + d[1] * e + f.nz * g);
+        const top = new THREE.Mesh(new THREE.ConeGeometry(2.6, 0.9, 4), new THREE.MeshLambertMaterial({ color: cols[k % 5], flatShading: true }));
+        top.position.set(x, y + 2.75, z); top.rotation.y = ry + Math.PI / 4; top.castShadow = true; G.add(top);
+        for (const e of [-1, 0, 1]) box(0.75, 0.3, 0.9, crate[(k + e + 4) % 4], x + d[0] * e, y + 1.1, z + d[1] * e, ry + Math.PI / 2);
+        k++;
+      }
+    sign(world, G, 'MANDERLA', { a: [2388, 1235], b: [2401, 1224], t: 0.5, away: [2400, 1236], y: 46.2, w: 11, h: 2.2, fg: '#f4f1e6', glow: 1.3, off: -0.6 });
   }
 
   // door markers
@@ -146,7 +195,7 @@ export function buildVenues(world, scene) {
 
   let cool = 0;
   return {
-    doors,
+    doors, guests,
     // night: signs and bulbs glow
     update(dt, night) {
       cool = Math.max(0, cool - dt);

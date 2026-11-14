@@ -56,7 +56,7 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 main{max-width:1100px;margin:0 auto;padding:18px 16px calc(96px + var(--sb))}
 h2{font:700 20px/1.2 var(--head);letter-spacing:-.02em;margin:26px 0 12px;display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:10px}
 h2:first-child{margin-top:4px}
-h2 small{font:500 13px 'Instrument Sans';color:var(--mut)}
+h2 small{font:500 13px 'Instrument Sans',system-ui,sans-serif;color:var(--mut)}
 
 /* ——— prehľad ——— */
 .hero{border:1px solid var(--line);border-radius:22px;padding:20px;background:linear-gradient(160deg,#16201a,#0f1411 60%);position:relative;overflow:hidden}
@@ -168,3 +168,20 @@ label.f{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--mu
 body{overflow-x:hidden}
 .bar{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin-top:6px}
 .bar i{display:block;height:100%;background:var(--win)}
+
+/* ——— len na čítanie: 2 záložky, živé tipy ——— */
+.nav.nav2{grid-template-columns:repeat(2,1fr)}
+@media(min-width:720px){.kpis.kpis3{grid-template-columns:repeat(3,1fr)}}
+.intro{margin:6px 0 18px}
+.intro h1{font:800 clamp(28px,8vw,40px)/1.05 var(--head);letter-spacing:-.03em;margin:0}
+.intro p{margin:8px 0 0}
+.slip .ft.ft2{grid-template-columns:repeat(2,1fr)}
+.slip.live{border-color:rgba(184,255,60,.55);box-shadow:0 0 0 1px rgba(184,255,60,.25),0 0 34px rgba(184,255,60,.16);
+  background:linear-gradient(180deg,rgba(184,255,60,.07),transparent 45%),var(--panel)}
+.slip.live::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:var(--win)}
+.chip.st-live{color:#0b0f0d;background:var(--win)}
+.chip.st-live::before{background:#0b0f0d;animation:blik 1.4s infinite}
+@keyframes blik{50%{opacity:.25}}
+.badge.live{background:var(--win)}
+.slips.hotove .slip{opacity:.6}
+.slips.hotove .slip:hover{opacity:.85}

@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Tipy na dnes · si/vsadzal</title>
+<meta name="description" content="Dnešné tipy na zápasy – safe a risky tikety.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0b0f0d">
+<meta property="og:title" content="Tipy na dnes · si/vsadzal">
+<meta property="og:description" content="Dnešné tipy na zápasy – safe a risky tikety.">
+<meta property="og:image" content="https://durica.si/vsadzal/icon-512.png">
+<link rel="icon" href="../icon-192.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="../style.css">
+<style>
+  main{padding-bottom:calc(40px + var(--sb))}
+  .intro{margin:6px 0 18px}
+  .intro h1{font:800 clamp(28px,8vw,40px)/1.05 var(--head);letter-spacing:-.03em;margin:0}
+  .intro p{color:var(--mut);margin:8px 0 0}
+  .foot{margin-top:28px;text-align:center;color:var(--mut2);font-size:12.5px;line-height:1.6}
+  .slip .ft{grid-template-columns:repeat(2,1fr)}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="logo">si/<b>vsadzal</b></div>
+  <div class="acts"><button class="ibtn pri" id="share">Zdieľať</button></div>
+</header>
+<main>
+  <div class="intro"><h1 id="nadpis">Tipy na dnes</h1><p id="podnadpis">Načítavam…</p></div>
+  <div class="slips" id="slips"></div>
+  <p class="foot">Len tipy, nie istota. Stávkovanie je od 18 rokov – hraj zodpovedne a len za to, čo si môžeš dovoliť prehrať.</p>
+</main>
+<div id="toast" class="toast" hidden></div>
+<script>
+(function () {
+  'use strict';
+  var URL_ = 'https://znsrokpaoczljisaoulu.supabase.co';
+  var KEY = 'sb_publishable_9bRi6q6rnTTr5_Rszk5IiQ_MBBoti45';
+  var STAV = { navrh: 'Tip', caka: 'Čaká', vyhral: 'Vyšiel', prehral: 'Nevyšiel', vrateny: 'Vrátený', cashout: 'Cash out', neznamy: '—' };
+  var UROVEN = { ultra: 'Ultra safe', safe: 'Safe', risky: 'Risky', vlastny: 'Vlastný' };
+  var DNI = ['nedeľa', 'pondelok', 'utorok', 'streda', 'štvrtok', 'piatok', 'sobota'];
+
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function kurz(k) { return k == null ? '—' : Number(k).toLocaleString('sk-SK', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function cas(c) { var d = new Date(c); return isNaN(d) ? '' : d.toLocaleTimeString('sk-SK', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Bratislava' }); }
+  function toast(m) { var t = document.getElementById('toast'); t.textContent = m; t.hidden = false; clearTimeout(toast.x); toast.x = setTimeout(function () { t.hidden = true; }, 2400); }
+  function stavTiketu(s) { return s === 'navrh' || s === 'caka' ? 'caka' : s; }
+
+  var d = new URLSearchParams(location.search).get('d');
+  var body = /^\d{4}-\d{2}-\d{2}$/.test(d || '') ? { p_datum: d } : {};
+
+  fetch(URL_ + '/rest/v1/rpc/vsadzal_dnes', {
+    method: 'POST', cache: 'no-store',
+    headers: { apikey: KEY, Authorization: 'Bearer ' + KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (j) {
+    var p = String(j.datum).split('-'), dt = new Date(+p[0], +p[1] - 1, +p[2]);
+    var dnes = new Date(); var jeDnes = dt.toDateString() === dnes.toDateString();
+    document.getElementById('nadpis').textContent = jeDnes ? 'Tipy na dnes' : 'Tipy ' + (+p[2]) + '. ' + (+p[1]) + '.';
+    document.getElementById('podnadpis').textContent = DNI[dt.getDay()] + ' ' + (+p[2]) + '. ' + (+p[1]) + '. ' + p[0] + ' · ' +
+      j.tikety.length + ' ' + (j.tikety.length === 1 ? 'tiket' : j.tikety.length > 1 && j.tikety.length < 5 ? 'tikety' : 'tiketov');
+    var el = document.getElementById('slips');
+    if (!j.tikety.length) { el.innerHTML = '<div class="empty">Na tento deň zatiaľ nie sú žiadne tipy.</div>'; return; }
+    el.innerHTML = j.tikety.map(function (t) {
+      var st = stavTiketu(t.stav);
+      return '<article class="slip"><div class="hd"><div><div class="ttl">' + esc(t.nazov || 'Tiket') + '</div><div class="dt">' +
+        t.zapasy.length + ' ' + (t.zapasy.length === 1 ? 'zápas' : t.zapasy.length < 5 ? 'zápasy' : 'zápasov') + '</div></div>' +
+        '<div style="display:flex;gap:6px;align-items:center"><span class="lv lv-' + esc(t.uroven) + '">' + esc(UROVEN[t.uroven] || t.uroven) + '</span>' +
+        '<span class="chip st-' + esc(st) + '">' + esc(STAV[t.stav] || t.stav) + '</span></div></div><div class="legs">' +
+        t.zapasy.map(function (z) {
+          return '<div class="leg"><div><div class="m">' + esc(z.zapas) + '</div><div class="d">' + esc([z.liga, z.cas ? cas(z.cas) : '', z.trh].filter(Boolean).join(' · ')) + '</div></div>' +
+            '<div style="text-align:right"><div class="k">' + esc(z.tip || '—') + (z.kurz ? ' <span class="mut" style="font-weight:400;font-size:13px">@' + kurz(z.kurz) + '</span>' : '') + '</div>' +
+            (z.stav !== 'caka' ? '<span class="chip st-' + esc(z.stav) + '">' + esc(STAV[z.stav]) + (z.vysledok ? ' ' + esc(z.vysledok) : '') + '</span>' : '') + '</div>' +
+            (z.preco ? '<div class="why">' + esc(z.preco) + '</div>' : '') + '</div>';
+        }).join('') +
+        '</div><div class="perf"><i></i></div><div class="ft"><div><div class="lab">Celkový kurz</div><div class="v">' + kurz(t.kurz) + '</div></div>' +
+        '<div><div class="lab">Za 10 € by bolo</div><div class="v">' + (t.kurz ? (10 * t.kurz).toLocaleString('sk-SK', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €' : '—') + '</div></div></div></article>';
+    }).join('');
+  }).catch(function () {
+    document.getElementById('podnadpis').textContent = 'Tipy sa nepodarilo načítať. Skús to o chvíľu.';
+  });
+
+  document.getElementById('share').addEventListener('click', function () {
+    var url = location.origin + location.pathname;
+    if (navigator.share) navigator.share({ title: 'Tipy na dnes', text: 'Dnešné tipy na zápasy 👇', url: url }).catch(function () {});
+    else if (navigator.clipboard) navigator.clipboard.writeText(url).then(function () { toast('Odkaz skopírovaný'); });
+  });
+})();
+</script>
+<script src="/stats.js" defer></script>
+</body>
+</html>

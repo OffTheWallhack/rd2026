@@ -67,10 +67,11 @@
     if (!j.tikety.length) { el.innerHTML = '<div class="empty">Na tento deň zatiaľ nie sú žiadne tipy.</div>'; return; }
     el.innerHTML = j.tikety.map(function (t) {
       var st = stavTiketu(t.stav);
-      return '<article class="slip"><div class="hd"><div><div class="ttl">' + esc(t.nazov || 'Tiket') + '</div><div class="dt">' +
+      var live = st === 'caka' && jeDnes;
+      return '<article class="slip' + (live ? ' live' : '') + '"><div class="hd"><div><div class="ttl">' + esc(t.nazov || 'Tiket') + '</div><div class="dt">' +
         t.zapasy.length + ' ' + (t.zapasy.length === 1 ? 'zápas' : t.zapasy.length < 5 ? 'zápasy' : 'zápasov') + '</div></div>' +
         '<div style="display:flex;gap:6px;align-items:center"><span class="lv lv-' + esc(t.uroven) + '">' + esc(UROVEN[t.uroven] || t.uroven) + '</span>' +
-        '<span class="chip st-' + esc(st) + '">' + esc(STAV[t.stav] || t.stav) + '</span></div></div><div class="legs">' +
+        (live ? '<span class="chip st-live">Dá sa tipnúť</span>' : '<span class="chip st-' + esc(st) + '">' + esc(STAV[t.stav] || t.stav) + '</span>') + '</div></div><div class="legs">' +
         t.zapasy.map(function (z) {
           return '<div class="leg"><div><div class="m">' + esc(z.zapas) + '</div><div class="d">' + esc([z.liga, z.cas ? cas(z.cas) : '', z.trh].filter(Boolean).join(' · ')) + '</div></div>' +
             '<div style="text-align:right"><div class="k">' + esc(z.tip || '—') + (z.kurz ? ' <span class="mut" style="font-weight:400;font-size:13px">@' + kurz(z.kurz) + '</span>' : '') + '</div>' +

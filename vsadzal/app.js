@@ -1,4 +1,4 @@
-/* si/vsadzal — súkromná štatistika stávkových tiketov.
+/* si/vsadzal — štatistika tiketov a dnešné tipy (len na čítanie, za PINom).
    Dáta: Supabase, len cez funkcie vsadzal_* — každá chce PIN, tabuľky sú inak zamknuté.
    PIN sa na serveri overuje voči hashu, po 5 zlých pokusoch sa stránka zamkne na hodinu. */
 (function () {
@@ -7,14 +7,12 @@
   var URL_ = 'https://znsrokpaoczljisaoulu.supabase.co';
   var KEY = 'sb_publishable_9bRi6q6rnTTr5_Rszk5IiQ_MBBoti45';
 
-  var STAV = { navrh: 'Návrh', caka: 'Čaká', vyhral: 'Vyhral', prehral: 'Prehral', vrateny: 'Vrátený', cashout: 'Cash out', neznamy: 'Nevieme' };
+  var STAV = { navrh: 'Tip', caka: 'Čaká', vyhral: 'Vyhral', prehral: 'Prehral', vrateny: 'Vrátený', cashout: 'Cash out', neznamy: 'Nevieme' };
   var UROVEN = { ultra: 'Ultra safe', safe: 'Safe', risky: 'Risky', vlastny: 'Vlastný' };
   var UZAVRETE = { vyhral: 1, prehral: 1, vrateny: 1, cashout: 1 };
-  var CYKLUS = { caka: 'vyhral', vyhral: 'prehral', prehral: 'vrateny', vrateny: 'neznamy', neznamy: 'caka' };
 
-  var S = { pin: null, tikety: [], tab: 'prehlad', graf: 'zisk', fSport: '', fStav: '', otvorene: {} };
+  var S = { pin: null, tikety: [], tab: 'prehlad', graf: 'zisk' };
   var app = document.getElementById('app');
-  var sheet = document.getElementById('sheet');
 
   // ——— pomôcky ———
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -89,13 +87,6 @@
       S.tikety = (j.tikety || []).map(function (t) { t.zapasy = t.zapasy || []; return t; });
     });
   }
-  function uloz(t) {
-    return rpc('vsadzal_ulozit', { p_pin: S.pin, p_tiket: t }).then(function (j) {
-      if (!j || !j.ok) { var e = new Error(j && j.chyba); e.kod = j && j.chyba; throw e; }
-      return nacitaj();
-    });
-  }
-
   // ——— PIN ———
   function pinScreen(msg) {
     var dlzka = +(store('vsadzal_dlzka') || 4);
@@ -149,7 +140,6 @@
     };
     kresli();
   }
-  function zamkni() { store('vsadzal_pin', null); S.pin = null; S.tikety = []; pinScreen(); }
 
   // ——— štatistiky ———
   function statistiky(zoznam) {
@@ -235,72 +225,69 @@
   // ——— obrazovky ———
   function render() {
     if (!S.pin) return pinScreen();
-    var cakaju = S.tikety.filter(function (t) { return t.stav === 'caka' || t.stav === 'navrh'; }).length;
-    var tabs = [['prehlad', 'Prehľad'], ['tipy', 'Tipy'], ['tikety', 'Tikety'], ['zapasy', 'Zápasy']];
+    var dnesne = tipyDna(dnes()).length;
+    var tabs = [['prehlad', 'Prehľad'], ['tipy', 'Dnešné tipy']];
     var y = window.scrollY;
     app.innerHTML =
       '<header class="top"><div class="logo">si/<b>vsadzal</b></div><div class="acts">' +
-        '<button class="ibtn pri" data-a="novy">' + ICO.plus + 'Tiket</button>' +
-        '<button class="ibtn" data-a="menu" aria-label="Menu">' + ICO.menu + '</button></div></header>' +
-      '<main id="main">' + ({ prehlad: vPrehlad, tipy: vTipy, tikety: vTikety, zapasy: vZapasy }[S.tab])() + '</main>' +
-      '<nav class="nav">' + tabs.map(function (t) {
+        '<button class="ibtn pri" data-a="zdielat">Zdieľať tipy</button></div></header>' +
+      '<main id="main">' + (S.tab === 'tipy' ? vTipy() : vPrehlad()) + '</main>' +
+      '<nav class="nav nav2">' + tabs.map(function (t) {
         return '<button data-tab="' + t[0] + '" class="' + (S.tab === t[0] ? 'on' : '') + '">' + ICO[t[0]] +
-          '<span>' + t[1] + (t[0] === 'tipy' && cakaju ? '<span class="badge">' + cakaju + '</span>' : '') + '</span></button>';
+          '<span>' + t[1] + (t[0] === 'tipy' && dnesne ? '<span class="badge live">' + dnesne + '</span>' : '') + '</span></button>';
       }).join('') + '</nav>';
     window.scrollTo(0, y);
   }
 
   function vPrehlad() {
-    if (!S.tikety.length) return '<div class="empty">Zatiaľ tu nie sú žiadne tikety. Pridaj prvý cez „+ Tiket“.</div>';
+    if (!S.tikety.length) return '<div class="empty">Zatiaľ tu nie sú žiadne tikety.</div>';
     var s = statistiky(S.tikety);
-    var h = '<div class="hero"><div class="lab">Celkový zisk</div>' +
+    var h = '<div class="hero"><div class="lab">Čistý zisk</div>' +
       '<div class="big num ' + trieda(s.zisk) + '">' + eur(s.zisk, true) + '</div>' +
       '<div class="sub">' + s.pocet + ' vyhodnotených tiketov · návratnosť ' + (s.roi == null ? '—' : (s.roi > 0 ? '+' : '') + Math.round(s.roi * 100) + ' %') + '</div></div>';
-    h += '<div class="kpis">' +
-      kpi('Vložené', eur(s.vlozene)) + kpi('Vyplatené', eur(s.vyplatene)) +
-      kpi('Úspešnosť', pct(s.uspesnost), s.vyhral + ' z ' + (s.vyhral + s.prehral)) +
+    h += '<div class="kpis kpis3">' +
+      kpi('Staked', eur(s.vlozene)) +
+      kpi('Výhry / prehry', '<span class="pos">' + s.vyhral + '</span> / <span class="neg">' + s.prehral + '</span>') +
+      kpi('Úspešnosť', pct(s.uspesnost)) +
       kpi('Priemerný kurz', kurzTxt(s.priemKurz)) +
-      kpi('V hre teraz', eur(s.vHre)) +
-      kpi('Možná výhra', eur(s.moznaVyhra), s.caka ? s.caka + '×' : '') +
-      kpi('Najlepší tiket', najlepsi(), '') + kpi('Séria', seria()) + '</div>';
-    h += '<h2>Ako sa vyvíjajú peniaze <span class="seg"><button data-graf="zisk" class="' + (S.graf === 'zisk' ? 'on' : '') + '">Zisk</button><button data-graf="toky" class="' + (S.graf === 'toky' ? 'on' : '') + '">Vklady a výhry</button></span></h2>';
-    h += '<div class="card">' + graf() + '</div>';
+      kpi('Najlepší tiket', najlepsi()) + kpi('Séria', seria()) + '</div>';
 
-    // podľa úrovne
-    h += '<div class="split"><div><h2>Podľa typu tiketu</h2><div class="tw"><table><thead><tr><th>Typ</th><th class="r">Tikety</th><th class="r">Úspešnosť</th><th class="r">Vložené</th><th class="r">Zisk</th></tr></thead><tbody>';
+    h += '<h2>Ako sa vyvíja zisk</h2><div class="card">' + graf() + '</div>';
+
+    h += '<div class="split"><div><h2>Podľa typu tiketu</h2><div class="tw"><table><thead><tr><th>Typ</th><th class="r">Tikety</th><th class="r">Úspešnosť</th><th class="r">Staked</th><th class="r">Zisk</th></tr></thead><tbody>';
     ['ultra', 'safe', 'risky', 'vlastny'].forEach(function (u) {
       var z = S.tikety.filter(function (t) { return t.uroven === u; });
       if (!z.length) return;
       var st = statistiky(z);
-      h += '<tr><td>' + lv(u) + '</td><td class="r num">' + st.pocet + (st.caka ? ' <span class="mut">+' + st.caka + '</span>' : '') + '</td><td class="r num">' + pct(st.uspesnost) + '</td><td class="r num">' + eur(st.vlozene) + '</td><td class="r num ' + trieda(st.zisk) + '">' + eur(st.zisk, true) + '</td></tr>';
+      if (!st.pocet) return;
+      h += '<tr><td>' + lv(u) + '</td><td class="r num">' + st.pocet + '</td><td class="r num">' + pct(st.uspesnost) + '</td><td class="r num">' + eur(st.vlozene) + '</td><td class="r num ' + trieda(st.zisk) + '">' + eur(st.zisk, true) + '</td></tr>';
     });
     h += '</tbody></table></div></div>';
 
-    // podľa športu (jednotlivé zápasy)
     var sporty = {};
     S.tikety.forEach(function (t) {
       t.zapasy.forEach(function (z) {
         var k = z.sport || 'Iné';
-        sporty[k] = sporty[k] || { v: 0, p: 0, c: 0 };
-        if (z.stav === 'vyhral') sporty[k].v++; else if (z.stav === 'prehral') sporty[k].p++; else if (z.stav === 'caka') sporty[k].c++;
+        sporty[k] = sporty[k] || { v: 0, p: 0 };
+        if (z.stav === 'vyhral') sporty[k].v++; else if (z.stav === 'prehral') sporty[k].p++;
       });
     });
     h += '<div><h2>Úspešnosť zápasov podľa športu</h2><div class="tw"><table><thead><tr><th>Šport</th><th class="r">Trafené</th><th class="r">Netrafené</th><th class="r">Úspešnosť</th></tr></thead><tbody>';
     Object.keys(sporty).sort().forEach(function (k) {
       var x = sporty[k], u = x.v + x.p ? x.v / (x.v + x.p) : null;
+      if (u == null) return;
       h += '<tr><td class="t1">' + esc(k) + '</td><td class="r num pos">' + x.v + '</td><td class="r num neg">' + x.p + '</td><td class="r num">' + pct(u) +
-        (u != null ? '<div class="bar"><i style="width:' + Math.round(u * 100) + '%"></i></div>' : '') + '</td></tr>';
+        '<div class="bar"><i style="width:' + Math.round(u * 100) + '%"></i></div></td></tr>';
     });
     h += '</tbody></table></div></div></div>';
 
-    // po dňoch
     var dni = {};
-    S.tikety.forEach(function (t) { (dni[t.datum] = dni[t.datum] || []).push(t); });
-    h += '<h2>Po dňoch</h2><div class="tw"><table><thead><tr><th>Deň</th><th class="r">Tikety</th><th class="r">Vyhral / prehral</th><th class="r">Vložené</th><th class="r">Vyplatené</th><th class="r">Zisk</th></tr></thead><tbody>';
+    S.tikety.forEach(function (t) { if (UZAVRETE[t.stav]) (dni[t.datum] = dni[t.datum] || []).push(t); });
+    h += '<h2>Po dňoch</h2><div class="tw"><table><thead><tr><th>Deň</th><th class="r">Tikety</th><th class="r">Výhra / prehra</th><th class="r">Staked</th><th class="r">Zisk</th></tr></thead><tbody>';
     Object.keys(dni).sort().reverse().forEach(function (d) {
       var st = statistiky(dni[d]);
-      h += '<tr><td class="t1">' + datum(d) + '</td><td class="r num">' + dni[d].length + '</td><td class="r num"><span class="pos">' + st.vyhral + '</span> / <span class="neg">' + st.prehral + '</span>' + (st.caka ? ' <span class="mut">· ' + st.caka + ' čaká</span>' : '') +
-        '</td><td class="r num">' + eur(st.vlozene) + '</td><td class="r num">' + eur(st.vyplatene) + '</td><td class="r num ' + trieda(st.zisk) + '">' + eur(st.zisk, true) + '</td></tr>';
+      h += '<tr><td class="t1">' + datum(d) + '</td><td class="r num">' + dni[d].length + '</td><td class="r num"><span class="pos">' + st.vyhral + '</span> / <span class="neg">' + st.prehral + '</span></td>' +
+        '<td class="r num">' + eur(st.vlozene) + '</td><td class="r num ' + trieda(st.zisk) + '">' + eur(st.zisk, true) + '</td></tr>';
     });
     h += '</tbody></table></div>';
     return h;
@@ -319,247 +306,58 @@
     return '<span class="' + (posl === 'vyhral' ? 'pos' : 'neg') + '">' + n + '× ' + (posl === 'vyhral' ? 'výhra' : 'prehra') + '</span>';
   }
 
+  // tipy = tikety, ktoré som tipoval ja (nie vlastné)
+  function tipyDna(d) {
+    var poradie = { ultra: 1, safe: 2, risky: 3 };
+    return S.tikety.filter(function (t) { return t.datum === d && t.uroven !== 'vlastny'; })
+      .sort(function (a, b) { return (poradie[a.uroven] || 9) - (poradie[b.uroven] || 9); });
+  }
   function vTipy() {
-    var z = zoradene().reverse().filter(function (t) { return t.stav === 'caka' || t.stav === 'navrh'; });
-    var h = '<h2>Aktuálne tipy <small>' + z.length + ' ' + (z.length === 1 ? 'tiket' : z.length > 1 && z.length < 5 ? 'tikety' : 'tiketov') + '</small></h2>' +
-      '<div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px"><div><div class="t1" style="font-weight:700">Verejné tipy na dnes</div>' +
-      '<div class="mut" style="font-size:13px">Bez vkladov a výhier, len zápasy a tipy · durica.si/vsadzal/dnes</div></div>' +
-      '<button class="ibtn pri" data-a="zdielat">Zdieľať</button></div>';
-    if (!z.length) return h + '<div class="empty">Teraz nič nečaká. Nové tipy sa sem pridajú, keď ich vymyslíme.</div>';
-    h += '<div class="slips">' + z.map(slip).join('') + '</div>';
-    var hotove = zoradene().reverse().filter(function (t) { return UZAVRETE[t.stav]; }).slice(0, 4);
-    if (hotove.length) h += '<h2>Naposledy vyhodnotené</h2><div class="slips">' + hotove.map(slip).join('') + '</div>';
+    var d = dnes(), z = tipyDna(d);
+    var h = '<div class="intro"><h1>Dnešné tipy</h1><p class="mut">' + datum(d) + ' · ' + (z.length ? z.length + ' ' + (z.length === 1 ? 'tiket' : z.length < 5 ? 'tikety' : 'tiketov') : 'zatiaľ nič') + '</p></div>';
+    h += z.length ? '<div class="slips">' + z.map(function (t) { return slip(t, true); }).join('') + '</div>'
+      : '<div class="empty">Na dnes ešte nie sú tipy. Pribudnú, keď ich vymyslíme.</div>';
+    var dni = [];
+    zoradene().reverse().forEach(function (t) { if (t.datum < d && t.uroven !== 'vlastny' && dni.indexOf(t.datum) < 0) dni.push(t.datum); });
+    dni.slice(0, 3).forEach(function (den) {
+      h += '<h2>Predošlé tipy <small>' + datum(den) + '</small></h2><div class="slips hotove">' + tipyDna(den).map(function (t) { return slip(t, false); }).join('') + '</div>';
+    });
     return h;
   }
-  function slip(t) {
-    var moznaVyhra = (+t.vklad || 0) * (+t.kurz || 0);
-    var h = '<article class="slip"><div class="hd"><div><div class="ttl">' + esc(t.nazov || 'Tiket') + '</div><div class="dt">' + datum(t.datum) + ' · ' + t.zapasy.length + ' ' + (t.zapasy.length === 1 ? 'zápas' : t.zapasy.length < 5 ? 'zápasy' : 'zápasov') + '</div></div>' +
-      '<div style="display:flex;gap:6px;align-items:center">' + lv(t.uroven) + chip(t.stav) + '</div></div><div class="legs">';
-    t.zapasy.forEach(function (z, i) {
+  function slip(t, dnesny) {
+    var otvoreny = !UZAVRETE[t.stav];
+    var live = dnesny && otvoreny;
+    var stavTxt = live ? 'Dá sa tipnúť' : (STAV[t.stav] || t.stav);
+    var h = '<article class="slip' + (live ? ' live' : '') + '"><div class="hd"><div><div class="ttl">' + esc(t.nazov || 'Tiket') + '</div><div class="dt">' +
+      t.zapasy.length + ' ' + (t.zapasy.length === 1 ? 'zápas' : t.zapasy.length < 5 ? 'zápasy' : 'zápasov') + '</div></div>' +
+      '<div style="display:flex;gap:6px;align-items:center">' + lv(t.uroven) + '<span class="chip st-' + (live ? 'live' : esc(t.stav)) + '">' + esc(stavTxt) + '</span></div></div><div class="legs">';
+    t.zapasy.forEach(function (z) {
       h += '<div class="leg"><div><div class="m">' + esc(z.zapas) + '</div><div class="d">' + esc([z.liga, z.cas ? casTxt(z.cas) : '', z.trh].filter(Boolean).join(' · ')) + '</div></div>' +
         '<div style="text-align:right"><div class="k">' + esc(z.tip || '—') + (z.kurz ? ' <span class="mut" style="font-weight:400;font-size:13px">@' + kurzTxt(z.kurz) + '</span>' : '') + '</div>' +
-        '<button class="chip st-' + esc(z.stav) + '" data-a="cyklus" data-id="' + esc(t.id) + '" data-i="' + i + '" title="Ťukni pre zmenu stavu">' + esc(STAV[z.stav]) + (z.vysledok ? ' ' + esc(z.vysledok) : '') + '</button></div>' +
-        (z.preco ? '<div class="why">' + esc(z.preco) + '</div>' : '') + '</div>';
+        (z.stav !== 'caka' ? '<span class="chip st-' + esc(z.stav) + '">' + esc(STAV[z.stav]) + (z.vysledok ? ' ' + esc(z.vysledok) : '') + '</span>' : '') + '</div>' +
+        (z.preco && dnesny ? '<div class="why">' + esc(z.preco) + '</div>' : '') + '</div>';
     });
-    h += '</div><div class="perf"><i></i></div><div class="ft">' +
-      '<div><div class="lab">Vklad</div><div class="v">' + eur(t.vklad) + '</div></div>' +
-      '<div><div class="lab">Kurz</div><div class="v">' + kurzTxt(t.kurz) + '</div></div>' +
-      '<div><div class="lab">' + (UZAVRETE[t.stav] ? 'Výhra' : 'Možná výhra') + '</div><div class="v ' + (t.stav === 'vyhral' ? 'pos' : t.stav === 'prehral' ? 'neg' : '') + '">' + eur(UZAVRETE[t.stav] ? t.vyhra : moznaVyhra) + '</div></div></div>';
-    if (t.poznamka) h += '<div class="note">' + esc(t.poznamka) + '</div>';
-    h += '<div class="bt">' + (UZAVRETE[t.stav] ? '' :
-      '<button class="btn win" data-a="vyhral" data-id="' + esc(t.id) + '">Vyhral</button><button class="btn loss" data-a="prehral" data-id="' + esc(t.id) + '">Prehral</button>') +
-      '<button class="btn" data-a="upravit" data-id="' + esc(t.id) + '">Upraviť</button></div></article>';
+    h += '</div><div class="perf"><i></i></div><div class="ft ft2">' +
+      '<div><div class="lab">Celkový kurz</div><div class="v">' + kurzTxt(t.kurz) + '</div></div>' +
+      '<div><div class="lab">Za 10 € by bolo</div><div class="v ' + (t.stav === 'vyhral' ? 'pos' : t.stav === 'prehral' ? 'neg' : '') + '">' + (t.kurz ? eur(10 * t.kurz) : '—') + '</div></div></div></article>';
     return h;
   }
-  function casTxt(c) { var d = new Date(c); return isNaN(d) ? '' : d.toLocaleTimeString('sk-SK', { hour: '2-digit', minute: '2-digit' }); }
-
-  function vTikety() {
-    var z = zoradene().reverse();
-    if (!z.length) return '<div class="empty">Zatiaľ žiadne tikety.</div>';
-    var h = '<h2>Všetky tikety <small>' + z.length + '</small></h2><div class="tw"><table><thead><tr><th>Dátum</th><th>Tiket</th><th>Typ</th><th class="r">Vklad</th><th class="r">Kurz</th><th class="r">Výhra</th><th class="r">Zisk</th><th>Stav</th></tr></thead><tbody>';
-    z.forEach(function (t) {
-      var zs = zisk(t);
-      h += '<tr class="click" data-a="rozbal" data-id="' + esc(t.id) + '"><td class="num">' + datum(t.datum) + '</td><td class="wrap"><div class="t1">' + esc(t.nazov || 'Tiket') + '</div><div class="t2">' + esc(t.zapasy.map(function (x) { return x.zapas; }).join(' · ')) + '</div></td><td>' + lv(t.uroven) + '</td>' +
-        '<td class="r num">' + eur(t.vklad) + '</td><td class="r num">' + kurzTxt(t.kurz) + '</td><td class="r num">' + (UZAVRETE[t.stav] ? eur(t.vyhra) : '—') + '</td>' +
-        '<td class="r num ' + trieda(zs) + '">' + (UZAVRETE[t.stav] ? eur(zs, true) : '—') + '</td><td>' + chip(t.stav) + '</td></tr>';
-      if (S.otvorene[t.id]) {
-        h += '<tr class="sub"><td colspan="8"><div class="slips" style="margin-top:8px">' + slip(t) + '</div></td></tr>';
-      }
-    });
-    return h + '</tbody></table></div>';
-  }
-
-  function vZapasy() {
-    var riadky = [];
-    zoradene().reverse().forEach(function (t) { t.zapasy.forEach(function (z, i) { riadky.push({ t: t, z: z, i: i }); }); });
-    var sporty = {}; riadky.forEach(function (r) { sporty[r.z.sport || 'Iné'] = 1; });
-    var f = riadky.filter(function (r) { return (!S.fSport || (r.z.sport || 'Iné') === S.fSport) && (!S.fStav || r.z.stav === S.fStav); });
-    var v = f.filter(function (r) { return r.z.stav === 'vyhral'; }).length, p = f.filter(function (r) { return r.z.stav === 'prehral'; }).length;
-    var h = '<h2>Všetky zápasy <small>' + f.length + ' · trafené ' + v + ' z ' + (v + p) + (v + p ? ' (' + pct(v / (v + p)) + ')' : '') + '</small></h2>';
-    h += '<div class="filters">' + [''].concat(Object.keys(sporty).sort()).map(function (s) { return '<button data-fsport="' + esc(s) + '" class="' + (S.fSport === s ? 'on' : '') + '">' + esc(s || 'Všetky športy') + '</button>'; }).join('') + '</div>';
-    h += '<div class="filters">' + ['', 'vyhral', 'prehral', 'caka', 'neznamy'].map(function (s) { return '<button data-fstav="' + s + '" class="' + (S.fStav === s ? 'on' : '') + '">' + (s ? STAV[s] : 'Všetky stavy') + '</button>'; }).join('') + '</div>';
-    if (!f.length) return h + '<div class="empty">Nič nezodpovedá filtru.</div>';
-    h += '<div class="tw"><table><thead><tr><th>Dátum</th><th>Zápas</th><th>Liga</th><th>Trh</th><th>Tip</th><th class="r">Kurz</th><th>Výsledok</th><th>Stav</th><th>Tiket</th></tr></thead><tbody>';
-    f.forEach(function (r) {
-      h += '<tr><td class="num">' + datum(r.t.datum) + '</td><td class="t1">' + esc(r.z.zapas) + '</td><td><div>' + esc(r.z.liga || '') + '</div><div class="t2">' + esc(r.z.sport || '') + '</div></td><td>' + esc(r.z.trh || '') + '</td>' +
-        '<td class="num t1">' + esc(r.z.tip || '') + '</td><td class="r num">' + kurzTxt(r.z.kurz) + '</td><td class="num">' + esc(r.z.vysledok || '') + '</td>' +
-        '<td><button class="chip st-' + esc(r.z.stav) + '" data-a="cyklus" data-id="' + esc(r.t.id) + '" data-i="' + r.i + '">' + esc(STAV[r.z.stav]) + '</button></td><td>' + lv(r.t.uroven) + '</td></tr>';
-    });
-    return h + '</tbody></table></div>';
-  }
-
-  // ——— formulár tiketu ———
-  function otvorSheet(html) { sheet.innerHTML = '<div class="box">' + html + '</div>'; sheet.hidden = false; }
-  function zavriSheet() { sheet.hidden = true; sheet.innerHTML = ''; }
-  sheet.addEventListener('click', function (e) { if (e.target === sheet) zavriSheet(); });
-
-  function prazdnyZapas() { return { sport: 'Futbal', liga: '', zapas: '', trh: 'Výsledok zápasu', tip: '', kurz: '', vysledok: '', stav: 'caka', preco: '' }; }
-  function editor(t) {
-    t = t ? JSON.parse(JSON.stringify(t)) : { datum: dnes(), nazov: '', uroven: 'vlastny', stav: 'caka', vklad: '', kurz: '', vyhra: '', poznamka: '', zapasy: [prazdnyZapas()] };
-    function opt(map, val) { return Object.keys(map).map(function (k) { return '<option value="' + k + '"' + (k === val ? ' selected' : '') + '>' + map[k] + '</option>'; }).join(''); }
-    function kresli() {
-      var zs = {}; Object.keys(STAV).forEach(function (k) { if (k !== 'navrh' && k !== 'cashout') zs[k] = STAV[k]; });
-      var ts = {}; ['navrh', 'caka', 'vyhral', 'prehral', 'vrateny', 'cashout'].forEach(function (k) { ts[k] = STAV[k]; });
-      otvorSheet(
-        '<h3>' + (t.id ? 'Upraviť tiket' : 'Nový tiket') + '<button class="ibtn" data-x="zavriet">Zavrieť</button></h3>' +
-        '<div class="grid">' +
-          '<label class="f full">Názov<input data-f="nazov" value="' + esc(t.nazov || '') + '" placeholder="napr. Liga národov – safe"></label>' +
-          '<label class="f">Dátum<input type="date" data-f="datum" value="' + esc(t.datum || dnes()) + '"></label>' +
-          '<label class="f">Typ<select data-f="uroven">' + opt(UROVEN, t.uroven) + '</select></label>' +
-          '<label class="f">Stav<select data-f="stav">' + opt(ts, t.stav) + '</select></label>' +
-          '<label class="f">Vklad (€)<input inputmode="decimal" data-f="vklad" value="' + esc(t.vklad == null ? '' : t.vklad) + '"></label>' +
-          '<label class="f">Kurz tiketu<input inputmode="decimal" data-f="kurz" value="' + esc(t.kurz == null ? '' : t.kurz) + '" placeholder="dopočíta sa"></label>' +
-          '<label class="f">Výhra (€)<input inputmode="decimal" data-f="vyhra" value="' + esc(t.vyhra ? t.vyhra : '') + '" placeholder="pri výhre sa dopočíta"></label>' +
-          '<label class="f full">Poznámka<textarea data-f="poznamka">' + esc(t.poznamka || '') + '</textarea></label>' +
-        '</div>' +
-        t.zapasy.map(function (z, i) {
-          return '<div class="legbox"><div class="lh">Zápas ' + (i + 1) + '<button data-x="zmazZapas" data-i="' + i + '">Odstrániť</button></div><div class="grid">' +
-            '<label class="f full">Zápas<input data-z="zapas" data-i="' + i + '" value="' + esc(z.zapas || '') + '" placeholder="Domáci – Hostia"></label>' +
-            '<label class="f">Šport<input data-z="sport" data-i="' + i + '" value="' + esc(z.sport || '') + '" list="vs-sporty"></label>' +
-            '<label class="f">Liga<input data-z="liga" data-i="' + i + '" value="' + esc(z.liga || '') + '"></label>' +
-            '<label class="f">Trh<input data-z="trh" data-i="' + i + '" value="' + esc(z.trh || '') + '" list="vs-trhy"></label>' +
-            '<label class="f">Tip<input data-z="tip" data-i="' + i + '" value="' + esc(z.tip || '') + '" placeholder="1, X2, Lakers…"></label>' +
-            '<label class="f">Kurz<input inputmode="decimal" data-z="kurz" data-i="' + i + '" value="' + esc(z.kurz == null ? '' : z.kurz) + '"></label>' +
-            '<label class="f">Výsledok<input data-z="vysledok" data-i="' + i + '" value="' + esc(z.vysledok || '') + '" placeholder="2:1"></label>' +
-            '<label class="f">Stav<select data-z="stav" data-i="' + i + '">' + opt(zs, z.stav) + '</select></label>' +
-            '<label class="f full">Prečo<input data-z="preco" data-i="' + i + '" value="' + esc(z.preco || '') + '"></label>' +
-          '</div></div>';
-        }).join('') +
-        '<datalist id="vs-sporty"><option value="Futbal"><option value="Basketbal"><option value="Hokej"><option value="CS2"><option value="Tenis"></datalist>' +
-        '<datalist id="vs-trhy"><option value="Výsledok zápasu"><option value="Dvojtip"><option value="Víťaz zápasu (vrátane predĺženia)"><option value="Počet gólov"><option value="Handicap"></datalist>' +
-        '<div class="row"><button class="btn" data-x="pridajZapas">+ Pridať zápas</button></div>' +
-        '<div class="row">' + (t.id ? '<button class="btn danger" data-x="zmazat">Zmazať</button>' : '') + '<button class="btn win" data-x="ulozit">Uložiť</button></div>'
-      );
-    }
-    function precitaj() {
-      sheet.querySelectorAll('[data-f]').forEach(function (e) { t[e.getAttribute('data-f')] = e.value; });
-      sheet.querySelectorAll('[data-z]').forEach(function (e) { t.zapasy[+e.getAttribute('data-i')][e.getAttribute('data-z')] = e.value; });
-    }
-    kresli();
-    sheet.onclick = function (e) {
-      var b = e.target.closest('[data-x]'); if (!b) return;
-      var x = b.getAttribute('data-x');
-      if (x === 'zavriet') return zavriSheet();
-      precitaj();
-      if (x === 'pridajZapas') { t.zapasy.push(prazdnyZapas()); kresli(); sheet.querySelector('.box').scrollTop = 1e6; }
-      else if (x === 'zmazZapas') { t.zapasy.splice(+b.getAttribute('data-i'), 1); kresli(); }
-      else if (x === 'zmazat') {
-        if (!confirm('Naozaj zmazať tento tiket?')) return;
-        rpc('vsadzal_zmazat', { p_pin: S.pin, p_id: t.id }).then(nacitaj).then(function () { zavriSheet(); render(); toast('Tiket zmazaný'); }).catch(chyba);
-      } else if (x === 'ulozit') {
-        t.zapasy = t.zapasy.filter(function (z) { return (z.zapas || '').trim(); });
-        t.zapasy.forEach(function (z) { z.kurz = num(z.kurz); });
-        t.vklad = num(t.vklad) || 0; t.kurz = num(t.kurz); t.vyhra = num(t.vyhra);
-        if (t.kurz == null && t.zapasy.length && t.zapasy.every(function (z) { return z.kurz; })) {
-          t.kurz = Math.round(t.zapasy.reduce(function (a, z) { return a * z.kurz; }, 1) * 1000) / 1000;
-        }
-        if (t.stav === 'vyhral' && !t.vyhra && t.kurz) t.vyhra = Math.round(t.vklad * t.kurz * 100) / 100;
-        if (t.stav === 'vrateny' && !t.vyhra) t.vyhra = t.vklad;
-        if (t.stav === 'prehral') t.vyhra = 0;
-        b.disabled = true; b.textContent = 'Ukladám…';
-        uloz(t).then(function () { zavriSheet(); render(); toast('Uložené'); }).catch(function (er) { b.disabled = false; b.textContent = 'Uložiť'; chyba(er); });
-      }
-    };
-  }
-  function chyba(e) {
-    if (e && (e.kod === 'zly' || e.kod === 'zamknute')) { zavriSheet(); store('vsadzal_pin', null); S.pin = null; return pinScreen(chybaText(e.kod)); }
-    toast(chybaText(e && e.kod, e));
-  }
-
-  function najdi(id) { for (var i = 0; i < S.tikety.length; i++) if (S.tikety[i].id === id) return S.tikety[i]; return null; }
-
-  function vyhodnot(t, stav) {
-    if (stav === 'prehral') {
-      if (!confirm('Označiť „' + (t.nazov || 'tiket') + '“ ako prehratý?')) return;
-      var k = JSON.parse(JSON.stringify(t)); k.stav = 'prehral'; k.vyhra = 0;
-      k.zapasy.forEach(function (z) { if (z.stav === 'caka') z.stav = 'neznamy'; });
-      return uloz(k).then(function () { render(); toast('Zapísané ako prehra'); }).catch(chyba);
-    }
-    var navrh = t.kurz ? Math.round(t.vklad * t.kurz * 100) / 100 : '';
-    otvorSheet('<h3>Koľko si vyhral?<button class="ibtn" data-x="zavriet">Zavrieť</button></h3>' +
-      '<p class="mut" style="margin:-6px 0 12px">Napíš sumu, ktorú ti Fortuna naozaj vyplatila.</p>' +
-      '<label class="f">Výhra (€)<input inputmode="decimal" id="vs-vyhra" value="' + esc(navrh) + '"></label>' +
-      '<div class="row"><button class="btn win" data-x="ok">Uložiť výhru</button></div>');
-    sheet.onclick = function (e) {
-      var b = e.target.closest('[data-x]'); if (!b) return;
-      if (b.getAttribute('data-x') === 'zavriet') return zavriSheet();
-      var v = num(document.getElementById('vs-vyhra').value);
-      if (v == null) return toast('Zadaj sumu');
-      var k = JSON.parse(JSON.stringify(t)); k.stav = 'vyhral'; k.vyhra = v;
-      if (!k.kurz && k.vklad) k.kurz = Math.round(v / k.vklad * 1000) / 1000;
-      k.zapasy.forEach(function (z) { if (z.stav === 'caka') z.stav = 'vyhral'; });
-      b.disabled = true;
-      uloz(k).then(function () { zavriSheet(); render(); toast('Výhra zapísaná 🎉'); }).catch(chyba);
-    };
-  }
-
-  function menu() {
-    otvorSheet('<h3>Menu<button class="ibtn" data-x="zavriet">Zavrieť</button></h3><div class="menu">' +
-      '<button class="btn" data-x="obnov">Obnoviť dáta</button>' +
-      '<button class="btn" data-x="pin">Zmeniť PIN</button>' +
-      '<button class="btn danger" data-x="zamkni">Zamknúť a zabudnúť PIN na tomto zariadení</button></div>');
-    sheet.onclick = function (e) {
-      var b = e.target.closest('[data-x]'); if (!b) return;
-      var x = b.getAttribute('data-x');
-      if (x === 'zavriet') zavriSheet();
-      else if (x === 'obnov') nacitaj().then(function () { zavriSheet(); render(); toast('Obnovené'); }).catch(chyba);
-      else if (x === 'zamkni') { zavriSheet(); zamkni(); }
-      else if (x === 'pin') zmenPin();
-    };
-  }
-  function zmenPin() {
-    otvorSheet('<h3>Zmeniť PIN<button class="ibtn" data-x="zavriet">Zavrieť</button></h3><div class="grid">' +
-      '<label class="f full">Nový PIN (4–8 číslic)<input type="password" inputmode="numeric" id="vs-p1" autocomplete="new-password"></label>' +
-      '<label class="f full">Ešte raz<input type="password" inputmode="numeric" id="vs-p2" autocomplete="new-password"></label></div>' +
-      '<div class="row"><button class="btn win" data-x="ok">Zmeniť</button></div>');
-    sheet.onclick = function (e) {
-      var b = e.target.closest('[data-x]'); if (!b) return;
-      if (b.getAttribute('data-x') === 'zavriet') return zavriSheet();
-      var p1 = document.getElementById('vs-p1').value, p2 = document.getElementById('vs-p2').value;
-      if (!/^[0-9]{4,8}$/.test(p1)) return toast('PIN musí mať 4 až 8 číslic');
-      if (p1 !== p2) return toast('PIN-y sa nezhodujú');
-      rpc('vsadzal_zmenit_pin', { p_pin: S.pin, p_novy: p1 }).then(function (j) {
-        if (!j || !j.ok) { var er = new Error(); er.kod = j && j.chyba; throw er; }
-        var pamata = false; try { pamata = !!localStorage.getItem('vsadzal_pin'); } catch (x) {}
-        S.pin = p1; store('vsadzal_pin', [p1, pamata]);
-        try { localStorage.setItem('vsadzal_dlzka', String(p1.length)); } catch (x) {}
-        zavriSheet(); toast('PIN zmenený');
-      }).catch(chyba);
-    };
-  }
+  function casTxt(c) { var d = new Date(c); return isNaN(d) ? '' : d.toLocaleTimeString('sk-SK', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Bratislava' }); }
 
   // ——— kliky ———
   app.addEventListener('click', function (e) {
     var tab = e.target.closest('[data-tab]');
     if (tab) { S.tab = tab.getAttribute('data-tab'); render(); window.scrollTo(0, 0); return; }
-    var g = e.target.closest('[data-graf]');
-    if (g) { S.graf = g.getAttribute('data-graf'); render(); return; }
-    var fs = e.target.closest('[data-fsport]');
-    if (fs) { S.fSport = fs.getAttribute('data-fsport'); render(); return; }
-    var ft = e.target.closest('[data-fstav]');
-    if (ft) { S.fStav = ft.getAttribute('data-fstav'); render(); return; }
-    var b = e.target.closest('[data-a]'); if (!b) return;
-    var a = b.getAttribute('data-a'), t = najdi(b.getAttribute('data-id'));
-    if (a === 'zdielat') {
+    var b = e.target.closest('[data-a="zdielat"]');
+    if (b) {
       var url = 'https://durica.si/vsadzal/dnes/';
       if (navigator.share) navigator.share({ title: 'Tipy na dnes', text: 'Dnešné tipy na zápasy 👇', url: url }).catch(function () {});
       else if (navigator.clipboard) navigator.clipboard.writeText(url).then(function () { toast('Odkaz skopírovaný'); });
-      return;
-    }
-    if (a === 'novy') editor(null);
-    else if (a === 'menu') menu();
-    else if (a === 'rozbal') { S.otvorene[t.id] = !S.otvorene[t.id]; render(); }
-    else if (a === 'upravit') editor(t);
-    else if (a === 'vyhral' || a === 'prehral') vyhodnot(t, a);
-    else if (a === 'cyklus') {
-      e.stopPropagation();
-      var k = JSON.parse(JSON.stringify(t)), i = +b.getAttribute('data-i');
-      k.zapasy[i].stav = CYKLUS[k.zapasy[i].stav] || 'caka';
-      b.textContent = STAV[k.zapasy[i].stav]; b.className = 'chip st-' + k.zapasy[i].stav;
-      uloz(k).then(render).catch(chyba);
     }
   });
   var rt; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { if (S.pin && S.tab === 'prehlad') render(); }, 200); });
+  // dáta sa obnovia, keď sa človek vráti na stránku
+  document.addEventListener('visibilitychange', function () { if (!document.hidden && S.pin) nacitaj().then(render).catch(function () {}); });
 
   // ——— štart ———
   var ulozeny = store('vsadzal_pin');

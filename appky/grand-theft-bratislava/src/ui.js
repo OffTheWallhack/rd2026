@@ -80,14 +80,24 @@ export class UI {
   bindTouch(input, snd) {
     this.snd = snd;
     const stickEl = $('#stick'), knob = $('#stick i');
-    let sid = null, sx = 0, sy = 0, lid = null, lx = 0;
-    const R = 52;
+    let sid = null, sx = 0, sy = 0, lid = null, lx = 0, slider = false;
+    const R = 52, RS = 78;
     const zone = $('#touch');
     zone.addEventListener('touchstart', (e) => {
       snd.unlock();
       for (const t of e.changedTouches) {
         if (t.clientX < innerWidth * 0.5 && sid === null) {
           sid = t.identifier; sx = t.clientX; sy = t.clientY;
+          slider = document.body.classList.contains('incar');
+          if (slider) {
+            // v aute: posuvník doľava–doprava (poloha prsta voči stredu posuvníka)
+            const rc = stickEl.getBoundingClientRect();
+            sx = rc.left + rc.width / 2;
+            const dx = Math.max(-RS, Math.min(RS, t.clientX - sx));
+            knob.style.transform = `translate(${dx}px,0)`;
+            this.stick.active = true; this.stick.x = dx / RS; this.stick.y = 0;
+            continue;
+          }
           stickEl.style.left = sx + 'px'; stickEl.style.top = sy + 'px';
           stickEl.classList.add('on');
           this.stick.active = true; this.stick.x = this.stick.y = 0;
@@ -97,7 +107,11 @@ export class UI {
     }, { passive: false });
     zone.addEventListener('touchmove', (e) => {
       for (const t of e.changedTouches) {
-        if (t.identifier === sid) {
+        if (t.identifier === sid && slider) {
+          const dx = Math.max(-RS, Math.min(RS, t.clientX - sx));
+          knob.style.transform = `translate(${dx}px,0)`;
+          this.stick.x = dx / RS; this.stick.y = 0;
+        } else if (t.identifier === sid) {
           let dx = t.clientX - sx, dy = t.clientY - sy;
           const d = Math.hypot(dx, dy);
           if (d > R) { dx *= R / d; dy *= R / d; }

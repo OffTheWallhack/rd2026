@@ -106,6 +106,7 @@ const HOUSE = ['#f1ead8', '#ece0c2', '#e9d6a8', '#f4f1ea', '#dfd3bd', '#e6c9a0',
 const BLOCK = ['#c9c4b8', '#bdb7aa', '#d4cdbd', '#b3b6b4', '#cbbfa8', '#c2c7c4'];
 const ROOF = ['#9a4a32', '#a85a3a', '#8a3e2c', '#7d4434', '#b0603f', '#94503a', '#53565c', '#5c5450'];
 const KID = { old: 0, modern: 1, util: 2, church: 3, castle: 4, roof: 5, ruin: 2, panel: 6, house: 7, block: 8, clad: 9 };
+const CLEAR = [[2334.6, 1209.5, 19]]; // [x, z, polomer]
 const EMPTY = { bld: [], green: [], water: [], parea: [], walls: [], trees: [], lamps: [] };
 const _col = new THREE.Color();
 
@@ -823,11 +824,13 @@ export class World {
   *buildTile(t) {
     const d = t.data, T = this.T, x0 = t.x0, z0 = t.z0;
     const M = new THREE.Matrix4(), q = new THREE.Quaternion(), S = new THREE.Vector3(), P = new THREE.Vector3(), up = new THREE.Vector3(0, 1, 0);
-    const nT = d.trees.length;
+    // voľné miesta bez stromov (trh pred Starou tržnicou)
+    const trees = d.trees.filter((q) => !CLEAR.some(([cx, cz, r]) => Math.hypot(q[0] / 10 + x0 - cx, q[1] / 10 + z0 - cz) < r));
+    const nT = trees.length;
     if (nT) {
       const tm = new THREE.InstancedMesh(this.trunkGeo, this.trunkMat, nT), cm = new THREE.InstancedMesh(this.crownGeo, this.crownMat, nT);
       for (let i = 0; i < nT; i++) {
-        const x = d.trees[i][0] / 10 + x0, z = d.trees[i][1] / 10 + z0, hs = t.k * 4099 + i;
+        const x = trees[i][0] / 10 + x0, z = trees[i][1] / 10 + z0, hs = t.k * 4099 + i;
         const s = 0.75 + hash(hs * 3 + 1) * 0.6, y = this.hAt(x, z);
         q.setFromAxisAngle(up, hash(hs) * 6.28);
         M.compose(P.set(x, y, z), q, S.set(s, s * (0.9 + hash(hs * 5) * 0.3), s));
@@ -911,6 +914,8 @@ export class World {
     for (const m of this.meshesFrom(A)) { t.objs.push(m); this.group.add(m); }
     yield;
     this.buildMarkings(t);
+    yield;
+    this.buildSigns(t);
     yield;
     this.buildFountains(t);
     yield;
@@ -1028,6 +1033,37 @@ export class World {
       }
       if (r.c >= 3) for (const o of [r.w / 2 - 0.3, -(r.w / 2 - 0.3)]) stripe(W, o, 0.12, WHITE, yOf, lift, 0, 0, blocked);
     }
+    // obrubníky: nízky kamenný pás po oboch stranách cesty (zakryje aj zubatý okraj asfaltu)
+    const KERB = [0.5, 0.49, 0.46], KSIDE = [0.3, 0.29, 0.27];
+    for (const r of this.ix.road[t.k]) {
+      if (r.c < 1 || r.c > 4 || r.b || r.s || r.pk || r.nv) continue;
+      const pts = m(r.p), W = walk(pts, 2.5);
+      if (W.length < 2) continue;
+      const blocked = [];
+      let sAcc = 0;
+      for (let k = 0; k < r.p.length; k++) {
+        if (k) sAcc += Math.hypot(pts[k][0] - pts[k - 1][0], pts[k][1] - pts[k - 1][1]);
+        const others = (this.touch.get(r.p[k][0] * 200000 + r.p[k][1]) || []).filter((j) => j !== r._i);
+        if (!others.length) continue;
+        const ends = k === 0 || k === r.p.length - 1;
+        if (ends && others.length === 1 && Math.abs(this.d.road[others[0]].w - r.w) < 0.1) continue;
+        const wMax = Math.max(...others.map((j) => this.d.road[j].w));
+        blocked.push([sAcc - wMax / 2 - 2.2, sAcc + wMax / 2 + 2.2]);
+      }
+      for (const sd of [1, -1]) {
+        const o0 = sd * (r.w / 2 - 0.04), o1 = sd * (r.w / 2 + 0.26);
+        for (let i = 0; i < W.length - 1; i++) {
+          const a = W[i], b = W[i + 1], sm = (a.s + b.s) / 2;
+          if (!inT((a.x + b.x) / 2, (a.z + b.z) / 2) || blocked.some(([u, v]) => sm > u && sm < v)) continue;
+          const A0 = [a.x + a.nx * o0, 0, a.z + a.nz * o0], B0 = [b.x + b.nx * o0, 0, b.z + b.nz * o0];
+          const A1 = [a.x + a.nx * o1, 0, a.z + a.nz * o1], B1 = [b.x + b.nx * o1, 0, b.z + b.nz * o1];
+          const ya = this.hAt(A0[0], A0[2]), yb = this.hAt(B0[0], B0[2]), H = 0.13;
+          const A0t = [A0[0], ya + H, A0[2]], B0t = [B0[0], yb + H, B0[2]], A1t = [A1[0], this.hAt(A1[0], A1[2]) + H, A1[2]], B1t = [B1[0], this.hAt(B1[0], B1[2]) + H, B1[2]];
+          if (sd > 0) { quad(A0t, B0t, B1t, A1t, KERB); quad([A0[0], ya, A0[2]], [B0[0], yb, B0[2]], B0t, A0t, KSIDE); }
+          else { quad(A1t, B1t, B0t, A0t, KERB); quad(A0t, B0t, [B0[0], yb, B0[2]], [A0[0], ya, A0[2]], KSIDE); }
+        }
+      }
+    }
     const tmp = [];
     const onRoad = (x, z) => {
       for (const sg of this.edgeGrid.query(x, z, 8, tmp)) {
@@ -1075,6 +1111,53 @@ export class World {
     const mesh = new THREE.Mesh(geo, this.markMat);
     mesh.receiveShadow = true;
     t.objs.push(mesh); this.group.add(mesh);
+  }
+
+  // dopravné značky pri križovatkách; dajú sa zraziť autom
+  buildSigns(t) {
+    const S = [], T = this.T;
+    for (const r of this.ix.road[t.k]) {
+      if (r.c < 1 || r.c > 3 || r.b || r.nv || r.pk) continue;
+      const n = r.p.length;
+      for (const end of [0, 1]) {
+        const k = end ? n - 1 : 0, key = r.p[k][0] * 200000 + r.p[k][1];
+        const others = (this.touch.get(key) || []).filter((j) => j !== r._i);
+        if (others.length < 1 || (others.length === 1 && this.d.road[others[0]].c === r.c)) continue;
+        if (hash(key % 99991) < 0.35) continue;
+        const a = r.p[k], b = r.p[end ? n - 2 : 1];
+        let dx = (b[0] - a[0]) / 10, dz = (b[1] - a[1]) / 10;
+        const L = Math.hypot(dx, dz);
+        if (L < 9) continue;
+        dx /= L; dz /= L;
+        const back = Math.min(L - 1, 8.5), side = (end ? -1 : 1) * (r.w / 2 + 1.0);
+        const x = a[0] / 10 + dx * back - dz * side, z = a[1] / 10 + dz * back + dx * side;
+        if (x < t.x0 || z < t.z0 || x >= t.x0 + T || z >= t.z0 + T) continue;
+        if (this.hAt(x, z) < this.water + 1) continue;
+        S.push([x, z, Math.atan2(-dx, -dz), Math.floor(hash(key % 7919) * 4)]);
+      }
+    }
+    if (!S.length) return;
+    if (!this.signGeo) {
+      this.signGeo = [new THREE.CylinderGeometry(0.035, 0.035, 2.5, 5), new THREE.CylinderGeometry(0.34, 0.34, 0.04, 14), new THREE.CylinderGeometry(0.24, 0.24, 0.05, 12)];
+      this.signGeo[0].translate(0, 1.25, 0);
+      for (const g of this.signGeo.slice(1)) { g.rotateX(Math.PI / 2); g.translate(0, 2.35, 0.03); }
+      for (const g of this.signGeo) g.userData.shared = true;
+      this.signMat = [new THREE.MeshLambertMaterial({ color: 0x8b8f94 }), new THREE.MeshLambertMaterial({ color: 0xffffff }), new THREE.MeshLambertMaterial({ color: 0xffffff })];
+    }
+    const im = this.signGeo.map((g, i) => new THREE.InstancedMesh(g, this.signMat[i], S.length));
+    const M = new THREE.Matrix4(), q = new THREE.Quaternion(), up = new THREE.Vector3(0, 1, 0), one = new THREE.Vector3(1, 1, 1), P = new THREE.Vector3();
+    const OUT = ['#c8102e', '#1456b8', '#c8102e', '#f2c230'], IN = ['#ffffff', '#1456b8', '#c8102e', '#f2c230'];
+    S.forEach(([x, z, h, ty], i) => {
+      const y = this.hAt(x, z);
+      q.setFromAxisAngle(up, h);
+      M.compose(P.set(x, y, z), q, one);
+      for (const o of im) o.setMatrixAt(i, M);
+      im[1].setColorAt(i, _col.set(OUT[ty])); im[2].setColorAt(i, _col.set(IN[ty]));
+      this.colliders.add({ ax: x - 0.08, az: z, bx: x + 0.08, bz: z, y0: y - 1, y1: y + 2.6, kind: 'p', tag: t, im, idx: i, px: x, pz: z, py: y, sc: 1, sign: [h, OUT[ty], IN[ty]] }, x - 0.2, z - 0.2, x + 0.2, z + 0.2, t.keys);
+    });
+    const g = new THREE.Group();
+    for (const o of im) { o.frustumCulled = false; o.castShadow = false; g.add(o); }
+    t.objs.push(g); this.group.add(g);
   }
 
   // ponds and fountain basins above the river level: real water + a stone rim
@@ -1512,6 +1595,11 @@ export class World {
       if (s.im[1].instanceColor) s.im[1].getColorAt(s.idx, col);
       const cm = this.crownMat.clone(); cm.color = col; cm.onBeforeCompile = this.crownMat.onBeforeCompile;
       g.add(new THREE.Mesh(this.trunkGeo, this.trunkMat), new THREE.Mesh(this.crownGeo, cm));
+    } else if (s.sign) {
+      const h = new THREE.Group();
+      h.add(new THREE.Mesh(this.signGeo[0], this.signMat[0]), new THREE.Mesh(this.signGeo[1], new THREE.MeshLambertMaterial({ color: s.sign[1] })), new THREE.Mesh(this.signGeo[2], new THREE.MeshLambertMaterial({ color: s.sign[2] })));
+      h.rotation.y = s.sign[0];
+      g.add(h);
     } else g.add(new THREE.Mesh(this.postGeo, this.postMat), new THREE.Mesh(this.headGeo, new THREE.MeshBasicMaterial({ color: 0x3a3a3a })));
     g.traverse((o) => { if (o.isMesh) o.castShadow = true; });
     g.position.set(s.px, s.py, s.pz); g.scale.setScalar(s.sc || 1);
@@ -1519,7 +1607,7 @@ export class World {
     const d = { obj: g, ang: 0, w: 1.2 + L * 0.12, axis: new THREE.Vector3(vz / L, 0, -vx / L), spin: (Math.random() - 0.5) * 0.6, t: 0, tile: s.tag, max: s.kind === 't' ? 1.5 : 1.52 };
     this.group.add(g);
     (this.debris || (this.debris = [])).push(d);
-    if (s.kind === 'p' && s.tag) { s.tag.lampPts = s.tag.lampPts.filter((q) => Math.hypot(q[0] - s.px, q[1] - s.pz) > 0.5); this.lampDirty = true; }
+    if (s.kind === 'p' && s.tag && !s.sign) { s.tag.lampPts = s.tag.lampPts.filter((q) => Math.hypot(q[0] - s.px, q[1] - s.pz) > 0.5); this.lampDirty = true; }
   }
   tickDebris(dt) {
     const D = this.debris;

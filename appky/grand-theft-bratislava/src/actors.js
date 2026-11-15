@@ -36,6 +36,38 @@ const PEOPLE = [
   { file: 'woman_dress.glb', pre: 'HumanArmature|Female_' },
 ];
 
+async function loadEventCar(base, key, SC, wr, ww) {
+  try {
+    const [meta, tex] = await Promise.all([
+      fetch(base.replace(/models\/$/, '') + 'cars/' + key + '.json').then((r) => { if (!r.ok) throw new Error('model'); return r.json(); }),
+      new Promise((ok, no) => new THREE.TextureLoader().load(base.replace(/models\/$/, '') + 'cars/' + key + '.jpg', ok, undefined, no)),
+    ]);
+    const bin = Uint8Array.from(atob(meta.bin), (c) => c.charCodeAt(0)).buffer;
+    tex.flipY = false; tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
+    const p = meta.body, g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(bin, p.pos[0], p.pos[1]), 3));
+    g.setAttribute('normal', new THREE.BufferAttribute(new Int8Array(bin, p.nor[0], p.nor[1]), 3, true));
+    g.setAttribute('uv', new THREE.BufferAttribute(new Uint16Array(bin, p.uv[0], p.uv[1]), 2, true));
+    g.setIndex(new THREE.BufferAttribute(new Uint16Array(bin, p.idx[0], p.idx[1]), 1));
+    g.computeBoundingBox(); g.computeBoundingSphere();
+    const holder = new THREE.Group(), inner = new THREE.Group();
+    inner.scale.setScalar(SC); holder.add(inner);
+    const body = new THREE.Mesh(g, new THREE.MeshLambertMaterial({ map: tex, side: THREE.DoubleSide, name: 'EventBody' }));
+    body.castShadow = true;
+    inner.add(body);
+    const r = meta.wr || wr, w = meta.ww || ww;
+    const tyreG = new THREE.CylinderGeometry(r, r, w, 16); tyreG.rotateZ(Math.PI / 2);
+    const rimG = new THREE.CylinderGeometry(r * 0.6, r * 0.6, w * 1.03, 10); rimG.rotateZ(Math.PI / 2);
+    const tyreM = new THREE.MeshLambertMaterial({ color: 0x131314, name: 'Tire' }), rimM = new THREE.MeshLambertMaterial({ color: 0x8d9096, name: 'Rim' });
+    for (const wh of meta.wheels) {
+      const t = new THREE.Mesh(tyreG, tyreM), m = new THREE.Mesh(rimG, rimM);
+      t.position.set(wh.center[0], r, wh.center[2]); m.position.copy(t.position); t.castShadow = true;
+      inner.add(t, m);
+    }
+    const bb = g.boundingBox, old = ASSETS.cars[key];
+    ASSETS.cars[key] = { obj: holder, def: { ...old.def, paint: null }, w: (bb.max.x - bb.min.x) * SC * 0.94, h: (bb.max.y - bb.min.y) * SC, len: (bb.max.z - bb.min.z) * SC, real: true };
+  } catch (e) { console.warn('event car model', key, e && e.message); /* keep the procedural version */ }
+}
 export async function loadAssets(base, onProgress) {
   const jobs = [];
   let done = 0;
@@ -108,6 +140,8 @@ export async function loadAssets(base, onProgress) {
   }
   await Promise.all(jobs);
   for (const k of Object.keys(CAR_SPECS)) ASSETS.cars[k] = buildCar(k);
+  // skutočné 3D modely event áut (rovnaké ako v Event Car Game); ak sa nenačítajú, ostane jednoduchý model
+  await Promise.all([loadEventCar(base, 'zubor', 1.05, 0.42, 0.38), loadEventCar(base, 'sugga', 1.07, 0.345, 0.42)]);
 }
 
 // ------------------------------------------------------------------ person
@@ -242,7 +276,9 @@ export class Car {
     let impact = 0;
     for (const o of [this.off, -this.off, 0]) {
       const px = this.x + nh * o, pz = this.z + nc * o;
-      if (world.collide(px, pz, this.y + 0.3, this.r, _hit)) {
+      const hitNow = world.collide(px, pz, this.y + 0.3, this.r, _hit, Math.hypot(this.vx, this.vz), this.vx, this.vz);
+      if (_hit.broke) { const k = _hit.broke === 't' ? 0.7 : 0.86; this.vx *= k; this.vz *= k; this.dmg += _hit.broke === 't' ? 9 : 4; this.broke = _hit.broke; impact = Math.max(impact, _hit.broke === 't' ? 7 : 4.5); }
+      if (hitNow) {
         this.x += _hit.x - px;
         this.z += _hit.z - pz;
         const vn = this.vx * _hit.nx + this.vz * _hit.nz;

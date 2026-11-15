@@ -834,7 +834,7 @@ export class World {
         tm.setMatrixAt(i, M); cm.setMatrixAt(i, M);
         _col.setHSL(0.22 + hash(hs * 11) * 0.08, 0.38 + hash(hs * 17) * 0.2, 0.22 + hash(hs * 19) * 0.1);
         cm.setColorAt(i, _col);
-        this.colliders.add({ ax: x - 0.25, az: z, bx: x + 0.25, bz: z, y0: y - 2, y1: y + 3, kind: 't', tag: t }, x - 0.3, z - 0.3, x + 0.3, z + 0.3, t.keys);
+        this.colliders.add({ ax: x - 0.25, az: z, bx: x + 0.25, bz: z, y0: y - 2, y1: y + 3, kind: 't', tag: t, im: [tm, cm], idx: i, px: x, pz: z, py: y, sc: s }, x - 0.3, z - 0.3, x + 0.3, z + 0.3, t.keys);
       }
       tm.castShadow = cm.castShadow = !this.mobile || nT < 500;
       cm.receiveShadow = true;
@@ -872,7 +872,7 @@ export class World {
       L.forEach(([x, z], i) => {
         M.makeTranslation(x, this.hAt(x, z), z);
         pm.setMatrixAt(i, M); hm.setMatrixAt(i, M);
-        this.colliders.add({ ax: x - 0.1, az: z, bx: x + 0.1, bz: z, y0: -50, y1: 999, kind: 'p', tag: t }, x - 0.2, z - 0.2, x + 0.2, z + 0.2, t.keys);
+        this.colliders.add({ ax: x - 0.1, az: z, bx: x + 0.1, bz: z, y0: -50, y1: 999, kind: 'p', tag: t, im: [pm, hm], idx: i, px: x, pz: z, py: this.hAt(x, z), sc: 1 }, x - 0.2, z - 0.2, x + 0.2, z + 0.2, t.keys);
       });
       pm.frustumCulled = hm.frustumCulled = false;
       const g = new THREE.Group(); g.add(pm, hm);
@@ -1501,16 +1501,48 @@ export class World {
     return out;
   }
 
-  collide(x, z, y, r, out) {
+  // a fast car knocks over trees and lamp posts instead of stopping dead
+  breakProp(s, vx, vz) {
+    s.dead = true;
+    const Z = new THREE.Matrix4().makeScale(0, 0, 0);
+    for (const im of s.im) { im.setMatrixAt(s.idx, Z); im.instanceMatrix.needsUpdate = true; }
+    const g = new THREE.Group();
+    if (s.kind === 't') {
+      const col = new THREE.Color(0x4f8a3c);
+      if (s.im[1].instanceColor) s.im[1].getColorAt(s.idx, col);
+      const cm = this.crownMat.clone(); cm.color = col; cm.onBeforeCompile = this.crownMat.onBeforeCompile;
+      g.add(new THREE.Mesh(this.trunkGeo, this.trunkMat), new THREE.Mesh(this.crownGeo, cm));
+    } else g.add(new THREE.Mesh(this.postGeo, this.postMat), new THREE.Mesh(this.headGeo, new THREE.MeshBasicMaterial({ color: 0x3a3a3a })));
+    g.traverse((o) => { if (o.isMesh) o.castShadow = true; });
+    g.position.set(s.px, s.py, s.pz); g.scale.setScalar(s.sc || 1);
+    const L = Math.hypot(vx, vz) || 1;
+    const d = { obj: g, ang: 0, w: 1.2 + L * 0.12, axis: new THREE.Vector3(vz / L, 0, -vx / L), spin: (Math.random() - 0.5) * 0.6, t: 0, tile: s.tag, max: s.kind === 't' ? 1.5 : 1.52 };
+    this.group.add(g);
+    (this.debris || (this.debris = [])).push(d);
+    if (s.kind === 'p' && s.tag) { s.tag.lampPts = s.tag.lampPts.filter((q) => Math.hypot(q[0] - s.px, q[1] - s.pz) > 0.5); this.lampDirty = true; }
+  }
+  tickDebris(dt) {
+    const D = this.debris;
+    if (!D || !D.length) return;
+    for (let i = D.length - 1; i >= 0; i--) {
+      const d = D[i];
+      d.t += dt;
+      if (d.ang < d.max) { d.w += 5.5 * dt * (0.3 + Math.sin(d.ang)); d.ang = Math.min(d.max, d.ang + d.w * dt); d.obj.quaternion.setFromAxisAngle(d.axis, d.ang); d.obj.rotateY(d.spin * d.ang); }
+      if (d.t > 40 || (d.tile && d.tile.state !== 4)) { this.group.remove(d.obj); D.splice(i, 1); }
+    }
+  }
+  collide(x, z, y, r, out, power = 0, vx = 0, vz = 0) {
+    out.broke = null;
     const a = this.colliders.query(x, z, r + 0.5, this._tmp);
     let hit = false;
     out.nx = 0; out.nz = 0; out.d = 0; out.kind = null;
     for (let k = 0; k < a.length; k++) {
       const s = a[k];
-      if (y > s.y1 || y + 1.5 < s.y0) continue;
+      if (s.dead || y > s.y1 || y + 1.5 < s.y0) continue;
       const c = segClosest(x, z, s.ax, s.az, s.bx, s.bz, this._c);
       let dx = x - c.x, dz = z - c.z;
       const d = Math.hypot(dx, dz);
+      if (d < r && s.im && power > (s.kind === 't' ? 7.5 : 4.5)) { this.breakProp(s, vx, vz); out.broke = s.kind; continue; }
       if (d < r) {
         if (d < 1e-4) { dx = -(s.bz - s.az); dz = s.bx - s.ax; }
         const L = Math.hypot(dx, dz) || 1, pen = r - d;

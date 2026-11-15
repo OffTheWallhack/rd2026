@@ -262,6 +262,33 @@ function eventLivery(c, kind) {
     c.obj.add(m);
   }
 }
+// náraz: auto sa trochu pokrčí a odletia z neho kúsky
+const shards = [];
+const shardG = new THREE.BoxGeometry(0.16, 0.05, 0.22);
+function crush(c, imp, quiet) {
+  const k = Math.min(0.17, (c.crushK || 0) + imp * 0.0035);
+  c.crushK = k;
+  c.obj.scale.set(1 + k * 0.22, 1 - k * 0.5, 1 - k * 0.75);
+  if (quiet || shards.length > 70) return;
+  const n = Math.min(8, 2 + Math.floor(imp / 3));
+  for (let i = 0; i < n; i++) {
+    const m = new THREE.Mesh(shardG, new THREE.MeshLambertMaterial({ color: i % 3 ? new THREE.Color(c.paint || '#888') : 0x22262b }));
+    m.position.set(c.x + rnd(-0.8, 0.8), c.y + rnd(0.4, 1.1), c.z + rnd(-0.8, 0.8));
+    scene.add(m);
+    shards.push({ m, vx: c.vx * 0.5 + rnd(-4, 4), vy: rnd(2.5, 6), vz: c.vz * 0.5 + rnd(-4, 4), t: 0, r: [rnd(-9, 9), rnd(-9, 9), rnd(-9, 9)] });
+  }
+}
+function tickShards(dt) {
+  for (let i = shards.length - 1; i >= 0; i--) {
+    const s = shards[i];
+    s.t += dt; s.vy -= 16 * dt;
+    s.m.position.x += s.vx * dt; s.m.position.y += s.vy * dt; s.m.position.z += s.vz * dt;
+    const gy = world.surfaceY(s.m.position.x, s.m.position.z, s.m.position.y + 1) + 0.04;
+    if (s.m.position.y < gy) { s.m.position.y = gy; s.vy *= -0.3; s.vx *= 0.6; s.vz *= 0.6; s.r = [0, 0, 0]; }
+    s.m.rotation.x += s.r[0] * dt; s.m.rotation.y += s.r[1] * dt; s.m.rotation.z += s.r[2] * dt;
+    if (s.t > 6) { scene.remove(s.m); s.m.material.dispose(); shards.splice(i, 1); }
+  }
+}
 function setPlayerPos(x, z) {
   player.x = x; player.z = z;
   player.y = world.surfaceY(x, z);
@@ -608,7 +635,7 @@ async function boot() {
       const off = ne.e.r.w / 2 - 1.2;
       const c = spawnCar(kind, tmpP.x - tmpP.dz * off, tmpP.z + tmpP.dx * off, Math.atan2(tmpP.dx, tmpP.dz), paint);
       c.parked = true; c.safe = true; c.keep = true;
-      eventLivery(c, kind);
+      if (!ASSETS.cars[kind].real) eventLivery(c, kind);
     });
     World.at(ne.e, s0, tmpP);
     const po = ne.e.r.w / 2 + 1.6;
@@ -709,6 +736,12 @@ function step(dt) {
   else player.mixer.update(dt);
   updateWorldActors(dt, true);
   X3.update(dt, false);
+  world.tickDebris(dt);
+  tickShards(dt);
+  for (const c of cars) {
+    if (c.impact > 4.2) crush(c, c.impact, c !== playerCar && Math.hypot(c.x - player.x, c.z - player.z) > 60);
+    if (c.broke) { if (c === playerCar || Math.hypot(c.x - player.x, c.z - player.z) < 50) { snd.thud(); if (c === playerCar) shake(c.broke === 't' ? 0.3 : 0.16); } c.broke = null; }
+  }
   if (VEN) {
     VEN.update(dt, shared.uNight.value);
     if (guestPeople.length && Math.hypot(player.x - guestPeople[0].x, player.z - guestPeople[0].z) < 160) for (const g of guestPeople) g.mixer.update(dt);
@@ -935,6 +968,7 @@ function updateWorldActors(dt, active) {
           if (b.parked) b.parked = false;
           if (imp > 3) {
             a.dmg += imp * 2; b.dmg += imp * 2;
+            if (imp > 3) { crush(a, imp); crush(b, imp, true); }
             if (a === playerCar || b === playerCar) {
               snd.crash(imp);
               shake(imp * 0.025);

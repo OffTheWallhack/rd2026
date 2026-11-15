@@ -71,8 +71,8 @@ h1 em{font-style:normal;display:inline-block;font-size:.34em;line-height:1;verti
 #toast{position:absolute;top:calc(64px + var(--safe-t));left:50%;transform:translateX(-50%);background:rgba(0,0,0,.75);border:1px solid rgba(255,255,255,.2);padding:8px 14px;border-radius:10px;font-size:14px;opacity:0;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}
 #toast.show{animation:toast 3.6s forwards}
 @keyframes toast{0%{opacity:0;transform:translate(-50%,-6px)}8%,80%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
-#big{position:absolute;top:36%;left:0;right:0;text-align:center;opacity:0}
-#big b{display:block;font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(48px,12vw,110px);text-shadow:0 4px 0 #000,0 0 30px rgba(0,0,0,.8)}
+#big{position:absolute;top:calc(104px + var(--safe-t));left:0;right:0;text-align:center;opacity:0}
+#big b{display:block;font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(24px,6.5vw,46px);text-shadow:0 4px 0 #000,0 0 30px rgba(0,0,0,.8)}
 #big span{font-size:16px;background:rgba(0,0,0,.6);padding:4px 10px;border-radius:6px}
 #big.show{animation:big 2.6s forwards}
 @keyframes big{0%{opacity:0;transform:scale(1.3)}8%{opacity:1;transform:none}85%{opacity:1}100%{opacity:0}}
@@ -100,7 +100,9 @@ body.incar #bGas,body.incar #bBrake,body.incar #bHb{display:flex}
 #bHb{width:64px;height:64px;right:calc(30px + var(--safe-r));bottom:calc(150px + var(--safe-b));font-size:10px}
 body.touch #mm{width:118px;height:118px;left:auto;right:calc(12px + var(--safe-r));top:calc(118px + var(--safe-t));bottom:auto}
 body.touch #speed{left:auto;right:calc(16px + var(--safe-r));top:calc(244px + var(--safe-t));bottom:auto;font-size:24px}
-body.touch #street{bottom:auto;top:calc(274px + var(--safe-t));font-size:22px}
+body.touch #street{bottom:auto;top:calc(196px + var(--safe-t));font-size:17px}
+body.touch #big{top:calc(110px + var(--safe-t))}
+body.touch #toast{top:calc(98px + var(--safe-t));font-size:12.5px}
 body.touch .top{right:150px;top:calc(56px + var(--safe-t))}
 body.touch #bMap{right:auto;left:calc(12px + var(--safe-l))}
 body.touch #bPause{right:auto;left:calc(84px + var(--safe-l))}
@@ -110,7 +112,7 @@ body.touch #goal{font-size:12px}
   body.touch #mm{top:auto;bottom:calc(10px + var(--safe-b));left:calc(10px + var(--safe-l));right:auto;width:104px;height:104px}
   body.touch #speed{top:auto;bottom:calc(150px + var(--safe-b));right:calc(120px + var(--safe-r))}
   body.touch #street{top:calc(64px + var(--safe-t));right:calc(14px + var(--safe-r))}
-  #big{top:24%}
+  #big{top:calc(92px + var(--safe-t))}
 }
 #pause,#map{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
 #pause h2{font-family:Anton,Impact,sans-serif;font-weight:400;font-size:52px;margin:0}

@@ -209,7 +209,12 @@ export class Car {
         if (/head/i.test(m.name)) { const c = m.clone(); c.emissive = new THREE.Color(0, 0, 0); this.head = c; return c; }
         if (/tail/i.test(m.name)) { const c = m.clone(); c.emissive = new THREE.Color(0, 0, 0); this.tail = c; return c; }
         return m;
-      }).map((m) => (HOOK.mat ? HOOK.mat(m) : m));
+      }).map((m) => {
+        const g = HOOK.mat ? HOOK.mat(m) : m;
+        if (m === this.head) { this.head = g; if (!g.emissive) g.emissive = new THREE.Color(0, 0, 0); }
+        if (m === this.tail) { this.tail = g; if (!g.emissive) g.emissive = new THREE.Color(0, 0, 0); }
+        return g;
+      });
       if (o.material.length === 1) o.material = o.material[0];
     });
     this.x = 0; this.z = 0; this.y = 0; this.h = 0;
@@ -260,12 +265,12 @@ export class Car {
     // yaw
     const wb = this.len * 0.62;
     const wTarget = (vf * Math.tan(this.steer)) / wb;
-    const grip = this.hb ? 1.6 : 9;
+    const grip = this.hb ? 1.6 : 15;
     const latA = Math.abs(wTarget * vf);
-    const slideLimit = this.hb ? 6 : 13;
+    const slideLimit = this.hb ? 6 : 19;
     const k = latA > slideLimit ? (grip * slideLimit) / latA : grip;
     this.w += (wTarget * (this.hb ? 1.35 : 1) - this.w) * clamp(k * dt, 0, 1);
-    vs *= Math.exp(-(this.hb ? 1.4 : latA > slideLimit ? 3.2 : 10) * dt);
+    vs *= Math.exp(-(this.hb ? 1.4 : latA > slideLimit ? 7 : 18) * dt);
     this.h = wrapA(this.h + this.w * dt);
     const nh = Math.sin(this.h), nc = Math.cos(this.h);
     this.vx = vf * nh + vs * nc;
@@ -321,8 +326,8 @@ export class Car {
     this.obj.rotateZ(this.roll + lean);
   }
   lights(night, braking) {
-    if (this.head) this.head.emissive.setRGB(night * 3, night * 2.7, night * 2.2);
-    if (this.tail) this.tail.emissive.setRGB(braking ? 3 : night * 1.2, 0, 0);
+    if (this.head) this.head.emissive.setRGB(0.25 + night * 3.2, 0.24 + night * 2.9, 0.2 + night * 2.3);
+    if (this.tail) this.tail.emissive.setRGB(braking ? 3.2 : 0.35 + night * 1.6, 0, 0);
   }
 }
 

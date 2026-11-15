@@ -670,7 +670,7 @@ function togglePause() {
 function resize() {
   if (!ascii) return;
   const lvl = G.detail ?? 1;
-  const cap = MOBILE ? [2, 1.5, 1.1][lvl] : [2, 1.5, 1][lvl];
+  const cap = MOBILE ? [1.6, 1.25, 1][lvl] : [2, 1.5, 1][lvl];
   const dpr = Math.min(window.devicePixelRatio || 1, cap);
   const w = Math.floor(innerWidth * dpr), h = Math.floor(innerHeight * dpr);
   canvas.width = w;
@@ -695,7 +695,9 @@ G.camYaw = 0;
 
 function loop(now) {
   requestAnimationFrame(loop);
-  let dt = Math.min(0.05, (now - last) / 1000);
+  // telefón: najviac 30 snímok za sekundu, šetrí batériu a nehreje sa
+  if (MOBILE && !G.fixedDt && now - last < 31) return;
+  let dt = Math.min(0.07, (now - last) / 1000);
   last = now;
   if (G.fixedDt) dt = G.fixedDt;
   if (G.noLoop) return;

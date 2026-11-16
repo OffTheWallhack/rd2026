@@ -105,7 +105,31 @@ const MOD = ['#b8bcc0', '#9aa4ac', '#c8c4bc', '#a9b3b5', '#d0ccc4'];
 const HOUSE = ['#f1ead8', '#ece0c2', '#e9d6a8', '#f4f1ea', '#dfd3bd', '#e6c9a0', '#d9dccf', '#efe2cf', '#e0b58f', '#cfd3d6'];
 const BLOCK = ['#c9c4b8', '#bdb7aa', '#d4cdbd', '#b3b6b4', '#cbbfa8', '#c2c7c4'];
 const ROOF = ['#9a4a32', '#a85a3a', '#8a3e2c', '#7d4434', '#b0603f', '#94503a', '#53565c', '#5c5450'];
-const KID = { old: 0, modern: 1, util: 2, church: 3, castle: 4, roof: 5, ruin: 2, panel: 6, house: 7, block: 8, clad: 9 };
+const KID = { old: 0, modern: 1, util: 2, church: 3, castle: 4, roof: 5, ruin: 2, panel: 6, house: 7, block: 8, clad: 9, glass: 10, mall: 11 };
+// budovy, ktoré majú vyzerať ako naozaj (podľa fotiek): oblasť alebo meno -> vzhľad
+const STYLE = [
+  // River Park na Dvořákovom nábreží: presklené fasády s bielymi pásmi medzi poschodiami
+  { n: 'Grand Hotel River Park', k: 'glass', c: '#dcd5c6', rc: '#6c6f72' },
+  { box: [585, 1500, 1060, 1665], only: 'modern', k: 'glass', c: '#eceeec', rc: '#6c6f72' },
+  // Nivy: nákupné centrum so zelenou strechou a 125 m vysoká Nivy Tower
+  { n: 'Nivy Tower', k: 'glass', c: '#a9b8bf', rc: '#cfcfca' },
+  { n: 'Nivy', k: 'mall', c: '#e2d9c6', rc: '#5d7f45' },
+  // Eurovea Tower (168 m): presklená veža s bielymi pásmi balkónov
+  { box: [3480, 1748, 3510, 1776], only: 'modern', k: 'glass', c: '#f5f5f1', rc: '#d6d6d2' },
+];
+function restyle(b, outer) {
+  if (b._st) return;
+  b._st = 1;
+  let cx = 0, cz = 0;
+  for (const p of outer) { cx += p[0]; cz += p[1]; }
+  cx /= outer.length; cz /= outer.length;
+  for (const r of STYLE) {
+    if (r.n ? b.n !== r.n : !(cx >= r.box[0] && cz >= r.box[1] && cx <= r.box[2] && cz <= r.box[3] && (!r.only || b.k === r.only))) continue;
+    b.k = r.k; b.c = r.c; b.rc = r.rc; b.r = 0; b.s = 'f';
+    return;
+  }
+}
+const LANDMARK = new Set(['Starý most', 'Most Apollo', 'Prístavný most']);
 const CLEAR = [[2334.6, 1209.5, 19]]; // [x, z, polomer]
 const EMPTY = { bld: [], green: [], water: [], parea: [], walls: [], trees: [], lamps: [] };
 const _col = new THREE.Color();
@@ -293,12 +317,35 @@ export class World {
             float fr = isGround * hdBox(q, vec2(-bw * 0.5, 0.0), vec2(bw * 0.5, floorH - 0.3), aa);
             col = mix(col, vec3(0.10, 0.10, 0.11), fr * (1.0 - gl));
             glass = gl; lit = gl * step(0.18, rnd);
+          } else if (glassW) {
+            // sklenená obvodová stena: priebežné sklo, tenké stĺpiky, svetlý pás pri každej podlahe
+            float dm = (0.5 - abs(fract(wx * 2.0) - 0.5)) * bw * 0.5;
+            float mul = 1.0 - smoothstep(0.05 - aa.x, 0.05 + aa.x, dm);
+            float spd = (1.0 - isGround) * (1.0 - smoothstep(0.95 - aa.y, 0.95 + aa.y, q.y));
+            float gl = body * (1.0 - spd);
+            col = mix(col, vec3(0.20, 0.22, 0.24), gl * mul * (1.0 - far));
+            glass = gl * (1.0 - mul * (1.0 - far)); lit = glass * step(0.5, rnd) * (1.0 - isGround);
+            shopGlass = glass * isGround;
+          } else if (mall) {
+            // Nivy: svetlé zvislé lamely, zelené steny z rastlín, presklené prízemie
+            float fin = fract(vF.x * bw / 0.9);
+            float finS = smoothstep(0.0, 0.3, fin) * (1.0 - smoothstep(0.7, 1.0, fin));
+            col *= mix(1.0, 0.80 + 0.22 * finS, above * (1.0 - far) * (1.0 - isGround));
+            float grn = step(0.70, rndB) * above * (1.0 - isGround) * hasBays;
+            vec3 leafC = vec3(0.17, 0.33, 0.13) * (0.65 + 0.7 * vnoise(vec2(vF.x * bw * 2.5, vF.y * 2.5)));
+            col = mix(col, leafC, grn);
+            float stripe = step(0.45, rndB) * step(rndB, 0.70) * hdBox(q, vec2(-bw * 0.45, floorH * 0.25), vec2(bw * 0.45, floorH * 0.75), aa) * body * (1.0 - isGround);
+            float gl = isGround * hasBays * hdBox(q, vec2(-bw * 0.47, 0.25), vec2(bw * 0.47, floorH - 0.6), aa);
+            col = mix(col, vec3(0.12, 0.12, 0.13), isGround * hasBays * (1.0 - gl));
+            glass = max(gl, stripe); shopGlass = gl; lit = glass;
           } else if (util) {`;
     let fb = FACADE_BODY
-      .replace('bool old = kid < 0.5,', 'bool panel = kid > 5.5 && kid < 6.5; bool clad = kid > 8.5; bool old = kid < 0.5 || (kid > 6.5 && kid < 8.5),')
+      .replace('bool old = kid < 0.5,', 'bool panel = kid > 5.5 && kid < 6.5; bool clad = kid > 8.5 && kid < 9.5; bool glassW = kid > 9.5 && kid < 10.5; bool mall = kid > 10.5; bool old = kid < 0.5 || (kid > 6.5 && kid < 8.5),')
+      .replace('col = mix(col, inside, glass);', 'inside = mix(inside, vec3(0.04, 0.085, 0.10), (kid > 9.5 && kid < 10.5) ? 0.75 : 0.0); col = mix(col, inside, glass);')
+      .replace('(modern ? 0.85 : 0.6)', '(modern || kid > 9.5 ? 0.9 : 0.6)')
       .replace('float gType = isGround * (old ? 1.0 : 0.0);', 'float gType = isGround * (kid < 0.5 ? 1.0 : 0.0);')
       .replace('} else if (util) {', PANEL);
-    if (fb.length < FACADE_BODY.length + 1700) throw new Error('facade shader patch failed');
+    if (fb.length < FACADE_BODY.length + 3500) throw new Error('facade shader patch failed');
     this.wallMat.onBeforeCompile = (sh) =>
       patchCommon(sh, 'attribute vec3 fuv; attribute vec4 fdat; varying vec3 vF; varying vec4 vD; //MAIN vF = fuv; vD = fdat;', FACADE_HEAD, fb);
     this.roofMat = new THREE.MeshLambertMaterial({ vertexColors: true, side: THREE.DoubleSide, flatShading: true });
@@ -649,9 +696,9 @@ export class World {
     else col.set(OLD[(seed * OLD.length) | 0]);
     const wr = col.r, wg = col.g, wb = col.b;
     const levels = b.l || Math.max(1, Math.round(h / (b.k === 'panel' ? 2.9 : 3.4)));
-    const floorH = b.t ? 7.5 : clamp(h / Math.max(1, levels), 2.7, 5.5);
+    const floorH = b.t ? 7.5 : b.k === 'mall' ? 5.6 : clamp(h / Math.max(1, levels), 2.7, 5.5);
     const kid = KID[b.k] ?? 0;
-    const spacing = b.k === 'modern' ? 2.6 : b.k === 'church' ? 5 : b.k === 'panel' ? 3.0 : b.k === 'house' ? 3.8 : 3.4;
+    const spacing = b.k === 'modern' ? 2.6 : b.k === 'glass' ? 3.0 : b.k === 'mall' ? 4.5 : b.k === 'church' ? 5 : b.k === 'panel' ? 3.0 : b.k === 'house' ? 3.8 : 3.4;
     const rings = [outer, ...inners];
     for (const ring of rings) {
       const n = ring.length;
@@ -809,6 +856,7 @@ export class World {
       const t = this.tiles[tj * this.ntx + ti];
       let A = per.get(t);
       if (!A) per.set(t, (A = this.newArrays()));
+      restyle(b, outer);
       this.emitBuilding(A, b, outer, [], hash(n * 613 + 7), t, true);
     });
     for (const [t, A] of per) {
@@ -889,7 +937,10 @@ export class World {
       if (b.n === 'UFO') continue;
       if (b.n === 'Kostol sv. Alžbety') { b.c = '#9cc4e8'; b.rc = '#5f86b4'; }
       const outer = b.o.map((p) => [p[0] / 10 + x0, p[1] / 10 + z0]);
+      // nohy pylónu Mosta SNP sú v mapových dátach ako 95 m vysoké „budovy“ – staviame ich sami
+      if (this.pylonC && b.h > 60 && Math.hypot(outer[0][0] - this.pylonC[0], outer[0][1] - this.pylonC[1]) < 40) continue;
       const inners = (b.i || []).map((r) => r.map((p) => [p[0] / 10 + x0, p[1] / 10 + z0]));
+      restyle(b, outer);
       this.emitBuilding(A, b, outer, inners, hash(t.k * 7919 + n * 977 + 13), t, false);
       if (n % 24 === 23) yield;
     }
@@ -1272,13 +1323,40 @@ export class World {
         p.y = y;
       }
       const hw = big ? (nBig > 1 ? 6.8 : 10.8) : Math.max(2.5, ch.w / 2 + 1.2);
-      const brObj = { s, hw, big, low, n: ch.n };
+      this.bridges.push({ s, hw, big, low, n: ch.n });
+    }
+    // nájazdy a zjazdy: koniec mosta, ktorý nenadväzuje na iný most, musí sedieť na zemi (inak je tam schod)
+    const onOther = (x, z, self) => {
+      for (const o of this.bridges) {
+        if (o === self) continue;
+        for (let i = 0; i < o.s.length - 1; i++) {
+          const a = o.s[i], b = o.s[i + 1];
+          const c = segClosest(x, z, a.x, a.z, b.x, b.z, this._c);
+          if (Math.hypot(x - c.x, z - c.z) < 1.6) return a.y + (b.y - a.y) * c.t;
+        }
+      }
+      return null;
+    };
+    for (const br of this.bridges) {
+      if (br.low) continue;
+      const s = br.s;
+      for (const e of [s[0], s[s.length - 1]]) {
+        const yo = onOther(e.x, e.z, br);
+        const pin = yo !== null ? yo : this.hAt(e.x, e.z) + 0.02;
+        if (yo !== null && Math.abs(yo - e.y) < 0.3) continue;
+        const k = br.big ? 0.06 : 0.11;
+        for (const p of s) p.y = Math.min(p.y, pin + k * Math.abs(p.d - e.d));
+        if (yo !== null) for (const p of s) p.y = Math.max(p.y, pin - k * Math.abs(p.d - e.d));
+      }
+      for (const p of s) p.y = Math.max(p.y, this.hAt(p.x, p.z) + 0.02);
+    }
+    for (const brObj of this.bridges) {
+      const s = brObj.s, hw = brObj.hw;
       for (let i = 0; i < s.length - 1; i++) {
         const a = s[i], b = s[i + 1];
         const seg = { ax: a.x, az: a.z, bx: b.x, bz: b.z, ya: a.y, yb: b.y, hw, br: brObj };
         this.decks.add(seg, Math.min(a.x, b.x) - hw, Math.min(a.z, b.z) - hw, Math.max(a.x, b.x) + hw, Math.max(a.z, b.z) + hw);
       }
-      this.bridges.push(brObj);
     }
   }
   buildBridgeMeshes() {
@@ -1294,7 +1372,7 @@ export class World {
         const nx = -(b.z - a.z) / L, nz = (b.x - a.x) / L, hw = br.hw;
         const A1 = [a.x + nx * hw, a.y, a.z + nz * hw], A2 = [a.x - nx * hw, a.y, a.z - nz * hw];
         const B1 = [b.x + nx * hw, b.y, b.z + nz * hw], B2 = [b.x - nx * hw, b.y, b.z - nz * hw];
-        const dd = br.big ? 2.2 : br.low ? 0.8 : 2.2;
+        const dd = br.big ? 3.6 : br.low ? 0.8 : 2.2;
         const dn = (p) => [p[0], p[1] - dd, p[2]];
         quad(A1, B1, B2, A2, top);
         quad(dn(A1), dn(A2), dn(B2), dn(B1), side.map((v) => v * 0.6));
@@ -1319,8 +1397,10 @@ export class World {
           const up = (p, h) => [p[0], p[1] + h, p[2]];
           quad(r0, r1, up(r1, 1.1), up(r0, 1.1), [0.78, 0.79, 0.8]);
           this.colliders.add({ ax: r0[0], az: r0[2], bx: r1[0], bz: r1[2], y0: Math.min(a.y, b.y) - 1, y1: Math.max(a.y, b.y) + 1.4, kind: 'r', tag: null }, r0[0], r0[2], r1[0], r1[2]);
+          // Most SNP: hore autá, o poschodie nižšie chodník a cyklotrasa (na vonkajšej strane, pod presahom mostovky)
+          if (br.big) this.snpWalk(br, a, b, nx * sg, nz * sg, hw, i, quad);
         }
-        if (!br.low && !br.big && i % 30 === 15) {
+        if (!br.low && !br.big && !LANDMARK.has(br.n) && i % 30 === 15) {
           const gy = Math.min(this.hAt(a.x, a.z), this.water) - 3;
           if (a.y - gy > 4) {
             const w2 = 2.2;
@@ -1331,7 +1411,7 @@ export class World {
         }
       }
     }
-    // landmark structures: arch of Most Apollo, truss of Stary most
+    // ---------------------------------------------------------- mosty podľa fotiek
     const beam = (a, b, th, col) => {
       const dx = b[0] - a[0], dy = b[1] - a[1], dz = b[2] - a[2], L = Math.hypot(dx, dy, dz) || 1;
       let ux = -dz, uz = dx; const ul = Math.hypot(ux, uz);
@@ -1342,38 +1422,138 @@ export class World {
       const S = [[1, 1], [-1, 1], [-1, -1], [1, -1]];
       for (let i = 0; i < 4; i++) { const j = (i + 1) % 4; quad(c(a, ...S[i]), c(b, ...S[i]), c(b, ...S[j]), c(a, ...S[j]), col); }
     };
-    const longest = (n) => this.bridges.filter((b) => b.n === n).sort((a, b) => b.s.length - a.s.length)[0];
-    const span = (br) => { const my = Math.max(...br.s.map((p) => p.y)); const top = br.s.filter((p) => p.y > my - 0.6); return top.length > 8 ? top : null; };
-    const side = (s, i, off, dy) => {
-      const a = s[Math.max(0, i - 1)], b = s[Math.min(s.length - 1, i + 1)], L = Math.hypot(b.x - a.x, b.z - a.z) || 1;
-      return [s[i].x - ((b.z - a.z) / L) * off, s[i].y + dy, s[i].z + ((b.x - a.x) / L) * off];
+    const surf = (x, z) => Math.max(this.hAt(x, z), this.water);
+    // obe jazdné pásy jedného mosta spolu: os, šírka, výška mostovky
+    const combo = (name) => {
+      const ch = this.bridges.filter((b) => b.n === name && b.s.length > 20);
+      if (!ch.length) return null;
+      const ref = ch.slice().sort((a, b) => b.s.length - a.s.length)[0];
+      const s = ref.s, out = [];
+      for (let i = 0; i < s.length; i++) {
+        const a = s[Math.max(0, i - 2)], b = s[Math.min(s.length - 1, i + 2)];
+        const L = Math.hypot(b.x - a.x, b.z - a.z) || 1, tx = (b.x - a.x) / L, tz = (b.z - a.z) / L, nx = -tz, nz = tx;
+        const p = s[i];
+        let lo = -ref.hw, hi = ref.hw, y = p.y;
+        for (const o of ch) {
+          if (o === ref) continue;
+          let best = null, bd = 1e9;
+          for (let k = 0; k < o.s.length - 1; k++) {
+            const c = segClosest(p.x, p.z, o.s[k].x, o.s[k].z, o.s[k + 1].x, o.s[k + 1].z, this._c);
+            const d = Math.hypot(p.x - c.x, p.z - c.z);
+            if (d < bd) { bd = d; best = { x: c.x, z: c.z, y: o.s[k].y + (o.s[k + 1].y - o.s[k].y) * c.t }; }
+          }
+          if (!best || bd > 40) continue;
+          if (Math.abs((best.x - p.x) * tx + (best.z - p.z) * tz) > 4) continue;
+          const off = (best.x - p.x) * nx + (best.z - p.z) * nz;
+          lo = Math.min(lo, off - o.hw); hi = Math.max(hi, off + o.hw); y = Math.max(y, best.y);
+        }
+        const m = (lo + hi) / 2;
+        out.push({ x: p.x + nx * m, z: p.z + nz * m, y, tx, tz, nx, nz, half: (hi - lo) / 2, d: p.d });
+      }
+      return out;
     };
-    const ap = longest('Most Apollo');
-    if (ap && span(ap)) {
-      const s = span(ap), n = s.length - 1, white = [0.86, 0.87, 0.88];
-      for (const off of [-(ap.hw + 9), ap.hw + 9]) {
+    const at = (arr, d) => {
+      let lo = 0, hi = arr.length - 1;
+      if (d <= arr[0].d) return arr[0];
+      if (d >= arr[hi].d) return arr[hi];
+      while (hi - lo > 1) { const m = (lo + hi) >> 1; if (arr[m].d <= d) lo = m; else hi = m; }
+      const a = arr[lo], b = arr[hi], t = (d - a.d) / (b.d - a.d || 1), o = {};
+      for (const k of ['x', 'z', 'y', 'tx', 'tz', 'nx', 'nz', 'half']) o[k] = a[k] + (b[k] - a[k]) * t;
+      o.d = d; return o;
+    };
+    const edge = (P, side, off, dy) => [P.x + P.nx * side * off, P.y + dy, P.z + P.nz * side * off];
+    // kváder natočený podľa mosta: a = polovica pozdĺž, b = polovica naprieč
+    const obox = (P, a, b, y0, y1, col) => {
+      const c = (u, v, y) => [P.x + P.tx * u + P.nx * v, y, P.z + P.tz * u + P.nz * v];
+      const C = [[-a, -b], [a, -b], [a, b], [-a, b]];
+      for (let i = 0; i < 4; i++) { const j = (i + 1) % 4; quad(c(...C[i], y0), c(...C[j], y0), c(...C[j], y1), c(...C[i], y1), col); }
+      quad(c(-a, -b, y1), c(a, -b, y1), c(a, b, y1), c(-a, b, y1), col);
+    };
+    const elevated = (arr, minH) => {
+      let i0 = -1, i1 = -1;
+      arr.forEach((p, i) => { if (p.y - surf(p.x, p.z) > minH) { if (i0 < 0) i0 = i; i1 = i; } });
+      return i0 < 0 ? null : arr.slice(i0, i1 + 1);
+    };
+    const stone = [0.62, 0.6, 0.56];
+
+    // Starý most (2016): zeleno-sivá oceľová priehradovina, každé pole má horný pás prehnutý do oblúka, piliere v Dunaji
+    const sm = combo('Starý most'), smRun = sm && elevated(sm, 2.5);
+    if (smRun && smRun.length > 20) {
+      const green = [0.40, 0.50, 0.45], d0 = smRun[0].d, len = smRun[smRun.length - 1].d - d0;
+      const nSpan = Math.max(1, Math.round(len / 78)), spanL = len / nSpan, np = Math.max(4, Math.round(spanL / 6.5));
+      for (let k = 0; k < nSpan; k++) {
         let prev = null;
-        for (let i = 0; i <= n; i += 3) {
-          const t = i / n, p = side(s, i, off, 34 * 4 * t * (1 - t));
-          if (prev) beam(prev, p, 1.8, white);
-          if (i % 9 === 0 && i > 0 && i < n) beam(p, side(s, i, off * 0.75, 0.5), 0.3, white);
-          prev = p;
+        for (let j = 0; j <= np; j++) {
+          const t = j / np, P = at(sm, d0 + k * spanL + t * spanL), hT = 3.4 + 6.2 * Math.sin(Math.PI * t);
+          const cur = [];
+          for (const sd of [-1, 1]) {
+            const B = edge(P, sd, P.half + 0.45, 0.15), T = [B[0], B[1] + hT, B[2]];
+            cur.push([B, T]);
+            beam(B, T, 0.32, green);
+            if (prev) {
+              const [pB, pT] = prev[sd < 0 ? 0 : 1];
+              beam(pB, B, 0.6, green); beam(pT, T, 0.62, green);
+              if (t <= 0.5) beam(pB, T, 0.28, green); else beam(pT, B, 0.28, green);
+            }
+          }
+          if (hT > 7.6 && j % 2 === 0) beam(cur[0][1], cur[1][1], 0.26, green);
+          prev = cur;
         }
-        if (prev) beam(prev, side(s, n, off, 0), 1.8, white);
+        if (k > 0) { const P = at(sm, d0 + k * spanL); obox(P, 2.2, P.half + 2.2, Math.min(this.hAt(P.x, P.z), this.water) - 3, P.y - 1.0, stone); }
       }
     }
-    const sm = longest('Starý most');
-    if (sm && span(sm)) {
-      const s = span(sm), n = s.length - 1, green = [0.42, 0.55, 0.48];
-      for (const off of [-(sm.hw + 2.5), sm.hw + 2.5]) {
-        for (let i = 0; i + 6 <= n; i += 6) {
-          const a0 = side(s, i, off, 0.4), a1 = side(s, i + 6, off, 0.4), m = side(s, i + 3, off, 8.5), t0 = side(s, Math.max(0, i - 3), off, 8.5);
-          beam(a0, m, 0.5, green); beam(m, a1, 0.5, green);
-          if (i) beam(t0, m, 0.6, green);
-          beam(a0, a1, 0.5, green);
+
+    // Most Apollo: biely oceľový oblúk (rozpätie 231 m, výška 36 m) po oboch stranách mostovky, závesy
+    const ap = combo('Most Apollo');
+    if (ap) {
+      const my = Math.max(...ap.map((p) => p.y)), top = ap.filter((p) => p.y > my - 0.8);
+      if (top.length > 8) {
+        const white = [0.88, 0.89, 0.9], dc = (top[0].d + top[top.length - 1].d) / 2, A0 = dc - 115.5, n = 64;
+        const yA = at(ap, A0).y, yB = at(ap, A0 + 231).y;
+        for (const sd of [-1, 1]) {
+          let prev = null;
+          for (let i = 0; i <= n; i++) {
+            const t = i / n, P = at(ap, A0 + t * 231), y = yA + (yB - yA) * t - 1.5 + 37.5 * 4 * t * (1 - t);
+            const p = [P.x + P.nx * sd * (P.half + 1.6), y, P.z + P.nz * sd * (P.half + 1.6)];
+            if (prev) beam(prev, p, 2.3, white);
+            if (i % 2 === 0 && i > 2 && i < n - 2) beam(p, edge(P, sd, P.half + 1.6, 0.4), 0.22, white);
+            prev = p;
+          }
+        }
+        for (const D of [A0, A0 + 231]) { const P = at(ap, D); obox(P, 4, P.half + 3.5, Math.min(this.hAt(P.x, P.z), this.water) - 3, P.y - 1.6, stone); }
+        for (let D = ap[0].d + 30; D < ap[ap.length - 1].d - 20; D += 34) {
+          if (D > A0 - 20 && D < A0 + 251) continue;
+          const P = at(ap, D);
+          if (P.y - surf(P.x, P.z) > 3) obox(P, 1.4, P.half * 0.6, this.hAt(P.x, P.z) - 2, P.y - 1.6, stone);
         }
       }
     }
+
+    // Prístavný most: dvojpodlažná oceľová priehradovina pod diaľnicou (dole železnica a chodník)
+    const pr = combo('Prístavný most'), prRun = pr && elevated(pr, 6);
+    if (prRun && prRun.length > 20) {
+      const steel = [0.44, 0.5, 0.55], d0 = prRun[0].d, len = prRun[prRun.length - 1].d - d0, np = Math.round(len / 9);
+      let prev = null;
+      for (let j = 0; j <= np; j++) {
+        const P = at(pr, d0 + (j / np) * len), dep = Math.min(9.5, P.y - surf(P.x, P.z) - 1.2);
+        const cur = [];
+        for (const sd of [-1, 1]) {
+          const T = edge(P, sd, P.half + 0.3, -0.9), B = edge(P, sd, P.half + 0.3, -dep);
+          cur.push([B, T]);
+          if (j % 2 === 0) beam(B, T, 0.4, steel);
+          if (prev) {
+            const [pB, pT] = prev[sd < 0 ? 0 : 1];
+            beam(pT, T, 0.7, steel); beam(pB, B, 0.7, steel);
+            if (j % 2) beam(pB, T, 0.42, steel); else beam(pT, B, 0.42, steel);
+          }
+        }
+        beam(cur[0][0], cur[1][0], 0.4, steel);
+        prev = cur;
+      }
+      const nP = Math.max(1, Math.round(len / 105));
+      for (let k = 0; k <= nP; k++) { const P = at(pr, d0 + (k / nP) * len); obox(P, 2.6, P.half + 1.5, Math.min(this.hAt(P.x, P.z), this.water) - 3, P.y - Math.min(9.5, P.y - surf(P.x, P.z) - 1.2), stone); }
+    }
+    this._snp = combo('Most SNP');
     if (!pos.length) return;
     const geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
@@ -1385,54 +1565,154 @@ export class World {
     this.group.add(m);
   }
 
+  snpWalk(br, a, b, nx, nz, hw, i, quad) {
+    const W = 3.0, drop = 3.1;
+    const ga = this.hAt(a.x + nx * (hw + 1.5), a.z + nz * (hw + 1.5)), gb = this.hAt(b.x + nx * (hw + 1.5), b.z + nz * (hw + 1.5));
+    const wa = a.y - drop, wb = b.y - drop;
+    if (wa < Math.max(ga, this.water) + 0.6 || wb < Math.max(gb, this.water) + 0.6) return;
+    const P = (p, off, y) => [p.x + nx * off, y, p.z + nz * off];
+    const steel = [0.56, 0.58, 0.6], floor = [0.42, 0.41, 0.4];
+    // presah mostovky nad chodníkom
+    quad(P(a, hw, a.y), P(b, hw, b.y), P(b, hw + W, b.y), P(a, hw + W, a.y), [0.36, 0.37, 0.39]);
+    quad(P(a, hw + W, a.y - 0.55), P(b, hw + W, b.y - 0.55), P(b, hw, b.y - 0.55), P(a, hw, a.y - 0.55), steel.map((v) => v * 0.7));
+    quad(P(a, hw + W, a.y), P(b, hw + W, b.y), P(b, hw + W, b.y - 0.55), P(a, hw + W, a.y - 0.55), steel);
+    // podlaha chodníka
+    quad(P(a, hw, wa), P(b, hw, wb), P(b, hw + W, wb), P(a, hw + W, wa), floor);
+    quad(P(a, hw + W, wa - 0.3), P(b, hw + W, wb - 0.3), P(b, hw, wb - 0.3), P(a, hw, wa - 0.3), steel.map((v) => v * 0.6));
+    quad(P(a, hw + W, wa), P(b, hw + W, wb), P(b, hw + W, wb - 0.3), P(a, hw + W, wa - 0.3), steel);
+    // zábradlie a oceľové rebrá medzi chodníkom a presahom
+    quad(P(a, hw + W - 0.05, wa), P(b, hw + W - 0.05, wb), P(b, hw + W - 0.05, wb + 1.05), P(a, hw + W - 0.05, wa + 1.05), [0.66, 0.68, 0.7]);
+    if (i % 2 === 0) {
+      const p0 = P(a, hw + W - 0.1, wa), p1 = P(a, hw + W - 0.1, a.y - 0.55);
+      const w = 0.12, tx = (b.x - a.x), tz = (b.z - a.z), L = Math.hypot(tx, tz) || 1, ux = (tx / L) * w, uz = (tz / L) * w;
+      quad([p0[0] - ux, p0[1], p0[2] - uz], [p0[0] + ux, p0[1], p0[2] + uz], [p1[0] + ux, p1[1], p1[2] + uz], [p1[0] - ux, p1[1], p1[2] - uz], steel);
+      if (i % 4 === 0) {
+        const q1 = P(b, hw + W - 0.1, b.y - 0.55);
+        quad([p0[0] - ux, p0[1], p0[2] - uz], [p0[0] + ux, p0[1], p0[2] + uz], [q1[0] + ux, q1[1], q1[2] + uz], [q1[0] - ux, q1[1], q1[2] - uz], steel);
+      }
+    }
+    const c = P(a, hw + W * 0.5, wa), d = P(b, hw + W * 0.5, wb);
+    const brObj = this._snpWalkBr || (this._snpWalkBr = { s: [], hw: W / 2, walk: true, n: 'Most SNP – chodník' });
+    const seg = { ax: c[0], az: c[2], bx: d[0], bz: d[2], ya: wa, yb: wb, hw: W / 2 - 0.05, br: brObj };
+    this.decks.add(seg, Math.min(c[0], d[0]) - W, Math.min(c[2], d[2]) - W, Math.max(c[0], d[0]) + W, Math.max(c[2], d[2]) + W);
+    const o0 = P(a, hw + W, 0), o1 = P(b, hw + W, 0), i0 = P(a, hw, 0), i1 = P(b, hw, 0);
+    this.colliders.add({ ax: o0[0], az: o0[2], bx: o1[0], bz: o1[2], y0: Math.min(wa, wb) - 0.6, y1: Math.max(wa, wb) + 1.4, kind: 'r', tag: null }, o0[0], o0[2], o1[0], o1[2]);
+    this.colliders.add({ ax: i0[0], az: i0[2], bx: i1[0], bz: i1[2], y0: Math.min(wa, wb) - 0.6, y1: Math.max(wa, wb) + 2.4, kind: 'b', tag: null }, i0[0], i0[2], i1[0], i1[2]);
+    (this.snpWalkEnds || (this.snpWalkEnds = [])).push([c[0], c[2], wa, nx, nz, b.x - a.x, b.z - a.z]);
+  }
+
   buildPylon() {
     const rings = this.d.pylon.map((r) => r.map((p) => [p[0] / 10, p[1] / 10]));
     if (rings.length < 2) return;
     const cen = rings.map((r) => { let x = 0, z = 0; for (const p of r) { x += p[0]; z += p[1]; } return [x / r.length, z / r.length]; });
     const g = new THREE.Group();
-    const mat = new THREE.MeshLambertMaterial({ color: 0x8c9196 });
-    const topY = this.water + 84;
-    const mx = (cen[0][0] + cen[1][0]) / 2, mz = (cen[0][1] + cen[1][1]) / 2, lean = 14;
-    const tops = [];
+    const mx = (cen[0][0] + cen[1][0]) / 2, mz = (cen[0][1] + cen[1][1]) / 2;
+    this.pylonC = [mx, mz];
+    const snp = this._snp;
+    // smer mosta pri pylóne a strana k Dunaju (hlavné pole)
+    let k0 = 0, tx = 0, tz = -1, river = -1;
+    if (snp) {
+      let bd = 1e9;
+      snp.forEach((p, k) => { const d = Math.hypot(p.x - mx, p.z - mz); if (d < bd) { bd = d; k0 = k; } });
+      tx = snp[k0].tx; tz = snp[k0].tz;
+      const P = (dd) => snp[Math.max(0, Math.min(snp.length - 1, k0 + Math.round(dd / 2)))];
+      const wet = (p) => this.hAt(p.x, p.z) < this.water ? 1 : 0;
+      river = wet(P(120)) + wet(P(200)) >= wet(P(-120)) + wet(P(-200)) ? 1 : -1;
+    }
+    const rx = tx * river, rz = tz * river, nx = -rz, nz = rx;
+    const steelM = new THREE.MeshLambertMaterial({ color: 0x8e9398 });
+    // pylón: dve šikmé nohy, ktoré sa hore zbiehajú pod UFO a nakláňajú sa od rieky k Petržalke
+    const topY = this.water + 84.6, lean = 12;
+    const C = new THREE.Vector3(mx - rx * lean, topY, mz - rz * lean);
+    const legs = [];
     for (const c of cen) {
+      const sd = Math.sign((c[0] - mx) * nx + (c[1] - mz) * nz) || 1;
       const by = this.hAt(c[0], c[1]) - 2;
-      const a = new THREE.Vector3(c[0], by, c[1]), b = new THREE.Vector3(mx + (c[0] - mx) * 0.55, topY, mz + lean);
-      const m = new THREE.Mesh(new THREE.BoxGeometry(3.2, a.distanceTo(b), 4.2), mat);
+      const a = new THREE.Vector3(c[0], by, c[1]), b = new THREE.Vector3(C.x + nx * sd * 2.6, topY, C.z + nz * sd * 2.6);
+      const geo = new THREE.CylinderGeometry(1.75, 3.1, a.distanceTo(b), 4, 1);
+      geo.rotateY(Math.PI / 4);
+      const m = new THREE.Mesh(geo, steelM);
       m.position.copy(a).add(b).multiplyScalar(0.5);
       m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), b.clone().sub(a).normalize());
       m.castShadow = true;
-      g.add(m); tops.push(b);
-      this.colliders.add({ ax: c[0] - 2, az: c[1] - 2, bx: c[0] + 2, bz: c[1] + 2, y0: -50, y1: by + 30, kind: 'b', tag: null }, c[0] - 2, c[1] - 2, c[0] + 2, c[1] + 2);
-      this.colliders.add({ ax: c[0] + 2, az: c[1] - 2, bx: c[0] - 2, bz: c[1] + 2, y0: -50, y1: by + 30, kind: 'b', tag: null }, c[0] - 2, c[1] - 2, c[0] + 2, c[1] + 2);
+      g.add(m); legs.push({ a, b, sd });
+      this.colliders.add({ ax: c[0] - 2.4, az: c[1] - 2.4, bx: c[0] + 2.4, bz: c[1] + 2.4, y0: -50, y1: by + 40, kind: 'b', tag: null }, c[0] - 3, c[1] - 3, c[0] + 3, c[1] + 3);
+      this.colliders.add({ ax: c[0] + 2.4, az: c[1] - 2.4, bx: c[0] - 2.4, bz: c[1] + 2.4, y0: -50, y1: by + 40, kind: 'b', tag: null }, c[0] - 3, c[1] - 3, c[0] + 3, c[1] + 3);
     }
-    const ux = mx, uz = mz + lean;
-    const prof = [[0, -2.2], [6, -2.6], [13, -1.6], [16.5, 0.2], [15.5, 1.4], [12, 2.2], [6, 2.8], [0, 3.0]].map(([r, y]) => new THREE.Vector2(r, y));
-    const ufo = new THREE.Mesh(new THREE.LatheGeometry(prof, 40), new THREE.MeshLambertMaterial({ color: 0x9aa0a6 }));
-    ufo.position.set(ux, topY + 3, uz); ufo.castShadow = true;
-    g.add(ufo);
-    const ring = new THREE.Mesh(new THREE.TorusGeometry(15.8, 0.35, 6, 48), new THREE.MeshBasicMaterial({ color: 0xffd28a }));
-    ring.rotation.x = Math.PI / 2; ring.position.set(ux, topY + 3.3, uz);
+    // priečka medzi nohami tesne pod UFO
+    {
+      const p0 = legs[0].a.clone().lerp(legs[0].b, 0.93), p1 = legs[1].a.clone().lerp(legs[1].b, 0.93);
+      const m = new THREE.Mesh(new THREE.BoxGeometry(1.6, 1.6, p0.distanceTo(p1)), steelM);
+      m.position.copy(p0).add(p1).multiplyScalar(0.5); m.lookAt(p1); g.add(m);
+    }
+    // UFO: tanier s presklenou reštauráciou a vyhliadkovou terasou na streche
+    const ux = C.x, uz = C.z, uy = topY + 2.6;
+    const bodyM = new THREE.MeshLambertMaterial({ color: 0xb4b9be, side: THREE.DoubleSide });
+    const under = new THREE.Mesh(new THREE.LatheGeometry([[0.5, -4.2], [3.5, -3.9], [9, -2.6], [14.6, -0.6], [15.6, 0]].map(([r, y]) => new THREE.Vector2(r, y)), 40), bodyM);
+    const band = new THREE.Mesh(new THREE.LatheGeometry([[15.6, 0], [16.1, 1.3], [15.7, 2.5]].map(([r, y]) => new THREE.Vector2(r, y)), 48),
+      new THREE.MeshLambertMaterial({ color: 0x1c242c, emissive: 0xffc98a, emissiveIntensity: 0 }));
+    const roof = new THREE.Mesh(new THREE.LatheGeometry([[15.7, 2.5], [14.2, 3.2], [9, 3.6], [0, 3.7]].map(([r, y]) => new THREE.Vector2(r, y)), 40), bodyM);
+    for (const m of [under, band, roof]) { m.position.set(ux, uy, uz); m.castShadow = true; g.add(m); }
+    this.glowMats = [band.material];
+    // zábradlie vyhliadky a technická nadstavba s anténou
+    const railM = new THREE.MeshLambertMaterial({ color: 0x7c8186 });
+    const rail = new THREE.Mesh(new THREE.TorusGeometry(13.6, 0.08, 4, 48), railM); rail.rotation.x = Math.PI / 2; rail.position.set(ux, uy + 4.75, uz); g.add(rail);
+    const hut = new THREE.Mesh(new THREE.CylinderGeometry(3.4, 3.8, 2.4, 16), bodyM); hut.position.set(ux, uy + 4.9, uz); g.add(hut);
+    const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.22, 9, 6), railM); mast.position.set(ux, uy + 10.5, uz); g.add(mast);
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(16.15, 0.3, 6, 56), new THREE.MeshBasicMaterial({ color: 0xffd28a }));
+    ring.rotation.x = Math.PI / 2; ring.position.set(ux, uy + 2.55, uz);
     this.ufoRing = ring; g.add(ring);
-    const big = this.bridges.find((b) => b.big);
-    if (big) {
-      const st = new THREE.MeshLambertMaterial({ color: 0xc8ccd0 });
-      const pts = big.s.filter((p) => { const d = Math.hypot(p.x - mx, p.z - mz); return d > 40 && d < 240 && p.z < mz; });
-      const pick = [];
-      for (let i = 0; i < pts.length; i += Math.max(1, Math.floor(pts.length / 8))) pick.push(pts[i]);
-      for (const p of pick)
-        for (const side of [-1, 1]) {
-          const t = tops[side < 0 ? 0 : 1];
-          const a = new THREE.Vector3(lerp(t.x, mx, 0.2), lerp(topY - 12, topY - 40, Math.hypot(p.x - mx, p.z - mz) / 240), lerp(t.z, mz, 0.6));
-          const b = new THREE.Vector3(p.x + side * 9.5, p.y + 0.6, p.z);
-          const m = new THREE.Mesh(new THREE.BoxGeometry(0.35, a.distanceTo(b), 0.35), st);
-          m.position.copy(a).add(b).multiplyScalar(0.5);
-          m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), b.clone().sub(a).normalize());
-          g.add(m);
-        }
+    // laná: z každej nohy 3 zväzky do hlavného poľa a 3 kotevné dozadu, uchytené na okrajoch mostovky
+    if (snp) {
+      const cab = new THREE.MeshLambertMaterial({ color: 0xc9cdd1 });
+      const P = (dd) => snp[Math.max(0, Math.min(snp.length - 1, k0 + Math.round((dd * river) / 2)))];
+      const rope = (A, B, th) => {
+        const m = new THREE.Mesh(new THREE.CylinderGeometry(th, th, A.distanceTo(B), 6), cab);
+        m.position.copy(A).add(B).multiplyScalar(0.5);
+        m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), B.clone().sub(A).normalize());
+        m.castShadow = true; g.add(m);
+      };
+      for (const L of legs) {
+        const anc = (f) => L.a.clone().lerp(L.b, f);
+        [[0.86, 238], [0.8, 168], [0.74, 98]].forEach(([f, D]) => {
+          const p = P(D);
+          rope(anc(f), new THREE.Vector3(p.x + p.nx * L.sd * (p.half + 0.3) * Math.sign(p.nx * nx + p.nz * nz || 1), p.y + 0.3, p.z + p.nz * L.sd * (p.half + 0.3) * Math.sign(p.nx * nx + p.nz * nz || 1)), 0.42);
+        });
+        [[0.86, -64], [0.8, -50], [0.74, -36]].forEach(([f, D]) => {
+          const p = P(D), y = Math.max(p.y, this.hAt(p.x, p.z)) + 0.3, sg = Math.sign(p.nx * nx + p.nz * nz || 1);
+          rope(anc(f), new THREE.Vector3(p.x + p.nx * L.sd * (p.half + 0.3) * sg, y, p.z + p.nz * L.sd * (p.half + 0.3) * sg), 0.42);
+        });
+      }
+      // kotevný blok za pylónom
+      const pa = P(-58), blk = new THREE.Mesh(new THREE.BoxGeometry(pa.half * 2 + 4, 4, 18), new THREE.MeshLambertMaterial({ color: 0x8e8b84 }));
+      blk.position.set(pa.x, Math.min(pa.y, this.hAt(pa.x, pa.z) + 1.6) - 2.2, pa.z); blk.rotation.y = Math.atan2(pa.tx, pa.tz); g.add(blk);
+    }
+    // konce spodného chodníka: krátke rampy dole na nábrežie
+    const E = this.snpWalkEnds || [], runs = [];
+    let run = [];
+    for (const e of E) { const p = run[run.length - 1]; if (p && Math.hypot(e[0] - p[0], e[1] - p[1]) > 4.5) { runs.push(run); run = []; } run.push(e); }
+    if (run.length) runs.push(run);
+    const rampM = new THREE.MeshLambertMaterial({ color: 0x6b6a68 });
+    for (const r of runs) {
+      if (r.length < 3) continue;
+      for (const [e, dirS] of [[r[0], -1], [r[r.length - 1], 1]]) {
+        const L0 = Math.hypot(e[5], e[6]) || 1, dx = (e[5] / L0) * dirS, dz = (e[6] / L0) * dirS;
+        const sx = e[0] + (dirS > 0 ? e[5] : 0), sz = e[1] + (dirS > 0 ? e[6] : 0);
+        const g0 = this.hAt(sx, sz), clear = e[2] - g0;
+        if (clear < 0.25) continue;
+        const L = Math.max(4, clear / 0.16), ex = sx + dx * L, ez = sz + dz * L, ye = this.hAt(ex, ez) + 0.02;
+        const seg = { ax: sx, az: sz, bx: ex, bz: ez, ya: e[2], yb: ye, hw: 1.45, br: this._snpWalkBr };
+        this.decks.add(seg, Math.min(sx, ex) - 3, Math.min(sz, ez) - 3, Math.max(sx, ex) + 3, Math.max(sz, ez) + 3);
+        const m = new THREE.Mesh(new THREE.BoxGeometry(2.9, 0.3, Math.hypot(L, e[2] - ye)), rampM);
+        m.position.set((sx + ex) / 2, (e[2] + ye) / 2 - 0.15, (sz + ez) / 2);
+        m.rotation.order = 'YXZ'; m.rotation.y = Math.atan2(dx, dz); m.rotation.x = Math.atan2(e[2] - ye, L);
+        m.receiveShadow = true; g.add(m);
+      }
     }
     g.traverse((o) => { o.frustumCulled = false; });
     this.group.add(g);
-    this.ufoPos = new THREE.Vector3(ux, topY + 3, uz);
+    this.ufoPos = new THREE.Vector3(ux, uy, uz);
+    this.pylonTop = C;
   }
 
   // ---------------------------------------------------------------- road graph for traffic

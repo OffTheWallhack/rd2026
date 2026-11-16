@@ -796,6 +796,7 @@ function updateSky() {
   scene.fog.density = lerp(0.002, MOBILE ? 0.0014 : 0.0009, day);
   world.lampHeadMat.color.setRGB(lerp(0.5, 3.0, night), lerp(0.45, 2.4, night), lerp(0.35, 1.5, night));
   if (world.ufoRing) world.ufoRing.material.color.setRGB(lerp(0.6, 3, night), lerp(0.5, 2.2, night), lerp(0.3, 1.2, night));
+  if (world.glowMats) for (const m of world.glowMats) m.emissiveIntensity = (m.userData.day || 0) + night * (m.userData.k || 1.4);
   ascii.exposure.value = lerp(1.0, 1.55, night);
 }
 

@@ -20,7 +20,9 @@ Jedna hra – pôvodná verzia zo znakov ASCII a samostatná „3D“ verzia sú
 - `hd.js` – vykresľovanie: HDR, vyhladzovanie hrán, žiara, farby.
 - `hdglsl.js` – shadery: zem, voda, fasády, strechy, obloha.
 - `x3.js` – život Bratislavy: električky, pešia zóna, polepy polície, ŠPZ, taxíky, terasy, Stará radnica, Čumil, pamiatky.
-- `venues.js` – miesta podľa skutočnosti: nápisy, terasy, vchody (Prior, Hotel Kyjev, Kácečko, Ost Block). Nové miesta sa pridávajú sem; vzhľad konkrétnych budov (farba, výška, typ fasády) je v `tools/prep2.py` vo funkcii `restyle`.
+- `venues.js` – miesta podľa skutočnosti: nápisy, terasy, vchody (Prior, Hotel Kyjev, Kácečko, Ost Block, zelená strecha Nív s bežeckým okruhom, promenáda River Parku). Nové miesta sa pridávajú sem; vzhľad konkrétnych budov (farba, výška, typ fasády) je v `tools/prep2.py` vo funkcii `restyle`.
+- Mosty podľa fotiek sú v `world.js` (`buildBridgeMeshes`, `buildPylon`): Most SNP so šikmým pylónom, UFO, lanami a spodným chodníkom; Starý most (zeleno-sivá priehradovina s oblúkovými poliami); Most Apollo (biely oblúk 231 m); Prístavný most (dvojpodlažná priehradovina). Konce mostov, ktoré nenadväzujú na iný most, sa pripnú k zemi, aby na nájazdoch nebol schod. Most Lafranconi je mimo mapy.
+- Vzhľad budov priamo v hre: tabuľka `STYLE` vo `world.js` (River Park, Nivy, Nivy Tower, Eurovea Tower) – typy fasád `glass` (sklenená obvodová stena) a `mall` (Nivy: lamely a zelené steny).
 - `actors.js`, `carmodels.js` – autá, ľudia, umelá inteligencia vodičov.
 - `ui.js`, `sound.js`, `util.js` – HUD a mapa, zvuk, pomocné funkcie.
 

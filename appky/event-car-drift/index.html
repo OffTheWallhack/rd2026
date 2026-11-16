@@ -976,9 +976,10 @@ body.dh #hud .speed,body.dh #hud .score,body.dh #combo,body.dh #timer{display:no
         <div class="tb fit two">
           <div class="col wide">
             <p class="lab2">KAMERA</p>
-            <div class="cards four six" id="camCards">
+            <div class="cards four" id="camCards">
+              <button class="card on" type="button" data-cam="auto"><b>PODĽA MÓDU</b><small>Každý mód má svoju kameru.</small></button>
               <button class="card" type="button" data-cam="near"><b>BLÍZKO</b><small>Tesne za autom.</small></button>
-              <button class="card on" type="button" data-cam="chase"><b>ZA AUTOM</b><small>Klasika.</small></button>
+              <button class="card" type="button" data-cam="chase"><b>ZA AUTOM</b><small>Klasika.</small></button>
               <button class="card" type="button" data-cam="high"><b>VYSOKO</b><small>Viac prehľadu.</small></button>
               <button class="card" type="button" data-cam="top"><b>ZHORA</b><small>Z vtáčej, auto hore.</small></button>
               <button class="card" type="button" data-cam="pov"><b>Z KOKPITU</b><small>Zubor z kabíny, ostatné z kapoty.</small></button>
@@ -1131,7 +1132,7 @@ const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
 if (isTouch) document.body.classList.add('touch');
 const store = { get(k, d) { try { const v = localStorage.getItem('ecd.' + k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
                 set(k, v) { try { localStorage.setItem('ecd.' + k, JSON.stringify(v)); } catch (e) {} } };
-const settings = { sfx: clamp(store.get('sfx', 1), 0, 1), q: store.get('q', isTouch ? 1 : 2), vib: store.get('vib', true), fps: store.get('fps', false), cam: store.get('cam', 'chase'), wx: store.get('wx', 'auto'), dhCam: store.get('dhCam', 'chase'), ghost: store.get('ghost', true), hwCam: store.get('hwCam', 'cockpit') };
+const settings = { sfx: clamp(store.get('sfx', 1), 0, 1), q: store.get('q', isTouch ? 1 : 2), vib: store.get('vib', true), fps: store.get('fps', false), cam: store.get('cam', 'chase'), camPick: store.get('cam', 'chase'), camAuto: store.get('camAuto', true), wx: store.get('wx', 'auto'), dhCam: store.get('dhCam', 'chase'), ghost: store.get('ghost', true), hwCam: store.get('hwCam', 'cockpit') };
 const stats = Object.assign({ dist: 0, time: 0, runs: 0, cones: 0, bestCombo: 0, banked: 0, total: 0, maxSpd: 0, mult5: false, badges: {} }, store.get('stats', {}));
 
 /* ================= renderer / scene ================= */
@@ -5134,7 +5135,7 @@ function renderMode() {
   if (wiz.step === 3 && !tr && pendingMode !== 'dh') setStep(2); else setStep(wiz.step);
   renderLevels(); renderSum();
 }
-const renderCam = () => $$('#camCards .card').forEach(c => c.classList.toggle('on', c.dataset.cam === settings.cam));
+const renderCam = () => $$('#camCards .card').forEach(c => c.classList.toggle('on', c.dataset.cam === (settings.camAuto ? 'auto' : settings.camPick)));
 const renderQ = () => $$('#qCards .card').forEach(c => c.classList.toggle('on', +c.dataset.q === settings.q));
 const renderWx = () => $$('#wxCards .card').forEach(c => c.classList.toggle('on', c.dataset.wx === settings.wx));
 function renderRecords() {
@@ -5553,6 +5554,7 @@ function startRun() {
     coneHits = 0; runMaxSpd = 0; runBestCombo = 0; stats.runs++;
     sound.pause(false);
     gear = 'P'; gearShow(); if (isTouch) setTimeout(() => { if (game.running && gear === 'P') popText('PREPNI NA D'); }, 700);
+    applyModeCam();
     if (game.mode === 'job') { jobSetWorld(true); jobStart(); } else { jobSetWorld(false); lvCones(null); setAmbient(!isDrM(game.mode)); resetCar(); if (game.mode === 'tokyo') tkNight(true); if (isDrM(game.mode)) { const ly = layOf('drift'); drOn(true, game.mode === 'arena' ? 'arena' : 'race', ly); if (game.mode === 'drift') setTimeout(() => { if (game.running) popText('TRAŤ ' + 'AB'[ly] + ' · ' + LAYS.drift[ly], true); }, 500); } }
     if (game.mode === 'dh') dhStart();
     if (game.mode !== 'tokyo' && game.mode !== 'hwy' && game.mode !== 'chase' && game.mode !== 'dh') { const wk = wxPick(); wxApply(wk); if (wk !== 'day') setTimeout(() => { if (game.running) popText(WX_NAME[wk]); }, 300); }
@@ -5579,7 +5581,7 @@ function toMenu(instant) {
     pauseEl.hidden = true; endEl.hidden = true; menuEl.hidden = false; $('#hud').hidden = true; elTimer.hidden = true;
     document.body.classList.remove('playing'); elCombo.classList.remove('on');
     hwyLeave(); dhLeave(); tkNight(false); wxClear(); drOn(false); jobSetWorld(false); jEl.jobHud.hidden = true; MK.visible = false; job.over = true;
-    resetCar(); renderMode(); setTab('home'); setStep(1); fcReset();
+    camRestore(); resetCar(); renderMode(); setTab('home'); setStep(1); fcReset();
     layoutStage(); updateCamera(0, true);
   };
   if (instant) go(); else fadeThen(go);
@@ -7572,7 +7574,12 @@ $('#dhTrk').addEventListener('click', e => { const b = e.target.closest('.card')
 $('#lvTabs').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; const w = b.dataset.sect, g = LEVELS.filter(x => x.world === w && !x.mission); const n = g.find(x => !lvStars(x.id)) || g[g.length - 1]; LV.sel = n.id; store.set('lvSel', LV.sel); renderMode(); });
 $('#lvList').addEventListener('click', e => { const b = e.target.closest('.lv'); if (!b) return; const i = lvIndex(b.dataset.lv); if (i < 0) return; LV.sel = b.dataset.lv; store.set('lvSel', LV.sel); renderMode(); });
 $('#nextBtn').addEventListener('click', () => { const n = lvNext(LEVELS[Math.max(0, lvIndex(LV.sel))]); if (n) { LV.sel = n.id; store.set('lvSel', LV.sel); } startRun(); });
-$('#camCards').addEventListener('click', e => { const c = e.target.closest('.card'); if (!c) return; settings.cam = c.dataset.cam; store.set('cam', settings.cam); renderCam(); });
+$('#camCards').addEventListener('click', e => {
+  const c = e.target.closest('.card'); if (!c) return; const k = c.dataset.cam;
+  if (k === 'auto') { settings.camAuto = true; store.set('camAuto', true); }
+  else { settings.camAuto = false; store.set('camAuto', false); settings.camPick = settings.cam = k; store.set('cam', k); }
+  camRestore(); renderCam();
+});
 $('#wxCards').addEventListener('click', e => { const c = e.target.closest('.card'); if (!c) return; settings.wx = c.dataset.wx; store.set('wx', settings.wx); renderWx(); });
 $('#qCards').addEventListener('click', e => { const c = e.target.closest('.card'); if (!c) return; settings.q = +c.dataset.q; store.set('q', settings.q); renderQ(); applyQuality(); });
 function wireSwitch(id, key, after) {
@@ -7618,16 +7625,36 @@ $('#startBtn').addEventListener('click', startRun);
 $('#menu').addEventListener('pointerdown', e => { if (e.target.closest('button') && game.view === 'menu') { try { sound.init(); sound.tick(); } catch (x) {} } }, true);
 $('#pauseBtn').addEventListener('click', togglePause);
 // every mode has its own set of views; the camera button (and C) steps through the views of the mode being played
+/* every mode forces its own starting camera ("PODĽA MÓDU" in the settings); C still steps through the views while playing.
+   Free play: free orbit. 60 s: bird's-eye. Training: bird's-eye for the cones. Racing track: from the cockpit (bonnet for the other cars).
+   Arena: high, to see all circuits. Tokyo: close and low, neon. Delivery: behind the car. Wilderness: high over the bushes.
+   Downhill: high, in the air discipline the free orbit. Highway: cockpit. Police chase: behind the car, so you see who is after you. */
+const MODE_CAM = { free: 'free', t60: 'top', tokyo: 'near', drift: 'pov', arena: 'high' };
+const JOB_CAM = { lot: 'top', dovoz: 'chase', off: 'high' };
+const DH_MODE_CAM = { speed: 'high', slalom: 'high', air: 'free' };
+const HW_MODE_CAM = { hwy: 'cockpit', chase: 'chase' };
+// back to what the player saved (menu, or when AUTO is switched off)
+function camRestore() { settings.cam = settings.camPick; settings.dhCam = store.get('dhCam', 'chase'); settings.hwCam = store.get('hwCam', 'cockpit'); }
+function applyModeCam() {
+  if (!settings.camAuto) return;
+  let k;
+  if (game.mode === 'dh') { k = DH_MODE_CAM[dhSelD()] || 'high'; settings.dhCam = k; DH.camSnap = true; }
+  else if (game.mode === 'hwy' || game.mode === 'chase') { k = HW_MODE_CAM[game.mode]; settings.hwCam = k; }
+  else { k = game.mode === 'job' ? JOB_CAM[job.kind] || 'chase' : MODE_CAM[game.mode] || 'chase'; settings.cam = k; }
+  const nm = game.mode === 'dh' ? DH_CAM_NAME[k] : (game.mode === 'hwy' || game.mode === 'chase') ? HW_CAM_NAME[k] : camLabel(k);
+  setTimeout(() => { if (game.running) toast('KAMERA · ' + nm + ' · C = ZMENA'); }, 900);
+  camHint(k);
+}
 const DH_CAMS = ['chase', 'near', 'high', 'hood', 'pov', 'free'], DH_CAM_NAME = { chase: 'ZA AUTOM', near: 'BLÍZKO', high: 'VYSOKO', hood: 'KAPOTA', pov: 'Z KOKPITU', free: 'VOĽNÁ' };
 const HW_CAMS = ['cockpit', 'chase', 'free'], HW_CAM_NAME = { cockpit: 'KOKPIT', chase: 'ZA AUTOM', free: 'VOĽNÁ' };
 const camHint = k => { if (k === 'free') { fcReset(); setTimeout(() => { if (game.running) popText(isTouch ? 'ŤAHAJ PRSTOM' : 'ŤAHAJ MYŠOU'); }, 650); } };
 function cycleCam() {
   if (DH.on) {
     let i = DH_CAMS.indexOf(settings.dhCam); do i = (i + 1) % DH_CAMS.length; while (DH_CAMS[i] === 'pov' && carKey !== 'zubor');   // the other cars already have the bonnet view
-    settings.dhCam = DH_CAMS[i]; store.set('dhCam', settings.dhCam); DH.camSnap = true; toast('KAMERA · ' + DH_CAM_NAME[settings.dhCam]); camHint(settings.dhCam); return;
+    settings.dhCam = DH_CAMS[i]; if (!settings.camAuto) store.set('dhCam', settings.dhCam); DH.camSnap = true; toast('KAMERA · ' + DH_CAM_NAME[settings.dhCam]); camHint(settings.dhCam); return;
   }
-  if (HW.on) { settings.hwCam = HW_CAMS[(HW_CAMS.indexOf(settings.hwCam) + 1) % HW_CAMS.length]; store.set('hwCam', settings.hwCam); toast('KAMERA · ' + HW_CAM_NAME[settings.hwCam]); camHint(settings.hwCam); return; }
-  settings.cam = CAM_ORDER[(CAM_ORDER.indexOf(settings.cam) + 1) % CAM_ORDER.length]; store.set('cam', settings.cam); renderCam(); toast('KAMERA · ' + camLabel(settings.cam)); camHint(settings.cam);
+  if (HW.on) { settings.hwCam = HW_CAMS[(HW_CAMS.indexOf(settings.hwCam) + 1) % HW_CAMS.length]; if (!settings.camAuto) store.set('hwCam', settings.hwCam); toast('KAMERA · ' + HW_CAM_NAME[settings.hwCam]); camHint(settings.hwCam); return; }
+  settings.cam = CAM_ORDER[(CAM_ORDER.indexOf(settings.cam) + 1) % CAM_ORDER.length]; if (!settings.camAuto) { settings.camPick = settings.cam; store.set('cam', settings.cam); } renderCam(); toast('KAMERA · ' + camLabel(settings.cam)); camHint(settings.cam);
 }
 $('#camBtn').addEventListener('click', cycleCam);
 $('#resumeBtn').addEventListener('click', togglePause);
@@ -7656,7 +7683,7 @@ toMenu(true); clearMarks();
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { layoutStage(); });
 requestAnimationFrame(() => { layoutStage(); updateCamera(0, true); });
 requestAnimationFrame(loop);
-window.__drift = { buildCap, drGround, LM, layOf, LAYS, hwRebuild, get HWLAY() { return HWLAY; }, drLoad, drCheckCourse, drH, scoring, input, get scene() { return scene; }, get camera() { return camera; }, DR, drOn, drUpdate, drEnv, drNear, get curModel() { return model; }, ensureModel, stageShow, stageSnap, hwCopSpawn, WX, wxApply, wxClear, stunt, stuntTick, JENV, HW_SPECIALS, hwUnlock, hwUnlocked, hwRaceStart, renderer, HW, TK, hwBlink, hwShift, hwAuto, hwyStep, hwyRender, hwyEnd, pickMode: m => { pendingMode = m; renderMode(); }, get CUROBS() { return OBS; }, setGear, get gear() { return gear; }, setPedal, touch, readInput, keys, solids, cones, physics, updateCones, setCar, CARS, LEVELS, LV, store, renderMode, curLevel, lvCones, endJob, steerMaxAt: v => P.steerMax / (1 + Math.pow(Math.max(0, Math.abs(v) - 4) / P.steerFall, 1.3)), get P() { return P; }, rp, ORT, offUpdate, dvUpdate, HOLES: () => HOLES, holeAt, sg, stageSnap, stageReady: () => modelReady(sg.target), sound, get JP() { return JP; }, placeMarker, jobPhysics, jobDamage, jobTasks, jobFX, carShape, job, get TASKS() { return TASKS; }, TRAIL, WALK, OBS, carHits, jobRespawn, jobStart, jobSetWorld, buildJobWorld, terrainH, trailAt, surfAt, endJob, jobScore, S, input, game, camera, stage, music, settings, stats, get model() { return model; }, scene, setTab, startRun, toMenu, endRun, togglePause };
+window.__drift = { settings, game, job, startRun, toMenu, store, setPending: m => { pendingMode = m; }, buildCap, drGround, LM, layOf, LAYS, hwRebuild, get HWLAY() { return HWLAY; }, drLoad, drCheckCourse, drH, scoring, input, get scene() { return scene; }, get camera() { return camera; }, DR, drOn, drUpdate, drEnv, drNear, get curModel() { return model; }, ensureModel, stageShow, stageSnap, hwCopSpawn, WX, wxApply, wxClear, stunt, stuntTick, JENV, HW_SPECIALS, hwUnlock, hwUnlocked, hwRaceStart, renderer, HW, TK, hwBlink, hwShift, hwAuto, hwyStep, hwyRender, hwyEnd, pickMode: m => { pendingMode = m; renderMode(); }, get CUROBS() { return OBS; }, setGear, get gear() { return gear; }, setPedal, touch, readInput, keys, solids, cones, physics, updateCones, setCar, CARS, LEVELS, LV, store, renderMode, curLevel, lvCones, endJob, steerMaxAt: v => P.steerMax / (1 + Math.pow(Math.max(0, Math.abs(v) - 4) / P.steerFall, 1.3)), get P() { return P; }, rp, ORT, offUpdate, dvUpdate, HOLES: () => HOLES, holeAt, sg, stageSnap, stageReady: () => modelReady(sg.target), sound, get JP() { return JP; }, placeMarker, jobPhysics, jobDamage, jobTasks, jobFX, carShape, job, get TASKS() { return TASKS; }, TRAIL, WALK, OBS, carHits, jobRespawn, jobStart, jobSetWorld, buildJobWorld, terrainH, trailAt, surfAt, endJob, jobScore, S, input, game, camera, stage, music, settings, stats, get model() { return model; }, scene, setTab, startRun, toMenu, endRun, togglePause };
 })();
 </script>
 <script src="/stats.js" defer></script>

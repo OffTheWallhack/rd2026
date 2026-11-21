@@ -137,9 +137,11 @@
   function nm(s, id) { const p = P(s, id); return p ? p.name : '?'; }
   function T(s, cid) { return s.cards[cid].t; }
   function cardName(s, cid) { return CARDS[T(s, cid)].n; }
+  function cl(s, cid) { const c = s.cards[cid]; return { t: c.t, r: c.r, s: c.s }; }
   function cardLabel(s, cid) { const c = s.cards[cid]; return CARDS[c.t].n + ' ' + (RANK_N[c.r] || c.r) + SUIT_IC[c.s]; }
-  function fail(msg) { const e = new Error(msg); e.game = true; throw e; }
-  function log(s, msg, kind) { s.log.push({ i: ++s.logN, m: msg, k: kind || '' }); if (s.log.length > 90) s.log.splice(0, s.log.length - 90); }
+  function fail(key, prm) { const e = new Error(key); e.game = true; e.key = key; e.prm = prm || null; throw e; }
+  // záznam priebehu: kľúč + parametre, text sa skladá až u hráča v jeho jazyku (i18n.js)
+  function log(s, key, prm, kind) { s.log.push({ i: ++s.logN, key, p: prm || {}, k: kind || '' }); if (s.log.length > 90) s.log.splice(0, s.log.length - 90); }
   function fx(s, f) { f.i = ++s.fxN; s.fx.push(f); if (s.fx.length > 12) s.fx.splice(0, s.fx.length - 12); }
 
   function alive(s) { return s.players.filter(p => p.alive); }           // živí (nie duchovia)
@@ -156,13 +158,13 @@
       const top = s.discard.pop();
       s.deck = shuffle(s, s.discard);
       s.discard = [top];
-      log(s, '🔄 Balíček sa zamiešal.');
+      log(s, 'l.reshuffle');
     }
     return s.deck.pop();
   }
   function give(s, p, n) { let k = 0; for (let i = 0; i < n; i++) { const c = drawCard(s); if (c == null) break; p.hand.push(c); k++; } return k; }
   function toDiscard(s, cid) { s.discard.push(cid); }
-  function removeFromHand(p, cid) { const i = p.hand.indexOf(cid); if (i < 0) fail('Túto kartu nemáš.'); p.hand.splice(i, 1); }
+  function removeFromHand(p, cid) { const i = p.hand.indexOf(cid); if (i < 0) fail('e.notYourCard'); p.hand.splice(i, 1); }
 
   // ---------- vzdialenosť a dosah ----------
   function seatsAlive(s) { return s.players.filter(p => p.alive).sort((a, b) => a.seat - b.seat); }
@@ -205,7 +207,7 @@
     const view = c => { const o = Object.assign({}, s.cards[c]); if (eventOn(s, 'pozehnanie')) o.s = 'h'; if (eventOn(s, 'prekliatie')) o.s = 's'; return o; };
     let ok = drawn.some(c => good(view(c)));
     drawn.forEach(c => toDiscard(s, c));
-    log(s, '🎴 Ťah! (' + why + ') ' + p.name + ': ' + drawn.map(c => cardLabel(s, c)).join(' / ') + (ok ? ' ✔' : ' ✘'));
+    log(s, 'l.check', { why, n: p.name, cl: drawn.map(c => cl(s, c)), ok });
     fx(s, { t: 'check', pid: p.id, cards: drawn.slice(), ok, why });
     return ok;
   }
@@ -217,18 +219,18 @@
     if (!p.alive || n <= 0) return;
     const src = srcId ? P(s, srcId) : null;
     if (src && src.id !== p.id && hasItem(p, 'vesta') && !p.vestaUsed) {
-      p.vestaUsed = true; log(s, '🦺 Vesta zastavila zásah na ' + p.name + '.'); fx(s, { t: 'block', pid: p.id }); return;
+      p.vestaUsed = true; log(s, 'l.vest', { n: p.name }); fx(s, { t: 'block', pid: p.id }); return;
     }
     p.hp -= n;
     fx(s, { t: 'hit', pid: p.id, n, how: how || '' });
-    log(s, '🩸 ' + p.name + ' −' + n + ' ' + (n === 1 ? 'život' : 'životy') + (src && src.id !== p.id ? ' (od ' + src.name + ')' : '') + '. Ostáva ' + Math.max(0, p.hp) + '.', 'hit');
+    log(s, src && src.id !== p.id ? 'l.hitBy' : 'l.hit', { n: p.name, n2: src ? src.name : '', x: n, y: Math.max(0, p.hp) }, 'hit');
     // záchrana pred smrťou (automaticky)
     if (p.hp <= 0) saveFromDeath(s, p);
     if (p.hp <= 0) { eliminate(s, p, src); return; }
-    if (ab(s, p, 'tono')) { const k = give(s, p, n); if (k) log(s, '🪨 ' + p.name + ' si za bolesť potiahol ' + k + '.'); }
+    if (ab(s, p, 'tono')) { const k = give(s, p, n); if (k) log(s, 'l.tono', { n: p.name, x: k }); }
     if (ab(s, p, 'jano') && src && src.id !== p.id && src.hand.length) {
       for (let i = 0; i < n && src.hand.length; i++) { const c = src.hand.splice(Math.floor(rnd(s) * src.hand.length), 1)[0]; p.hand.push(c); }
-      log(s, '😤 ' + p.name + ' vzal kartu z ruky ' + src.name + '.');
+      log(s, 'l.jano', { n: p.name, n2: src.name });
     }
   }
 
@@ -237,10 +239,10 @@
     let guard = 0;
     while (p.hp <= 0 && guard++ < 20) {
       const pivo = many ? p.hand.find(c => T(s, c) === 'pivo') : null;
-      if (pivo != null) { removeFromHand(p, pivo); toDiscard(s, pivo); p.hp += beerPower(s, p); log(s, '🍺 ' + p.name + ' sa zachránil pivom!', 'save'); continue; }
+      if (pivo != null) { removeFromHand(p, pivo); toDiscard(s, pivo); p.hp += beerPower(s, p); log(s, 'l.saveBeer', { n: p.name }, 'save'); continue; }
       const wh = p.hand.find(c => T(s, c) === 'whisky');
-      if (wh != null && p.hand.length >= 2) { removeFromHand(p, wh); toDiscard(s, wh); const other = cheapest(s, p.hand); removeFromHand(p, other); toDiscard(s, other); p.hp += 2; log(s, '🥃 ' + p.name + ' sa zachránil whisky!', 'save'); continue; }
-      if (ab(s, p, 'sid') && p.hand.length >= 2) { for (let k = 0; k < 2; k++) { const c = cheapest(s, p.hand); removeFromHand(p, c); toDiscard(s, c); } p.hp += 1; log(s, '🩺 ' + p.name + ' sa zaplátal (2 karty).', 'save'); continue; }
+      if (wh != null && p.hand.length >= 2) { removeFromHand(p, wh); toDiscard(s, wh); const other = cheapest(s, p.hand); removeFromHand(p, other); toDiscard(s, other); p.hp += 2; log(s, 'l.saveWhisky', { n: p.name }, 'save'); continue; }
+      if (ab(s, p, 'sid') && p.hand.length >= 2) { for (let k = 0; k < 2; k++) { const c = cheapest(s, p.hand); removeFromHand(p, c); toDiscard(s, c); } p.hp += 1; log(s, 'l.saveSid', { n: p.name }, 'save'); continue; }
       break;
     }
   }
@@ -248,23 +250,23 @@
 
   function eliminate(s, p, killer) {
     p.alive = false; p.hp = 0;
-    log(s, '☠️ ' + p.name + ' padol! Bol to ' + ROLES[p.role].n + '.', 'death');
+    log(s, 'l.death', { n: p.name, r: p.role }, 'death');
     fx(s, { t: 'death', pid: p.id, role: p.role });
     const cards = p.hand.concat(p.table);
     p.hand = []; p.table = [];
     const vik = s.players.find(q => q.alive && ab(s, q, 'viktor'));
-    if (vik) { vik.hand.push(...cards); if (cards.length) log(s, '🦅 ' + vik.name + ' si zobral ' + cards.length + ' kariet.'); }
+    if (vik) { vik.hand.push(...cards); if (cards.length) log(s, 'l.vulture', { n: vik.name, x: cards.length }); }
     else cards.forEach(c => toDiscard(s, c));
-    s.players.forEach(q => { if (q.alive && ab(s, q, 'greg')) { const h = heal(s, q, 2); if (h) log(s, '⚰️ ' + q.name + ' +' + h + ' na pohrebe.'); } });
+    s.players.forEach(q => { if (q.alive && ab(s, q, 'greg')) { const h = heal(s, q, 2); if (h) log(s, 'l.greg', { n: q.name, x: h }); } });
     if (killer && killer.alive && killer.id !== p.id) {
-      if (p.role === 'bandita') { give(s, killer, 3); log(s, '💰 ' + killer.name + ' dostal odmenu 3 karty.'); }
+      if (p.role === 'bandita') { give(s, killer, 3); log(s, 'l.reward', { n: killer.name }); }
       if (p.role === 'pomocnik' && killer.role === 'serif') {
         const all = killer.hand.concat(killer.table); killer.hand = []; killer.table = []; all.forEach(c => toDiscard(s, c));
-        log(s, '😬 Šerif zastrelil pomocníka a prišiel o všetky karty.');
+        log(s, 'l.deputyKilled');
       }
       if (s.opts.gold) { killer.gold += 2; }
     }
-    if (s.opts.ghosts) { p.ghost = true; p.ghostTurns = 2; log(s, '👻 ' + p.name + ' sa vráti ako duch na 2 ťahy.'); }
+    if (s.opts.ghosts) { p.ghost = true; p.ghostTurns = 2; log(s, 'l.ghost', { n: p.name }); }
     s.q = s.q.filter(h => !(h.pid === p.id && h.k !== 'jarmok'));
     s.q.forEach(h => { if (h.k === 'jarmok') h.order = h.order.filter(id => id !== p.id); });
     if (s.turnPid === p.id) s.stage = 'dead';
@@ -281,8 +283,7 @@
     } else if (!al.some(p => p.role === 'bandita' || p.role === 'odpadlik')) w = 'serif';
     if (w) {
       s.phase = 'over'; s.winner = w; s.q = [];
-      const txt = { serif: 'Vyhral zákon! Šerif a pomocníci', bandita: 'Vyhrali banditi', odpadlik: 'Vyhral odpadlík' }[w];
-      log(s, '🏆 ' + txt + '!', 'win');
+      log(s, 'l.win.' + w, {}, 'win');
       fx(s, { t: 'win', w });
     }
   }
@@ -306,17 +307,17 @@
   }
   function newRound(s) {
     s.round++;
-    if (!s.opts.events && s.round === 25) { s.event = 'poludnie'; log(s, '🕛 Hra sa ťahá. Prichádza Pravé poludnie: každý stratí 1 život na začiatku svojho ťahu.', 'event'); fx(s, { t: 'event', e: 'poludnie' }); }
+    if (!s.opts.events && s.round === 25) { s.event = 'poludnie'; log(s, 'l.highNoon', {}, 'event'); fx(s, { t: 'event', e: 'poludnie' }); }
     if (s.opts.events && s.round >= 2) {
       if (s.eventDeck.length) s.event = s.eventDeck.shift();
-      if (s.event) { log(s, EVENTS[s.event].ic + ' Udalosť kola: ' + EVENTS[s.event].n + ' — ' + EVENTS[s.event].d, 'event'); fx(s, { t: 'event', e: s.event }); }
+      if (s.event) { log(s, 'l.event', { e: s.event }, 'event'); fx(s, { t: 'event', e: s.event }); }
     }
   }
 
   function doStart(s) {
     const p = P(s, s.turnPid);
     p.bangs = 0; p.vestaUsed = false; p.docUsed = false;
-    log(s, '▶️ Na ťahu: ' + p.name + (p.ghost && !p.alive ? ' 👻' : ''), 'turn');
+    log(s, p.ghost && !p.alive ? 'l.turnGhost' : 'l.turn', { n: p.name }, 'turn');
     if (!p.alive) { // duch
       p.ghostTurns--;
       give(s, p, 2);
@@ -331,14 +332,14 @@
       const boom = !check(s, p, c => !(c.s === 's' && c.r >= 2 && c.r <= 9), 'dynamit');
       p.table.splice(p.table.indexOf(dyn), 1);
       if (boom) {
-        toDiscard(s, dyn); log(s, '💥💥 Dynamit vybuchol ' + p.name + ' do tváre!', 'hit'); fx(s, { t: 'boom', pid: p.id });
+        toDiscard(s, dyn); log(s, 'l.dynBoom', { n: p.name }, 'hit'); fx(s, { t: 'boom', pid: p.id });
         damage(s, p, 3, null, 'dynamit');
         if (!p.alive) return;
       } else {
         const ring = seatsAlive(s); const i = ring.findIndex(q => q.id === p.id);
         let nxt = null;
         for (let k = 1; k < ring.length; k++) { const q = ring[(i + k) % ring.length]; if (!tableHas(s, q, 'dynamit')) { nxt = q; break; } }
-        if (nxt && nxt.id !== p.id) { nxt.table.push(dyn); log(s, '🧨 Dynamit putuje k ' + nxt.name + '.'); }
+        if (nxt && nxt.id !== p.id) { nxt.table.push(dyn); log(s, 'l.dynMove', { n: nxt.name }); }
         else p.table.push(dyn);
       }
     }
@@ -346,8 +347,8 @@
     const ja = tableHas(s, p, 'basa');
     if (ja != null) {
       p.table.splice(p.table.indexOf(ja), 1); toDiscard(s, ja);
-      if (check(s, p, c => c.s === 'h', 'basa')) log(s, '🔓 ' + p.name + ' ušiel z basy!');
-      else { log(s, '⛓️ ' + p.name + ' sedí v base a stojí kolo.'); s.stage = 'skip'; return; }
+      if (check(s, p, c => c.s === 'h', 'basa')) log(s, 'l.jailOut', { n: p.name });
+      else { log(s, 'l.jailStay', { n: p.name }); s.stage = 'skip'; return; }
     }
     s.stage = 'draw';
   }
@@ -376,7 +377,7 @@
       const sec = got[Math.min(1, got.length - 1)];
       if (sec != null) {
         const red = ['h', 'd'].indexOf(s.cards[sec].s) >= 0;
-        log(s, '🎩 ' + p.name + ' ukazuje ' + cardLabel(s, sec) + (red ? ' — červená, ťahá ešte jednu!' : '.'));
+        log(s, red ? 'l.jackRed' : 'l.jack', { n: p.name, cl: [cl(s, sec)] });
         if (red) give(s, p, 1);
       }
       s.stage = 'play'; return;
@@ -403,14 +404,14 @@
       }
       if (s.stage === 'end2' || s.stage === 'skip' || s.stage === 'dead') {
         const p = P(s, s.turnPid);
-        if (p && !p.alive && p.ghost && p.ghostTurns <= 0 && s.stage !== 'dead') { p.ghost = false; p.hand.forEach(c => toDiscard(s, c)); p.hand = []; log(s, '👻 Duch ' + p.name + ' odišiel na večný odpočinok.'); }
+        if (p && !p.alive && p.ghost && p.ghostTurns <= 0 && s.stage !== 'dead') { p.ghost = false; p.hand.forEach(c => toDiscard(s, c)); p.hand = []; log(s, 'l.ghostGone', { n: p.name }); }
         nextTurn(s); continue;
       }
       return; // stage play – čaká sa na hráča na ťahu
     }
   }
   function zuzka(s) {
-    s.players.forEach(p => { if (p.alive && ab(s, p, 'zuzka') && p.hand.length === 0) { if (give(s, p, 1)) log(s, '🌵 ' + p.name + ' si potiahla kartu.'); } });
+    s.players.forEach(p => { if (p.alive && ab(s, p, 'zuzka') && p.hand.length === 0) { if (give(s, p, 1)) log(s, 'l.zuzka', { n: p.name }); } });
   }
 
   // vráti true, ak sa pozícia v rade vyriešila sama (alebo zmizla)
@@ -420,7 +421,7 @@
       h.order = h.order.filter(id => { const q = P(s, id); return q && q.alive; });
       if (!h.order.length || !h.cards.length) { h.cards.forEach(c => toDiscard(s, c)); s.q.shift(); return true; }
       h.pid = h.order[0];
-      if (h.cards.length === 1) { const q = P(s, h.pid); q.hand.push(h.cards[0]); log(s, '🛒 ' + q.name + ' berie posledný: ' + cardName(s, h.cards[0]) + '.'); h.cards = []; s.q.shift(); return true; }
+      if (h.cards.length === 1) { const q = P(s, h.pid); q.hand.push(h.cards[0]); log(s, 'l.fairLast', { n: q.name, c: T(s, h.cards[0]) }); h.cards = []; s.q.shift(); return true; }
       return false;
     }
     if (!p || (!p.alive && ['shot', 'prepad', 'suboj', 'odhod'].indexOf(h.k) >= 0 && !(h.k === 'odhod' && p.ghost))) { s.q.shift(); return true; }
@@ -430,9 +431,9 @@
       let barrels = 0;
       if (!eventOn(s, 'prazdnesudy')) { if (tableHas(s, p, 'sud') != null) barrels++; if (ab(s, p, 'fero')) barrels++; }
       for (let i = 0; i < barrels && h.got < h.need; i++) {
-        if (check(s, p, c => c.s === 'h', 'sud')) { h.got++; log(s, '🛢️ ' + p.name + ' sa schoval za sud.'); }
+        if (check(s, p, c => c.s === 'h', 'sud')) { h.got++; log(s, 'l.barrel', { n: p.name }); }
       }
-      if (h.got >= h.need) { log(s, '💨 ' + p.name + ' unikol.'); fx(s, { t: 'dodge', pid: p.id }); s.q.shift(); return true; }
+      if (h.got >= h.need) { log(s, 'l.escaped', { n: p.name }); fx(s, { t: 'dodge', pid: p.id }); s.q.shift(); return true; }
     }
     if (h.k === 'shot' || h.k === 'prepad' || h.k === 'suboj') {
       if (!responseCards(s, p, h).length) { resolvePass(s, h); return true; }
@@ -463,19 +464,19 @@
     s.q.shift();
     if (h.k === 'shot') damage(s, p, h.dmg || 1, h.src, h.via);
     else if (h.k === 'prepad') damage(s, p, 1, h.src, 'prepad');
-    else if (h.k === 'suboj') { log(s, '🤺 ' + p.name + ' prehral súboj.'); damage(s, p, 1, h.other, 'suboj'); }
+    else if (h.k === 'suboj') { log(s, 'l.duelLost', { n: p.name }); damage(s, p, 1, h.other, 'suboj'); }
   }
 
-  function outOfTurn(s, p) { if (ab(s, p, 'molly') && s.turnPid !== p.id) { if (give(s, p, 1)) log(s, '🌙 Molly si potiahla kartu.'); } }
+  function outOfTurn(s, p) { if (ab(s, p, 'molly') && s.turnPid !== p.id) { if (give(s, p, 1)) log(s, 'l.molly', { n: p.name }); } }
 
   // ---------- čo sa dá s kartou urobiť (pre UI aj boty) ----------
   // vráti { ok, why, targets:[pid], tcard:bool, extra:bool, as }
   function cardOptions(s, pid, cid) {
     const p = P(s, pid);
-    const no = why => ({ ok: false, why });
-    if (s.phase !== 'play') return no('Hra nebeží.');
-    if (s.turnPid !== pid || s.stage !== 'play' || s.q.length) return no('Teraz nie si na ťahu.');
-    if (p.hand.indexOf(cid) < 0) return no('Túto kartu nemáš.');
+    const no = (why, wp) => ({ ok: false, why, wp: wp || null });
+    if (s.phase !== 'play') return no('e.notRunning');
+    if (s.turnPid !== pid || s.stage !== 'play' || s.q.length) return no('e.notTurn');
+    if (p.hand.indexOf(cid) < 0) return no('e.notYourCard');
     let t = T(s, cid);
     const ghost = !p.alive;
     let as = null;
@@ -485,87 +486,87 @@
     const res = (o) => Object.assign({ ok: true, as, t }, o);
     switch (t) {
       case 'vystrel': {
-        if (p.bangs >= bangLimit(s, p)) return no('Výstrel už si v tomto ťahu použil.');
+        if (p.bangs >= bangLimit(s, p)) return no('e.bangUsed');
         const r = range(s, p);
         const tg = others.filter(q => distance(s, p, q) <= r).map(q => q.id);
-        return tg.length ? res({ targets: tg }) : no('Nikto nie je v dosahu (dosah ' + r + ').');
+        return tg.length ? res({ targets: tg }) : no('e.noneInRange', { x: r });
       }
       case 'past': {
         const tg = others.filter(q => distance(s, p, q) <= 1).map(q => q.id);
-        return tg.length ? res({ targets: tg }) : no('Nikto nie je na vzdialenosť 1.');
+        return tg.length ? res({ targets: tg }) : no('e.noneAt1');
       }
       case 'odstrelovac':
-        if (p.hand.length < 2) return no('Potrebuješ ešte jednu kartu na odhodenie.');
-        return others.length ? res({ targets: others.map(q => q.id), extra: true }) : no('Nie je na koho.');
-      case 'vedla': case 'uskok': return no('Túto kartu použiješ, keď na teba niekto strieľa.');
+        if (p.hand.length < 2) return no('e.needExtra');
+        return others.length ? res({ targets: others.map(q => q.id), extra: true }) : no('e.noTarget');
+      case 'vedla': case 'uskok': return no('e.reactive');
       case 'pivo':
-        if (ghost) return no('Duch nepije.');
-        if (alive(s).length <= 2) return no('Keď ostanú 2 hráči, pivo nefunguje.');
-        if (p.hp >= p.maxHp) return no('Máš plné životy.');
+        if (ghost) return no('e.ghostDrink');
+        if (alive(s).length <= 2) return no('e.beer2');
+        if (p.hp >= p.maxHp) return no('e.fullHp');
         return res({});
       case 'whisky':
-        if (ghost) return no('Duch nepije.');
-        if (p.hp >= p.maxHp) return no('Máš plné životy.');
-        if (p.hand.length < 2) return no('Potrebuješ ešte jednu kartu na odhodenie.');
+        if (ghost) return no('e.ghostDrink');
+        if (p.hp >= p.maxHp) return no('e.fullHp');
+        if (p.hand.length < 2) return no('e.needExtra');
         return res({ extra: true });
       case 'bitka':
-        if (p.hand.length < 2) return no('Potrebuješ ešte jednu kartu na odhodenie.');
+        if (p.hand.length < 2) return no('e.needExtra');
         return res({ extra: true });
       case 'jarmok':
-        if (ghost) return no('Duch na jarmok nechodí.');
+        if (ghost) return no('e.ghostFair');
         return res({});
       case 'krcma': case 'dostavnik': case 'vlak': case 'gulomet': case 'prepad':
         return res({});
       case 'vreckar': {
         const tg = others.filter(q => distance(s, p, q) <= 1 && (q.hand.length || q.table.length)).map(q => q.id);
-        return tg.length ? res({ targets: tg, tcard: true }) : no('Nikto s kartami nie je na vzdialenosť 1.');
+        return tg.length ? res({ targets: tg, tcard: true }) : no('e.noneCards1');
       }
       case 'sabotaz': {
         const tg = others.filter(q => q.hand.length || q.table.length).map(q => q.id);
-        return tg.length ? res({ targets: tg, tcard: true }) : no('Nikto nemá karty.');
+        return tg.length ? res({ targets: tg, tcard: true }) : no('e.noCards');
       }
       case 'suboj':
-        return others.length ? res({ targets: others.map(q => q.id) }) : no('Nie je s kým.');
+        return others.length ? res({ targets: others.map(q => q.id) }) : no('e.noDuel');
       case 'basa': {
         if (ghost) { /* duch môže zavrieť */ }
         const tg = others.filter(q => q.role !== 'serif' && !tableHas(s, q, 'basa')).map(q => q.id);
-        return tg.length ? res({ targets: tg }) : no('Nie je koho zavrieť (šerifa nemožno).');
+        return tg.length ? res({ targets: tg }) : no('e.noJail');
       }
       default:
-        if (ghost) return no('Duch nemôže nič položiť pred seba.');
+        if (ghost) return no('e.ghostPlace');
         if (def.c === 'm') {
-          if (tableHas(s, p, t) != null) return no('Takú kartu už pred sebou máš.');
+          if (tableHas(s, p, t) != null) return no('e.haveSame');
           return res({});
         }
         if (def.c === 'w') return res({});
-        return no('Túto kartu nejde zahrať.');
+        return no('e.cantPlay');
     }
   }
 
   // ---------- akcie ----------
   function apply(s, pid, a) {
-    if (!a || !a.a) fail('Chýba akcia.');
-    if (a.a === 'say') { const p = P(s, pid); if (!p) fail('Nie si v hre.'); const txt = String(a.text || '').slice(0, 60); if (!txt.trim()) return s; s.chat.push({ i: ++s.logN, pid, m: txt, at: a.at || 0 }); if (s.chat.length > 20) s.chat.shift(); return s; }
+    if (!a || !a.a) fail('e.noAction');
+    if (a.a === 'say') { const p = P(s, pid); if (!p) fail('e.notInGame'); const txt = String(a.text || '').slice(0, 60); if (!txt.trim()) return s; s.chat.push({ i: ++s.logN, pid, m: txt, at: a.at || 0 }); if (s.chat.length > 20) s.chat.shift(); return s; }
     if (s.phase === 'lobby') return lobbyAct(s, pid, a);
     if (s.phase === 'chars') return charAct(s, pid, a);
-    if (s.phase === 'over') { if (a.a === 'rematch') return rematch(s, pid); fail('Hra skončila.'); }
+    if (s.phase === 'over') { if (a.a === 'rematch') return rematch(s, pid); fail('e.gameOver'); }
     const p = P(s, pid);
-    if (!p) fail('Nie si v hre.');
+    if (!p) fail('e.notInGame');
     const h = s.q[0];
     if (a.a === 'respond' || a.a === 'pick') {
-      if (!h || h.pid !== pid) fail('Teraz od teba nikto nič nechce.');
+      if (!h || h.pid !== pid) fail('e.nothingAsked');
       handleQueue(s, p, h, a);
     } else if (a.a === 'play') {
-      if (h) fail('Najprv sa musí vyriešiť: ' + qLabel(s, h));
+      if (h) fail('e.resolveFirst');
       playCard(s, p, a);
     } else if (a.a === 'end') {
-      if (h || s.turnPid !== pid || s.stage !== 'play') fail('Teraz nemôžeš ukončiť ťah.');
+      if (h || s.turnPid !== pid || s.stage !== 'play') fail('e.cantEnd');
       s.stage = 'end';
     } else if (a.a === 'ability') {
       ability(s, p, a);
     } else if (a.a === 'buy') {
       buy(s, p, a);
-    } else fail('Neznáma akcia.');
+    } else fail('e.unknown');
     s.acts++;
     settle(s);
     return s;
@@ -582,24 +583,22 @@
     if (!o.ok) fail(o.why);
     const t = o.t;
     let target = null;
-    if (o.targets) { target = P(s, a.target); if (!target || o.targets.indexOf(target.id) < 0) fail('Vyber platný cieľ.'); }
+    if (o.targets) { target = P(s, a.target); if (!target || o.targets.indexOf(target.id) < 0) fail('e.badTarget'); }
     let extra = null;
-    if (o.extra) { extra = a.extra; if (extra == null || extra === cid || p.hand.indexOf(extra) < 0) fail('Vyber ešte jednu kartu na odhodenie.'); }
+    if (o.extra) { extra = a.extra; if (extra == null || extra === cid || p.hand.indexOf(extra) < 0) fail('e.pickExtra'); }
     removeFromHand(p, cid);
     if (extra != null) { removeFromHand(p, extra); toDiscard(s, extra); }
     const def = CARDS[t];
-    const label = (o.as ? CARDS[T(s, cid)].n + ' ako ' : '') + def.n;
-    fx(s, { t: 'play', pid: p.id, card: T(s, cid), as: o.as, target: target && target.id });
+        fx(s, { t: 'play', pid: p.id, card: T(s, cid), as: o.as, target: target && target.id });
     if (def.c === 'm' || def.c === 'w') {
-      if (t === 'basa') { target.table.push(cid); log(s, '⛓️ ' + p.name + ' zavrel ' + target.name + ' do basy.'); noteAggro(s, p, target); return; }
+      if (t === 'basa') { target.table.push(cid); log(s, 'l.jail', { n: p.name, n2: target.name }); noteAggro(s, p, target); return; }
       if (def.c === 'w') { const w = weapon(s, p); if (w != null) { p.table.splice(p.table.indexOf(w), 1); toDiscard(s, w); } }
       p.table.push(cid);
-      log(s, def.ic + ' ' + p.name + ' si položil ' + def.n + '.');
+      log(s, 'l.placed', { n: p.name, c: t });
       return;
     }
     toDiscard(s, cid);
-    const tgtTxt = target ? ' → ' + target.name : '';
-    log(s, def.ic + ' ' + p.name + ': ' + label + tgtTxt, 'play');
+    log(s, target ? 'l.playT' : 'l.play', { n: p.name, n2: target ? target.name : '', c: t, c0: o.as ? T(s, cid) : null }, 'play');
     switch (t) {
       case 'vystrel':
         p.bangs++;
@@ -610,18 +609,18 @@
         noteAggro(s, p, target);
         s.q.push({ k: 'shot', pid: target.id, src: p.id, need: 1, got: 0, dmg: eventOn(s, 'mesiac') ? 2 : 1, via: t });
         break;
-      case 'pivo': { const g = heal(s, p, beerPower(s, p)); log(s, '🍺 ' + p.name + ' +' + g + '.'); break; }
-      case 'whisky': { const g = heal(s, p, 2); log(s, '🥃 ' + p.name + ' +' + g + '.'); break; }
+      case 'pivo': { const g = heal(s, p, beerPower(s, p)); log(s, 'l.heal', { n: p.name, x: g, c: 'pivo' }); break; }
+      case 'whisky': { const g = heal(s, p, 2); log(s, 'l.heal', { n: p.name, x: g, c: 'whisky' }); break; }
       case 'krcma': alive(s).forEach(q => heal(s, q, 1)); break;
       case 'dostavnik': give(s, p, 2); break;
       case 'vlak': give(s, p, 3); break;
       case 'vreckar': case 'sabotaz': {
         noteAggro(s, p, target);
         let c = null;
-        if (a.tcard === 'hand' || a.tcard == null) { if (!target.hand.length) fail('Nemá nič v ruke.'); c = target.hand.splice(Math.floor(rnd(s) * target.hand.length), 1)[0]; }
-        else { const i = target.table.indexOf(a.tcard); if (i < 0) fail('Táto karta pred ním neleží.'); c = target.table.splice(i, 1)[0]; }
-        if (t === 'vreckar') { p.hand.push(c); log(s, '🫳 ' + p.name + ' zobral ' + target.name + (a.tcard === 'hand' || a.tcard == null ? ' kartu z ruky.' : ': ' + cardName(s, c) + '.')); }
-        else { toDiscard(s, c); log(s, '✂️ ' + target.name + ' prišiel o ' + cardName(s, c) + '.'); }
+        if (a.tcard === 'hand' || a.tcard == null) { if (!target.hand.length) fail('e.noHand'); c = target.hand.splice(Math.floor(rnd(s) * target.hand.length), 1)[0]; }
+        else { const i = target.table.indexOf(a.tcard); if (i < 0) fail('e.notOnTable'); c = target.table.splice(i, 1)[0]; }
+        if (t === 'vreckar') { p.hand.push(c); log(s, a.tcard === 'hand' || a.tcard == null ? 'l.stealHand' : 'l.stealTable', { n: p.name, n2: target.name, c: T(s, c) }); }
+        else { toDiscard(s, c); log(s, 'l.lost', { n: target.name, c: T(s, c), ic: '✂️' }); }
         break;
       }
       case 'suboj': noteAggro(s, p, target); s.q.push({ k: 'suboj', pid: target.id, other: p.id }); break;
@@ -647,7 +646,7 @@
           let c = null;
           if (q.hand.length) c = q.hand.splice(Math.floor(rnd(s) * q.hand.length), 1)[0];
           else if (q.table.length) c = q.table.splice(Math.floor(rnd(s) * q.table.length), 1)[0];
-          if (c != null) { toDiscard(s, c); log(s, '🍾 ' + q.name + ' prišiel o ' + cardName(s, c) + '.'); }
+          if (c != null) { toDiscard(s, c); log(s, 'l.lost', { n: q.name, c: T(s, c), ic: '🍾' }); }
         });
         break;
       }
@@ -664,25 +663,25 @@
     if (h.k === 'shot' || h.k === 'prepad' || h.k === 'suboj') {
       if (a.a === 'respond' && a.pass) { resolvePass(s, h); return; }
       const cid = a.card;
-      if (responseCards(s, p, h).indexOf(cid) < 0) fail('Touto kartou sa nedá odpovedať.');
+      if (responseCards(s, p, h).indexOf(cid) < 0) fail('e.cantRespond');
       removeFromHand(p, cid); toDiscard(s, cid);
       const t = T(s, cid);
       fx(s, { t: 'play', pid: p.id, card: t });
       if (h.k === 'shot') {
         h.got++;
-        log(s, '💨 ' + p.name + ': ' + cardName(s, cid) + (h.got < h.need ? ' (treba ešte jednu)' : ''));
+        log(s, h.got < h.need ? 'l.dodgeMore' : 'l.dodge', { n: p.name, c: t });
         if (t === 'uskok') give(s, p, 1);
         outOfTurn(s, p);
         if (h.got >= h.need) { s.q.shift(); fx(s, { t: 'dodge', pid: p.id }); }
         return;
       }
-      if (h.k === 'prepad') { log(s, '🏹 ' + p.name + ' odhodil ' + cardName(s, cid) + '.'); outOfTurn(s, p); s.q.shift(); return; }
-      if (h.k === 'suboj') { log(s, '🤺 ' + p.name + ' strieľa späť!'); outOfTurn(s, p); const o = h.other; h.other = h.pid; h.pid = o; return; }
+      if (h.k === 'prepad') { log(s, 'l.ambushResp', { n: p.name, c: t }); outOfTurn(s, p); s.q.shift(); return; }
+      if (h.k === 'suboj') { log(s, 'l.duelBack', { n: p.name }); outOfTurn(s, p); const o = h.other; h.other = h.pid; h.pid = o; return; }
     }
     if (h.k === 'jarmok') {
-      if (a.a !== 'pick' || h.cards.indexOf(a.card) < 0) fail('Vyber jednu z kariet na jarmoku.');
+      if (a.a !== 'pick' || h.cards.indexOf(a.card) < 0) fail('e.pickFair');
       h.cards.splice(h.cards.indexOf(a.card), 1); p.hand.push(a.card);
-      log(s, '🛒 ' + p.name + ' si vybral ' + cardName(s, a.card) + '.');
+      log(s, 'l.fairPick', { n: p.name, c: T(s, a.card) });
       h.order.shift();
       if (!h.order.length || !h.cards.length) { h.cards.forEach(c => toDiscard(s, c)); s.q.shift(); }
       else h.pid = h.order[0];
@@ -690,36 +689,36 @@
     }
     if (h.k === 'odhod') {
       const cards = Array.isArray(a.cards) ? a.cards : [];
-      if (cards.length !== h.n || new Set(cards).size !== cards.length || cards.some(c => p.hand.indexOf(c) < 0)) fail('Odhoď presne ' + h.n + ' ' + (h.n === 1 ? 'kartu' : 'karty') + '.');
+      if (cards.length !== h.n || new Set(cards).size !== cards.length || cards.some(c => p.hand.indexOf(c) < 0)) fail('e.discardN', { x: h.n });
       cards.forEach(c => { removeFromHand(p, c); toDiscard(s, c); });
-      log(s, '🗑️ ' + p.name + ' odhodil ' + cards.length + '.');
+      log(s, 'l.discard', { n: p.name, x: cards.length });
       if (s.opts.gold) p.gold += Math.min(2, cards.length);
       s.q.shift();
       return;
     }
     if (h.k === 'kit') {
-      if (h.cards.indexOf(a.card) < 0) fail('Vyber kartu, ktorú vrátiš.');
+      if (h.cards.indexOf(a.card) < 0) fail('e.pickReturn');
       h.cards.splice(h.cards.indexOf(a.card), 1);
       s.deck.push(a.card); p.hand.push(...h.cards);
-      log(s, '🦊 ' + p.name + ' si vybral ' + h.cards.length + ' karty z ' + (h.cards.length + 1) + '.');
+      log(s, 'l.kit', { n: p.name, x: h.cards.length, y: h.cards.length + 1 });
       s.q.shift(); return;
     }
     if (h.k === 'palo') {
       let n = h.n;
       if (a.from && a.from !== 'deck') {
         const q = P(s, a.from);
-        if (!q || !q.alive || q.id === p.id || !q.hand.length) fail('Od tohto hráča nejde ťahať.');
+        if (!q || !q.alive || q.id === p.id || !q.hand.length) fail('e.cantDrawFrom');
         p.hand.push(q.hand.splice(Math.floor(rnd(s) * q.hand.length), 1)[0]); n--;
-        log(s, '🃏 ' + p.name + ' potiahol kartu z ruky ' + q.name + '.');
+        log(s, 'l.palo', { n: p.name, n2: q.name });
       }
       give(s, p, n); s.q.shift(); return;
     }
     if (h.k === 'pedro') {
       let n = h.n;
-      if (a.from === 'discard' && s.discard.length) { const c = s.discard.pop(); p.hand.push(c); n--; log(s, '🌮 ' + p.name + ' vzal z kôpky ' + cardName(s, c) + '.'); }
+      if (a.from === 'discard' && s.discard.length) { const c = s.discard.pop(); p.hand.push(c); n--; log(s, 'l.pedro', { n: p.name, c: T(s, c) }); }
       give(s, p, n); s.q.shift(); return;
     }
-    fail('Toto teraz nejde.');
+    fail('e.notNow');
   }
 
   function cheapest(s, hand) {
@@ -733,44 +732,44 @@
     const myTurn = s.turnPid === p.id && s.stage === 'play' && !s.q.length;
     if (ab(s, p, 'sid') && a.kind === 'sid') {
       const cards = a.cards || [];
-      if (cards.length !== 2 || cards[0] === cards[1] || cards.some(c => p.hand.indexOf(c) < 0)) fail('Vyber 2 karty.');
-      if (p.hp >= p.maxHp) fail('Máš plné životy.');
+      if (cards.length !== 2 || cards[0] === cards[1] || cards.some(c => p.hand.indexOf(c) < 0)) fail('e.pick2');
+      if (p.hp >= p.maxHp) fail('e.fullHp');
       cards.forEach(c => { removeFromHand(p, c); toDiscard(s, c); }); heal(s, p, 1);
-      log(s, '🩺 ' + p.name + ' odhodil 2 karty a +1 život.'); return;
+      log(s, 'l.sid', { n: p.name }); return;
     }
     if (ab(s, p, 'chucho') && a.kind === 'chucho') {
-      if (!myTurn) fail('Len vo svojom ťahu.');
-      if (p.hp <= 1) fail('Na to máš málo životov.');
-      p.hp--; give(s, p, 2); log(s, '🌶️ ' + p.name + ' −1 život za 2 karty.'); fx(s, { t: 'hit', pid: p.id, n: 1 }); return;
+      if (!myTurn) fail('e.ownTurn');
+      if (p.hp <= 1) fail('e.lowHp');
+      p.hp--; give(s, p, 2); log(s, 'l.chucho', { n: p.name }); fx(s, { t: 'hit', pid: p.id, n: 1 }); return;
     }
     if (ab(s, p, 'doc') && a.kind === 'doc') {
-      if (!myTurn) fail('Len vo svojom ťahu.');
-      if (p.docUsed) fail('Už si to v tomto ťahu použil.');
+      if (!myTurn) fail('e.ownTurn');
+      if (p.docUsed) fail('e.usedThisTurn');
       const cards = a.cards || [];
-      if (cards.length !== 2 || cards[0] === cards[1] || cards.some(c => p.hand.indexOf(c) < 0)) fail('Vyber 2 karty.');
+      if (cards.length !== 2 || cards[0] === cards[1] || cards.some(c => p.hand.indexOf(c) < 0)) fail('e.pick2');
       const r = range(s, p);
       const target = P(s, a.target);
-      if (!target || !target.alive || target.id === p.id || distance(s, p, target) > r) fail('Cieľ nie je v dosahu.');
+      if (!target || !target.alive || target.id === p.id || distance(s, p, target) > r) fail('e.outOfRange');
       cards.forEach(c => { removeFromHand(p, c); toDiscard(s, c); });
       p.docUsed = true; noteAggro(s, p, target);
-      log(s, '⛈️ ' + p.name + ' hromovou ranou → ' + target.name, 'play');
+      log(s, 'l.doc', { n: p.name, n2: target.name }, 'play');
       fx(s, { t: 'play', pid: p.id, card: 'vystrel', target: target.id });
       s.q.push({ k: 'shot', pid: target.id, src: p.id, need: 1, got: 0, dmg: eventOn(s, 'mesiac') ? 2 : 1, via: 'doc' });
       return;
     }
-    fail('Táto schopnosť teraz nejde.');
+    fail('e.abilityNo');
   }
 
   function price(s, id) { return Math.max(1, ITEMS[id].cost - (eventOn(s, 'horucka') ? 1 : 0)); }
   function buy(s, p, a) {
-    if (!s.opts.gold) fail('Obchod je vypnutý.');
-    if (s.turnPid !== p.id || s.stage !== 'play' || s.q.length) fail('Nakupovať môžeš len vo svojom ťahu.');
-    if (!p.alive) fail('Duchovia nenakupujú.');
-    const i = s.shop.indexOf(a.item); if (i < 0) fail('Toto v obchode nie je.');
+    if (!s.opts.gold) fail('e.shopOff');
+    if (s.turnPid !== p.id || s.stage !== 'play' || s.q.length) fail('e.shopTurn');
+    if (!p.alive) fail('e.ghostShop');
+    const i = s.shop.indexOf(a.item); if (i < 0) fail('e.notInShop');
     const id = a.item, it = ITEMS[id];
-    if (!it.once && hasItem(p, id)) fail('Toto už máš.');
+    if (!it.once && hasItem(p, id)) fail('e.haveIt');
     const cost = price(s, id);
-    if (p.gold < cost) fail('Máš málo zlata (treba ' + cost + ').');
+    if (p.gold < cost) fail('e.lowGold', { x: cost });
     p.gold -= cost;
     s.shop.splice(i, 1);
     if (it.once) {
@@ -780,7 +779,7 @@
       if (id === 'mapa') give(s, p, 3);
     } else p.items.push(id);
     if (s.shopDeck.length) s.shop.push(s.shopDeck.shift());
-    log(s, it.ic + ' ' + p.name + ' kúpil ' + it.n + ' za ' + cost + ' zlata.');
+    log(s, 'l.buy', { n: p.name, it: id, x: cost });
   }
 
   // ---------- lobby ----------
@@ -802,26 +801,26 @@
     if (a.a === 'join') {
       const ex = P(s, pid);
       if (ex) { ex.name = String(a.name || ex.name).slice(0, 16); return s; }
-      if (s.players.length >= 7) fail('Miestnosť je plná (max 7).');
-      s.players.push(mkPlayer(pid, a.name, false, nextSeat(s))); log(s, '👋 ' + String(a.name || 'Hráč').slice(0, 16) + ' prišiel do saloonu.'); return s;
+      if (s.players.length >= 7) fail('e.roomFull');
+      s.players.push(mkPlayer(pid, a.name, false, nextSeat(s))); log(s, 'l.joined', { n: String(a.name || 'Hráč').slice(0, 16) }); return s;
     }
     if (a.a === 'leave') { s.players = s.players.filter(p => p.id !== pid); if (s.host === pid && s.players.length) s.host = (s.players.find(p => !p.bot) || s.players[0]).id; return s; }
-    if (!isHost) fail('Toto môže len zakladateľ miestnosti.');
+    if (!isHost) fail('e.hostOnly');
     if (a.a === 'bot') {
-      if (s.players.length >= 7) fail('Miestnosť je plná.');
+      if (s.players.length >= 7) fail('e.roomFull');
       const used = s.players.map(p => p.name); const name = BOT_NAMES.find(n => used.indexOf(n) < 0) || 'Bot';
       s.players.push(mkPlayer('bot-' + Math.floor(rnd(s) * 1e9).toString(36), name, true, nextSeat(s))); return s;
     }
-    if (a.a === 'kick') { if (a.id === s.host) fail('Seba nevyhodíš.'); s.players = s.players.filter(p => p.id !== a.id); return s; }
+    if (a.a === 'kick') { if (a.id === s.host) fail('e.kickSelf'); s.players = s.players.filter(p => p.id !== a.id); return s; }
     if (a.a === 'opts') { Object.keys(s.opts).forEach(k => { if (a.opts && typeof a.opts[k] === 'boolean') s.opts[k] = a.opts[k]; }); return s; }
     if (a.a === 'start') return startGame(s);
-    fail('Neznáma akcia.');
+    fail('e.unknown');
   }
   function nextSeat(s) { return s.players.reduce((m, p) => Math.max(m, p.seat), -1) + 1; }
 
   function startGame(s) {
     const n = s.players.length;
-    if (n < 4 || n > 7) fail('Hra je pre 4 až 7 hráčov (môžeš pridať boty).');
+    if (n < 4 || n > 7) fail('e.players');
     // náhodné poradie sedenia
     shuffle(s, s.players).forEach((p, i) => { p.seat = i; });
     s.players.sort((a, b) => a.seat - b.seat);
@@ -848,16 +847,16 @@
     s.shopDeck = shuffle(s, sd); s.shop = s.shopDeck.splice(0, 3);
     s.phase = 'chars';
     s.games++;
-    log(s, '🤠 Rozdávajú sa role. Vyberte si postavu!', 'turn');
+    log(s, 'l.dealt', {}, 'turn');
     s.players.forEach(p => { if (p.bot) pickChar(s, p, pick(s, p.charOpts)); });
     maybeBegin(s);
     return s;
   }
   function charAct(s, pid, a) {
-    const p = P(s, pid); if (!p) fail('Nie si v hre.');
-    if (a.a !== 'char') fail('Najprv si vyber postavu.');
-    if (p.char) fail('Postavu už máš.');
-    if (p.charOpts.indexOf(a.char) < 0) fail('Túto postavu nemáš na výber.');
+    const p = P(s, pid); if (!p) fail('e.notInGame');
+    if (a.a !== 'char') fail('e.pickCharFirst');
+    if (p.char) fail('e.haveChar');
+    if (p.charOpts.indexOf(a.char) < 0) fail('e.charNotOffered');
     pickChar(s, p, a.char); maybeBegin(s); return s;
   }
   function pickChar(s, p, c) {
@@ -868,16 +867,16 @@
     s.phase = 'play';
     s.players.forEach(p => { give(s, p, p.hp); if (s.opts.gold) p.gold = 1; });
     const sh = s.players.find(p => p.role === 'serif');
-    log(s, '⭐ Šerifom je ' + sh.name + '. Začína!', 'turn');
+    log(s, 'l.sheriffStarts', { n: sh.name }, 'turn');
     s.turnPid = sh.id; s.stage = 'start'; s.round = 1;
     settle(s);
   }
   function rematch(s, pid) {
-    if (pid !== s.host) fail('Odvetu spúšťa zakladateľ.');
+    if (pid !== s.host) fail('e.rematchHost');
     s.phase = 'lobby'; s.turnPid = null; s.stage = null; s.q = []; s.winner = null; s.event = null;
     s.players.forEach(p => Object.assign(p, mkPlayer(p.id, p.name, p.bot, p.seat)));
     s.cards = []; s.deck = []; s.discard = [];
-    log(s, '🔁 Nová hra! Zakladateľ môže spustiť.', 'turn');
+    log(s, 'l.rematch', {}, 'turn');
     return startGame(s);
   }
 

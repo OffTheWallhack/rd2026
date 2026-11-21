@@ -19,6 +19,63 @@
   let busy = false, driveTimer = null, tickTimer = null, netBad = 0, joining = false;
   const ui = { sheet: null, role: false, sound: ls('strelil_sound') !== '0', lastFx: 0, lastChat: 0, multi: [], firstState: true, play: null, resp: null, pickSel: null, charSel: null };
 
+  // ---------- jazyky (texty sú v lang/*.js) ----------
+  const LANG_LIST = [['sk', '🇸🇰', 'Slovenčina'], ['cs', '🇨🇿', 'Čeština'], ['en', '🇬🇧', 'English'], ['hu', '🇭🇺', 'Magyar'], ['pl', '🇵🇱', 'Polski'], ['zh', '🇨🇳', '中文'], ['ja', '🇯🇵', '日本語'], ['tlh', '⚔️', 'tlhIngan Hol']];
+  const LS = window.STRELIL_LANG = window.STRELIL_LANG || {};
+  function guessLang() {
+    const saved = ls('strelil_lang'); if (saved && LANG_LIST.some(l => l[0] === saved)) return saved;
+    const nav = ((navigator.languages && navigator.languages[0]) || navigator.language || 'sk').toLowerCase();
+    const m = { sk: 'sk', cs: 'cs', cz: 'cs', en: 'en', hu: 'hu', pl: 'pl', zh: 'zh', ja: 'ja' }[nav.slice(0, 2)];
+    return m || 'sk';
+  }
+  let LANG = guessLang();
+  const fmt = (str, p) => p ? String(str).replace(/\{(\w+)\}/g, (m, k) => p[k] != null ? p[k] : '') : String(str);
+  function t(k, p) { const L = LS[LANG]; let v = L && L.ui && L.ui[k]; if (v == null) v = LS.sk && LS.sk.ui[k]; if (v == null) v = k; return fmt(v, p); }
+  // lokalizované kópie dát z enginu (názvy a popisy kariet, postáv, rolí…)
+  const D = { CARDS: {}, CHARS: {}, ROLES: {}, EVENTS: {}, ITEMS: {} };
+  function buildD() {
+    const L = LS[LANG] || {};
+    const mk = (src, tr, f) => { const out = {}; Object.keys(src).forEach(k => { const o = Object.assign({}, src[k]); const x = tr && tr[k]; if (x) f(o, x); out[k] = o; }); return out; };
+    D.CARDS = mk(E.CARDS, L.cards, (o, x) => { o.n = x[0]; o.s = x[1]; o.d = x[2]; });
+    D.CHARS = mk(E.CHARS, L.chars, (o, x) => { o.n = x[0]; o.d = x[1]; });
+    D.ROLES = mk(E.ROLES, L.roles, (o, x) => { o.n = x[0]; o.d = x[1]; });
+    D.EVENTS = mk(E.EVENTS, L.events, (o, x) => { o.n = x[0]; o.d = x[1]; });
+    D.ITEMS = mk(E.ITEMS, L.items, (o, x) => { o.n = x[0]; o.d = x[1]; });
+  }
+  function loadLang(code, done) {
+    if (LS[code] || code === 'sk') { done(); return; }
+    const sc = document.createElement('script'); sc.src = 'lang/' + code + '.js?v=1';
+    sc.onload = done; sc.onerror = () => { LANG = 'sk'; done(); };
+    document.head.appendChild(sc);
+  }
+  function setLang(code) {
+    loadLang(code, () => {
+      LANG = LS[code] || code === 'sk' ? code : 'sk'; ls('strelil_lang', LANG);
+      document.documentElement.lang = LANG === 'tlh' ? 'tlh' : LANG;
+      buildD(); mode = null;
+      const g = $('#gallery'); if (g && !g.hidden) g.hidden = true;
+      render(); if (ui.sheet) renderSheet();
+    });
+  }
+  function langPicker() { return '<div class="langs">' + LANG_LIST.map(l => '<button class="lang' + (l[0] === LANG ? ' on' : '') + '" data-lang="' + l[0] + '" title="' + esc(l[2]) + '"><span>' + l[1] + '</span><small>' + esc(l[2]) + '</small></button>').join('') + '</div>'; }
+  function bindLangs(root) { (root || document).querySelectorAll('[data-lang]').forEach(b => b.onclick = () => { snd('pick'); setLang(b.getAttribute('data-lang')); }); }
+  // text záznamu z priebehu hry (nové záznamy sú kľúč + parametre, staré obyčajný text)
+  const clTxt = arr => (arr || []).map(c => (D.CARDS[c.t] ? D.CARDS[c.t].n : '?') + ' ' + (E.RANK_N[c.r] || c.r) + E.SUIT_IC[c.s]).join(' / ');
+  function logText(l) {
+    if (!l) return '';
+    if (l.m != null && !l.key) return l.m;
+    const P = Object.assign({}, l.p || {});
+    if (P.c && D.CARDS[P.c]) { P.ic = P.ic || D.CARDS[P.c].ic; P.c = P.c0 && D.CARDS[P.c0] ? t('l.as', { a: D.CARDS[P.c0].n, b: D.CARDS[P.c].n }) : D.CARDS[P.c].n; }
+    if (P.r && D.ROLES[P.r]) P.r = D.ROLES[P.r].n;
+    if (P.e && D.EVENTS[P.e]) { P.ei = D.EVENTS[P.e].ic; P.en = D.EVENTS[P.e].n; P.ed = D.EVENTS[P.e].d; }
+    if (P.it && D.ITEMS[P.it]) { P.ic = D.ITEMS[P.it].ic; P.it = D.ITEMS[P.it].n; }
+    if (P.cl) P.cl = clTxt(P.cl);
+    if (P.why && D.CARDS[P.why]) P.why = D.CARDS[P.why].n;
+    if (P.ok != null) P.ok = P.ok ? '✔' : '✘';
+    return t(l.key, P);
+  }
+  const errText = e => e.game ? t(e.key || e.message, e.prm) : t('toast.err', { m: e.message });
+
   const $ = s => document.querySelector(s);
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const clone = o => JSON.parse(JSON.stringify(o));
@@ -48,14 +105,14 @@
     try {
       const r = await rpc('strelil_sync', { p_code: code, p_pid: me.id, p_since: VER });
       netBad = 0;
-      if (!r.ok) { if (r.err === 'no_room') { toast('Miestnosť ' + code + ' neexistuje alebo už vypršala.'); leaveRoom(); return; } }
+      if (!r.ok) { if (r.err === 'no_room') { toast(t('toast.noRoom', { c: code })); leaveRoom(); return; } }
       else {
         SEEN = r.seen || {}; skew = r.now - Date.now() / 1000;
         if (r.state && r.version > VER) { S = r.state; VER = r.version; onState(); }
         else refreshOnline();
         drive();
       }
-    } catch (e) { netBad++; if (netBad === 3) toast('Slabé pripojenie… skúšam znova.'); }
+    } catch (e) { netBad++; if (netBad === 3) toast(t('toast.weakNet')); }
     tickTimer = setTimeout(tick, document.hidden ? 4000 : 900);
   }
   document.addEventListener('visibilitychange', () => { if (!document.hidden && code) tick(); });
@@ -68,10 +125,10 @@
       for (let attempt = 0; attempt < (opt.bot ? 1 : 4); attempt++) {
         const base = clone(S);
         try { E.apply(base, asPid || me.id, action); }
-        catch (e) { if (!opt.bot) toast(e.game ? e.message : 'Chyba: ' + e.message); if (!e.game) console.error(e); return false; }
+        catch (e) { if (!opt.bot) toast(errText(e)); if (!e.game) console.error(e); return false; }
         let r;
         try { r = await rpc('strelil_put', { p_code: code, p_expected: VER, p_state: base }); }
-        catch (e) { toast('Nepodarilo sa odoslať. Skontroluj internet.'); return false; }
+        catch (e) { toast(t('toast.sendFail')); return false; }
         if (r.ok) { S = base; VER = r.version; onState(); return true; }
         if (r.err === 'conflict') {
           const f = await rpc('strelil_sync', { p_code: code, p_pid: me.id, p_since: 0 });
@@ -79,7 +136,7 @@
           if (opt.bot) return false;
           continue;
         }
-        toast('Miestnosť už neexistuje.'); return false;
+        toast(t('toast.roomGone')); return false;
       }
       return false;
     } finally { busy = false; }
@@ -161,35 +218,35 @@
       (o.band ? '<div class="cc-band">' + esc(o.band) + '</div>' : '') +
       '<div class="cc-art"><i class="cc-sun"></i><i class="cc-mesa"></i><span class="cc-emo">' + o.emo + '</span></div>' +
       (o.gem ? '<div class="cc-gem' + (o.gemRed ? ' red' : '') + '">' + o.gem + '</div>' : '') +
-      (o.rng ? '<div class="cc-rng" title="dosah">' + o.rng + '</div>' : '') +
+      (o.rng ? '<div class="cc-rng" title="' + esc(t('card.range')) + '">' + o.rng + '</div>' : '') +
       (o.hp ? '<div class="cc-hp">' + o.hp + '</div>' : '') +
       '<div class="cc-rib"><span>' + esc(o.name) + '</span></div>' +
       '<div class="cc-txt">' + esc(o.text || '') + '</div>' +
       (o.orig ? '<div class="cc-org">' + esc(o.orig) + '</div>' : '') +
       '</div><i class="cc-shine"></i></div>';
   }
-  const KIND_BAND = { b: '', m: 'pred seba', w: 'zbraň' };
+  const kindBand = c => c === 'm' ? t('band.m') : c === 'w' ? t('band.w') : '';
   function cardFace(k, opt) {
     opt = opt || {};
-    const d = E.CARDS[k]; const a = artOf(k);
+    const d = D.CARDS[k]; const a = artOf(k);
     const c = opt.cid != null && S && S.cards[opt.cid] ? S.cards[opt.cid] : null;
     return shell({ w: opt.w, kind: d.c, emo: d.ic, a1: a[0], a2: a[1], name: d.n, orig: d.o, text: opt.full ? d.d : d.s,
       gem: c ? (E.RANK_N[c.r] || c.r) + '<small>' + E.SUIT_IC[c.s] + '</small>' : '', gemRed: c && (c.s === 'h' || c.s === 'd'),
-      rng: d.r || '', band: opt.band === false ? '' : KIND_BAND[d.c], cls: opt.cls, attrs: opt.attrs, x: d.x });
+      rng: d.r || '', band: opt.band === false ? '' : kindBand(d.c), cls: opt.cls, attrs: opt.attrs, x: d.x });
   }
   function cardEl(cid, opt) { return cardFace(S.cards[cid].t, Object.assign({ cid }, opt || {})); }
   function charFace(k, opt) {
     opt = opt || {};
-    const d = E.CHARS[k]; const a = charArt(k);
-    return shell({ w: opt.w, kind: 'ch', emo: d.ic, a1: a[0], a2: a[1], name: d.n, orig: d.o, text: d.d, hp: (d.hp + (opt.extraHp || 0)), band: 'postava', cls: opt.cls, attrs: opt.attrs, x: d.x });
+    const d = D.CHARS[k]; const a = charArt(k);
+    return shell({ w: opt.w, kind: 'ch', emo: d.ic, a1: a[0], a2: a[1], name: d.n, orig: d.o, text: d.d, hp: (d.hp + (opt.extraHp || 0)), band: t('band.char'), cls: opt.cls, attrs: opt.attrs, x: d.x });
   }
   function roleFace(k, opt) {
     opt = opt || {};
-    const d = E.ROLES[k]; const A = { serif: ['#ffe9a8', '#a8761a'], pomocnik: ['#cfe3ff', '#2e5a8a'], bandita: ['#ffb8a8', '#7a1a12'], odpadlik: ['#d4f0c0', '#2e5a22'] }[k];
-    return shell({ w: opt.w, kind: 'role', emo: d.ic, a1: A[0], a2: A[1], name: d.n, orig: d.o, text: d.d, band: 'tajná rola', cls: opt.cls, attrs: opt.attrs });
+    const d = D.ROLES[k]; const A = { serif: ['#ffe9a8', '#a8761a'], pomocnik: ['#cfe3ff', '#2e5a8a'], bandita: ['#ffb8a8', '#7a1a12'], odpadlik: ['#d4f0c0', '#2e5a22'] }[k];
+    return shell({ w: opt.w, kind: 'role', emo: d.ic, a1: A[0], a2: A[1], name: d.n, orig: d.o, text: d.d, band: t('band.role'), cls: opt.cls, attrs: opt.attrs });
   }
-  function eventFace(k, opt) { opt = opt || {}; const d = E.EVENTS[k]; return shell({ w: opt.w, kind: 'ev', emo: d.ic, a1: '#ffe2a0', a2: '#8a5a10', name: d.n, orig: d.o, text: d.d, band: 'udalosť kola', cls: opt.cls, attrs: opt.attrs }); }
-  function itemFace(k, opt) { opt = opt || {}; const d = E.ITEMS[k]; return shell({ w: opt.w, kind: 'it', emo: d.ic, a1: '#fff0b0', a2: '#7a5a10', name: d.n, text: d.d + (d.once ? ' (jednorazové)' : ''), gem: '🪙' + d.cost, band: 'obchod', cls: opt.cls, attrs: opt.attrs }); }
+  function eventFace(k, opt) { opt = opt || {}; const d = D.EVENTS[k]; return shell({ w: opt.w, kind: 'ev', emo: d.ic, a1: '#ffe2a0', a2: '#8a5a10', name: d.n, orig: d.o, text: d.d, band: t('band.event'), cls: opt.cls, attrs: opt.attrs }); }
+  function itemFace(k, opt) { opt = opt || {}; const d = D.ITEMS[k]; return shell({ w: opt.w, kind: 'it', emo: d.ic, a1: '#fff0b0', a2: '#7a5a10', name: d.n, text: d.d + (d.once ? ' ' + t('item.once') : ''), gem: '🪙' + d.cost, band: t('band.shop'), cls: opt.cls, attrs: opt.attrs }); }
 
   // ---------- toasty a efekty ----------
   function toast(msg, kind) {
@@ -268,11 +325,11 @@
         if (f.target === me.id) buzz([60, 40, 60]);
       }
       if (f.t === 'hit') { flashSeat(f.pid, 'shake'); floatAt(f.pid, '−' + f.n, 'neg'); snd('hit'); if (f.pid === me.id) { buzz(200); flashScreen(); } }
-      if (f.t === 'dodge') { floatAt(f.pid, 'vedľa!', 'pos'); snd('dodge'); }
+      if (f.t === 'dodge') { floatAt(f.pid, t('fx.dodge'), 'pos'); snd('dodge'); }
       if (f.t === 'block') floatAt(f.pid, '🦺', 'pos');
       if (f.t === 'boom') { snd('boom'); flashSeat(f.pid, 'shake'); floatAt(f.pid, '💥', 'neg'); buzz([100, 50, 300]); }
-      if (f.t === 'death') { snd('death'); floatAt(f.pid, '☠️', 'neg'); banner(name(f.pid) + ' padol', 'bol to ' + E.ROLES[f.role].n, 'dark'); }
-      if (f.t === 'check') toast('🎴 Ťah! ' + name(f.pid) + ': ' + f.cards.map(c => E.cardLabel(S, c)).join(' / ') + (f.ok ? ' ✔' : ' ✘'));
+      if (f.t === 'death') { snd('death'); floatAt(f.pid, '☠️', 'neg'); banner(t('fx.died', { n: name(f.pid) }), t('fx.was', { r: D.ROLES[f.role].n }), 'dark'); }
+      if (f.t === 'check') toast(t('fx.check', { n: name(f.pid), cl: clTxt(f.cards.map(c => S.cards[c])), ok: f.ok ? '✔' : '✘' }));
       if (f.t === 'event') { snd('event'); showEvent(f.e); }
       if (f.t === 'win') snd('win');
     }, k * 520));
@@ -299,7 +356,7 @@
     if (!S) return;
     const meP = E.P(S, me.id);
     const myTurnNow = S.phase === 'play' && S.turnPid === me.id && S.stage === 'play';
-    if (myTurnNow && !wasMyTurn && !ui.firstState) { snd('turn'); buzz(80); setTimeout(() => banner('TVOJ ŤAH', '', 'gold'), 250); }
+    if (myTurnNow && !wasMyTurn && !ui.firstState) { snd('turn'); buzz(80); setTimeout(() => banner(t('yourTurn'), '', 'gold'), 250); }
     wasMyTurn = myTurnNow;
     if (ui.play) {
       if (!meP || meP.hand.indexOf(ui.play.card) < 0 || S.turnPid !== me.id || S.q.length || S.phase !== 'play') ui.play = null;
@@ -325,20 +382,20 @@
   function randCode() { const A = 'ABCDEFGHJKLMNPRSTUVWXYZ'; let c = ''; for (let i = 0; i < 4; i++) c += A[Math.floor(Math.random() * A.length)]; return c; }
   async function createRoom() {
     const name = ($('#nm') && $('#nm').value.trim()) || me.name;
-    if (!name) { toast('Napíš svoje meno.'); $('#nm') && $('#nm').focus(); return; }
+    if (!name) { toast(t('toast.name')); $('#nm') && $('#nm').focus(); return; }
     setName(name);
     for (let i = 0; i < 5; i++) {
       const c = randCode();
       const st = E.newRoom(c, me.id, name, Math.floor(Math.random() * 2e9));
       try { const r = await rpc('strelil_create', { p_code: c, p_state: st }); if (r.ok) { enterRoom(c); return; } }
-      catch (e) { toast('Nepodarilo sa založiť miestnosť. Skontroluj internet.'); return; }
+      catch (e) { toast(t('toast.createFail')); return; }
     }
-    toast('Skús to ešte raz.');
+    toast(t('toast.retry'));
   }
   function setName(n) { me.name = n.slice(0, 16); ls('strelil_name', me.name); }
   function enterRoom(c) {
     c = String(c || '').toUpperCase().replace(/[^A-Z]/g, '').slice(0, 4);
-    if (c.length !== 4) { toast('Kód má 4 písmená.'); return; }
+    if (c.length !== 4) { toast(t('toast.code4')); return; }
     if (location.hash !== '#' + c) history.replaceState(null, '', '#' + c);
     code = c; S = null; VER = 0; ui.firstState = true; ui.lastFx = 0; ui.lastChat = 0; joining = false;
     render(); tick();
@@ -354,9 +411,9 @@
   }
   function shareLink() {
     const link = URL_SELF + '#' + code;
-    const text = 'Poď si zastrieľať 🤠 si/strelil, miestnosť ' + code + ': ' + link;
+    const text = t('share.text', { c: code, l: link });
     if (navigator.share) navigator.share({ title: 'si/strelil', text, url: link }).catch(() => {});
-    else { try { navigator.clipboard.writeText(link); toast('Link skopírovaný.'); } catch (e) { prompt('Skopíruj link:', link); } }
+    else { try { navigator.clipboard.writeText(link); toast(t('toast.copied')); } catch (e) { prompt(t('prompt.copy'), link); } }
   }
 
   // ---------- RENDER ----------
@@ -366,7 +423,7 @@
     const inGame = !!(code && S && (S.phase === 'play' || S.phase === 'over'));
     document.body.classList.toggle('ingame', inGame || !!(code && S && S.phase === 'chars'));
     if (!code) { mode = 'home'; app.className = 'app'; app.innerHTML = homeHTML(); bindHome(); return; }
-    if (!S) { mode = 'wait'; app.className = 'app'; app.innerHTML = '<div class="center"><div class="logo">si/<em>strelil</em></div><p class="muted">Pripájam sa do miestnosti ' + esc(code) + '…</p></div>'; return; }
+    if (!S) { mode = 'wait'; app.className = 'app'; app.innerHTML = '<div class="center"><div class="logo">si/<em>strelil</em></div><p class="muted">' + esc(t('wait.connecting', { c: code })) + '</p></div>'; return; }
     if (S.phase === 'lobby') { mode = 'lobby'; app.className = 'app'; app.innerHTML = lobbyHTML(); bindLobby(); maybeAutoJoin(); return; }
     if (S.phase === 'chars') { mode = 'chars'; app.className = 'app'; app.innerHTML = charsHTML(); bindChars(); return; }
     renderGame();
@@ -374,57 +431,58 @@
 
   function homeHTML() {
     return '<div class="home">' +
-      '<div class="poster"><div class="star">★</div><div class="logo">si/<em>strelil</em></div><div class="tag">Westernová kartová hra so skrytými rolami</div><div class="tag2">Šerif · Banditi · Odpadlík · 4–7 hráčov</div>' +
+      '<div class="poster"><div class="star">★</div><div class="logo">si/<em>strelil</em></div><div class="tag">' + esc(t('home.tag')) + '</div><div class="tag2">' + esc(t('home.tag2')) + '</div>' +
       '<div class="poster-cards">' + cardFace('vystrel', { w: 74, band: false }) + cardFace('vedla', { w: 74, band: false }) + cardFace('dynamit', { w: 74 }) + '</div></div>' +
-      '<label class="field"><span>Tvoje meno</span><input id="nm" maxlength="16" autocomplete="nickname" placeholder="napr. Robo" value="' + esc(me.name) + '"></label>' +
-      '<button class="btn big red" id="create">Založiť miestnosť</button>' +
-      '<div class="or">alebo</div>' +
-      '<div class="joinrow"><input id="code" maxlength="4" placeholder="KÓD" autocapitalize="characters" autocomplete="off"><button class="btn" id="join">Pripojiť</button></div>' +
-      '<div class="btnrow2"><button class="btn" id="gal">🃏 Karty a postavy</button><button class="btn" id="rules">📜 Ako sa hrá</button></div>' +
-      '<p class="foot muted">Hra beží cez link, nič sa neinštaluje. Boty doplnia miesta, ak vás je menej.</p>' +
+      '<label class="field"><span>' + esc(t('home.name')) + '</span><input id="nm" maxlength="16" autocomplete="nickname" placeholder="' + esc(t('home.namePh')) + '" value="' + esc(me.name) + '"></label>' +
+      '<button class="btn big red" id="create">' + esc(t('home.create')) + '</button>' +
+      '<div class="or">' + esc(t('home.or')) + '</div>' +
+      '<div class="joinrow"><input id="code" maxlength="4" placeholder="' + esc(t('home.codePh')) + '" autocapitalize="characters" autocomplete="off"><button class="btn" id="join">' + esc(t('home.join')) + '</button></div>' +
+      '<div class="btnrow2"><button class="btn" id="gal">' + esc(t('home.gallery')) + '</button><button class="btn" id="rules">' + esc(t('home.rules')) + '</button></div>' +
+      '<div class="langbox"><div class="muted">🌐 ' + esc(t('home.lang')) + '</div>' + langPicker() + '</div>' +
+      '<p class="foot muted">' + esc(t('home.foot')) + '</p>' +
       '</div>';
   }
   function bindHome() {
     $('#create').onclick = createRoom;
-    $('#join').onclick = () => { const n = $('#nm').value.trim(); if (!n) { toast('Napíš svoje meno.'); return; } setName(n); enterRoom($('#code').value); };
+    $('#join').onclick = () => { const n = $('#nm').value.trim(); if (!n) { toast(t('toast.name')); return; } setName(n); enterRoom($('#code').value); };
     $('#code').addEventListener('keydown', e => { if (e.key === 'Enter') $('#join').click(); });
     $('#rules').onclick = () => openSheet({ kind: 'rules' });
     $('#gal').onclick = () => openGallery('karty');
+    bindLangs($('#app'));
   }
 
-  const OPT_INFO = {
-    events: ['🕛 Pravé poludnie', 'Každé kolo nová udalosť (smäd, krvavý mesiac, piesočná búrka…). Na konci príde Pravé poludnie.'],
-    gold: ['⛏️ Zlatá horúčka', 'Zlato za každý ťah, odhodené karty aj zabitie. V obchode kupuješ vylepšenia.'],
-    ghosts: ['👻 Duchovia', 'Kto padne, vráti sa ako duch na 2 ťahy a môže ešte škodiť.'],
-    extra: ['🃏 Nové karty', 'Päsť, Úskok, Odstreľovač, Whisky, Bitka, Úkryt.'],
-    chars: ['🤠 Nové postavy', 'Hostinský Jožo, Doc Hrom, Bezohľadný Bill, Hrobár Greg, Chucho Kaktus, Tichá Molly.'],
-  };
+  const OPT_KEYS = ['events', 'gold', 'ghosts', 'extra', 'chars'];
+  function optInfo(k) {
+    if (k === 'extra') return [t('opt.extra'), Object.keys(D.CARDS).filter(c => D.CARDS[c].x).map(c => D.CARDS[c].n).join(', ') + '.'];
+    if (k === 'chars') return [t('opt.chars'), Object.keys(D.CHARS).filter(c => D.CHARS[c].x).map(c => D.CHARS[c].n).join(', ') + '.'];
+    return [t('opt.' + k), t('opt.' + k + '.d')];
+  }
   function lobbyHTML() {
     const host = S.host === me.id;
     const inRoom = !!E.P(S, me.id);
     const n = S.players.length;
     let h = '<div class="lobby"><div class="topbar"><button class="btn ghost sm" id="home">←</button><div class="logo sm">si/<em>strelil</em></div><span><button class="btn ghost sm" id="gal">🃏</button><button class="btn ghost sm" id="rules">📜</button></span></div>';
-    h += '<div class="codebox"><div class="muted">Kód miestnosti</div><div class="code">' + esc(code) + '</div><button class="btn red" id="share">📨 Pozvať partiu</button></div>';
-    if (!inRoom) h += '<label class="field"><span>Tvoje meno</span><input id="nm" maxlength="16" value="' + esc(me.name) + '"></label><button class="btn big" id="joinme">Sadnúť si ku stolu</button>';
-    h += '<h3>Pri stole (' + n + '/7)</h3><ul class="plist">';
+    h += '<div class="codebox"><div class="muted">' + esc(t('lobby.code')) + '</div><div class="code">' + esc(code) + '</div><button class="btn red" id="share">' + esc(t('lobby.invite')) + '</button></div>';
+    if (!inRoom) h += '<label class="field"><span>' + esc(t('home.name')) + '</span><input id="nm" maxlength="16" value="' + esc(me.name) + '"></label><button class="btn big" id="joinme">' + esc(t('lobby.sit')) + '</button>';
+    h += '<h3>' + esc(t('lobby.atTable', { n })) + '</h3><ul class="plist">';
     S.players.forEach(p => {
-      h += '<li><span class="dot" data-online="' + esc(p.id) + '"></span><b>' + esc(p.name) + '</b>' + (p.bot ? ' <span class="pill">bot</span>' : '') + (p.id === S.host ? ' <span class="pill gold">zakladateľ</span>' : '') + (p.id === me.id ? ' <span class="pill">ty</span>' : '') +
-        (host && p.id !== me.id ? '<button class="x" data-kick="' + esc(p.id) + '" aria-label="Vyhodiť">✕</button>' : '') + '</li>';
+      h += '<li><span class="dot" data-online="' + esc(p.id) + '"></span><b>' + esc(p.name) + '</b>' + (p.bot ? ' <span class="pill">' + esc(t('pill.bot')) + '</span>' : '') + (p.id === S.host ? ' <span class="pill gold">' + esc(t('pill.host')) + '</span>' : '') + (p.id === me.id ? ' <span class="pill">' + esc(t('pill.you')) + '</span>' : '') +
+        (host && p.id !== me.id ? '<button class="x" data-kick="' + esc(p.id) + '" aria-label="' + esc(t('lobby.kick')) + '">✕</button>' : '') + '</li>';
     });
     h += '</ul>';
-    if (host) h += '<button class="btn" id="addbot" ' + (n >= 7 ? 'disabled' : '') + '>🤖 Pridať bota</button>';
-    h += '<h3>Rozšírenia</h3><div class="opts">';
-    Object.keys(OPT_INFO).forEach(k => {
-      h += '<label class="opt' + (host ? '' : ' ro') + '"><input type="checkbox" data-opt="' + k + '" ' + (S.opts[k] ? 'checked' : '') + (host ? '' : ' disabled') + '><span><b>' + OPT_INFO[k][0] + '</b><small>' + esc(OPT_INFO[k][1]) + '</small></span></label>';
+    if (host) h += '<button class="btn" id="addbot" ' + (n >= 7 ? 'disabled' : '') + '>' + esc(t('lobby.addBot')) + '</button>';
+    h += '<h3>' + esc(t('lobby.expansions')) + '</h3><div class="opts">';
+    OPT_KEYS.forEach(k => { const oi = optInfo(k);
+      h += '<label class="opt' + (host ? '' : ' ro') + '"><input type="checkbox" data-opt="' + k + '" ' + (S.opts[k] ? 'checked' : '') + (host ? '' : ' disabled') + '><span><b>' + esc(oi[0]) + '</b><small>' + esc(oi[1]) + '</small></span></label>';
     });
     h += '</div>';
-    if (host) h += '<button class="btn big red" id="start" ' + (n < 4 ? 'disabled' : '') + '>' + (n < 4 ? 'Treba aspoň 4 (pridaj boty)' : '🔫 Rozdať karty') + '</button>';
-    else h += '<p class="muted center-t">Čaká sa, kým zakladateľ spustí hru…</p>';
+    if (host) h += '<button class="btn big red" id="start" ' + (n < 4 ? 'disabled' : '') + '>' + esc(n < 4 ? t('lobby.need4') : t('lobby.deal')) + '</button>';
+    else h += '<p class="muted center-t">' + esc(t('lobby.waitHost')) + '</p>';
     return h + '</div>';
   }
   function bindLobby() {
     $('#home').onclick = leaveRoom; $('#share').onclick = shareLink; $('#rules').onclick = () => openSheet({ kind: 'rules' }); $('#gal').onclick = () => openGallery('karty');
-    if ($('#joinme')) $('#joinme').onclick = async () => { const n = $('#nm').value.trim(); if (!n) { toast('Napíš meno.'); return; } setName(n); await act({ a: 'join', name: n }); };
+    if ($('#joinme')) $('#joinme').onclick = async () => { const n = $('#nm').value.trim(); if (!n) { toast(t('toast.name')); return; } setName(n); await act({ a: 'join', name: n }); };
     if ($('#addbot')) $('#addbot').onclick = () => act({ a: 'bot' });
     if ($('#start')) $('#start').onclick = () => act({ a: 'start' });
     document.querySelectorAll('[data-kick]').forEach(b => b.onclick = () => act({ a: 'kick', id: b.getAttribute('data-kick') }));
@@ -435,17 +493,17 @@
   function charsHTML() {
     const p = E.P(S, me.id);
     let h = '<div class="chars"><div class="topbar"><div></div><div class="logo sm">si/<em>strelil</em></div><button class="btn ghost sm" id="gal">🃏</button></div>';
-    if (!p) return h + '<p class="center-t muted">Hra už beží. Pozeráš ako divák.</p></div>';
-    h += '<div class="ch-role"><div class="muted center-t">Tvoja tajná rola</div><div class="flipin">' + roleFace(p.role, { w: Math.min(170, innerWidth * 0.42) }) + '</div></div>';
+    if (!p) return h + '<p class="center-t muted">' + esc(t('chars.spectator')) + '</p></div>';
+    h += '<div class="ch-role"><div class="muted center-t">' + esc(t('chars.secret')) + '</div><div class="flipin">' + roleFace(p.role, { w: Math.min(170, innerWidth * 0.42) }) + '</div></div>';
     if (!p.char) {
-      h += '<h3 class="center-t">Vyber si postavu</h3><div class="ch-pick">';
+      h += '<h3 class="center-t">' + esc(t('chars.pick')) + '</h3><div class="ch-pick">';
       const w = Math.min(165, (innerWidth - 50) / 2);
       p.charOpts.forEach(c => { h += '<button class="ch-opt' + (ui.charSel === c ? ' sel' : '') + '" data-char="' + c + '">' + charFace(c, { w, extraHp: p.role === 'serif' ? 1 : 0 }) + '</button>'; });
       const ok = ui.charSel && p.charOpts.indexOf(ui.charSel) >= 0;
-      h += '</div><button class="btn big red" id="chargo" ' + (ok ? '' : 'disabled') + '>' + (ok ? '✔ Hrať za: ' + esc(E.CHARS[ui.charSel].n) : 'Ťukni na postavu') + '</button>';
-    } else h += '<p class="center-t">Hráš za <b>' + esc(E.CHARS[p.char].n) + '</b>. Čaká sa na ostatných…</p>';
+      h += '</div><button class="btn big red" id="chargo" ' + (ok ? '' : 'disabled') + '>' + esc(ok ? t('chars.playAs', { c: D.CHARS[ui.charSel].n }) : t('chars.tap')) + '</button>';
+    } else h += '<p class="center-t">' + t('chars.youAre', { c: '<b>' + esc(D.CHARS[p.char].n) + '</b>' }) + '</p>';
     const waiting = S.players.filter(q => !q.char).map(q => q.name);
-    if (waiting.length) h += '<p class="center-t muted">Ešte vyberajú: ' + esc(waiting.join(', ')) + '</p>';
+    if (waiting.length) h += '<p class="center-t muted">' + esc(t('chars.stillPicking', { n: waiting.join(', ') })) + '</p>';
     return h + '</div>';
   }
   function bindChars() {
@@ -476,10 +534,10 @@
   }
 
   function renderBar() {
-    const ev = S.event && (S.opts.events || S.event === 'poludnie') ? E.EVENTS[S.event] : null;
-    $('#tbar').innerHTML = '<button class="ib" id="menu" aria-label="Menu">☰</button><div class="tb-mid"><b>' + esc(code) + '</b> · kolo ' + S.round + '</div>' +
+    const ev = S.event && (S.opts.events || S.event === 'poludnie') ? D.EVENTS[S.event] : null;
+    $('#tbar').innerHTML = '<button class="ib" id="menu" aria-label="' + esc(t('menu.t')) + '">☰</button><div class="tb-mid"><b>' + esc(code) + '</b> · ' + esc(t('bar.round', { n: S.round })) + '</div>' +
       (ev ? '<button class="evchip" id="evchip">' + ev.ic + ' ' + esc(ev.n) + '</button>' : '<span></span>') +
-      '<button class="ib" id="galbtn" aria-label="Kartotéka">🃏</button><button class="ib" id="logbtn" aria-label="Priebeh">📜</button>';
+      '<button class="ib" id="galbtn" aria-label="' + esc(t('a.gallery')) + '">🃏</button><button class="ib" id="logbtn" aria-label="' + esc(t('a.log')) + '">📜</button>';
     $('#menu').onclick = () => openSheet({ kind: 'menu' });
     $('#galbtn').onclick = () => openGallery('karty');
     $('#logbtn').onclick = () => openSheet({ kind: 'log' });
@@ -493,7 +551,7 @@
   }
   function portrait(p, size, opts) {
     opts = opts || {};
-    const ch = p.char ? E.CHARS[p.char] : null; const a = p.char ? charArt(p.char) : ['#e8d0a0', '#5a3a1a'];
+    const ch = p.char ? D.CHARS[p.char] : null; const a = p.char ? charArt(p.char) : ['#e8d0a0', '#5a3a1a'];
     const tg = opts.targets; const isT = tg && tg.indexOf(p.id) >= 0;
     const roleKnown = p.role === 'serif' || !p.alive || S.phase === 'over' || (p.id === me.id && ui.role);
     const h = S.q[0];
@@ -505,7 +563,7 @@
       '<span class="pt-ring"><span class="pt-art"><span class="pt-emo">' + (ch ? ch.ic : '🤠') + '</span></span></span>' +
       (p.alive ? '<span class="pt-hp">' + p.hp + '</span>' : '<span class="pt-hp dead">' + (p.ghost && p.ghostTurns > 0 ? '👻' : '☠') + '</span>') +
       (p.id !== me.id ? '<span class="pt-cards">' + p.hand.length + '</span>' : '') +
-      (roleKnown && p.role ? '<span class="pt-role r-' + p.role + '" title="' + esc(E.ROLES[p.role].n) + '">' + E.ROLES[p.role].ic + '</span>' : '') +
+      (roleKnown && p.role ? '<span class="pt-role r-' + p.role + '" title="' + esc(D.ROLES[p.role].n) + '">' + D.ROLES[p.role].ic + '</span>' : '') +
       (S.opts.gold && p.alive && p.id !== me.id ? '<span class="pt-gold">' + p.gold + '</span>' : '') +
       (dist ? '<span class="pt-dist">↔' + dist + '</span>' : '') +
       '<span class="pt-nm"><i class="dot" data-online="' + esc(p.id) + '"></i>' + esc(p.name) + '</span>' +
@@ -536,22 +594,22 @@
   }
 
   function lastLogLine() {
-    for (let i = S.log.length - 1; i >= 0; i--) { const l = S.log[i]; if (l.k !== 'turn' || i === S.log.length - 1) return l.m; }
+    for (let i = S.log.length - 1; i >= 0; i--) { const l = S.log[i]; if (l.k !== 'turn' || i === S.log.length - 1) return logText(l); }
     return '';
   }
   function statusText() {
-    if (S.phase === 'over') return 'Koniec hry';
+    if (S.phase === 'over') return t('st.over');
     const h = S.q[0];
-    const nmP = id => { const p = E.P(S, id); return p ? (id === me.id ? 'ty' : p.name) : '?'; };
+    const nmP = id => { const p = E.P(S, id); return p ? (id === me.id ? t('st.you') : p.name) : '?'; };
     if (h) {
       const who = nmP(h.pid);
-      const auto = (E.P(S, h.pid) || {}).bot ? '' : (offlineLong(h.pid) && h.pid !== me.id ? ' (autopilot)' : '');
-      const map = { shot: who + ' sa bráni výstrelu', prepad: who + ' odráža prepad', suboj: 'Súboj — na rade ' + who, jarmok: 'Jarmok — vyberá ' + who, odhod: who + ' odhadzuje', kit: who + ' vyberá karty', palo: who + ' ťahá', pedro: who + ' ťahá' };
-      return (map[h.k] || '…') + auto;
+      const auto = (E.P(S, h.pid) || {}).bot ? '' : (offlineLong(h.pid) && h.pid !== me.id ? ' ' + t('st.autopilot') : '');
+      const k = { shot: 'st.shot', prepad: 'st.prepad', suboj: 'st.suboj', jarmok: 'st.jarmok', odhod: 'st.odhod', kit: 'st.kit', palo: 'st.draw', pedro: 'st.draw' }[h.k];
+      return (k ? t(k, { w: who }) : '…') + auto;
     }
-    const t = E.P(S, S.turnPid);
-    if (!t) return '';
-    return S.turnPid === me.id ? 'Tvoj ťah' : 'Na ťahu: ' + t.name + (t.bot ? ' 🤖' : (offlineLong(t.id) ? ' (autopilot)' : ''));
+    const tp = E.P(S, S.turnPid);
+    if (!tp) return '';
+    return S.turnPid === me.id ? t('st.yourTurn') : t('st.turn', { n: tp.name }) + (tp.bot ? ' 🤖' : (offlineLong(tp.id) ? ' ' + t('st.autopilot') : ''));
   }
 
   function renderMid() {
@@ -573,7 +631,7 @@
   }
 
   // panel pri hraní karty: veľká karta + kroky + potvrdenie
-  const cname = cid => E.CARDS[S.cards[cid].t].n;
+  const cname = cid => D.CARDS[S.cards[cid].t].n;
   function playReady(pl) {
     const o = pl.o;
     if (!o.ok) return false;
@@ -583,53 +641,54 @@
     return true;
   }
   function stageHTML(meP) {
-    const pl = ui.play, o = pl.o, d = E.CARDS[S.cards[pl.card].t];
-    const shown = o.as ? E.CARDS[o.as] : d;
+    const pl = ui.play, o = pl.o, d = D.CARDS[S.cards[pl.card].t];
+    const shown = o.as ? D.CARDS[o.as] : d;
     const w = Math.min(132, innerWidth * 0.33);
     let s = '<div class="stage"><div class="st-card" id="stcard">' + cardEl(pl.card, { w, full: true }) + '</div><div class="st-side">';
     s += '<div class="st-t">' + esc(shown.n) + (o.as ? ' <small>(' + esc(d.n) + ')</small>' : '') + '</div>';
-    if (!o.ok) s += '<p class="warn">' + esc(o.why) + '</p>';
+    if (!o.ok) s += '<p class="warn">' + esc(t(o.why, o.wp)) + '</p>';
     else {
-      if (o.extra) s += '<div class="st-step' + (pl.extra != null ? ' done' : '') + '">' + (pl.extra != null ? '✔ odhodíš ' + esc(cname(pl.extra)) : 'Vyber kartu na odhodenie') + '</div><div class="minis">' + meP.hand.filter(x => x !== pl.card).map(x => cardEl(x, { w: 44, cls: pl.extra === x ? 'sel' : '', attrs: 'data-ex="' + x + '"', band: false })).join('') + '</div>';
-      if (o.targets) s += '<div class="st-step' + (pl.target ? ' done' : '') + '">' + (pl.target ? '✔ cieľ: <b>' + esc(E.P(S, pl.target).name) + '</b>' : '👆 ťukni na hráča hore') + '</div>';
+      if (o.extra) s += '<div class="st-step' + (pl.extra != null ? ' done' : '') + '">' + esc(pl.extra != null ? t('play.discarding', { c: cname(pl.extra) }) : t('play.pickDiscard')) + '</div><div class="minis">' + meP.hand.filter(x => x !== pl.card).map(x => cardEl(x, { w: 44, cls: pl.extra === x ? 'sel' : '', attrs: 'data-ex="' + x + '"', band: false })).join('') + '</div>';
+      if (o.targets) s += '<div class="st-step' + (pl.target ? ' done' : '') + '">' + (pl.target ? t('play.target', { n: '<b>' + esc(E.P(S, pl.target).name) + '</b>' }) : esc(t('play.tapPlayer'))) + '</div>';
       if (o.tcard && pl.target) {
         const q = E.P(S, pl.target);
-        s += '<div class="st-step' + (pl.tcard !== undefined ? ' done' : '') + '">Ktorú kartu?</div><div class="chips">' + (q.hand.length ? '<button class="chipbtn' + (pl.tcard === 'hand' ? ' on' : '') + '" data-tc="hand">🂠 z ruky (' + q.hand.length + ')</button>' : '') + q.table.map(tc => '<button class="chipbtn' + (pl.tcard === tc ? ' on' : '') + '" data-tc="' + tc + '">' + E.CARDS[S.cards[tc].t].ic + ' ' + esc(cname(tc)) + '</button>').join('') + '</div>';
+        s += '<div class="st-step' + (pl.tcard !== undefined ? ' done' : '') + '">' + esc(t('play.whichCard')) + '</div><div class="chips">' + (q.hand.length ? '<button class="chipbtn' + (pl.tcard === 'hand' ? ' on' : '') + '" data-tc="hand">' + esc(t('play.fromHand', { x: q.hand.length })) + '</button>' : '') + q.table.map(tc => '<button class="chipbtn' + (pl.tcard === tc ? ' on' : '') + '" data-tc="' + tc + '">' + D.CARDS[S.cards[tc].t].ic + ' ' + esc(cname(tc)) + '</button>').join('') + '</div>';
       }
     }
     const ready = playReady(pl);
-    s += '<div class="st-go"><button class="btn red go" id="playgo" ' + (ready ? '' : 'disabled') + '>' + (ready ? '✔ Zahrať' : 'Zahrať') + '</button><button class="btn ghost" id="playcancel">Späť</button></div>';
+    s += '<div class="st-go"><button class="btn red go" id="playgo" ' + (ready ? '' : 'disabled') + '>' + (ready ? '✔ ' : '') + esc(t('play.go')) + '</button><button class="btn ghost" id="playcancel">' + esc(t('play.back')) + '</button></div>';
     return s + '</div></div>';
   }
 
   function promptHTML(meP, h) {
     const nmP = id => { const p = E.P(S, id); return p ? p.name : '?'; };
-    let t = '', body = '';
-    const respBtn = () => ui.resp != null ? '<button class="btn red go" id="respgo">✔ Použiť ' + esc(cname(ui.resp)) + '</button>' : '';
+    let tt = '', body = '';
+    const respBtn = () => ui.resp != null ? '<button class="btn red go" id="respgo">' + esc(t('resp.use', { c: cname(ui.resp) })) + '</button>' : '';
     if (h.k === 'shot' || h.k === 'prepad' || h.k === 'suboj') {
-      const via = { vystrel: 'Výstrel', gulomet: 'Guľomet', past: 'Päsť', odstrelovac: 'Odstreľovač', doc: 'Hromová rana' }[h.via] || 'Výstrel';
-      if (h.k === 'shot') t = '💥 ' + nmP(h.src) + ' na teba páli! <small>(' + via + (h.need - h.got > 1 ? ', treba ' + (h.need - h.got) + '× Vedľa!' : '') + (h.dmg > 1 ? ', zásah −' + h.dmg : '') + ')</small>';
-      if (h.k === 'prepad') t = '🏹 Prepad od ' + esc(nmP(h.src)) + '! <small>Odhoď Výstrel</small>';
-      if (h.k === 'suboj') t = '🤺 Súboj s ' + esc(nmP(h.other)) + '! <small>Odhoď Výstrel</small>';
+      const via = h.via === 'doc' ? t('resp.doc') : (D.CARDS[h.via] || D.CARDS.vystrel).n;
+      const bangN = D.CARDS.vystrel.n;
+      if (h.k === 'shot') tt = esc(t('resp.shot', { n: nmP(h.src) })) + ' <small>(' + esc(via + (h.need - h.got > 1 ? ', ' + t('resp.needMore', { x: h.need - h.got, c: D.CARDS.vedla.n }) : '') + (h.dmg > 1 ? ', ' + t('resp.dmg', { x: h.dmg }) : '')) + ')</small>';
+      if (h.k === 'prepad') tt = esc(t('resp.ambush', { n: nmP(h.src) })) + ' <small>' + esc(t('resp.discardBang', { c: bangN })) + '</small>';
+      if (h.k === 'suboj') tt = esc(t('resp.duel', { n: nmP(h.other) })) + ' <small>' + esc(t('resp.discardBang', { c: bangN })) + '</small>';
       const has = E.responseCards(S, meP, h).length > 0;
-      body = '<p class="hint">' + (has ? (ui.resp != null ? 'Potvrď, alebo vyber inú kartu.' : 'Svietiace karty dole ťa zachránia — ťukni a potvrď, alebo potiahni hore.') : 'Nemáš sa čím brániť.') + '</p><div class="st-go">' + respBtn() +
-        '<button class="btn ' + (ui.resp != null ? 'ghost' : 'red go') + '" id="pass">' + (h.k === 'shot' ? 'Zobrať zásah (−' + (h.dmg || 1) + ')' : h.k === 'suboj' ? 'Vzdať (−1)' : 'Stratiť život') + '</button></div>';
+      body = '<p class="hint">' + esc(has ? (ui.resp != null ? t('resp.confirm') : t('resp.hint')) : t('resp.none')) + '</p><div class="st-go">' + respBtn() +
+        '<button class="btn ' + (ui.resp != null ? 'ghost' : 'red go') + '" id="pass">' + esc(h.k === 'shot' ? t('resp.take', { x: h.dmg || 1 }) : h.k === 'suboj' ? t('resp.giveUp') : t('resp.loseLife')) + '</button></div>';
     } else if (h.k === 'jarmok' || h.k === 'kit') {
-      t = h.k === 'jarmok' ? '🛒 Jarmok — vyber si kartu' : '🦊 Vyber kartu, ktorú VRÁTIŠ';
+      tt = esc(h.k === 'jarmok' ? t('pick.fair', { c: D.CARDS.jarmok.n }) : t('pick.kit'));
       const w = Math.min(86, (innerWidth - 40) / Math.max(3, h.cards.length));
-      body = '<div class="pickrow">' + h.cards.map(c => cardEl(c, { w, cls: 'pk' + (ui.pickSel === c ? ' sel' : ''), attrs: 'data-pick="' + c + '"', band: false })).join('') + '</div><div class="st-go"><button class="btn red go" id="pickgo" ' + (ui.pickSel != null ? '' : 'disabled') + '>' + (ui.pickSel != null ? '✔ ' + (h.k === 'jarmok' ? 'Vziať ' : 'Vrátiť ') + esc(cname(ui.pickSel)) : 'Ťukni na kartu') + '</button></div>';
+      body = '<div class="pickrow">' + h.cards.map(c => cardEl(c, { w, cls: 'pk' + (ui.pickSel === c ? ' sel' : ''), attrs: 'data-pick="' + c + '"', band: false })).join('') + '</div><div class="st-go"><button class="btn red go" id="pickgo" ' + (ui.pickSel != null ? '' : 'disabled') + '>' + esc(ui.pickSel != null ? t(h.k === 'jarmok' ? 'pick.take' : 'pick.ret', { c: cname(ui.pickSel) }) : t('pick.tap')) + '</button></div>';
     } else if (h.k === 'odhod') {
-      t = '🗑️ Odhoď ' + h.n + ' ' + (h.n === 1 ? 'kartu' : 'karty');
-      body = '<p class="hint">Máš viac kariet ako životov. Ťukni na karty dole (' + ui.multi.length + '/' + h.n + ').</p><div class="st-go"><button class="btn red go" id="discardgo" ' + (ui.multi.length === h.n ? '' : 'disabled') + '>✔ Odhodiť</button></div>';
+      tt = esc(t('disc.t', { x: h.n }));
+      body = '<p class="hint">' + esc(t('disc.hint', { a: ui.multi.length, b: h.n })) + '</p><div class="st-go"><button class="btn red go" id="discardgo" ' + (ui.multi.length === h.n ? '' : 'disabled') + '>' + esc(t('disc.go')) + '</button></div>';
     } else if (h.k === 'palo') {
-      t = '🃏 Odkiaľ potiahneš prvú kartu?';
-      body = '<div class="chips"><button class="chipbtn" data-from="deck">Z balíčka</button>' + S.players.filter(q => q.alive && q.id !== me.id && q.hand.length).map(q => '<button class="chipbtn" data-from="' + esc(q.id) + '">Od ' + esc(q.name) + ' (' + q.hand.length + ')</button>').join('') + '</div>';
+      tt = esc(t('palo.t'));
+      body = '<div class="chips"><button class="chipbtn" data-from="deck">' + esc(t('from.deck')) + '</button>' + S.players.filter(q => q.alive && q.id !== me.id && q.hand.length).map(q => '<button class="chipbtn" data-from="' + esc(q.id) + '">' + esc(t('from.player', { n: q.name, x: q.hand.length })) + '</button>').join('') + '</div>';
     } else if (h.k === 'pedro') {
       const top = S.discard[S.discard.length - 1];
-      t = '🌮 Prvá karta z kôpky' + (top != null ? ' (' + esc(cname(top)) + ')' : '') + ' alebo z balíčka?';
-      body = '<div class="chips"><button class="chipbtn" data-from="discard">Z kôpky</button><button class="chipbtn" data-from="deck">Z balíčka</button></div>';
+      tt = esc(t('pedro.t', { c: top != null ? ' (' + cname(top) + ')' : '' }));
+      body = '<div class="chips"><button class="chipbtn" data-from="discard">' + esc(t('from.discard')) + '</button><button class="chipbtn" data-from="deck">' + esc(t('from.deck')) + '</button></div>';
     }
-    return '<div class="prompt"><div class="pr-t">' + t + '</div>' + body + '</div>';
+    return '<div class="prompt"><div class="pr-t">' + tt + '</div>' + body + '</div>';
   }
 
   function bindMid() {
@@ -639,7 +698,7 @@
     document.querySelectorAll('#mid [data-tc]').forEach(b => b.onclick = () => { const v = b.getAttribute('data-tc'); ui.play.tcard = v === 'hand' ? 'hand' : +v; render(); });
     document.querySelectorAll('#mid [data-ex]').forEach(b => b.onclick = () => { if (suppressClick) return; ui.play.extra = +b.getAttribute('data-ex'); snd('pick'); render(); });
     on('#respgo', () => { const c = ui.resp; ui.resp = null; if (c != null) act({ a: 'respond', card: c }); });
-    on('#pass', () => armed('#pass', 'Naozaj? Máš sa čím brániť', () => { ui.resp = null; act({ a: 'respond', pass: true }); }, () => { const mp = E.P(S, me.id); const h = S.q[0]; return mp && h && E.responseCards(S, mp, h).length > 0; }));
+    on('#pass', () => armed('#pass', esc(t('armed.pass')), () => { ui.resp = null; act({ a: 'respond', pass: true }); }, () => { const mp = E.P(S, me.id); const h = S.q[0]; return mp && h && E.responseCards(S, mp, h).length > 0; }));
     document.querySelectorAll('#mid [data-pick]').forEach(b => b.onclick = () => { if (suppressClick) return; const c = +b.getAttribute('data-pick'); ui.pickSel = ui.pickSel === c ? null : c; snd('pick'); render(); });
     on('#pickgo', () => { const c = ui.pickSel; ui.pickSel = null; if (c != null) act({ a: 'pick', card: c }); });
     on('#discardgo', () => { const h = S.q[0]; if (h && ui.multi.length === h.n) { const cs = ui.multi.slice(); ui.multi = []; act({ a: 'pick', cards: cs }); } });
@@ -650,26 +709,26 @@
   function renderHero() {
     const meP = E.P(S, me.id);
     const el = $('#herozone');
-    if (!meP) { el.innerHTML = '<p class="muted center-t">Pozeráš ako divák.</p>'; return; }
+    if (!meP) { el.innerHTML = '<p class="muted center-t">' + esc(t('hero.spectator')) + '</p>'; return; }
     const h = S.q[0];
     const myTurn = S.turnPid === me.id && S.stage === 'play' && !h && S.phase === 'play';
     const anyPlayable = myTurn && meP.hand.some(c => E.cardOptions(S, me.id, c).ok);
     const abil = meP.char && ['sid', 'doc', 'chucho'].indexOf(meP.char) >= 0 && E.ab(S, meP, meP.char);
     let s = '<div class="hz-left">';
-    if (S.opts.gold) s += '<button class="rb gold" id="shop" aria-label="Obchod"><span>🏪</span><b>' + meP.gold + '</b></button>';
-    if (abil) s += '<button class="rb power" id="abil" aria-label="Schopnosť"><span>' + E.CHARS[meP.char].ic + '</span><b>✨</b></button>';
-    s += '<button class="rb" id="chat" aria-label="Správa"><span>💬</span></button></div>';
+    if (S.opts.gold) s += '<button class="rb gold" id="shop" aria-label="' + esc(t('a.shop')) + '"><span>🏪</span><b>' + meP.gold + '</b></button>';
+    if (abil) s += '<button class="rb power" id="abil" aria-label="' + esc(t('a.ability')) + '"><span>' + D.CHARS[meP.char].ic + '</span><b>✨</b></button>';
+    s += '<button class="rb" id="chat" aria-label="' + esc(t('a.chat')) + '"><span>💬</span></button></div>';
     s += '<div class="hz-mid">' + portrait(meP, 86, {}) +
-      '<button class="rolepill r-' + meP.role + (ui.role || meP.role === 'serif' || !meP.alive ? ' open' : '') + '" id="myrole">' + (ui.role || meP.role === 'serif' || !meP.alive ? E.ROLES[meP.role].ic + ' ' + esc(E.ROLES[meP.role].n) : '🔒 rola') + '</button>' +
+      '<button class="rolepill r-' + meP.role + (ui.role || meP.role === 'serif' || !meP.alive ? ' open' : '') + '" id="myrole">' + (ui.role || meP.role === 'serif' || !meP.alive ? D.ROLES[meP.role].ic + ' ' + esc(D.ROLES[meP.role].n) : esc(t('hero.role'))) + '</button>' +
       '<span class="rangepill">⌖ ' + E.range(S, meP) + '</span></div>';
-    s += '<div class="hz-right"><button class="endbtn' + (myTurn ? (anyPlayable ? ' on' : ' on done') : '') + '" id="endturn" ' + (myTurn ? '' : 'disabled') + '><span>' + (myTurn ? 'KONIEC<br>ŤAHU' : (S.phase === 'play' ? 'ČAKAJ' : '')) + '</span></button></div>';
+    s += '<div class="hz-right"><button class="endbtn' + (myTurn ? (anyPlayable ? ' on' : ' on done') : '') + '" id="endturn" ' + (myTurn ? '' : 'disabled') + '><span>' + (myTurn ? t('hero.end') : (S.phase === 'play' ? esc(t('hero.wait')) : '')) + '</span></button></div>';
     el.innerHTML = s;
     const on = (id, f) => { const b = $(id); if (b) b.onclick = f; };
     on('#shop', () => openSheet({ kind: 'shop' }));
     on('#abil', () => openSheet({ kind: 'ability', cards: [] }));
     on('#chat', () => openSheet({ kind: 'chat' }));
     on('#myrole', () => { ui.role = !ui.role; render(); });
-    on('#endturn', () => armed('#endturn', 'NAOZAJ?', () => act({ a: 'end' }), () => anyPlayable));
+    on('#endturn', () => armed('#endturn', esc(t('armed.end')), () => act({ a: 'end' }), () => anyPlayable));
     el.querySelectorAll('.pt').forEach(b => b.onclick = () => { if (suppressClick) return; seatTap(me.id); });
   }
 
@@ -932,13 +991,13 @@
     if (S.phase !== 'over') { w.innerHTML = ''; return; }
     if (w.firstChild) return;
     const ws = E.winners(S);
-    const title = { serif: '⭐ Vyhral zákon!', bandita: '🦹 Vyhrali banditi!', odpadlik: '🐍 Vyhral odpadlík!' }[S.winner] || 'Koniec';
+    const title = S.winner ? t('over.' + S.winner) : t('over.end');
     const iWon = ws.indexOf(me.id) >= 0;
-    let h = '<div class="over"><div class="ov-box"><div class="ov-t">' + title + '</div><div class="ov-sub">' + (E.P(S, me.id) ? (iWon ? '🏆 Vyhral si!' : 'Tentoraz nie…') : '') + '</div><div class="ov-cards">';
+    let h = '<div class="over"><div class="ov-box"><div class="ov-t">' + esc(title) + '</div><div class="ov-sub">' + (E.P(S, me.id) ? esc(iWon ? t('over.won') : t('over.lost')) : '') + '</div><div class="ov-cards">';
     S.players.slice().sort((a, b) => a.seat - b.seat).forEach(p => {
-      h += '<div class="ov-p' + (ws.indexOf(p.id) >= 0 ? ' win' : '') + '">' + roleFace(p.role, { w: 70 }) + '<b>' + esc(p.name) + '</b><small>' + esc(p.char ? E.CHARS[p.char].n : '') + (p.alive ? '' : ' ☠️') + '</small></div>';
+      h += '<div class="ov-p' + (ws.indexOf(p.id) >= 0 ? ' win' : '') + '">' + roleFace(p.role, { w: 70 }) + '<b>' + esc(p.name) + '</b><small>' + esc(p.char ? D.CHARS[p.char].n : '') + (p.alive ? '' : ' ☠️') + '</small></div>';
     });
-    h += '</div>' + (S.host === me.id ? '<button class="btn big red" id="rematch">🔁 Odveta</button>' : '<p class="muted">Odvetu spúšťa zakladateľ.</p>') + '<div class="btnrow2"><button class="btn ghost" id="ovlog">📜 Priebeh</button><button class="btn ghost" id="ovhome">Domov</button></div></div></div>';
+    h += '</div>' + (S.host === me.id ? '<button class="btn big red" id="rematch">' + esc(t('over.rematch')) + '</button>' : '<p class="muted">' + esc(t('e.rematchHost')) + '</p>') + '<div class="btnrow2"><button class="btn ghost" id="ovlog">' + esc(t('over.log')) + '</button><button class="btn ghost" id="ovhome">' + esc(t('over.home')) + '</button></div></div></div>';
     w.innerHTML = h;
     $('#rematch') && ($('#rematch').onclick = () => { w.innerHTML = ''; act({ a: 'rematch' }); });
     $('#ovhome').onclick = leaveRoom; $('#ovlog').onclick = () => openSheet({ kind: 'log' });
@@ -949,25 +1008,25 @@
   function zoom(html) {
     let z = $('#zoom');
     if (!z) { z = document.createElement('div'); z.id = 'zoom'; z.className = 'zoom'; document.body.appendChild(z); z.addEventListener('click', () => { z.classList.remove('on'); setTimeout(() => { z.hidden = true; }, 180); }); }
-    z.innerHTML = '<div class="zoom-in">' + html + '<div class="zoom-hint">ťukni kamkoľvek pre zavretie</div></div>';
+    z.innerHTML = '<div class="zoom-in">' + html + '<div class="zoom-hint">' + esc(t('zoom.hint')) + '</div></div>';
     z.hidden = false; requestAnimationFrame(() => z.classList.add('on'));
   }
   function zoomCard(cid) {
-    const k = S.cards[cid].t; const d = E.CARDS[k];
-    zoom(cardEl(cid, { w: zoomW(), full: true }) + '<div class="zoom-meta">' + (d.x ? 'nová karta · ' : '') + 'v balíčku ' + ((E.DECK_BASE[k] || 0) + (E.DECK_EXTRA[k] || 0)) + '× · pôvodne <i>' + esc(d.o) + '</i></div>');
+    const k = S.cards[cid].t; const d = D.CARDS[k];
+    zoom(cardEl(cid, { w: zoomW(), full: true }) + '<div class="zoom-meta">' + (d.x ? esc(t('zoom.new')) + ' · ' : '') + esc(t('gal.inDeck', { x: (E.DECK_BASE[k] || 0) + (E.DECK_EXTRA[k] || 0) })) + ' · ' + t('zoom.orig', { o: '<i>' + esc(d.o) + '</i>' }) + '</div>');
   }
   function playerExtra(p) {
     const parts = [];
-    if (p.table.length) parts.push('pred sebou: ' + p.table.map(c => E.CARDS[S.cards[c].t].ic + ' ' + esc(E.CARDS[S.cards[c].t].n)).join(', '));
-    if (p.items.length) parts.push('vylepšenia: ' + p.items.map(i => E.ITEMS[i].ic + ' ' + esc(E.ITEMS[i].n)).join(', '));
+    if (p.table.length) parts.push(esc(t('px.table')) + ' ' + p.table.map(c => D.CARDS[S.cards[c].t].ic + ' ' + esc(D.CARDS[S.cards[c].t].n)).join(', '));
+    if (p.items.length) parts.push(esc(t('px.items')) + ' ' + p.items.map(i => D.ITEMS[i].ic + ' ' + esc(D.ITEMS[i].n)).join(', '));
     return parts.length ? '<div class="zoom-meta">' + parts.join('<br>') + '</div>' : '';
   }
 
-  const GAL_TABS = [['karty', '🃏 Karty'], ['postavy', '🤠 Postavy'], ['role', '⭐ Role'], ['udalosti', '🕛 Udalosti'], ['obchod', '⛏️ Obchod']];
+  const GAL_TABS = [['karty', 'gal.cards'], ['postavy', 'gal.chars'], ['role', 'gal.roles'], ['udalosti', 'gal.events'], ['obchod', 'gal.shop']];
   function galleryItems(tab, w) {
-    if (tab === 'karty') return Object.keys(E.CARDS).sort((a, b) => (E.CARDS[a].x || 0) - (E.CARDS[b].x || 0)).map(k => cardFace(k, { w, full: true }) + '<div class="gal-meta">v balíčku ' + ((E.DECK_BASE[k] || 0) + (E.DECK_EXTRA[k] || 0)) + '×' + (E.CARDS[k].x ? ' · nová' : '') + '</div>');
-    if (tab === 'postavy') return Object.keys(E.CHARS).map(k => charFace(k, { w }) + '<div class="gal-meta">' + (E.CHARS[k].x ? 'nová postava' : 'základná postava') + '</div>');
-    if (tab === 'role') return Object.keys(E.ROLES).map(k => roleFace(k, { w }) + '<div class="gal-meta">pri 4 hráčoch: ' + ({ serif: '1×', odpadlik: '1×', bandita: '2×', pomocnik: 'nie je' })[k] + '</div>');
+    if (tab === 'karty') return Object.keys(E.CARDS).sort((a, b) => (E.CARDS[a].x || 0) - (E.CARDS[b].x || 0)).map(k => cardFace(k, { w, full: true }) + '<div class="gal-meta">' + esc(t('gal.inDeck', { x: (E.DECK_BASE[k] || 0) + (E.DECK_EXTRA[k] || 0) })) + (E.CARDS[k].x ? ' · ' + esc(t('pill.new')) : '') + '</div>');
+    if (tab === 'postavy') return Object.keys(E.CHARS).map(k => charFace(k, { w }) + '<div class="gal-meta">' + esc(E.CHARS[k].x ? t('gal.newChar') : t('gal.baseChar')) + '</div>');
+    if (tab === 'role') return Object.keys(E.ROLES).map(k => roleFace(k, { w }) + '<div class="gal-meta">' + esc(t('gal.at4', { x: ({ serif: '1×', odpadlik: '1×', bandita: '2×', pomocnik: '—' })[k] })) + '</div>');
     if (tab === 'udalosti') return Object.keys(E.EVENTS).map(k => eventFace(k, { w }));
     return Object.keys(E.ITEMS).map(k => itemFace(k, { w }));
   }
@@ -977,10 +1036,10 @@
     if (!g) { g = document.createElement('div'); g.id = 'gallery'; g.className = 'gallery'; document.body.appendChild(g); }
     const w = Math.min(270, innerWidth * 0.7, (innerHeight - 200) / 1.42);
     const items = galleryItems(tab, w);
-    g.innerHTML = '<div class="gal-top"><div class="gal-tabs">' + GAL_TABS.map(t => '<button class="gtab' + (t[0] === tab ? ' on' : '') + '" data-gtab="' + t[0] + '">' + t[1] + '</button>').join('') + '</div><button class="ib gal-x" id="galx">✕</button></div>' +
+    g.innerHTML = '<div class="gal-top"><div class="gal-tabs">' + GAL_TABS.map(g0 => '<button class="gtab' + (g0[0] === tab ? ' on' : '') + '" data-gtab="' + g0[0] + '">' + esc(t(g0[1])) + '</button>').join('') + '</div><button class="ib gal-x" id="galx">✕</button></div>' +
       '<div class="gal-track" id="galtrack" style="--gw:' + w + 'px">' + items.map(h => '<div class="gal-slide">' + h + '</div>').join('') + '</div>' +
       '<div class="gal-nav"><button class="ib" id="galprev">‹</button><span id="galcount">1 / ' + items.length + '</span><button class="ib" id="galnext">›</button></div>' +
-      '<div class="gal-hint">Listuj prstom do strán · kurzívou je pôvodný názov z BANG!</div>';
+      '<div class="gal-hint">' + esc(t('gal.hint')) + '</div>';
     g.hidden = false;
     const tr = $('#galtrack');
     const slideW = () => (tr.firstChild ? tr.firstChild.getBoundingClientRect().width : 1) + 18;
@@ -1010,46 +1069,46 @@
     else if (sh.kind === 'player') {
       const p = E.P(S, sh.pid); if (!p) { closeSheet(); return; }
       const known = p.id === me.id || p.role === 'serif' || !p.alive || S.phase === 'over';
-      h = '<h3>' + esc(p.name) + (p.bot ? ' <span class="pill">bot</span>' : '') + (known && p.role ? ' <span class="role r-' + p.role + '">' + E.ROLES[p.role].ic + ' ' + esc(E.ROLES[p.role].n) + '</span>' : '') + '</h3>';
+      h = '<h3>' + esc(p.name) + (p.bot ? ' <span class="pill">' + esc(t('pill.bot')) + '</span>' : '') + (known && p.role ? ' <span class="role r-' + p.role + '">' + D.ROLES[p.role].ic + ' ' + esc(D.ROLES[p.role].n) + '</span>' : '') + '</h3>';
       h += '<div class="pl-row">' + (p.char ? charFace(p.char, { w: 118, extraHp: p.role === 'serif' ? 1 : 0 }) : '') + '<div class="pl-info">' +
-        (p.alive ? '<p>♥ <b>' + p.hp + '</b> / ' + p.maxHp + ' životov</p>' : '<p>' + (p.ghost && p.ghostTurns > 0 ? '👻 duch, ešte ' + p.ghostTurns + ' ťahy' : '☠️ vypadol') + '</p>') +
-        '<p>🂠 ' + p.hand.length + ' kariet v ruke</p>' + (S.opts.gold ? '<p>🪙 ' + p.gold + ' zlata</p>' : '') +
-        (meP && meP.alive && p.alive && p.id !== me.id ? '<p>↔ vzdialenosť ' + E.distance(S, meP, p) + ' (tvoj dosah ' + E.range(S, meP) + ')</p>' : '') +
-        (p.id === me.id ? '<p>⌖ dosah ' + E.range(S, p) + '</p>' : '') + '</div></div>';
-      if (p.table.length || p.items.length) h += '<p class="muted">Pred sebou (ťukni pre detail):</p><div class="minis big">' + p.table.map(c => cardEl(c, { w: 70, attrs: 'data-zoom="' + c + '"', band: false })).join('') + p.items.map(it => itemFace(it, { w: 70, attrs: 'data-izoom="' + it + '"' })).join('') + '</div>';
-      h += '<button class="btn ghost wide" id="sclose">Zavrieť</button>';
+        (p.alive ? '<p>' + t('pl.hp', { a: '<b>' + p.hp + '</b>', b: p.maxHp }) + '</p>' : '<p>' + esc(p.ghost && p.ghostTurns > 0 ? t('pl.ghost', { x: p.ghostTurns }) : t('pl.dead')) + '</p>') +
+        '<p>' + esc(t('pl.hand', { x: p.hand.length })) + '</p>' + (S.opts.gold ? '<p>' + esc(t('pl.gold', { x: p.gold })) + '</p>' : '') +
+        (meP && meP.alive && p.alive && p.id !== me.id ? '<p>' + esc(t('pl.dist', { a: E.distance(S, meP, p), b: E.range(S, meP) })) + '</p>' : '') +
+        (p.id === me.id ? '<p>' + esc(t('pl.range', { x: E.range(S, p) })) + '</p>' : '') + '</div></div>';
+      if (p.table.length || p.items.length) h += '<p class="muted">' + esc(t('pl.front')) + '</p><div class="minis big">' + p.table.map(c => cardEl(c, { w: 70, attrs: 'data-zoom="' + c + '"', band: false })).join('') + p.items.map(it => itemFace(it, { w: 70, attrs: 'data-izoom="' + it + '"' })).join('') + '</div>';
+      h += '<button class="btn ghost wide" id="sclose">' + esc(t('close')) + '</button>';
     }
     else if (sh.kind === 'shop') {
       const can = meP && S.turnPid === me.id && S.stage === 'play' && !S.q.length && meP.alive;
-      h = '<h3>🏪 Obchod <span class="pill gold">🪙 ' + (meP ? meP.gold : 0) + '</span></h3><p class="muted">Nakupuješ len vo svojom ťahu. Zlato: +1 každý ťah, +1 za odhodenú kartu (max 2), +2 za zabitie.</p><div class="shop">' +
-        S.shop.map(id => { const it = E.ITEMS[id]; const pr = E.price(S, id); const own = !it.once && meP && meP.items.indexOf(id) >= 0; const ok = can && !own && meP.gold >= pr; return '<div class="shop-it">' + itemFace(id, { w: 96 }) + '<button class="btn sm' + (ok ? ' red' : '') + '" data-buy="' + id + '" ' + (ok ? '' : 'disabled') + '>' + (own ? 'máš' : 'Kúpiť 🪙' + pr) + '</button></div>'; }).join('') + '</div><button class="btn ghost wide" id="sclose">Zavrieť</button>';
+      h = '<h3>' + esc(t('shop.t')) + ' <span class="pill gold">🪙 ' + (meP ? meP.gold : 0) + '</span></h3><p class="muted">' + esc(t('shop.info')) + '</p><div class="shop">' +
+        S.shop.map(id => { const it = D.ITEMS[id]; const pr = E.price(S, id); const own = !it.once && meP && meP.items.indexOf(id) >= 0; const ok = can && !own && meP.gold >= pr; return '<div class="shop-it">' + itemFace(id, { w: 96 }) + '<button class="btn sm' + (ok ? ' red' : '') + '" data-buy="' + id + '" ' + (ok ? '' : 'disabled') + '>' + esc(own ? t('shop.own') : t('shop.buy', { x: pr })) + '</button></div>'; }).join('') + '</div><button class="btn ghost wide" id="sclose">' + esc(t('close')) + '</button>';
     }
     else if (sh.kind === 'ability') {
-      const k = meP.char; const ch = E.CHARS[k];
+      const k = meP.char; const ch = D.CHARS[k];
       h = '<h3>' + ch.ic + ' ' + esc(ch.n) + '</h3><p>' + esc(ch.d) + '</p>';
-      if (k === 'chucho') h += '<button class="btn big red" id="abgo">−1 život → +2 karty</button>';
+      if (k === 'chucho') h += '<button class="btn big red" id="abgo">' + esc(t('ab.chucho')) + '</button>';
       else {
-        h += '<p class="muted">Vyber 2 karty na odhodenie: ' + sh.cards.length + '/2</p><div class="minis big">' + meP.hand.map(c => cardEl(c, { w: 62, cls: sh.cards.indexOf(c) >= 0 ? 'sel' : '', attrs: 'data-abc="' + c + '"', band: false })).join('') + '</div>';
+        h += '<p class="muted">' + esc(t('ab.pick2', { x: sh.cards.length })) + '</p><div class="minis big">' + meP.hand.map(c => cardEl(c, { w: 62, cls: sh.cards.indexOf(c) >= 0 ? 'sel' : '', attrs: 'data-abc="' + c + '"', band: false })).join('') + '</div>';
         if (k === 'doc') {
           const tg = S.players.filter(q => q.alive && q.id !== me.id && E.distance(S, meP, q) <= E.range(S, meP)).map(q => q.id);
-          h += '<p class="muted">Cieľ:</p><div class="chips">' + tg.map(id => '<button class="chipbtn' + (sh.target === id ? ' on' : '') + '" data-at="' + esc(id) + '">' + esc(E.P(S, id).name) + '</button>').join('') + (tg.length ? '' : '<span class="muted">Nikto v dosahu.</span>') + '</div>';
+          h += '<p class="muted">' + esc(t('ab.target')) + '</p><div class="chips">' + tg.map(id => '<button class="chipbtn' + (sh.target === id ? ' on' : '') + '" data-at="' + esc(id) + '">' + esc(E.P(S, id).name) + '</button>').join('') + (tg.length ? '' : '<span class="muted">' + esc(t('ab.noneInRange')) + '</span>') + '</div>';
         }
-        h += '<button class="btn big red" id="abgo" ' + (sh.cards.length === 2 && (k !== 'doc' || sh.target) ? '' : 'disabled') + '>' + (k === 'sid' ? '✔ Odhodiť 2 → +1 život' : '✔ Hromová rana!') + '</button>';
+        h += '<button class="btn big red" id="abgo" ' + (sh.cards.length === 2 && (k !== 'doc' || sh.target) ? '' : 'disabled') + '>' + esc(k === 'sid' ? t('ab.sid') : t('ab.doc')) + '</button>';
       }
-      h += '<button class="btn ghost wide" id="sclose">Zrušiť</button>';
+      h += '<button class="btn ghost wide" id="sclose">' + esc(t('cancel')) + '</button>';
     }
     else if (sh.kind === 'chat') {
-      const quick = ['🤠', '🔥', '😂', '😡', '👏', '💀', '🍺', 'Nestrieľaj na mňa!', 'Spojme sa!', 'Pomsta!', 'To bolo blbé…', 'GG'];
-      h = '<h3>💬 Rýchla správa</h3><div class="chips">' + quick.map(q => '<button class="chipbtn" data-say="' + esc(q) + '">' + esc(q) + '</button>').join('') + '</div>' +
-        '<div class="joinrow"><input id="saytxt" maxlength="60" placeholder="vlastná správa"><button class="btn" id="saygo">Poslať</button></div><button class="btn ghost wide" id="sclose">Zavrieť</button>';
+      const quick = ['🤠', '🔥', '😂', '😡', '👏', '💀', '🍺', t('chat.q1'), t('chat.q2'), t('chat.q3'), t('chat.q4'), 'GG'];
+      h = '<h3>' + esc(t('chat.t')) + '</h3><div class="chips">' + quick.map(q => '<button class="chipbtn" data-say="' + esc(q) + '">' + esc(q) + '</button>').join('') + '</div>' +
+        '<div class="joinrow"><input id="saytxt" maxlength="60" placeholder="' + esc(t('chat.ph')) + '"><button class="btn" id="saygo">' + esc(t('chat.send')) + '</button></div><button class="btn ghost wide" id="sclose">' + esc(t('close')) + '</button>';
     }
     else if (sh.kind === 'log') {
-      const items = S.log.map(l => ({ i: l.i, html: '<li class="lg-' + l.k + '">' + esc(l.m) + '</li>' })).concat((S.chat || []).map(c => ({ i: c.i, html: '<li class="lg-chat">💬 <b>' + esc((E.P(S, c.pid) || {}).name || '?') + ':</b> ' + esc(c.m) + '</li>' })));
+      const items = S.log.map(l => ({ i: l.i, html: '<li class="lg-' + l.k + '">' + esc(logText(l)) + '</li>' })).concat((S.chat || []).map(c => ({ i: c.i, html: '<li class="lg-chat">💬 <b>' + esc((E.P(S, c.pid) || {}).name || '?') + ':</b> ' + esc(c.m) + '</li>' })));
       items.sort((a, b) => b.i - a.i);
-      h = '<h3>📜 Priebeh</h3><ul class="log">' + items.map(x => x.html).join('') + '</ul><button class="btn ghost wide" id="sclose">Zavrieť</button>';
+      h = '<h3>' + esc(t('over.log')) + '</h3><ul class="log">' + items.map(x => x.html).join('') + '</ul><button class="btn ghost wide" id="sclose">' + esc(t('close')) + '</button>';
     }
     else if (sh.kind === 'menu') {
-      h = '<h3>Menu</h3><div class="col"><button class="btn" id="m-share">📨 Pozvať / zdieľať link</button><button class="btn" id="m-gal">🃏 Karty a postavy</button><button class="btn" id="m-rules">📜 Pravidlá</button><button class="btn" id="m-sound">' + (ui.sound ? '🔊 Zvuk zapnutý' : '🔇 Zvuk vypnutý') + '</button><button class="btn ghost" id="m-leave">🚪 Odísť do menu</button><button class="btn ghost" id="sclose">Zavrieť</button></div>';
+      h = '<h3>' + esc(t('menu.t')) + '</h3><div class="col"><button class="btn" id="m-share">' + esc(t('menu.share')) + '</button><button class="btn" id="m-gal">' + esc(t('home.gallery')) + '</button><button class="btn" id="m-rules">' + esc(t('menu.rules')) + '</button><button class="btn" id="m-sound">' + esc(ui.sound ? t('menu.soundOn') : t('menu.soundOff')) + '</button><div class="langbox"><div class="muted">🌐 ' + esc(t('home.lang')) + '</div>' + langPicker() + '</div><button class="btn ghost" id="m-leave">' + esc(t('menu.leave')) + '</button><button class="btn ghost" id="sclose">' + esc(t('close')) + '</button></div>';
     }
     el.innerHTML = '<div class="sh-in"><div class="grab"></div>' + h + '</div>';
     el.hidden = false;
@@ -1063,35 +1122,31 @@
     on('#abgo', async () => { const k = meP.char; const a = { a: 'ability', kind: k, cards: sh.cards.slice(), target: sh.target }; closeSheet(); await act(a); });
     el.querySelectorAll('[data-say]').forEach(b => b.onclick = () => { act({ a: 'say', text: b.getAttribute('data-say') }); closeSheet(); });
     on('#saygo', () => { const v = el.querySelector('#saytxt').value.trim(); if (v) { act({ a: 'say', text: v }); closeSheet(); } });
+    bindLangs(el);
     on('#m-share', shareLink);
     on('#m-gal', () => { closeSheet(); openGallery('karty'); });
     on('#m-rules', () => openSheet({ kind: 'rules' }));
     on('#m-sound', () => { ui.sound = !ui.sound; ls('strelil_sound', ui.sound ? '1' : '0'); renderSheet(); });
-    on('#m-leave', () => { if (confirm('Naozaj odísť? Kým sa nevrátiš, hrá za teba autopilot.')) leaveRoom(); });
+    on('#m-leave', () => { if (confirm(t('menu.leaveConfirm'))) leaveRoom(); });
   }
   $('#sheet').addEventListener('click', e => { if (e.target.id === 'sheet') closeSheet(); });
 
   function rulesHTML() {
-    const cards = Object.keys(E.CARDS).map(k => { const c = E.CARDS[k]; return '<li>' + c.ic + ' <b>' + esc(c.n) + '</b> <span class="orig">(' + esc(c.o) + ')</span>' + (c.x ? ' <span class="pill">nové</span>' : '') + ' — ' + esc(c.d) + '</li>'; }).join('');
-    const chars = Object.keys(E.CHARS).map(k => { const c = E.CHARS[k]; return '<li>' + c.ic + ' <b>' + esc(c.n) + '</b> <span class="orig">(' + esc(c.o) + ')</span> (' + c.hp + '♥)' + (c.x ? ' <span class="pill">nová</span>' : '') + ' — ' + esc(c.d) + '</li>'; }).join('');
-    const evs = Object.keys(E.EVENTS).map(k => { const c = E.EVENTS[k]; return '<li>' + c.ic + ' <b>' + esc(c.n) + '</b>' + (c.o ? ' <span class="orig">(' + esc(c.o) + ')</span>' : '') + ' — ' + esc(c.d) + '</li>'; }).join('');
-    const its = Object.keys(E.ITEMS).map(k => { const c = E.ITEMS[k]; return '<li>' + c.ic + ' <b>' + esc(c.n) + '</b> (🪙' + c.cost + ') — ' + esc(c.d) + '</li>'; }).join('');
-    return '<h3>📜 Ako sa hrá</h3>' +
-      '<p class="muted">V zátvorke je pôvodný názov z BANG!, nech sa vyznáte.</p>' +
-      '<p><b>Role (tajné):</b> ⭐ Šerif (Sheriff) je známy všetkým a chce zlikvidovať banditov aj odpadlíka. 🦹 Banditi (Outlaws) chcú zastreliť šerifa. 🐍 Odpadlík (Renegade) chce ostať posledný. 🔰 Pomocník (Deputy, od 5 hráčov) chráni šerifa. Pri 4 hráčoch: šerif, odpadlík a 2 banditi.</p>' +
-      '<p><b>Tvoj ťah:</b> 1) potiahneš 2 karty, 2) hráš koľko kariet chceš (Výstrel len 1× za ťah), 3) na konci môžeš mať v ruke najviac toľko kariet, koľko máš životov.</p>' +
-      '<p><b>Ovládanie:</b> kartu chyť a potiahni hore. Karta s cieľom ťahá šípku — pusti ju na hráča. Alebo ťukni na kartu, vyber hráča a stlač <b>Zahrať</b>. Podržaním prsta na karte alebo hráčovi uvidíš detail.</p>' +
-      '<p><b>Vzdialenosť</b> je počet miest k hráčovi (kratšou cestou okolo stola). Výstrelom trafíš len hráča v dosahu zbrane (bez zbrane dosah 1).</p>' +
-      '<p><b>Ťah!</b> = otočí sa vrchná karta balíčka a rozhoduje jej znak (srdce, pika…).</p>' +
-      '<p><b>Odmeny:</b> kto zastrelí banditu, ťahá 3 karty. Šerif, ktorý zastrelí pomocníka, stratí všetky karty. Pivo ťa zachráni pred smrťou automaticky.</p>' +
-      '<p><b>Online:</b> kto vypadne z internetu, za toho po 45 s hrá autopilot. Boty riadi prvý pripojený hráč.</p>' +
-      '<details><summary>🃏 Karty</summary><ul class="infol">' + cards + '</ul></details>' +
-      '<details><summary>🤠 Postavy</summary><ul class="infol">' + chars + '</ul></details>' +
-      '<details><summary>🕛 Udalosti (Pravé poludnie)</summary><ul class="infol">' + evs + '</ul></details>' +
-      '<details><summary>⛏️ Obchod (Zlatá horúčka)</summary><ul class="infol">' + its + '</ul></details>' +
-      '<details><summary>👻 Duchovia</summary><p>Kto padne, vráti sa na 2 svoje ťahy ako duch: ťahá 2 karty a môže hrať karty na hocikoho (vzdialenosť 1), ale nedá sa trafiť ani liečiť. Víťazstvo sa počíta len zo živých.</p></details>' +
-      '<p class="muted">si/strelil je fanúšikovská hra inšpirovaná westernovými kartovými hrami so skrytými rolami. Pôvodné názvy z BANG! (dV Giochi) sú uvedené len pre orientáciu, grafika je vlastná.</p>' +
-      '<button class="btn ghost wide" id="sclose">Zavrieť</button>';
+    const cards = Object.keys(D.CARDS).map(k => { const c = D.CARDS[k]; return '<li>' + c.ic + ' <b>' + esc(c.n) + '</b> <span class="orig">(' + esc(c.o) + ')</span>' + (c.x ? ' <span class="pill">' + esc(t('pill.new')) + '</span>' : '') + ' — ' + esc(c.d) + '</li>'; }).join('');
+    const chars = Object.keys(D.CHARS).map(k => { const c = D.CHARS[k]; return '<li>' + c.ic + ' <b>' + esc(c.n) + '</b> <span class="orig">(' + esc(c.o) + ')</span> (' + c.hp + '♥)' + (c.x ? ' <span class="pill">' + esc(t('pill.new')) + '</span>' : '') + ' — ' + esc(c.d) + '</li>'; }).join('');
+    const evs = Object.keys(D.EVENTS).map(k => { const c = D.EVENTS[k]; return '<li>' + c.ic + ' <b>' + esc(c.n) + '</b>' + (c.o ? ' <span class="orig">(' + esc(c.o) + ')</span>' : '') + ' — ' + esc(c.d) + '</li>'; }).join('');
+    const its = Object.keys(D.ITEMS).map(k => { const c = D.ITEMS[k]; return '<li>' + c.ic + ' <b>' + esc(c.n) + '</b> (🪙' + c.cost + ') — ' + esc(c.d) + '</li>'; }).join('');
+    const para = (k, b) => '<p><b>' + esc(t('rules.' + k + '.t')) + '</b> ' + t('rules.' + k, b) + '</p>';
+    return '<h3>' + esc(t('home.rules')) + '</h3>' +
+      '<p class="muted">' + esc(t('rules.origNote')) + '</p>' +
+      para('roles') + para('turn', { c: esc(D.CARDS.vystrel.n) }) + para('controls', { go: '<b>' + esc(t('play.go')) + '</b>' }) + para('dist') + para('check') + para('rewards') + para('online') +
+      '<details><summary>' + esc(t('gal.cards')) + '</summary><ul class="infol">' + cards + '</ul></details>' +
+      '<details><summary>' + esc(t('gal.chars')) + '</summary><ul class="infol">' + chars + '</ul></details>' +
+      '<details><summary>' + esc(t('gal.events')) + ' (' + esc(t('opt.events').replace(/^\S+\s/, '')) + ')</summary><ul class="infol">' + evs + '</ul></details>' +
+      '<details><summary>' + esc(t('gal.shop')) + ' (' + esc(t('opt.gold').replace(/^\S+\s/, '')) + ')</summary><ul class="infol">' + its + '</ul></details>' +
+      '<details><summary>' + esc(t('opt.ghosts')) + '</summary><p>' + esc(t('rules.ghosts')) + '</p></details>' +
+      '<p class="muted">' + esc(t('rules.disclaimer')) + '</p>' +
+      '<button class="btn ghost wide" id="sclose">' + esc(t('close')) + '</button>';
   }
 
   // ---------- zákaz zoomovania ----------
@@ -1108,10 +1163,15 @@
   window.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && ['+', '-', '=', '0'].indexOf(e.key) >= 0) e.preventDefault(); });
 
   // ---------- štart ----------
+  buildD(); document.documentElement.lang = LANG;
   window.addEventListener('hashchange', () => { const c = location.hash.slice(1); if (c && c.toUpperCase() !== code) enterRoom(c); });
-  const startCode = location.hash.slice(1);
-  if (startCode && /^[A-Za-z]{4}$/.test(startCode)) {
-    if (!me.name) { render(); const ci = $('#code'); if (ci) ci.value = startCode.toUpperCase(); toast('Napíš meno a ťukni Pripojiť.'); }
-    else enterRoom(startCode);
-  } else render();
+  loadLang(LANG, () => {
+    if (!LS[LANG] && LANG !== 'sk') LANG = 'sk';
+    buildD(); document.documentElement.lang = LANG;
+    const startCode = location.hash.slice(1);
+    if (startCode && /^[A-Za-z]{4}$/.test(startCode)) {
+      if (!me.name) { render(); const ci = $('#code'); if (ci) ci.value = startCode.toUpperCase(); toast(t('toast.joinHint')); }
+      else enterRoom(startCode);
+    } else render();
+  });
 })();

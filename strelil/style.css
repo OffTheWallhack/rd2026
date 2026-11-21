@@ -369,3 +369,14 @@ summary { font-weight: 800; cursor: pointer; }
   .rb { width: 42px; height: 42px; font-size: 19px; }
 }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+
+/* výber jazyka */
+.langbox { margin: 6px 0 2px; }
+.langbox > .muted { font-size: 13px; text-align: center; margin-bottom: 6px; }
+.langs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.lang { border: 1px solid rgba(242,212,154,.25); background: rgba(242,228,196,.06); border-radius: 12px; padding: 6px 2px 5px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 0; }
+.lang span { font-size: 20px; line-height: 1.1; }
+.lang small { font-size: 10.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.lang.on { background: rgba(196,53,31,.35); border-color: #f08a6a; }
+.lang.on small { color: var(--paper); }
+html[lang="zh"] body, html[lang="ja"] body { font-family: var(--body), 'Hiragino Sans', 'PingFang SC', 'Noto Sans CJK SC', 'Noto Sans JP', 'Microsoft YaHei', sans-serif; }

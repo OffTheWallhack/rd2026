@@ -17,7 +17,8 @@
   // ---------- stav ----------
   let S = null, VER = 0, SEEN = {}, skew = 0, code = null;
   let busy = false, driveTimer = null, tickTimer = null, netBad = 0, joining = false;
-  const ui = { sheet: null, role: false, sound: ls('strelil_sound') !== '0', lastFx: 0, lastChat: 0, multi: [], firstState: true, play: null, resp: null, pickSel: null, charSel: null };
+  let TV = false; // režim veľkej obrazovky (len pozerá)
+  const ui = { dist: false, sheet: null, role: false, sound: ls('strelil_sound') !== '0', lastFx: 0, lastChat: 0, multi: [], firstState: true, play: null, resp: null, pickSel: null, charSel: null };
 
   // ---------- jazyky (texty sú v lang/*.js) ----------
   const LANG_LIST = [['sk', '🇸🇰', 'Slovenčina'], ['cs', '🇨🇿', 'Čeština'], ['en', '🇬🇧', 'English'], ['hu', '🇭🇺', 'Magyar'], ['pl', '🇵🇱', 'Polski'], ['zh', '🇨🇳', '中文'], ['ja', '🇯🇵', '日本語'], ['tlh', '⚔️', 'tlhIngan Hol']];
@@ -44,7 +45,7 @@
   }
   function loadLang(code, done) {
     if (LS[code] || code === 'sk') { done(); return; }
-    const sc = document.createElement('script'); sc.src = 'lang/' + code + '.js?v=1';
+    const sc = document.createElement('script'); sc.src = 'lang/' + code + '.js?v=3';
     sc.onload = done; sc.onerror = () => { LANG = 'sk'; done(); };
     document.head.appendChild(sc);
   }
@@ -150,7 +151,7 @@
     return !!d && d.id === me.id;
   }
   function drive() {
-    if (!S || busy || driveTimer || (S.phase !== 'play' && S.phase !== 'chars')) return;
+    if (TV || !S || busy || driveTimer || (S.phase !== 'play' && S.phase !== 'chars')) return;
     if (!amDriver()) return;
     const w = E.waitingFor(S);
     for (const pid of w) {
@@ -159,11 +160,12 @@
       const auto = p.bot || (pid !== me.id && offlineLong(pid));
       if (!auto) continue;
       const h = S.q[0];
-      const delay = p.bot ? (h && h.pid === pid ? 1500 : (S.stage === 'play' && S.turnPid === pid && !h ? 2200 : 1500)) : 900;
+      // boty hrajú pomalšie a počkajú, kým dobehnú efekty, nech to všetci stihnú vidieť
+      const delay = (p.bot ? (h && h.pid === pid ? 1900 : (S.stage === 'play' && S.turnPid === pid && !h ? 2800 : 2000)) : 1200) + fxBusy();
       driveTimer = setTimeout(async () => {
         driveTimer = null;
         if (!S || busy || E.waitingFor(S).indexOf(pid) < 0) return;
-        if (drag) { drive(); return; } // počas ťahania karty nič nemeníme
+        if (drag || fxBusy() > 400) { drive(); return; } // počas ťahania karty a efektov nič nemeníme
         const a = E.botAct(S, pid);
         if (a) await act(a, pid, { bot: true });
         drive();
@@ -176,6 +178,7 @@
   let AC = null;
   function snd(kind) {
     if (!ui.sound) return;
+    if (SFX[kind]) { try { SFX[kind](); } catch (e) {} return; }
     try {
       AC = AC || new (window.AudioContext || window.webkitAudioContext)();
       const t = AC.currentTime;
@@ -282,9 +285,9 @@
       { transform: tf(c.x, c.y, 1.05, 3), opacity: 1, offset: 0.25 },
       { transform: tf(c.x, c.y, 1, 0), opacity: 1, offset: 0.75 },
       { transform: tf(c.x, c.y - 20, 0.9, 0), opacity: 0 },
-    ], { duration: 1700, easing: 'cubic-bezier(.2,.8,.2,1)' });
+    ], { duration: 2100, easing: 'cubic-bezier(.2,.8,.2,1)' });
     anim.onfinish = () => wrap.remove();
-    if (toPid) setTimeout(() => tracer(c, toPid), 450);
+    if (toPid) setTimeout(() => tracer(c, toPid), 750);
   }
   // červená stopa výstrelu k cieľu
   function tracer(from, toPid) {
@@ -297,17 +300,17 @@
     p.setAttribute('class', 'tracer');
     svg.appendChild(p);
     const len = p.getTotalLength(); p.style.strokeDasharray = len; p.style.strokeDashoffset = len;
-    p.animate([{ strokeDashoffset: len }, { strokeDashoffset: 0, offset: 0.5 }, { strokeDashoffset: -len }], { duration: 700, easing: 'ease-out' }).onfinish = () => p.remove();
+    p.animate([{ strokeDashoffset: len }, { strokeDashoffset: 0, offset: 0.55 }, { strokeDashoffset: -len }], { duration: 950, easing: 'ease-out' }).onfinish = () => p.remove();
   }
   function banner(txt, sub, cls) {
     const f = document.createElement('div'); f.className = 'banner ' + (cls || '');
     f.innerHTML = '<div class="bn-t">' + esc(txt) + '</div>' + (sub ? '<div class="bn-s">' + esc(sub) + '</div>' : '');
-    $('#fxlayer').appendChild(f); setTimeout(() => f.remove(), 2200);
+    $('#fxlayer').appendChild(f); setTimeout(() => f.remove(), 2600);
   }
   function showEvent(k) {
     const f = document.createElement('div'); f.className = 'evpop';
     f.innerHTML = eventFace(k, { w: Math.min(220, innerWidth * 0.56) });
-    $('#fxlayer').appendChild(f); setTimeout(() => f.remove(), 3400);
+    $('#fxlayer').appendChild(f); setTimeout(() => f.remove(), 3600);
   }
 
   function playFx(list) {
@@ -315,24 +318,82 @@
     if (!fresh.length) return;
     ui.lastFx = fresh[fresh.length - 1].i;
     if (ui.firstState) return;
-    fresh.slice(-6).forEach((f, k) => setTimeout(() => {
-      const name = id => { const p = E.P(S, id); return p ? p.name : ''; };
-      if (f.t === 'play') {
-        const key = f.as || f.card;
-        const shot = ['vystrel', 'gulomet', 'past', 'odstrelovac'].indexOf(key) >= 0;
+    // keď je rad príliš dlhý (napr. po výpadku), staré efekty preskočíme
+    let list2 = fresh.slice(-10);
+    if (fxBusy() > 14000) list2 = list2.filter(f => f.t === 'death' || f.t === 'win');
+    list2.forEach(f => queueFx(FX_MS[f.t] || 900, () => runFx(f)));
+  }
+  // ---------- dramatické efekty, jeden po druhom ----------
+  let fxEnd = 0;
+  const FX_MS = { play: 2000, hit: 1200, dodge: 1200, block: 1000, boom: 2800, death: 5600, check: 2900, event: 3800, win: 3000 };
+  function fxBusy() { return Math.max(0, fxEnd - Date.now()); }
+  function queueFx(ms, fn) { const now = Date.now(); const at = Math.max(now, fxEnd); fxEnd = at + ms; setTimeout(fn, at - now); }
+  function runFx(f) {
+    const name = id => { const p = E.P(S, id); return p ? p.name : ''; };
+    if (f.t === 'play') {
+      const key = f.as || f.card;
+      const shot = ['vystrel', 'past', 'odstrelovac'].indexOf(key) >= 0;
+      if (key === 'gulomet' || key === 'prepad') {
+        flyCard(f.pid, f.card, null);
+        const others = S.players.filter(q => q.alive && q.id !== f.pid);
+        others.forEach((q, i) => setTimeout(() => { tracer(stageCenter(), q.id); flashSeat(q.id, 'aimed'); snd(key === 'gulomet' ? 'shot' : 'swoosh'); }, 800 + i * 220));
+        shakeTable(); if (f.pid !== me.id) buzz([60, 40, 60, 40, 60]);
+      } else {
         flyCard(f.pid, f.card, shot || f.target ? f.target : null);
-        if (shot) { setTimeout(() => snd('shot'), 450); if (f.target) setTimeout(() => flashSeat(f.target, 'aimed'), 500); } else snd('swoosh');
-        if (f.target === me.id) buzz([60, 40, 60]);
+        if (shot) { setTimeout(() => snd('shot'), 780); if (f.target) setTimeout(() => flashSeat(f.target, 'aimed'), 820); } else snd('swoosh');
+        if (key === 'suboj' && f.target) setTimeout(() => banner('🤺 ' + D.CARDS.suboj.n + '!', name(f.pid) + ' ⚔ ' + name(f.target), 'gold'), 900);
       }
-      if (f.t === 'hit') { flashSeat(f.pid, 'shake'); floatAt(f.pid, '−' + f.n, 'neg'); snd('hit'); if (f.pid === me.id) { buzz(200); flashScreen(); } }
-      if (f.t === 'dodge') { floatAt(f.pid, t('fx.dodge'), 'pos'); snd('dodge'); }
-      if (f.t === 'block') floatAt(f.pid, '🦺', 'pos');
-      if (f.t === 'boom') { snd('boom'); flashSeat(f.pid, 'shake'); floatAt(f.pid, '💥', 'neg'); buzz([100, 50, 300]); }
-      if (f.t === 'death') { snd('death'); floatAt(f.pid, '☠️', 'neg'); banner(t('fx.died', { n: name(f.pid) }), t('fx.was', { r: D.ROLES[f.role].n }), 'dark'); }
-      if (f.t === 'check') toast(t('fx.check', { n: name(f.pid), cl: clTxt(f.cards.map(c => S.cards[c])), ok: f.ok ? '✔' : '✘' }));
-      if (f.t === 'event') { snd('event'); showEvent(f.e); }
-      if (f.t === 'win') snd('win');
-    }, k * 520));
+      if (f.target === me.id) { buzz([60, 40, 60]); if (shot) setTimeout(flashScreen, 800); }
+    }
+    if (f.t === 'hit') { flashSeat(f.pid, 'shake'); floatAt(f.pid, '−' + f.n + ' ♥', 'neg'); snd('hit'); if (f.pid === me.id) { buzz(200); flashScreen(); } }
+    if (f.t === 'dodge') { floatAt(f.pid, t('fx.dodge'), 'pos'); snd('dodge'); }
+    if (f.t === 'block') floatAt(f.pid, '🦺', 'pos');
+    if (f.t === 'boom') { showBoom(f.pid); }
+    if (f.t === 'death') revealRole(f.pid, f.role, name(f.pid));
+    if (f.t === 'check') showCheck(f, name(f.pid));
+    if (f.t === 'event') { snd('event'); showEvent(f.e); }
+    if (f.t === 'win') { snd('win'); confetti(); }
+  }
+  function shakeTable() { const tb = $('#table') || $('#tv'); if (!tb) return; tb.classList.remove('tshake'); void tb.offsetWidth; tb.classList.add('tshake'); setTimeout(() => tb.classList.remove('tshake'), 700); }
+  function overlay(cls, html, ms) {
+    const o = document.createElement('div'); o.className = 'dram ' + (cls || ''); o.innerHTML = html;
+    $('#fxlayer').appendChild(o); requestAnimationFrame(() => o.classList.add('on'));
+    setTimeout(() => { o.classList.remove('on'); o.classList.add('off'); }, ms - 450); setTimeout(() => o.remove(), ms);
+    return o;
+  }
+  const BACK = w => '<div class="cardback" style="--w:' + w + 'px"><i>★</i></div>';
+  // odhalenie roly po smrti: tma, bubny, otočenie karty
+  function revealRole(pid, role, nm) {
+    snd('death'); flashSeat(pid, 'shake'); floatAt(pid, '☠️', 'neg'); buzz([200, 80, 200]);
+    const w = Math.min(TV ? 300 : 200, innerWidth * 0.5, (innerHeight - 190) / 1.42);
+    const o = overlay('reveal', '<div class="dr-t">☠️ ' + esc(t('fx.died', { n: nm })) + '</div>' +
+      '<div class="flip" style="--w:' + w + 'px"><div class="flip-in"><div class="face f1">' + BACK(w) + '</div><div class="face f2">' + roleFace(role, { w }) + '</div></div></div>' +
+      '<div class="dr-s">' + esc(t('fx.whoWas')) + '</div>', FX_MS.death);
+    setTimeout(() => snd('drumroll'), 500);
+    setTimeout(() => { o.classList.add('flipped'); snd('reveal'); const s2 = o.querySelector('.dr-s'); if (s2) s2.textContent = t('fx.was', { r: D.ROLES[role].n }); o.classList.add('r-' + role); }, 2300);
+  }
+  // Ťah!: karty sa otočia v strede a ukážu výsledok
+  function showCheck(f, nm) {
+    const w = Math.min(TV ? 190 : 120, innerWidth * 0.3, (innerHeight - 260) / 1.42);
+    const why = f.why && D.CARDS[f.why] ? D.CARDS[f.why].ic + ' ' + D.CARDS[f.why].n : '🎴';
+    const cards = f.cards.map(c => '<div class="flip" style="--w:' + w + 'px"><div class="flip-in"><div class="face f1">' + BACK(w) + '</div><div class="face f2">' + cardEl(c, { w, band: false }) + '</div></div></div>').join('');
+    const o = overlay('check', '<div class="dr-t">' + esc(t('fx.checkT', { n: nm })) + '</div><div class="dr-s">' + esc(why) + '</div><div class="ck-row">' + cards + '</div><div class="stamp ' + (f.ok ? 'ok' : 'no') + '">' + (f.ok ? '✔' : '✘') + '</div>', FX_MS.check);
+    snd('tick');
+    setTimeout(() => { o.classList.add('flipped'); snd('card'); }, 900);
+    setTimeout(() => { o.classList.add('stamped'); snd(f.ok ? 'dodge' : 'hit'); }, 1650);
+  }
+  function showBoom(pid) {
+    overlay('boom', '<div class="boom-b">💥</div>', 1400);
+    setTimeout(() => { snd('boom'); shakeTable(); flashSeat(pid, 'shake'); floatAt(pid, '💥', 'neg'); buzz([100, 50, 300]); }, 150);
+  }
+  function confetti() {
+    const L = $('#fxlayer'); const cols = ['#ffd75a', '#c4351f', '#f2e4c4', '#4f7d3a', '#3a6b98'];
+    for (let i = 0; i < 70; i++) {
+      const c = document.createElement('i'); c.className = 'conf';
+      c.style.left = Math.random() * 100 + 'vw'; c.style.background = cols[i % cols.length];
+      c.style.animationDelay = (Math.random() * 0.8) + 's'; c.style.animationDuration = (2 + Math.random() * 1.6) + 's';
+      L.appendChild(c); setTimeout(() => c.remove(), 4600);
+    }
   }
   function flashScreen() { const f = document.createElement('div'); f.className = 'redflash'; $('#fxlayer').appendChild(f); setTimeout(() => f.remove(), 600); }
   function chatFx() {
@@ -342,8 +403,10 @@
     if (ui.firstState) return;
     fresh.forEach(c => {
       const el = seatEl(c.pid); const p = E.P(S, c.pid);
+      if (c.r) { if (c.pid !== me.id) playReaction(c.r); bigReact(c.pid, c.r); return; }
+      if (c.v && c.pid !== me.id) playVoice(c.v);
       if (el && c.pid !== me.id) {
-        const b = document.createElement('div'); b.className = 'bubble'; b.textContent = c.m;
+        const b = document.createElement('div'); b.className = 'bubble'; b.textContent = c.v ? '🎙️ ' + (c.d || '') + 's' : c.m;
         const r = el.getBoundingClientRect(); b.style.left = (r.left + r.width / 2) + 'px'; b.style.top = (r.bottom + 6) + 'px';
         $('#fxlayer').appendChild(b); setTimeout(() => b.remove(), 3500);
       } else if (c.pid !== me.id && p) toast(p.name + ': ' + c.m);
@@ -356,7 +419,7 @@
     if (!S) return;
     const meP = E.P(S, me.id);
     const myTurnNow = S.phase === 'play' && S.turnPid === me.id && S.stage === 'play';
-    if (myTurnNow && !wasMyTurn && !ui.firstState) { snd('turn'); buzz(80); setTimeout(() => banner(t('yourTurn'), '', 'gold'), 250); }
+    if (myTurnNow && !wasMyTurn && !ui.firstState) setTimeout(() => { snd('turn'); buzz(80); banner(t('yourTurn'), '', 'gold'); }, fxBusy() + 250);
     wasMyTurn = myTurnNow;
     if (ui.play) {
       if (!meP || meP.hand.indexOf(ui.play.card) < 0 || S.turnPid !== me.id || S.q.length || S.phase !== 'play') ui.play = null;
@@ -370,8 +433,8 @@
       ui.multi = ui.multi.filter(c => meP && meP.hand.indexOf(c) >= 0);
     }
     if (ui.sheet && ['shop', 'ability', 'player', 'log'].indexOf(ui.sheet.kind) >= 0) renderSheet();
-    if (drag) pendingRender = true; else render();
     playFx(S.fx || []);
+    if (drag) pendingRender = true; else render();
     chatFx();
     ui.firstState = false;
     drive();
@@ -393,20 +456,25 @@
     toast(t('toast.retry'));
   }
   function setName(n) { me.name = n.slice(0, 16); ls('strelil_name', me.name); }
-  function enterRoom(c) {
+  function enterRoom(c, tv) {
     c = String(c || '').toUpperCase().replace(/[^A-Z]/g, '').slice(0, 4);
     if (c.length !== 4) { toast(t('toast.code4')); return; }
-    if (location.hash !== '#' + c) history.replaceState(null, '', '#' + c);
+    TV = !!tv;
+    if (TV) { me.id = 'tv-' + Math.random().toString(36).slice(2, 9); loadQR(); }
+    else me.id = myId;
+    const h = '#' + c + (TV ? '/tv' : '');
+    if (location.hash !== h) history.replaceState(null, '', h);
     code = c; S = null; VER = 0; ui.firstState = true; ui.lastFx = 0; ui.lastChat = 0; joining = false;
     render(); tick();
   }
   function leaveRoom() {
+    TV = false; me.id = myId; document.body.classList.remove('tvmode');
     code = null; S = null; VER = 0; clearTimeout(tickTimer); closeSheet();
     history.replaceState(null, '', location.pathname);
     render();
   }
   async function maybeAutoJoin() {
-    if (!S || S.phase !== 'lobby' || E.P(S, me.id) || joining || !me.name) return;
+    if (TV || !S || S.phase !== 'lobby' || E.P(S, me.id) || joining || !me.name) return;
     joining = true; await act({ a: 'join', name: me.name }); joining = false;
   }
   function shareLink() {
@@ -423,6 +491,7 @@
     const inGame = !!(code && S && (S.phase === 'play' || S.phase === 'over'));
     document.body.classList.toggle('ingame', inGame || !!(code && S && S.phase === 'chars'));
     if (!code) { mode = 'home'; app.className = 'app'; app.innerHTML = homeHTML(); bindHome(); return; }
+    if (TV) { document.body.classList.add('tvmode'); renderTV(); return; }
     if (!S) { mode = 'wait'; app.className = 'app'; app.innerHTML = '<div class="center"><div class="logo">si/<em>strelil</em></div><p class="muted">' + esc(t('wait.connecting', { c: code })) + '</p></div>'; return; }
     if (S.phase === 'lobby') { mode = 'lobby'; app.className = 'app'; app.innerHTML = lobbyHTML(); bindLobby(); maybeAutoJoin(); return; }
     if (S.phase === 'chars') { mode = 'chars'; app.className = 'app'; app.innerHTML = charsHTML(); bindChars(); return; }
@@ -462,7 +531,7 @@
     const inRoom = !!E.P(S, me.id);
     const n = S.players.length;
     let h = '<div class="lobby"><div class="topbar"><button class="btn ghost sm" id="home">←</button><div class="logo sm">si/<em>strelil</em></div><span><button class="btn ghost sm" id="gal">🃏</button><button class="btn ghost sm" id="rules">📜</button></span></div>';
-    h += '<div class="codebox"><div class="muted">' + esc(t('lobby.code')) + '</div><div class="code">' + esc(code) + '</div><button class="btn red" id="share">' + esc(t('lobby.invite')) + '</button></div>';
+    h += '<div class="codebox"><div class="muted">' + esc(t('lobby.code')) + '</div><div class="code">' + esc(code) + '</div><button class="btn red" id="share">' + esc(t('lobby.invite')) + '</button></div><button class="btn wide" id="tvbtn">' + esc(t('tv.btn')) + '</button>';
     if (!inRoom) h += '<label class="field"><span>' + esc(t('home.name')) + '</span><input id="nm" maxlength="16" value="' + esc(me.name) + '"></label><button class="btn big" id="joinme">' + esc(t('lobby.sit')) + '</button>';
     h += '<h3>' + esc(t('lobby.atTable', { n })) + '</h3><ul class="plist">';
     S.players.forEach(p => {
@@ -481,7 +550,7 @@
     return h + '</div>';
   }
   function bindLobby() {
-    $('#home').onclick = leaveRoom; $('#share').onclick = shareLink; $('#rules').onclick = () => openSheet({ kind: 'rules' }); $('#gal').onclick = () => openGallery('karty');
+    $('#home').onclick = leaveRoom; $('#share').onclick = shareLink; $('#tvbtn').onclick = () => openSheet({ kind: 'tv' }); $('#rules').onclick = () => openSheet({ kind: 'rules' }); $('#gal').onclick = () => openGallery('karty');
     if ($('#joinme')) $('#joinme').onclick = async () => { const n = $('#nm').value.trim(); if (!n) { toast(t('toast.name')); return; } setName(n); await act({ a: 'join', name: n }); };
     if ($('#addbot')) $('#addbot').onclick = () => act({ a: 'bot' });
     if ($('#start')) $('#start').onclick = () => act({ a: 'start' });
@@ -558,6 +627,7 @@
     const cls = ['pt', S.turnPid === p.id ? 'turn' : '', !p.alive ? (p.ghost && p.ghostTurns > 0 ? 'ghost' : 'dead') : '', isT ? 'tgt' : '', tg && !isT && p.id !== me.id ? 'dim' : '', ui.play && ui.play.target === p.id ? 'chosen' : '', h && h.pid === p.id ? 'acting' : '', p.id === me.id ? 'me' : ''].join(' ');
     const meP = E.P(S, me.id);
     const dist = isT && meP && meP.alive ? E.distance(S, meP, p) : null;
+    const dd = !isT && ui.dist && meP && meP.alive && p.alive && p.id !== me.id && S.phase === 'play' ? { d: E.distance(S, meP, p), ok: E.distance(S, meP, p) <= E.range(S, meP), danger: E.distance(S, p, meP) <= E.range(S, p) } : null;
     const eq = p.table.map(c => '<i class="eq eq-' + E.CARDS[S.cards[c].t].c + '">' + E.CARDS[S.cards[c].t].ic + '</i>').join('') + p.items.map(it => '<i class="eq eq-i">' + E.ITEMS[it].ic + '</i>').join('');
     return '<button class="' + cls + '" data-seat="' + esc(p.id) + '" style="--ps:' + size + 'px;--a1:' + a[0] + ';--a2:' + a[1] + (opts.pos || '') + '">' +
       '<span class="pt-ring"><span class="pt-art"><span class="pt-emo">' + (ch ? ch.ic : '🤠') + '</span></span></span>' +
@@ -566,6 +636,7 @@
       (roleKnown && p.role ? '<span class="pt-role r-' + p.role + '" title="' + esc(D.ROLES[p.role].n) + '">' + D.ROLES[p.role].ic + '</span>' : '') +
       (S.opts.gold && p.alive && p.id !== me.id ? '<span class="pt-gold">' + p.gold + '</span>' : '') +
       (dist ? '<span class="pt-dist">↔' + dist + '</span>' : '') +
+      (dd ? '<span class="pt-dd ' + (dd.ok ? 'ok' : 'no') + '">↔' + dd.d + (dd.ok ? ' ✔' : '') + '</span>' + (dd.danger ? '<span class="pt-danger" title="' + esc(t('dist.danger')) + '">🎯</span>' : '') : '') +
       '<span class="pt-nm"><i class="dot" data-online="' + esc(p.id) + '"></i>' + esc(p.name) + '</span>' +
       (eq ? '<span class="pt-eq">' + eq + '</span>' : '') +
       (S.turnPid === p.id && S.phase === 'play' ? '<span class="pt-turn"></span>' : '') +
@@ -624,7 +695,8 @@
       html = '<div class="board">' +
         '<div class="deck" style="--w:' + w + 'px"><i></i><i></i><i></i><b>' + S.deck.length + '</b></div>' +
         '<div class="discard" id="discard">' + (top != null ? cardEl(top, { w, cls: 'tilt', band: false }) : '<div class="emptyslot" style="--w:' + w + 'px"></div>') + '</div>' +
-        '</div><div class="status' + (S.turnPid === me.id && !h ? ' mine' : '') + '">' + esc(statusText()) + '</div><div class="ticker">' + esc(lastLogLine()) + '</div>';
+        '</div><div class="status' + (S.turnPid === me.id && !h ? ' mine' : '') + '">' + esc(statusText()) + '</div>' +
+        (ui.dist ? '<div class="distleg">' + esc(t('dist.legend', { r: meP ? E.range(S, meP) : 1 })) + '</div>' : '<div class="ticker">' + esc(lastLogLine()) + '</div>');
     }
     el.innerHTML = html;
     bindMid();
@@ -717,7 +789,7 @@
     let s = '<div class="hz-left">';
     if (S.opts.gold) s += '<button class="rb gold" id="shop" aria-label="' + esc(t('a.shop')) + '"><span>🏪</span><b>' + meP.gold + '</b></button>';
     if (abil) s += '<button class="rb power" id="abil" aria-label="' + esc(t('a.ability')) + '"><span>' + D.CHARS[meP.char].ic + '</span><b>✨</b></button>';
-    s += '<button class="rb" id="chat" aria-label="' + esc(t('a.chat')) + '"><span>💬</span></button></div>';
+    s += '<button class="rb" id="chat" aria-label="' + esc(t('a.chat')) + '"><span>💬</span></button><button class="rb mic" id="mic" aria-label="' + esc(t('voice.hold')) + '"><span>🎙️</span></button></div>';
     s += '<div class="hz-mid">' + portrait(meP, 86, {}) +
       '<button class="rolepill r-' + meP.role + (ui.role || meP.role === 'serif' || !meP.alive ? ' open' : '') + '" id="myrole">' + (ui.role || meP.role === 'serif' || !meP.alive ? D.ROLES[meP.role].ic + ' ' + esc(D.ROLES[meP.role].n) : esc(t('hero.role'))) + '</button>' +
       '<span class="rangepill">⌖ ' + E.range(S, meP) + '</span></div>';
@@ -727,6 +799,7 @@
     on('#shop', () => openSheet({ kind: 'shop' }));
     on('#abil', () => openSheet({ kind: 'ability', cards: [] }));
     on('#chat', () => openSheet({ kind: 'chat' }));
+    bindMic($('#mic'));
     on('#myrole', () => { ui.role = !ui.role; render(); });
     on('#endturn', () => armed('#endturn', esc(t('armed.end')), () => act({ a: 'end' }), () => anyPlayable));
     el.querySelectorAll('.pt').forEach(b => b.onclick = () => { if (suppressClick) return; seatTap(me.id); });
@@ -962,6 +1035,7 @@
     render();
   }
   function seatTap(pid) {
+    if (pid === me.id && !(ui.play && ui.play.o.ok && ui.play.o.targets)) { ui.dist = !ui.dist; snd('pick'); if (ui.dist) toast(t('dist.on')); render(); return; }
     if (ui.play && ui.play.o.ok && ui.play.o.targets && ui.play.o.targets.indexOf(pid) >= 0) { ui.play.target = ui.play.target === pid ? null : pid; ui.play.tcard = undefined; snd('pick'); render(); return; }
     openSheet({ kind: 'player', pid });
   }
@@ -989,7 +1063,11 @@
   function renderOver() {
     const w = $('#overwrap'); if (!w) return;
     if (S.phase !== 'over') { w.innerHTML = ''; return; }
-    if (w.firstChild) return;
+    if (fxBusy() > 0) { clearTimeout(renderOver.tm); renderOver.tm = setTimeout(() => { if (S && S.phase === 'over' && mode === 'game') renderOver(); }, fxBusy() + 400); return; }
+    const vs = S.votes || {}; const need = E.votesNeeded(S); const yes = S.players.filter(p => !p.bot && vs[p.id]);
+    const vkey = yes.map(p => p.id).join(',');
+    if (w.firstChild && w.dataset.v === vkey) return;
+    w.dataset.v = vkey;
     const ws = E.winners(S);
     const title = S.winner ? t('over.' + S.winner) : t('over.end');
     const iWon = ws.indexOf(me.id) >= 0;
@@ -997,9 +1075,12 @@
     S.players.slice().sort((a, b) => a.seat - b.seat).forEach(p => {
       h += '<div class="ov-p' + (ws.indexOf(p.id) >= 0 ? ' win' : '') + '">' + roleFace(p.role, { w: 70 }) + '<b>' + esc(p.name) + '</b><small>' + esc(p.char ? D.CHARS[p.char].n : '') + (p.alive ? '' : ' ☠️') + '</small></div>';
     });
-    h += '</div>' + (S.host === me.id ? '<button class="btn big red" id="rematch">' + esc(t('over.rematch')) + '</button>' : '<p class="muted">' + esc(t('e.rematchHost')) + '</p>') + '<div class="btnrow2"><button class="btn ghost" id="ovlog">' + esc(t('over.log')) + '</button><button class="btn ghost" id="ovhome">' + esc(t('over.home')) + '</button></div></div></div>';
+    h += '</div>' + (E.P(S, me.id) ? '<button class="btn big ' + (vs[me.id] ? 'ghost' : 'red') + '" id="vote">' + esc(vs[me.id] ? t('vote.undo') : t('vote.yes')) + '</button>' : '') +
+      '<div class="votes"><div class="vbar"><i style="width:' + Math.min(100, Math.round(yes.length / need * 100)) + '%"></i></div><small>' + esc(t('vote.count', { a: yes.length, b: need })) + (yes.length ? ' · ' + esc(yes.map(p => p.name).join(', ')) : '') + '</small></div>' +
+      (S.host === me.id ? '<button class="btn ghost sm" id="rematch">' + esc(t('vote.force')) + '</button>' : '') + '<div class="btnrow2"><button class="btn ghost" id="ovlog">' + esc(t('over.log')) + '</button><button class="btn ghost" id="ovhome">' + esc(t('over.home')) + '</button></div></div></div>';
     w.innerHTML = h;
     $('#rematch') && ($('#rematch').onclick = () => { w.innerHTML = ''; act({ a: 'rematch' }); });
+    $('#vote') && ($('#vote').onclick = () => { snd('pick'); act({ a: 'vote', yes: !vs[me.id] }); });
     $('#ovhome').onclick = leaveRoom; $('#ovlog').onclick = () => openSheet({ kind: 'log' });
   }
 
@@ -1099,16 +1180,22 @@
     }
     else if (sh.kind === 'chat') {
       const quick = ['🤠', '🔥', '😂', '😡', '👏', '💀', '🍺', t('chat.q1'), t('chat.q2'), t('chat.q3'), t('chat.q4'), 'GG'];
-      h = '<h3>' + esc(t('chat.t')) + '</h3><div class="chips">' + quick.map(q => '<button class="chipbtn" data-say="' + esc(q) + '">' + esc(q) + '</button>').join('') + '</div>' +
+      h = '<h3>' + esc(t('react.t')) + '</h3><div class="reacts">' + E.REACTIONS.map(r => '<button class="rx" data-rx="' + r + '"><span>' + RX_IC[r] + '</span><small>' + esc(t('rx.' + r)) + '</small></button>').join('') + '</div>' +
+        '<button class="btn big mic wide" id="mic2">' + esc(t('voice.hold')) + '</button>' +
+        '<h3>' + esc(t('chat.t')) + '</h3><div class="chips">' + quick.map(q => '<button class="chipbtn" data-say="' + esc(q) + '">' + esc(q) + '</button>').join('') + '</div>' +
         '<div class="joinrow"><input id="saytxt" maxlength="60" placeholder="' + esc(t('chat.ph')) + '"><button class="btn" id="saygo">' + esc(t('chat.send')) + '</button></div><button class="btn ghost wide" id="sclose">' + esc(t('close')) + '</button>';
     }
     else if (sh.kind === 'log') {
-      const items = S.log.map(l => ({ i: l.i, html: '<li class="lg-' + l.k + '">' + esc(logText(l)) + '</li>' })).concat((S.chat || []).map(c => ({ i: c.i, html: '<li class="lg-chat">💬 <b>' + esc((E.P(S, c.pid) || {}).name || '?') + ':</b> ' + esc(c.m) + '</li>' })));
+      const items = S.log.map(l => ({ i: l.i, html: '<li class="lg-' + l.k + '">' + esc(logText(l)) + '</li>' })).concat((S.chat || []).map(c => ({ i: c.i, html: '<li class="lg-chat">' + (c.r ? RX_IC[c.r] || '🔊' : '💬') + ' <b>' + esc((E.P(S, c.pid) || {}).name || '?') + ':</b> ' + (c.v ? '<button class="chipbtn sm" data-play="' + esc(c.v) + '">▶ 🎙️ ' + (c.d || '') + 's</button>' : c.r ? esc(t('rx.' + c.r)) : esc(c.m)) + '</li>' })));
       items.sort((a, b) => b.i - a.i);
       h = '<h3>' + esc(t('over.log')) + '</h3><ul class="log">' + items.map(x => x.html).join('') + '</ul><button class="btn ghost wide" id="sclose">' + esc(t('close')) + '</button>';
     }
+    else if (sh.kind === 'tv') {
+      h = '<h3>' + esc(t('tv.btn')) + '</h3><p>' + esc(t('tv.info')) + '</p><div class="tvlink">' + esc(tvLink().replace('https://', '')) + '</div>' +
+        '<div class="col"><button class="btn red" id="tvopen">' + esc(t('tv.open')) + '</button><button class="btn" id="tvcopy">' + esc(t('tv.copy')) + '</button><button class="btn ghost" id="sclose">' + esc(t('close')) + '</button></div>';
+    }
     else if (sh.kind === 'menu') {
-      h = '<h3>' + esc(t('menu.t')) + '</h3><div class="col"><button class="btn" id="m-share">' + esc(t('menu.share')) + '</button><button class="btn" id="m-gal">' + esc(t('home.gallery')) + '</button><button class="btn" id="m-rules">' + esc(t('menu.rules')) + '</button><button class="btn" id="m-sound">' + esc(ui.sound ? t('menu.soundOn') : t('menu.soundOff')) + '</button><div class="langbox"><div class="muted">🌐 ' + esc(t('home.lang')) + '</div>' + langPicker() + '</div><button class="btn ghost" id="m-leave">' + esc(t('menu.leave')) + '</button><button class="btn ghost" id="sclose">' + esc(t('close')) + '</button></div>';
+      h = '<h3>' + esc(t('menu.t')) + '</h3><div class="col"><button class="btn" id="m-share">' + esc(t('menu.share')) + '</button><button class="btn" id="m-gal">' + esc(t('home.gallery')) + '</button><button class="btn" id="m-rules">' + esc(t('menu.rules')) + '</button><button class="btn" id="m-tv">' + esc(t('tv.btn')) + '</button><button class="btn" id="m-sound">' + esc(ui.sound ? t('menu.soundOn') : t('menu.soundOff')) + '</button><div class="langbox"><div class="muted">🌐 ' + esc(t('home.lang')) + '</div>' + langPicker() + '</div><button class="btn ghost" id="m-leave">' + esc(t('menu.leave')) + '</button><button class="btn ghost" id="sclose">' + esc(t('close')) + '</button></div>';
     }
     el.innerHTML = '<div class="sh-in"><div class="grab"></div>' + h + '</div>';
     el.hidden = false;
@@ -1121,6 +1208,12 @@
     el.querySelectorAll('[data-at]').forEach(b => b.onclick = () => { sh.target = b.getAttribute('data-at'); renderSheet(); });
     on('#abgo', async () => { const k = meP.char; const a = { a: 'ability', kind: k, cards: sh.cards.slice(), target: sh.target }; closeSheet(); await act(a); });
     el.querySelectorAll('[data-say]').forEach(b => b.onclick = () => { act({ a: 'say', text: b.getAttribute('data-say') }); closeSheet(); });
+    el.querySelectorAll('[data-rx]').forEach(b => b.onclick = () => sendReaction(b.getAttribute('data-rx')));
+    if (el.querySelector('#mic2')) bindMic(el.querySelector('#mic2'));
+    el.querySelectorAll('[data-play]').forEach(b => b.onclick = () => playVoice(b.getAttribute('data-play'), true));
+    on('#tvopen', () => { window.open(tvLink(), '_blank'); });
+    on('#tvcopy', () => { try { navigator.clipboard.writeText(tvLink()); toast(t('toast.copied')); } catch (e) { prompt(t('prompt.copy'), tvLink()); } });
+    on('#m-tv', () => openSheet({ kind: 'tv' }));
     on('#saygo', () => { const v = el.querySelector('#saytxt').value.trim(); if (v) { act({ a: 'say', text: v }); closeSheet(); } });
     bindLangs(el);
     on('#m-share', shareLink);
@@ -1149,6 +1242,154 @@
       '<button class="btn ghost wide" id="sclose">' + esc(t('close')) + '</button>';
   }
 
+  // ---------- zvukové reakcie ----------
+  const RX_IC = { yeehaw: '🤠', laugh: '😂', dun: '😱', trombone: '🎺', applause: '👏', whistle: '😏', drum: '🥁', bang: '🔫', boo: '👎', wow: '🤯' };
+  function sendReaction(r) { playReaction(r); act({ a: 'say', r }); closeSheet(); }
+  function bigReact(pid, r) {
+    const el = seatEl(pid); const f = document.createElement('div'); f.className = 'bigrx'; f.textContent = RX_IC[r] || '🔊';
+    if (el) { const c = centerOf(el); f.style.left = c.x + 'px'; f.style.top = c.y + 'px'; } else { f.style.left = '50%'; f.style.top = '45%'; }
+    $('#fxlayer').appendChild(f); setTimeout(() => f.remove(), 2200);
+  }
+  function ac() { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') AC.resume(); return AC; }
+  function noise(len, shape, filt, freq, gain, at) {
+    const A = ac(); const t0 = A.currentTime + (at || 0);
+    const b = A.createBuffer(1, Math.max(1, A.sampleRate * len), A.sampleRate); const d = b.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * shape(i / d.length);
+    const src = A.createBufferSource(); src.buffer = b; const f = A.createBiquadFilter(); f.type = filt; f.frequency.value = freq;
+    const g = A.createGain(); g.gain.value = gain; src.connect(f); f.connect(g); g.connect(A.destination); src.start(t0);
+  }
+  function tone(type, pts, gain, at) { // pts: [[freq, dĺžka], ...]
+    const A = ac(); const t0 = A.currentTime + (at || 0); const o = A.createOscillator(); const g = A.createGain();
+    o.type = type; o.connect(g); g.connect(A.destination); let tt = t0;
+    pts.forEach(([f, d], i) => { if (i === 0) o.frequency.setValueAtTime(f, tt); else o.frequency.linearRampToValueAtTime(f, tt); tt += d; });
+    g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(gain, t0 + 0.02); g.gain.setValueAtTime(gain, tt - 0.05); g.gain.exponentialRampToValueAtTime(0.0001, tt + 0.08);
+    o.start(t0); o.stop(tt + 0.1);
+  }
+  function speak(txt, lang, rate, pitch) {
+    try { const u = new SpeechSynthesisUtterance(txt); u.lang = lang || 'en-US'; u.rate = rate || 1; u.pitch = pitch || 1; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch (e) {}
+  }
+  const SFX = {
+    drumroll: () => { noise(1.7, x => (0.4 + 0.6 * x) * (0.6 + 0.4 * Math.sin(x * 1.7 * 2 * Math.PI * 22)), 'bandpass', 900, 0.5); noise(0.35, x => Math.pow(1 - x, 3), 'lowpass', 2500, 0.8, 1.72); },
+    reveal: () => { tone('sawtooth', [[220, 0.25], [330, 0.25], [440, 0.6]], 0.07); tone('triangle', [[110, 1.1]], 0.12); },
+    tick: () => { tone('square', [[1400, 0.03]], 0.05); tone('square', [[1100, 0.03]], 0.05, 0.25); tone('square', [[1400, 0.03]], 0.05, 0.5); },
+  };
+  function playReaction(r) {
+    if (!ui.sound) return;
+    try {
+      if (r === 'yeehaw') { tone('sine', [[900, 0.12], [2200, 0.22], [600, 0.1], [2000, 0.25]], 0.08); speak('Yee-haw!', 'en-US', 1.1, 1.3); }
+      if (r === 'laugh') { for (let i = 0; i < 5; i++) tone('triangle', [[520 - i * 25, 0.09], [420 - i * 25, 0.05]], 0.09, i * 0.16); speak('Ha ha ha ha!', 'en-US', 1.2, 1.2); }
+      if (r === 'dun') { tone('sawtooth', [[294, 0.22]], 0.12); tone('sawtooth', [[277, 0.22]], 0.12, 0.3); tone('sawtooth', [[247, 1.1]], 0.14, 0.6); tone('sawtooth', [[123, 1.1]], 0.1, 0.6); }
+      if (r === 'trombone') { [[392, 0.35], [370, 0.35], [349, 0.35]].forEach((n, i) => tone('triangle', [n], 0.13, i * 0.42)); tone('triangle', [[330, 0.25], [325, 0.2], [335, 0.2], [320, 0.25], [330, 0.2]], 0.13, 1.26); }
+      if (r === 'applause') { for (let i = 0; i < 26; i++) noise(0.05, x => Math.pow(1 - x, 2), 'bandpass', 1500 + Math.random() * 1500, 0.5, Math.random() * 1.6); }
+      if (r === 'whistle') { tone('sine', [[700, 0.05], [2100, 0.25]], 0.1); tone('sine', [[900, 0.08], [2300, 0.18], [700, 0.35]], 0.1, 0.45); }
+      if (r === 'drum') { tone('sine', [[160, 0.02], [60, 0.18]], 0.6); noise(0.15, x => Math.pow(1 - x, 2), 'highpass', 1500, 0.5, 0.25); tone('sine', [[160, 0.02], [60, 0.18]], 0.6, 0.45); noise(0.6, x => Math.pow(1 - x, 1.5), 'highpass', 6000, 0.45, 0.7); }
+      if (r === 'bang') { snd('shot'); setTimeout(() => snd('shot'), 260); setTimeout(() => snd('shot'), 520); }
+      if (r === 'boo') { tone('sawtooth', [[180, 0.2], [140, 0.9]], 0.08); speak('Booooo!', 'en-US', 0.7, 0.6); }
+      if (r === 'wow') { tone('sine', [[400, 0.1], [900, 0.5], [700, 0.3]], 0.1); speak('Wooow!', 'en-US', 0.8, 1.1); }
+    } catch (e) {}
+  }
+
+  // ---------- hlasovky (podrž a hovor) ----------
+  const VOICE_MAX = 8000;
+  let recState = null;
+  function bindMic(btn) {
+    if (!btn) return;
+    const start = e => { e.preventDefault(); e.stopPropagation(); startRec(btn); };
+    const stop = e => { if (recState && recState.btn === btn) { e.preventDefault(); stopRec(); } };
+    btn.addEventListener('pointerdown', start); btn.addEventListener('pointerup', stop); btn.addEventListener('pointerleave', stop); btn.addEventListener('pointercancel', stop);
+    btn.addEventListener('contextmenu', e => e.preventDefault());
+  }
+  async function startRec(btn) {
+    if (recState || !code || TV) return;
+    if (!navigator.mediaDevices || !window.MediaRecorder) { toast(t('voice.unsupported')); return; }
+    recState = { btn, chunks: [], t0: Date.now(), stopAsked: false };
+    btn.classList.add('rec'); buzz(20);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
+      if (!recState) { stream.getTracks().forEach(x => x.stop()); return; }
+      const types = ['audio/webm;codecs=opus', 'audio/mp4', 'audio/ogg;codecs=opus', 'audio/webm'];
+      const mime = types.find(x => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(x)) || '';
+      const mr = new MediaRecorder(stream, Object.assign({ audioBitsPerSecond: 24000 }, mime ? { mimeType: mime } : {}));
+      recState.mr = mr; recState.stream = stream; recState.t0 = Date.now();
+      mr.ondataavailable = ev => { if (ev.data && ev.data.size) recState && recState.chunks.push(ev.data); };
+      mr.onstop = () => finishRec();
+      mr.start();
+      recState.timer = setTimeout(stopRec, VOICE_MAX);
+      toast(t('voice.rec'));
+      if (recState.stopAsked) stopRec();
+    } catch (e) { toast(t('voice.denied')); btn.classList.remove('rec'); recState = null; }
+  }
+  function stopRec() {
+    if (!recState) return;
+    if (!recState.mr) { recState.stopAsked = true; return; }
+    clearTimeout(recState.timer);
+    if (recState.mr.state !== 'inactive') recState.mr.stop();
+  }
+  async function finishRec() {
+    const R = recState; recState = null; if (!R) return;
+    R.btn.classList.remove('rec'); try { R.stream.getTracks().forEach(x => x.stop()); } catch (e) {}
+    const secs = Math.round((Date.now() - R.t0) / 1000);
+    if (Date.now() - R.t0 < 600 || !R.chunks.length) { toast(t('voice.short')); return; }
+    const blob = new Blob(R.chunks, { type: R.mr.mimeType || 'audio/webm' });
+    const b64 = await new Promise(res => { const fr = new FileReader(); fr.onload = () => res(String(fr.result).split(',')[1] || ''); fr.readAsDataURL(blob); });
+    try {
+      const r = await rpc('strelil_voice_put', { p_code: code, p_pid: me.id, p_mime: (blob.type || 'audio/webm').slice(0, 60), p_audio: b64 }, 15000);
+      if (!r.ok) { toast(t('voice.fail')); return; }
+      voiceCache[r.id] = { mime: blob.type, audio: b64 };
+      await act({ a: 'say', v: String(r.id), d: Math.max(1, secs) });
+      closeSheet(); toast(t('voice.sent'));
+    } catch (e) { toast(t('voice.fail')); }
+  }
+  const voiceCache = {};
+  async function playVoice(id, force) {
+    if (!ui.sound && !force) return;
+    try {
+      let v = voiceCache[id];
+      if (!v) { const r = await rpc('strelil_voice_get', { p_code: code, p_id: Number(id) }, 15000); if (!r.ok) return; v = voiceCache[id] = { mime: r.mime, audio: r.audio }; }
+      const a = new Audio('data:' + v.mime.split(';')[0] + ';base64,' + v.audio); a.volume = 1;
+      await a.play();
+    } catch (e) { if (force) toast(t('voice.cantPlay')); }
+  }
+
+  // ---------- veľká obrazovka (TV) ----------
+  function tvLink() { return URL_SELF + '#' + code + '/tv'; }
+  function joinLink() { return URL_SELF + '#' + code; }
+  function loadQR() { if (window.qrcode || document.getElementById('qrjs')) return; const sc = document.createElement('script'); sc.id = 'qrjs'; sc.src = 'vendor/qrcode.js'; sc.onload = () => { if (TV) render(); }; document.head.appendChild(sc); }
+  function qrSvg(txt) { if (!window.qrcode) return ''; try { const q = qrcode(0, 'M'); q.addData(txt); q.make(); return q.createSvgTag({ cellSize: 6, margin: 2, scalable: true }); } catch (e) { return ''; } }
+  function renderTV() {
+    const app = $('#app'); app.className = 'app app-tv';
+    if (!S) { app.innerHTML = '<div class="center"><div class="logo">si/<em>strelil</em></div><p class="muted">' + esc(t('wait.connecting', { c: code })) + '</p></div>'; return; }
+    const joinBox = '<div class="tv-join"><div class="tv-qr">' + qrSvg(joinLink()) + '</div><div><div class="muted">' + esc(t('tv.join')) + '</div><div class="tv-url">durica.si/strelil</div><div class="tv-code">' + esc(code) + '</div></div></div>';
+    if (S.phase === 'lobby' || S.phase === 'chars') {
+      mode = 'tv-lobby';
+      app.innerHTML = '<div class="tv tv-lobby" id="tv"><div class="logo">si/<em>strelil</em></div><div class="tag">' + esc(t('home.tag')) + '</div>' + joinBox +
+        '<div class="tv-plist">' + S.players.map(p => '<div class="tv-pl' + (S.phase === 'chars' && p.char ? ' done' : '') + '"><span class="dot" data-online="' + esc(p.id) + '"></span>' + esc(p.name) + (p.bot ? ' 🤖' : '') + (S.phase === 'chars' ? (p.char ? ' ✔' : ' …') : '') + '</div>').join('') + '</div>' +
+        '<p class="muted tv-hint">' + esc(S.phase === 'chars' ? t('tv.picking') : t('lobby.waitHost')) + '</p></div>';
+      refreshOnline(); return;
+    }
+    mode = 'tv-game';
+    const W = innerWidth, H = innerHeight;
+    const ps = S.players.slice().sort((a, b) => a.seat - b.seat);
+    const n = ps.length, size = Math.round(Math.min(W, H) * (n <= 5 ? 0.15 : 0.13));
+    const cx = W / 2, cy = H * 0.52, rx = W * 0.4, ry = H * 0.36;
+    let seats = '';
+    ps.forEach((p, i) => { const a = Math.PI / 2 + (i / n) * Math.PI * 2; const x = cx + rx * Math.cos(a), y = cy + ry * Math.sin(a) - size * 0.4; seats += portrait(p, size, { pos: ';left:' + x.toFixed(0) + 'px;top:' + y.toFixed(0) + 'px' }); });
+    const ev = S.event && (S.opts.events || S.event === 'poludnie') ? D.EVENTS[S.event] : null;
+    const top = S.discard[S.discard.length - 1];
+    const cw = Math.round(Math.min(W, H) * 0.13);
+    const logs = S.log.slice(-7).map(l => '<li class="lg-' + l.k + '">' + esc(logText(l)) + '</li>').join('');
+    const over = S.phase === 'over' && fxBusy() === 0;
+    app.innerHTML = '<div class="tv" id="tv"><div class="tv-top"><div class="logo sm">si/<em>strelil</em></div><div class="tv-round">' + esc(code) + ' · ' + esc(t('bar.round', { n: S.round })) + '</div>' + (ev ? '<div class="evchip">' + ev.ic + ' ' + esc(ev.n) + '<small>' + esc(ev.d) + '</small></div>' : '<span></span>') + '</div>' +
+      '<div class="tv-ring">' + seats + '</div>' +
+      '<div class="tv-mid" id="mid"><div class="board"><div class="deck" style="--w:' + cw + 'px"><i></i><i></i><i></i><b>' + S.deck.length + '</b></div><div class="discard">' + (top != null ? cardEl(top, { w: cw, cls: 'tilt', band: false }) : '<div class="emptyslot" style="--w:' + cw + 'px"></div>') + '</div></div>' +
+      '<div class="status">' + esc(statusText()) + '</div><ul class="tv-log">' + logs + '</ul></div>' +
+      (over ? '<div class="tv-over"><div class="ov-t">' + esc(S.winner ? t('over.' + S.winner) : t('over.end')) + '</div><div class="ov-cards">' + ps.map(p => '<div class="ov-p' + (E.winners(S).indexOf(p.id) >= 0 ? ' win' : '') + '">' + roleFace(p.role, { w: 110 }) + '<b>' + esc(p.name) + '</b></div>').join('') + '</div></div>' : '') +
+      '<div class="tv-corner">' + joinBox + '</div></div>';
+    if (S.phase === 'over' && !over) setTimeout(() => { if (TV && S && S.phase === 'over') render(); }, fxBusy() + 400);
+    refreshOnline();
+  }
+  window.addEventListener('resize', () => { if (TV && S) render(); });
+
   // ---------- zákaz zoomovania ----------
   ['gesturestart', 'gesturechange', 'gestureend'].forEach(t => document.addEventListener(t, e => e.preventDefault(), { passive: false }));
   document.addEventListener('touchmove', e => { if (e.touches && e.touches.length > 1) e.preventDefault(); if (e.scale !== undefined && e.scale !== 1) e.preventDefault(); }, { passive: false });
@@ -1164,12 +1405,13 @@
 
   // ---------- štart ----------
   buildD(); document.documentElement.lang = LANG;
-  window.addEventListener('hashchange', () => { const c = location.hash.slice(1); if (c && c.toUpperCase() !== code) enterRoom(c); });
+  window.addEventListener('hashchange', () => { const m = /^#([A-Za-z]{4})(\/tv)?$/.exec(location.hash); if (m && (m[1].toUpperCase() !== code || !!m[2] !== TV)) enterRoom(m[1], !!m[2]); });
   loadLang(LANG, () => {
     if (!LS[LANG] && LANG !== 'sk') LANG = 'sk';
     buildD(); document.documentElement.lang = LANG;
-    const startCode = location.hash.slice(1);
-    if (startCode && /^[A-Za-z]{4}$/.test(startCode)) {
+    const hm = /^#([A-Za-z]{4})(\/tv)?$/.exec(location.hash); const startCode = hm ? hm[1] : '';
+    if (hm && hm[2]) enterRoom(startCode, true);
+    else if (startCode) {
       if (!me.name) { render(); const ci = $('#code'); if (ci) ci.value = startCode.toUpperCase(); toast(t('toast.joinHint')); }
       else enterRoom(startCode);
     } else render();

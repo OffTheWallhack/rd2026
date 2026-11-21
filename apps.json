@@ -49,6 +49,51 @@
   ],
   "apps": [
     {
+      "id": "strelil",
+      "name": "Si strelil",
+      "short": "Si strelil",
+      "group": "hry",
+      "url": "strelil/",
+      "icon": "appky/img/strelil-192.png",
+      "desc": {
+        "sk": "Westernová kartová hra so skrytými rolami pre partiu 4–7 hráčov. Hráte cez link, každý z mobilu.",
+        "en": "A Wild West card game with hidden roles for 4–7 friends. Play online via a link, each on your phone."
+      },
+      "visibility": "public",
+      "embed": false,
+      "away": true,
+      "allow": "fullscreen",
+      "win": [
+        560,
+        860
+      ],
+      "sitemap": {
+        "priority": 0.5
+      },
+      "status": "new",
+      "linky": {
+        "section": "nove",
+        "order": 5,
+        "banner": "g-strelil.webp",
+        "h": 176,
+        "dark": true,
+        "shade": "linear-gradient(180deg,rgba(26,16,10,.35) 0%,rgba(26,16,10,0) 40%,rgba(26,16,10,.9) 100%)",
+        "kicker": "KARTOVÁ HRA · ONLINE",
+        "title": "Si strelil",
+        "line": "šerif, banditi a odpadlík pre partiu",
+        "gc": "strelil"
+      },
+      "titulka": {
+        "order": 5,
+        "img": "strelil/thumb.webp",
+        "w": 512,
+        "h": 512,
+        "alt": "Si strelil",
+        "sk": "Westernová kartová hra so skrytými rolami. Založ miestnosť, pošli kód partii a hrajte z mobilov.",
+        "en": "A Wild West card game with hidden roles. Create a room, send the code and play on your phones."
+      }
+    },
+    {
       "id": "drift",
       "name": "Event Car Game",
       "short": "Car Game",

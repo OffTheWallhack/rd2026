@@ -109,6 +109,17 @@
     flasa:      { n: 'Fľaša', cost: 1, once: 1, ic: '🍶', d: 'Hneď +1 život.' },
   };
 
+  // pôvodné názvy z BANG! (len pre orientáciu) a krátky popis na kartu
+  const ORIG_CARDS = { vystrel: 'BANG!', vedla: 'Mancato!', pivo: 'Birra', krcma: 'Saloon', dostavnik: 'Diligenza', vlak: 'Wells Fargo', vreckar: 'Panico!', sabotaz: 'Cat Balou', suboj: 'Duello', gulomet: 'Gatling', prepad: 'Indiani!', jarmok: 'Emporio', sud: 'Barile', dynamit: 'Dinamite', basa: 'Prigione', mustang: 'Mustang', dalekohlad: 'Mirino', sedmicka: 'Volcanic', kolt: 'Schofield', puska: 'Remington', karabina: 'Rev. Carabine', ostrostrel: 'Winchester', past: 'Punch', uskok: 'Dodge', odstrelovac: 'Springfield', whisky: 'Whisky', bitka: 'Brawl', ukryt: 'Hideout' };
+  const SHORT_CARDS = { vystrel: 'strela na hráča v dosahu', vedla: 'uhneš výstrelu', pivo: '+1 život', krcma: 'všetci +1 život', dostavnik: 'ťaháš 2 karty', vlak: 'ťaháš 3 karty', vreckar: 'zober kartu (vzd. 1)', sabotaz: 'zahoď hocikomu kartu', suboj: 'súboj vo Výstreloch', gulomet: 'strela na všetkých', prepad: 'ostatní odhodia Výstrel', jarmok: 'každý si vezme kartu', sud: 'srdce = uhol si', dynamit: 'pika 2–9 = −3 životy', basa: 'zavri hráča, stojí kolo', mustang: 'vidia ťa o 1 ďalej', dalekohlad: 'vidíš o 1 bližšie', sedmicka: 'dosah 1, Výstrelov ∞', kolt: 'zbraň, dosah 2', puska: 'zbraň, dosah 3', karabina: 'zbraň, dosah 4', ostrostrel: 'zbraň, dosah 5', past: 'Výstrel na vzd. 1, bez limitu', uskok: 'Vedľa! + ťaháš 1', odstrelovac: '+1 karta: strela kamkoľvek', whisky: '+1 karta: +2 životy', bitka: '+1 karta: všetci −1 karta', ukryt: 'vidia ťa o 1 ďalej' };
+  Object.keys(CARDS).forEach(k => { CARDS[k].o = ORIG_CARDS[k] || ''; CARDS[k].s = SHORT_CARDS[k] || ''; });
+  const ORIG_CHARS = { tono: 'Bart Cassidy', jano: 'El Gringo', kata: 'Calamity Janet', palo: 'Jesse Jones', lucka: 'Lucky Duke', fero: 'Jourdonnais', kit: 'Kit Carlson', miro: 'Paul Regret', rudo: 'Rose Doolan', viktor: 'Vulture Sam', willy: 'Willy the Kid', zuzka: 'Suzy Lafayette', sid: 'Sid Ketchum', slim: 'Slab the Killer', pedro: 'Pedro Ramirez', jack: 'Black Jack', jozo: 'Tequila Joe', doc: 'Doc Holyday', bill: 'Bill Noface', greg: 'Greg Digger', chucho: 'Chuck Wengam', molly: 'Molly Stark' };
+  Object.keys(CHARS).forEach(k => { CHARS[k].o = ORIG_CHARS[k] || ''; });
+  const ORIG_ROLES = { serif: 'Sheriff', pomocnik: 'Deputy', bandita: 'Outlaw', odpadlik: 'Renegade' };
+  Object.keys(ROLES).forEach(k => { ROLES[k].o = ORIG_ROLES[k]; });
+  const ORIG_EVENTS = { smad: 'Sete / Thirst', kocovina: 'Sbornia / Hangover', pozehnanie: 'Benedizione / Blessing', prekliatie: 'Maledizione / Curse', poludnie: 'Mezzogiorno di fuoco / High Noon' };
+  Object.keys(EVENTS).forEach(k => { EVENTS[k].o = ORIG_EVENTS[k] || ''; });
+
   const SUITS = ['h', 'd', 'c', 's'];
   const SUIT_IC = { h: '♥', d: '♦', c: '♣', s: '♠' };
   const RANK_N = { 11: 'J', 12: 'Q', 13: 'K', 14: 'A' };
@@ -982,6 +993,6 @@
     return true;
   }
 
-  const E = { CARDS, CHARS, ROLES, EVENTS, ITEMS, SUIT_IC, RANK_N, newRoom, apply, cardOptions, responseCards, waitingFor, botAct, distance, range, bangLimit, handLimit, price, winners, audit, ab, P, alive, cardLabel, qLabel };
+  const E = { DECK_BASE, DECK_EXTRA, CARDS, CHARS, ROLES, EVENTS, ITEMS, SUIT_IC, RANK_N, newRoom, apply, cardOptions, responseCards, waitingFor, botAct, distance, range, bangLimit, handLimit, price, winners, audit, ab, P, alive, cardLabel, qLabel };
   if (typeof module !== 'undefined' && module.exports) module.exports = E; else root.StrelilEngine = E;
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -15,7 +15,7 @@
   // ---------- stav ----------
   let S = null, VER = 0, SEEN = {}, skew = 0, code = null;
   let busy = false, driveTimer = null, tickTimer = null, netBad = 0, joining = false;
-  const ui = { sheet: null, sel: null, role: false, sound: ls('strelil_sound') !== '0', lastFx: 0, lastChat: 0, lastLog: 0, multi: [], firstState: true, logOpen: false };
+  const ui = { sheet: null, sel: null, role: false, sound: ls('strelil_sound') !== '0', lastFx: 0, lastChat: 0, lastLog: 0, multi: [], firstState: true, logOpen: false, play: null, resp: null, pickSel: null };
 
   const $ = s => document.querySelector(s);
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -100,7 +100,7 @@
       const auto = p.bot || (pid !== me.id && offlineLong(pid));
       if (!auto) continue;
       const h = S.q[0];
-      const delay = p.bot ? (h && h.pid === pid ? 650 : 950) : 400;
+      const delay = p.bot ? (h && h.pid === pid ? 1500 : (S.stage === 'play' && S.turnPid === pid && !h ? 2100 : 1500)) : 900;
       driveTimer = setTimeout(async () => {
         driveTimer = null;
         if (!S || busy || E.waitingFor(S).indexOf(pid) < 0) return;
@@ -216,9 +216,14 @@
     if (mine && !wasMyTurn && !ui.firstState) { snd('turn'); buzz(80); }
     wasMyTurn = mine;
     // zavri okno, ak už nedáva zmysel
-    if (ui.sheet && ui.sheet.kind === 'play') {
-      const meP = E.P(S, me.id);
-      if (!meP || meP.hand.indexOf(ui.sheet.card) < 0 || S.turnPid !== me.id || S.q.length) closeSheet();
+    { const meP = E.P(S, me.id);
+      if (ui.play) {
+        if (!meP || meP.hand.indexOf(ui.play.card) < 0 || S.turnPid !== me.id || S.q.length || S.phase !== 'play') ui.play = null;
+        else { const o = E.cardOptions(S, me.id, ui.play.card); ui.play.o = o; if (ui.play.target && (!o.ok || !o.targets || o.targets.indexOf(ui.play.target) < 0)) ui.play.target = null; if (ui.play.extra != null && meP.hand.indexOf(ui.play.extra) < 0) ui.play.extra = null; }
+      }
+      const hh = S.q && S.q[0];
+      if (!hh || hh.pid !== me.id) { ui.resp = null; ui.pickSel = null; }
+      else { if (ui.resp != null && (!meP || meP.hand.indexOf(ui.resp) < 0)) ui.resp = null; if (ui.pickSel != null && (!hh.cards || hh.cards.indexOf(ui.pickSel) < 0)) ui.pickSel = null; }
     }
     if (ui.sheet && (ui.sheet.kind === 'shop' || ui.sheet.kind === 'ability' || ui.sheet.kind === 'player' || ui.sheet.kind === 'log')) renderSheet();
     // vyčisti výber pri odhadzovaní, ak už neplatí
@@ -292,7 +297,7 @@
       '<button class="btn big red" id="create">Založiť miestnosť</button>' +
       '<div class="or">alebo</div>' +
       '<div class="joinrow"><input id="code" maxlength="4" placeholder="KÓD" autocapitalize="characters" autocomplete="off"><button class="btn" id="join">Pripojiť</button></div>' +
-      '<button class="btn ghost" id="rules">📜 Ako sa hrá</button>' +
+      '<div class="btnrow2"><button class="btn" id="gal">🃏 Karty a postavy</button><button class="btn" id="rules">📜 Ako sa hrá</button></div>' +
       '<p class="foot muted">Hra beží cez link, nič sa neinštaluje. Boty doplnia miesta, ak vás je menej.</p>' +
       '</div>';
   }
@@ -301,6 +306,7 @@
     $('#join').onclick = () => { const n = $('#nm').value.trim(); if (!n) { toast('Napíš svoje meno.'); return; } setName(n); enterRoom($('#code').value); };
     $('#code').addEventListener('keydown', e => { if (e.key === 'Enter') $('#join').click(); });
     $('#rules').onclick = () => openSheet({ kind: 'rules' });
+    $('#gal').onclick = () => openGallery('karty');
   }
 
   const OPT_INFO = {
@@ -314,7 +320,7 @@
     const host = S.host === me.id;
     const inRoom = !!E.P(S, me.id);
     const n = S.players.length;
-    let h = '<div class="lobby"><div class="topbar"><button class="btn ghost sm" id="home">←</button><div class="logo sm">si/<em>strelil</em></div><button class="btn ghost sm" id="rules">📜</button></div>';
+    let h = '<div class="lobby"><div class="topbar"><button class="btn ghost sm" id="home">←</button><div class="logo sm">si/<em>strelil</em></div><span><button class="btn ghost sm" id="gal">🃏</button><button class="btn ghost sm" id="rules">📜</button></span></div>';
     h += '<div class="codebox"><div class="muted">Kód miestnosti</div><div class="code">' + esc(code) + '</div><button class="btn red" id="share">📨 Pozvať partiu</button></div>';
     if (!inRoom) {
       h += '<label class="field"><span>Tvoje meno</span><input id="nm" maxlength="16" value="' + esc(me.name) + '"></label><button class="btn big" id="joinme">Sadnúť si ku stolu</button>';
@@ -337,7 +343,7 @@
     return h;
   }
   function bindLobby() {
-    $('#home').onclick = leaveRoom; $('#share').onclick = shareLink; $('#rules').onclick = () => openSheet({ kind: 'rules' });
+    $('#home').onclick = leaveRoom; $('#share').onclick = shareLink; $('#rules').onclick = () => openSheet({ kind: 'rules' }); $('#gal').onclick = () => openGallery('karty');
     if ($('#joinme')) $('#joinme').onclick = async () => { const n = $('#nm').value.trim(); if (!n) { toast('Napíš meno.'); return; } setName(n); await act({ a: 'join', name: n }); };
     if ($('#addbot')) $('#addbot').onclick = () => act({ a: 'bot' });
     if ($('#start')) $('#start').onclick = () => act({ a: 'start' });
@@ -352,17 +358,20 @@
     let h = '<div class="lobby"><div class="topbar"><div></div><div class="logo sm">si/<em>strelil</em></div><div></div></div>';
     if (!p) return h + '<p class="center-t muted">Hra už beží. Pozeráš ako divák.</p></div>';
     const r = E.ROLES[p.role];
-    h += '<div class="rolecard r-' + p.role + '"><div class="muted">Tvoja tajná rola</div><div class="rc-ic">' + r.ic + '</div><div class="rc-n">' + esc(r.n) + '</div><p>' + esc(r.d) + '</p></div>';
+    h += '<div class="rolecard r-' + p.role + '"><div class="muted">Tvoja tajná rola</div><div class="rc-ic">' + r.ic + '</div><div class="rc-n">' + esc(r.n) + '</div><div class="rc-o">' + esc(r.o) + '</div><p>' + esc(r.d) + '</p></div>';
     if (!p.char) {
       h += '<h3>Vyber si postavu</h3><div class="charpick">';
-      p.charOpts.forEach(c => { const ch = E.CHARS[c]; h += '<button class="charopt" data-char="' + c + '"><div class="co-ic">' + ch.ic + '</div><div class="co-n">' + esc(ch.n) + '</div><div class="co-hp">' + hearts(ch.hp + (p.role === 'serif' ? 1 : 0), ch.hp + (p.role === 'serif' ? 1 : 0)) + '</div><div class="co-d">' + esc(ch.d) + '</div></button>'; });
-      h += '</div>';
+      p.charOpts.forEach(c => { const ch = E.CHARS[c]; h += '<button class="charopt' + (ui.charSel === c ? ' sel' : '') + '" data-char="' + c + '"><div class="co-ic">' + ch.ic + '</div><div class="co-n">' + esc(ch.n) + '</div><div class="co-o">' + esc(ch.o) + '</div><div class="co-hp">' + hearts(ch.hp + (p.role === 'serif' ? 1 : 0), ch.hp + (p.role === 'serif' ? 1 : 0)) + '</div><div class="co-d">' + esc(ch.d) + '</div></button>'; });
+      h += '</div><button class="btn big red" id="chargo" ' + (ui.charSel && p.charOpts.indexOf(ui.charSel) >= 0 ? '' : 'disabled') + '>' + (ui.charSel && p.charOpts.indexOf(ui.charSel) >= 0 ? '✔ Hrať za: ' + esc(E.CHARS[ui.charSel].n) : 'Ťukni na postavu') + '</button>';
     } else h += '<p class="center-t">Vybral si <b>' + esc(E.CHARS[p.char].n) + '</b>. Čaká sa na ostatných…</p>';
     const waiting = S.players.filter(q => !q.char).map(q => q.name);
     if (waiting.length) h += '<p class="center-t muted">Ešte vyberajú: ' + esc(waiting.join(', ')) + '</p>';
     return h + '</div>';
   }
-  function bindChars() { document.querySelectorAll('[data-char]').forEach(b => b.onclick = () => act({ a: 'char', char: b.getAttribute('data-char') })); }
+  function bindChars() {
+    document.querySelectorAll('[data-char]').forEach(b => b.onclick = () => { ui.charSel = b.getAttribute('data-char'); render(); });
+    const go = $('#chargo'); if (go) go.onclick = () => { const c = ui.charSel; ui.charSel = null; if (c) act({ a: 'char', char: c }); };
+  }
 
   function hearts(hp, max) { let s = ''; for (let i = 0; i < max; i++) s += i < hp ? '<i class="hf">♥</i>' : '<i class="he">♥</i>'; return '<span class="hearts">' + s + '</span>'; }
   function miniCard(cid, opts) {
@@ -372,7 +381,7 @@
   function cardHTML(cid, cls, attrs) {
     const c = S.cards[cid], d = E.CARDS[c.t];
     const red = c.s === 'h' || c.s === 'd';
-    return '<button class="card k-' + d.c + ' ' + (cls || '') + '" ' + (attrs || '') + '><span class="c-rk' + (red ? ' red' : '') + '">' + (E.RANK_N[c.r] || c.r) + E.SUIT_IC[c.s] + '</span>' + (d.r ? '<span class="c-range">⌖' + d.r + '</span>' : '') + '<span class="c-ic">' + d.ic + '</span><span class="c-nm">' + esc(d.n) + '</span></button>';
+    return '<button class="card k-' + d.c + ' ' + (cls || '') + '" ' + (attrs || '') + '><span class="c-rk' + (red ? ' red' : '') + '">' + (E.RANK_N[c.r] || c.r) + E.SUIT_IC[c.s] + '</span>' + (d.r ? '<span class="c-range">⌖' + d.r + '</span>' : '') + '<span class="c-ic">' + d.ic + '</span><span class="c-nm">' + esc(d.n) + '</span><span class="c-ds">' + esc(d.s) + '</span>' + (d.o ? '<span class="c-or">' + esc(d.o) + '</span>' : '') + '</button>';
   }
 
   function statusText() {
@@ -397,23 +406,23 @@
     const others = myIdx < 0 ? ordered : ordered.slice(myIdx + 1).concat(ordered.slice(0, myIdx));
     const h = S.q[0];
     const myTurn = meP && S.turnPid === me.id && S.stage === 'play' && !h && S.phase === 'play';
-    const targeting = ui.sheet && ui.sheet.kind === 'play' && ui.sheet.targets;
+    const targeting = ui.play && ui.play.o.ok && ui.play.o.targets ? ui.play.o.targets : null;
     let out = '<div class="game' + (myTurn ? ' myturn' : '') + '">';
     // horná lišta
     const ev = S.event && (S.opts.events || S.event === 'poludnie') ? E.EVENTS[S.event] : null;
     out += '<div class="gbar"><button class="btn ghost sm" id="menu">☰</button><div class="gb-mid"><span class="gb-code">' + esc(code) + '</span> · kolo ' + S.round + '</div>' +
-      (ev ? '<button class="evchip" id="evchip">' + ev.ic + ' ' + esc(ev.n) + '</button>' : '<span></span>') + '<button class="btn ghost sm" id="logbtn">📜</button></div>';
+      (ev ? '<button class="evchip" id="evchip">' + ev.ic + ' ' + esc(ev.n) + '</button>' : '<span></span>') + '<span class="gb-r"><button class="btn ghost sm" id="galbtn">🃏</button><button class="btn ghost sm" id="logbtn">📜</button></span></div>';
     // súperi
     out += '<div class="seats n' + others.length + '">';
     others.forEach(p => {
       const dist = meP && meP.alive && p.alive ? E.distance(S, meP, p) : null;
-      const inRange = targeting && ui.sheet.targets.indexOf(p.id) >= 0;
+      const inRange = targeting && targeting.indexOf(p.id) >= 0;
       const roleKnown = p.role === 'serif' || !p.alive || S.phase === 'over';
-      const cls = ['seat', S.turnPid === p.id ? 'turn' : '', !p.alive ? (p.ghost && p.ghostTurns > 0 ? 'ghost' : 'dead') : '', inRange ? 'tgt' : '', targeting && !inRange ? 'dim' : '', h && h.pid === p.id ? 'acting' : ''].join(' ');
+      const cls = ['seat', S.turnPid === p.id ? 'turn' : '', !p.alive ? (p.ghost && p.ghostTurns > 0 ? 'ghost' : 'dead') : '', inRange ? 'tgt' : '', inRange && ui.play.target === p.id ? 'chosen' : '', targeting && !inRange ? 'dim' : '', h && h.pid === p.id ? 'acting' : ''].join(' ');
       const ch = p.char ? E.CHARS[p.char] : null;
       out += '<button class="' + cls + '" data-seat="' + esc(p.id) + '">' +
         '<div class="s-top"><span class="s-av">' + (ch ? ch.ic : '🤠') + '</span><span class="s-nm">' + esc(p.name) + '</span><span class="dot" data-online="' + esc(p.id) + '"></span></div>' +
-        '<div class="s-role">' + (roleKnown ? roleBadge(p.role) : '<span class="role r-unk">❓ ' + (ch ? esc(ch.n) : '') + '</span>') + '</div>' +
+        (ch ? '<div class="s-char">' + esc(ch.n) + ' <i>' + esc(ch.o) + '</i></div>' : '') + '<div class="s-role">' + (roleKnown ? roleBadge(p.role) : '<span class="role r-unk">❓ rola</span>') + '</div>' +
         '<div class="s-hp">' + (p.alive ? hearts(p.hp, p.maxHp) : (p.ghost && p.ghostTurns > 0 ? '<span class="ghosttxt">👻 duch · ' + p.ghostTurns + '</span>' : '<span class="ghosttxt">☠️ mŕtvy</span>')) + '</div>' +
         '<div class="s-meta"><span title="karty v ruke">🂠 ' + p.hand.length + '</span>' + (dist ? '<span title="vzdialenosť">↔ ' + dist + '</span>' : '') + (S.opts.gold ? '<span title="zlato">🪙 ' + p.gold + '</span>' : '') + '</div>' +
         '<div class="s-tbl">' + p.table.map(c => miniCard(c)).join('') + p.items.map(it => '<span class="chip k-i">' + E.ITEMS[it].ic + ' ' + esc(E.ITEMS[it].n) + '</span>').join('') + '</div>' +
@@ -430,23 +439,23 @@
       const ch = meP.char ? E.CHARS[meP.char] : null;
       const r = E.ROLES[meP.role];
       out += '<div class="me' + (S.turnPid === me.id ? ' turn' : '') + (!meP.alive ? ' deadme' : '') + '" data-seat="' + esc(me.id) + '">' +
-        '<div class="me-l"><button class="me-char" id="mychar"><span class="s-av">' + (ch ? ch.ic : '') + '</span><span><b>' + esc(meP.name) + '</b><small>' + (ch ? esc(ch.n) : '') + '</small></span></button>' +
+        '<div class="me-l"><button class="me-char" id="mychar"><span class="s-av">' + (ch ? ch.ic : '') + '</span><span><b>' + esc(meP.name) + '</b><small>' + (ch ? esc(ch.n) + ' · <i>' + esc(ch.o) + '</i>' : '') + '</small></span></button>' +
         '<button class="me-role r-' + meP.role + (ui.role ? ' open' : '') + '" id="myrole">' + (ui.role || meP.role === 'serif' || !meP.alive ? r.ic + ' ' + esc(r.n) : '🔒 rola') + '</button></div>' +
         '<div class="me-r">' + (meP.alive ? hearts(meP.hp, meP.maxHp) : (meP.ghost && meP.ghostTurns > 0 ? '<span class="ghosttxt">👻 si duch · ' + meP.ghostTurns + ' ťahy</span>' : '<span class="ghosttxt">☠️ vypadol si</span>')) +
         '<div class="me-meta">' + (S.opts.gold ? '<span>🪙 ' + meP.gold + '</span>' : '') + '<span>⌖ dosah ' + E.range(S, meP) + '</span></div></div>' +
         '<div class="me-tbl">' + meP.table.map(c => miniCard(c, 'data-info="' + c + '"')).join('') + meP.items.map(it => '<span class="chip k-i" data-item="' + it + '">' + E.ITEMS[it].ic + ' ' + esc(E.ITEMS[it].n) + '</span>').join('') + '</div>' +
         '</div>';
       // výzva (odpoveď / výber)
-      out += promptHTML(meP, h);
+      out += ui.play ? playPanelHTML(meP) : promptHTML(meP, h);
       // ruka
       const sel = ui.multi;
       const respond = h && h.pid === me.id && (h.k === 'shot' || h.k === 'prepad' || h.k === 'suboj') ? E.responseCards(S, meP, h) : null;
-      out += '<div class="hand">' + (meP.hand.length ? '' : '<div class="muted emptyhand">Prázdna ruka</div>') + meP.hand.map(c => {
+      out += '<div class="hand" id="hand">' + (meP.hand.length ? '' : '<div class="muted emptyhand">Prázdna ruka</div>') + meP.hand.map(c => {
         let cls = '';
-        if (respond) cls = respond.indexOf(c) >= 0 ? 'can' : 'off';
+        if (respond) cls = (respond.indexOf(c) >= 0 ? 'can' : 'off') + (ui.resp === c ? ' sel' : '');
         else if (h && h.pid === me.id && h.k === 'odhod') cls = sel.indexOf(c) >= 0 ? 'picked' : '';
         else if (ui.sheet && ui.sheet.kind === 'ability') cls = (ui.sheet.cards || []).indexOf(c) >= 0 ? 'picked' : '';
-        else if (myTurn) cls = E.cardOptions(S, me.id, c).ok ? 'can' : 'off';
+        else if (myTurn) cls = (E.cardOptions(S, me.id, c).ok ? 'can' : 'off') + (ui.play && ui.play.card === c ? ' sel' : '');
         return cardHTML(c, cls, 'data-card="' + c + '"');
       }).join('') + '</div>';
       // akcie
@@ -471,17 +480,17 @@
     if (h.k === 'shot') {
       const via = { vystrel: 'Výstrel', gulomet: 'Guľomet', past: 'Päsť', odstrelovac: 'Odstreľovač', doc: 'Hromová rana' }[h.via] || 'Výstrel';
       t = '💥 ' + nmP(h.src) + ' na teba páli (' + via + ')' + (h.need - h.got > 1 ? ' — treba ešte ' + (h.need - h.got) + '× Vedľa!' : '') + (h.dmg > 1 ? ' · zásah = −' + h.dmg : '');
-      body = '<p class="muted">Ťukni na kartu Vedľa! v ruke, alebo zober zásah.</p><button class="btn red" id="pass">Zobrať zásah (−' + (h.dmg || 1) + ')</button>';
+      body = respHint('Ťukni na Vedľa! v ruke a potvrď (alebo ju potiahni hore). Inak zober zásah.') + '<div class="btnrow">' + respBtn() + '<button class="btn' + (ui.resp != null ? '' : ' red') + '" id="pass">Zobrať zásah (−' + (h.dmg || 1) + ')</button></div>';
     } else if (h.k === 'prepad') {
-      t = '🏹 Prepad od ' + nmP(h.src) + '!'; body = '<p class="muted">Odhoď Výstrel, alebo stratíš život.</p><button class="btn red" id="pass">Stratiť život</button>';
+      t = '🏹 Prepad od ' + nmP(h.src) + '!'; body = respHint('Ťukni na Výstrel v ruke a potvrď, alebo stratíš život.') + '<div class="btnrow">' + respBtn() + '<button class="btn' + (ui.resp != null ? '' : ' red') + '" id="pass">Stratiť život</button></div>';
     } else if (h.k === 'suboj') {
-      t = '🤺 Súboj s ' + nmP(h.other) + '!'; body = '<p class="muted">Odhoď Výstrel, alebo súboj prehráš.</p><button class="btn red" id="pass">Vzdať súboj (−1)</button>';
+      t = '🤺 Súboj s ' + nmP(h.other) + '!'; body = respHint('Ťukni na Výstrel v ruke a potvrď, alebo súboj prehráš.') + '<div class="btnrow">' + respBtn() + '<button class="btn' + (ui.resp != null ? '' : ' red') + '" id="pass">Vzdať súboj (−1)</button></div>';
     } else if (h.k === 'jarmok') {
-      t = '🛒 Jarmok — vyber si jednu kartu'; body = '<div class="choice">' + h.cards.map(c => cardHTML(c, 'can', 'data-pick="' + c + '"')).join('') + '</div>';
+      t = '🛒 Jarmok — vyber si jednu kartu'; body = '<div class="choice">' + h.cards.map(c => cardHTML(c, 'can' + (ui.pickSel === c ? ' sel' : ''), 'data-pick="' + c + '"')).join('') + '</div>' + pickBtn('Vziať ');
     } else if (h.k === 'odhod') {
       t = '🗑️ Máš veľa kariet — odhoď ' + h.n; body = '<p class="muted">Ťukni na ' + h.n + ' ' + (h.n === 1 ? 'kartu' : 'karty') + ' v ruke. Vybraté: ' + ui.multi.length + '/' + h.n + '</p><button class="btn red" id="discardgo" ' + (ui.multi.length === h.n ? '' : 'disabled') + '>Odhodiť</button>';
     } else if (h.k === 'kit') {
-      t = '🦊 Vyber kartu, ktorú VRÁTIŠ na balíček'; body = '<div class="choice">' + h.cards.map(c => cardHTML(c, 'can', 'data-pick="' + c + '"')).join('') + '</div>';
+      t = '🦊 Vyber kartu, ktorú VRÁTIŠ na balíček'; body = '<div class="choice">' + h.cards.map(c => cardHTML(c, 'can' + (ui.pickSel === c ? ' sel' : ''), 'data-pick="' + c + '"')).join('') + '</div>' + pickBtn('Vrátiť ');
     } else if (h.k === 'palo') {
       t = '🃏 Odkiaľ potiahneš prvú kartu?';
       body = '<div class="btnrow"><button class="btn" data-from="deck">Z balíčka</button>' + S.players.filter(q => q.alive && q.id !== me.id && q.hand.length).map(q => '<button class="btn" data-from="' + esc(q.id) + '">Od ' + esc(q.name) + ' (' + q.hand.length + ')</button>').join('') + '</div>';
@@ -491,6 +500,42 @@
       body = '<div class="btnrow"><button class="btn" data-from="discard">Z kôpky</button><button class="btn" data-from="deck">Z balíčka</button></div>';
     }
     return '<div class="prompt">' + '<div class="pr-t">' + esc(t) + '</div>' + body + '</div>';
+  }
+
+  const cname = cid => E.CARDS[S.cards[cid].t].n;
+  function respHint(t) { return '<p class="muted">' + esc(t) + '</p>'; }
+  function respBtn() { return ui.resp != null ? '<button class="btn red" id="respgo">✔ Použiť ' + esc(cname(ui.resp)) + '</button>' : ''; }
+  function pickBtn(verb) { return '<button class="btn red" id="pickgo" ' + (ui.pickSel != null ? '' : 'disabled') + '>' + (ui.pickSel != null ? '✔ ' + verb + esc(cname(ui.pickSel)) : 'Najprv ťukni na kartu') + '</button>'; }
+
+  // panel pri hraní karty: výber → (cieľ / karta / odhodenie) → potvrdenie
+  function playReady(pl) {
+    const o = pl.o;
+    if (!o.ok) return false;
+    if (o.extra && pl.extra == null) return false;
+    if (o.targets && !pl.target) return false;
+    if (o.tcard && pl.tcard === undefined) return false;
+    return true;
+  }
+  function playPanelHTML(meP) {
+    const pl = ui.play, o = pl.o, c = S.cards[pl.card], d = E.CARDS[c.t];
+    const shown = o.as ? E.CARDS[o.as] : d;
+    let h = '<div class="prompt playp"><div class="pp-head">' + cardHTML(pl.card, 'mini', 'tabindex="-1"') + '<div><div class="pr-t">' + d.ic + ' ' + esc(d.n) + (o.as ? ' <small>(ako ' + esc(E.CARDS[o.as].n) + ')</small>' : '') + '</div><p class="muted">' + esc(shown.d) + '</p></div></div>';
+    if (!o.ok) return h + '<p class="warn">' + esc(o.why) + '</p><button class="btn" id="playcancel">Zrušiť</button></div>';
+    let n = 1;
+    if (o.extra) {
+      h += '<p class="step' + (pl.extra != null ? ' done' : '') + '">' + (n++) + '. ' + (pl.extra != null ? '✔ Odhodíš ' + esc(cname(pl.extra)) : 'Vyber ďalšiu kartu na odhodenie:') + '</p><div class="choice sm">' + meP.hand.filter(x => x !== pl.card).map(x => cardHTML(x, pl.extra === x ? 'sel' : '', 'data-ex="' + x + '"')).join('') + '</div>';
+    }
+    if (o.targets) {
+      h += '<p class="step' + (pl.target ? ' done' : '') + '">' + (n++) + '. ' + (pl.target ? '✔ Cieľ: ' + esc(E.P(S, pl.target).name) : 'Vyber cieľ — ťukni na hráča hore, alebo naňho kartu potiahni:') + '</p><div class="btnrow">' +
+        o.targets.map(id => { const q = E.P(S, id); return '<button class="btn sm' + (pl.target === id ? ' red' : '') + '" data-t="' + esc(id) + '">' + esc(q.name) + ' <small>↔' + E.distance(S, meP, q) + ' ♥' + q.hp + '</small></button>'; }).join('') + '</div>';
+      if (o.tcard && pl.target) {
+        const q = E.P(S, pl.target);
+        h += '<p class="step' + (pl.tcard !== undefined ? ' done' : '') + '">' + (n++) + '. Ktorú kartu?</p><div class="btnrow">' + (q.hand.length ? '<button class="btn sm' + (pl.tcard === 'hand' ? ' red' : '') + '" data-tc="hand">🂠 Náhodnú z ruky (' + q.hand.length + ')</button>' : '') + q.table.map(tc => '<button class="btn sm' + (pl.tcard === tc ? ' red' : '') + '" data-tc="' + tc + '">' + E.CARDS[S.cards[tc].t].ic + ' ' + esc(cname(tc)) + '</button>').join('') + '</div>';
+      }
+    }
+    const ready = playReady(pl);
+    h += '<div class="btnrow pp-go"><button class="btn red big2" id="playgo" ' + (ready ? '' : 'disabled') + '>' + (ready ? '✔ Potvrdiť: ' + esc(shown.n) + (pl.target ? ' → ' + esc(E.P(S, pl.target).name) : '') : 'Potvrdiť') + '</button><button class="btn" id="playcancel">Zrušiť</button></div>';
+    return h + '</div>';
   }
 
   function overHTML() {
@@ -509,8 +554,9 @@
     const on = (id, f) => { const el = $(id); if (el) el.onclick = f; };
     on('#menu', () => openSheet({ kind: 'menu' }));
     on('#logbtn', () => openSheet({ kind: 'log' }));
-    on('#evchip', () => { const ev = E.EVENTS[S.event]; openSheet({ kind: 'info', title: ev.ic + ' ' + ev.n, text: ev.d }); });
-    on('#endturn', () => act({ a: 'end' }));
+    on('#galbtn', () => openGallery('karty'));
+    on('#evchip', () => { const ev = E.EVENTS[S.event]; openSheet({ kind: 'info', title: ev.ic + ' ' + ev.n, orig: ev.o, text: ev.d }); });
+    on('#endturn', () => armed('#endturn', 'Naozaj ukončiť ťah?', () => act({ a: 'end' }), () => { const mp = E.P(S, me.id); return mp && mp.hand.some(c => E.cardOptions(S, me.id, c).ok); }));
     on('#shop', () => openSheet({ kind: 'shop' }));
     on('#abil', () => openSheet({ kind: 'ability', cards: [] }));
     on('#chat', () => openSheet({ kind: 'chat' }));
@@ -519,19 +565,35 @@
     on('#ovlog', () => openSheet({ kind: 'log' }));
     on('#myrole', () => { ui.role = !ui.role; render(); });
     on('#mychar', () => openSheet({ kind: 'player', pid: me.id }));
-    on('#pass', () => act({ a: 'respond', pass: true }));
+    on('#pass', () => armed('#pass', 'Naozaj? Máš sa čím brániť', () => { ui.resp = null; act({ a: 'respond', pass: true }); }, () => { const mp = E.P(S, me.id); const h = S.q[0]; return mp && h && E.responseCards(S, mp, h).length > 0; }));
+    on('#respgo', () => { const c = ui.resp; ui.resp = null; if (c != null) act({ a: 'respond', card: c }); });
+    on('#pickgo', () => { const c = ui.pickSel; ui.pickSel = null; if (c != null) act({ a: 'pick', card: c }); });
+    on('#playgo', () => doPlay());
+    on('#playcancel', () => { ui.play = null; render(); });
+    document.querySelectorAll('.playp [data-t]').forEach(b => b.onclick = () => chooseTarget(b.getAttribute('data-t')));
+    document.querySelectorAll('.playp [data-tc]').forEach(b => b.onclick = () => { const v = b.getAttribute('data-tc'); ui.play.tcard = v === 'hand' ? 'hand' : +v; render(); });
+    document.querySelectorAll('.playp [data-ex]').forEach(b => b.onclick = () => { ui.play.extra = +b.getAttribute('data-ex'); render(); });
     on('#discardgo', () => { const h = S.q[0]; if (h && ui.multi.length === h.n) act({ a: 'pick', cards: ui.multi.slice() }).then(() => { ui.multi = []; }); });
-    document.querySelectorAll('[data-pick]').forEach(b => b.onclick = () => act({ a: 'pick', card: +b.getAttribute('data-pick') }));
+    document.querySelectorAll('[data-pick]').forEach(b => b.onclick = () => { const c = +b.getAttribute('data-pick'); ui.pickSel = ui.pickSel === c ? null : c; render(); });
     document.querySelectorAll('[data-from]').forEach(b => b.onclick = () => act({ a: 'pick', from: b.getAttribute('data-from') }));
     document.querySelectorAll('[data-info]').forEach(b => b.onclick = e => { e.stopPropagation(); cardInfo(+b.getAttribute('data-info')); });
     document.querySelectorAll('[data-item]').forEach(b => b.onclick = e => { e.stopPropagation(); const it = E.ITEMS[b.getAttribute('data-item')]; openSheet({ kind: 'info', title: it.ic + ' ' + it.n, text: it.d }); });
     document.querySelectorAll('.seat').forEach(b => b.onclick = () => seatClick(b.getAttribute('data-seat')));
     document.querySelectorAll('.hand [data-card]').forEach(b => b.onclick = () => handClick(+b.getAttribute('data-card')));
+    document.querySelectorAll('.disc .card').forEach(b => b.onclick = () => { const t = S.discard[S.discard.length - 1]; if (t != null) cardInfo(t); });
     refreshOnline();
   }
 
+  // dvojité potvrdenie: prvé ťuknutie len „nabije“ tlačidlo
+  let armedSel = null, armedTimer = null;
+  function armed(sel, txt, fn, needed) {
+    if (needed && !needed()) { fn(); return; }
+    if (armedSel === sel) { armedSel = null; clearTimeout(armedTimer); fn(); return; }
+    armedSel = sel; const b = $(sel); if (b) { b.dataset.orig = b.textContent; b.textContent = txt; b.classList.add('armed'); }
+    clearTimeout(armedTimer); armedTimer = setTimeout(() => { armedSel = null; const bb = $(sel); if (bb && bb.dataset.orig) { bb.textContent = bb.dataset.orig; bb.classList.remove('armed'); } }, 3000);
+  }
   function seatClick(pid) {
-    if (ui.sheet && ui.sheet.kind === 'play' && ui.sheet.targets && ui.sheet.targets.indexOf(pid) >= 0) { chooseTarget(pid); return; }
+    if (ui.play && ui.play.o.ok && ui.play.o.targets && ui.play.o.targets.indexOf(pid) >= 0) { chooseTarget(pid); return; }
     if (ui.sheet && ui.sheet.kind === 'ability' && ui.sheet.targets && ui.sheet.targets.indexOf(pid) >= 0) { ui.sheet.target = pid; renderSheet(); return; }
     openSheet({ kind: 'player', pid });
   }
@@ -540,7 +602,7 @@
     const meP = E.P(S, me.id); const h = S.q[0];
     if (h && h.pid === me.id) {
       if (h.k === 'shot' || h.k === 'prepad' || h.k === 'suboj') {
-        if (E.responseCards(S, meP, h).indexOf(cid) >= 0) act({ a: 'respond', card: cid }); else cardInfo(cid);
+        if (E.responseCards(S, meP, h).indexOf(cid) >= 0) { ui.resp = ui.resp === cid ? null : cid; render(); } else cardInfo(cid);
         return;
       }
       if (h.k === 'odhod') {
@@ -555,31 +617,92 @@
       if (i >= 0) a.splice(i, 1); else if (a.length < 2) a.push(cid);
       render(); renderSheet(); return;
     }
-    if (ui.sheet && ui.sheet.kind === 'play' && ui.sheet.needExtra && cid !== ui.sheet.card) { ui.sheet.extra = cid; renderSheet(); render(); return; }
+    if (ui.play && ui.play.card === cid) { ui.play = null; render(); return; }
+    if (S.turnPid !== me.id || S.stage !== 'play' || S.q.length || S.phase !== 'play') { cardInfo(cid); return; }
     openPlay(cid);
   }
 
-  function cardInfo(cid) { const c = S.cards[cid], d = E.CARDS[c.t]; openSheet({ kind: 'info', title: d.ic + ' ' + d.n, text: d.d + (d.r ? ' (dosah ' + d.r + ')' : ''), card: cid }); }
+  function cardInfo(cid) { zoomCard(cid); return; const c = S.cards[cid], d = E.CARDS[c.t]; openSheet({ kind: 'info', title: d.ic + ' ' + d.n, orig: d.o, text: d.d + (d.r ? ' (dosah ' + d.r + ')' : ''), card: cid }); }
 
-  function openPlay(cid) {
+  function openPlay(cid, target) {
     const o = E.cardOptions(S, me.id, cid);
-    openSheet({ kind: 'play', card: cid, o, targets: o.ok && o.targets ? o.targets : null, needExtra: !!(o.ok && o.extra), target: null, extra: null });
+    ui.play = { card: cid, o, target: null, tcard: undefined, extra: null };
+    if (target && o.ok && o.targets && o.targets.indexOf(target) >= 0) ui.play.target = target;
     render();
   }
   function chooseTarget(pid) {
-    const sh = ui.sheet; sh.target = pid;
-    if (sh.o.tcard) { renderSheet(); return; }
-    if (sh.needExtra && sh.extra == null) { renderSheet(); return; }
-    doPlay();
+    const pl = ui.play; if (!pl) return;
+    pl.target = pl.target === pid ? null : pid; pl.tcard = undefined;
+    render();
   }
-  async function doPlay(tcard) {
-    const sh = ui.sheet; if (!sh) return;
-    const a = { a: 'play', card: sh.card };
-    if (sh.target) a.target = sh.target;
-    if (tcard !== undefined) a.tcard = tcard;
-    if (sh.extra != null) a.extra = sh.extra;
-    closeSheet();
+  async function doPlay() {
+    const pl = ui.play; if (!pl || !playReady(pl)) return;
+    const a = { a: 'play', card: pl.card };
+    if (pl.target) a.target = pl.target;
+    if (pl.tcard !== undefined) a.tcard = pl.tcard;
+    if (pl.extra != null) a.extra = pl.extra;
+    ui.play = null;
     await act(a);
+  }
+
+  // ---------- veľké karty: detail (podržanie) a kartotéka ----------
+  const KIND_TXT = { b: 'Hnedá — zahráš a odhodíš', m: 'Modrá — leží pred tebou', w: 'Zbraň — leží pred tebou' };
+  function deckCount(k) { return (E.DECK_BASE[k] || 0) + (E.DECK_EXTRA[k] || 0); }
+  function bigCardDef(k, cid) {
+    const d = E.CARDS[k]; const c = cid != null && S ? S.cards[cid] : null;
+    const red = c && (c.s === 'h' || c.s === 'd');
+    return '<div class="bc bc-' + d.c + '">' +
+      '<div class="bc-band">' + esc(KIND_TXT[d.c]) + '</div>' +
+      (c ? '<div class="bc-rk' + (red ? ' red' : '') + '">' + (E.RANK_N[c.r] || c.r) + E.SUIT_IC[c.s] + '</div>' : '') +
+      (d.r ? '<div class="bc-range">⌖ ' + d.r + '</div>' : '') +
+      '<div class="bc-ic">' + d.ic + '</div><div class="bc-nm">' + esc(d.n) + '</div>' + (d.o ? '<div class="bc-or">' + esc(d.o) + '</div>' : '') +
+      '<div class="bc-hr"></div><div class="bc-d">' + esc(d.d) + '</div>' +
+      '<div class="bc-ft">' + (d.x ? '<span class="pill">nová karta</span> ' : '') + 'v balíčku ' + deckCount(k) + '×' + (c ? ' · Ťah! ' + (E.RANK_N[c.r] || c.r) + E.SUIT_IC[c.s] : '') + '</div></div>';
+  }
+  function bigChar(k, extraHp) {
+    const d = E.CHARS[k]; const hp = d.hp + (extraHp || 0);
+    return '<div class="bc bc-ch"><div class="bc-band">Postava' + (d.x ? ' · nová' : '') + '</div><div class="bc-ic">' + d.ic + '</div><div class="bc-nm">' + esc(d.n) + '</div><div class="bc-or">' + esc(d.o) + '</div><div class="bc-hp">' + hearts(hp, hp) + '</div><div class="bc-hr"></div><div class="bc-d">' + esc(d.d) + '</div></div>';
+  }
+  function bigRole(k) {
+    const d = E.ROLES[k]; const cnt = { serif: '1', pomocnik: '0–2', bandita: '2–3', odpadlik: '1' }[k];
+    return '<div class="bc bc-role r-' + k + '"><div class="bc-band">Tajná rola</div><div class="bc-ic">' + d.ic + '</div><div class="bc-nm">' + esc(d.n) + '</div><div class="bc-or">' + esc(d.o) + '</div><div class="bc-hr"></div><div class="bc-d">' + esc(d.d) + '</div><div class="bc-ft">v hre: ' + cnt + '× · pri 4 hráčoch: ' + (k === 'serif' || k === 'odpadlik' ? '1×' : k === 'bandita' ? '2×' : 'nie je') + '</div></div>';
+  }
+  function bigEvent(k) { const d = E.EVENTS[k]; return '<div class="bc bc-ev"><div class="bc-band">Udalosť kola</div><div class="bc-ic">' + d.ic + '</div><div class="bc-nm">' + esc(d.n) + '</div>' + (d.o ? '<div class="bc-or">' + esc(d.o) + '</div>' : '') + '<div class="bc-hr"></div><div class="bc-d">' + esc(d.d) + '</div></div>'; }
+  function bigItem(k) { const d = E.ITEMS[k]; return '<div class="bc bc-it"><div class="bc-band">Obchod · 🪙 ' + d.cost + (d.once ? ' · jednorazové' : '') + '</div><div class="bc-ic">' + d.ic + '</div><div class="bc-nm">' + esc(d.n) + '</div><div class="bc-hr"></div><div class="bc-d">' + esc(d.d) + '</div></div>'; }
+
+  function zoom(html) {
+    let z = $('#zoom');
+    if (!z) { z = document.createElement('div'); z.id = 'zoom'; z.className = 'zoom'; document.body.appendChild(z); z.addEventListener('click', () => { z.classList.remove('on'); setTimeout(() => { z.hidden = true; }, 180); }); }
+    z.innerHTML = '<div class="zoom-in">' + html + '<div class="zoom-hint">ťukni kamkoľvek pre zavretie</div></div>';
+    z.hidden = false; requestAnimationFrame(() => z.classList.add('on'));
+  }
+  function zoomCard(cid) { zoom(bigCardDef(S.cards[cid].t, cid)); }
+
+  const GAL_TABS = [['karty', '🃏 Karty'], ['postavy', '🤠 Postavy'], ['role', '⭐ Role'], ['udalosti', '🕛 Udalosti'], ['obchod', '⛏️ Obchod']];
+  function galleryItems(tab) {
+    if (tab === 'karty') return Object.keys(E.CARDS).sort((a, b) => (E.CARDS[a].x || 0) - (E.CARDS[b].x || 0)).map(k => bigCardDef(k));
+    if (tab === 'postavy') return Object.keys(E.CHARS).map(k => bigChar(k));
+    if (tab === 'role') return Object.keys(E.ROLES).map(k => bigRole(k));
+    if (tab === 'udalosti') return Object.keys(E.EVENTS).map(k => bigEvent(k));
+    return Object.keys(E.ITEMS).map(k => bigItem(k));
+  }
+  function openGallery(tab) {
+    tab = tab || 'karty';
+    let g = $('#gallery');
+    if (!g) { g = document.createElement('div'); g.id = 'gallery'; g.className = 'gallery'; document.body.appendChild(g); }
+    const items = galleryItems(tab);
+    g.innerHTML = '<div class="gal-top"><div class="gal-tabs">' + GAL_TABS.map(t => '<button class="gtab' + (t[0] === tab ? ' on' : '') + '" data-gtab="' + t[0] + '">' + t[1] + '</button>').join('') + '</div><button class="btn ghost sm gal-x" id="galx">✕</button></div>' +
+      '<div class="gal-track" id="galtrack">' + items.map(h => '<div class="gal-slide">' + h + '</div>').join('') + '</div>' +
+      '<div class="gal-nav"><button class="btn sm" id="galprev">‹</button><span id="galcount">1 / ' + items.length + '</span><button class="btn sm" id="galnext">›</button></div>' +
+      '<div class="gal-hint">Listuj prstom do strán · v zátvorke a kurzívou je pôvodný názov z BANG!</div>';
+    g.hidden = false;
+    const tr = $('#galtrack');
+    const upd = () => { const w = tr.firstChild ? tr.firstChild.getBoundingClientRect().width + 14 : 1; const i = Math.round(tr.scrollLeft / w); $('#galcount').textContent = (i + 1) + ' / ' + items.length; };
+    tr.addEventListener('scroll', () => requestAnimationFrame(upd), { passive: true });
+    const go = dir => { const w = tr.firstChild.getBoundingClientRect().width + 14; tr.scrollBy({ left: dir * w, behavior: 'smooth' }); };
+    $('#galprev').onclick = () => go(-1); $('#galnext').onclick = () => go(1);
+    $('#galx').onclick = () => { g.hidden = true; };
+    g.querySelectorAll('[data-gtab]').forEach(b => b.onclick = () => openGallery(b.getAttribute('data-gtab')));
   }
 
   // ---------- spodné okno ----------
@@ -591,7 +714,7 @@
     let h = '';
     const meP = S ? E.P(S, me.id) : null;
     if (sh.kind === 'rules') h = rulesHTML();
-    else if (sh.kind === 'info') h = '<h3>' + esc(sh.title) + '</h3><p>' + esc(sh.text) + '</p>' + (sh.card != null ? '<p class="muted">' + esc(E.cardLabel(S, sh.card)) + '</p>' : '');
+    else if (sh.kind === 'info') h = (sh.card != null ? '<div class="info-big">' + cardHTML(sh.card, 'big', 'tabindex="-1"') + '</div>' : '') + '<h3>' + esc(sh.title) + '</h3>' + (sh.orig ? '<p class="orig">V BANG!: <b>' + esc(sh.orig) + '</b></p>' : '') + '<p>' + esc(sh.text) + '</p>' + (sh.card != null ? '<p class="muted">' + esc(E.cardLabel(S, sh.card)) + '</p>' : '') + '<button class="btn ghost" id="sclose">Zavrieť</button>';
     else if (sh.kind === 'play') {
       const c = S.cards[sh.card], d = E.CARDS[c.t];
       h = '<div class="pl-head">' + cardHTML(sh.card, 'can', '') + '<div><h3>' + d.ic + ' ' + esc(d.n) + (sh.o.as ? ' <small>(ako ' + esc(E.CARDS[sh.o.as].n) + ')</small>' : '') + '</h3><p>' + esc(sh.o.as ? E.CARDS[sh.o.as].d : d.d) + '</p></div></div>';
@@ -614,8 +737,8 @@
       const ch = p.char ? E.CHARS[p.char] : null;
       const known = p.id === me.id || p.role === 'serif' || !p.alive || S.phase === 'over';
       h = '<h3>' + (ch ? ch.ic + ' ' : '') + esc(p.name) + (p.bot ? ' <span class="pill">bot</span>' : '') + '</h3>' + (known && p.role ? '<p>' + roleBadge(p.role) + '</p>' : '') +
-        (ch ? '<p><b>' + esc(ch.n) + '</b> (' + ch.hp + ' ♥) — ' + esc(ch.d) + '</p>' : '') +
-        (p.table.length ? '<p class="muted">Pred sebou:</p><ul class="infol">' + p.table.map(c => { const d = E.CARDS[S.cards[c].t]; return '<li>' + d.ic + ' <b>' + esc(d.n) + '</b> — ' + esc(d.d) + '</li>'; }).join('') + '</ul>' : '') +
+        (ch ? '<p><b>' + esc(ch.n) + '</b> <span class="orig">(BANG!: ' + esc(ch.o) + ')</span> (' + ch.hp + ' ♥) — ' + esc(ch.d) + '</p>' : '') +
+        (p.table.length ? '<p class="muted">Pred sebou:</p><ul class="infol">' + p.table.map(c => { const d = E.CARDS[S.cards[c].t]; return '<li>' + d.ic + ' <b>' + esc(d.n) + '</b> <span class="orig">(' + esc(d.o) + ')</span> — ' + esc(d.d) + '</li>'; }).join('') + '</ul>' : '') +
         (p.items.length ? '<p class="muted">Vylepšenia:</p><ul class="infol">' + p.items.map(it => '<li>' + E.ITEMS[it].ic + ' <b>' + esc(E.ITEMS[it].n) + '</b> — ' + esc(E.ITEMS[it].d) + '</li>').join('') + '</ul>' : '') +
         (meP && meP.alive && p.alive && p.id !== me.id ? '<p class="muted">Vzdialenosť od teba: ' + E.distance(S, meP, p) + ' · tvoj dosah: ' + E.range(S, meP) + '</p>' : '') +
         '<button class="btn ghost" id="sclose">Zavrieť</button>';
@@ -652,11 +775,11 @@
       h = '<h3>📜 Priebeh</h3><ul class="log">' + items.map(x => x.html).join('') + '</ul><button class="btn ghost" id="sclose">Zavrieť</button>';
     }
     else if (sh.kind === 'menu') {
-      h = '<h3>Menu</h3><div class="col"><button class="btn" id="m-share">📨 Pozvať / zdieľať link</button><button class="btn" id="m-rules">📜 Pravidlá</button><button class="btn" id="m-sound">' + (ui.sound ? '🔊 Zvuk zapnutý' : '🔇 Zvuk vypnutý') + '</button><button class="btn ghost" id="m-leave">🚪 Odísť do menu</button><button class="btn ghost" id="sclose">Zavrieť</button></div>';
+      h = '<h3>Menu</h3><div class="col"><button class="btn" id="m-share">📨 Pozvať / zdieľať link</button><button class="btn" id="m-gal">🃏 Karty a postavy</button><button class="btn" id="m-rules">📜 Pravidlá</button><button class="btn" id="m-sound">' + (ui.sound ? '🔊 Zvuk zapnutý' : '🔇 Zvuk vypnutý') + '</button><button class="btn ghost" id="m-leave">🚪 Odísť do menu</button><button class="btn ghost" id="sclose">Zavrieť</button></div>';
     }
     el.innerHTML = '<div class="sh-in">' + h + '</div>';
     el.hidden = false;
-    el.classList.toggle('peek', sh.kind === 'play' && !!sh.targets && sh.o.ok);
+    el.classList.remove('peek');
     const on = (id, f) => { const b = el.querySelector(id); if (b) b.onclick = f; };
     on('#sclose', closeSheet);
     on('#playgo', () => doPlay());
@@ -671,18 +794,20 @@
     on('#saygo', () => { const v = el.querySelector('#saytxt').value.trim(); if (v) { act({ a: 'say', text: v }); closeSheet(); } });
     on('#m-share', shareLink);
     on('#m-rules', () => openSheet({ kind: 'rules' }));
+    on('#m-gal', () => { closeSheet(); openGallery('karty'); });
     on('#m-sound', () => { ui.sound = !ui.sound; ls('strelil_sound', ui.sound ? '1' : '0'); renderSheet(); });
     on('#m-leave', () => { if (confirm('Naozaj odísť? Kým sa nevrátiš, hrá za teba autopilot.')) leaveRoom(); });
   }
   $('#sheet').addEventListener('click', e => { if (e.target.id === 'sheet') closeSheet(); });
 
   function rulesHTML() {
-    const cards = Object.keys(E.CARDS).map(k => { const c = E.CARDS[k]; return '<li>' + c.ic + ' <b>' + esc(c.n) + '</b>' + (c.x ? ' <span class="pill">nové</span>' : '') + ' — ' + esc(c.d) + '</li>'; }).join('');
-    const chars = Object.keys(E.CHARS).map(k => { const c = E.CHARS[k]; return '<li>' + c.ic + ' <b>' + esc(c.n) + '</b> (' + c.hp + '♥)' + (c.x ? ' <span class="pill">nová</span>' : '') + ' — ' + esc(c.d) + '</li>'; }).join('');
-    const evs = Object.keys(E.EVENTS).map(k => { const c = E.EVENTS[k]; return '<li>' + c.ic + ' <b>' + esc(c.n) + '</b> — ' + esc(c.d) + '</li>'; }).join('');
+    const cards = Object.keys(E.CARDS).map(k => { const c = E.CARDS[k]; return '<li>' + c.ic + ' <b>' + esc(c.n) + '</b> <span class="orig">(' + esc(c.o) + ')</span>' + (c.x ? ' <span class="pill">nové</span>' : '') + ' — ' + esc(c.d) + '</li>'; }).join('');
+    const chars = Object.keys(E.CHARS).map(k => { const c = E.CHARS[k]; return '<li>' + c.ic + ' <b>' + esc(c.n) + '</b> <span class="orig">(' + esc(c.o) + ')</span> (' + c.hp + '♥)' + (c.x ? ' <span class="pill">nová</span>' : '') + ' — ' + esc(c.d) + '</li>'; }).join('');
+    const evs = Object.keys(E.EVENTS).map(k => { const c = E.EVENTS[k]; return '<li>' + c.ic + ' <b>' + esc(c.n) + '</b>' + (c.o ? ' <span class="orig">(' + esc(c.o) + ')</span>' : '') + ' — ' + esc(c.d) + '</li>'; }).join('');
     const its = Object.keys(E.ITEMS).map(k => { const c = E.ITEMS[k]; return '<li>' + c.ic + ' <b>' + esc(c.n) + '</b> (🪙' + c.cost + ') — ' + esc(c.d) + '</li>'; }).join('');
     return '<h3>📜 Ako sa hrá</h3>' +
-      '<p><b>Role (tajné):</b> ⭐ Šerif je známy všetkým a chce zlikvidovať banditov aj odpadlíka. 🦹 Banditi chcú zastreliť šerifa. 🐍 Odpadlík chce ostať posledný. 🔰 Pomocník (od 5 hráčov) chráni šerifa. Pri 4 hráčoch: šerif, odpadlík a 2 banditi.</p>' +
+      '<p class="muted">V zátvorke je vždy pôvodný názov z BANG!, nech sa vyznáte.</p>' +
+      '<p><b>Role (tajné):</b> ⭐ Šerif (Sheriff) je známy všetkým a chce zlikvidovať banditov aj odpadlíka. 🦹 Banditi (Outlaws) chcú zastreliť šerifa. 🐍 Odpadlík (Renegade) chce ostať posledný. 🔰 Pomocník (Deputy, od 5 hráčov) chráni šerifa. Pri 4 hráčoch: šerif, odpadlík a 2 banditi.</p>' +
       '<p><b>Tvoj ťah:</b> 1) potiahneš 2 karty, 2) hráš koľko kariet chceš (Výstrel len 1× za ťah), 3) na konci môžeš mať v ruke najviac toľko kariet, koľko máš životov.</p>' +
       '<p><b>Vzdialenosť</b> je počet miest k hráčovi (kratšou cestou okolo stola). Výstrelom trafíš len hráča v dosahu svojej zbrane (bez zbrane dosah 1).</p>' +
       '<p><b>Ťah!</b> = otočí sa vrchná karta balíčka a rozhoduje jej znak (srdce, pika…).</p>' +
@@ -692,10 +817,127 @@
       '<details><summary>🤠 Postavy</summary><ul class="infol">' + chars + '</ul></details>' +
       '<details><summary>🕛 Udalosti (Pravé poludnie)</summary><ul class="infol">' + evs + '</ul></details>' +
       '<details><summary>⛏️ Obchod (Zlatá horúčka)</summary><ul class="infol">' + its + '</ul></details>' +
+      '<details><summary>🎮 Ovládanie</summary><p>Ťukni na kartu → vyber cieľ → <b>Potvrdiť</b>. Alebo kartu potiahni prstom hore priamo na hráča (karty bez cieľa stačí potiahnuť hore na stôl). Keď podržíš prst na karte, ukáže sa jej detail.</p></details>' +
       '<details><summary>👻 Duchovia</summary><p>Kto padne, vráti sa na 2 svoje ťahy ako duch: ťahá 2 karty a môže hrať karty na hocikoho (vzdialenosť 1), ale nedá sa trafiť ani liečiť. Víťazstvo sa počíta len zo živých.</p></details>' +
-      '<p class="muted">si/strelil je fanúšikovská hra inšpirovaná klasickými westernovými kartovými hrami so skrytými rolami. Postavy, názvy aj grafika sú vlastné.</p>' +
+      '<p class="muted">si/strelil je fanúšikovská hra inšpirovaná klasickými westernovými kartovými hrami so skrytými rolami. Pôvodné názvy z BANG! (dV Giochi) sú uvedené len pre orientáciu, grafika je vlastná.</p>' +
       '<button class="btn ghost" id="sclose">Zavrieť</button>';
   }
+
+  // ---------- podržanie prsta = detail karty, potiahnutie = zahranie ----------
+  const LP_MS = 450;
+  let press = null, suppressClick = false;
+  function cardIdOf(el) {
+    const a = ['data-card', 'data-pick', 'data-ex', 'data-info', 'data-abc'];
+    for (const k of a) if (el.hasAttribute(k)) return +el.getAttribute(k);
+    if (el.closest('.disc')) return S && S.discard.length ? S.discard[S.discard.length - 1] : null;
+    if (el.closest('.pp-head') && ui.play) return ui.play.card;
+    return null;
+  }
+  function dragKind(cid) {
+    // čo sa stane, keď kartu z ruky potiahneš: 'play' / 'respond' / null
+    if (!S || S.phase !== 'play') return null;
+    const meP = E.P(S, me.id); if (!meP || meP.hand.indexOf(cid) < 0) return null;
+    const h = S.q[0];
+    if (h && h.pid === me.id && (h.k === 'shot' || h.k === 'prepad' || h.k === 'suboj')) return E.responseCards(S, meP, h).indexOf(cid) >= 0 ? 'respond' : null;
+    if (!h && S.turnPid === me.id && S.stage === 'play') return E.cardOptions(S, me.id, cid).ok ? 'play' : null;
+    return null;
+  }
+  document.addEventListener('pointerdown', e => {
+    if (e.button && e.button !== 0) return;
+    if (!S) return;
+    const el = e.target.closest('[data-card],[data-pick],[data-ex],[data-info],[data-abc],.disc .card,.pp-head .card');
+    if (!el) {
+      const st = e.target.closest('.seat,.me-char');
+      const pid = st ? (st.getAttribute('data-seat') || me.id) : null; const pp = pid ? E.P(S, pid) : null;
+      if (pp && pp.char) { press = { el: st, cid: null, charOf: pp.char, extraHp: pp.role === 'serif' ? 1 : 0, x: e.clientX, y: e.clientY, id: e.pointerId, inHand: false, drag: null, lp: false }; press.timer = setTimeout(() => { if (!press) return; press.lp = true; suppressClick = true; buzz(15); zoom(bigChar(press.charOf, press.extraHp)); }, LP_MS); }
+      return;
+    }
+    const cid = cardIdOf(el); if (cid == null || !S.cards[cid]) return;
+    const inHand = !!el.closest('#hand');
+    press = { el, cid, x: e.clientX, y: e.clientY, id: e.pointerId, inHand, drag: null, lp: false };
+    press.timer = setTimeout(() => {
+      if (!press || press.drag) return;
+      press.lp = true; suppressClick = true; buzz(15);
+      if (press.charOf) zoom(bigChar(press.charOf, press.extraHp)); else zoomCard(press.cid);
+    }, LP_MS);
+  });
+  document.addEventListener('pointermove', e => {
+    if (!press || e.pointerId !== press.id) return;
+    const dx = e.clientX - press.x, dy = e.clientY - press.y;
+    if (!press.drag) {
+      if (Math.abs(dx) > 9 || Math.abs(dy) > 9) clearTimeout(press.timer);
+      if (press.lp || !press.inHand) return;
+      if (dy < -12 && Math.abs(dy) > Math.abs(dx)) {
+        const kind = dragKind(press.cid);
+        if (!kind) { press = null; return; }
+        startDrag(kind);
+      } else if (Math.abs(dx) > 12) { press = null; return; } // vodorovne = posúvanie ruky
+    }
+    if (press && press.drag) { e.preventDefault(); moveDrag(e.clientX, e.clientY); }
+  }, { passive: false });
+  function endPress(e) {
+    if (!press || (e && e.pointerId !== press.id)) return;
+    clearTimeout(press.timer);
+    if (press.drag) { finishDrag(e.clientX, e.clientY); suppressClick = true; }
+    press = null;
+    setTimeout(() => { suppressClick = false; }, 60);
+  }
+  document.addEventListener('pointerup', endPress);
+  document.addEventListener('pointercancel', e => { if (press && press.drag) { cancelDrag(); } if (press) clearTimeout(press.timer); press = null; });
+  document.addEventListener('click', e => { if (suppressClick) { e.stopPropagation(); e.preventDefault(); suppressClick = false; } }, true);
+  document.addEventListener('contextmenu', e => { if (e.target.closest('.card,.chip,.seat')) e.preventDefault(); });
+
+  function startDrag(kind) {
+    const r = press.el.getBoundingClientRect();
+    const g = press.el.cloneNode(true); g.classList.add('dragghost'); g.removeAttribute('data-card');
+    g.style.width = r.width + 'px'; g.style.height = r.height + 'px';
+    document.body.appendChild(g);
+    press.drag = { kind, g, ox: press.x - r.left, oy: press.y - r.top, over: null };
+    press.el.classList.add('dragging');
+    try { press.el.setPointerCapture(press.id); } catch (e) {}
+    const o = kind === 'play' ? E.cardOptions(S, me.id, press.cid) : null;
+    press.drag.targets = o && o.targets ? o.targets : null;
+    document.body.classList.add('dragmode');
+    document.querySelectorAll('.seat').forEach(s => { const id = s.getAttribute('data-seat'); if (press.drag.targets) s.classList.toggle(press.drag.targets.indexOf(id) >= 0 ? 'tgt' : 'dim', true); });
+    if (!press.drag.targets) $('#app').classList.add('dropall');
+    buzz(10);
+    moveDrag(press.x, press.y);
+  }
+  function moveDrag(x, y) {
+    const d = press.drag; d.g.style.transform = 'translate(' + (x - d.ox) + 'px,' + (y - d.oy) + 'px) rotate(-4deg)';
+    let over = null;
+    if (d.targets) { const el = document.elementFromPoint(x, y); const s = el && el.closest('.seat'); if (s && d.targets.indexOf(s.getAttribute('data-seat')) >= 0) over = s.getAttribute('data-seat'); }
+    if (over !== d.over) { document.querySelectorAll('.seat.dropover').forEach(s => s.classList.remove('dropover')); if (over) { const s = seatEl(over); s && s.classList.add('dropover'); } d.over = over; }
+  }
+  function cleanupDrag() {
+    if (press && press.drag) { press.drag.g.remove(); press.el.classList.remove('dragging'); }
+    document.body.classList.remove('dragmode'); $('#app').classList.remove('dropall');
+    document.querySelectorAll('.seat').forEach(s => s.classList.remove('dropover'));
+  }
+  function cancelDrag() { cleanupDrag(); render(); }
+  function finishDrag(x, y) {
+    const d = press.drag, cid = press.cid;
+    cleanupDrag();
+    const hand = $('#hand'); const handTop = hand ? hand.getBoundingClientRect().top : innerHeight;
+    if (d.kind === 'respond') { if (y < handTop - 10) { ui.resp = null; act({ a: 'respond', card: cid }); } else render(); return; }
+    if (d.targets) {
+      if (!d.over) { render(); return; }
+      openPlay(cid, d.over);
+      if (playReady(ui.play)) doPlay(); // pustenie na hráča = potvrdenie
+      return;
+    }
+    if (y < handTop - 10) { openPlay(cid); if (playReady(ui.play)) doPlay(); }
+    else render();
+  }
+
+  // ---------- zákaz zoomovania ----------
+  ['gesturestart', 'gesturechange', 'gestureend'].forEach(t => document.addEventListener(t, e => e.preventDefault(), { passive: false }));
+  document.addEventListener('touchmove', e => { if (e.touches && e.touches.length > 1) e.preventDefault(); if (e.scale !== undefined && e.scale !== 1) e.preventDefault(); }, { passive: false });
+  document.addEventListener('dblclick', e => e.preventDefault(), { passive: false });
+  let lastTouchEnd = 0;
+  document.addEventListener('touchend', e => { const now = Date.now(); if (now - lastTouchEnd < 320 && !e.target.closest('input,textarea')) { e.preventDefault(); e.target.click && e.target.closest('button') && e.target.closest('button').click(); } lastTouchEnd = now; }, { passive: false });
+  window.addEventListener('wheel', e => { if (e.ctrlKey) e.preventDefault(); }, { passive: false });
+  window.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && ['+', '-', '=', '0'].indexOf(e.key) >= 0) e.preventDefault(); });
 
   // ---------- štart ----------
   window.addEventListener('hashchange', () => { const c = location.hash.slice(1); if (c && c.toUpperCase() !== code) enterRoom(c); });

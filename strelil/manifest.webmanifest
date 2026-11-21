@@ -1,0 +1,15 @@
+{
+  "name": "si/strelil",
+  "short_name": "si/strelil",
+  "description": "Westernová kartová hra so skrytými rolami pre partiu.",
+  "start_url": "/strelil/",
+  "scope": "/strelil/",
+  "display": "standalone",
+  "background_color": "#1a100a",
+  "theme_color": "#1a100a",
+  "icons": [
+    { "src": "ikony/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "ikony/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "ikony/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

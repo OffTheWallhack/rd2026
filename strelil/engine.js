@@ -120,6 +120,7 @@
   const ORIG_EVENTS = { smad: 'Sete / Thirst', kocovina: 'Sbornia / Hangover', pozehnanie: 'Benedizione / Blessing', prekliatie: 'Maledizione / Curse', poludnie: 'Mezzogiorno di fuoco / High Noon' };
   Object.keys(EVENTS).forEach(k => { EVENTS[k].o = ORIG_EVENTS[k] || ''; });
 
+  const REACTIONS = ['yeehaw', 'laugh', 'dun', 'trombone', 'applause', 'whistle', 'drum', 'bang', 'boo', 'wow'];
   const SUITS = ['h', 'd', 'c', 's'];
   const SUIT_IC = { h: '♥', d: '♦', c: '♣', s: '♠' };
   const RANK_N = { 11: 'J', 12: 'Q', 13: 'K', 14: 'A' };
@@ -546,10 +547,17 @@
   // ---------- akcie ----------
   function apply(s, pid, a) {
     if (!a || !a.a) fail('e.noAction');
-    if (a.a === 'say') { const p = P(s, pid); if (!p) fail('e.notInGame'); const txt = String(a.text || '').slice(0, 60); if (!txt.trim()) return s; s.chat.push({ i: ++s.logN, pid, m: txt, at: a.at || 0 }); if (s.chat.length > 20) s.chat.shift(); return s; }
+    if (a.a === 'say') {
+      const p = P(s, pid); if (!p) fail('e.notInGame');
+      const e = { i: ++s.logN, pid, m: '', at: a.at || 0 };
+      if (a.r && REACTIONS.indexOf(a.r) >= 0) e.r = a.r;                       // zvuková reakcia
+      else if (a.v && /^[0-9]{1,15}$/.test(String(a.v))) { e.v = String(a.v); e.m = '🎙️'; e.d = Math.max(1, Math.min(9, a.d | 0)); } // hlasovka (id v strelil_voice)
+      else { const txt = String(a.text || '').slice(0, 60); if (!txt.trim()) return s; e.m = txt; }
+      s.chat.push(e); if (s.chat.length > 20) s.chat.shift(); return s;
+    }
     if (s.phase === 'lobby') return lobbyAct(s, pid, a);
     if (s.phase === 'chars') return charAct(s, pid, a);
-    if (s.phase === 'over') { if (a.a === 'rematch') return rematch(s, pid); fail('e.gameOver'); }
+    if (s.phase === 'over') { if (a.a === 'rematch') return rematch(s, pid); if (a.a === 'vote') return vote(s, pid, a); fail('e.gameOver'); }
     const p = P(s, pid);
     if (!p) fail('e.notInGame');
     const h = s.q[0];
@@ -838,7 +846,7 @@
     shuffle(s, suitRank);
     s.cards = types.map((t, i) => ({ t, s: suitRank[i].s, r: suitRank[i].r }));
     s.deck = shuffle(s, s.cards.map((_, i) => i)); s.discard = [];
-    s.q = []; s.aggro = {}; s.winner = null; s.round = 0; s.event = null; s.fx = [];
+    s.q = []; s.aggro = {}; s.winner = null; s.round = 0; s.event = null; s.fx = []; s.votes = {};
     // udalosti
     const evs = shuffle(s, Object.keys(EVENTS).filter(e => e !== 'poludnie' && (s.opts.gold || !EVENTS[e].gold)));
     s.eventDeck = evs.slice(0, 7).concat(['poludnie']);
@@ -871,8 +879,22 @@
     s.turnPid = sh.id; s.stage = 'start'; s.round = 1;
     settle(s);
   }
+  // hlasovanie o odvete: stačí nadpolovičná väčšina ľudí pri stole
+  function votesNeeded(s) { const humans = s.players.filter(p => !p.bot).length; return Math.floor(humans / 2) + 1; }
+  function vote(s, pid, a) {
+    if (!P(s, pid)) fail('e.notInGame');
+    s.votes = s.votes || {};
+    if (a.yes === false) delete s.votes[pid]; else s.votes[pid] = 1;
+    const yes = Object.keys(s.votes).filter(id => { const q = P(s, id); return q && !q.bot; }).length;
+    if (yes >= votesNeeded(s)) return doRematch(s);
+    return s;
+  }
   function rematch(s, pid) {
     if (pid !== s.host) fail('e.rematchHost');
+    return doRematch(s);
+  }
+  function doRematch(s) {
+    s.votes = {};
     s.phase = 'lobby'; s.turnPid = null; s.stage = null; s.q = []; s.winner = null; s.event = null;
     s.players.forEach(p => Object.assign(p, mkPlayer(p.id, p.name, p.bot, p.seat)));
     s.cards = []; s.deck = []; s.discard = [];
@@ -992,6 +1014,6 @@
     return true;
   }
 
-  const E = { DECK_BASE, DECK_EXTRA, CARDS, CHARS, ROLES, EVENTS, ITEMS, SUIT_IC, RANK_N, newRoom, apply, cardOptions, responseCards, waitingFor, botAct, distance, range, bangLimit, handLimit, price, winners, audit, ab, P, alive, cardLabel, qLabel };
+  const E = { REACTIONS, votesNeeded, DECK_BASE, DECK_EXTRA, CARDS, CHARS, ROLES, EVENTS, ITEMS, SUIT_IC, RANK_N, newRoom, apply, cardOptions, responseCards, waitingFor, botAct, distance, range, bangLimit, handLimit, price, winners, audit, ab, P, alive, cardLabel, qLabel };
   if (typeof module !== 'undefined' && module.exports) module.exports = E; else root.StrelilEngine = E;
 })(typeof window !== 'undefined' ? window : globalThis);

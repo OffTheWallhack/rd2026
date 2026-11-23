@@ -13,8 +13,9 @@ Kontakt: WhatsApp +421 908 109 541, web https://durica.si/#kontakt. Jazyk webu: 
 - [Linky](https://durica.si/linky/): rozcestník
 
 ## Projekty (appky, hry, nástroje)
+- [Si strelil](https://durica.si/strelil/): Westernová kartová hra so skrytými rolami pre partiu 4–7 hráčov. Hráte cez link, každý z mobilu.
 - [Event Car Game](https://durica.si/appky/event-car-drift/): 3D hra s event autami Zubor a Sugga.
-- [Grand Theft Bratislava](https://durica.si/appky/grand-theft-bratislava/): Staré Mesto ako 3D hra zo znakov ASCII. Skutočná mapa a terén.
+- [Grand Theft Bratislava](https://durica.si/appky/grand-theft-bratislava/): Bratislava v 3D: Staré Mesto, Petržalka, Ružinov, Vrakuňa. Autá, električky, polícia.
 - [Usage of Empires](https://offthewallhack.github.io/usage-of-empires/): RTS paródia na limity AI.
 - [Usage of Empires II](https://offthewallhack.github.io/uoe2/): Cozy idle dedina, kde villageri žijú sami.
 - [Acid Box](https://durica.si/appky/acid-box/): Acid bass synth a bubnový stroj v prehliadači.
@@ -27,8 +28,10 @@ Kontakt: WhatsApp +421 908 109 541, web https://durica.si/#kontakt. Jazyk webu: 
 - [Wallflash](https://durica.si/appky/wallflash/): Tekuté pozadie na celú obrazovku.
 - [BG Maker](https://bg-maker-gamma.vercel.app): Generátor pozadí pre Instagram a socials.
 - [Si stvoril](https://durica.si/stvoril/): Pixelové terárko: sypaj piesok, vodu a lávu, nechaj rásť stromy a pozeraj, čo sa stane.
+- [si/počúval](https://durica.si/pocuval/): Rádio so stanicami, DJ setmi a hláškami. Ladíš ako na starom rádiu, stanice bežia stále.
 
 ## Články
+- [Vlastná AI v mobile: bez internetu, zadarmo a bez cenzúry](https://durica.si/blog/vlastna-ai-v-mobile/) (2026-11-23): Nainštaloval som si do iPhonu AI, ktorá beží celá v telefóne. Funguje aj v režime lietadlo, nič neposiela na internet a neodmieta odpovedať. Tu je celý návod krok za krokom, čo to dokáže, na akom mobile to pôjde a prečo sa nemusíš báť, že si zničíš telefón.
 - [Staviam dve hry s AI. Takto vznikli a ako fungujú.](https://durica.si/blog/dve-hry-usage-of-empires/) (2026-10-24): Usage of Empires dostal za pár dní vyše 30 nových verzií a popri ňom vznikla druhá hra, Usage of Empires II. Obe sú o dedine, ktorá žije, ale hrajú sa úplne inak. Tu je, ako ich staviam, ako fungujú a čo je nové.
 - [Postavil som si drift hru cez AI. Takto vznikala.](https://durica.si/blog/event-car-drift-hra-s-ai/) (2026-10-20): Event Car Game (pôvodne Event Car Drift) je 3D hra, ktorú som si s AI postavil v prehliadači: parkovisko, tréning, dovoz, offroad až na vrchol hory, diaľnica z kokpitu, tajné preteky o Red Bull autá a nočná naháňačka s políciou. Tu je, ako presne vznikala, na čo sme prišli a čo som z nej vyhodil. Hrať sa dá priamo v mojom robOS.
 - [Usage of Empires je hrateľná. Vyskúšaj ju a povedz mi, čo je zle.](https://durica.si/blog/usage-of-empires-hraj/) (2026-10-20): Hra, ktorú si stavám s AI, sa dá odteraz hrať. Stačí odkaz, nič sa neinštaluje. Je to beta, takže čakaj chyby. Práve preto ju dávam von: potrebujem, aby ju vyskúšal niekto iný ako ja, a povedal mi, čo sa pokazilo.

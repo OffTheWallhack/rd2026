@@ -19,9 +19,7 @@ Kontakt: WhatsApp +421 908 109 541, web https://durica.si/#kontakt. Jazyk webu: 
 - [Usage of Empires](https://offthewallhack.github.io/usage-of-empires/): RTS paródia na limity AI.
 - [Usage of Empires II](https://offthewallhack.github.io/uoe2/): Cozy idle dedina, kde villageri žijú sami.
 - [Acid Box](https://durica.si/appky/acid-box/): Acid bass synth a bubnový stroj v prehliadači.
-- [si/mixoval](https://durica.si/mixoval/): DJ pult s 2 alebo 4 deckami, aj spolu na diaľku.
 - [si/exportoval](https://durica.si/exportoval/): USB pre Pioneer CDJ bez rekordboxu: BPM, beatgrid, tónina a waveformy.
-- [Hlasoval](https://durica.si/hlasoval/): Ťukni na štýl hudby, ktorý chceš počuť. DJ to vidí naživo.
 - [si/pozeral](https://durica.si/pozeral/): Retro telka s rozprávkami a večerníčkami v CZ/SK dabingu.
 - [si/editoval](https://durica.si/editoval/): Post aj story z tvojej fotky, s efektami a fontami.
 - [LED IT ROLL](https://durica.si/appky/led-it-roll/): Scrollujúci LED banner na celú obrazovku, tancuje do hudby.

@@ -330,7 +330,7 @@
   /* ---------- Spustiť, vypnúť ---------- */
   function runDialog() {
     var names = APPS.map(function (a) { return a.id + ' ' + a.name; }).join(', ');
-    dialog({ title: 'Spustiť', icon: pix('sys-run'), text: 'Napíš názov appky (napríklad <i>mixoval</i> alebo <i>drift</i>) a robOS ju otvorí.<br><br>', input: { value: '' },
+    dialog({ title: 'Spustiť', icon: pix('sys-run'), text: 'Napíš názov appky (napríklad <i>editoval</i> alebo <i>drift</i>) a robOS ju otvorí.<br><br>', input: { value: '' },
       buttons: [{ label: 'OK', primary: true, run: function (v) {
         var q = String(v || '').trim().toLowerCase().replace(/^si\//, ''); if (!q) return;
         var hit = APPS.filter(function (a) { return a.id === q || a.name.toLowerCase().replace(/^si\//, '') === q || (a.short || '').toLowerCase().replace(/^si\//, '') === q; })[0] ||

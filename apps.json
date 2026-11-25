@@ -283,53 +283,6 @@
       }
     },
     {
-      "id": "mixoval",
-      "name": "si/mixoval",
-      "short": "si/mixoval",
-      "group": "dj",
-      "url": "mixoval/",
-      "icon": "mixoval/ikony/icon-192.png",
-      "desc": {
-        "sk": "DJ pult s 2 alebo 4 deckami, aj spolu na diaľku.",
-        "en": "DJ console with 2 or 4 decks, also together over the internet."
-      },
-      "visibility": "public",
-      "embed": true,
-      "away": true,
-      "allow": "fullscreen; microphone; autoplay; midi; clipboard-write",
-      "win": [
-        1100,
-        720
-      ],
-      "sitemap": {
-        "priority": 0.6,
-        "extra": [
-          {
-            "url": "mixoval/pult/",
-            "priority": 0.5
-          },
-          {
-            "url": "mixoval/rec/",
-            "priority": 0.4
-          }
-        ]
-      },
-      "status": "new",
-      "linky": {
-        "section": "nove",
-        "order": 10,
-        "banner": "g-mixoval.webp",
-        "h": 176,
-        "dark": true,
-        "pulse": true,
-        "shade": "linear-gradient(180deg,rgba(6,8,10,.8) 0%,rgba(6,8,10,.1) 28%,rgba(6,8,10,0) 45%,rgba(6,8,10,.9) 100%)",
-        "kicker": "DJ PULT · 4 DECKY · IZBA PRE 4 ĽUDÍ",
-        "title": "si/mixoval",
-        "line": "mixuj v prehliadači, aj spolu na diaľku",
-        "gc": "mixoval"
-      }
-    },
-    {
       "id": "exportoval",
       "name": "si/exportoval",
       "short": "si/exportoval",
@@ -364,30 +317,6 @@
         "line": "BPM, grid, tónina a waveformy na USB",
         "gc": "exportoval"
       }
-    },
-    {
-      "id": "hlasoval",
-      "name": "Hlasoval",
-      "short": "Hlasoval",
-      "group": "dj",
-      "url": "hlasoval/",
-      "icon": "hlasoval/ikony/icon-192.png",
-      "desc": {
-        "sk": "Ťukni na štýl hudby, ktorý chceš počuť. DJ to vidí naživo.",
-        "en": "Tap the music style you want to hear. The DJ sees it live."
-      },
-      "visibility": "public",
-      "embed": true,
-      "away": true,
-      "allow": "fullscreen",
-      "win": [
-        520,
-        700
-      ],
-      "sitemap": {
-        "priority": 0.4
-      },
-      "status": "new"
     },
     {
       "id": "pozeral",

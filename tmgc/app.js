@@ -24,6 +24,8 @@ let mode = 'loading';            // loading | pick | naming | home
 let pickIndex = 0;
 let muted = !!(S && S.muted);
 let voiceOn = !(S && S.voiceOff);
+let device = false;               // režim kľúčenky (malý displej 300×300)
+const K_RES = 300;
 
 function load() {
   try { return JSON.parse(localStorage.getItem(SAVE_KEY)) || null; } catch { return null; }
@@ -140,10 +142,23 @@ function setPetModel(obj) {
 }
 
 function resize() {
+  const tan = Math.tan(T.MathUtils.degToRad(camera.fov / 2));
+  if (device) {
+    // skutočné rozlíšenie displeja kľúčenky: presne 300×300 pixelov
+    renderer.setPixelRatio(1);
+    renderer.setSize(K_RES, K_RES, false);
+    camera.aspect = 1;
+    const d = 2.75 / (2 * tan);
+    camera.position.set(0, PET_H * 0.5 + d * 0.16, d);
+    target.set(0, PET_H * 0.5 - 0.02, 0);
+    camera.lookAt(target);
+    camera.updateProjectionMatrix();
+    return;
+  }
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   const w = innerWidth, h = innerHeight;
   renderer.setSize(w, h, false);
   camera.aspect = w / h;
-  const tan = Math.tan(T.MathUtils.degToRad(camera.fov / 2));
   // zvieratko má zabrať asi tretinu výšky a nesmie byť širšie ako obrazovka
   const dV = 3.6 / (2 * tan);
   const dH = 2.3 / (2 * tan * camera.aspect);
@@ -158,7 +173,8 @@ addEventListener('resize', resize);
 
 function toScreen(x, y, z) {
   const v = new T.Vector3(x, y, z).applyMatrix4(petRoot.matrixWorld).project(camera);
-  return { x: (v.x + 1) / 2 * innerWidth, y: (1 - v.y) / 2 * innerHeight };
+  const r = canvas.getBoundingClientRect();
+  return { x: (v.x + 1) / 2 * r.width, y: (1 - v.y) / 2 * r.height };
 }
 
 // ---------- animácia ----------
@@ -261,12 +277,16 @@ canvas.addEventListener('pointerup', (e) => {
 canvas.addEventListener('pointercancel', () => { dragging = false; down = null; });
 
 function tapAt(x, y) {
-  const p = new T.Vector2(x / innerWidth * 2 - 1, -(y / innerHeight) * 2 + 1);
+  const r = canvas.getBoundingClientRect();
+  const p = new T.Vector2((x - r.left) / r.width * 2 - 1, -((y - r.top) / r.height) * 2 + 1);
   ray.setFromCamera(p, camera);
   if (!ray.intersectObject(petRoot, true).length) return;
   if (mode === 'pick') { play('jump', 0.55); chirp(1); return; }
   if (mode !== 'home') { play('jump', 0.55); chirp(1); return; }
   if (game) return;
+  petPet();
+}
+function petPet() {
   if (S.sleeping) { say(pick(L().sleeping)); play('nod', 0.8); return; }
   S.stats.mood = clamp(S.stats.mood + 3);
   play('jump', 0.55);
@@ -278,7 +298,8 @@ function tapAt(x, y) {
 
 // ---------- efekty ----------
 const fx = $('fx');
-function particle(txt, x, y, { dx = 0, dy = -90, dur = 1200, size = 26, rot = 0, scale = 1, color, cls = 'p', delay = 0 } = {}) {
+function particle(txt, x, y, { dx = 0, dy = -90, dur = 1200, size = 26, rot = 0, scale = 1, color, cls = 'p', delay = 0, exact = false } = {}) {
+  if (device) { size *= 0.6; if (!exact) { dx *= 0.6; dy *= 0.6; } }
   const el = document.createElement('div');
   el.className = cls; el.textContent = txt; el.style.fontSize = size + 'px';
   if (color) el.style.color = color;
@@ -293,7 +314,7 @@ function particle(txt, x, y, { dx = 0, dy = -90, dur = 1200, size = 26, rot = 0,
 function head() { return toScreen(0, PET_H * 1.02, 0); }
 function hearts(n) {
   const h = head();
-  for (let i = 0; i < n; i++) particle(pick(['💛', '💕', '💖', '✨']), h.x + (Math.random() - 0.5) * 60, h.y, { dx: (Math.random() - 0.5) * 90, dy: -70 - Math.random() * 60, delay: i * 90, size: 22 + Math.random() * 10 });
+  for (let i = 0; i < n; i++) particle(pick(['💛', '💕', '💖', '✨']), h.x + (Math.random() - 0.5) * (device ? 36 : 60), h.y, { dx: (Math.random() - 0.5) * 90, dy: -70 - Math.random() * 60, delay: i * 90, size: 22 + Math.random() * 10 });
 }
 function zzz() {
   const h = head();
@@ -368,17 +389,23 @@ function fill(txt) {
   return S?.owner ? txt.replace(/\{ty\}/g, S.owner) : txt.replace(/,?\s*\{ty\}/g, '');
 }
 function say(txt) {
-  const b = $('bubble');
+  const b = device ? $('kBubble') : $('bubble');
   txt = fill(txt);
-  $('bubbleText').textContent = txt;
+  if (device) kText(txt); else $('bubbleText').textContent = txt;
   b.hidden = true; void b.offsetWidth; b.hidden = false;
+  if (device) kScroll(txt);
   clearTimeout(bubbleTimer);
-  bubbleTimer = setTimeout(() => { b.hidden = true; }, Math.max(3500, txt.length * 65));
+  bubbleTimer = setTimeout(() => { b.hidden = true; }, Math.max(3500, txt.length * 70));
   if (!speak(txt)) chirp(Math.min(4, 1 + Math.floor(txt.length / 25)));
   else { talking = true; setTimeout(() => { if (!synth?.speaking) talking = false; }, 1500); }
   lastTalk = Date.now();
 }
 function youSaid(txt) {
+  if (device) {
+    const b = $('kBubble'); kText('Ty: ' + txt, 'you'); b.hidden = false;
+    clearTimeout(bubbleTimer); bubbleTimer = setTimeout(() => { b.hidden = true; }, 2500);
+    return;
+  }
   const y = $('you');
   y.textContent = txt; y.hidden = true; void y.offsetWidth; y.hidden = false;
   clearTimeout(youSaid.t); youSaid.t = setTimeout(() => { y.hidden = true; }, 2600);
@@ -521,6 +548,7 @@ function renderStats() {
   renderer.toneMappingExposure = sleeping ? 0.5 : 1.05;
   floor.material.opacity = sleeping ? 0.25 : 1;
   $('sleepLabel').textContent = sleeping ? 'Zobudiť' : 'Spať';
+  if (device) renderK();
   document.querySelectorAll('#actions button').forEach((b) => { b.disabled = (sleeping && b.dataset.act !== 'sleep') || !!game; });
 }
 
@@ -547,6 +575,7 @@ function tick() {
   if (gap > 30 * 60e3) say(pick(L().welcomeBack));
   if (S.wokeUp) { S.wokeUp = false; say(pick(L().wake)); play('hop', 0.9); }
   if (S.sleeping && now - zzzT > 1400) { zzzT = now; zzz(); }
+  if (device && kSel >= 0 && !kPanel && now - kSelT > 8000) { kSel = -1; renderK(); }
   if (!game && now > nextIdle && now - lastTalk > 15000) {
     nextIdle = now + 25000 + Math.random() * 25000;
     if (S.sleeping) { /* spí potichu */ }
@@ -578,6 +607,7 @@ $('sheetWrap').addEventListener('click', (e) => { if (e.target.id === 'sheetWrap
 
 function openFood() {
   if (S.sleeping) return say(pick(L().sleeping));
+  if (device) { kPanel = { type: 'food', i: 0 }; return renderK(); }
   const foods = SPECIES[S.species].foods;
   openSheet(`<h3>Čím nakŕmiš ${S.name}?</h3><div class="grid">${foods.map((f) => `<button data-f="${f.id}"><i>${f.icon}</i>${f.label}</button>`).join('')}</div>`);
   $('sheet').querySelectorAll('[data-f]').forEach((b) => b.onclick = () => { closeSheet(); feed(foods.find((f) => f.id === b.dataset.f)); });
@@ -586,7 +616,8 @@ function feed(f) {
   const s = S.stats;
   if (s.full >= 95) { say(pick(L().full)); play('shake', 0.8); return; }
   const mouth = toScreen(0, PET_H * 0.6, 0.4);
-  particle(f.icon, mouth.x, innerHeight - 140, { dx: 0, dy: mouth.y - (innerHeight - 140), dur: 700, size: 44 });
+  const startY = canvas.getBoundingClientRect().height - (device ? 30 : 140);
+  particle(f.icon, mouth.x, startY, { dx: 0, dy: mouth.y - startY, dur: 700, size: 44, exact: true });
   setTimeout(() => {
     play('eat', 1.4);
     for (let i = 0; i < 6; i++) particle('•', mouth.x, mouth.y, { dx: (Math.random() - 0.5) * 80, dy: 30 + Math.random() * 40, dur: 700, size: 12, color: '#c9a26b', delay: i * 120 });
@@ -601,7 +632,8 @@ function doBath() {
   play('shake', 2);
   for (let i = 0; i < 26; i++) {
     const sand = S.species === 'cincila';
-    particle(b.particle, c.x + (Math.random() - 0.5) * 160, c.y + 40 + Math.random() * 60, {
+    const k = device ? 0.55 : 1;
+    particle(b.particle, c.x + (Math.random() - 0.5) * 160 * k, c.y + (40 + Math.random() * 60) * k, {
       dx: (Math.random() - 0.5) * 140, dy: -60 - Math.random() * 120, dur: 1400,
       size: sand ? 8 + Math.random() * 8 : 18 + Math.random() * 16, color: sand ? '#c8a66e' : undefined, delay: i * 60,
     });
@@ -625,6 +657,7 @@ function startGame() {
   if (S.sleeping) return say(pick(L().sleeping));
   if (game) return;
   if (S.stats.energy < 15) { say(pick(L().howareyou.tired)); return; }
+  if (device) return startGameK();
   game = { score: 0, end: Date.now() + 10000 };
   say(pick(L().play));
   play('spin', 0.9);
@@ -656,6 +689,7 @@ function startGame() {
 function endGame() {
   const sc = game.score; clearTimeout(game.timer); game = null;
   $('gameHud').hidden = true;
+  if (kPanel?.type === 'game') kPanel = null;
   const s = S.stats;
   s.mood = clamp(s.mood + 6 + sc * 3); s.energy = clamp(s.energy - 8); s.full = clamp(s.full - 4); s.clean = clamp(s.clean - 6);
   S.best = Math.max(S.best || 0, sc);
@@ -671,6 +705,7 @@ $('menuBtn').addEventListener('click', () => {
     <button data-m="rename">✏️ Premenovať</button>
     <button data-m="voice">${voiceOn ? '🗣️ Hlas zapnutý' : '🤐 Hlas vypnutý'}</button>
     <button data-m="sound">${muted ? '🔇 Pípanie vypnuté' : '🔊 Pípanie zapnuté'}</button>
+    <button data-m="device">🔑 Režim kľúčenky (displej 300×300)</button>
     <button data-m="info">ℹ️ O appke</button>
     <button data-m="new" class="danger">🔄 Nové zvieratko</button>
   </div>`);
@@ -678,6 +713,7 @@ $('menuBtn').addEventListener('click', () => {
 });
 function menu(m) {
   if (m === 'rename') { closeSheet(); goNaming(true); }
+  if (m === 'device') { closeSheet(); enterDevice(); }
   if (m === 'sound') { muted = !muted; save(); closeSheet(); toast(muted ? 'Pípanie vypnuté' : 'Pípanie zapnuté'); }
   if (m === 'voice') { voiceOn = !voiceOn; if (!voiceOn) synth?.cancel(); save(); closeSheet(); toast(voiceOn ? 'Hlas zapnutý' : 'Hlas vypnutý'); if (voiceOn) say(pick(L().hello)); }
   if (m === 'info') {
@@ -767,8 +803,189 @@ async function goHome() {
   renderChips();
   setPetModel(await loadModel(S.species));
   lastTick = Date.now();
+  if (S.device || /[?&]kluc/.test(location.search)) enterDevice();
   renderStats();
 }
+
+// ---------- režim kľúčenky ----------
+// Simulácia fyzickej kľúčenky: displej 300×300 px, 3 tlačidlá vpredu (◀ ● ▶) a bočné tlačidlo na hovorenie.
+const K_MENU = [
+  { id: 'feed', icon: '🍎', label: 'Papať', stat: 'full' },
+  { id: 'play', icon: '⭐', label: 'Hrať', stat: 'mood' },
+  { id: 'bath', icon: '🫧', label: 'Kúpeľ', stat: 'clean' },
+  { id: 'sleep', icon: '🌙', label: 'Spať', stat: 'energy' },
+  { id: 'stats', icon: '📊', label: 'Stav' },
+];
+const K_SHELL = {
+  cincila: ['#e4e6f7', '#b9bfe6', '#f6a5c0'],
+  opicka: ['#ffe2c4', '#f0b07e', '#ff9b6a'],
+};
+let kSel = -1, kSelT = 0, kPanel = null;
+
+function enterDevice() {
+  if (!S) return;
+  device = true; S.device = true; save();
+  document.body.classList.add('device');
+  const scr = $('kScreen');
+  scr.prepend(canvas); canvas.after(fx);
+  const sh = K_SHELL[S.species] || K_SHELL.cincila;
+  const st = document.documentElement.style;
+  st.setProperty('--shell1', sh[0]); st.setProperty('--shell2', sh[1]); st.setProperty('--btn', sh[2]);
+  ['pick', 'naming', 'home'].forEach((id) => { $(id).hidden = true; });
+  $('bubble').hidden = true;
+  $('device').hidden = false;
+  closeSheet(); resize(); renderK();
+}
+function exitDevice() {
+  device = false; S.device = false; save();
+  document.body.classList.remove('device');
+  $('bg').after(canvas); canvas.after(fx);
+  $('device').hidden = true; $('kBubble').hidden = true;
+  if (game) endGame();
+  kPanel = null; kSel = -1;
+  $('home').hidden = false;
+  resize(); renderStats();
+}
+function kText(txt, cls = '') {
+  const b = $('kBubble');
+  b.className = 'k-bubble ' + cls;
+  b.innerHTML = '<span></span>';
+  b.firstChild.textContent = txt;
+}
+function kScroll(txt) {
+  // dlhý text sa na malom displeji pomaly posúva hore
+  const b = $('kBubble'), sp = b.firstChild;
+  const over = sp.scrollHeight - b.clientHeight + 10;
+  if (over > 0) sp.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(0)', offset: 0.3 }, { transform: `translateY(${-over}px)` }], { duration: Math.max(3500, txt.length * 70), fill: 'forwards', easing: 'linear' });
+}
+function kNeeds(m) { return m.stat && S.stats[m.stat] < 35; }
+function renderK() {
+  if (!device || !S) return;
+  const scr = $('kScreen');
+  scr.classList.toggle('night', !!S.sleeping);
+  const top = $('kTop');
+  if (kPanel?.type === 'game' && game) {
+    const left = Math.max(0, Math.ceil((game.end - Date.now()) / 1000));
+    top.innerHTML = `<div class="k-score">⭐ ${game.score} · ${left} s</div>`;
+  } else {
+    top.innerHTML = `<div class="k-icons">${K_MENU.map((m, i) => `<span class="${i === kSel ? 'sel' : ''} ${kNeeds(m) ? 'need' : ''}">${m.id === 'sleep' && S.sleeping ? '☀️' : m.icon}</span>`).join('')}</div>`
+      + (kSel >= 0 ? `<div class="k-label">${K_MENU[kSel].id === 'sleep' && S.sleeping ? 'Zobudiť' : K_MENU[kSel].label}</div>` : '');
+  }
+  const pan = $('kPanel');
+  if (!kPanel) { pan.hidden = true; pan.innerHTML = ''; return; }
+  pan.hidden = false;
+  if (kPanel.type === 'food') {
+    const foods = SPECIES[S.species].foods;
+    const it = kPanel.i < foods.length ? foods[kPanel.i] : { icon: '↩', label: 'Späť' };
+    pan.innerHTML = `<div class="k-card"><div class="k-big">${it.icon}</div><b>${it.label}</b><div class="k-dots">${[...foods, 0].map((_, i) => `<i class="${i === kPanel.i ? 'on' : ''}"></i>`).join('')}</div></div>`;
+  } else if (kPanel.type === 'stats') {
+    pan.innerHTML = `<div class="k-card k-stats"><b>${S.name}</b>${STAT_UI.map((s) => {
+      const v = Math.round(S.stats[s.k]);
+      return `<div class="k-row"><i>${s.icon}</i><div class="bar"><b style="width:${v}%;background:${v < 30 ? 'var(--bad)' : v < 60 ? 'var(--mid)' : 'var(--good)'}"></b></div></div>`;
+    }).join('')}<small>spolu ${Math.floor((Date.now() - S.born) / 864e5) + 1}. deň</small></div>`;
+  } else if (kPanel.type === 'game') {
+    pan.innerHTML = `<div class="k-lanes">${[0, 1, 2].map((l) => `<span>${game && game.lane === l ? '⭐' : ''}</span>`).join('')}</div>`;
+  }
+}
+function kPress(b) {
+  audioInit();
+  if (!S) return;
+  kSelT = Date.now();
+  if (kPanel?.type === 'game') return kGameHit(b);
+  chirp(1);
+  if (kPanel?.type === 'stats') { kPanel = null; return renderK(); }
+  if (kPanel?.type === 'food') {
+    const foods = SPECIES[S.species].foods, n = foods.length + 1;
+    if (b === 'L') kPanel.i = (kPanel.i - 1 + n) % n;
+    else if (b === 'R') kPanel.i = (kPanel.i + 1) % n;
+    else { const f = foods[kPanel.i]; kPanel = null; if (f) feed(f); }
+    return renderK();
+  }
+  if (b === 'L') kSel = kSel <= 0 ? K_MENU.length - 1 : kSel - 1;
+  else if (b === 'R') kSel = (kSel + 1) % K_MENU.length;
+  else if (kSel < 0) { play('jump', 0.55); hearts(3); petPet(); }
+  else {
+    const id = K_MENU[kSel].id;
+    if (id === 'stats') kPanel = { type: 'stats' };
+    else ({ feed: openFood, play: startGame, bath: doBath, sleep: toggleSleep })[id]();
+  }
+  renderK();
+}
+function startGameK() {
+  game = { score: 0, end: Date.now() + 12000, lane: -1 };
+  kPanel = { type: 'game' };
+  kSel = -1;
+  say('Chyť hviezdičku! ◀ ● ▶');
+  play('spin', 0.9);
+  const spawn = () => {
+    if (!game) return;
+    if (Date.now() >= game.end) { endGame(); return renderK(); }
+    game.lane = Math.floor(Math.random() * 3); game.hit = false; renderK();
+    game.timer = setTimeout(() => {
+      if (!game) return;
+      game.lane = -1; renderK();
+      game.timer = setTimeout(spawn, 200 + Math.random() * 300);
+    }, 700 + Math.random() * 400);
+  };
+  game.timer = setTimeout(spawn, 900);
+}
+function kGameHit(b) {
+  if (!game) return;
+  const lane = { L: 0, OK: 1, R: 2 }[b];
+  if (game.lane === lane && !game.hit) {
+    game.hit = true; game.score++; game.lane = -1;
+    chirp(2); play('jump', 0.45); renderK();
+  } else play('shake', 0.35);
+}
+document.querySelectorAll('[data-k]').forEach((btn) => {
+  btn.addEventListener('pointerdown', (e) => { e.preventDefault(); btn.classList.add('down'); kPress(btn.dataset.k); });
+  ['pointerup', 'pointerleave', 'pointercancel'].forEach((ev) => btn.addEventListener(ev, () => btn.classList.remove('down')));
+});
+// klávesnica na počítači: šípky + Enter, medzerník = hovoriť
+addEventListener('keydown', (e) => {
+  if (!device || e.target.tagName === 'INPUT') return;
+  const k = { ArrowLeft: 'L', ArrowRight: 'R', Enter: 'OK' }[e.key];
+  if (k) { e.preventDefault(); kPress(k); }
+  if (e.key === ' ') { e.preventDefault(); kListen(); }
+});
+
+// bočné tlačidlo: hovoriť
+let kRec = null;
+function kListen() {
+  audioInit();
+  if (!S) return;
+  if (kRec) { kRec.stop(); return; }
+  if (!SR) { $('kType').hidden = false; $('kTypeInput').focus(); return; }
+  if (S.sleeping) return say(pick(L().sleeping));
+  synth?.cancel();
+  kRec = new SR();
+  kRec.lang = 'sk-SK'; kRec.interimResults = true;
+  let txt = '', fin = '';
+  const b = $('kBubble');
+  $('kTalk').classList.add('rec');
+  kText('🎤 Počúvam…', 'you'); b.hidden = false; clearTimeout(bubbleTimer);
+  kRec.onresult = (e) => {
+    txt = ''; for (const r of e.results) { txt += r[0].transcript; if (r.isFinal) fin = txt; }
+    kText('🎤 ' + txt, 'you');
+  };
+  kRec.onerror = (e) => { if (e.error === 'not-allowed' || e.error === 'service-not-allowed') toast('Povoľ mikrofón v nastaveniach prehliadača'); };
+  kRec.onend = () => {
+    $('kTalk').classList.remove('rec'); kRec = null;
+    const v = (fin || txt).trim();
+    if (v) { youSaid(v); setTimeout(() => reply(v), 450); } else b.hidden = true;
+  };
+  try { kRec.start(); } catch { $('kTalk').classList.remove('rec'); kRec = null; }
+}
+$('kTalk').addEventListener('click', kListen);
+$('kKeyb').addEventListener('click', () => { const f = $('kType'); f.hidden = !f.hidden; if (!f.hidden) $('kTypeInput').focus(); });
+$('kType').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const v = $('kTypeInput').value.trim();
+  if (!v) return;
+  audioInit(); $('kTypeInput').value = '';
+  youSaid(v); setTimeout(() => reply(v), 450);
+});
+$('kExit').addEventListener('click', exitDevice);
 
 // ---------- štart ----------
 (async function start() {

@@ -201,3 +201,83 @@ body.night .actions button[data-act="sleep"] { background: #ffe9a8; }
   #naming { justify-content: center; }
   .name-card { max-width: 440px; }
 }
+
+/* ---------- režim kľúčenky ---------- */
+body.device .bg { background: radial-gradient(90% 60% at 50% 38%, #4a4166 0%, #1c1828 75%); filter: none; }
+body.device #rd-stats { right: 10px !important; }
+.device-wrap {
+  position: fixed; inset: 0; z-index: 5; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 14px; padding: calc(var(--sat) + 40px) 16px calc(var(--sab) + 16px);
+}
+.device {
+  position: relative; width: min(330px, 84vw); padding: 34px 20px 24px;
+  border-radius: 48% 48% 42% 42% / 30% 30% 26% 26%;
+  background: radial-gradient(120% 80% at 30% 15%, rgba(255,255,255,.55), rgba(255,255,255,0) 45%), linear-gradient(165deg, var(--shell1, #e4e6f7), var(--shell2, #b9bfe6));
+  box-shadow: inset 0 4px 8px rgba(255,255,255,.7), inset 0 -10px 18px rgba(0,0,0,.18), 0 30px 60px rgba(0,0,0,.5), 0 6px 0 rgba(0,0,0,.12);
+}
+.ring {
+  position: absolute; top: -46px; left: 50%; width: 60px; height: 60px; margin-left: -30px; z-index: -1;
+  border-radius: 50%; border: 7px solid #c8ccd6; box-shadow: inset 0 2px 3px rgba(0,0,0,.35), 0 2px 3px rgba(255,255,255,.25);
+}
+.ring::after { content: ''; position: absolute; left: 50%; bottom: -16px; width: 22px; height: 18px; margin-left: -11px; border-radius: 6px; background: var(--shell2, #b9bfe6); }
+.side-btn {
+  position: absolute; right: -15px; top: 30%; width: 26px; height: 74px; border-radius: 12px;
+  background: var(--btn, #f6a5c0); box-shadow: inset -3px 0 4px rgba(0,0,0,.2), 3px 4px 8px rgba(0,0,0,.3); font-size: 13px;
+  display: grid; place-items: center;
+}
+.side-btn:active { transform: translateX(-3px); }
+.side-btn.rec { background: #ff5370; animation: rec 1s ease-in-out infinite; }
+.k-bezel { background: #1b1826; border-radius: 26px; padding: 10px; box-shadow: inset 0 3px 8px rgba(0,0,0,.7), 0 1px 0 rgba(255,255,255,.4); }
+.k-screen {
+  position: relative; width: 100%; aspect-ratio: 1; border-radius: 16px; overflow: hidden;
+  background: radial-gradient(100% 70% at 50% 20%, rgba(255,255,255,.85), rgba(255,255,255,0) 60%), linear-gradient(180deg, var(--bg1), var(--bg2));
+  transition: filter .8s;
+}
+.k-screen.night { filter: brightness(.55) saturate(.8); }
+.k-screen #scene { position: absolute; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; z-index: 1; }
+.k-screen .fx { position: absolute; inset: 0; z-index: 2; }
+.k-top { position: absolute; top: 5px; left: 6px; right: 6px; z-index: 3; pointer-events: none; text-align: center; }
+.k-icons { display: flex; justify-content: space-between; }
+.k-icons span { width: 13.5%; aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center; font-size: clamp(12px, 4.4vw, 17px); background: rgba(255,255,255,.55); transition: transform .12s, background .12s; }
+.k-icons span.sel { background: var(--ink); transform: scale(1.12); box-shadow: 0 2px 6px rgba(0,0,0,.25); }
+.k-icons span.need { animation: kneed 1.2s ease-in-out infinite; }
+@keyframes kneed { 50% { background: #ffb3b3; } }
+.k-label { display: inline-block; margin-top: 3px; background: var(--ink); color: #fff; border-radius: 8px; padding: 1px 8px; font-size: 11px; font-weight: 600; }
+.k-score { display: inline-block; background: var(--ink); color: #fff; border-radius: 10px; padding: 3px 10px; font-size: 13px; font-weight: 600; }
+.k-bubble {
+  position: absolute; left: 7px; right: 7px; bottom: 7px; z-index: 4; max-height: 40%; overflow: hidden;
+  background: rgba(255,255,255,.95); border-radius: 12px; padding: 5px 8px; font-size: clamp(11px, 3.4vw, 13px); line-height: 1.25; text-align: center;
+  box-shadow: 0 3px 8px rgba(59,51,80,.15);
+}
+.k-bubble span { display: block; }
+.k-bubble.you { background: var(--ink); color: #fff; }
+.k-panel { position: absolute; inset: 0; z-index: 3; display: grid; place-items: center; pointer-events: none; }
+.k-card { background: rgba(255,255,255,.95); border-radius: 14px; padding: 8px 14px 10px; text-align: center; min-width: 52%; box-shadow: 0 6px 16px rgba(59,51,80,.2); font-size: 13px; }
+.k-big { font-size: clamp(30px, 11vw, 44px); line-height: 1.15; }
+.k-dots { display: flex; gap: 4px; justify-content: center; margin-top: 5px; }
+.k-dots i { width: 5px; height: 5px; border-radius: 50%; background: var(--line); }
+.k-dots i.on { background: var(--ink); }
+.k-stats { min-width: 70%; display: grid; gap: 5px; }
+.k-stats small { color: var(--soft); font-size: 11px; }
+.k-row { display: flex; align-items: center; gap: 6px; }
+.k-row i { font-style: normal; font-size: 13px; }
+.k-row .bar { flex: 1; height: 7px; border-radius: 4px; background: var(--line); overflow: hidden; }
+.k-row .bar b { display: block; height: 100%; }
+.k-lanes { position: absolute; top: 34px; left: 8%; right: 8%; display: flex; justify-content: space-between; }
+.k-lanes span { width: 28%; height: 52px; border-radius: 12px; background: rgba(255,255,255,.35); display: grid; place-items: center; font-size: 30px; }
+.k-brand { text-align: center; font-weight: 700; letter-spacing: .3em; font-size: 12px; color: rgba(0,0,0,.3); margin: 10px 0 2px; }
+.k-btns { display: flex; justify-content: center; align-items: center; gap: 24px; margin-top: 8px; }
+.k-btns button {
+  width: 54px; height: 54px; border-radius: 50%; font-size: 17px; color: rgba(0,0,0,.4);
+  background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.7), rgba(255,255,255,0) 55%), var(--btn, #f6a5c0);
+  box-shadow: 0 5px 0 rgba(0,0,0,.22), 0 9px 14px rgba(0,0,0,.25); transition: transform .06s, box-shadow .06s;
+}
+.k-btns button.ok { width: 62px; height: 62px; margin-top: 14px; font-size: 20px; }
+.k-btns button.down { transform: translateY(4px); box-shadow: 0 1px 0 rgba(0,0,0,.22), 0 3px 6px rgba(0,0,0,.25); }
+.k-hint { color: #cfc8e6; font-size: 12.5px; text-align: center; line-height: 1.45; max-width: 340px; }
+.k-hint span { color: #8f87ad; }
+.k-type { display: flex; gap: 8px; width: min(330px, 84vw); }
+.k-type input { flex: 1; min-width: 0; border: 0; border-radius: 18px; padding: 11px 14px; font-size: 16px; outline: none; }
+.k-links { display: flex; gap: 18px; }
+.k-links .link { color: #b9b1d6; margin: 0; }
+@media (max-height: 700px) { .device { width: min(290px, 78vw); padding-top: 28px; } .k-btns button { width: 48px; height: 48px; } .k-btns button.ok { width: 54px; height: 54px; } }

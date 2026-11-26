@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="modulepreload" href="vendor/three.bundle.js">
-<link rel="stylesheet" href="style.css?v=2">
+<link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
 <div id="bg" class="bg"></div>
@@ -88,6 +88,33 @@
   </div>
 </section>
 
+<!-- Režim kľúčenky -->
+<section id="device" class="device-wrap" hidden>
+  <div class="device">
+    <div class="ring" aria-hidden="true"></div>
+    <button class="side-btn" id="kTalk" aria-label="Hovoriť">🎤</button>
+    <div class="k-bezel">
+      <div class="k-screen" id="kScreen">
+        <div class="k-top" id="kTop"></div>
+        <div class="k-panel" id="kPanel" hidden></div>
+        <div class="k-bubble" id="kBubble" hidden></div>
+      </div>
+    </div>
+    <div class="k-brand">tmgc</div>
+    <div class="k-btns">
+      <button data-k="L" aria-label="Doľava">◀</button>
+      <button data-k="OK" class="ok" aria-label="Potvrdiť">●</button>
+      <button data-k="R" aria-label="Doprava">▶</button>
+    </div>
+  </div>
+  <div class="k-hint">◀ ▶ vyber · ● potvrď (bez výberu = pohladkaj) · 🎤 bočné tlačidlo = hovor<br><span>displej 300 × 300 px, skutočné rozlíšenie</span></div>
+  <form class="k-type" id="kType" hidden autocomplete="off">
+    <input id="kTypeInput" maxlength="120" placeholder="Napíš (len v prototype)…" enterkeyhint="send">
+    <button class="send" aria-label="Poslať">➤</button>
+  </form>
+  <div class="k-links"><button class="link" id="kKeyb">⌨️ písať</button><button class="link" id="kExit">← celá appka</button></div>
+</section>
+
 <!-- Spodné okno (jedlo, menu) -->
 <div class="sheet-wrap" id="sheetWrap" hidden>
   <div class="sheet" id="sheet"></div>
@@ -98,7 +125,7 @@
 
 <div class="loading" id="loading"><div class="spin"></div><span>Načítavam…</span></div>
 
-<script type="module" src="app.js?v=2"></script>
+<script type="module" src="app.js?v=3"></script>
 <script src="/stats.js" defer></script>
 </body>
 </html>

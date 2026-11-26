@@ -16,20 +16,21 @@ const STAT_UI = [
   { k: 'mood', icon: '💛', label: 'Nálada' },
   { k: 'clean', icon: '🫧', label: 'Čistota' },
 ];
-const CHIPS = ['Ahoj!', 'Ako sa máš?', 'Kto si?', 'Povedz vtip', 'Mám ťa rád 💛', 'Povedz zaujímavosť', 'Volám sa…'];
+const CHIPS = ['Ahoj!', 'Ako sa máš?', 'Čo robíš?', 'Zaspievaj', 'Povedz vtip', 'Čo máš rád?', 'Mám ťa rád 💛', 'Koľko je hodín?', 'Čo vieš?', 'Volám sa…'];
 
 // ---------- stav ----------
 let S = load();
 let mode = 'loading';            // loading | pick | naming | home
 let pickIndex = 0;
 let muted = !!(S && S.muted);
+let voiceOn = !(S && S.voiceOff);
 
 function load() {
   try { return JSON.parse(localStorage.getItem(SAVE_KEY)) || null; } catch { return null; }
 }
 function save() {
   if (!S) return;
-  S.last = Date.now(); S.muted = muted;
+  S.last = Date.now(); S.muted = muted; S.voiceOff = !voiceOn;
   try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch {}
 }
 const clamp = (v, a = FLOOR, b = 100) => Math.max(a, Math.min(b, v));
@@ -61,23 +62,25 @@ const rim = new T.DirectionalLight(0xd8e4ff, 0.8);
 rim.position.set(-3, 2, -2.5);
 scene.add(rim);
 
-function radialTex(inner, outer) {
-  const c = document.createElement('canvas'); c.width = c.height = 128;
+// mäkký kruh: šedá maska (alphaMap), bez tone mappingu → žiadny farebný šum na iPhone
+function radialMask(strength) {
+  const c = document.createElement('canvas'); c.width = c.height = 256;
   const g = c.getContext('2d');
-  const gr = g.createRadialGradient(64, 64, 0, 64, 64, 64);
-  gr.addColorStop(0, inner); gr.addColorStop(1, outer);
-  g.fillStyle = gr; g.fillRect(0, 0, 128, 128);
-  const t = new T.CanvasTexture(c); t.colorSpace = T.SRGBColorSpace; return t;
+  const gr = g.createRadialGradient(128, 128, 0, 128, 128, 128);
+  const v = Math.round(255 * strength);
+  gr.addColorStop(0, `rgb(${v},${v},${v})`); gr.addColorStop(0.55, `rgb(${v >> 1},${v >> 1},${v >> 1})`); gr.addColorStop(1, 'rgb(0,0,0)');
+  g.fillStyle = gr; g.fillRect(0, 0, 256, 256);
+  return new T.CanvasTexture(c);
 }
 const floor = new T.Mesh(
   new T.PlaneGeometry(3.6, 3.6),
-  new T.MeshBasicMaterial({ map: radialTex('rgba(255,255,255,0.85)', 'rgba(255,255,255,0)'), transparent: true, depthWrite: false })
+  new T.MeshBasicMaterial({ color: 0xffffff, alphaMap: radialMask(0.85), transparent: true, depthWrite: false, toneMapped: false })
 );
 floor.rotation.x = -Math.PI / 2;
 scene.add(floor);
 const shadow = new T.Mesh(
   new T.PlaneGeometry(1.5, 1.5),
-  new T.MeshBasicMaterial({ map: radialTex('rgba(60,45,90,0.32)', 'rgba(60,45,90,0)'), transparent: true, depthWrite: false })
+  new T.MeshBasicMaterial({ color: 0x3c2d5a, alphaMap: radialMask(0.32), transparent: true, depthWrite: false, toneMapped: false })
 );
 shadow.rotation.x = -Math.PI / 2; shadow.position.y = 0.003;
 scene.add(shadow);
@@ -163,6 +166,7 @@ let anim = null;            // { type, t0, dur }
 let popT = 1;               // vyskočenie pri výmene modelu
 let userYaw = 0, yawVel = 0, dragging = false;
 let lookX = 0;
+let talking = false;
 const clock = { start: performance.now(), prev: performance.now(), elapsedTime: 0, getDelta() { const n = performance.now(); const d = (n - this.prev) / 1000; this.prev = n; this.elapsedTime = (n - this.start) / 1000; return d; } };
 
 function play(type, dur) { anim = { type, t0: clock.elapsedTime, dur }; }
@@ -180,6 +184,10 @@ function frame() {
   let sy = 1 + br, sxz = 1 - br * 0.5;
   let y = 0, pitch = sleeping ? 0.16 : sad ? 0.1 : 0, roll = sleeping ? 0.07 : 0, extraYaw = 0;
   if (sleeping) sy *= 0.94;
+  if (talking && !sleeping) {
+    const k = Math.abs(Math.sin(t * 13)) * 0.035;
+    sy *= 1 + k; sxz *= 1 - k * 0.4; pitch -= k * 0.8;
+  }
 
   if (anim) {
     const p = (t - anim.t0) / anim.dur;
@@ -232,7 +240,7 @@ canvas.addEventListener('pointerdown', (e) => {
   down = { x: e.clientX, y: e.clientY, t: performance.now(), lx: e.clientX, moved: 0 };
   dragging = true; yawVel = 0;
   canvas.setPointerCapture(e.pointerId);
-  audioInit();
+  audioInit(); unlockVoice();
 });
 canvas.addEventListener('pointermove', (e) => {
   lookX = (e.clientX / innerWidth - 0.5);
@@ -298,7 +306,7 @@ function toast(msg) {
 
 // ---------- zvuk (malé pípnutia) ----------
 let ac = null;
-function audioInit() { if (!ac) { try { ac = new (window.AudioContext || window.webkitAudioContext)(); } catch {} } ac?.resume?.(); }
+function audioInit() { unlockVoice(); if (!ac) { try { ac = new (window.AudioContext || window.webkitAudioContext)(); } catch {} } ac?.resume?.(); }
 function chirp(n = 2) {
   if (muted || !ac) return;
   const base = 520 * (S ? SPECIES[S.species].sound : SPECIES[ORDER[pickIndex]]?.sound || 1.3);
@@ -316,20 +324,58 @@ function chirp(n = 2) {
   }
 }
 
+// ---------- hlas (čítanie nahlas v slovenčine) ----------
+const synth = window.speechSynthesis;
+let skVoice = null, voiceUnlocked = false;
+function pickVoice() {
+  const vs = synth?.getVoices?.() || [];
+  skVoice = vs.find((v) => /^sk/i.test(v.lang)) || vs.find((v) => /^cs/i.test(v.lang)) || null;
+}
+if (synth) { pickVoice(); synth.addEventListener?.('voiceschanged', pickVoice); }
+function unlockVoice() {
+  // iOS pustí hlas až po prvom dotyku
+  if (voiceUnlocked || !synth) return;
+  voiceUnlocked = true;
+  try { const u = new SpeechSynthesisUtterance(' '); u.volume = 0; synth.speak(u); } catch {}
+}
+function speak(txt) {
+  if (!voiceOn || !synth || !S) return false;
+  const clean = txt.replace(/\*[^*]*\*/g, ' ').replace(/[\p{Extended_Pictographic}\u{FE0F}\u{200D}]/gu, '').replace(/\s+/g, ' ').trim();
+  if (!clean) return false;
+  try {
+    synth.cancel();
+    const u = new SpeechSynthesisUtterance(clean);
+    u.lang = skVoice?.lang || 'sk-SK';
+    if (skVoice) u.voice = skVoice;
+    u.pitch = SPECIES[S.species].pitch || 1.5;
+    u.rate = SPECIES[S.species].rate || 1.05;
+    u.onstart = () => { talking = true; };
+    u.onend = u.onerror = () => { talking = false; };
+    synth.speak(u);
+    return true;
+  } catch { return false; }
+}
+
 // ---------- reč ----------
 const L = () => SPECIES[S.species].lines;
 let bubbleTimer = 0;
 function fill(txt) {
-  txt = txt.replace(/\{meno\}/g, S?.name || '');
+  const now = new Date();
+  txt = txt.replace(/\{meno\}/g, S?.name || '')
+    .replace(/\{cas\}/g, now.toLocaleTimeString('sk-SK', { hour: 'numeric', minute: '2-digit' }))
+    .replace(/\{dnes\}/g, now.toLocaleDateString('sk-SK', { weekday: 'long', day: 'numeric', month: 'long' }))
+    .replace(/\{den\}/g, S ? Math.floor((Date.now() - S.born) / 864e5) + 1 : 1);
   return S?.owner ? txt.replace(/\{ty\}/g, S.owner) : txt.replace(/,?\s*\{ty\}/g, '');
 }
 function say(txt) {
   const b = $('bubble');
-  $('bubbleText').textContent = fill(txt);
+  txt = fill(txt);
+  $('bubbleText').textContent = txt;
   b.hidden = true; void b.offsetWidth; b.hidden = false;
   clearTimeout(bubbleTimer);
   bubbleTimer = setTimeout(() => { b.hidden = true; }, Math.max(3500, txt.length * 65));
-  chirp(Math.min(4, 1 + Math.floor(txt.length / 25)));
+  if (!speak(txt)) chirp(Math.min(4, 1 + Math.floor(txt.length / 25)));
+  else { talking = true; setTimeout(() => { if (!synth?.speaking) talking = false; }, 1500); }
   lastTalk = Date.now();
 }
 function youSaid(txt) {
@@ -362,6 +408,12 @@ function reply(raw) {
       const n = need();
       return say(pick(L().howareyou[n || 'good']));
     }
+    case 'hungryq': return say(pick(S.stats.full < 50 ? L().hungryYes : L().hungryNo));
+    case 'tiredq': return say(pick(S.stats.energy < 40 ? L().tiredYes : L().tiredNo));
+    case 'bored': say(pick(L().bored)); return setTimeout(startGame, 1500);
+    case 'sing': case 'dance': play(hit === 'dance' ? 'spin' : 'hop', 1.2); return say(pick(L()[hit]));
+    case 'insult': play('shake', 0.8); S.stats.mood = clamp(S.stats.mood - 3); renderStats(); return say(pick(L().insult));
+    case 'usad': hearts(4); return say(pick(L().usad));
     case 'feed': say(pick(L().need.hungry)); return setTimeout(openFood, 600);
     case 'play': return startGame();
     case 'sleep': return toggleSleep();
@@ -373,7 +425,7 @@ function reply(raw) {
     }
     default: {
       const arr = L()[hit];
-      if (hit === 'love') { hearts(6); S.stats.mood = clamp(S.stats.mood + 4); renderStats(); }
+      if (hit === 'love' || hit === 'friend' || hit === 'compliment') { hearts(6); S.stats.mood = clamp(S.stats.mood + 4); renderStats(); }
       if (hit === 'hello' || hit === 'love') play('hop', 0.9);
       return say(pick(arr));
     }
@@ -410,6 +462,41 @@ function renderChips() {
     c.appendChild(b);
   });
 }
+
+// ---------- mikrofón (rozpoznávanie reči) ----------
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+const micBtn = $('mic');
+if (!SR) micBtn.hidden = true;
+let rec = null;
+micBtn.addEventListener('click', () => {
+  audioInit();
+  if (rec) { rec.stop(); return; }
+  if (S?.sleeping) return say(pick(L().sleeping));
+  synth?.cancel();
+  rec = new SR();
+  rec.lang = 'sk-SK'; rec.interimResults = true; rec.maxAlternatives = 1;
+  const inp = $('talkInput');
+  let finalText = '';
+  micBtn.classList.add('rec'); inp.placeholder = 'Počúvam…';
+  rec.onresult = (e) => {
+    let txt = '';
+    for (const r of e.results) { txt += r[0].transcript; if (r.isFinal) finalText = txt; }
+    inp.value = txt;
+  };
+  rec.onerror = (e) => { if (e.error === 'not-allowed' || e.error === 'service-not-allowed') toast('Povoľ mikrofón v nastaveniach prehliadača'); };
+  rec.onend = () => {
+    micBtn.classList.remove('rec'); inp.placeholder = 'Povedz niečo…';
+    rec = null;
+    const v = (finalText || inp.value).trim();
+    if (v) $('talk').requestSubmit();
+  };
+  try { rec.start(); } catch { micBtn.classList.remove('rec'); rec = null; }
+});
+
+// nech sa stránka správa ako appka: žiadny zoom
+['gesturestart', 'gesturechange', 'gestureend'].forEach((ev) => document.addEventListener(ev, (e) => e.preventDefault(), { passive: false }));
+document.addEventListener('touchmove', (e) => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
+document.addEventListener('dblclick', (e) => e.preventDefault(), { passive: false });
 
 // ---------- štatistiky ----------
 function renderStats() {
@@ -582,7 +669,8 @@ function endGame() {
 $('menuBtn').addEventListener('click', () => {
   openSheet(`<h3>${S.name}</h3><div class="list">
     <button data-m="rename">✏️ Premenovať</button>
-    <button data-m="sound" class="row"><span>${muted ? '🔇 Zvuk vypnutý' : '🔊 Zvuk zapnutý'}</span></button>
+    <button data-m="voice">${voiceOn ? '🗣️ Hlas zapnutý' : '🤐 Hlas vypnutý'}</button>
+    <button data-m="sound">${muted ? '🔇 Pípanie vypnuté' : '🔊 Pípanie zapnuté'}</button>
     <button data-m="info">ℹ️ O appke</button>
     <button data-m="new" class="danger">🔄 Nové zvieratko</button>
   </div>`);
@@ -590,9 +678,10 @@ $('menuBtn').addEventListener('click', () => {
 });
 function menu(m) {
   if (m === 'rename') { closeSheet(); goNaming(true); }
-  if (m === 'sound') { muted = !muted; save(); closeSheet(); toast(muted ? 'Zvuk vypnutý' : 'Zvuk zapnutý'); }
+  if (m === 'sound') { muted = !muted; save(); closeSheet(); toast(muted ? 'Pípanie vypnuté' : 'Pípanie zapnuté'); }
+  if (m === 'voice') { voiceOn = !voiceOn; if (!voiceOn) synth?.cancel(); save(); closeSheet(); toast(voiceOn ? 'Hlas zapnutý' : 'Hlas vypnutý'); if (voiceOn) say(pick(L().hello)); }
   if (m === 'info') {
-    openSheet(`<h3>si/tmgc</h3><p style="text-align:center;color:var(--soft);margin:0 0 8px;line-height:1.4">Prototyp cozy Tamagotchi. Zvieratko nemôže umrieť, len ti bude chýbať.<br>Rozhovory sú zatiaľ predpísané, AI príde neskôr.<br>Ťahaj prstom = otáčaš, ťukni = pohladkáš.</p>`);
+    openSheet(`<h3>si/tmgc</h3><p style="text-align:center;color:var(--soft);margin:0 0 8px;line-height:1.4">Prototyp cozy Tamagotchi. Zvieratko nemôže umrieť, len ti bude chýbať.<br>Rozhovory sú zatiaľ predpísané, AI príde neskôr.<br>Píš alebo drž 🎤 a hovor. Ťahaj prstom = otáčaš, ťukni = pohladkáš.<br>Ak nepočuješ hlas, vypni na iPhone tichý režim.</p>`);
   }
   if (m === 'new') {
     openSheet(`<h3>Naozaj nové zvieratko?</h3><p style="text-align:center;color:var(--soft);margin:0 0 12px">${S.name} odíde k babke na dedinu 🏡</p><div class="list"><button data-c="yes" class="danger">Áno, chcem nové</button><button data-c="no">Nie, nechám si ${S.name}</button></div>`);

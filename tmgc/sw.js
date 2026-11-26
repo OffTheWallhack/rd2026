@@ -1,7 +1,7 @@
 // si/tmgc service worker — pri novej verzii zvýš číslo
-const CACHE = 'tmgc-v1';
+const CACHE = 'tmgc-v2';
 const CORE = [
-  './', 'index.html', 'style.css?v=1', 'app.js?v=1', 'lines.js', 'vendor/three.bundle.js',
+  './', 'index.html', 'style.css?v=2', 'app.js?v=2', 'lines.js', 'vendor/three.bundle.js',
   'models/cincila.glb', 'models/opicka.glb', 'manifest.webmanifest', 'ikony/icon-192.png',
 ];
 self.addEventListener('install', (e) => {

@@ -1,0 +1,16 @@
+{
+  "name": "si/tmgc — tvoje 3D zvieratko",
+  "short_name": "tmgc",
+  "description": "Cozy 3D Tamagotchi. Kŕm, hraj sa a rozprávaj sa so svojím zvieratkom.",
+  "start_url": "/tmgc/",
+  "scope": "/tmgc/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#eef1f8",
+  "theme_color": "#eef1f8",
+  "icons": [
+    { "src": "ikony/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "ikony/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "ikony/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

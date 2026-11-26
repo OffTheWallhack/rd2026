@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
+<title>si/tmgc — tvoje 3D zvieratko</title>
+<meta name="description" content="Cozy 3D Tamagotchi v prehliadači. Vyber si činčilu alebo opičku, daj jej meno, kŕm ju, hraj sa s ňou a rozprávaj sa.">
+<meta name="theme-color" content="#eef1f8">
+<link rel="canonical" href="https://durica.si/tmgc/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="durica.si">
+<meta property="og:title" content="si/tmgc">
+<meta property="og:description" content="Cozy 3D zvieratko v mobile. Kŕm ho, hraj sa a rozprávaj sa s ním.">
+<meta property="og:url" content="https://durica.si/tmgc/">
+<meta property="og:image" content="https://durica.si/tmgc/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="ikony/icon-192.png">
+<link rel="apple-touch-icon" href="ikony/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="tmgc">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="modulepreload" href="vendor/three.bundle.js">
+<link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+<div id="bg" class="bg"></div>
+<canvas id="scene"></canvas>
+<div id="fx" class="fx" aria-hidden="true"></div>
+
+<!-- Výber zvieratka -->
+<section id="pick" class="screen" hidden>
+  <header class="pick-head">
+    <div class="logo">si/tmgc</div>
+    <h1>Vyber si kamoša</h1>
+  </header>
+  <div class="pick-nav">
+    <button class="round" id="prev" aria-label="Predchádzajúce">‹</button>
+    <div class="pick-label"><b id="pickName"></b><span id="pickNote"></span></div>
+    <button class="round" id="next" aria-label="Ďalšie">›</button>
+  </div>
+  <div class="dots" id="dots"></div>
+  <button class="big" id="pickBtn">Toto chcem</button>
+</section>
+
+<!-- Pomenovanie -->
+<section id="naming" class="screen" hidden>
+  <div class="card name-card">
+    <h2>Ako sa bude volať?</h2>
+    <div class="name-row">
+      <input id="nameInput" maxlength="16" autocomplete="off" placeholder="Meno">
+      <button class="round dice" id="dice" aria-label="Náhodné meno">🎲</button>
+    </div>
+    <button class="big" id="nameBtn">Hotovo</button>
+    <button class="link" id="backPick">← späť na výber</button>
+  </div>
+</section>
+
+<!-- Domček -->
+<section id="home" class="screen" hidden>
+  <header class="top">
+    <div class="who">
+      <b id="petName"></b>
+      <span id="petAge"></span>
+    </div>
+    <button class="round small" id="menuBtn" aria-label="Menu">⋯</button>
+  </header>
+  <div class="stats" id="stats"></div>
+  <div class="bubble" id="bubble" hidden><span id="bubbleText"></span></div>
+  <div class="you" id="you" hidden></div>
+  <div class="bottom">
+    <div class="chips" id="chips"></div>
+    <form class="talk" id="talk" autocomplete="off">
+      <input id="talkInput" maxlength="120" placeholder="Povedz niečo…">
+      <button class="send" aria-label="Poslať">➤</button>
+    </form>
+    <nav class="actions" id="actions">
+      <button data-act="feed"><i>🍎</i><span>Papať</span></button>
+      <button data-act="play"><i>⭐</i><span>Hrať</span></button>
+      <button data-act="bath"><i>🫧</i><span>Kúpeľ</span></button>
+      <button data-act="sleep"><i>🌙</i><span id="sleepLabel">Spať</span></button>
+    </nav>
+  </div>
+</section>
+
+<!-- Spodné okno (jedlo, menu) -->
+<div class="sheet-wrap" id="sheetWrap" hidden>
+  <div class="sheet" id="sheet"></div>
+</div>
+
+<!-- Minihra -->
+<div class="game-hud" id="gameHud" hidden><span id="gameScore">0</span> ⭐ · <span id="gameTime">10</span> s</div>
+
+<div class="loading" id="loading"><div class="spin"></div><span>Načítavam…</span></div>
+
+<script type="module" src="app.js?v=1"></script>
+<script src="/stats.js" defer></script>
+</body>
+</html>
